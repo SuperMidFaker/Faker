@@ -74,11 +74,6 @@ export default class ManifestList extends Component {
     width: 120,
     render: (o, record) => <a onClick={() => this.handlePreview(o, record)}>{o}</a>,
   }, {
-    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
-    dataIndex: 'detail_count',
-    width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
-  }, {
     title: '报关代理',
     dataIndex: 'customs_name',
     width: 160,
@@ -93,9 +88,14 @@ export default class ManifestList extends Component {
     render: (o, record) => (record.id ?
     record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
   }, {
+    title: <Tooltip title="表体记录数"><Icon type="bars" /></Tooltip>,
+    dataIndex: 'detail_count',
+    width: 50,
+    render: dc => !isNaN(dc) ? dc : null,
+  }, {
     title: '制单进度',
     width: 180,
-    render: (o, record) => <Progress percent={record.bill_status} strokeWidth={5} showInfo={false} />,
+    render: (o, record) => <Progress percent={record.bill_status} strokeWidth={5} />,
   }, {
     title: '客户',
     dataIndex: 'send_name',

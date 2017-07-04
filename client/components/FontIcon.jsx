@@ -64,3 +64,14 @@ Ikons.propTypes = {
   type: PropTypes.string.isRequired,
   tagWrapped: PropTypes.bool,
 };
+
+export function Iconfont(props) {
+  const { type, tagWrapped } = props;
+  const icon = (<i className={`iconfont icon-${type}`} />);
+  return tagWrapped ? <Tag>{icon}</Tag> : icon;
+}
+
+Iconfont.propTypes = {
+  type: PropTypes.string.isRequired,
+  tagWrapped: PropTypes.bool,
+};

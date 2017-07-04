@@ -265,4 +265,36 @@ export default defineMessages({
     id: 'cms.customs.contract.no',
     defaultMessage: '合同协议号：',
   },
+  containerId: {
+    id: 'cms.customs.tabpanes.container.id',
+    defaultMessage: '箱号',
+  },
+  containerWt: {
+    id: 'cms.customs.tabpanes.container.wt',
+    defaultMessage: '自重',
+  },
+  containerSpec: {
+    id: 'cms.customs.tabpanes.container.spec',
+    defaultMessage: '规格',
+  },
+  containerQty: {
+    id: 'cms.customs.tabpanes.container.qty',
+    defaultMessage: '数量',
+  },
+  docuSpec: {
+    id: 'cms.customs.tabpanes.document.spec',
+    defaultMessage: '单据类型',
+  },
+  docuCode: {
+    id: 'cms.customs.tabpanes.document.code',
+    defaultMessage: '单据编码',
+  },
+  certSpec: {
+    id: 'cms.customs.tabpanes.cert.spec',
+    defaultMessage: '单证类型',
+  },
+  certNum: {
+    id: 'cms.customs.tabpanes.cert.num',
+    defaultMessage: '单证编号',
+  },
 });
