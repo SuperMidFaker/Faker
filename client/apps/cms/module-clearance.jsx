@@ -37,7 +37,7 @@ export default class Clearance extends React.Component {
         single: true,
         key: 'cms-dashboard',
         path: '/clearance/dashboard',
-        icon: 'logixon icon-yingyongchengxu',
+        icon: 'logixon icon-apps',
         text: formatMsg(intl, 'dashboard'),
       });
     }
@@ -102,7 +102,7 @@ export default class Clearance extends React.Component {
       linkMenus.push({
         single: false,
         key: 'cms-classification',
-        icon: 'logixon icon-ziyuan',
+        icon: 'logixon icon-resource',
         text: formatMsg(intl, 'classification'),
         sublinks: [{
           key: 'cms-classification-0',
@@ -124,7 +124,7 @@ export default class Clearance extends React.Component {
         single: false,
         key: 'cms-billing',
         path: '/clearance/billing',
-        icon: 'logixon icon-caiwu',
+        icon: 'logixon icon-finance',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'cms-billing-0',
@@ -153,7 +153,7 @@ export default class Clearance extends React.Component {
       linkMenus.push({
         single: false,
         key: 'ccms-settings',
-        icon: 'logixon icon-shezhi-xianxing',
+        icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
         sublinks: [{
           key: 'ccms-settings-0',

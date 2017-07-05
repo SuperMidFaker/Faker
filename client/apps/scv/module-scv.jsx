@@ -52,7 +52,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-2',
-      icon: 'logixon icon-jiankongshexiangtou',
+      icon: 'logixon icon-monitor-cam-o',
       text: formatMsg(intl, 'tracking'),
       sublinks: trackingSublinks.concat([{
         key: 'scv-2-99',
@@ -64,7 +64,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-3',
-      icon: 'logixon icon-haiguan-xianxing',
+      icon: 'logixon icon-customs-o',
       text: formatMsg(intl, 'clearance'),
       sublinks: [{
         key: 'scv-3-0',
@@ -87,7 +87,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-4',
-      icon: 'logixon icon-ziyuan-xianxing',
+      icon: 'logixon icon-resource-o',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'scv-4-0',
@@ -98,7 +98,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-5',
-      icon: 'logixon icon-cangkucangchu-xianxing',
+      icon: 'logixon icon-warehouse-o',
       text: formatMsg(intl, 'inventory'),
       sublinks: [{
         key: 'scv-5-0',
@@ -126,7 +126,7 @@ export default class ModuleSCV extends React.Component {
       single: false,
       key: 'scv-6',
       disabled: true,
-      icon: 'logixon icon-zhangdan-xianxing',
+      icon: 'logixon icon-bill-o',
       text: formatMsg(intl, 'billing'),
       sublinks: [{
         key: 'scv-6-0',
@@ -145,7 +145,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-7',
-      icon: 'logixon icon-baobiao-xianxing',
+      icon: 'logixon icon-report-o',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{
         key: 'scv-7-0',
@@ -160,7 +160,7 @@ export default class ModuleSCV extends React.Component {
     linkMenus.push({
       single: false,
       key: 'scv-8',
-      icon: 'logixon icon-shezhi-xianxing',
+      icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
       sublinks: [{
         key: 'scv-8-0',

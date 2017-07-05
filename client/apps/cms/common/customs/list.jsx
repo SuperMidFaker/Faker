@@ -26,6 +26,7 @@ import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
+import { Logixon } from 'client/components/FontIcon';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -121,7 +122,7 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.released.value:
           return (
             <span>
-              <DeclStatusPopover entryId={entryNO}><Tag color={record.status === CMS_DECL_STATUS.released.value ? 'green' : 'blue'}>海关</Tag></DeclStatusPopover>
+              <DeclStatusPopover entryId={entryNO}><Tag color={record.status === CMS_DECL_STATUS.released.value ? 'green' : 'blue'}><Logixon type="customs-o" /></Tag></DeclStatusPopover>
               <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>
             </span>);
         default:

@@ -37,7 +37,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-0',
         path: '/transport/dashboard',
-        icon: 'logixon icon-yingyongchengxu',
+        icon: 'logixon icon-apps',
         text: formatMsg(intl, 'dashboard'),
       });
     }
@@ -46,7 +46,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-1',
         path: '/transport/shipment',
-        icon: 'logixon icon-danju-xianxing',
+        icon: 'logixon icon-order',
         text: formatMsg(intl, 'shipment'),
       });
     }
@@ -55,7 +55,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-2',
         path: '/transport/dispatch',
-        icon: 'logixon icon-yunshuzhongwuliu',
+        icon: 'logixon icon-truck',
         text: formatMsg(intl, 'dispatch'),
       });
     }
@@ -64,7 +64,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-3',
         path: '/transport/tracking',
-        icon: 'logixon icon-tuodiantu',
+        icon: 'logixon icon-tracking',
         text: formatMsg(intl, 'tracking'),
       });
     }
@@ -73,7 +73,7 @@ export default class Transport extends React.Component {
         single: false,
         key: 'tms-4',
         path: '/transport/billing',
-        icon: 'logixon icon-caiwu',
+        icon: 'logixon icon-finance',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'tms-4-0',
@@ -97,7 +97,7 @@ export default class Transport extends React.Component {
     linkMenus.push({
       single: false,
       key: 'tms-5',
-      icon: 'logixon icon-baobiao',
+      icon: 'logixon icon-report',
       text: formatMsg(intl, 'analytics'),
       sublinks: [{
         key: 'tms-5-0',
@@ -109,7 +109,7 @@ export default class Transport extends React.Component {
       linkMenus.push({
         single: false,
         key: 'tms-6',
-        icon: 'logixon icon-shezhi-xianxing',
+        icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
         sublinks: [{
           key: 'tms-6-0',

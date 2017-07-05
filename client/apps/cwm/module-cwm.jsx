@@ -34,13 +34,13 @@ export default class ModuleCWM extends React.Component {
       single: true,
       key: 'cwm-0',
       path: '/cwm/dashboard',
-      icon: 'logixon icon-yingyongchengxu',
+      icon: 'logixon icon-apps',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: false,
       key: 'cwm-1',
-      icon: 'logixon icon-chaibaoguoqujian',
+      icon: 'logixon icon-receiving',
       text: formatMsg(intl, 'receiving'),
       sublinks: [{
         key: 'cwm-1-0',
@@ -56,7 +56,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-2',
-      icon: 'logixon icon-peizaizhuangche',
+      icon: 'logixon icon-shipping',
       text: formatMsg(intl, 'shipping'),
       sublinks: [{
         key: 'cwm-2-0',
@@ -77,7 +77,7 @@ export default class ModuleCWM extends React.Component {
       single: false,
       key: 'cwm-3',
       path: '/cwm/stock',
-      icon: 'logixon icon-kucun',
+      icon: 'logixon icon-inventory',
       text: formatMsg(intl, 'stock'),
       sublinks: [{
         key: 'cwm-3-0',
@@ -104,7 +104,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-4',
-      icon: 'logixon icon-haiguan',
+      icon: 'logixon icon-customs',
       text: formatMsg(intl, 'supervision'),
       sublinks: [{
         key: 'cwm-4-0',
@@ -116,7 +116,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-5',
-      icon: 'logixon icon-tijikongjian',
+      icon: 'logixon icon-sku',
       text: formatMsg(intl, 'products'),
       sublinks: [{
         key: 'cwm-5-0',
@@ -138,7 +138,7 @@ export default class ModuleCWM extends React.Component {
     linkMenus.push({
       single: false,
       key: 'cwm-6',
-      icon: 'logixon icon-shezhi-xianxing',
+      icon: 'logixon icon-setting-o',
       text: formatMsg(intl, 'settings'),
       sublinks: [{
         key: 'cwm-6-0',
