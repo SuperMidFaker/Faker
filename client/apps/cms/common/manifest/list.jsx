@@ -183,6 +183,7 @@ export default class ManifestList extends Component {
       const params = {
         ietype: this.props.ietype,
         tenantId: this.props.tenantId,
+        loginId: this.props.loginId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
@@ -209,6 +210,7 @@ export default class ManifestList extends Component {
     this.props.loadDelgBill({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
+      loginId: this.props.loginId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.delgBillList.pageSize,
       currentPage: currentPage || this.props.delgBillList.current,
@@ -274,6 +276,14 @@ export default class ManifestList extends Component {
       btn: <a onClick={() => { notification.close(key); this.handleNotificationClose(billSeqNo); }}>进入</a>,
       key,
     });
+  }
+  handleDateRangeChange = (value, dateString) => {
+    const filters = { ...this.props.listFilter, acptDate: dateString };
+    this.handleTableLoad(1, filters);
+  }
+  handleViewChange = (value) => {
+    const filters = { ...this.props.listFilter, viewStatus: value };
+    this.handleTableLoad(1, filters);
   }
   render() {
     const { delgBillList, listFilter, clients } = this.props;

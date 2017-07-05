@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Button, message, Mention, Collapse, Tabs } from 'antd';
-import { openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams } from 'common/reducers/cmsManifest';
+import { saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo } from 'common/reducers/cmsManifest';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
-import { loadCustomers } from 'common/reducers/crmCustomers';
 import ButtonToggle from 'client/components/ButtonToggle';
 import HeadRulesPane from './tabpane/headRulesPane';
 import ImportRulesPane from './tabpane/importRulesPane';
@@ -29,11 +28,14 @@ const TabPane = Tabs.TabPane;
     template: state.cmsManifest.template,
     ietype: state.cmsManifest.template.ietype,
     templateName: state.cmsManifest.template.template_name,
-    relatedCustomers: state.cmsManifest.relatedCustomers,
     formData: state.cmsManifest.formData,
     changeTimes: state.cmsManifest.changeTimes,
+    customers: state.crmCustomers.customers.map(tm => ({
+      key: tm.id,
+      text: tm.name,
+    })),
   }),
-  { loadCustomers, openAddModal, deleteRelatedCustomer, loadRelatedCustomers, saveTemplateData, countFieldsChange, loadCmsParams }
+  { saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo }
 )
 @Form.create({ onFieldsChange: (props, values) => props.countFieldsChange(values) })
 export default class ManifestTemplate extends Component {
@@ -42,10 +44,10 @@ export default class ManifestTemplate extends Component {
     ietype: PropTypes.oneOf(['import', 'export']),
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
-    relatedCustomers: PropTypes.array,
     template: PropTypes.object.isRequired,
     operation: PropTypes.string.isRequired,
     changeTimes: PropTypes.number,
+    customers: PropTypes.array.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -68,10 +70,7 @@ export default class ManifestTemplate extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    const { template, relatedCustomers } = this.props;
-    if (relatedCustomers.length === 0) {
-      return message.error('至少添加一个关联客户');
-    }
+    const { template } = this.props;
     const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
     const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
     const specialHsSortArr = this.props.form.getFieldValue('split_spl_category');
@@ -110,21 +109,14 @@ export default class ManifestTemplate extends Component {
   handleCancel = () => {
     this.context.router.goBack();
   }
-  handleAddRelatedCustomers = () => {
-    this.props.loadCustomers({
-      tenantId: this.props.tenantId,
-    });
-    this.props.openAddModal();
-  }
-  handleCustDel = (id) => {
-    this.props.deleteRelatedCustomer(id).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.loadRelatedCustomers(this.props.template.id);
-        }
-      });
+  handleTempInfoChange = (val, field) => {
+    const change = {};
+    change[field] = val;
+    if (field === 'customer_partner_id') {
+      const cust = this.props.customers.find(ct => ct.key === val);
+      change.customer_name = cust.text;
+    }
+    this.props.changeTempInfo({ change, templateId: this.props.template.id });
   }
   toggleRightSider = () => {
     this.setState({
@@ -132,7 +124,7 @@ export default class ManifestTemplate extends Component {
     });
   }
   render() {
-    const { form, ietype, templateName, formData, template, operation } = this.props;
+    const { form, ietype, templateName, formData, template, operation, customers } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
@@ -193,8 +185,10 @@ export default class ManifestTemplate extends Component {
             </div>
             <Collapse accordion defaultActiveKey="properties">
               <Panel header={'模板属性'} key="properties">
-                <InfoItem label="关联客户" type="select" field={''} dataIndex="bl_wb_no" placeholder="关联客户" options={''} editable onEdit={this.handleFill} />
-                <InfoItem label="模板名称" field={templateName} dataIndex="bl_wb_no" placeholder="模板名称" editable onEdit={this.handleFill} />
+                <InfoItem type="select" label="关联客户" placeholder="关联客户" field={template.customer_partner_id}
+                  editable options={customers} onEdit={value => this.handleTempInfoChange(value, 'customer_partner_id')}
+                />
+                <InfoItem label="模板名称" field={templateName} dataIndex="template_name" placeholder="模板名称" editable onEdit={this.handleTempInfoChange} />
               </Panel>
               <Panel header={'授权使用单位'} key="user">
                 <TemplateUsersPane template={template} operation={operation} />

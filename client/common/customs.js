@@ -57,9 +57,11 @@ export function buildTipItems(str, b) {
   }
   const cs = [];
   for (let i = 0; i < str.length; i++) {
-    const s = !b ? Customs[str[i]] : Inspections[str[i]];
     const k = str[i];
-    cs.push(<span>{k}:{s} <br /></span>);
+    if (k !== '/' && k !== '.') {
+      const s = !b ? Customs[str[i]] : Inspections[str[i]];
+      cs.push(<span>{k}:{s} <br /></span>);
+    }
   }
   return (<a>{cs}</a>); // (<Tooltip title={cs}><a>{str}</a></Tooltip>);
 }
