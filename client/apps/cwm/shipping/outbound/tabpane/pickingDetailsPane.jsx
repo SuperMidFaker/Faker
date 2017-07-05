@@ -9,7 +9,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import QuantityInput from '../../../common/quantityInput';
-import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead } from 'common/reducers/cwmOutbound';
+import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
 @injectIntl
@@ -20,7 +20,7 @@ import { CWM_OUTBOUND_STATUS } from 'common/constants';
     reload: state.cwmOutbound.outboundReload,
     pickDetails: state.cwmOutbound.pickDetails,
   }),
-  { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead }
+  { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelProductsAlloc }
 )
 export default class PickingDetailsPane extends React.Component {
   static propTypes = {
@@ -29,7 +29,9 @@ export default class PickingDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    selectedRows: [],
     ButtonStatus: null,
+    operationMode: null,
   }
   componentWillMount() {
     this.props.loadPickDetails(this.props.outboundNo);
@@ -152,6 +154,9 @@ export default class PickingDetailsPane extends React.Component {
       }
     },
   }]
+  handleCancelAllocated = (row) => {
+    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId);
+  }
   handleCancelPicked = (traceId, pickedQty, pickedPackQty) => {
     const data = {
       trace_id: traceId,
@@ -167,15 +172,58 @@ export default class PickingDetailsPane extends React.Component {
   }
   handleConfirmPicked = (traceId, location, allocQty, skuPackQty) => {
     this.props.openPickingModal(traceId, location, allocQty, skuPackQty);
+    this.setState({
+      operationMode: 'single',
+    });
   }
   handleConfirmShipped = (traceId, pickedQty, pickedPackQty) => {
     this.props.openShippingModal(traceId, pickedQty, pickedPackQty);
+    this.setState({
+      operationMode: 'single',
+    });
   }
   handleBatchConfirmPicked = () => {
     this.props.openPickingModal();
+    this.setState({
+      operationMode: 'batch',
+    });
   }
   handleBatchConfirmShipped = () => {
     this.props.openShippingModal();
+    this.setState({
+      operationMode: 'batch',
+    });
+  }
+  handleBatchCancelPicked = () => {
+    const { selectedRows } = this.state;
+    const list = [];
+    for (let i = 0; i < selectedRows.length; i++) {
+      const data = {};
+      data.trace_id = selectedRows[i].trace_id;
+      data.picked_qty = selectedRows[i].picked_qty;
+      data.picked_pack_qty = selectedRows[i].picked_qty / selectedRows[i].sku_pack_qty;
+      list.push(data);
+    }
+    this.props.cancelPicked(this.props.outboundNo, list).then((result) => {
+      if (!result.error) {
+        this.props.loadPickDetails(this.props.outboundNo);
+        this.props.loadOutboundHead(this.props.outboundNo);
+        this.resetState();
+      }
+    });
+  }
+  handleAllocBatchCancel = () => {
+    this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId).then((result) => {
+      if (!result.error) {
+        this.resetState();
+      }
+    });
+  }
+  resetState = () => {
+    this.setState({
+      selectedRows: [],
+      selectedRowKeys: [],
+    });
   }
   render() {
     const { pickDetails } = this.props;
@@ -191,7 +239,7 @@ export default class PickingDetailsPane extends React.Component {
         } else if (picked && picked.length === selectedRows.length) {
           status = 'allPicked';
         }
-        this.setState({ selectedRowKeys, ButtonStatus: status });
+        this.setState({ selectedRowKeys, selectedRows, ButtonStatus: status });
       },
     };
     return (
@@ -202,13 +250,13 @@ export default class PickingDetailsPane extends React.Component {
             {ButtonStatus === 'allAllocated' && <span><Button size="large" onClick={this.handleBatchConfirmPicked}>
               <MdIcon type="check-all" />批量拣货确认
             </Button>
-              <Button size="large" onClick={this.handleWithdrawTask} icon="close">
+              <Button size="large" onClick={this.handleAllocBatchCancel} icon="close">
               批量取消分配
             </Button></span>}
             {ButtonStatus === 'allPicked' && <span><Button size="large" onClick={this.handleBatchConfirmShipped}>
               <MdIcon type="check-all" />批量发货确认
             </Button>
-              <Button size="large" onClick={this.handleWithdrawTask} icon="close">
+              <Button size="large" onClick={this.handleBatchCancelPicked} icon="close">
               批量取消拣货
             </Button></span>}
           </div>
@@ -217,8 +265,8 @@ export default class PickingDetailsPane extends React.Component {
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
-        <PickingModal outboundNo={this.props.outboundNo} shippingMode={this.state.shippingMode} />
-        <ShippingModal outboundNo={this.props.outboundNo} shippingMode={this.state.shippingMode} />
+        <PickingModal resetState={this.resetState} pickMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
+        <ShippingModal resetState={this.resetState} shipMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
       </div>
     );
   }

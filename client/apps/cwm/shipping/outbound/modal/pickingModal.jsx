@@ -27,38 +27,53 @@ const FormItem = Form.Item;
 export default class PickingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    shippingMode: PropTypes.string,
     outboundNo: PropTypes.string.isRequired,
+    pickMode: PropTypes.string.isRequired,
+    selectedRows: PropTypes.array,
+    resetState: PropTypes.func,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
     this.props.closePickingModal();
   }
   handleSubmit = () => {
-    const { outboundNo, allocQty, skuPackQty, tenantId, loginId } = this.props;
+    const { outboundNo, allocQty, skuPackQty, tenantId, loginId, pickMode, selectedRows } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const data = {};
-        data.trace_id = values.traceId;
-        if (values.picked_qty) {
-          data.picked_qty = Number(values.picked_qty);
-          data.picked_pack_qty = values.picked_qty / skuPackQty;
+        const list = [];
+        if (pickMode === 'single') {
+          const data = {};
+          data.trace_id = values.traceId;
+          if (values.picked_qty) {
+            data.picked_qty = Number(values.picked_qty);
+            data.picked_pack_qty = values.picked_qty / skuPackQty;
+          } else {
+            data.picked_qty = Number(allocQty);
+            data.picked_pack_qty = allocQty / skuPackQty;
+          }
+          list.push(data);
         } else {
-          data.picked_qty = Number(allocQty);
-          data.picked_pack_qty = allocQty / skuPackQty;
+          for (let i = 0; i < selectedRows.length; i++) {
+            const data = {};
+            data.trace_id = selectedRows[i].trace_id;
+            data.picked_qty = selectedRows[i].alloc_qty;
+            data.picked_pack_qty = selectedRows[i].alloc_qty / selectedRows[i].sku_pack_qty;
+            list.push(data);
+          }
         }
-        this.props.pickConfirm(outboundNo, [data], loginId, tenantId, values.pickedBy, values.pickedDate).then((result) => {
+        this.props.pickConfirm(outboundNo, list, loginId, tenantId, values.pickedBy, values.pickedDate).then((result) => {
           if (!result.error) {
             this.props.closePickingModal();
             this.props.loadPickDetails(this.props.outboundNo);
             this.props.loadOutboundHead(this.props.outboundNo);
+            this.props.resetState();
           }
         });
       }
     });
   }
   render() {
-    const { form: { getFieldDecorator }, traceId, location } = this.props;
+    const { form: { getFieldDecorator }, traceId, location, pickMode } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -66,30 +81,30 @@ export default class PickingModal extends Component {
     return (
       <Modal title="拣货确认" maskClosable={false} onOk={this.handleSubmit} onCancel={this.handleCancel} visible={this.props.visible}>
         <Form>
-          <FormItem {...formItemLayout} label="目标库位" >
+          {pickMode === 'single' && <FormItem {...formItemLayout} label="目标库位" >
             {
               getFieldDecorator('targetLocation', {
                 initialValue: location,
               })(<Input disabled />)
             }
-          </FormItem>
-          <FormItem {...formItemLayout} label="目标跟踪号" >
+          </FormItem>}
+          {pickMode === 'single' && <FormItem {...formItemLayout} label="目标跟踪号" >
             {
               getFieldDecorator('traceId', {
                 initialValue: traceId,
               })(<Input disabled />)
             }
-          </FormItem>
+          </FormItem>}
           <FormItem {...formItemLayout} label="拣货人员" >
             {
               getFieldDecorator('pickedBy')(<Input />)
             }
           </FormItem>
-          <FormItem {...formItemLayout} label="拣货数量" >
+          {pickMode === 'single' && <FormItem {...formItemLayout} label="拣货数量" >
             {
               getFieldDecorator('picked_qty')(<Input />)
             }
-          </FormItem>
+          </FormItem>}
           <FormItem {...formItemLayout} label="拣货时间" >
             {
               getFieldDecorator('pickedDate')(<DatePicker />)
