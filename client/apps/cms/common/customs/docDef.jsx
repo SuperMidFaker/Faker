@@ -4,19 +4,17 @@ function pdfHeader(head, declWayCode) {
   if (declWayCode === 'IBND') {
     headContent = [
       { columns: [
-        { text: '', width: 60 },
-        { text: '中华人民共和国海关进境货物备案清单', fontSize: 15, bold: true, alignment: 'center', width: 300 },
-        { text: '仅供核对用', fontSize: 18, bold: true, alignment: 'right' },
+        { text: '中华人民共和国海关进境货物备案清单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 10, alignment: 'center' },
-        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 10, alignment: 'center' },
+        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
           widths: ['40%', '15%', '15%', '15%', '15%'],
           body: [
-            [{ text: `收发货人   ${head.trade_name || ''}` },
+            [{ text: `收发货人   ${head.trade_name || ''}`, style: 'tableCell' },
             { text: `进境口岸   ${head.i_e_port || ''}` },
             { text: `备案号   ${head.manual_no || ''}` },
             { text: `进境日期   ${head.i_e_date || ''}` },
@@ -55,13 +53,11 @@ function pdfHeader(head, declWayCode) {
   } else if (declWayCode === 'EBND') {
     headContent = [
       { columns: [
-        { text: '', width: 60 },
-        { text: '中华人民共和国海关出境货物备案清单', fontSize: 15, bold: true, alignment: 'center', width: 300 },
-        { text: '仅供核对用', fontSize: 18, bold: true, alignment: 'right' },
+        { text: '中华人民共和国海关出境货物备案清单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 10, alignment: 'center' },
-        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 10, alignment: 'center' },
+        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
@@ -106,13 +102,11 @@ function pdfHeader(head, declWayCode) {
   } else if (declWayCode === 'IMPT') {
     headContent = [
       { columns: [
-        { text: '', width: 60 },
-        { text: '中华人民共和国海关进口货物报关单', fontSize: 15, bold: true, alignment: 'center', width: 300 },
-        { text: '仅供核对用', fontSize: 18, bold: true, alignment: 'right' },
+        { text: '中华人民共和国海关进口货物报关单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 10, alignment: 'center' },
-        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 10, alignment: 'center' },
+        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
@@ -161,13 +155,11 @@ function pdfHeader(head, declWayCode) {
   } else if (declWayCode === 'EXPT') {
     headContent = [
       { columns: [
-        { text: '', width: 60 },
-        { text: '中华人民共和国海关出口货物报关单', fontSize: 15, bold: true, alignment: 'center', width: 300 },
-        { text: '仅供核对用', fontSize: 18, bold: true, alignment: 'right' },
+        { text: '中华人民共和国海关出口货物报关单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 10, alignment: 'center' },
-        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 10, alignment: 'center' },
+        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
@@ -230,7 +222,7 @@ function pdfBody(bodydatas, declWayCode) {
       { text: '总价', style: 'tableHeader' },
       { text: '币制', style: 'tableHeader' },
     );
-  let widths = ['5%', '15%', '25%', '15%', '10%', '10%', '10%', '10%'];
+  let widths = ['5%', '15%', '20%', '15%', '15%', '10%', '10%', '10%'];
   if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
     header.push({ text: '征免', style: 'tableHeader' });
     widths = ['5%', '10%', '25%', '10%', '10%', '10%', '10%', '10%', '10%'];
@@ -260,15 +252,24 @@ function pdfBody(bodydatas, declWayCode) {
 export function DocDef(head, bodies, declWayCode) {
   const docDefinition = {
     pageSize: 'A4',
-    pageMargins: [40, 60, 40, 60],
+    pageMargins: [20, 30],
     content: [],
     styles: {
+      title: {
+        fontSize: 15,
+        bold: true,
+        alignment: 'center',
+        width: '100%',
+        margin: [0, 50, 0, 15],
+      },
       table: {
-        fontSize: 10,
+        fontSize: 8,
+      },
+      tableCell: {
+        height: 30,
       },
       tableHeader: {
-        fontSize: 10,
-        bold: true,
+        fontSize: 8,
       },
     },
     defaultStyle: {
@@ -290,7 +291,7 @@ export function DocDef(head, bodies, declWayCode) {
     }
     content = pdfHeader(head, declWayCode);
     content.push(
-      { style: 'table', table: pdfBody(datas, declWayCode) });
+      { style: 'table', table: pdfBody(datas, declWayCode), layout: 'lightHorizontalLines' });
     const pdfFooter = [
       [{ text: '\n', border: [true, false, false, true] },
       { text: '\n', border: [false, false, false, true] },
