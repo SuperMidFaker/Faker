@@ -114,7 +114,7 @@ export default class StatsPanel extends Component {
               </div>
               <div className="data">
                 <div className="data-num lg text-error"><Link to={this.logsLocation('overtime')}>{overtime}</Link></div>
-                <div className="data-percent">
+                <div className="data-extra">
                   {total > 0 ? (overtime / total * 100).toFixed(2) : 0}%
                   <div>超时率</div>
                 </div>
@@ -130,7 +130,7 @@ export default class StatsPanel extends Component {
               </div>
               <div className="data">
                 <div className="data-num lg text-error"><Link to={this.logsLocation('exception')}>{exception}</Link></div>
-                <div className="data-percent">
+                <div className="data-extra">
                   {total > 0 ? (exception / total * 100).toFixed(2) : 0}%
                   <div>异常率</div>
                 </div>

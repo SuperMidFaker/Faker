@@ -259,6 +259,8 @@ function pdfBody(bodydatas, declWayCode) {
 
 export function DocDef(head, bodies, declWayCode) {
   const docDefinition = {
+    pageSize: 'A4',
+    pageMargins: [40, 60, 40, 60],
     content: [],
     styles: {
       table: {

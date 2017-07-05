@@ -7,6 +7,8 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import StatsCard from './card/statsCard';
+import ClassificationStatsCard from './card/classificationStatsCard';
+import TaxStatsCard from './card/taxStatsCard';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -43,6 +45,12 @@ export default class CMSDashboard extends React.Component {
           <Row gutter={16}>
             <Col sm={24} lg={24}>
               <StatsCard />
+            </Col>
+            <Col sm={24} lg={12}>
+              <ClassificationStatsCard />
+            </Col>
+            <Col sm={24} lg={12}>
+              <TaxStatsCard />
             </Col>
           </Row>
         </Content>

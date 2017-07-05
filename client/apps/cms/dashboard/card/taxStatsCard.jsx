@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, DatePicker, Radio, Select } from 'antd';
+import { Card, DatePicker, Select } from 'antd';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -14,8 +14,6 @@ import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
   const firstDay = new Date();
@@ -37,7 +35,7 @@ function fetchData({ state, dispatch }) {
   { loadCmsStatistics }
 )
 
-export default class StatsCard extends Component {
+export default class TaxStatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     statistics: PropTypes.object.isRequired,
@@ -54,18 +52,14 @@ export default class StatsCard extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected, declcount } = this.props.statistics;
+    const { startDate, endDate, total, sumImport, sumExport, released } = this.props.statistics;
     const clients = [{
       name: '全部客户',
       partner_id: -1,
     }].concat(this.props.clients);
     const datePicker = (
       <div>
-        <RadioGroup defaultValue="502" onChange={this.handleCurrencyChange}>
-          <RadioButton value="502">USD</RadioButton>
-          <RadioButton value="142">RMB</RadioButton>
-        </RadioGroup>
-        <Select showSearch optionFilterProp="children" style={{ width: 160, marginLeft: 8 }}
+        <Select showSearch optionFilterProp="children" style={{ width: 160 }}
           onChange={this.handleClientSelectChange} defaultValue={-1}
           dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
         >
@@ -80,82 +74,47 @@ export default class StatsCard extends Component {
         />
       </div>);
     return (
-      <Card title={this.msg('stats')}
-        extra={datePicker}
-      >
+      <Card title={this.msg('taxStats')} extra={datePicker}>
         <ul className="statistics-columns">
-          <li>
+          <li className="col-3">
             <div className="statistics-cell">
-              <h4>{this.msg('total')}</h4>
+              <h4>{this.msg('totalPaid')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{total}</div>
-                <div className="data-extra">
-                  ${1000.00}
-                  <div>{this.msg('totalValue')}</div>
-                </div>
+                <div className="data-num lg text-error">{total}</div>
               </div>
             </div>
           </li>
           <li className="statistics-divider" />
-          <li>
+          <li className="col-3">
             <div className="statistics-cell">
-              <h4>{this.msg('sumImport')}</h4>
+              <h4>{this.msg('duty')}</h4>
               <div className="data">
-                <div className="data-num lg text-normal">{sumImport}</div>
-                <div className="data-extra">
-                  ${800.00}
-                  <div>{this.msg('sumImportValue')}</div>
-                </div>
+                <div className="data-num lg text-emphasis">{sumImport}</div>
               </div>
             </div>
           </li>
-          <li>
+          <li className="col-3">
             <div className="statistics-cell">
-              <h4>{this.msg('sumExport')}</h4>
+              <h4>{this.msg('VAT')}</h4>
               <div className="data">
-                <div className="data-num lg text-normal">{sumExport}</div>
-                <div className="data-extra">
-                  ${200.00}
-                  <div>{this.msg('sumExportValue')}</div>
-                </div>
+                <div className="data-num lg text-emphasis">{sumExport}</div>
               </div>
             </div>
           </li>
-          <li className="statistics-divider" />
-          <li>
+          <li className="col-3">
             <div className="statistics-cell">
-              <h4>{this.msg('processing')}</h4>
+              <h4>{this.msg('comsuTax')}</h4>
               <div className="data">
-                <div className="data-num lg text-warning">{processing}</div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('declared')}</h4>
-              <div className="data">
-                <div className="data-num lg text-info">{declared}</div>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('released')}</h4>
-              <div className="data">
-                <div className="data-num lg text-success">{released}</div>
+                <div className="data-num lg text-emphasis">{released}</div>
               </div>
             </div>
           </li>
           <li className="statistics-divider" />
-          <li>
-            <div className="statistics-cell" style={{ width: 160 }}>
-              <h4>{this.msg('inspected')}</h4>
+          <li className="col-3">
+            <div className="statistics-cell">
+              <h4>{this.msg('totalWithdrawn')}</h4>
               <div className="data">
-                <div className="data-num lg text-error">{inspected}</div>
-                <div className="data-extra">
-                  {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%
-                  <div>{this.msg('inspectedRate')}</div>
-                </div>
+                <div className="data-num lg text-success">{total}</div>
               </div>
             </div>
           </li>

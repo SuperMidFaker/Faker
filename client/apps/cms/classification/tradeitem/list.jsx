@@ -23,6 +23,7 @@ import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
 import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
+import Strip from 'client/components/Strip';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -659,12 +660,18 @@ export default class TradeItemList extends Component {
       key: 'owner_name',
       render: (o, record) => {
         if (record.mode === 'slave') {
-          return <div style={{ paddingLeft: 15 }}><Icon type="link" className="text-success" /> {o}</div>;
+          return (<div style={{ paddingLeft: 8 }}><Icon type="link" className="text-success" /> {o}
+            <Strip overall={1000} parts={{ success: 800, processing: 180, warning: 20 }} hints={['已归类', '归类待定', '未归类']} />
+          </div>);
         } else {
-          return <div style={{ paddingLeft: 15 }}>{o}</div>;
+          return (<div style={{ paddingLeft: 8 }}>{o}
+            <Strip overall={1000} parts={{ success: 600, processing: 80, warning: 120 }} hints={['已归类', '归类待定', '未归类']} />
+          </div>);
         }
       },
-    }, {
+    }];
+    /*
+    {
       width: 40,
       fixed: 'right',
       render: (o, record) => {
@@ -682,7 +689,7 @@ export default class TradeItemList extends Component {
           );
         }
       },
-    }];
+    }*/
     const importMenu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
