@@ -58,7 +58,10 @@ export default class AllocatingModal extends Component {
     }
     if (nextProps.allocatedData !== this.props.allocatedData) {
       this.setState({
-        allocatedData: nextProps.allocatedData,
+        allocatedData: nextProps.allocatedData.map(ad => ({ ...ad,
+          allocated_qty: ad.alloc_qty,
+          allocated_pack_qty: ad.sku_pack_qty ? ad.alloc_qty / ad.sku_pack_qty : ad.alloc_qty,
+        })),
       });
     }
   }

@@ -85,10 +85,10 @@ export default class OutboundList extends React.Component {
   }, {
     title: '波次号',
     width: 120,
-    dataIndex: 'ref_order_no',
+    dataIndex: 'wave_no',
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
-    dataIndex: 'detail_count',
+    dataIndex: 'total_qty',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
   }, {
@@ -149,7 +149,7 @@ export default class OutboundList extends React.Component {
     },
   }, {
     title: '操作模式',
-    dataIndex: 'receiving_mode',
+    dataIndex: 'shipping_mode',
     width: 150,
     render: (o) => {
       if (o === 'scan') {
