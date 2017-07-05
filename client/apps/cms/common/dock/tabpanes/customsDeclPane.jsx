@@ -21,7 +21,7 @@ import InfoItem from 'client/components/InfoItem';
     loginId: state.account.loginId,
     loginName: state.account.username,
     partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
-    operators: state.crmCustomers.operators,
+    serviceTeamMembers: state.crmCustomers.operators,
   }),
   { loadCustPanel, ensureManifestMeta, setOpetaor, loadOperators }
 )
@@ -110,7 +110,7 @@ export default class CustomsDeclPane extends React.Component {
     }
   }
   render() {
-    const { customsPanel, customsSpinning, tenantId, operators } = this.props;
+    const { customsPanel, customsSpinning, tenantId, serviceTeamMembers } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = customsPanel.decls;
     // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
@@ -124,7 +124,7 @@ export default class CustomsDeclPane extends React.Component {
       render: (o, record) => <CustomsDeclSheetCard customsDecl={record} manifest={bill} />,
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
-    const filterOperators = operators.filter(op => op.name !== bill.preparer_name);
+    const filterOperators = serviceTeamMembers.filter(op => op.name !== bill.preparer_name);
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={customsSpinning}>
