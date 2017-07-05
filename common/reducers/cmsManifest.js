@@ -78,6 +78,8 @@ const initialState = {
     sortOrder: '',
     filterNo: '',
     clientView: { tenantIds: [], partnerIds: [] },
+    viewStatus: 'all',
+    acptDate: [],
   },
   billMeta: {
     bill_seq_no: '',

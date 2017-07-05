@@ -463,6 +463,10 @@ export default class DelegationList extends Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleDateRangeChange = (value, dateString) => {
+    const filters = { ...this.props.listFilter, acptDate: dateString };
+    this.handleDelgListLoad(1, filters);
+  }
   render() {
     const { delegationlist, listFilter, listView, tenantId, clients } = this.props;
     const rowSelection = {

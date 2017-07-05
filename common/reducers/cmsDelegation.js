@@ -52,6 +52,7 @@ const initialState = {
     ietype: 'all',
     filterNo: '',
     clientView: { tenantIds: [], partnerIds: [] },
+    acptDate: [],
   },
   formRequire: {
     clients: [],
