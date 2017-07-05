@@ -9,7 +9,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import QuantityInput from '../../../common/quantityInput';
-import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
+import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
 @injectIntl
@@ -20,7 +20,7 @@ import { CWM_OUTBOUND_STATUS } from 'common/constants';
     reload: state.cwmOutbound.outboundReload,
     pickDetails: state.cwmOutbound.pickDetails,
   }),
-  { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelProductsAlloc }
+  { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc }
 )
 export default class PickingDetailsPane extends React.Component {
   static propTypes = {
@@ -155,7 +155,13 @@ export default class PickingDetailsPane extends React.Component {
     },
   }]
   handleCancelAllocated = (row) => {
-    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId);
+    this.props.cancelTraceAlloc(row.outbound_no, [row.trace_id], this.props.loginId).then((result) => {
+      if (!result.error) {
+        this.props.loadPickDetails(this.props.outboundNo);
+        this.props.loadOutboundHead(this.props.outboundNo);
+        this.resetState();
+      }
+    });
   }
   handleCancelPicked = (traceId, pickedQty, pickedPackQty) => {
     const data = {
@@ -213,7 +219,7 @@ export default class PickingDetailsPane extends React.Component {
     });
   }
   handleAllocBatchCancel = () => {
-    this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId).then((result) => {
+    this.props.cancelTraceAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId).then((result) => {
       if (!result.error) {
         this.resetState();
       }
@@ -262,7 +268,7 @@ export default class PickingDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right" />
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="id"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="trace_id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <PickingModal resetState={this.resetState} pickMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
