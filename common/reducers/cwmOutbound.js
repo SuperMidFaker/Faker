@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'OUTBOUNDS_PICK', 'OUTBOUNDS_PICK_SUCCEED', 'OUTBOUNDS_PICK_FAIL',
   'UNDO_PICKED', 'UNDO_PICKED_SUCCEED', 'UNDO_PICKED_FAIL',
   'OUTBOUNDS_SHIP', 'OUTBOUNDS_SHIP_SUCCEED', 'OUTBOUNDS_SHIP_FAIL',
+  'CANCEL_TRACE_ALLOC', 'CANCEL_TRACE_ALLOC_SUCCEED', 'CANCEL_TRACE_ALLOC_FAIL',
 ]);
 
 const initialState = {
@@ -267,6 +268,24 @@ export function cancelProductsAlloc(outboundNo, seqNos, loginId) {
       method: 'post',
       data: { outbound_no: outboundNo,
         seq_nos: seqNos,
+        login_id: loginId,
+      },
+    },
+  };
+}
+
+export function cancelTraceAlloc(outboundNo, traceIds, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_TRACE_ALLOC,
+        actionTypes.CANCEL_TRACE_ALLOC_SUCCEED,
+        actionTypes.CANCEL_TRACE_ALLOC_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbound/undo/trace/alloc',
+      method: 'post',
+      data: { outbound_no: outboundNo,
+        trace_ids: traceIds,
         login_id: loginId,
       },
     },
