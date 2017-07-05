@@ -27,8 +27,10 @@ const FormItem = Form.Item;
 export default class ShippingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    shippingMode: PropTypes.string,
     outboundNo: PropTypes.string.isRequired,
+    shipMode: PropTypes.string.isRequired,
+    selectedRows: PropTypes.array,
+    resetState: PropTypes.func,
   }
   state = {
     shippingMode: 0,
@@ -41,21 +43,37 @@ export default class ShippingModal extends Component {
     this.setState({ shippingMode: e.target.value });
   }
   handleSubmit = () => {
-    const { outboundNo, skuPackQty, pickedQty, loginId, tenantId, traceId } = this.props;
+    const { outboundNo, skuPackQty, pickedQty, loginId, tenantId, traceId, shipMode, selectedRows } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const data = {};
-        data.trace_id = traceId;
-        data.shipped_qty = pickedQty;
-        data.shipped_pack_qty = pickedQty / skuPackQty;
-        data.drop_id = '';
-        data.waybill = values.waybill;
-        data.shipped_type = this.state.shippingMode;
-        this.props.shipConfirm(outboundNo, [data], loginId, tenantId, values.shippedBy, values.shippedDate).then((result) => {
+        const list = [];
+        if (shipMode === 'single') {
+          const data = {};
+          data.trace_id = traceId;
+          data.shipped_qty = pickedQty;
+          data.shipped_pack_qty = pickedQty / skuPackQty;
+          data.drop_id = '';
+          data.waybill = values.waybill;
+          data.shipped_type = this.state.shippingMode;
+          list.push(data);
+        } else {
+          for (let i = 0; i < selectedRows.length; i++) {
+            const data = {};
+            data.trace_id = selectedRows[i].trace_id;
+            data.shipped_qty = selectedRows[i].picked_qty;
+            data.shipped_pack_qty = selectedRows[i].picked_qty / selectedRows[i].sku_pack_qty;
+            data.drop_id = '';
+            data.waybill = values.waybill;
+            data.shipped_type = this.state.shippingMode;
+            list.push(data);
+          }
+        }
+        this.props.shipConfirm(outboundNo, list, loginId, tenantId, values.shippedBy, values.shippedDate).then((result) => {
           if (!result.error) {
             this.props.closeShippingModal();
             this.props.loadPickDetails(this.props.outboundNo);
             this.props.loadOutboundHead(this.props.outboundNo);
+            this.props.resetState();
           }
         });
       }
