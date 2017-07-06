@@ -64,7 +64,7 @@ export default class NotificationPopover extends React.Component {
       WebIM.config = {
         xmppURL: 'im-api.easemob.com',
         apiURL: `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
-        appkey: 'jiaojiao123#test',
+        appkey: 'welogix#welogixweb',
         https: true,
         isMultiLoginSessions: true,
         isAutoLogin: true,
