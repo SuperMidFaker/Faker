@@ -131,23 +131,23 @@ export default class PickingDetailsPane extends React.Component {
       switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
         case 2:   // 已分配
           return (<span>
-            <RowUpdater onHit={() => this.handleConfirmPicked(record.trace_id, record.location, record.alloc_qty, record.sku_pack_qty)} label="拣货确认" row={record} />
+            <RowUpdater onHit={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty, record.sku_pack_qty, record.trace_id)} label="拣货确认" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleCancelAllocated} label="取消分配" row={record} />
           </span>);
         case 3:   // 部分拣货
           return (
             <span>
-              <RowUpdater onHit={() => this.handleConfirmPicked(record.trace_id, record.location, record.alloc_qty, record.sku_pack_qty)} label="拣货确认" row={record} />
+              <RowUpdater onHit={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty, record.sku_pack_qty, record.trace_id)} label="拣货确认" row={record} />
               <span className="ant-divider" />
-              <RowUpdater onHit={() => this.handleCancelPicked(record.trace_id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
+              <RowUpdater onHit={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
             </span>
           );
         case 4:   // 已拣货
           return (<span>
-            <RowUpdater onHit={() => this.handleConfirmShipped(record.trace_id, record.picked_qty, record.sku_pack_qty)} label="发货确认" row={record} />
+            <RowUpdater onHit={() => this.handleConfirmShipped(record.id, record.picked_qty, record.sku_pack_qty)} label="发货确认" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={() => this.handleCancelPicked(record.trace_id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
+            <RowUpdater onHit={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
           </span>);
         default:
           break;
@@ -155,7 +155,7 @@ export default class PickingDetailsPane extends React.Component {
     },
   }]
   handleCancelAllocated = (row) => {
-    this.props.cancelTraceAlloc(row.outbound_no, [row.trace_id], this.props.loginId).then((result) => {
+    this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId).then((result) => {
       if (!result.error) {
         this.props.loadPickDetails(this.props.outboundNo);
         this.props.loadOutboundHead(this.props.outboundNo);
@@ -163,9 +163,9 @@ export default class PickingDetailsPane extends React.Component {
       }
     });
   }
-  handleCancelPicked = (traceId, pickedQty, pickedPackQty) => {
+  handleCancelPicked = (id, pickedQty, pickedPackQty) => {
     const data = {
-      trace_id: traceId,
+      id,
       picked_qty: pickedQty,
       picked_pack_qty: pickedPackQty,
     };
@@ -176,14 +176,14 @@ export default class PickingDetailsPane extends React.Component {
       }
     });
   }
-  handleConfirmPicked = (traceId, location, allocQty, skuPackQty) => {
-    this.props.openPickingModal(traceId, location, allocQty, skuPackQty);
+  handleConfirmPicked = (id, location, allocQty, skuPackQty, traceId) => {
+    this.props.openPickingModal(id, location, allocQty, skuPackQty, traceId);
     this.setState({
       operationMode: 'single',
     });
   }
-  handleConfirmShipped = (traceId, pickedQty, pickedPackQty) => {
-    this.props.openShippingModal(traceId, pickedQty, pickedPackQty);
+  handleConfirmShipped = (id, pickedQty, pickedPackQty) => {
+    this.props.openShippingModal(id, pickedQty, pickedPackQty);
     this.setState({
       operationMode: 'single',
     });
@@ -205,7 +205,7 @@ export default class PickingDetailsPane extends React.Component {
     const list = [];
     for (let i = 0; i < selectedRows.length; i++) {
       const data = {};
-      data.trace_id = selectedRows[i].trace_id;
+      data.id = selectedRows[i].id;
       data.picked_qty = selectedRows[i].picked_qty;
       data.picked_pack_qty = selectedRows[i].picked_qty / selectedRows[i].sku_pack_qty;
       list.push(data);
@@ -221,6 +221,8 @@ export default class PickingDetailsPane extends React.Component {
   handleAllocBatchCancel = () => {
     this.props.cancelTraceAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId).then((result) => {
       if (!result.error) {
+        this.props.loadPickDetails(this.props.outboundNo);
+        this.props.loadOutboundHead(this.props.outboundNo);
         this.resetState();
       }
     });
@@ -268,7 +270,7 @@ export default class PickingDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right" />
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="trace_id"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <PickingModal resetState={this.resetState} pickMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />

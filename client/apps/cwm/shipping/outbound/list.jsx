@@ -101,7 +101,7 @@ export default class OutboundList extends React.Component {
     render: (o, record) => {
       if (record.status === 1) {
         return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= 2 && record.status <= 6) {
+      } else if (record.status >= 2 && record.status <= 7) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;
@@ -113,7 +113,7 @@ export default class OutboundList extends React.Component {
     render: (o, record) => {
       if (record.status === 3) {
         return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= 4 && record.status <= 6) {
+      } else if (record.status >= 4 && record.status <= 7) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;
@@ -139,9 +139,9 @@ export default class OutboundList extends React.Component {
     title: '发运',
     className: 'cell-align-center',
     render: (o, record) => {
-      if (record.status === 5) {
+      if (record.status === 6) {
         return <Fontello type="circle" color="blue" />;
-      } else if (record.status === 6) {
+      } else if (record.status === 7) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;

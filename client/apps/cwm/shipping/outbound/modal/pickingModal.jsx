@@ -18,6 +18,7 @@ const FormItem = Form.Item;
     location: state.cwmOutbound.pickingModal.location,
     allocQty: state.cwmOutbound.pickingModal.allocQty,
     skuPackQty: state.cwmOutbound.pickingModal.skuPackQty,
+    id: state.cwmOutbound.pickingModal.id,
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
   }),
@@ -37,13 +38,13 @@ export default class PickingModal extends Component {
     this.props.closePickingModal();
   }
   handleSubmit = () => {
-    const { outboundNo, allocQty, skuPackQty, tenantId, loginId, pickMode, selectedRows } = this.props;
+    const { outboundNo, allocQty, skuPackQty, tenantId, loginId, pickMode, selectedRows, id } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const list = [];
         if (pickMode === 'single') {
           const data = {};
-          data.trace_id = values.traceId;
+          data.id = id;
           if (values.picked_qty) {
             data.picked_qty = Number(values.picked_qty);
             data.picked_pack_qty = values.picked_qty / skuPackQty;
@@ -55,7 +56,7 @@ export default class PickingModal extends Component {
         } else {
           for (let i = 0; i < selectedRows.length; i++) {
             const data = {};
-            data.trace_id = selectedRows[i].trace_id;
+            data.id = selectedRows[i].id;
             data.picked_qty = selectedRows[i].alloc_qty;
             data.picked_pack_qty = selectedRows[i].alloc_qty / selectedRows[i].sku_pack_qty;
             list.push(data);
