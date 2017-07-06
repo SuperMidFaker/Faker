@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/dashboard/', [
   'CMS_STATISTICS', 'CMS_STATISTICS_SUCCEED', 'CMS_STATISTICS_FAIL',
+  'CMS_ITEMS_STATS', 'CMS_ITEMS_STATS_SUCCEED', 'CMS_ITEMS_STATS_FAIL',
 ]);
 
 const initialState = {
@@ -19,12 +20,20 @@ const initialState = {
     inspected: 0,
     declcount: 0,
   },
+  itemsStats: {
+    repoCount: 0,
+    unclassifiedItems: 0,
+    pendingItems: 0,
+    classifiedItems: 0,
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.CMS_STATISTICS_SUCCEED:
       return { ...state, statistics: { ...state.statistics, ...action.result.data, ...action.params } };
+    case actionTypes.CMS_ITEMS_STATS_SUCCEED:
+      return { ...state, itemsStats: { ...state.itemsStats, ...action.result.data } };
     default:
       return state;
   }
@@ -39,6 +48,21 @@ export function loadCmsStatistics(params) {
         actionTypes.CMS_STATISTICS_FAIL,
       ],
       endpoint: 'v1/cms/dashboard/statistics',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadCmsItemsStats(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CMS_ITEMS_STATS,
+        actionTypes.CMS_ITEMS_STATS_SUCCEED,
+        actionTypes.CMS_ITEMS_STATS_FAIL,
+      ],
+      endpoint: 'v1/cms/dashboard/classification/items/stats',
       method: 'get',
       params,
     },
