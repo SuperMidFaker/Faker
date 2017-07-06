@@ -103,18 +103,6 @@ export default class ModuleCWM extends React.Component {
     });
     linkMenus.push({
       single: false,
-      key: 'cwm-4',
-      icon: 'logixon icon-customs',
-      text: formatMsg(intl, 'supervision'),
-      sublinks: [{
-        key: 'cwm-4-0',
-        path: '/cwm/supervision/shftz',
-        text: formatMsg(intl, 'supervisionSHFTZ'),
-      },
-      ],
-    });
-    linkMenus.push({
-      single: false,
       key: 'cwm-5',
       icon: 'logixon icon-sku',
       text: formatMsg(intl, 'products'),
@@ -177,6 +165,25 @@ export default class ModuleCWM extends React.Component {
         }
       }
       nextProps.loadWhse(nextProps.whse.code);
+      if (nextProps.whse.bonded !== this.props.whse.bonded) {
+        let linkMenus = [...this.state.linkMenus];
+        if (nextProps.whse.bonded) {
+          linkMenus.splice(4, 0, {
+            single: false,
+            key: 'cwm-ftz',
+            icon: 'logixon icon-customs',
+            text: formatMsg(nextProps.intl, 'supervision'),
+            sublinks: [{
+              key: 'cwm-ftz-0',
+              path: '/cwm/supervision/shftz',
+              text: formatMsg(nextProps.intl, 'supervisionSHFTZ'),
+            }],
+          });
+        } else {
+          linkMenus = linkMenus.filter(lm => lm.key !== 'cwm-ftz');
+        }
+        this.setState({ linkMenus });
+      }
     }
   }
   render() {

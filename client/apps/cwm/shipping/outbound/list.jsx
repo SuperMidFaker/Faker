@@ -12,11 +12,12 @@ import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
 import { loadOutbounds } from 'common/reducers/cwmOutbound';
-import { format } from 'client/common/i18n/helpers';
 import ShippingDockPanel from '../dock/shippingDockPanel';
-import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
+import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -79,7 +80,7 @@ export default class OutboundList extends React.Component {
     dataIndex: 'so_no',
     width: 200,
     render: o => (
-      <a onClick={() => this.handlePreview()}>
+      <a onClick={this.handlePreview}>
         {o}
       </a>),
   }, {
@@ -99,9 +100,9 @@ export default class OutboundList extends React.Component {
     title: '分配',
     className: 'cell-align-center',
     render: (o, record) => {
-      if (record.status === 1) {
+      if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
         return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= 2 && record.status <= 7) {
+      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;
@@ -111,9 +112,9 @@ export default class OutboundList extends React.Component {
     title: '拣货',
     className: 'cell-align-center',
     render: (o, record) => {
-      if (record.status === 3) {
+      if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value) {
         return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= 4 && record.status <= 7) {
+      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_PICKED.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;
@@ -139,9 +140,9 @@ export default class OutboundList extends React.Component {
     title: '发运',
     className: 'cell-align-center',
     render: (o, record) => {
-      if (record.status === 6) {
+      if (record.status === CWM_OUTBOUND_STATUS.SHIPPING.value) {
         return <Fontello type="circle" color="blue" />;
-      } else if (record.status === 7) {
+      } else if (record.status === CWM_OUTBOUND_STATUS.COMPLETED.value) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;
