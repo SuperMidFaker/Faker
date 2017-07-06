@@ -9,8 +9,7 @@ const initialState = {
   statistics: {
     startDate: null,
     endDate: null,
-    cusPartnerId: '',
-    cusTenantId: '',
+    clientView: { tenantIds: [], partnerIds: [] },
     total: 0,
     sumImport: 0,
     sumExport: 0,
