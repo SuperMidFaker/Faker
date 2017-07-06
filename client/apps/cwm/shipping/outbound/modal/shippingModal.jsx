@@ -15,9 +15,9 @@ const FormItem = Form.Item;
 @connect(
   state => ({
     visible: state.cwmOutbound.shippingModal.visible,
-    traceId: state.cwmOutbound.shippingModal.traceId,
     pickedQty: state.cwmOutbound.shippingModal.pickedQty,
     skuPackQty: state.cwmOutbound.shippingModal.skuPackQty,
+    id: state.cwmOutbound.shippingModal.id,
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
   }),
@@ -43,13 +43,13 @@ export default class ShippingModal extends Component {
     this.setState({ shippingMode: e.target.value });
   }
   handleSubmit = () => {
-    const { outboundNo, skuPackQty, pickedQty, loginId, tenantId, traceId, shipMode, selectedRows } = this.props;
+    const { outboundNo, skuPackQty, pickedQty, loginId, tenantId, shipMode, selectedRows, id } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const list = [];
         if (shipMode === 'single') {
           const data = {};
-          data.trace_id = traceId;
+          data.id = id;
           data.shipped_qty = pickedQty;
           data.shipped_pack_qty = pickedQty / skuPackQty;
           data.drop_id = '';
@@ -59,7 +59,7 @@ export default class ShippingModal extends Component {
         } else {
           for (let i = 0; i < selectedRows.length; i++) {
             const data = {};
-            data.trace_id = selectedRows[i].trace_id;
+            data.id = selectedRows[i].id;
             data.shipped_qty = selectedRows[i].picked_qty;
             data.shipped_pack_qty = selectedRows[i].picked_qty / selectedRows[i].sku_pack_qty;
             data.drop_id = '';

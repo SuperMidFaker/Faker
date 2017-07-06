@@ -15,16 +15,6 @@ const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option;
 
-function fetchData({ state, dispatch }) {
-  const firstDay = new Date();
-  firstDay.setDate(1);
-  const startDate = `${moment(state.cmsDashboard.statistics.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
-  const endDate = `${moment(state.cmsDashboard.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
-  const promises = [dispatch(loadCmsStatistics({ tenantId: state.account.tenantId, startDate, endDate, cusPartnerId: -1, cusTenantId: -2 })),
-    dispatch(loadPartnersByTypes(state.account.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance))];
-  return Promise.all(promises);
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -42,13 +32,6 @@ export default class KpiCard extends Component {
   }
   onDateChange = (value, dateString) => {
     const { cusPartnerId, cusTenantId } = this.props.statistics;
-    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, cusPartnerId, cusTenantId });
-  }
-  handleClientSelectChange = (value) => {
-    const { startDate, endDate } = this.props.statistics;
-    const client = this.props.clients.find(clt => clt.partner_id === value);
-    const cusTenantId = client ? client.tid : -2;
-    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate, endDate, cusPartnerId: value, cusTenantId });
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, DatePicker, Radio, Select } from 'antd';
 import moment from 'moment';
+import { Link } from 'react-router';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -22,7 +23,8 @@ function fetchData({ state, dispatch }) {
   firstDay.setDate(1);
   const startDate = `${moment(state.cmsDashboard.statistics.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
   const endDate = `${moment(state.cmsDashboard.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
-  const promises = [dispatch(loadCmsStatistics({ tenantId: state.account.tenantId, startDate, endDate, cusPartnerId: -1, cusTenantId: -2 })),
+  const clientView = JSON.stringify({ tenantIds: [], partnerIds: [] });
+  const promises = [dispatch(loadCmsStatistics({ tenantId: state.account.tenantId, startDate, endDate, clientView })),
     dispatch(loadPartnersByTypes(state.account.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance))];
   return Promise.all(promises);
 }
@@ -43,14 +45,46 @@ export default class StatsCard extends Component {
     statistics: PropTypes.object.isRequired,
   }
   onDateChange = (value, dateString) => {
-    const { cusPartnerId, cusTenantId } = this.props.statistics;
-    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, cusPartnerId, cusTenantId });
+    const clientView = this.props.statistics.clientView;
+    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView });
   }
   handleClientSelectChange = (value) => {
     const { startDate, endDate } = this.props.statistics;
-    const client = this.props.clients.find(clt => clt.partner_id === value);
-    const cusTenantId = client ? client.tid : -2;
-    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate, endDate, cusPartnerId: value, cusTenantId });
+    const clientView = { tenantIds: [], partnerIds: [] };
+    if (value !== -1) {
+      const client = this.props.clients.find(clt => clt.partner_id === value);
+      if (client.partner_id !== null) {
+        clientView.partnerIds.push(client.partner_id);
+      } else {
+        clientView.tenantIds.push(client.tid);
+      }
+    }
+    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate, endDate, clientView: JSON.stringify(clientView) });
+    if (window.localStorage) {
+      window.localStorage.cmsDelegationListFilters =
+      JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters), clientView });
+    }
+  }
+  handleLinkDelg = (type) => {
+    const { startDate, endDate } = this.props.statistics;
+    if (window.localStorage) {
+      let fv = JSON.parse(window.localStorage.cmsDelegationListFilters);
+      if (type === 'total') {
+        fv = { ...fv, acptDate: [startDate, endDate], ietype: 'all', status: 'all' };
+      } else if (type === 'sumImport') {
+        fv = { ...fv, acptDate: [startDate, endDate], ietype: 'import', status: 'all' };
+      } else if (type === 'sumExport') {
+        fv = { ...fv, acptDate: [startDate, endDate], ietype: 'export', status: 'all' };
+      } else if (type === 'processing') {
+        fv = { ...fv, acptDate: [startDate, endDate], ietype: 'all', status: 'undeclared' };
+      } else if (type === 'declared') {
+        fv = { ...fv, acptDate: [startDate, endDate], ietype: 'all', status: 'declared' };
+      } else if (type === 'released') {
+        fv = { ...fv, acptDate: [startDate, endDate], ietype: 'all', status: 'finished' };
+      }
+      window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
+    }
+    return '/clearance/delegation';
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
@@ -88,7 +122,9 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('total')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{total}</div>
+                <div className="data-num lg text-emphasis">
+                  <Link to={() => this.handleLinkDelg('total')} >{total}</Link>
+                </div>
                 <div className="data-extra">
                   ${1000.00}
                   <div>{this.msg('totalValue')}</div>
@@ -101,7 +137,9 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('sumImport')}</h4>
               <div className="data">
-                <div className="data-num lg text-normal">{sumImport}</div>
+                <div className="data-num lg text-normal">
+                  <Link to={() => this.handleLinkDelg('sumImport')} >{sumImport}</Link>
+                </div>
                 <div className="data-extra">
                   ${800.00}
                   <div>{this.msg('sumImportValue')}</div>
@@ -113,7 +151,9 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('sumExport')}</h4>
               <div className="data">
-                <div className="data-num lg text-normal">{sumExport}</div>
+                <div className="data-num lg text-normal">
+                  <Link to={() => this.handleLinkDelg('sumExport')} >{sumExport}</Link>
+                </div>
                 <div className="data-extra">
                   ${200.00}
                   <div>{this.msg('sumExportValue')}</div>
@@ -126,7 +166,9 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('processing')}</h4>
               <div className="data">
-                <div className="data-num lg text-warning">{processing}</div>
+                <div className="data-num lg text-warning">
+                  <Link to={() => this.handleLinkDelg('processing')} >{processing}</Link>
+                </div>
               </div>
             </div>
           </li>
@@ -134,7 +176,9 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('declared')}</h4>
               <div className="data">
-                <div className="data-num lg text-info">{declared}</div>
+                <div className="data-num lg text-info">
+                  <Link to={() => this.handleLinkDelg('declared')} >{declared}</Link>
+                </div>
               </div>
             </div>
           </li>
@@ -142,7 +186,9 @@ export default class StatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('released')}</h4>
               <div className="data">
-                <div className="data-num lg text-success">{released}</div>
+                <div className="data-num lg text-success">
+                  <Link to={() => this.handleLinkDelg('released')} >{released}</Link>
+                </div>
               </div>
             </div>
           </li>

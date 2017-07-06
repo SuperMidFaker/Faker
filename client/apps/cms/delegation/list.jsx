@@ -106,7 +106,7 @@ export default class DelegationList extends Component {
   componentDidMount() {
     const filters = this.initializeFilters();
     this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
-    this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '', clientView: { tenantIds: [], partnerIds: [] } });
+    this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -120,7 +120,7 @@ export default class DelegationList extends Component {
     }
   }
   initializeFilters = () => {
-    let filters = { viewStatus: 'all' };
+    let filters = { viewStatus: 'all', clientView: { tenantIds: [], partnerIds: [] } };
     if (window.localStorage) {
       filters = JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}');
     }
@@ -437,12 +437,12 @@ export default class DelegationList extends Component {
   }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] };
-    if (value !== 'all') {
+    if (value !== -1) {
       const client = this.props.clients.find(clt => clt.partner_id === value);
-      if (client.tid !== -1) {
-        clientView.tenantIds.push(client.tid);
-      } else {
+      if (client.partner_id !== null) {
         clientView.partnerIds.push(client.partner_id);
+      } else {
+        clientView.tenantIds.push(client.tid);
       }
     }
     const filter = { ...this.props.listFilter, clientView };
@@ -465,16 +465,28 @@ export default class DelegationList extends Component {
   }
   handleDateRangeChange = (value, dateString) => {
     const filters = { ...this.props.listFilter, acptDate: dateString };
+    if (window.localStorage) {
+      const fv = { ...JSON.parse(window.localStorage.cmsDelegationListFilters), acptDate: [] };
+      window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
+    }
     this.handleDelgListLoad(1, filters);
   }
   render() {
-    const { delegationlist, listFilter, listView, tenantId, clients } = this.props;
+    const { delegationlist, listFilter, listView, tenantId } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    let dateVal = [];
+    if (listFilter.acptDate.length > 0 && listFilter.acptDate[0] !== '') {
+      dateVal = [moment(listFilter.acptDate[0]), moment(listFilter.acptDate[1])];
+    }
+    let clientPid = -1;
+    if (listFilter.clientView.partnerIds.length > 0) {
+      clientPid = listFilter.clientView.partnerIds[0];
+    }
     let columns = [];
     if (listView === 'delegation') {
       this.dataSource.remotes = delegationlist;
@@ -587,6 +599,10 @@ export default class DelegationList extends Component {
         },
       });
     }
+    const clients = [{
+      name: '全部客户',
+      partner_id: -1,
+    }].concat(this.props.clients);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
@@ -618,10 +634,9 @@ export default class DelegationList extends Component {
               />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} defaultValue="all"
+                onChange={this.handleClientSelectChange} value={clientPid}
                 dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
-                <Option value="all">全部客户</Option>
                 {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
                   search={`${data.partner_code}${data.name}`}
                 >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
@@ -637,7 +652,7 @@ export default class DelegationList extends Component {
                 </OptGroup>
               </Select>
               <span />
-              <RangePicker size="large"
+              <RangePicker size="large" value={dateVal}
                 ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
                 onChange={this.handleDateRangeChange}
               />
