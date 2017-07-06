@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, Collapse, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button } from 'antd';
+import { Card, Collapse, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
@@ -126,7 +126,7 @@ export default class AllocatingModal extends Component {
     title: '出库数量',
     width: 200,
     fixed: 'right',
-    render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+    render: (o, record, index) => (<QuantityInput onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '添加',
     width: 80,
@@ -186,6 +186,18 @@ export default class AllocatingModal extends Component {
     fixed: 'right',
     render: (o, record, index) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} /></span>),
   }]
+  handleAllocChange = (value, index) => {
+    const inventoryData = [...this.state.inventoryData];
+    if (value > inventoryData[index].avail_pack_qty) {
+      message.info('分配数量不能大于可用数量');
+    } else {
+      inventoryData[index].allocated_pack_qty = value;
+      inventoryData[index].allocated_qty = value * inventoryData[index].sku_pack_qty;
+      this.setState({
+        inventoryData,
+      });
+    }
+  }
   handleLocationChange = (e) => {
     const filters = { ...this.props.filters, location: e.target.value };
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters);
@@ -206,9 +218,16 @@ export default class AllocatingModal extends Component {
     const inventoryData = [...this.state.inventoryData];
     const allocatedData = [...this.state.allocatedData];
     const allocatedOne = inventoryData[index];
+    const allocatedAmount = allocatedData.reduce((pre, cur) => (pre + cur.allocated_qty), 0);
+    if (allocatedAmount + (allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty) > this.props.outboundProduct.order_qty) {
+      message.info('分配数量不能大于订单总数');
+      return;
+    }
     inventoryData.splice(index, 1);
     allocatedData.push({
-      ...allocatedOne, allocated_qty: allocatedOne.avail_qty, allocated_pack_qty: allocatedOne.avail_pack_qty,
+      ...allocatedOne,
+      allocated_qty: allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty,
+      allocated_pack_qty: allocatedOne.allocated_pack_qty ? Number(allocatedOne.allocated_pack_qty) : allocatedOne.avail_pack_qty,
     });
     this.setState({
       inventoryData,

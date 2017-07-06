@@ -41,10 +41,11 @@ const initialState = {
     location: '',
     skuPackQty: '',
     allocQty: '',
+    id: '',
   },
   shippingModal: {
     visible: false,
-    traceId: '',
+    id: '',
     pickedQty: '',
     skuPackQty: '',
   },
@@ -68,11 +69,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_ALLOCATING_MODAL:
       return { ...state, allocatingModal: { ...state.allocatingModal, visible: false } };
     case actionTypes.OPEN_PICKING_MODAL:
-      return { ...state, pickingModal: { visible: true, traceId: action.traceId, location: action.location, allocQty: action.allcoQty, skuPackQty: action.skuPackQty } };
+      return { ...state, pickingModal: { visible: true, traceId: action.traceId, location: action.location, allocQty: action.allcoQty, skuPackQty: action.skuPackQty, id: action.id } };
     case actionTypes.CLOSE_PICKING_MODAL:
       return { ...state, pickingModal: { visible: false } };
     case actionTypes.OPEN_SHIPPING_MODAL:
-      return { ...state, shippingModal: { visible: true, traceId: action.traceId, pickedQty: action.pickedQty, skuPackQty: action.skuPackQty } };
+      return { ...state, shippingModal: { visible: true, id: action.id, pickedQty: action.pickedQty, skuPackQty: action.skuPackQty } };
     case actionTypes.CLOSE_SHIPPING_MODAL:
       return { ...state, shippingModal: { visible: false } };
     case actionTypes.LOAD_OUTBOUNDS:
@@ -113,13 +114,14 @@ export function closeAllocatingModal() {
   };
 }
 
-export function openPickingModal(traceId, location, allcoQty, skuPackQty) {
+export function openPickingModal(id, location, allcoQty, skuPackQty, traceId) {
   return {
     type: actionTypes.OPEN_PICKING_MODAL,
-    traceId,
+    id,
     location,
     allcoQty,
     skuPackQty,
+    traceId,
   };
 }
 
@@ -129,10 +131,10 @@ export function closePickingModal() {
   };
 }
 
-export function openShippingModal(traceId, pickedQty, skuPackQty) {
+export function openShippingModal(id, pickedQty, skuPackQty) {
   return {
     type: actionTypes.OPEN_SHIPPING_MODAL,
-    traceId,
+    id,
     pickedQty,
     skuPackQty,
   };
@@ -274,7 +276,7 @@ export function cancelProductsAlloc(outboundNo, seqNos, loginId) {
   };
 }
 
-export function cancelTraceAlloc(outboundNo, traceIds, loginId) {
+export function cancelTraceAlloc(outboundNo, ids, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -285,7 +287,7 @@ export function cancelTraceAlloc(outboundNo, traceIds, loginId) {
       endpoint: 'v1/cwm/outbound/undo/trace/alloc',
       method: 'post',
       data: { outbound_no: outboundNo,
-        trace_ids: traceIds,
+        detail_ids: ids,
         login_id: loginId,
       },
     },
