@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
 const initialState = {
   listFilter: {
     status: 'all',
+    ietype: 'all',
     declareType: '',
     name: '',
     sortField: '',

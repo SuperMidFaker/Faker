@@ -306,7 +306,7 @@ export default class CustomsList extends Component {
   })
   handleTableLoad = (currentPage, filter) => {
     this.props.loadCustomsDecls({
-      ietype: this.props.ietype,
+      ietype: filter.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.customslist.pageSize,
@@ -343,11 +343,19 @@ export default class CustomsList extends Component {
     }
     return newFilters;
   }
-  handleRadioChange = (ev) => {
+  handleStatusFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.setState({ selectedRowKeys: [] });
+    this.handleTableLoad(1, filter);
+  }
+  handleIEFilter = (ev) => {
+    if (ev.target.value === this.props.listFilter.ietype) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, ietype: ev.target.value };
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
   }
@@ -473,7 +481,7 @@ export default class CustomsList extends Component {
             <RadioButton value="export">{this.msg('export')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             {Object.keys(CMS_DECL_STATUS).map(declkey =>
               <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
