@@ -293,7 +293,7 @@ export default class CustomsList extends Component {
     }),
     getParams: (pagination) => {
       const params = {
-        ietype: this.props.ietype,
+        ietype: this.props.listFilter.ietype,
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
