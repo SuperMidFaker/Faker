@@ -97,8 +97,9 @@ export default class OrderDetailsPane extends React.Component {
       } else {
         return (<span>
           <RowUpdater onHit={this.handleManualAlloc} label="分配明细" row={record} />
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} />
+          {record.picked_qty < record.alloc_qty && <span className="ant-divider" />}
+          {record.picked_qty < record.alloc_qty &&
+            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} />}
         </span>);
       }
     },
@@ -130,7 +131,7 @@ export default class OrderDetailsPane extends React.Component {
       onChange: (selectedRowKeys, selectedRows) => {
         let status = null;
         const unallocated = selectedRows.find(item => item.alloc_qty < item.order_qty);
-        const allocated = selectedRows.find(item => item.alloc_qty === item.order_qty);
+        const allocated = selectedRows.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
         if (unallocated && !allocated) {
           status = 'alloc';
         } else if (!unallocated && allocated) {

@@ -65,8 +65,6 @@ export default class PickingModal extends Component {
         this.props.pickConfirm(outboundNo, list, loginId, tenantId, values.pickedBy, values.pickedDate).then((result) => {
           if (!result.error) {
             this.props.closePickingModal();
-            this.props.loadPickDetails(this.props.outboundNo);
-            this.props.loadOutboundHead(this.props.outboundNo);
             this.props.resetState();
           }
         });

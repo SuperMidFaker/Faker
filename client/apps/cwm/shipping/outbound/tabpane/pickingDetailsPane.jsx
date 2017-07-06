@@ -157,8 +157,6 @@ export default class PickingDetailsPane extends React.Component {
   handleCancelAllocated = (row) => {
     this.props.cancelTraceAlloc(row.outbound_no, [row.id], this.props.loginId).then((result) => {
       if (!result.error) {
-        this.props.loadPickDetails(this.props.outboundNo);
-        this.props.loadOutboundHead(this.props.outboundNo);
         this.resetState();
       }
     });
@@ -169,12 +167,7 @@ export default class PickingDetailsPane extends React.Component {
       picked_qty: pickedQty,
       picked_pack_qty: pickedPackQty,
     };
-    this.props.cancelPicked(this.props.outboundNo, [data]).then((result) => {
-      if (!result.error) {
-        this.props.loadPickDetails(this.props.outboundNo);
-        this.props.loadOutboundHead(this.props.outboundNo);
-      }
-    });
+    this.props.cancelPicked(this.props.outboundNo, [data]);
   }
   handleConfirmPicked = (id, location, allocQty, skuPackQty, traceId) => {
     this.props.openPickingModal(id, location, allocQty, skuPackQty, traceId);
@@ -212,8 +205,6 @@ export default class PickingDetailsPane extends React.Component {
     }
     this.props.cancelPicked(this.props.outboundNo, list).then((result) => {
       if (!result.error) {
-        this.props.loadPickDetails(this.props.outboundNo);
-        this.props.loadOutboundHead(this.props.outboundNo);
         this.resetState();
       }
     });
@@ -221,8 +212,6 @@ export default class PickingDetailsPane extends React.Component {
   handleAllocBatchCancel = () => {
     this.props.cancelTraceAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId).then((result) => {
       if (!result.error) {
-        this.props.loadPickDetails(this.props.outboundNo);
-        this.props.loadOutboundHead(this.props.outboundNo);
         this.resetState();
       }
     });

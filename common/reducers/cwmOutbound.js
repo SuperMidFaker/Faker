@@ -91,6 +91,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.AUTO_ALLOC_SUCCEED:
     case actionTypes.MANUAL_ALLOC_SUCCEED:
     case actionTypes.CANCEL_PRDALLOC_SUCCEED:
+    case actionTypes.CANCEL_TRACE_ALLOC_SUCCEED:
+    case actionTypes.OUTBOUNDS_PICK_SUCCEED:
+    case actionTypes.UNDO_PICKED_SUCCEED:
       return { ...state, outboundReload: true };
     case actionTypes.LOAD_PICK_DETAILS_SUCCEED:
       return { ...state, pickDetails: action.result.data };
