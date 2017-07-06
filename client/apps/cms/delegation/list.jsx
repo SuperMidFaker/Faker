@@ -16,7 +16,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
-import { loadAcceptanceTable, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
+import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { loadPartnersByTypes } from 'common/reducers/partner';
@@ -56,7 +56,7 @@ const RangePicker = DatePicker.RangePicker;
     })),
     operators: state.crmCustomers.operators,
   }),
-  { loadAcceptanceTable,
+  { loadDelegationList,
     acceptDelg,
     delDelg,
     showPreviewer,
@@ -83,7 +83,7 @@ export default class DelegationList extends Component {
     loginName: PropTypes.string.isRequired,
     delegationlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
-    loadAcceptanceTable: PropTypes.func.isRequired,
+    loadDelegationList: PropTypes.func.isRequired,
     ensureManifestMeta: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
@@ -267,7 +267,7 @@ export default class DelegationList extends Component {
     },
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadAcceptanceTable(params),
+    fetcher: params => this.props.loadDelegationList(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -302,7 +302,7 @@ export default class DelegationList extends Component {
     const { tenantId, listFilter, loginId,
       delegationlist: { pageSize, current } } = this.props;
     this.setState({ expandedKeys: [] });
-    this.props.loadAcceptanceTable({
+    this.props.loadDelegationList({
       tenantId,
       loginId,
       filter: JSON.stringify(filter || listFilter),

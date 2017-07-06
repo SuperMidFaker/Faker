@@ -50,6 +50,24 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'delegation'),
       }
     );
+    linkMenus.push(
+      {
+        single: true,
+        key: 'cms-customs',
+        path: '/clearance/customs',
+        icon: 'logixon icon-customs',
+        text: formatMsg(intl, 'customsDecl'),
+      }
+    );
+    linkMenus.push(
+      {
+        single: true,
+        key: 'cms-ciq',
+        path: '/clearance/ciq',
+        icon: 'logixon icon-ciq',
+        text: formatMsg(intl, 'ciqDecl'),
+      }
+    );
     if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
       linkMenus.push({
         single: false,

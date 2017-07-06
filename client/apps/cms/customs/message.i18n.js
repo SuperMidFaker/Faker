@@ -1,300 +1,300 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  customsDeclaration: {
-    id: 'cms.common.customs.management',
-    defaultMessage: '报关单证',
+  customsDecl: {
+    id: 'cms.customs.decl',
+    defaultMessage: '报关管理',
   },
   searchPlaceholder: {
-    id: 'cms.common.customs.search.placeholder',
+    id: 'cms.customs.decl.search.placeholder',
     defaultMessage: '海关编号/预报关编号/委托编号',
   },
   importOperation: {
-    id: 'cms.common.customs.import.operation',
+    id: 'cms.customs.decl.import.operation',
     defaultMessage: '进口申报',
   },
   exportOperation: {
-    id: 'cms.common.customs.export.operation',
+    id: 'cms.customs.decl.export.operation',
     defaultMessage: '出口申报',
   },
   declCDF: {
-    id: 'cms.common.customs.decl.cdf',
+    id: 'cms.customs.decl.decl.cdf',
     defaultMessage: '报关单',
   },
   declFTZ: {
-    id: 'cms.common.customs.decl.ftz',
+    id: 'cms.customs.decl.decl.ftz',
     defaultMessage: '备案清单',
   },
   declNo: {
-    id: 'cms.common.customs.decl.no',
+    id: 'cms.customs.decl.decl.no',
     defaultMessage: '报关单号',
   },
   entryId: {
-    id: 'cms.common.customs.decl.entryId',
+    id: 'cms.customs.decl.decl.entryId',
     defaultMessage: '海关编号',
   },
   createDecl: {
-    id: 'cms.common.customs.decl.create',
+    id: 'cms.customs.decl.decl.create',
     defaultMessage: '新建报关单',
   },
   delgNo: {
-    id: 'cms.common.customs.delg.no',
+    id: 'cms.customs.decl.delg.no',
     defaultMessage: '委托编号',
   },
   billNo: {
-    id: 'cms.common.customs.bill.no',
+    id: 'cms.customs.decl.bill.no',
     defaultMessage: '清单编号',
   },
   preEntryNo: {
-    id: 'cms.common.customs.decl.preentry.no',
+    id: 'cms.customs.decl.decl.preentry.no',
     defaultMessage: '预报关编号',
   },
   clrStatus: {
-    id: 'cms.common.customs.decl.status',
+    id: 'cms.customs.decl.decl.status',
     defaultMessage: '通关状态',
   },
   declType: {
-    id: 'cms.common.customs.decl.declType',
+    id: 'cms.customs.decl.decl.declType',
     defaultMessage: '单证类型',
   },
   easipassList: {
-    id: 'cms.common.customs.decl.easipassList',
+    id: 'cms.customs.decl.decl.easipassList',
     defaultMessage: 'EDI列表',
   },
   sendDecl: {
-    id: 'cms.common.customs.decl.sendModal.sendDecl',
+    id: 'cms.customs.decl.decl.sendModal.sendDecl',
     defaultMessage: '发送报关单',
   },
   agent: {
-    id: 'cms.common.customs.agent',
+    id: 'cms.customs.decl.agent',
     defaultMessage: '申报单位',
   },
   status: {
-    id: 'cms.common.customs.delg.status',
+    id: 'cms.customs.decl.delg.status',
     defaultMessage: '状态',
   },
   opColumn: {
-    id: 'cms.common.customs.opColumn',
+    id: 'cms.customs.decl.opColumn',
     defaultMessage: '操作',
   },
   entryNoFillModalTitle: {
-    id: 'cms.common.customs.modal.entrynofill.title',
+    id: 'cms.customs.decl.modal.entrynofill.title',
     defaultMessage: '回填海关编号',
   },
   customsClearModalTitle: {
-    id: 'cms.common.customs.modal.clear.title',
+    id: 'cms.customs.decl.modal.clear.title',
     defaultMessage: '标记报关单放行',
   },
   successfulOperation: {
-    id: 'cms.common.customs.modal.successful.operation',
+    id: 'cms.customs.decl.modal.successful.operation',
     defaultMessage: '操作成功',
   },
   save: {
-    id: 'cms.common.customs.save',
+    id: 'cms.customs.decl.save',
     defaultMessage: '保存',
   },
   processDate: {
-    id: 'cms.common.customs.process.date',
+    id: 'cms.customs.decl.process.date',
     defaultMessage: '更新时间',
   },
   customsCheck: {
-    id: 'cms.common.customs.check',
+    id: 'cms.customs.decl.check',
     defaultMessage: '海关查验',
   },
   all: {
-    id: 'cms.common.customs.filter.all',
+    id: 'cms.customs.decl.filter.all',
     defaultMessage: '全部',
   },
   filterProposed: {
-    id: 'cms.common.customs.filter.proposed',
+    id: 'cms.customs.decl.filter.proposed',
     defaultMessage: '报关建议书',
   },
   filterReviewed: {
-    id: 'cms.common.customs.filter.reviewed',
+    id: 'cms.customs.decl.filter.reviewed',
     defaultMessage: '已复核',
   },
   filterDeclared: {
-    id: 'cms.common.customs.filter.declared',
+    id: 'cms.customs.decl.filter.declared',
     defaultMessage: '已发送',
   },
   filterFinalized: {
-    id: 'cms.common.customs.filter.finalized',
+    id: 'cms.customs.decl.filter.finalized',
     defaultMessage: '已回执',
   },
   customsReleased: {
-    id: 'cms.common.customs.status.released',
+    id: 'cms.customs.decl.status.released',
     defaultMessage: '已放行',
   },
   deleteConfirm: {
-    id: 'cms.common.customs.delete.confirm',
+    id: 'cms.customs.decl.delete.confirm',
     defaultMessage: '确认删除该报关单?',
   },
   delete: {
-    id: 'cms.common.customs.delete',
+    id: 'cms.customs.decl.delete',
     defaultMessage: '删除',
   },
   review: {
-    id: 'cms.common.customs.filter.review',
+    id: 'cms.customs.decl.filter.review',
     defaultMessage: '复核',
   },
   recall: {
-    id: 'cms.common.customs.recall',
+    id: 'cms.customs.decl.recall',
     defaultMessage: '退回',
   },
   send: {
-    id: 'cms.common.customs.send',
+    id: 'cms.customs.decl.send',
     defaultMessage: '发送',
   },
   sendPackets: {
-    id: 'cms.common.customs.send.packets',
+    id: 'cms.customs.decl.send.packets',
     defaultMessage: '发送报文',
   },
   markReleased: {
-    id: 'cms.common.customs.mark.released',
+    id: 'cms.customs.decl.mark.released',
     defaultMessage: '标记放行',
   },
   preEntryId: {
-    id: 'cms.common.customs.form.pre.entry.id',
+    id: 'cms.customs.decl.form.pre.entry.id',
     defaultMessage: '预录入编号',
   },
   formEntryId: {
-    id: 'cms.common.customs.form.entry.id',
+    id: 'cms.customs.decl.form.entry.id',
     defaultMessage: '海关编号',
   },
   forwardName: {
-    id: 'cms.common.customs.form.forward.name',
+    id: 'cms.customs.decl.form.forward.name',
     defaultMessage: '收发货人',
   },
   ownerConsumeName: {
-    id: 'cms.common.customs.form.owner.consume.name',
+    id: 'cms.customs.decl.form.owner.consume.name',
     defaultMessage: '消费使用单位',
   },
   ownerProduceName: {
-    id: 'cms.common.customs.form.owner.produce.name',
+    id: 'cms.customs.decl.form.owner.produce.name',
     defaultMessage: '生产消费单位',
   },
   agentName: {
-    id: 'cms.common.customs.form.agent.name',
+    id: 'cms.customs.decl.form.agent.name',
     defaultMessage: '申报单位',
   },
   certMark: {
-    id: 'cms.common.customs.form.cert.mark',
+    id: 'cms.customs.decl.form.cert.mark',
     defaultMessage: '随附单证：',
   },
   markNotes: {
-    id: 'cms.common.customs.form.mark.notes',
+    id: 'cms.customs.decl.form.mark.notes',
     defaultMessage: '唛码备注：',
   },
   seqNumber: {
-    id: 'cms.common.customs.table.seq.number',
+    id: 'cms.customs.decl.table.seq.number',
     defaultMessage: '序号',
   },
   copGNo: {
-    id: 'cms.common.customs.table.cop.gno',
+    id: 'cms.customs.decl.table.cop.gno',
     defaultMessage: '商品货号',
   },
   emGNo: {
-    id: 'cms.common.customs.table.em.gno',
+    id: 'cms.customs.decl.table.em.gno',
     defaultMessage: '项号',
   },
   codeT: {
-    id: 'cms.common.customs.table.codet',
+    id: 'cms.customs.decl.table.codet',
     defaultMessage: '商品编码',
   },
   codeS: {
-    id: 'cms.common.customs.table.codes',
+    id: 'cms.customs.decl.table.codes',
     defaultMessage: '附加码',
   },
   gName: {
-    id: 'cms.common.customs.table.gname',
+    id: 'cms.customs.decl.table.gname',
     defaultMessage: '商品名称',
   },
   gModel: {
-    id: 'cms.common.customs.table.gmodel',
+    id: 'cms.customs.decl.table.gmodel',
     defaultMessage: '规格型号',
   },
   element: {
-    id: 'cms.common.customs.table.element',
+    id: 'cms.customs.decl.table.element',
     defaultMessage: '申报要素',
   },
   quantity: {
-    id: 'cms.common.customs.table.quantity',
+    id: 'cms.customs.decl.table.quantity',
     defaultMessage: '申报数量',
   },
   unit: {
-    id: 'cms.common.customs.table.unit',
+    id: 'cms.customs.decl.table.unit',
     defaultMessage: '成交单位',
   },
   icountry: {
-    id: 'cms.common.customs.table.icountry',
+    id: 'cms.customs.decl.table.icountry',
     defaultMessage: '原产国',
   },
   ecountry: {
-    id: 'cms.common.customs.table.ecountry',
+    id: 'cms.customs.decl.table.ecountry',
     defaultMessage: '最终目的国',
   },
   decPrice: {
-    id: 'cms.common.customs.table.dec.price',
+    id: 'cms.customs.decl.table.dec.price',
     defaultMessage: '单价',
   },
   decTotal: {
-    id: 'cms.common.customs.table.dec.total',
+    id: 'cms.customs.decl.table.dec.total',
     defaultMessage: '总价',
   },
   currency: {
-    id: 'cms.common.customs.table.currency',
+    id: 'cms.customs.decl.table.currency',
     defaultMessage: '币制',
   },
   exemptionWay: {
-    id: 'cms.common.customs.table.exemptionway',
+    id: 'cms.customs.decl.table.exemptionway',
     defaultMessage: '征免方式',
   },
   sendAllPackets: {
-    id: 'cms.common.customs.send.all.packets',
+    id: 'cms.customs.decl.send.all.packets',
     defaultMessage: '批量发送报文',
   },
   trafMode: {
-    id: 'cms.common.customs.traf.mode',
+    id: 'cms.customs.decl.traf.mode',
     defaultMessage: '运输方式',
   },
   packCount: {
-    id: 'cms.common.customs.pack.count',
+    id: 'cms.customs.decl.pack.count',
     defaultMessage: '件数：',
   },
   contractNo: {
-    id: 'cms.common.customs.contract.no',
+    id: 'cms.customs.decl.contract.no',
     defaultMessage: '合同协议号：',
   },
   containerId: {
-    id: 'cms.common.customs.tabpanes.container.id',
+    id: 'cms.customs.decl.tabpanes.container.id',
     defaultMessage: '箱号',
   },
   containerWt: {
-    id: 'cms.common.customs.tabpanes.container.wt',
+    id: 'cms.customs.decl.tabpanes.container.wt',
     defaultMessage: '自重',
   },
   containerSpec: {
-    id: 'cms.common.customs.tabpanes.container.spec',
+    id: 'cms.customs.decl.tabpanes.container.spec',
     defaultMessage: '规格',
   },
   containerQty: {
-    id: 'cms.common.customs.tabpanes.container.qty',
+    id: 'cms.customs.decl.tabpanes.container.qty',
     defaultMessage: '数量',
   },
   docuSpec: {
-    id: 'cms.common.customs.tabpanes.document.spec',
+    id: 'cms.customs.decl.tabpanes.document.spec',
     defaultMessage: '单据类型',
   },
   docuCode: {
-    id: 'cms.common.customs.tabpanes.document.code',
+    id: 'cms.customs.decl.tabpanes.document.code',
     defaultMessage: '单据编码',
   },
   certSpec: {
-    id: 'cms.common.customs.tabpanes.cert.spec',
+    id: 'cms.customs.decl.tabpanes.cert.spec',
     defaultMessage: '单证类型',
   },
   certNum: {
-    id: 'cms.common.customs.tabpanes.cert.num',
+    id: 'cms.customs.decl.tabpanes.cert.num',
     defaultMessage: '单证编号',
   },
 });

@@ -9,6 +9,14 @@ const messages = defineMessages({
     id: 'cms.module.delegation',
     defaultMessage: '委托管理',
   },
+  customsDecl: {
+    id: 'cms.module.customs.decl',
+    defaultMessage: '报关管理',
+  },
+  ciqDecl: {
+    id: 'cms.module.ciq.decl',
+    defaultMessage: '报检管理',
+  },
   import: {
     id: 'cms.module.import',
     defaultMessage: '进口申报',

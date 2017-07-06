@@ -255,7 +255,7 @@ export function setCiqFinish(delgNo) {
 //   };
 // }
 
-export function loadAcceptanceTable(params) {
+export function loadDelegationList(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -263,7 +263,7 @@ export function loadAcceptanceTable(params) {
         actionTypes.LOAD_ACCEPT_SUCCEED,
         actionTypes.LOAD_ACCEPT_FAIL,
       ],
-      endpoint: 'v1/cms/acceptance/delegations',
+      endpoint: 'v1/cms/delegations',
       method: 'get',
       params,
     },

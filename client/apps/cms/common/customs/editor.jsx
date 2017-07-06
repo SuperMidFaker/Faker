@@ -196,9 +196,6 @@ export default class CustomsDeclEditor extends React.Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
                 <Icon type="file" /> <NavLink to={`/clearance/${ietype}/customs/`}>{this.msg('customsDeclaration')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>

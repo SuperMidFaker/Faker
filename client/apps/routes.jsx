@@ -40,6 +40,8 @@ import * as Template from './pub/template';
 import CMS from './cms/module-clearance';
 import * as CMSDashboard from './cms/dashboard';
 import * as CMSDelegation from './cms/delegation';
+import * as CMSCustomsDecl from './cms/customs';
+import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSImportCustoms from './cms/import/customs';
 import * as CMSImportCiq from './cms/import/ciq';
@@ -282,6 +284,10 @@ export default(store, cookie) => {
             <IndexRedirect to="/clearance/dashboard" />
             <Route path="dashboard" component={CMSDashboard.Index} />
             <Route path="delegation" component={CMSDelegation.List} />
+            <Route path="customs">
+              <IndexRoute component={CMSCustomsDecl.List} />
+            </Route>
+            <Route path="ciq" component={CMSCiqDecl.List} />
             <Route path="import">
               <IndexRedirect to="/clearance/import/manifest" />
               <Route path="manifest">
