@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
-import messages from '../message.i18n';
-import { format } from 'client/common/i18n/helpers';
 import { loadEntryDetails, loadParams } from 'common/reducers/cwmShFtz';
+import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -30,10 +31,8 @@ function fetchData({ dispatch, params }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    tenantName: state.account.tenantName,
-    asnNo: state.cwmShFtz.entryData.asn_no,
-    entryData: state.cwmShFtz.entryData,
-    entryDetails: state.cwmShFtz.entryDetails,
+    entryAsn: state.cwmShFtz.entry_asn,
+    entryRegs: state.cwmShFtz.entry_regs,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -54,16 +53,9 @@ function fetchData({ dispatch, params }) {
   depth: 3,
   moduleName: 'cwm',
 })
-@Form.create()
 export default class SHFTZEntryDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    entryList: PropTypes.object.isRequired,
-    asnNo: PropTypes.string.isRequired,
-    entryData: PropTypes.object.isRequired,
-    entryDetails: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -73,15 +65,15 @@ export default class SHFTZEntryDetail extends Component {
     tabKey: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.entryDetails !== this.props.entryDetails) {
-      this.setState({ tabKey: Object.keys(nextProps.entryDetails)[0] });
+    if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
+      this.setState({ tabKey: nextProps.entryRegs[0].pre_entry_seq_no });
     }
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     notification.success({
       message: '操作成功',
-      description: `${this.props.asnNo} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
+      description: `${this.props.params.asnNo} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
     });
     this.setState({
       sent: true,
@@ -152,53 +144,9 @@ export default class SHFTZEntryDetail extends Component {
     const change = {};
     change[field] = value;
   }
-  renderTabs() {
-    const { entryData, entryDetails } = this.props;
-    const tabs = [];
-    const keys = Object.keys(entryDetails);
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const detail = entryDetails[key];
-      tabs.push(
-        <TabPane tab={key} key={key}>
-          <div className="panel-header">
-            <Row>
-              <Col sm={24} lg={8}>
-                <InfoItem size="small" addonBefore="入库备案号" field={entryData.ftz_ent_no} editable onEdit={value => this.handleInfoSave('ftz_ent_no', value)} />
-              </Col>
-              <Col sm={24} lg={6}>
-                <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
-                  type="date" field={entryData.ie_date} editable
-                  onEdit={value => this.handleInfoSave('ie_date', new Date(value))}
-                />
-              </Col>
-              <Col sm={24} lg={6}>
-                <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                  type="date" field={entryData.ftz_ent_date} editable
-                  onEdit={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
-                />
-              </Col>
-            </Row>
-          </div>
-          <Table columns={this.columns} dataSource={detail} indentSize={8} rowKey="id" />
-        </TabPane>);
-    }
-    return (
-      <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-        {tabs}
-      </Tabs>
-    );
-  }
   render() {
-    const { asnNo, entryData, whse } = this.props;
-    let entType = '';
-    if (entryData.ftz_ent_type === 1) {
-      entType = (<Tag color="blue">一二线进境</Tag>);
-    } else if (entryData.ftz_ent_type === 2) {
-      entType = (<Tag color="green">视同出口</Tag>);
-    } else if (entryData.ftz_ent_type === 3) {
-      entType = (<Tag color="yellow">区内转入</Tag>);
-    }
+    const { entryAsn, entryRegs, whse } = this.props;
+    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.ftz_ent_type)[0];
     return (
       <div>
         <Header className="top-bar">
@@ -213,7 +161,7 @@ export default class SHFTZEntryDetail extends Component {
               {this.msg('ftzEntryReg')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {asnNo}
+              {this.props.params.asnNo}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -226,22 +174,22 @@ export default class SHFTZEntryDetail extends Component {
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="备案类型" field={entType} />
+                  <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="经营单位" field={entryData.owner_name} />
+                  <InfoItem label="经营单位" field={entryAsn.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={entryData.wh_ent_name} />
+                  <InfoItem label="收货单位" field={entryAsn.wh_ent_name} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="备案时间" addonBefore={<span><Icon type="calendar" /></span>}
-                    field={entryData.ftz_ent_date && moment(entryData.ftz_ent_date).format('YYYY-MM-DD HH:mm')}
+                    field={entryAsn.ftz_ent_date && moment(entryAsn.ftz_ent_date).format('YYYY-MM-DD HH:mm')}
                   />
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={entryData.status}>
+                <Steps progressDot current={entryAsn.status}>
                   <Step description="待备案" />
                   <Step description="已发送" />
                   <Step description="备案完成" />
@@ -249,7 +197,32 @@ export default class SHFTZEntryDetail extends Component {
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
-              {this.renderTabs()}
+              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+                {entryRegs.map(reg => (
+                  <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                    <div className="panel-header">
+                      <Row>
+                        <Col sm={24} lg={8}>
+                          <InfoItem size="small" addonBefore="入库备案号" field={reg.ftz_ent_no} editable onEdit={value => this.handleInfoSave('ftz_ent_no', value)} />
+                        </Col>
+                        <Col sm={24} lg={6}>
+                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
+                            type="date" field={reg.ie_date} editable
+                            onEdit={value => this.handleInfoSave('ie_date', new Date(value))}
+                          />
+                        </Col>
+                        <Col sm={24} lg={6}>
+                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
+                            type="date" field={reg.ftz_ent_date} editable
+                            onEdit={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                    <Table columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id" />
+                  </TabPane>
+        ))}
+              </Tabs>
             </Card>
           </Form>
         </Content>

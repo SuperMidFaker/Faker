@@ -38,8 +38,8 @@ const initialState = {
     filterNo: '',
     ownerView: 'all',
   },
-  entryData: {},
-  entryDetails: {},
+  entry_asn: {},
+  entry_regs: [],
   params: {
     currencies: [],
     units: [],
@@ -52,7 +52,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
       return { ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.ENTRY_DETAILS_LOAD_SUCCEED:
-      return { ...state, entryDetails: action.result.data.detailG, entryData: action.result.data.entryData };
+      return { ...state, ...action.result.data };
     case actionTypes.PARAMS_LOAD_SUCCEED:
       return { ...state, params: action.result.data };
     case actionTypes.RELEASE_REG_LOAD_SUCCEED:

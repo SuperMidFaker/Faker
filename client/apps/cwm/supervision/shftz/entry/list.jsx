@@ -9,10 +9,11 @@ import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -68,14 +69,9 @@ export default class SHFTZEntryList extends React.Component {
   }, {
     title: '备案类型',
     dataIndex: 'ftz_ent_type',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">一二线进境</Tag>);
-      } else if (o === 2) {
-        return (<Tag color="green">视同出口</Tag>);
-      } else if (o === 3) {
-        return (<Tag color="yellow">区内转入</Tag>);
-      }
+    render: (enttype) => {
+      const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
+      return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
     },
   }, {
     title: '货主',
