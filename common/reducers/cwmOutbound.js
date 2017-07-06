@@ -69,7 +69,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_ALLOCATING_MODAL:
       return { ...state, allocatingModal: { ...state.allocatingModal, visible: false } };
     case actionTypes.OPEN_PICKING_MODAL:
-      return { ...state, pickingModal: { visible: true, traceId: action.traceId, location: action.location, allocQty: action.allcoQty, skuPackQty: action.skuPackQty, id: action.id } };
+      return { ...state,
+        pickingModal: { visible: true,
+          traceId: action.traceId,
+          location: action.location,
+          allocQty: action.allcoQty,
+          skuPackQty: action.skuPackQty,
+          id: action.id } };
     case actionTypes.CLOSE_PICKING_MODAL:
       return { ...state, pickingModal: { visible: false } };
     case actionTypes.OPEN_SHIPPING_MODAL:
