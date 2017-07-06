@@ -9,11 +9,11 @@ export default class Strip extends Component {
     hints: PropTypes.array.isRequired,
   }
   renderParts = (overall, parts, hints) => {
-    let total = overall;
-    if (!overall) {
-      total = Object.values(parts).reduce((pre, curr) =>
-        pre + curr, 0
-      );
+    let total = Object.values(parts).reduce((pre, curr) =>
+      pre + curr, 0
+    );
+    if (overall && total < overall) {
+      total = overall;
     }
     const keys = Object.keys(parts);
     return (
