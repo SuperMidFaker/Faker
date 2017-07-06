@@ -7,33 +7,57 @@ import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadCmsStatistics } from 'common/reducers/cmsDashboard';
-import { loadPartnersByTypes } from 'common/reducers/partner';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { loadCmsTaxStats } from 'common/reducers/cmsDashboard';
 
 const formatMsg = format(messages);
 const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option;
 
+function fetchData({ state, dispatch }) {
+  const firstDay = new Date();
+  firstDay.setDate(1);
+  const startDate = `${moment(state.cmsDashboard.taxStats.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
+  const endDate = `${moment(state.cmsDashboard.taxStats.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
+  const clientView = JSON.stringify({ tenantIds: [], partnerIds: [] });
+  return dispatch(loadCmsTaxStats({ tenantId: state.account.tenantId, startDate, endDate, clientView }));
+}
+
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    statistics: state.cmsDashboard.statistics,
+    taxStats: state.cmsDashboard.taxStats,
     clients: state.partner.partners,
   }),
-  { loadCmsStatistics }
+  { loadCmsTaxStats }
 )
 
 export default class TaxStatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    statistics: PropTypes.object.isRequired,
+    taxStats: PropTypes.object.isRequired,
   }
-
+  onDateChange = (value, dateString) => {
+    const clientView = this.props.taxStats.clientView;
+    this.props.loadCmsTaxStats({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView });
+  }
+  handleClientSelectChange = (value) => {
+    const { startDate, endDate } = this.props.taxStats;
+    const clientView = { tenantIds: [], partnerIds: [] };
+    if (value !== -1) {
+      const client = this.props.clients.find(clt => clt.partner_id === value);
+      if (client.partner_id !== null) {
+        clientView.partnerIds.push(client.partner_id);
+      } else {
+        clientView.tenantIds.push(client.tid);
+      }
+    }
+    this.props.loadCmsTaxStats({ tenantId: this.props.tenantId, startDate, endDate, clientView: JSON.stringify(clientView) });
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { startDate, endDate, total, sumImport, sumExport, released } = this.props.statistics;
+    const { startDate, endDate, totalPaid, dutyTax, vatTax, comsuTax, totalWithdrawn } = this.props.taxStats;
     const clients = [{
       name: '全部客户',
       partner_id: -1,
@@ -61,7 +85,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('totalPaid')}</h4>
               <div className="data">
-                <div className="data-num lg text-error">{total}</div>
+                <div className="data-num lg text-error">{totalPaid}</div>
               </div>
             </div>
           </li>
@@ -70,7 +94,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('duty')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{sumImport}</div>
+                <div className="data-num lg text-emphasis">{dutyTax}</div>
               </div>
             </div>
           </li>
@@ -78,7 +102,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('VAT')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{sumExport}</div>
+                <div className="data-num lg text-emphasis">{vatTax}</div>
               </div>
             </div>
           </li>
@@ -86,7 +110,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('comsuTax')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{released}</div>
+                <div className="data-num lg text-emphasis">{comsuTax}</div>
               </div>
             </div>
           </li>
@@ -95,7 +119,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('totalWithdrawn')}</h4>
               <div className="data">
-                <div className="data-num lg text-success">{total}</div>
+                <div className="data-num lg text-success">{totalWithdrawn}</div>
               </div>
             </div>
           </li>
