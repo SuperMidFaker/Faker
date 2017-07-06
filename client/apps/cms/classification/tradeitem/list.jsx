@@ -358,6 +358,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        this.props.loadRepos({ tenantId: this.props.tenantId });
         this.handleItemListLoad();
       }
     });
@@ -412,6 +413,7 @@ export default class TradeItemList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        this.props.loadRepos({ tenantId: this.props.tenantId });
         this.handleItemListLoad();
       }
     });
@@ -450,6 +452,7 @@ export default class TradeItemList extends Component {
           message.warning('归类拒绝');
         }
         this.setState({ selectedRowKeys: [] });
+        this.props.loadRepos({ tenantId: this.props.tenantId });
         this.handleItemListLoad();
       }
     });
@@ -661,11 +664,11 @@ export default class TradeItemList extends Component {
       render: (o, record) => {
         if (record.mode === 'slave') {
           return (<div style={{ paddingLeft: 8 }}><Icon type="link" className="text-success" /> {o}
-            <Strip overall={1000} parts={{ success: 800, processing: 180, warning: 20 }} hints={['已归类', '归类待定', '未归类']} />
+            <Strip overall={1000} parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }} hints={['已归类', '归类待定', '未归类']} />
           </div>);
         } else {
           return (<div style={{ paddingLeft: 8 }}>{o}
-            <Strip overall={1000} parts={{ success: 600, processing: 80, warning: 120 }} hints={['已归类', '归类待定', '未归类']} />
+            <Strip overall={1000} parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }} hints={['已归类', '归类待定', '未归类']} />
           </div>);
         }
       },
