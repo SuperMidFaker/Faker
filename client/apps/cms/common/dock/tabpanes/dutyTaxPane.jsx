@@ -123,34 +123,6 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'hscode',
     key: 'hscode',
   }, {
-    title: '完税价格',
-    dataIndex: 'duty_paid',
-    key: 'duty_paid',
-    render(o) {
-      return o ? o.toFixed(3) : '';
-    },
-  }, {
-    title: '关税',
-    dataIndex: 'duty_tax',
-    key: 'duty_tax',
-    render(o) {
-      return o ? o.toFixed(3) : '';
-    },
-  }, {
-    title: '增值税',
-    dataIndex: 'vat_tax',
-    key: 'vat_tax',
-    render(o) {
-      return o ? o.toFixed(3) : '';
-    },
-  }, {
-    title: '消费税',
-    dataIndex: 'excise_tax',
-    key: 'excise_tax',
-    render(o) {
-      return o ? o.toFixed(3) : '';
-    },
-  }, {
     title: '运费/率',
     dataIndex: 'ship_fee',
     key: 'ship_fee',
@@ -187,19 +159,47 @@ export default class DutyTaxPane extends React.Component {
       }
     },
   }, {
+    title: '完税价格',
+    dataIndex: 'duty_paid',
+    key: 'duty_paid',
+    render(o) {
+      return o ? o.toFixed(3) : '';
+    },
+  }, {
     title: '关税率',
     dataIndex: 'duty_rate',
     key: 'duty_rate',
+  }, {
+    title: '关税',
+    dataIndex: 'duty_tax',
+    key: 'duty_tax',
+    render(o) {
+      return o ? o.toFixed(3) : '';
+    },
   }, {
     title: '增值税率',
     dataIndex: 'vat_rates',
     key: 'vat_rates',
   }, {
+    title: '增值税',
+    dataIndex: 'vat_tax',
+    key: 'vat_tax',
+    render(o) {
+      return o ? o.toFixed(3) : '';
+    },
+  }, {
     title: '消费税率',
     dataIndex: 'gst_rates',
     key: 'gst_rates',
   }, {
-    title: '税费',
+    title: '消费税',
+    dataIndex: 'excise_tax',
+    key: 'excise_tax',
+    render(o) {
+      return o ? o.toFixed(3) : '';
+    },
+  }, {
+    title: '缴税金额',
     dataIndex: 'total_tax',
     key: 'total_tax',
     render(o) {
@@ -232,11 +232,11 @@ export default class DutyTaxPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <div className="pane-header">
-          <Popconfirm title="确定重新计算税费?" onConfirm={this.handleRecalculation}>
-            <Button icon="reload" loading={this.state.recalLoading}>重算</Button>
+          <Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
+            <Button icon="reload" loading={this.state.recalLoading}>预估税金</Button>
           </Popconfirm>
           <div style={{ float: 'right' }}>
-            <span style={{ color: '#FF9933' }}>单位：元</span>
+            <span style={{ color: '#FF9933' }}>单位：人民币元</span>
           </div>
         </div>
         <Card bodyStyle={{ padding: 0 }}>

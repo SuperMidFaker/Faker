@@ -4,6 +4,7 @@ import { Input, Icon, Select, DatePicker } from 'antd';
 import RegionCascade from 'client/components/region-cascade';
 import moment from 'moment';
 import * as Location from 'client/util/location';
+import './editable-cell.less';
 
 const Option = Select.Option;
 export default class EditableCell extends React.Component {
@@ -74,52 +75,64 @@ export default class EditableCell extends React.Component {
     const { value, region } = this.state;
     switch (type) {
       case 'textarea':
-        return (<div>
-          <Input type="textarea" autosize value={value} onChange={this.handleChange} />
-          <div>
+        return (<div className="editable-cell-outer">
+          <div className="editable-cell-inner">
+            <Input type="textarea" autosize value={value} onChange={this.handleChange} />
+          </div>
+          <span className="editable-cell-actions">
             <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
             <span className="ant-divider" />
             <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
-          </div>
+          </span>
         </div>);
       case 'select':
-        return (<div>
-          <Select showSearch placeholder={placeholder} value={value} style={{ width: '69%' }} onChange={this.handleSelectChange}>
-            {options && options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
-          </Select>
-          <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
-          <span className="ant-divider" />
-          <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
-        </div>);
-      case 'date':
-        return (<div>
-          <DatePicker style={{ width: '79%' }} value={value ? moment(value) : ''} onChange={this.handleDateChange} />
-          <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
-          <span className="ant-divider" />
-          <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
-        </div>);
-      case 'regionCascade':
-        return (<div>
-          <div style={{ width: '78%', display: 'inline-block' }}><RegionCascade region={region} onChange={this.handleRegionValueChange} /></div>
-          <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
-          <span className="ant-divider" />
-          <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
-        </div>);
-      default:
-        return (<Input
-          size="large"
-          type={type}
-          value={value}
-          addonBefore={addonBefore}
-          addonAfter={addonAfter}
-          onChange={this.handleChange}
-          onPressEnter={this.check}
-          suffix={<span>
+        return (<div className="editable-cell-outer">
+          <div className="editable-cell-inner">
+            <Select showSearch placeholder={placeholder} value={value} style={{ width: '100%' }} onChange={this.handleSelectChange}>
+              {options && options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
+            </Select>
+          </div>
+          <span className="editable-cell-actions">
             <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
             <span className="ant-divider" />
             <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
-          </span>}
-        />);
+          </span>
+        </div>);
+      case 'date':
+        return (<div className="editable-cell-outer">
+          <div className="editable-cell-inner">
+            <DatePicker style={{ width: '100%' }} value={value ? moment(value) : ''} onChange={this.handleDateChange} />
+          </div>
+          <span className="editable-cell-actions">
+            <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
+            <span className="ant-divider" />
+            <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
+          </span>
+        </div>);
+      case 'regionCascade':
+        return (<div className="editable-cell-outer">
+          <div className="editable-cell-inner">
+            <RegionCascade region={region} onChange={this.handleRegionValueChange} />
+          </div>
+          <span className="editable-cell-actions">
+            <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
+            <span className="ant-divider" />
+            <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
+          </span>
+        </div>);
+      default:
+        return (<div className="editable-cell-outer">
+          <div className="editable-cell-inner">
+            <Input size="large" type={type} value={value}
+              addonBefore={addonBefore} addonAfter={addonAfter} onChange={this.handleChange} onPressEnter={this.check}
+            />
+          </div>
+          <span className="editable-cell-actions">
+            <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
+            <span className="ant-divider" />
+            <Icon type="close" className="editable-cell-icon-close" onClick={this.close} />
+          </span>
+        </div>);
     }
   }
   renderText() {

@@ -89,31 +89,6 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="采购订单号">
-              {getFieldDecorator('po_no', {
-                initialValue: asnHead && asnHead.po_no,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
-            <FormItem label="预期到货日期" >
-              {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-                initialValue: asnHead && moment(new Date(asnHead.expect_receive_date)),
-              })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
-            <FormItem label="ASN类型">
-              {getFieldDecorator('asn_type', {
-                initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
-              })(
-                <Select placeholder="ASN类型">
-                  {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
-                </Select>
-                  )}
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
                 initialValue: asnHead ? asnHead.bonded : bonded,
@@ -139,6 +114,33 @@ export default class HeadForm extends Component {
               </FormItem>
             </Col>
           }
+        </Row>
+        <Row gutter={16}>
+          <Col sm={24} lg={8}>
+            <FormItem label="预期到货日期" >
+              {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+                initialValue: asnHead && moment(new Date(asnHead.expect_receive_date)),
+              })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="采购订单号">
+              {getFieldDecorator('po_no', {
+                initialValue: asnHead && asnHead.po_no,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="ASN类型">
+              {getFieldDecorator('asn_type', {
+                initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
+              })(
+                <Select placeholder="ASN类型">
+                  {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+                </Select>
+                  )}
+            </FormItem>
+          </Col>
         </Row>
       </Card>
     );

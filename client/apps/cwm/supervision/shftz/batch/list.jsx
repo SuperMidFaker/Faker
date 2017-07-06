@@ -75,7 +75,7 @@ export default class SupervisionSHFTZList extends React.Component {
       if (o === 0) {
         return (<Badge status="default" text="待收货" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="入库中" />);
+        return (<Badge status="processing" text="已释放" />);
       } else if (o === 2) {
         return (<Badge status="warning" text="部分收货" />);
       } else if (o === 3) {

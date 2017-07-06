@@ -1089,7 +1089,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #919191;
+    color: rgba(0, 0, 0, 0.65);
   }
   &-field {
     min-height: 32px;
@@ -1222,61 +1222,3 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
 }
 
-.editable-cell {
-  position: relative;
-  padding: 0 8px;
-  .ant-input,
-  .ant-select {
-    font-size: 14px;
-  }
-}
-
-.editable-cell-input-wrapper,
-.editable-cell-text-wrapper {
-  /*padding-right: 24px;*/
-  line-height: 32px;
-}
-
-.editable-cell-icon,
-.editable-cell-icon-check {
-  position: absolute;
-  top: 8px;
-  right: 16px;
-  width: 24px;
-  cursor: pointer;
-}
-
-.editable-cell-icon {
-  line-height: 18px;
-  display: none;
-}
-
-.editable-cell-icon-save {
-  color: @primary-color;
-}
-.editable-cell-icon-close {
-  color: @error-color;
-}
-
-.editable-cell:hover .editable-cell-icon,
-.editable-cell:hover .editable-cell-icon-check {
-  display: inline-block;
-}
-
-.editable-cell-icon:hover,
-.editable-cell-icon-check:hover {
-  color: #108ee9;
-}
-
-.editable-add-btn {
-  margin-bottom: 8px;
-}
-.editable-cell-placeholder {
-  color: @disabled-color;
-  >a {
-    color: @disabled-color;
-  }
-  >a:hover {
-    color: @link-hover-color;
-  }
-}

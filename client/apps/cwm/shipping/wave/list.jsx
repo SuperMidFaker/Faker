@@ -75,7 +75,7 @@ export default class WaveList extends React.Component {
       if (o === 0) {
         return (<Badge status="default" text="计划" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="出库中" />);
+        return (<Badge status="processing" text="已释放" />);
       } else if (o === 3) {
         return (<Badge status="success" text="完成" />);
       }
@@ -219,7 +219,7 @@ export default class WaveList extends React.Component {
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">计划</RadioButton>
-            <RadioButton value="outbound">出库中</RadioButton>
+            <RadioButton value="outbound">已释放</RadioButton>
             <RadioButton value="completed">完成</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
