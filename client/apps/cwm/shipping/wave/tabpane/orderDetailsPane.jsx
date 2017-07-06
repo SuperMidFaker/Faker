@@ -42,7 +42,7 @@ export default class OrderDetailsPane extends React.Component {
     render: o => (<b>{o}</b>),
   }, {
     title: '计量单位',
-    dataIndex: 'unit',
+    dataIndex: 'unit_name',
     width: 60,
   }, {
     title: 'SKU',
