@@ -14,6 +14,7 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     privileges: state.account.privileges,
+    navOption: state.cmsPreferences.navOption,
   })
 )
 export default class Clearance extends React.Component {
@@ -50,25 +51,27 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'delegation'),
       }
     );
-    linkMenus.push(
-      {
-        single: true,
-        key: 'cms-customs',
-        path: '/clearance/customs',
-        icon: 'logixon icon-customs',
-        text: formatMsg(intl, 'customsDecl'),
-      }
-    );
-    linkMenus.push(
-      {
-        single: true,
-        key: 'cms-ciq',
-        path: '/clearance/ciq',
-        icon: 'logixon icon-ciq',
-        text: formatMsg(intl, 'ciqDecl'),
-      }
-    );
-    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
+    if (this.props.navOption === 'CC' || this.props.navOption === 'ALL') {
+      linkMenus.push(
+        {
+          single: true,
+          key: 'cms-customs',
+          path: '/clearance/customs',
+          icon: 'logixon icon-customs',
+          text: formatMsg(intl, 'customsDecl'),
+        }
+      );
+      linkMenus.push(
+        {
+          single: true,
+          key: 'cms-ciq',
+          path: '/clearance/ciq',
+          icon: 'logixon icon-ciq',
+          text: formatMsg(intl, 'ciqDecl'),
+        }
+      );
+    }
+    if (this.props.navOption === 'IE' || this.props.navOption === 'ALL') {
       linkMenus.push({
         single: false,
         key: 'cms-import',
@@ -91,8 +94,6 @@ export default class Clearance extends React.Component {
           text: formatMsg(intl, 'importCiqDecl'),
         }],
       });
-    }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'export' })) {
       linkMenus.push({
         single: false,
         key: 'cms-export',
@@ -185,6 +186,10 @@ export default class Clearance extends React.Component {
           key: 'ccms-settings-2',
           path: '/clearance/settings/doctemplates',
           text: formatMsg(intl, 'docTemplates'),
+        }, {
+          key: 'ccms-settings-3',
+          path: '/clearance/settings/preferences',
+          text: formatMsg(intl, 'preferences'),
         }],
       });
     }

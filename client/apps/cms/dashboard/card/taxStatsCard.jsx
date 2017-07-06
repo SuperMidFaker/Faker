@@ -85,7 +85,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('totalPaid')}</h4>
               <div className="data">
-                <div className="data-num lg text-error">{totalPaid}</div>
+                <div className="data-num text-error">{totalPaid}</div>
               </div>
             </div>
           </li>
@@ -94,7 +94,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('duty')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{dutyTax}</div>
+                <div className="data-num text-emphasis">{dutyTax}</div>
               </div>
             </div>
           </li>
@@ -102,7 +102,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('VAT')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{vatTax}</div>
+                <div className="data-num text-emphasis">{vatTax}</div>
               </div>
             </div>
           </li>
@@ -110,7 +110,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('comsuTax')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{comsuTax}</div>
+                <div className="data-num text-emphasis">{comsuTax}</div>
               </div>
             </div>
           </li>
@@ -119,7 +119,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('totalWithdrawn')}</h4>
               <div className="data">
-                <div className="data-num lg text-success">{totalWithdrawn}</div>
+                <div className="data-num text-success">{totalWithdrawn}</div>
               </div>
             </div>
           </li>

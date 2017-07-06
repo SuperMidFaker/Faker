@@ -348,6 +348,7 @@ export default(store, cookie) => {
               <Route path="doctemplates/invoice/edit/:id" component={CMSSettings.InvoiceContent} />
               <Route path="doctemplates/contract/edit/:id" component={CMSSettings.ContractContent} />
               <Route path="doctemplates/packingList/edit/:id" component={CMSSettings.PackingListContent} />
+              <Route path="preferences" component={CMSSettings.Preferences} />
             </Route>
             <Route path="classification">
               <Route path="tradeitem">

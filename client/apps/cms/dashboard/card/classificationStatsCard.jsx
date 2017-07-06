@@ -42,7 +42,7 @@ export default class ClassificationStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('repoCount')}</h4>
               <div className="data">
-                <div className="data-num lg text-emphasis">{repoCount}</div>
+                <div className="data-num text-emphasis">{repoCount}</div>
               </div>
             </div>
           </li>
@@ -51,7 +51,7 @@ export default class ClassificationStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('classifiedItems')}</h4>
               <div className="data">
-                <div className="data-num lg text-success">{classifiedItems}</div>
+                <div className="data-num text-success">{classifiedItems}</div>
               </div>
             </div>
           </li>
@@ -59,7 +59,7 @@ export default class ClassificationStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('pendingItems')}</h4>
               <div className="data">
-                <div className="data-num lg text-info">{pendingItems}</div>
+                <div className="data-num text-info">{pendingItems}</div>
               </div>
             </div>
           </li>
@@ -67,7 +67,7 @@ export default class ClassificationStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('unclassifiedItems')}</h4>
               <div className="data">
-                <div className="data-num lg text-warning">{unclassifiedItems}</div>
+                <div className="data-num text-warning">{unclassifiedItems}</div>
               </div>
             </div>
           </li>

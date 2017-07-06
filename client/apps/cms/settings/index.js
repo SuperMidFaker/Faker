@@ -1,3 +1,4 @@
+export Preferences from './preferences';
 export QuoteTemplates from './quoteTemplates';
 export DocumentTemplates from './documentTemplates';
 export InvoiceContent from './components/invoiceContent';

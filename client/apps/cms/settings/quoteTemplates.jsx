@@ -54,9 +54,6 @@ export default class Settings extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('appSettings')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
               费用模板
             </Breadcrumb.Item>
           </Breadcrumb>

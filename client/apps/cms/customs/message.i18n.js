@@ -5,6 +5,14 @@ export default defineMessages({
     id: 'cms.customs.decl',
     defaultMessage: '报关管理',
   },
+  import: {
+    id: 'cms.customs.decl.import',
+    defaultMessage: '进口',
+  },
+  export: {
+    id: 'cms.customs.decl.export',
+    defaultMessage: '出口',
+  },
   searchPlaceholder: {
     id: 'cms.customs.decl.search.placeholder',
     defaultMessage: '海关编号/预报关编号/委托编号',

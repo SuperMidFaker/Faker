@@ -46,10 +46,10 @@ export default class CMSDashboard extends React.Component {
             <Col sm={24} lg={24}>
               <StatsCard />
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={10}>
               <ClassificationStatsCard />
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={14}>
               <TaxStatsCard />
             </Col>
           </Row>

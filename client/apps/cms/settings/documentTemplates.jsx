@@ -115,9 +115,6 @@ export default class InvoiceTemplate extends Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('appSettings')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
                 单据模板
               </Breadcrumb.Item>
             </Breadcrumb>

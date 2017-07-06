@@ -6,6 +6,18 @@ export default defineMessages({
     id: 'cms.ciq.decl',
     defaultMessage: '报检管理',
   },
+  import: {
+    id: 'cms.ciq.decl.import',
+    defaultMessage: '入境',
+  },
+  export: {
+    id: 'cms.ciq.decl.export',
+    defaultMessage: '出境',
+  },
+  all: {
+    id: 'cms.ciq.decl.filter.all',
+    defaultMessage: '全部',
+  },
   ciqSearchPlaceholder: {
     id: 'cms.ciq.decl.ciq.search.placeholder',
     defaultMessage: '通关单号/预报关编号/委托编号',
