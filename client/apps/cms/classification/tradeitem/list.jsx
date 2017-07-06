@@ -670,32 +670,22 @@ export default class TradeItemList extends Component {
         }
       },
     }];
-    /*
-    {
-      width: 40,
-      fixed: 'right',
-      render: (o, record) => {
-        if (record.mode !== 'slave' && record.owner_tenant_id !== -1) {
-          return (
-            <Tooltip placement="bottom" title="升级到主从模式">
-              <Button disabled={!record.upgrade} shape="circle" icon="to-top" onClick={() => this.handleUpgrade(record)} />
-            </Tooltip>
-          );
-        } else if (record.mode === 'slave' && record.owner_tenant_id !== -1) {
-          return (
-            <Tooltip placement="bottom" title="切换为单库模式">
-              <Button disabled shape="circle" icon="arrow-down" onClick={() => this.handleDegrade(record)} />
-            </Tooltip>
-          );
-        }
-      },
-    }*/
     const importMenu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
         <Menu.Item key="exportEditable"><Icon type="export" /> 导出可编辑物料</Menu.Item>
       </Menu>);
+    let mode = null;
+    if (repo.mode !== 'slave' && repo.owner_tenant_id !== -1) {
+      mode = (
+        <Button disabled={!repo.upgrade} icon="to-top" onClick={() => this.handleUpgrade(repo)} >升级到主从模式</Button>
+      );
+    } else if (repo.mode === 'slave' && repo.owner_tenant_id !== -1) {
+      mode = (
+        <Button disabled icon="arrow-down" onClick={() => this.handleDegrade(repo)} >切换为单库模式</Button>
+      );
+    }
     return (
       <Layout className="ant-layout-wrapper">
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
@@ -830,6 +820,11 @@ export default class TradeItemList extends Component {
               <Panel header={'授权使用单位'} key="user">
                 <RepoUsersPane repo={repo} />
               </Panel>
+              { repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                <Panel header={'模式切换'} key="mode">
+                  {mode}
+                </Panel>
+              }
               {
                 repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                 (<Panel header={'更多'} key="more">
