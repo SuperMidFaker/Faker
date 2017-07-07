@@ -13,6 +13,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'RELEASE_WAVE', 'RELEASE_WAVE_SUCCEED', 'RELEASE_WAVE_FAIL',
   'LOAD_WAVE_ORDERS', 'LOAD_WAVE_ORDERS_SUCCEED', 'LOAD_WAVE_ORDERS_FAIL',
   'LOAD_WAVE_DETAILS', 'LOAD_WAVE_DETAILS_SUCCEED', 'LOAD_WAVE_DETAILS_FAIL',
+  'CANCEL_WAVE', 'CANCEL_WAVE_SUCCEED', 'CANCEL_WAVE_FAIL',
+  'LOAD_WAVE_HEAD', 'LOAD_WAVE_HEAD_SUCCEED', 'LOAD_WAVE_HEAD_FAIL',
+  'REMOVE_WAVE_ORDERS', 'REMOVE_WAVE_ORDERS_SUCCEED', 'REMOVE_WAVE_ORDERS_FAIL',
 ]);
 
 const initialState = {
@@ -170,6 +173,21 @@ export function loadWaves({ whseCode, pageSize, current, filters }) {
   };
 }
 
+export function loadWaveHead(waveNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WAVE_HEAD,
+        actionTypes.LOAD_WAVE_HEAD_SUCCEED,
+        actionTypes.LOAD_WAVE_HEAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/wave/head',
+      method: 'get',
+      params: { waveNo },
+    },
+  };
+}
+
 export function createWave(soNos, tenantId, tenantName, whseCode, loginId) {
   return {
     [CLIENT_API]: {
@@ -226,6 +244,36 @@ export function loadWaveDetails(waveNo) {
       endpoint: 'v1/cwm/wave/details',
       method: 'get',
       params: { waveNo },
+    },
+  };
+}
+
+export function cancelWave(waveNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_WAVE,
+        actionTypes.CANCEL_WAVE_SUCCEED,
+        actionTypes.CANCEL_WAVE_FAIL,
+      ],
+      endpoint: 'v1/cwm/cancel/wave',
+      method: 'post',
+      data: { waveNo },
+    },
+  };
+}
+
+export function removeWaveOrders(soNos, waveNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_WAVE_ORDERS,
+        actionTypes.REMOVE_WAVE_ORDERS_SUCCEED,
+        actionTypes.REMOVE_WAVE_ORDERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/remove/wave/orders',
+      method: 'post',
+      data: { soNos, waveNo },
     },
   };
 }

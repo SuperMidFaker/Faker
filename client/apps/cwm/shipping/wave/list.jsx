@@ -14,7 +14,7 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadWaves, showDock, releaseWave } from 'common/reducers/cwmShippingOrder';
+import { loadWaves, showDock, releaseWave, cancelWave } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -41,7 +41,7 @@ function fetchData({ state, dispatch }) {
     filters: state.cwmShippingOrder.waveFilters,
     wave: state.cwmShippingOrder.wave,
   }),
-  { loadWaves, switchDefaultWhse, showDock, releaseWave }
+  { loadWaves, switchDefaultWhse, showDock, releaseWave, cancelWave }
 )
 @connectNav({
   depth: 2,
@@ -87,7 +87,7 @@ export default class WaveList extends React.Component {
     dataIndex: 'wave_desc',
   }, {
     title: '订单数量',
-    dataIndex: 'order_count',
+    dataIndex: 'total_qty',
   }, {
     title: '收货人',
     dataIndex: 'receiver',
@@ -107,7 +107,7 @@ export default class WaveList extends React.Component {
     width: 120,
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseWave} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditWave} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseWave} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditWave} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} onHit={this.cancelWave} /></span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} /></span>);
@@ -123,6 +123,13 @@ export default class WaveList extends React.Component {
   handleReleaseWave = (record) => {
     const { loginId } = this.props;
     this.props.releaseWave(record.wave_no, loginId).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+      }
+    });
+  }
+  cancelWave = (row) => {
+    this.props.cancelWave(row.wave_no).then((result) => {
       if (!result.error) {
         this.handleReload();
       }

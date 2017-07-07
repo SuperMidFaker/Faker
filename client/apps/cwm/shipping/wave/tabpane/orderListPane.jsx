@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Button } from 'antd';
-import { loadWaveOrders } from 'common/reducers/cwmShippingOrder';
+import { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails } from 'common/reducers/cwmShippingOrder';
+import { CWM_SO_TYPES } from 'common/constants';
 
 @injectIntl
 @connect(
@@ -11,7 +12,7 @@ import { loadWaveOrders } from 'common/reducers/cwmShippingOrder';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
   }),
-  { loadWaveOrders }
+  { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -22,6 +23,15 @@ export default class OrderDetailsPane extends React.Component {
     orders: [],
   }
   componentWillMount() {
+    this.props.loadWaveOrders(this.props.waveNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          orders: result.data,
+        });
+      }
+    });
+  }
+  handleReload = () => {
     this.props.loadWaveOrders(this.props.waveNo).then((result) => {
       if (!result.error) {
         this.setState({
@@ -41,6 +51,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '订单类型',
     dataIndex: 'so_type',
+    render: o => CWM_SO_TYPES[o - 1].text,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -67,82 +78,15 @@ export default class OrderDetailsPane extends React.Component {
     width: 120,
     render: o => moment(o).format('YYYY.MM.DD'),
   }]
-  mockData = [{
-    id: 1,
-    seq_no: '1',
-    product_no: 'N04601170548',
-    order_qty: 15,
-    desc_cn: '微纤维止血胶原粉',
-    sku: 'N04601170548',
-    allocate_rule: 'FIFO',
-    unit: '件',
-    sku_pack: '单件',
-    expect_pack_qty: 15,
-    expect_qty: 15,
-    received_pack_qty: 15,
-    received_qty: 15,
-    status: -1,
-  }, {
-    id: 4,
-    seq_no: '2',
-    product_no: 'N04601170547',
-    order_qty: 1000,
-    desc_cn: 'PTA球囊扩张导管',
-    sku: 'N04601170547',
-    allocate_rule: 'FIFO',
-    unit: '件',
-    location: 'P1CA0101',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-    status: 0,
-  }, {
-    id: 5,
-    seq_no: '3',
-    product_no: 'SBMG-00859',
-    order_qty: 1000,
-    desc_cn: '临时起搏电极导管',
-    sku: 'RS2A03A0AL0W00',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    location: 'P1CA0101',
-    expect_pack_qty: 10,
-    expect_qty: 1000,
-    received_pack_qty: 0,
-    received_qty: 0,
-    status: 1,
-  }, {
-    id: 6,
-    seq_no: '4',
-    product_no: 'SBME-00787',
-    order_qty: 12,
-    desc_cn: '肾造瘘球囊扩张导管',
-    sku: '109R0612D401',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    expect_pack_qty: 2,
-    location: 'P1CA0101',
-    expect_qty: 12,
-    received_pack_qty: 1,
-    received_qty: 6,
-    status: 1,
-  }, {
-    id: 7,
-    seq_no: '5',
-    product_no: 'SBMJ-00199',
-    order_qty: 1,
-    desc_cn: '输尿管镜球囊扩张导管',
-    sku: '9GV0912P1G03',
-    allocate_rule: 'FIFO',
-    unit: '个',
-    expect_pack_qty: 1,
-    location: 'P1CA0101',
-    expect_qty: 1,
-    received_pack_qty: 0,
-    received_qty: 0,
-    status: 1,
-  }];
+  handleRemoveOrders = () => {
+    this.props.removeWaveOrders(this.state.selectedRowKeys, this.props.waveNo).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+        this.props.loadWaveHead(this.props.waveNo);
+        this.props.loadWaveDetails(this.props.waveNo);
+      }
+    });
+  }
   render() {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -155,7 +99,7 @@ export default class OrderDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleWithdrawTask} icon="close">
+            <Button size="large" onClick={this.handleRemoveOrders} icon="close">
               移除订单
             </Button>
           </div>
