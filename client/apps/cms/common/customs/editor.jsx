@@ -244,16 +244,16 @@ export default class CustomsDeclEditor extends React.Component {
                   <TabPane tab="报关单表体" key="body">
                     <CustomsDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} />
                   </TabPane>
-                  <TabPane tab="集装箱" key="containers">
+                  <TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
                     <ContainersPane />
                   </TabPane>
-                  <TabPane tab="随附单据" key="attachedDocs">
+                  <TabPane tab="随附单据" key="attachedDocs" head={head}>
                     <AttachedDocsPane />
                   </TabPane>
-                  <TabPane tab="随附单证" key="attachedCerts">
+                  <TabPane tab="随附单证" key="attachedCerts" head={head}>
                     <AttachedCertsPane />
                   </TabPane>
-                  <TabPane tab="清单明细" key="manifestDetails">
+                  <TabPane tab="清单明细" key="manifestDetails" head={head}>
                     <ManifestDetailsPane />
                   </TabPane>
                   {filterProducts.length > 0 && <TabPane tab="法检物料" key="ciqDetails">

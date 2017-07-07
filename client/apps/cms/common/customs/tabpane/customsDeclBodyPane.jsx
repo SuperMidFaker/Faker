@@ -158,8 +158,8 @@ export default class CustomsDeclBodyPanel extends React.Component {
       pagination: {
         current: 1,
         total: 0,
-        pageSize: 10,
-        showQuickJumper: true,
+        pageSize: 8,
+        showQuickJumper: false,
         onChange: this.handlePageChange,
       },
     };
@@ -320,7 +320,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
         />),
     }, {
       title: this.msg('currency'),
-      width: 80,
+      width: 100,
       className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}

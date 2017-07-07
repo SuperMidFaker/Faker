@@ -9,7 +9,7 @@ import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 
-export default class ManifestDetailsPanel extends React.Component {
+export default class ManifestDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     filterProducts: PropTypes.array.isRequired,

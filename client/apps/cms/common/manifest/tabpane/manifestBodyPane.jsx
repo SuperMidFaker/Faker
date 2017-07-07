@@ -225,7 +225,7 @@ export default class ManifestBodyPanel extends React.Component {
         current: 1,
         total: 0,
         pageSize: 10,
-        showQuickJumper: true,
+        showQuickJumper: false,
         onChange: this.handlePageChange,
       },
       selectedRowKeys: [],

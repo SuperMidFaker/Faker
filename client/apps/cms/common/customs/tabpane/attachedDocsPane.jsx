@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
 import { loadDocuMarks, saveDocuMark, delDocumark } from 'common/reducers/cmsManifest';
-import { CMS_DECL_DOCU } from 'common/constants';
+import { CMS_DECL_DOCU, CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -72,6 +72,7 @@ export default class AttachedDocsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    head: PropTypes.object,
     docuMarks: PropTypes.array,
   }
   state = {
@@ -131,6 +132,7 @@ export default class AttachedDocsPane extends React.Component {
   }
 
   render() {
+    const { head } = this.props;
     const columns = [{
       title: this.msg('docuSpec'),
       dataIndex: 'docu_spec',
@@ -148,16 +150,17 @@ export default class AttachedDocsPane extends React.Component {
     }, {
       width: 60,
       render: (o, record, index) => {
-        if (record.id) {
-          return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
+        if (head.status > CMS_DECL_STATUS.reviewed.value) {
+          return <Button type="primary" shape="circle" onClick={() => this.handleUpload(record, index)} icon="upload" />;
         } else {
-          return <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />;
+          return record.id ? <Button shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" /> :
+          <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />;
         }
       },
     }];
     return (
       <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
+        footer={() => head.status > CMS_DECL_STATUS.reviewed.value && <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
       />
     );
   }

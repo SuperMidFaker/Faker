@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Table, Button, Popconfirm, message } from 'antd';
+import { Icon, Table, Button, Popconfirm, Tag, message } from 'antd';
 import NavLink from 'client/components/nav-link';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
@@ -23,7 +23,7 @@ const formatMsg = format(messages);
   { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, loadCustomers }
 )
 
-export default class Templates extends React.Component {
+export default class ManifestTemplateList extends React.Component {
   static PropTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -38,7 +38,8 @@ export default class Templates extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleEdit = (record) => {
-    this.context.router.push(`/clearance/${this.props.ietype}/manifest/billtemplates/edit/${record.id}`);
+    const ietype = record.i_e_type === 0 ? 'import' : 'export';
+    this.context.router.push(`/clearance/${ietype}/manifest/billtemplates/edit/${record.id}`);
   }
   handleDelete = (record) => {
     this.props.deleteTemplate(record.id).then((result) => {
@@ -64,6 +65,13 @@ export default class Templates extends React.Component {
         title: '模板名称',
         dataIndex: 'template_name',
         key: 'template_name',
+        width: 120,
+      }, {
+        title: '类型',
+        dataIndex: 'i_e_type',
+        key: 'i_e_type',
+        width: 40,
+        render: o => <Tag>{o === 0 ? '进口' : '出口'}</Tag>,
       }, {
         title: '关联客户',
         dataIndex: 'customer_name',
@@ -74,6 +82,7 @@ export default class Templates extends React.Component {
         key: 'status',
         width: 60,
         render: (_, record) => {
+          const ietype = record.i_e_type === 0 ? 'import' : 'export';
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
               <span>
@@ -84,7 +93,7 @@ export default class Templates extends React.Component {
                 </Popconfirm>
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
-            return <NavLink to={`/clearance/${this.props.ietype}/manifest/billtemplates/view/${record.id}`}>{this.msg('view')}</NavLink>;
+            return <NavLink to={`/clearance/${ietype}/manifest/billtemplates/view/${record.id}`}>{this.msg('view')}</NavLink>;
           }
           return '';
         },
@@ -93,7 +102,7 @@ export default class Templates extends React.Component {
     return (
       <div>
         <div className="toolbar">
-          <Button type="primary" size="large" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新增模板</Button>
+          <Button type="primary" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新增</Button>
         </div>
         <div className="panel-body table-panel">
           <Table size="middle" columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
