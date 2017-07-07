@@ -6,6 +6,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import QuantityInput from '../../../common/quantityInput';
 import { openAllocatingModal } from 'common/reducers/cwmOutbound';
+import { loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 
 
 @injectIntl
@@ -14,7 +15,7 @@ import { openAllocatingModal } from 'common/reducers/cwmOutbound';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
   }),
-  { openAllocatingModal }
+  { openAllocatingModal, loadWaveDetails }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -23,7 +24,9 @@ export default class OrderDetailsPane extends React.Component {
   state = {
     selectedRowKeys: [],
   }
+  componentWillMount() {
 
+  }
   columns = [{
     title: '行号',
     dataIndex: 'seq_no',
