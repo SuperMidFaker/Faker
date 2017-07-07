@@ -153,6 +153,7 @@ export default class PickingDetailsPane extends React.Component {
             </span>
           );
         case 4:   // 已拣货
+        case 5:   // 已复核装箱
           return (<span>
             <RowUpdater onHit={() => this.handleConfirmShipped(record.id, record.picked_qty, record.sku_pack_qty)} label="发货确认" row={record} />
             <span className="ant-divider" />
