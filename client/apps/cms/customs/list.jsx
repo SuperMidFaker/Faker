@@ -26,7 +26,7 @@ import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from '../common/customs/modals/batchSendModal';
-import { Logixon } from 'client/components/FontIcon';
+import { Logixon, Fontello } from 'client/components/FontIcon';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -92,7 +92,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 200,
+    width: 180,
     fixed: 'left',
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
@@ -105,13 +105,11 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.reviewed.value:
           return (
             <span>
-              <Tag>预</Tag>
               {preEntryLink}
             </span>);
         case CMS_DECL_STATUS.sent.value:
           return (
             <span>
-              <Tag>预</Tag>
               {preEntryLink}
               <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
@@ -131,10 +129,58 @@ export default class CustomsList extends Component {
       }
     },
   }, {
+    title: '类型',
+    dataIndex: 'sheet_type',
+    width: 100,
+    render: (o, record) => {
+      if (record.i_e_type === 0) {
+        if (o === 'CDF') {
+          return <Tag color="blue">进口报关单</Tag>;
+        } else if (o === 'FTZ') {
+          return <Tag color="blue">进境备案清单</Tag>;
+        }
+      } else if (record.i_e_type === 1) {
+        if (o === 'CDF') {
+          return <Tag color="cyan">出口报关单</Tag>;
+        } else if (o === 'FTZ') {
+          return <Tag color="cyan">出境备案清单</Tag>;
+        }
+      } else {
+        return <span />;
+      }
+    },
+  }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
+  }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+    render: (ost) => {
+      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
+      if (declkey) {
+        const decl = CMS_DECL_STATUS[declkey];
+        return <Badge status={decl.badge} text={decl.text} />;
+      } else {
+        return null;
+      }
+    },
+  }, {
+    title: '海关查验',
+    dataIndex: 'customs_inspect',
+    className: 'cell-align-center',
+    width: 80,
+    render: (o, record) => {
+      if (record.customs_inspect === 1) {
+        return <Tooltip title="报关单查验"><span><Fontello type="circle" color="red" /></span></Tooltip>;
+      } else if (record.customs_inspect === 2) {
+        return <Tooltip title="查验放行"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+      } else {
+        return <Tooltip title="未查验"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+      }
+    },
   }, {
     title: '收发货人',
     dataIndex: 'trade_name',
@@ -146,9 +192,8 @@ export default class CustomsList extends Component {
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: '进出口岸',
+    title: '进/出口口岸',
     dataIndex: 'i_e_port',
-    width: 80,
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';
@@ -158,38 +203,13 @@ export default class CustomsList extends Component {
       return <TrimSpan text={port} maxLen={14} />;
     },
   }, {
-    title: '类型',
-    dataIndex: 'sheet_type',
-    width: 100,
-    render: (o) => {
-      if (o === 'CDF') {
-        return <Tag color="blue-inverse">报关单</Tag>;
-      } else if (o === 'FTZ') {
-        return <Tag color="blue">备案清单</Tag>;
-      } else {
-        return <span />;
-      }
-    },
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    render: (ost) => {
-      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
-      if (declkey) {
-        const decl = CMS_DECL_STATUS[declkey];
-        return <Badge status={decl.badge} text={decl.text} />;
-      } else {
-        return null;
-      }
-    },
-  }, {
-    title: '进出口日期',
+    title: '进/出口日期',
     dataIndex: 'i_e_date',
     width: 100,
     render: (o, record) => (record.id ?
       record.i_e_date && moment(record.i_e_date).format('YYYY.MM.DD') : '-'),
   }, {
-    title: '创建时间',
+    title: '制单时间',
     dataIndex: 'created_date',
     width: 100,
     render: createdt => (createdt ? moment(createdt).format('MM.DD HH:mm') : '-'),
@@ -197,16 +217,21 @@ export default class CustomsList extends Component {
     title: '发送时间',
     dataIndex: 'epsend_date',
     width: 100,
-    render: senddate => (senddate ? moment(senddate).format('MM.DD HH:mm') : '-'),
-  }, {
-    title: '发送人',
-    dataIndex: 'epsend_login_name',
-    width: 100,
+    render: sendDate => (sendDate ? moment(sendDate).format('MM.DD HH:mm') : '-'),
   }, {
     title: '回执时间',
     dataIndex: 'backfill_date',
     width: 100,
     render: backdt => (backdt ? moment(backdt).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '放行时间',
+    dataIndex: 'clear_date',
+    width: 100,
+    render: clearDate => (clearDate ? moment(clearDate).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '报关人员',
+    dataIndex: 'epsend_login_name',
+    width: 100,
   }, {
     title: this.msg('opColumn'),
     width: 140,
@@ -511,7 +536,7 @@ export default class CustomsList extends Component {
             </div>
             <div className="panel-body table-panel expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
-                loading={customslist.loading} scroll={{ x: 1750 }}
+                loading={customslist.loading} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
               />
             </div>
             <FillCustomsNoModal reload={this.handleTableLoad} />

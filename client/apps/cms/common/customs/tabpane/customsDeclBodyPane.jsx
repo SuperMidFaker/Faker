@@ -258,11 +258,11 @@ export default class CustomsDeclBodyPanel extends React.Component {
       dataIndex: 'g_no',
       fixed: 'left',
       width: 45,
-    }, {
+/*    }, {
       title: this.msg('copGNo'),
       fixed: 'left',
       width: 150,
-      dataIndex: 'cop_g_no',
+      dataIndex: 'cop_g_no',*/
     }, {
       title: this.msg('codeT'),
       width: 110,
@@ -409,12 +409,12 @@ export default class CustomsDeclBodyPanel extends React.Component {
     */
     }, {
       title: this.msg('customs'),
-      width: 100,
+      width: 150,
       dataIndex: 'customs',
       render: col => buildTipItems(col),
     }, {
       title: this.msg('inspection'),
-      width: 100,
+      width: 150,
       dataIndex: 'inspection',
       render: col => buildTipItems(col, true),
     }, {
@@ -423,7 +423,8 @@ export default class CustomsDeclBodyPanel extends React.Component {
         (<ColumnInput field="element" inEdit={index === editIndex} record={record}
           edit={editBody}
         />),
-    }, {
+    }];
+    /* , {
       title: this.msg('versionNo'),
       width: 80,
       render: (o, record, index) =>
@@ -438,7 +439,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
         (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           edit={editBody} decimal={3}
         />),
-    }];
+    }];*/
     return columns;
   }
 
