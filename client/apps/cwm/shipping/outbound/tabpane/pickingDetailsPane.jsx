@@ -111,6 +111,14 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '复核装箱',
     width: 100,
+    render: (o, record) => {
+      if (o) {
+        return (<div>
+          <div><Icon type="user" />{record.chkpacked_by}</div>
+          <div><Icon type="clock-circle-o" />{moment(record.chkpacked_date).format('YYYY.MM.DD')}</div>
+        </div>);
+      }
+    },
   }, {
     title: '发货',
     width: 100,
