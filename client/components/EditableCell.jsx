@@ -64,7 +64,7 @@ export default class EditableCell extends React.Component {
     this.setState({ value });
   }
   handleDateChange = (date) => {
-    this.setState({ value: date ? date.format('YYYY-MM-DD') : '' });
+    this.setState({ value: date && date.valueOf() });
   }
   handleRegionValueChange = (region) => {
     const [code, province, city, district, street] = region; // eslint-disable-line no-unused-vars
@@ -101,7 +101,7 @@ export default class EditableCell extends React.Component {
       case 'date':
         return (<div className="editable-cell-outer">
           <div className="editable-cell-inner">
-            <DatePicker style={{ width: '100%' }} value={value ? moment(value) : ''} onChange={this.handleDateChange} />
+            <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" value={value && moment(value)} onChange={this.handleDateChange} />
           </div>
           <span className="editable-cell-actions">
             <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />

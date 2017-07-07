@@ -142,8 +142,21 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'templates'),
       }],
     });
+    if (this.props.whse.bonded) {
+      linkMenus.splice(4, 0, {
+        single: false,
+        key: 'cwm-ftz',
+        icon: 'logixon icon-customs',
+        text: formatMsg(intl, 'supervision'),
+        sublinks: [{
+          key: 'cwm-ftz-0',
+          path: '/cwm/supervision/shftz',
+          text: formatMsg(intl, 'supervisionSHFTZ'),
+        }],
+      });
+    }
     this.setState({ linkMenus });
-    if (typeof window !== 'undefined') {
+    if (!this.props.whse.code && typeof window !== 'undefined') {
       let defaultWhse = this.props.whses.length > 0 ? this.props.whses[0].code : null;
       if (window.localStorage) {
         const contextWhse = window.localStorage.getItem('whse-code');
@@ -165,25 +178,21 @@ export default class ModuleCWM extends React.Component {
         }
       }
       nextProps.loadWhse(nextProps.whse.code);
-      if (nextProps.whse.bonded !== this.props.whse.bonded) {
-        let linkMenus = [...this.state.linkMenus];
-        if (nextProps.whse.bonded) {
-          linkMenus.splice(4, 0, {
-            single: false,
-            key: 'cwm-ftz',
-            icon: 'logixon icon-customs',
-            text: formatMsg(nextProps.intl, 'supervision'),
-            sublinks: [{
-              key: 'cwm-ftz-0',
-              path: '/cwm/supervision/shftz',
-              text: formatMsg(nextProps.intl, 'supervisionSHFTZ'),
-            }],
-          });
-        } else {
-          linkMenus = linkMenus.filter(lm => lm.key !== 'cwm-ftz');
-        }
-        this.setState({ linkMenus });
+      const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'cwm-ftz');
+      if (nextProps.whse.bonded) {
+        linkMenus.splice(4, 0, {
+          single: false,
+          key: 'cwm-ftz',
+          icon: 'logixon icon-customs',
+          text: formatMsg(nextProps.intl, 'supervision'),
+          sublinks: [{
+            key: 'cwm-ftz-0',
+            path: '/cwm/supervision/shftz',
+            text: formatMsg(nextProps.intl, 'supervisionSHFTZ'),
+          }],
+        });
       }
+      this.setState({ linkMenus });
     }
   }
   render() {

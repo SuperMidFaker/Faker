@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
-import { loadEntryDetails, loadParams } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -47,7 +47,7 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadEntryDetails }
+  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos }
 )
 @connectNav({
   depth: 3,
@@ -63,30 +63,89 @@ export default class SHFTZEntryDetail extends Component {
   state = {
     sentable: false,
     queryable: false,
+    whyunsent: '',
     tabKey: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
-      const queryable = nextProps.entryAsn.status < CWM_SHFTZ_APIREG_STATUS.completed &&
+      const queryable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      const sentable = nextProps.entryAsn.status < CWM_SHFTZ_APIREG_STATUS.completed &&
-        nextProps.entryRegs.filter(er => !er.cus_decl_no).length === 0;
-      this.setState({ tabKey: nextProps.entryRegs[0].pre_entry_seq_no, queryable, sentable });
+      let sentable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+      let unsentReason = '';
+      if (sentable) {
+        const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
+        if (nonCusDeclRegs.length === 0) {
+          sentable = true;
+        } else {
+          unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}未申报`;
+          sentable = false;
+        }
+      }
+      const newState = { queryable, sentable, whyunsent: unsentReason };
+      if (this.state.tabKey === '') {
+        newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
+      }
+      this.setState(newState);
     }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
-    notification.success({
-      message: '操作成功',
-      description: `${this.props.params.asnNo} 已发送至 上海自贸区海关监管系统 一二线先报关后入库`,
+    let nonCargono = false;
+    for (let i = 0; i < this.props.entryRegs.length; i++) {
+      nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
+      if (nonCargono) {
+        break;
+      }
+    }
+    if (nonCargono) {
+      notification.warn({
+        message: '货号未备案',
+        description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
+        btn: (<div>
+          <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
+          <span className="ant-divider" />
+          <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
+        </div>),
+        key: 'confirm-cargono',
+        duration: 0,
+      });
+    } else {
+      this.handleRegSend();
+    }
+  }
+  handleRegSend = () => {
+    const asnNo = this.props.params.asnNo;
+    notification.close('confirm-cargono');
+    this.props.fileEntryRegs(asnNo, this.props.entryAsn.whse_code).then((result) => {
+      if (!result.error) {
+        const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.entryAsn.bonded_intype)[0];
+        notification.success({
+          message: '操作成功',
+          description: `${asnNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
+          placement: 'topLeft',
+        });
+      }
     });
-    this.setState({
-      sent: true,
+  }
+  handleQuery = () => {
+    const asnNo = this.props.params.asnNo;
+    this.props.queryEntryRegInfos(asnNo, this.props.entryAsn.whse_code).then((result) => {
+      if (!result.error) {
+        this.props.loadEntryDetails({ asnNo });
+      }
     });
+  }
+  handleCargoAdd = () => {
+    notification.close('confirm-cargono');
+    this.context.router.push('/cwm/supervision/shftz/cargo');
   }
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
+    width: 150,
+  }, {
+    title: '入库明细ID',
+    dataIndex: 'ftz_ent_detail_id',
     width: 150,
   }, {
     title: '商品货号',
@@ -145,13 +204,13 @@ export default class SHFTZEntryDetail extends Component {
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
   }
-  handleInfoSave = (field, value) => {
-    const change = {};
-    change[field] = value;
+  handleInfoSave = (preRegNo, field, value) => {
+    this.props.updateEntryReg(preRegNo, field, value);
   }
   render() {
     const { entryAsn, entryRegs, whse } = this.props;
-    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.ftz_ent_type)[0];
+    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
+    const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     return (
       <div>
         <Header className="top-bar">
@@ -171,8 +230,9 @@ export default class SHFTZEntryDetail extends Component {
           </Breadcrumb>
           <div className="top-bar-tools">
             {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
-            <Button type="primary" size="large" icon="export" onClick={this.handleSend} disabled={!this.state.sentable}>发送备案</Button>
-            {this.state.sentable && <Button />}
+            {entryEditable &&
+            <Button type="primary" size="large" icon="export" onClick={this.handleSend} disabled={!this.state.sentable}>发送备案</Button>}
+            {!this.state.sentable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>
         <Content className="main-content">
@@ -186,16 +246,16 @@ export default class SHFTZEntryDetail extends Component {
                   <InfoItem label="经营单位" field={entryAsn.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={entryAsn.wh_ent_name} />
+                  <InfoItem label="收货单位" field={entryAsn.wh_ent_tenant_name} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="备案时间" addonBefore={<span><Icon type="calendar" /></span>}
-                    field={entryAsn.ftz_ent_date && moment(entryAsn.ftz_ent_date).format('YYYY-MM-DD HH:mm')}
+                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY-MM-DD HH:mm')}
                   />
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={entryAsn.status}>
+                <Steps progressDot current={entryAsn.reg_status}>
                   <Step description="待备案" />
                   <Step description="已发送" />
                   <Step description="备案完成" />
@@ -208,26 +268,33 @@ export default class SHFTZEntryDetail extends Component {
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
                       <Row>
-                        <Col sm={24} lg={8}>
-                          <InfoItem size="small" addonBefore="入库备案号" field={reg.ftz_ent_no} editable onEdit={value => this.handleInfoSave('ftz_ent_no', value)} />
+                        <Col sm={24} lg={6}>
+                          <InfoItem size="small" addonBefore="入库备案号" field={reg.ftz_ent_no} editable={entryEditable}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                          />
+                        </Col>
+                        <Col sm={24} lg={6}>
+                          <InfoItem size="small" addonBefore="报关单号" field={reg.cus_decl_no} editable={entryEditable}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
+                          />
                         </Col>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
-                            type="date" field={reg.ie_date} editable
-                            onEdit={value => this.handleInfoSave('ie_date', new Date(value))}
+                            type="date" field={reg.ie_date} editable={entryEditable}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
                           />
                         </Col>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                            type="date" field={reg.ftz_ent_date} editable
-                            onEdit={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
+                            type="date" field={reg.ftz_ent_date} editable={entryEditable}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                           />
                         </Col>
                       </Row>
                     </div>
                     <Table columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id" />
-                  </TabPane>
-        ))}
+                  </TabPane>)
+                )}
               </Tabs>
             </Card>
           </Form>

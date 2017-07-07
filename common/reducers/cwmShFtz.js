@@ -10,6 +10,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
   'ENABLE_PORTION', 'ENABLE_PORTION_SUCCEED', 'ENABLE_PORTION_FAIL',
+  'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
+  'FILE_ERS', 'FILE_ERS_SUCCEED', 'FILE_ERS_FAIL',
+  'QUERY_ERI', 'QUERY_ERI_SUCCEED', 'QUERY_ERI_FAIL',
 ]);
 
 const initialState = {
@@ -61,6 +64,21 @@ export default function reducer(state = initialState, action) {
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.PRODUCT_CARGO_LOAD_SUCCEED:
       return { ...state, cargolist: action.result.data.list, cargoRule: action.result.data.rule, loading: false };
+    case actionTypes.UPDATE_ERFIELD_SUCCEED: {
+      const regs = state.entry_regs.map((er) => {
+        if (er.pre_entry_seq_no === action.data.pre_entry_seq_no) {
+          return { ...er, [action.data.field]: action.data.value };
+        } else {
+          return er;
+        }
+      });
+      return { ...state, entry_regs: regs };
+    }
+    case actionTypes.FILE_ERS_SUCCEED:
+      return { ...state,
+        entry_asn: { ...state.entry_asn, reg_status: action.result.data.status },
+        entry_regs: state.entry_regs.map(er => ({ ...er, ftz_ent_no: action.result.data.preSeqEnts[er.pre_entry_seq_no] })),
+      };
     default:
       return state;
   }
@@ -185,3 +203,47 @@ export function updatePortionEn(whseId) {
   };
 }
 
+export function updateEntryReg(preRegNo, field, value) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_ERFIELD,
+        actionTypes.UPDATE_ERFIELD_SUCCEED,
+        actionTypes.UPDATE_ERFIELD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/field/value',
+      method: 'post',
+      data: { pre_entry_seq_no: preRegNo, field, value },
+    },
+  };
+}
+
+export function fileEntryRegs(asnNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILE_ERS,
+        actionTypes.FILE_ERS_SUCCEED,
+        actionTypes.FILE_ERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/regs/file',
+      method: 'post',
+      data: { asn_no: asnNo, whse_code: whseCode },
+    },
+  };
+}
+
+export function queryEntryRegInfos(asnNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUERY_ERI,
+        actionTypes.QUERY_ERI_SUCCEED,
+        actionTypes.QUERY_ERI_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/regs/query',
+      method: 'post',
+      data: { asn_no: asnNo, whse: whseCode },
+    },
+  };
+}
