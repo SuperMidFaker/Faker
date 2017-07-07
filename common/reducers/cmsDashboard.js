@@ -20,6 +20,9 @@ const initialState = {
     released: 0,
     inspected: 0,
     declcount: 0,
+    totVals: { total_cny: 0, total_usd: 0 },
+    totImVals: { total_cny: 0, total_usd: 0 },
+    totExVals: { total_cny: 0, total_usd: 0 },
   },
   itemsStats: {
     repoCount: 0,

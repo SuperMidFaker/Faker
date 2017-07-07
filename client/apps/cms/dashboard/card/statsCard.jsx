@@ -44,11 +44,34 @@ export default class StatsCard extends Component {
     intl: intlShape.isRequired,
     statistics: PropTypes.object.isRequired,
   }
+  state = {
+    totalValue: 0,
+    sumImportValue: 0,
+    sumExportValue: 0,
+    currency: 'usd',
+  }
   componentDidMount() {
     if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
       let fv = JSON.parse(window.localStorage.cmsDelegationListFilters);
       fv = { ...fv, acptDate: [], ietype: 'all', status: 'all' };
       window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.statistics !== this.props.statistics) {
+      if (this.state.currency === 'usd') {
+        this.setState({
+          totalValue: nextProps.statistics.totVals.total_usd,
+          sumImportValue: nextProps.statistics.totImVals.total_usd,
+          sumExportValue: nextProps.statistics.totExVals.total_usd,
+        });
+      } else if (this.state.currency === 'cny') {
+        this.setState({
+          totalValue: nextProps.statistics.totVals.total_cny,
+          sumImportValue: nextProps.statistics.totImVals.total_cny,
+          sumExportValue: nextProps.statistics.totExVals.total_cny,
+        });
+      }
     }
   }
   onDateChange = (value, dateString) => {
@@ -92,9 +115,22 @@ export default class StatsCard extends Component {
       window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
     }
   }
+  handleCurrencyChange = (ev) => {
+    const { totVals, totImVals, totExVals } = this.props.statistics;
+    if (ev.target.value === '502') {
+      this.setState({ currency: 'usd', totalValue: totVals.total_usd, sumImportValue: totImVals.total_usd, sumExportValue: totExVals.total_usd });
+    } else if (ev.target.value === '142') {
+      this.setState({ currency: 'cny', totalValue: totVals.total_cny, sumImportValue: totImVals.total_cny, sumExportValue: totExVals.total_cny });
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected, declcount } = this.props.statistics;
+    const { totalValue, sumImportValue, sumExportValue, currency } = this.state;
+    let sym = '$';
+    if (currency === 'cny') {
+      sym = '￥';
+    }
     const clients = [{
       name: '全部客户',
       partner_id: -1,
@@ -132,7 +168,7 @@ export default class StatsCard extends Component {
                   <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('total')} >{total}</Link>
                 </div>
                 <div className="data-extra">
-                  ${1000.00}
+                  {sym}{totalValue}
                   <div>{this.msg('totalValue')}</div>
                 </div>
               </div>
@@ -147,7 +183,7 @@ export default class StatsCard extends Component {
                   <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumImport')} >{sumImport}</Link>
                 </div>
                 <div className="data-extra">
-                  ${800.00}
+                  {sym}{sumImportValue}
                   <div>{this.msg('sumImportValue')}</div>
                 </div>
               </div>
@@ -161,7 +197,7 @@ export default class StatsCard extends Component {
                   <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumExport')} >{sumExport}</Link>
                 </div>
                 <div className="data-extra">
-                  ${200.00}
+                  {sym}{sumExportValue}
                   <div>{this.msg('sumExportValue')}</div>
                 </div>
               </div>
