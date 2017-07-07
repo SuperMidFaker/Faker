@@ -29,7 +29,7 @@ export default class CustomsDeclSheetCard extends React.Component {
     const sheetType = customsDecl.sheet_type === 'CDF' ? <Tag color="blue">报关单</Tag> : <Tag color="green">备案清单</Tag>;
     const declNo = (customsDecl.entry_id) ?
       <span>海关编号# {customsDecl.entry_id} {sheetType}</span> :
-      <span className="mdc-text-grey">预报关编号# {customsDecl.pre_entry_seq_no} {sheetType}</span>;
+      <span className="mdc-text-grey">内部编号# {customsDecl.pre_entry_seq_no} {sheetType}</span>;
     let inspectFlag = <Tag>否</Tag>;
     if (customsDecl.customs_inspect === 1) {
       inspectFlag = <Tag color="#F04134">是</Tag>;

@@ -47,7 +47,7 @@ const initialState = {
   trades: [],
   sendDeclModal: {
     visible: false,
-    ietype: -1,
+    ietype: '',
     preEntrySeqNo: '',
     delgNo: '',
     agentCustCo: '',

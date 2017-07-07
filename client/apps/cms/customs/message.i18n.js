@@ -15,7 +15,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.customs.decl.search.placeholder',
-    defaultMessage: '海关编号/预报关编号/委托编号',
+    defaultMessage: '海关编号/内部编号/委托编号',
   },
   importOperation: {
     id: 'cms.customs.decl.import.operation',
@@ -55,7 +55,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.customs.decl.decl.preentry.no',
-    defaultMessage: '预报关编号',
+    defaultMessage: '内部编号',
   },
   clrStatus: {
     id: 'cms.customs.decl.decl.status',

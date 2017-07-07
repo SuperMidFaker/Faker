@@ -65,7 +65,7 @@ function ColumnSelect(props) {
   } else {
     const foundOpts = options.filter(opt => opt.value === record[field]);
     const label = foundOpts.length === 1 ? `${foundOpts[0].value}|${foundOpts[0].text}` : '';
-    return <span>{label}</span>;
+    return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
   }
 }
 
@@ -262,6 +262,7 @@ export default class ManifestBodyPanel extends React.Component {
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
       fixed: 'left',
+      className: 'cell-align-center',
       width: 45,
     }, {
       title: this.msg('copGNo'),
@@ -306,7 +307,7 @@ export default class ManifestBodyPanel extends React.Component {
         />),
     }, {
       title: this.msg('gModel'),
-      width: 300,
+      width: 400,
       render: (o, record, index) =>
         (<ColumnInput type="textarea" autosize field="g_model" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -322,7 +323,7 @@ export default class ManifestBodyPanel extends React.Component {
     }, {
       title: this.msg('unit'),
       width: 80,
-      className: 'cell-align-right',
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
@@ -346,6 +347,7 @@ export default class ManifestBodyPanel extends React.Component {
     }, {
       title: this.msg('currency'),
       width: 100,
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={currencies} edit={editBody}
@@ -377,6 +379,7 @@ export default class ManifestBodyPanel extends React.Component {
     }, {
       title: this.msg('unit1'),
       width: 80,
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
@@ -392,13 +395,14 @@ export default class ManifestBodyPanel extends React.Component {
     }, {
       title: this.msg('unit2'),
       width: 80,
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
         />),
     }, {
       title: this.msg('exemptionWay'),
-      width: 80,
+      width: 100,
       render: (o, record, index) =>
         (<ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={exemptions} edit={editBody}
@@ -433,7 +437,6 @@ export default class ManifestBodyPanel extends React.Component {
         />),
     }, {
       title: this.msg('element'),
-      width: 380,
       render: (o, record, index) =>
         (<ColumnInput field="element" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -454,10 +457,8 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody} decimal={3}
         />),
     }, {
-      title: this.msg('opColumn'),
-      width: 80,
+      width: 40,
       fixed: 'right',
-      className: 'editable-row-operations',
       render: (o, record, index) => {
         if (readonly) {
           return <span />;
@@ -872,8 +873,8 @@ export default class ManifestBodyPanel extends React.Component {
           </div>
         </div>
         <div className="panel-body table-panel">
-          <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
-            scroll={{ x: 3000, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
+          <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
+            scroll={{ x: 3200, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
           <RelateImportRuleModal />

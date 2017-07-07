@@ -131,7 +131,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.delegation.delg.preEntry.no',
-    defaultMessage: '预报关编号',
+    defaultMessage: '内部编号',
   },
   delgPieces: {
     id: 'cms.delegation.delg.pieces',

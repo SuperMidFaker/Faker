@@ -92,7 +92,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 180,
+    width: 160,
     fixed: 'left',
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
@@ -119,11 +119,7 @@ export default class CustomsList extends Component {
             </span>);
         case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
-          return (
-            <span>
-              <DeclStatusPopover entryId={entryNO}><Tag color={record.status === CMS_DECL_STATUS.released.value ? 'green' : 'blue'}><Logixon type="customs-o" /></Tag></DeclStatusPopover>
-              <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>
-            </span>);
+          return (<NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>);
         default:
           return <span />;
       }
@@ -158,10 +154,16 @@ export default class CustomsList extends Component {
     title: '状态',
     dataIndex: 'status',
     width: 100,
-    render: (ost) => {
+    render: (ost, record) => {
       const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
       if (declkey) {
         const decl = CMS_DECL_STATUS[declkey];
+        if (record.status > CMS_DECL_STATUS.sent.value) {
+          return (<span><Badge status={decl.badge} text={decl.text} />
+            <DeclStatusPopover entryId={record.entry_id}><a role="presentation"><Logixon type="customs-o" /></a></DeclStatusPopover>
+          </span>);
+        }
+
         return <Badge status={decl.badge} text={decl.text} />;
       } else {
         return null;
@@ -173,7 +175,7 @@ export default class CustomsList extends Component {
     className: 'cell-align-center',
     width: 80,
     render: (o, record) => {
-      if (record.status > CMS_DECL_STATUS.reviewed.value) {
+      if (record.status > CMS_DECL_STATUS.sent.value) {
         if (record.customs_inspect === 1) {
           return <Tooltip title="报关单查验"><span><Fontello type="circle" color="red" /></span></Tooltip>;
         } else if (record.customs_inspect === 2) {

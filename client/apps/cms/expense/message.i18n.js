@@ -160,7 +160,7 @@ const messages = defineMessages({
   },
   preEntryNo: {
     id: 'cms.expense.delg.preEntry.no',
-    defaultMessage: '预报关编号',
+    defaultMessage: '内部编号',
   },
   advanceFee: {
     id: 'cms.expense.delg.advance.fee',

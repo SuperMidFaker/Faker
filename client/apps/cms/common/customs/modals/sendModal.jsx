@@ -30,7 +30,7 @@ const Option = Select.Option;
 export default class SendModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.oneOf(['import', 'export']),
+    ietype: PropTypes.oneOf(['import', 'export', '']),
     tenantId: PropTypes.number.isRequired,
     subdomain: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
