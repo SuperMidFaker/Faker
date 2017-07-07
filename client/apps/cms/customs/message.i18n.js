@@ -15,7 +15,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.customs.decl.search.placeholder',
-    defaultMessage: '海关编号/预报关编号/委托编号',
+    defaultMessage: '海关编号/内部编号/委托编号',
   },
   importOperation: {
     id: 'cms.customs.decl.import.operation',
@@ -35,7 +35,7 @@ export default defineMessages({
   },
   declNo: {
     id: 'cms.customs.decl.decl.no',
-    defaultMessage: '报关单号',
+    defaultMessage: '报关单号/内部编号',
   },
   entryId: {
     id: 'cms.customs.decl.decl.entryId',
@@ -55,7 +55,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.customs.decl.decl.preentry.no',
-    defaultMessage: '预报关编号',
+    defaultMessage: '内部编号',
   },
   clrStatus: {
     id: 'cms.customs.decl.decl.status',
@@ -91,7 +91,7 @@ export default defineMessages({
   },
   customsClearModalTitle: {
     id: 'cms.customs.decl.modal.clear.title',
-    defaultMessage: '标记报关单放行',
+    defaultMessage: '报关单放行确认',
   },
   successfulOperation: {
     id: 'cms.customs.decl.modal.successful.operation',
@@ -126,7 +126,7 @@ export default defineMessages({
     defaultMessage: '已发送',
   },
   filterFinalized: {
-    id: 'cms.customs.decl.filter.finalized',
+    id: 'cms.customs.decl.filter.entered',
     defaultMessage: '已回执',
   },
   customsReleased: {
@@ -159,7 +159,7 @@ export default defineMessages({
   },
   markReleased: {
     id: 'cms.customs.decl.mark.released',
-    defaultMessage: '标记放行',
+    defaultMessage: '放行确认',
   },
   preEntryId: {
     id: 'cms.customs.decl.form.pre.entry.id',

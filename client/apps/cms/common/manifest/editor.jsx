@@ -353,7 +353,7 @@ export default class ManifestEditor extends React.Component {
     let revertable = billMeta.entries.length > 0;
     billMeta.entries.forEach((entry) => {
       sendable = sendable && (entry.status === CMS_DECL_STATUS.reviewed.value);
-      revertable = revertable && (entry.status < CMS_DECL_STATUS.finalized.value);
+      revertable = revertable && (entry.status < CMS_DECL_STATUS.entered.value);
     });
     const path = `/clearance/${ietype}/manifest/`;
     let editable = !this.props.readonly && billMeta.entries.length === 0;

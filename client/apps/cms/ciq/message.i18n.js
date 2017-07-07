@@ -20,7 +20,7 @@ export default defineMessages({
   },
   ciqSearchPlaceholder: {
     id: 'cms.ciq.decl.ciq.search.placeholder',
-    defaultMessage: '通关单号/预报关编号/委托编号',
+    defaultMessage: '通关单号/内部编号/委托编号',
   },
   entryId: {
     id: 'cms.ciq.decl.delg.entryId',
@@ -32,7 +32,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.ciq.decl.delg.preEntry.no',
-    defaultMessage: '预报关编号',
+    defaultMessage: '内部编号',
   },
   clrStatus: {
     id: 'cms.ciq.decl.clr.status',

@@ -267,10 +267,10 @@ export const DELG_STATUS = {
 };
 
 export const CMS_DECL_STATUS = {
-  proposed: { value: 0, text: '报关建议书', badge: 'default', step: 0, stepDesc: '生成', date: 'created_date' },
-  reviewed: { value: 1, text: '已复核', badge: 'warning', step: 1, stepDesc: '复核', date: 'reviewed_date' },
+  proposed: { value: 0, text: '建议书', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date' },
+  reviewed: { value: 1, text: '已复核', badge: 'processing', step: 1, stepDesc: '复核', date: 'reviewed_date' },
   sent: { value: 2, text: '已发送', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date' },
-  finalized: { value: 3, text: '已回执', badge: 'success', step: 3, stepDesc: '回执', date: 'backfill_date' },
+  entered: { value: 3, text: '已回执', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date' },
   released: { value: 4, text: '已放行', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date' },
 };
 
@@ -279,6 +279,44 @@ export const ITEMS_STATUS = [
   { value: 1, text: '归类待定' },
   { value: 2, text: '已归类' },
 ];
+
+export const CMS_DECL_TYPE = [{
+  value: '1',
+  text: '有纸进口报关单',
+}, {
+  value: '3',
+  text: '有纸进境备案清单',
+}, {
+  value: '5',
+  text: '无纸进口报关单',
+}, {
+  value: '7',
+  text: '无纸进境备案清单',
+}, {
+  value: '9',
+  text: '通关无纸进口报关单',
+}, {
+  value: 'B',
+  text: '通关无纸进境备案清单',
+}, {
+  value: '0',
+  text: '有纸出口报关单',
+}, {
+  value: '2',
+  text: '有纸出境备案清单',
+}, {
+  value: '4',
+  text: '无纸出口报关单',
+}, {
+  value: '6',
+  text: '无纸出境备案清单',
+}, {
+  value: '8',
+  text: '通关无纸出口报关单',
+}, {
+  value: 'A',
+  text: '通关无纸出境备案清单',
+}];
 
 export const CMS_IMPORT_DECL_TYPE = [{
   value: '1',

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Button, Table, Input, Select } from 'antd';
+import { Alert, Button, Table, Tag, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../form/message.i18n';
@@ -55,7 +55,7 @@ function ColumnSelect(props) {
   } else {
     const foundOpts = options.filter(opt => opt.value === record[field]);
     const label = foundOpts.length === 1 ? `${foundOpts[0].value}|${foundOpts[0].text}` : '';
-    return <span>{label}</span>;
+    return label && label.length > 0 ? <Tag>{label}</Tag> : <span />;
   }
 }
 
@@ -258,11 +258,12 @@ export default class CustomsDeclBodyPanel extends React.Component {
       dataIndex: 'g_no',
       fixed: 'left',
       width: 45,
-    }, {
+      className: 'cell-align-center',
+/*    }, {
       title: this.msg('copGNo'),
       fixed: 'left',
       width: 150,
-      dataIndex: 'cop_g_no',
+      dataIndex: 'cop_g_no',*/
     }, {
       title: this.msg('codeT'),
       width: 110,
@@ -280,10 +281,10 @@ export default class CustomsDeclBodyPanel extends React.Component {
         />),
     }, {
       title: this.msg('gModel'),
-      width: 300,
+      width: 400,
       render: (o, record, index) =>
         (<ColumnInput field="g_model" inEdit={index === editIndex} record={record}
-          edit={editBody}
+          edit={editBody} type="textarea"
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('quantity')}</div>,
@@ -296,7 +297,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
     }, {
       title: this.msg('unit'),
       width: 80,
-      className: 'cell-align-right',
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="g_unit" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
@@ -319,7 +320,8 @@ export default class CustomsDeclBodyPanel extends React.Component {
         />),
     }, {
       title: this.msg('currency'),
-      width: 100,
+      width: 80,
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="trade_curr" inEdit={index === editIndex} record={record}
           options={currencies} edit={editBody}
@@ -351,6 +353,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
     }, {
       title: this.msg('unit1'),
       width: 80,
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="unit_1" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
@@ -366,13 +369,14 @@ export default class CustomsDeclBodyPanel extends React.Component {
     }, {
       title: this.msg('unit2'),
       width: 80,
+      className: 'cell-align-center',
       render: (o, record, index) =>
         (<ColumnSelect field="unit_2" inEdit={index === editIndex} record={record}
           options={units} edit={editBody}
         />),
     }, {
       title: this.msg('exemptionWay'),
-      width: 80,
+      width: 100,
       render: (o, record, index) =>
         (<ColumnSelect field="duty_mode" inEdit={index === editIndex} record={record}
           options={exemptions} edit={editBody}
@@ -409,12 +413,12 @@ export default class CustomsDeclBodyPanel extends React.Component {
     */
     }, {
       title: this.msg('customs'),
-      width: 100,
+      width: 150,
       dataIndex: 'customs',
       render: col => buildTipItems(col),
     }, {
       title: this.msg('inspection'),
-      width: 100,
+      width: 150,
       dataIndex: 'inspection',
       render: col => buildTipItems(col, true),
     }, {
@@ -423,7 +427,8 @@ export default class CustomsDeclBodyPanel extends React.Component {
         (<ColumnInput field="element" inEdit={index === editIndex} record={record}
           edit={editBody}
         />),
-    }, {
+    }];
+    /* , {
       title: this.msg('versionNo'),
       width: 80,
       render: (o, record, index) =>
@@ -438,7 +443,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
         (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           edit={editBody} decimal={3}
         />),
-    }];
+    }];*/
     return columns;
   }
 
@@ -472,7 +477,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
           </div>
         </div>
         <div className="panel-body table-panel">
-          <Table rowKey="id" columns={columns} dataSource={this.state.bodies}
+          <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
             scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination}
           />
         </div>

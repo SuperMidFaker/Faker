@@ -68,40 +68,43 @@ export default class Expander extends Component {
   render() {
     const { dataSource } = this.state;
     const columns = [{
-      title: this.msg('declNo'),
+      title: '内部编号',
       dataIndex: 'pre_entry_seq_no',
-      width: 100,
-    }, {
-      title: this.msg('delgNo'),
-      dataIndex: 'delg_no',
-      width: 100,
     }, {
       title: '类型',
       dataIndex: 'sheet_type',
       width: 100,
-      render: (o) => {
-        if (o === 'CDF') {
-          return <Tag color="blue-inverse">报关单</Tag>;
-        } else if (o === 'FTZ') {
-          return <Tag color="blue">备案清单</Tag>;
+      render: (o, record) => {
+        if (record.i_e_type === 0) {
+          if (o === 'CDF') {
+            return <Tag color="blue">进口报关单</Tag>;
+          } else if (o === 'FTZ') {
+            return <Tag color="blue">进境备案清单</Tag>;
+          }
+        } else if (record.i_e_type === 1) {
+          if (o === 'CDF') {
+            return <Tag color="cyan">出口报关单</Tag>;
+          } else if (o === 'FTZ') {
+            return <Tag color="cyan">出境备案清单</Tag>;
+          }
         } else {
           return <span />;
         }
       },
-    }, {
+ /*   }, {
       title: this.msg('trafMode'),
       dataIndex: 'traf_mode',
-      width: 100,
+      width: 100,*/
     }, {
       title: this.msg('declType'),
-      width: 150,
+      width: 180,
       render: (o, record, index) =>
         (<ColumnSelect field="declType"
           onChange={this.handleEditChange} options={this.props.declList} record={record} index={index}
         />),
     }, {
       title: 'EDI',
-      width: 150,
+      width: 180,
       render: (o, record, index) => {
         let easipassOpt = [];
         if (this.props.easilist[record.agent_custco]) {
@@ -118,7 +121,7 @@ export default class Expander extends Component {
     }];
     return (
       <Table columns={columns} dataSource={dataSource} pagination={false}
-        size="middle" scroll={{ x: 300, y: 200 }}
+        size="small" scroll={{ x: 300, y: 200 }}
       />
     );
   }

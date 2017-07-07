@@ -6,7 +6,7 @@ import { Modal, Select, message, Table } from 'antd';
 import { sendMutiDecl, closeBatchSendModal } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
+import { CMS_DECL_TYPE, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 import Expander from './expander';
 
 const formatMsg = format(messages);
@@ -133,6 +133,8 @@ export default class BatchSendModal extends React.Component {
       declList = CMS_IMPORT_DECL_TYPE;
     } else if (this.props.ietype === 'export') {
       declList = CMS_EXPORT_DECL_TYPE;
+    } else {
+      declList = CMS_DECL_TYPE;
     }
     const subData = this.state.expandDatas[row.agent_name];
     return (<Expander custkey={row.agent_name} subData={subData} declList={declList} onchange={this.handleExpChange} />);
@@ -144,21 +146,22 @@ export default class BatchSendModal extends React.Component {
       declList = CMS_IMPORT_DECL_TYPE;
     } else if (ietype === 'export') {
       declList = CMS_EXPORT_DECL_TYPE;
+    } else {
+      declList = CMS_DECL_TYPE;
     }
     const columns = [{
       title: this.msg('agent'),
-      width: 150,
       dataIndex: 'agent_name',
     }, {
       title: this.msg('declType'),
-      width: 150,
+      width: 200,
       render: (o, record, index) =>
         (<ColumnSelect field="declType"
           onChange={this.handleEditChange} options={declList} record={record} index={index}
         />),
     }, {
       title: 'EDI',
-      width: 150,
+      width: 200,
       render: (o, record, index) => {
         let easipassOpt = [];
         if (easilist[record.agent_custco]) {
@@ -177,7 +180,7 @@ export default class BatchSendModal extends React.Component {
       <Modal title={this.msg('sendAllPackets')} visible={visible} width={800}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Table rowKey="agent_name" columns={columns} dataSource={this.state.bodies}
+        <Table size="middle" rowKey="agent_name" columns={columns} dataSource={this.state.bodies}
           expandedRowRender={this.handleExpandDetail}
         />
       </Modal>

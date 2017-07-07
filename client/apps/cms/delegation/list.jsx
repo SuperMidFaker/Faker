@@ -245,7 +245,8 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('lastActTime'),
     dataIndex: 'last_act_time',
-    render: (o, record) => {
+    render: (o, record) => record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-',
+    /* {
       if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.last_act_time) {
         return `${this.msg('createdEvent')}
         ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
@@ -264,7 +265,7 @@ export default class DelegationList extends Component {
       } else {
         return '--';
       }
-    },
+    },*/
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadDelegationList(params),

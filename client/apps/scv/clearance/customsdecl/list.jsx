@@ -106,7 +106,7 @@ export default class ScvCustomsDeclList extends Component {
                 />
               </PrivilegeCover>
             </span>);
-        case CMS_DECL_STATUS.finalized.value:
+        case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
           return (
             <span>
