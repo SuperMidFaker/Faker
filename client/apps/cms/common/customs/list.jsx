@@ -118,7 +118,7 @@ export default class CustomsList extends Component {
                 />
               </PrivilegeCover>
             </span>);
-        case CMS_DECL_STATUS.finalized.value:
+        case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
           return (
             <span>
@@ -243,7 +243,7 @@ export default class CustomsList extends Component {
           spanElems.push(
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
-                label={<span><Icon type="flag" />标记放行</span>}
+                label={<span><Icon type="flag" />放行确认</span>}
               />
             </PrivilegeCover>);
         }

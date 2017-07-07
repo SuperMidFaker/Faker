@@ -270,7 +270,7 @@ export const CMS_DECL_STATUS = {
   proposed: { value: 0, text: '报关建议书', badge: 'default', step: 0, stepDesc: '生成', date: 'created_date' },
   reviewed: { value: 1, text: '已复核', badge: 'warning', step: 1, stepDesc: '复核', date: 'reviewed_date' },
   sent: { value: 2, text: '已发送', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date' },
-  finalized: { value: 3, text: '已回执', badge: 'success', step: 3, stepDesc: '回执', date: 'backfill_date' },
+  entered: { value: 3, text: '已回执', badge: 'success', step: 3, stepDesc: '回执', date: 'backfill_date' },
   released: { value: 4, text: '已放行', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date' },
 };
 

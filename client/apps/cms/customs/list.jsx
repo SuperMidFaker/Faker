@@ -117,7 +117,7 @@ export default class CustomsList extends Component {
                 />
               </PrivilegeCover>
             </span>);
-        case CMS_DECL_STATUS.finalized.value:
+        case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
           return (
             <span>
@@ -173,12 +173,16 @@ export default class CustomsList extends Component {
     className: 'cell-align-center',
     width: 80,
     render: (o, record) => {
-      if (record.customs_inspect === 1) {
-        return <Tooltip title="报关单查验"><span><Fontello type="circle" color="red" /></span></Tooltip>;
-      } else if (record.customs_inspect === 2) {
-        return <Tooltip title="查验放行"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+      if (record.status > CMS_DECL_STATUS.reviewed.value) {
+        if (record.customs_inspect === 1) {
+          return <Tooltip title="报关单查验"><span><Fontello type="circle" color="red" /></span></Tooltip>;
+        } else if (record.customs_inspect === 2) {
+          return <Tooltip title="查验放行"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+        } else {
+          return <Tooltip title="未查验"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        }
       } else {
-        return <Tooltip title="未查验"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        return null;
       }
     },
   }, {
@@ -269,7 +273,7 @@ export default class CustomsList extends Component {
           spanElems.push(
             <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
-                label={<span><Icon type="flag" />标记放行</span>}
+                label={<span><Icon type="flag" />放行确认</span>}
               />
             </PrivilegeCover>);
         }
@@ -284,7 +288,7 @@ export default class CustomsList extends Component {
             >
               <a><Icon type="down" /></a>
             </Dropdown>);
-        } else if (record.ep_receipt_filename && record.status > CMS_DECL_STATUS.sent.value) {
+        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <Dropdown key="receipt" overlay={(<Menu>
               <Menu.Item key="edit">
@@ -294,6 +298,8 @@ export default class CustomsList extends Component {
             >
               <a><Icon type="down" /></a>
             </Dropdown>);
+        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.released.value) {
+          spanElems.push(<a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>);
         }
         if (spanElems.length === 2) {
           spanElems.splice(1, 0, <span className="ant-divider" key="divid1" />);
