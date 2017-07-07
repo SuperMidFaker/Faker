@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'UNDO_PICKED', 'UNDO_PICKED_SUCCEED', 'UNDO_PICKED_FAIL',
   'OUTBOUNDS_SHIP', 'OUTBOUNDS_SHIP_SUCCEED', 'OUTBOUNDS_SHIP_FAIL',
   'CANCEL_TRACE_ALLOC', 'CANCEL_TRACE_ALLOC_SUCCEED', 'CANCEL_TRACE_ALLOC_FAIL',
+  'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
 ]);
 
 const initialState = {
@@ -105,6 +106,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, pickDetails: action.result.data };
     case actionTypes.LOAD_ALLOCATED_DETAILS_SUCCEED:
       return { ...state, allocatedData: action.result.data };
+    case actionTypes.UPDATE_OUTBMODE_SUCCEED:
+      return { ...state, outboundFormHead: { ...state.outboundFormHead, shipping_mode: action.data.shippingMode } };
     default:
       return state;
   }
@@ -359,6 +362,21 @@ export function shipConfirm(outboundNo, skulist, loginId, tenantId, shippedBy, s
       endpoint: 'v1/cwm/outbounds/ship',
       method: 'post',
       data: { outboundNo, skulist, loginId, tenantId, shippedBy, shippedDate },
+    },
+  };
+}
+
+export function updateOutboundMode(outboundNo, shippingMode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_OUTBMODE,
+        actionTypes.UPDATE_OUTBMODE_SUCCEED,
+        actionTypes.UPDATE_OUTBMODE_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbound/update/shippingmode',
+      method: 'post',
+      data: { outboundNo, shippingMode },
     },
   };
 }

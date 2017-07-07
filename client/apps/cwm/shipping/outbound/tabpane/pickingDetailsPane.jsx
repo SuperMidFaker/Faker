@@ -19,6 +19,7 @@ import { CWM_OUTBOUND_STATUS } from 'common/constants';
     loginId: state.account.loginId,
     reload: state.cwmOutbound.outboundReload,
     pickDetails: state.cwmOutbound.pickDetails,
+    outboundHead: state.cwmOutbound.outboundFormHead,
   }),
   { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc }
 )
@@ -26,6 +27,8 @@ export default class PickingDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
+    outboundHead: PropTypes.object.isRequired,
+    shippingMode: PropTypes.string.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -111,6 +114,15 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '复核装箱',
     width: 100,
+    dataIndex: 'chkpacked_date',
+    render: (o, record) => {
+      if (o) {
+        return (<div>
+          <div><Icon type="user" />{record.chkpacked_by}</div>
+          <div><Icon type="clock-circle-o" />{moment(record.chkpacked_date).format('YYYY.MM.DD')}</div>
+        </div>);
+      }
+    },
   }, {
     title: '发货',
     width: 100,
@@ -128,30 +140,53 @@ export default class PickingDetailsPane extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
-        case 2:   // 已分配
-          return (<span>
-            <RowUpdater onHit={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty, record.sku_pack_qty, record.trace_id)} label="拣货确认" row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={this.handleCancelAllocated} label="取消分配" row={record} />
-          </span>);
-        case 3:   // 部分拣货
-          return (
-            <span>
+      const { outboundHead } = this.props;
+      if (outboundHead.shipping_mode === 'manual') {
+        switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
+          case 2:   // 已分配
+            return (<span>
               <RowUpdater onHit={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty, record.sku_pack_qty, record.trace_id)} label="拣货确认" row={record} />
               <span className="ant-divider" />
+              <RowUpdater onHit={this.handleCancelAllocated} label="取消分配" row={record} />
+            </span>);
+          case 3:   // 部分拣货
+            return (
+              <span>
+                <RowUpdater onHit={() => this.handleConfirmPicked(record.id, record.location, record.alloc_qty, record.sku_pack_qty, record.trace_id)} label="拣货确认" row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
+              </span>
+            );
+          case 4:   // 已拣货
+            return (<span>
+              <RowUpdater onHit={() => this.handleConfirmShipped(record.id, record.picked_qty, record.sku_pack_qty)} label="发货确认" row={record} />
+              <span className="ant-divider" />
               <RowUpdater onHit={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
-            </span>
-          );
-        case 4:   // 已拣货
-          return (<span>
-            <RowUpdater onHit={() => this.handleConfirmShipped(record.id, record.picked_qty, record.sku_pack_qty)} label="发货确认" row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
-          </span>);
-        default:
-          break;
+            </span>);
+          case 5:   // 已复核装箱
+            return (<span>
+              <RowUpdater onHit={() => this.handleConfirmShipped(record.id, record.picked_qty, record.sku_pack_qty)} label="发货确认" row={record} />
+            </span>);
+          default:
+            break;
+        }
+      } else if (outboundHead.shipping_mode === 'scan') {
+        switch (record.status) {  // 分配明细的状态 2 已分配 4 已拣货 6 已发运
+          case 2:   // 已分配
+            return (<span>
+              <RowUpdater onHit={this.handleCancelAllocated} label="取消分配" row={record} />
+            </span>);
+          case 3:   // 部分拣货
+            return (
+              <span>
+                <RowUpdater onHit={() => this.handleCancelPicked(record.id, record.picked_qty, record.picked_qty / record.sku_pack_qty)} label="取消拣货" row={record} />
+              </span>
+            );
+          default:
+            break;
+        }
       }
+      return '';
     },
   }]
   handleCancelAllocated = (row) => {
