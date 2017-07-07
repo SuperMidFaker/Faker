@@ -8,6 +8,7 @@ import InfoItem from 'client/components/InfoItem';
 import OrderListPane from './tabpane/orderListPane';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import { loadReceiveModal } from 'common/reducers/cwmReceive';
+import { releaseWave, loadWaveHead } from 'common/reducers/cwmShippingOrder';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -26,7 +27,7 @@ const TabPane = Tabs.TabPane;
     submitting: state.cmsDelegation.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadReceiveModal }
+  { loadReceiveModal, loadWaveHead, releaseWave }
 )
 @connectNav({
   depth: 3,
@@ -52,20 +53,18 @@ export default class WaveDetail extends Component {
     printedPickingList: false,
     picking: false,
     picked: false,
+    waveHead: {},
   }
   componentWillMount() {
-  }
-  msg = key => formatMsg(this.props.intl, key);
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-
+    this.props.loadWaveHead(this.props.params.waveNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          waveHead: result.data,
+        });
       }
     });
   }
-  handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
-  }
+  msg = key => formatMsg(this.props.intl, key);
   handleCancelBtnClick = () => {
     this.context.router.goBack();
   }
@@ -112,9 +111,12 @@ export default class WaveDetail extends Component {
       currentStep: 2,
     });
   }
-
+  handleRelease = () => {
+    this.props.releaseWave(this.props.params.waveNo);
+  }
   render() {
     const { defaultWhse } = this.props;
+    const { waveHead } = this.state;
     return (
       <div>
         <Header className="top-bar">
@@ -133,7 +135,7 @@ export default class WaveDetail extends Component {
             {this.state.allocated && !this.state.picked &&
             <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
             }
-            <Button size="large">释放</Button>
+            <Button size="large" onClick={this.handleRelease}>释放</Button>
           </div>
         </Header>
         <Content className="main-content">
@@ -141,16 +143,16 @@ export default class WaveDetail extends Component {
             <Card>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="波次号" field="04601|米思米(中国)精密机械贸易" />
+                  <InfoItem addonBefore="波次号" field={this.props.params.waveNo} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem addonBefore="说明" field="米思米华东DC" />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="总订单数" field="50" />
+                  <InfoItem addonBefore="总订单数" field={waveHead.orderCount} />
                 </Col>
                 <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="总订单明细数" field="50" />
+                  <InfoItem addonBefore="总订单明细数" field={waveHead.detailCount} />
                 </Col>
               </Row>
             </Card>
