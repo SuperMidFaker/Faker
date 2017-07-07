@@ -14,7 +14,7 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadSos, showDock, releaseSo } from 'common/reducers/cwmShippingOrder';
+import { loadSos, showDock, releaseSo, createWave } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -42,8 +42,9 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     filters: state.cwmShippingOrder.soFilters,
     solist: state.cwmShippingOrder.solist,
+    tenantName: state.account.tenantName,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo }
+  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave }
 )
 @connectNav({
   depth: 2,
@@ -60,6 +61,7 @@ export default class ShippingOrderList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+    createWaveEnable: true,
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -92,7 +94,7 @@ export default class ShippingOrderList extends React.Component {
     title: '要求交货时间',
     dataIndex: 'expect_shipping_date',
     width: 160,
-    render: o => moment(o).format('YYYY.MM.DD'),
+    render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: '发货时间',
     dataIndex: 'shipped_date',
@@ -183,7 +185,7 @@ export default class ShippingOrderList extends React.Component {
     this.context.router.push(link);
   }
   handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
+    const filters = { ...this.props.filters, status: ev.target.value, isInWave: false };
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
@@ -223,8 +225,25 @@ export default class ShippingOrderList extends React.Component {
       filters,
     });
   }
+  createWave = () => {
+    const { tenantId, tenantName, defaultWhse, loginId } = this.props;
+    const { selectedRowKeys } = this.state;
+    this.props.createWave(selectedRowKeys, tenantId, tenantName, defaultWhse.code, loginId).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+        this.setState({
+          selectedRowKeys: [],
+        });
+      }
+    });
+  }
   render() {
     const { whses, defaultWhse, owners, filters } = this.props;
+    let columns = this.columns;
+    if (filters.status === 'inWave') {
+      columns = [...columns];
+      columns.splice(-1, 1);
+    }
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadSos(params),
       resolve: result => result.data,
@@ -249,7 +268,23 @@ export default class ShippingOrderList extends React.Component {
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
+      onChange: (selectedRowKeys, selectedRows) => {
+        for (let i = 0; i < selectedRows.length; i++) {
+          if (selectedRows[i].bonded) {
+            this.setState({
+              createWaveEnable: false,
+            });
+            break;
+          }
+          if (i > 0) {
+            if (selectedRows[i].receiver_code !== selectedRows[i - 1].receiver_code && selectedRows[i].carrier_code !== selectedRows[i - 1].carrier_code) {
+              this.setState({
+                createWaveEnable: false,
+              });
+              break;
+            }
+          }
+        }
         this.setState({ selectedRowKeys });
       },
     };
@@ -273,6 +308,7 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="outbound">已释放</RadioButton>
             <RadioButton value="partial">部分出库</RadioButton>
             <RadioButton value="completed">订单完成</RadioButton>
+            <RadioButton value="inWave">已加入波次计划</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
@@ -316,13 +352,13 @@ export default class ShippingOrderList extends React.Component {
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <Button size="large">创建波次计划</Button>
+                {this.state.createWaveEnable && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
                 <Button size="large">添加到波次计划</Button>
                 <Button size="large">触发补货任务</Button>
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no" scroll={{ x: 1400 }} />
+              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no" scroll={{ x: 1400 }} />
             </div>
           </div>
         </Content>

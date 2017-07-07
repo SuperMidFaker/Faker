@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio, Select, Badge } from 'antd';
+import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
@@ -13,7 +14,7 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadWaves, showDock, releaseSo } from 'common/reducers/cwmShippingOrder';
+import { loadWaves, showDock, releaseWave } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -38,9 +39,9 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
     filters: state.cwmShippingOrder.waveFilters,
-    solist: state.cwmShippingOrder.wave,
+    wave: state.cwmShippingOrder.wave,
   }),
-  { loadWaves, switchDefaultWhse, showDock, releaseSo }
+  { loadWaves, switchDefaultWhse, showDock, releaseWave }
 )
 @connectNav({
   depth: 2,
@@ -100,6 +101,7 @@ export default class WaveList extends React.Component {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
+    render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '操作',
     width: 120,
@@ -120,7 +122,7 @@ export default class WaveList extends React.Component {
   }
   handleReleaseWave = (record) => {
     const { loginId } = this.props;
-    this.props.releaseSo(record.so_no, loginId).then((result) => {
+    this.props.releaseWave(record.wave_no, loginId).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
@@ -135,7 +137,7 @@ export default class WaveList extends React.Component {
     });
   }
   handleEditWave = (row) => {
-    const link = `/cwm/shipping/wave/${row.so_no}`;
+    const link = `/cwm/shipping/wave/${row.wave_no}`;
     this.context.router.push(link);
   }
   handleAllocate = (row) => {
@@ -167,6 +169,17 @@ export default class WaveList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadWaves({
       whseCode,
+      pageSize: this.props.wave.pageSize,
+      current: this.props.wave.current,
+      filters,
+    });
+  }
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
+    const filters = this.props.filters;
+    this.props.loadWaves({
+      whseCode: value,
       pageSize: this.props.wave.pageSize,
       current: this.props.wave.current,
       filters,
