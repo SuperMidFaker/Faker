@@ -122,7 +122,7 @@ export default class DelegationList extends Component {
     }
   }
   initializeFilters = () => {
-    let filters = { viewStatus: 'all', clientView: { tenantIds: [], partnerIds: [] } };
+    let filters = { status: 'all', viewStatus: 'all', clientView: { tenantIds: [], partnerIds: [] } };
     if (window.localStorage) {
       filters = JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}');
     }

@@ -79,6 +79,9 @@ export default class CustomsList extends Component {
     selectedRowKeys: [],
     searchInput: '',
   }
+  componentDidMount() {
+    this.handleTableLoad();
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('delgNo'),
@@ -334,7 +337,7 @@ export default class CustomsList extends Component {
   handleTableLoad = (currentPage, filter) => {
     const ie = filter ? filter.ietype : this.props.listFilter.ietype;
     this.props.loadCustomsDecls({
-      ietype: ie,
+      ietype: filter && filter.ietype || this.props.listFilter.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.customslist.pageSize,

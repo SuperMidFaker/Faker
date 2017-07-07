@@ -44,6 +44,13 @@ export default class StatsCard extends Component {
     intl: intlShape.isRequired,
     statistics: PropTypes.object.isRequired,
   }
+  componentDidMount() {
+    if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
+      let fv = JSON.parse(window.localStorage.cmsDelegationListFilters);
+      fv = { ...fv, acptDate: [], ietype: 'all', status: 'all' };
+      window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
+    }
+  }
   onDateChange = (value, dateString) => {
     const clientView = this.props.statistics.clientView;
     this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView });
@@ -65,7 +72,7 @@ export default class StatsCard extends Component {
       JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters), clientView });
     }
   }
-  handleLinkDelg = (type) => {
+  handleLinkClick = (type) => {
     const { startDate, endDate } = this.props.statistics;
     if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
       let fv = JSON.parse(window.localStorage.cmsDelegationListFilters);
@@ -84,7 +91,6 @@ export default class StatsCard extends Component {
       }
       window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
     }
-    return '/clearance/delegation';
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
@@ -123,7 +129,7 @@ export default class StatsCard extends Component {
               <h4>{this.msg('total')}</h4>
               <div className="data">
                 <div className="data-num lg text-emphasis">
-                  <Link to={() => this.handleLinkDelg('total')} >{total}</Link>
+                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('total')} >{total}</Link>
                 </div>
                 <div className="data-extra">
                   ${1000.00}
@@ -138,7 +144,7 @@ export default class StatsCard extends Component {
               <h4>{this.msg('sumImport')}</h4>
               <div className="data">
                 <div className="data-num lg text-normal">
-                  <Link to={() => this.handleLinkDelg('sumImport')} >{sumImport}</Link>
+                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumImport')} >{sumImport}</Link>
                 </div>
                 <div className="data-extra">
                   ${800.00}
@@ -152,7 +158,7 @@ export default class StatsCard extends Component {
               <h4>{this.msg('sumExport')}</h4>
               <div className="data">
                 <div className="data-num lg text-normal">
-                  <Link to={() => this.handleLinkDelg('sumExport')} >{sumExport}</Link>
+                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumExport')} >{sumExport}</Link>
                 </div>
                 <div className="data-extra">
                   ${200.00}
@@ -167,7 +173,7 @@ export default class StatsCard extends Component {
               <h4>{this.msg('processing')}</h4>
               <div className="data">
                 <div className="data-num lg text-warning">
-                  <Link to={() => this.handleLinkDelg('processing')} >{processing}</Link>
+                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('processing')} >{processing}</Link>
                 </div>
               </div>
             </div>
@@ -177,7 +183,7 @@ export default class StatsCard extends Component {
               <h4>{this.msg('declared')}</h4>
               <div className="data">
                 <div className="data-num lg text-info">
-                  <Link to={() => this.handleLinkDelg('declared')} >{declared}</Link>
+                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('declared')} >{declared}</Link>
                 </div>
               </div>
             </div>
@@ -187,7 +193,7 @@ export default class StatsCard extends Component {
               <h4>{this.msg('released')}</h4>
               <div className="data">
                 <div className="data-num lg text-success">
-                  <Link to={() => this.handleLinkDelg('released')} >{released}</Link>
+                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('released')}>{released}</Link>
                 </div>
               </div>
             </div>
