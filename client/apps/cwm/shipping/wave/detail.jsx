@@ -157,10 +157,10 @@ export default class WaveDetail extends Component {
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="orderList" onChange={this.handleTabChange}>
                 <TabPane tab="订单列表" key="orderList">
-                  <OrderListPane />
+                  <OrderListPane waveNo={this.props.params.waveNo} />
                 </TabPane>
                 <TabPane tab="订单明细" key="orderDetails">
-                  <OrderDetailsPane />
+                  <OrderDetailsPane waveNo={this.props.params.waveNo} />
                 </TabPane>
               </Tabs>
             </Card>

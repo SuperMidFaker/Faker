@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Button } from 'antd';
-import { openAllocatingModal } from 'common/reducers/cwmOutbound';
+import { loadWaveOrders } from 'common/reducers/cwmShippingOrder';
 
 @injectIntl
 @connect(
@@ -10,7 +11,7 @@ import { openAllocatingModal } from 'common/reducers/cwmOutbound';
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
   }),
-  { openAllocatingModal }
+  { loadWaveOrders }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -18,42 +19,53 @@ export default class OrderDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    orders: [],
   }
-
+  componentWillMount() {
+    this.props.loadWaveOrders(this.props.waveNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          orders: result.data,
+        });
+      }
+    });
+  }
   columns = [{
     title: '行号',
-    dataIndex: 'seq_no',
     width: 40,
+    render: (o, record, index) => index + 1,
   }, {
     title: 'SO编号',
-    dataIndex: 'product_no',
+    dataIndex: 'so_no',
     width: 120,
   }, {
     title: '订单类型',
-    dataIndex: 'order_type',
+    dataIndex: 'so_type',
   }, {
     title: '状态',
-    dataIndex: 'order_status',
+    dataIndex: 'status',
   }, {
     title: '货主',
-    dataIndex: 'owner',
+    dataIndex: 'owner_name',
   }, {
     title: '收货人',
-    dataIndex: 'receiver',
+    dataIndex: 'receiver_name',
     width: 120,
     render: o => (<b>{o}</b>),
   }, {
     title: '承运人',
-    dataIndex: 'carrier',
+    dataIndex: 'carrier_name',
     width: 60,
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 120,
+    render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '要求出货日期',
     dataIndex: 'expect_shipping_date',
     width: 120,
+    render: o => moment(o).format('YYYY.MM.DD'),
   }]
   mockData = [{
     id: 1,
@@ -131,9 +143,6 @@ export default class OrderDetailsPane extends React.Component {
     received_qty: 0,
     status: 1,
   }];
-  handleSKUAllocateDetails = () => {
-    this.props.openAllocatingModal();
-  }
   render() {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -152,7 +161,7 @@ export default class OrderDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right" />
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.mockData} rowKey="id"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.state.orders} rowKey="so_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>

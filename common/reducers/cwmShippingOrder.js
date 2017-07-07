@@ -9,6 +9,10 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'UPDATE_SO', 'UPDATE_SO_SUCCEED', 'UPDATE_SO_FAIL',
   'RELEASE_SO', 'RELEASE_SO_SUCCEED', 'RELEASE_SO_FAIL',
   'LOAD_WAVES', 'LOAD_WAVES_SUCCEED', 'LOAD_WAVES_FAIL',
+  'CREATE_WAVES', 'CREATE_WAVES_SUCCEED', 'CREATE_WAVES_FAIL',
+  'RELEASE_WAVE', 'RELEASE_WAVE_SUCCEED', 'RELEASE_WAVE_FAIL',
+  'LOAD_WAVE_ORDERS', 'LOAD_WAVE_ORDERS_SUCCEED', 'LOAD_WAVE_ORDERS_FAIL',
+  'LOAD_WAVE_DETAILS', 'LOAD_WAVE_DETAILS_SUCCEED', 'LOAD_WAVE_DETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -48,6 +52,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, soFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_SOS_SUCCEED:
       return { ...state, solist: action.result.data };
+    case actionTypes.LOAD_WAVES:
+      return { ...state, waveFilters: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_WAVES_SUCCEED:
       return { ...state, wave: action.result.data };
     default:
@@ -160,6 +166,66 @@ export function loadWaves({ whseCode, pageSize, current, filters }) {
       endpoint: 'v1/cwm/waves',
       method: 'get',
       params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+    },
+  };
+}
+
+export function createWave(soNos, tenantId, tenantName, whseCode, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_WAVES,
+        actionTypes.CREATE_WAVES_SUCCEED,
+        actionTypes.CREATE_WAVES_FAIL,
+      ],
+      endpoint: 'v1/cwm/create/waves',
+      method: 'post',
+      data: { soNos, tenantId, tenantName, whseCode, loginId },
+    },
+  };
+}
+
+export function releaseWave(waveNo, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RELEASE_WAVE,
+        actionTypes.RELEASE_WAVE_SUCCEED,
+        actionTypes.RELEASE_WAVE_FAIL,
+      ],
+      endpoint: 'v1/cwm/release/wave',
+      method: 'post',
+      data: { waveNo, loginId },
+    },
+  };
+}
+
+export function loadWaveOrders(waveNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WAVE_ORDERS,
+        actionTypes.LOAD_WAVE_ORDERS_SUCCEED,
+        actionTypes.LOAD_WAVE_ORDERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/wave/orders',
+      method: 'get',
+      params: { waveNo },
+    },
+  };
+}
+
+export function loadWaveDetails(waveNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WAVE_DETAILS,
+        actionTypes.LOAD_WAVE_DETAILS_SUCCEED,
+        actionTypes.LOAD_WAVE_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/wave/details',
+      method: 'get',
+      params: { waveNo },
     },
   };
 }
