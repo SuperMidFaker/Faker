@@ -111,6 +111,7 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '复核装箱',
     width: 100,
+    dataIndex: 'chkpacked_date',
     render: (o, record) => {
       if (o) {
         return (<div>
