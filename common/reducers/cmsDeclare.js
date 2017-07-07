@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
-  'LOAD_CUSTOMS', 'LOAD_CUSTOMS_SUCCEED', 'LOAD_CUSTOMS_FAIL',
+  'LOAD_CUSTOMS_DECLS', 'LOAD_CUSTOMS_DECLS_SUCCEED', 'LOAD_CUSTOMS_DECLS_FAIL',
   'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
   'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
   'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
@@ -12,7 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'GET_EASIPASS_LIST', 'GET_EASIPASS_LIST_SUCCEED', 'GET_EASIPASS_LIST_FAIL',
   'SHOW_SEND_DECL_MODAL', 'CLEAN_CUSTOMSRES',
   'SEND_DECL', 'SEND_DECL_SUCCEED', 'SEND_DECL_FAIL',
-  'LOAD_CUSTOMSRES', 'LOAD_CUSTOMSRES_SUCCEED', 'LOAD_CUSTOMSRES_FAIL',
+  'LOAD_CLEARANCE_RESULTS', 'LOAD_CLEARANCE_RESULTS_SUCCEED', 'LOAD_CLEARANCE_RESULTS_FAIL',
   'OPEN_DECL_RELEASED_MODAL', 'CLOSE_DECL_RELEASED_MODAL',
   'CLEAR_CUSTOMS', 'CLEAR_CUSTOMS_SUCCEED', 'CLEAR_CUSTOMS_FAIL',
   'SEND_MUTI_DECL', 'SEND_MUTI_DECL_SUCCEED', 'SEND_MUTI_DECL_FAIL',
@@ -47,6 +47,7 @@ const initialState = {
   trades: [],
   sendDeclModal: {
     visible: false,
+    ietype: -1,
     preEntrySeqNo: '',
     delgNo: '',
     agentCustCo: '',
@@ -73,25 +74,25 @@ export default function reducer(state = initialState, action) {
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data } };
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
-    case actionTypes.LOAD_CUSTOMS:
+    case actionTypes.LOAD_CUSTOMS_DECLS:
       return { ...state, customslist: { ...state.customslist, loading: true } };
-    case actionTypes.LOAD_CUSTOMS_SUCCEED:
+    case actionTypes.LOAD_CUSTOMS_DECLS_SUCCEED:
       return { ...state,
         customslist: { ...state.customslist, loading: false, ...action.result.data },
         listFilter: JSON.parse(action.params.filter),
         customs: action.result.data.customs,
         trades: action.result.data.trades };
-    case actionTypes.LOAD_CUSTOMS_FAIL:
+    case actionTypes.LOAD_CUSTOMS_DECLS_FAIL:
       return { ...state, customslist: { ...state.customslist, loading: false } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
       return { ...state, sendDeclModal: { ...state.sendDeclModal, ...action.data } };
-    case actionTypes.LOAD_CUSTOMSRES:
+    case actionTypes.LOAD_CLEARANCE_RESULTS:
       return { ...state, customsResultsLoading: true };
-    case actionTypes.LOAD_CUSTOMSRES_SUCCEED:
+    case actionTypes.LOAD_CLEARANCE_RESULTS_SUCCEED:
       return { ...state, customsResultsLoading: false, customsResults: action.result.data };
-    case actionTypes.LOAD_CUSTOMSRES_FAIL:
+    case actionTypes.LOAD_CLEARANCE_RESULTS_FAIL:
       return { ...state, customsResultsLoading: false };
     case actionTypes.CLEAN_CUSTOMSRES:
       return { ...state, customsResults: [] };
@@ -159,9 +160,9 @@ export function loadCustomsDecls(params) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_CUSTOMS,
-        actionTypes.LOAD_CUSTOMS_SUCCEED,
-        actionTypes.LOAD_CUSTOMS_FAIL,
+        actionTypes.LOAD_CUSTOMS_DECLS,
+        actionTypes.LOAD_CUSTOMS_DECLS_SUCCEED,
+        actionTypes.LOAD_CUSTOMS_DECLS_FAIL,
       ],
       endpoint: 'v1/cms/decl/customs',
       method: 'get',
@@ -241,10 +242,10 @@ export function sendMutiDecl(data) {
   };
 }
 
-export function showSendDeclModal({ visible = true, preEntrySeqNo = '', delgNo = '', agentCustCo }) {
+export function showSendDeclModal({ visible = true, ietype, preEntrySeqNo = '', delgNo = '', agentCustCo }) {
   return {
     type: actionTypes.SHOW_SEND_DECL_MODAL,
-    data: { visible, preEntrySeqNo, delgNo, agentCustCo },
+    data: { visible, ietype, preEntrySeqNo, delgNo, agentCustCo },
   };
 }
 
@@ -267,9 +268,9 @@ export function loadClearanceResults(entryId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_CUSTOMSRES,
-        actionTypes.LOAD_CUSTOMSRES_SUCCEED,
-        actionTypes.LOAD_CUSTOMSRES_FAIL,
+        actionTypes.LOAD_CLEARANCE_RESULTS,
+        actionTypes.LOAD_CLEARANCE_RESULTS_SUCCEED,
+        actionTypes.LOAD_CLEARANCE_RESULTS_FAIL,
       ],
       endpoint: 'v1/cms/customs/results',
       method: 'get',

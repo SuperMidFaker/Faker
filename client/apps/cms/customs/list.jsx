@@ -111,7 +111,7 @@ export default class CustomsList extends Component {
           return (
             <span>
               {preEntryLink}
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
+              <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
@@ -244,25 +244,19 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowUpdater onHit={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
-            </PrivilegeCover>
-            <span className="ant-divider" />
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.delg_no, record.bill_seq_no)}>
-                <a role="presentation"><Icon type="delete" /></a>
-              </Popconfirm>
             </PrivilegeCover>
           </span>
         );
       } else if (record.status === CMS_DECL_STATUS.reviewed.value) {
         return (
           <span>
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
             </PrivilegeCover>
             <span className="ant-divider" />
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
             </PrivilegeCover>
           </span>
@@ -271,7 +265,7 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status !== CMS_DECL_STATUS.released.value) {
           spanElems.push(
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
+            <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />放行确认</span>}
               />
@@ -336,8 +330,9 @@ export default class CustomsList extends Component {
     remotes: this.props.customslist,
   })
   handleTableLoad = (currentPage, filter) => {
+    const ie = filter ? filter.ietype : this.props.listFilter.ietype;
     this.props.loadCustomsDecls({
-      ietype: filter.ietype,
+      ietype: ie,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.customslist.pageSize,
@@ -444,6 +439,7 @@ export default class CustomsList extends Component {
   handleShowSendDeclModal = (record) => {
     this.props.showSendDeclModal({
       visible: true,
+      ietype: record.i_e_type === 0 ? 'import' : 'export',
       preEntrySeqNo: record.pre_entry_seq_no,
       delgNo: record.delg_no,
       agentCustCo: record.agent_custco });
@@ -478,7 +474,7 @@ export default class CustomsList extends Component {
     let bulkBtns = '';
     if (status === 'proposed') {
       bulkBtns = (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+        <PrivilegeCover module="clearance" feature="customs" action="edit">
           <Button type="default" size="large" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
           批量复核
         </Button>
@@ -486,7 +482,7 @@ export default class CustomsList extends Component {
     } else if (status === 'reviewed') {
       bulkBtns = (
         <span>
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <PrivilegeCover module="clearance" feature="customs" action="edit">
             <Button type="primary" size="large" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
             批量发送
           </Button>
@@ -547,11 +543,11 @@ export default class CustomsList extends Component {
             </div>
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />
-            <SendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
-            <BatchSendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
+            <SendModal reload={this.handleTableLoad} />
+            <BatchSendModal reload={this.handleTableLoad} />
           </div>
         </Content>
-        <DelegationDockPanel ietype={this.props.ietype} />
+        <DelegationDockPanel />
         <OrderDockPanel />
         <ShipmentDockPanel />
       </QueueAnim>

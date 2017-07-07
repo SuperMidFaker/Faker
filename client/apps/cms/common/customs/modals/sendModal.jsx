@@ -6,7 +6,7 @@ import { Modal, Form, Select, message } from 'antd';
 import { showSendDeclModal, getEasipassList, sendDecl } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
+import { CMS_DECL_TYPE, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -17,6 +17,7 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     subdomain: state.account.subdomain,
     visible: state.cmsDeclare.sendDeclModal.visible,
+    ietype: state.cmsDeclare.sendDeclModal.ietype,
     preEntrySeqNo: state.cmsDeclare.sendDeclModal.preEntrySeqNo,
     delgNo: state.cmsDeclare.sendDeclModal.delgNo,
     agentCustCo: state.cmsDeclare.sendDeclModal.agentCustCo,
@@ -80,6 +81,8 @@ export default class SendModal extends React.Component {
       declList = CMS_IMPORT_DECL_TYPE;
     } else if (ietype === 'export') {
       declList = CMS_EXPORT_DECL_TYPE;
+    } else {
+      declList = CMS_DECL_TYPE;
     }
     return (
       <Modal title={this.msg('sendDecl')} visible={visible}
