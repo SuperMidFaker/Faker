@@ -8,7 +8,7 @@ import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Ta
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import { loadEntryDetails, loadParams } from 'common/reducers/cwmShFtz';
-import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -61,12 +61,17 @@ export default class SHFTZEntryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    sent: false,
+    sentable: false,
+    queryable: false,
     tabKey: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
-      this.setState({ tabKey: nextProps.entryRegs[0].pre_entry_seq_no });
+      const queryable = nextProps.entryAsn.status < CWM_SHFTZ_APIREG_STATUS.completed &&
+        nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
+      const sentable = nextProps.entryAsn.status < CWM_SHFTZ_APIREG_STATUS.completed &&
+        nextProps.entryRegs.filter(er => !er.cus_decl_no).length === 0;
+      this.setState({ tabKey: nextProps.entryRegs[0].pre_entry_seq_no, queryable, sentable });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -165,8 +170,9 @@ export default class SHFTZEntryDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
-            {this.state.sent ? <Button size="large" icon="sync" onClick={this.handlePrint} >获取状态</Button> :
-            <Button type="primary" size="large" icon="export" onClick={this.handleSend} >发送备案</Button>}
+            {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
+            <Button type="primary" size="large" icon="export" onClick={this.handleSend} disabled={!this.state.sentable}>发送备案</Button>
+            {this.state.sentable && <Button />}
           </div>
         </Header>
         <Content className="main-content">

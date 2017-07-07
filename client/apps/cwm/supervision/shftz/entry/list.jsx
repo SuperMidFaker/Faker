@@ -66,6 +66,7 @@ export default class SHFTZEntryList extends React.Component {
     title: '报关单号',
     width: 150,
     dataIndex: 'pre_entry_seq_no',
+    render: (preno, row) => row.cus_decl_no || preno,
   }, {
     title: '备案类型',
     dataIndex: 'ftz_ent_type',

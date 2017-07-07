@@ -67,7 +67,7 @@ export default class StatsCard extends Component {
   }
   handleLinkDelg = (type) => {
     const { startDate, endDate } = this.props.statistics;
-    if (window.localStorage) {
+    if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
       let fv = JSON.parse(window.localStorage.cmsDelegationListFilters);
       if (type === 'total') {
         fv = { ...fv, acptDate: [startDate, endDate], ietype: 'all', status: 'all' };

@@ -143,18 +143,18 @@ export default class ModuleCWM extends React.Component {
       }],
     });
     this.setState({ linkMenus });
-  }
-  componentDidMount() {
-    let defaultWhse = this.props.whses.length > 0 ? this.props.whses[0].code : null;
-    if (window.localStorage) {
-      const contextWhse = window.localStorage.getItem('whse-code');
-      if (contextWhse === null) {
-        window.localStorage.setItem('whse-code', defaultWhse);
-      } else {
-        defaultWhse = contextWhse;
+    if (typeof window !== 'undefined') {
+      let defaultWhse = this.props.whses.length > 0 ? this.props.whses[0].code : null;
+      if (window.localStorage) {
+        const contextWhse = window.localStorage.getItem('whse-code');
+        if (contextWhse === null) {
+          window.localStorage.setItem('whse-code', defaultWhse);
+        } else {
+          defaultWhse = contextWhse;
+        }
       }
+      this.props.switchDefaultWhse(defaultWhse);
     }
-    this.props.switchDefaultWhse(defaultWhse);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whse.code !== this.props.whse.code) {
