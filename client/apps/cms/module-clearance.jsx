@@ -64,6 +64,7 @@ export default class Clearance extends React.Component {
       linkMenus.push(
         {
           single: true,
+          disabled: true,
           key: 'cms-ciq',
           path: '/clearance/ciq',
           icon: 'logixon icon-ciq',

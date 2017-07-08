@@ -66,7 +66,7 @@ export default class ShippingOrderList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'SO编号',
-    width: 120,
+    width: 160,
     dataIndex: 'so_no',
     render: o => (
       <a onClick={() => this.handlePreview()}>
@@ -86,20 +86,20 @@ export default class ShippingOrderList extends React.Component {
     title: '承运人',
     dataIndex: 'carrier',
   }, {
-    title: '创建时间',
-    width: 120,
-    dataIndex: 'created_date',
-    render: o => moment(o).format('MM.DD HH:mm'),
-  }, {
-    title: '要求交货时间',
+    title: '要求交货日期',
     dataIndex: 'expect_shipping_date',
-    width: 160,
+    width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: '发货时间',
     dataIndex: 'shipped_date',
-    width: 160,
+    width: 120,
     render: o => o && moment(o).format('MM.DD HH:mm'),
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+    render: o => moment(o).format('MM.DD HH:mm'),
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -305,10 +305,10 @@ export default class ShippingOrderList extends React.Component {
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">订单接收</RadioButton>
+            <RadioButton value="inWave">已加入波次计划</RadioButton>
             <RadioButton value="outbound">已释放</RadioButton>
             <RadioButton value="partial">部分出库</RadioButton>
             <RadioButton value="completed">订单完成</RadioButton>
-            <RadioButton value="inWave">已加入波次计划</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>

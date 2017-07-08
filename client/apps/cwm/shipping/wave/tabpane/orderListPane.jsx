@@ -47,7 +47,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: 'SO编号',
     dataIndex: 'so_no',
-    width: 120,
+    width: 160,
   }, {
     title: '订单类型',
     dataIndex: 'so_type',

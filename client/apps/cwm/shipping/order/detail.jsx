@@ -142,9 +142,7 @@ export default class CreateShippingOrder extends Component {
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
-            <Card>
-              <HeadForm soHead={soHead} form={form} editable={this.state.editable} />
-            </Card>
+            <HeadForm soHead={soHead} form={form} editable={this.state.editable} />
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
