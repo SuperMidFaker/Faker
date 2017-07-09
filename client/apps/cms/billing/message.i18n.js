@@ -3,6 +3,10 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   billing: {
     id: 'cms.billing',
+    defaultMessage: '账务中心',
+  },
+  bills: {
+    id: 'cms.billing.bills',
     defaultMessage: '账单',
   },
   receivable: {
@@ -14,7 +18,7 @@ export default defineMessages({
     defaultMessage: '应付',
   },
   createBilling: {
-    id: 'cms.billing.createBilling',
+    id: 'cms.billing.create.bill',
     defaultMessage: '创建账单',
   },
   nextStep: {

@@ -6,8 +6,12 @@ const messages = defineMessages({
     id: 'cms.expense.search',
     defaultMessage: '委托编号/发票号/提运单号',
   },
+  billing: {
+    id: 'cms.expense.billing',
+    defaultMessage: '账务中心',
+  },
   expense: {
-    id: 'cms.expense.title',
+    id: 'cms.expense',
     defaultMessage: '费用管理',
   },
   all: {

@@ -143,27 +143,22 @@ export default class Clearance extends React.Component {
       linkMenus.push({
         single: false,
         key: 'cms-billing',
-        path: '/clearance/billing',
         icon: 'logixon icon-finance',
         text: formatMsg(intl, 'billing'),
         sublinks: [{
           key: 'cms-billing-0',
-          group: formatMsg(intl, 'groupBilling'),
           path: '/clearance/billing/expense',
           text: formatMsg(intl, 'expense'),
         }, {
           key: 'cms-billing-1',
-          group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/receivable',
           text: formatMsg(intl, 'billingReceivable'),
         }, {
           key: 'cms-billing-2',
-          group: formatMsg(intl, 'groupInvoice'),
           path: '/clearance/billing/payable',
           text: formatMsg(intl, 'billingPayable'),
         }, {
           key: 'cms-billing-3',
-          group: formatMsg(intl, 'groupQuote'),
           path: '/clearance/billing/quote',
           text: formatMsg(intl, 'quote'),
         }],
@@ -172,23 +167,27 @@ export default class Clearance extends React.Component {
     if (hasPermission(privileges, { module: 'clearance', feature: 'settings' })) {
       linkMenus.push({
         single: false,
-        key: 'ccms-settings',
+        key: 'cms-settings',
         icon: 'logixon icon-setting-o',
         text: formatMsg(intl, 'settings'),
         sublinks: [{
-          key: 'ccms-settings-0',
-          path: '/clearance/resources',
-          text: formatMsg(intl, 'settingsResources'),
+          key: 'cms-settings-0',
+          path: '/clearance/settings/brokers',
+          text: formatMsg(intl, 'brokers'),
         }, {
-          key: 'ccms-settings-1',
+          key: 'cms-settings-1',
+          path: '/clearance/settings/traders',
+          text: formatMsg(intl, 'traders'),
+        }, {
+          key: 'cms-settings-2',
           path: '/clearance/settings/quotetemplates',
           text: formatMsg(intl, 'quoteTemplates'),
         }, {
-          key: 'ccms-settings-2',
+          key: 'cms-settings-3',
           path: '/clearance/settings/doctemplates',
           text: formatMsg(intl, 'docTemplates'),
         }, {
-          key: 'ccms-settings-3',
+          key: 'cms-settings-4',
           path: '/clearance/settings/preferences',
           text: formatMsg(intl, 'preferences'),
         }],

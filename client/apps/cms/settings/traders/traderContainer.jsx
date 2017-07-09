@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import UnitList from '../components/unitList';
+import UnitList from './list';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal } from 'common/reducers/cmsResources';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -20,7 +20,7 @@ function fetchData({ dispatch, state, cookie }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class UnitListContainer extends Component {
+export default class TraderListContainer extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     loaded: PropTypes.bool.isRequired,

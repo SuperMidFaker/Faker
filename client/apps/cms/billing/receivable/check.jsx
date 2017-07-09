@@ -15,7 +15,7 @@ function fetchData({ dispatch, params }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class CheckPayableBilling extends React.Component {
+export default class CheckReceivableBill extends React.Component {
   render() {
     return (
       <BillingFeeList type="receivable" operation="check" />

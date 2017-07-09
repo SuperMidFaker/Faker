@@ -109,13 +109,13 @@ const messages = defineMessages({
     id: 'cms.module.settings',
     defaultMessage: '设置',
   },
-  settingsResources: {
-    id: 'cms.module.settings.resources',
-    defaultMessage: '资源设置',
+  traders: {
+    id: 'cms.module.settings.traders',
+    defaultMessage: '进出口收发货人',
   },
   brokers: {
-    id: 'cms.module.settings.resources.brokers',
-    defaultMessage: '报关代理',
+    id: 'cms.module.settings.brokers',
+    defaultMessage: '报关报检代理',
   },
   settingsApp: {
     id: 'cms.module.settings.app',

@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Breadcrumb, Table, Button, Layout, Menu, Popconfirm } from 'antd';
+import { Breadcrumb, Table, Button, Layout, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
-import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import BrokerModal from '../modals/brokerModal';
+import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
-import { mapPartnerships } from '../util/dataMapping';
+import { mapPartnerships } from './dataMapping';
 
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 const rowSelection = {
   onSelect() {},
 };
@@ -116,7 +115,7 @@ export default class BrokerList extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              资源设置
+              设置
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               报关报检代理
@@ -130,27 +129,14 @@ export default class BrokerList extends Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <Layout>
-              <Sider className="nav-sider">
-                <Menu
-                  defaultSelectedKeys={['broker']}
-                  mode="inline"
-                >
-                  <Menu.Item key="broker"><NavLink to="/clearance/resources/broker">报关报检代理</NavLink></Menu.Item>
-                  <Menu.Item key="unit"><NavLink to="/clearance/resources/unit">进出口收发货人</NavLink></Menu.Item>
-                </Menu>
-              </Sider>
-              <Content className="nav-content">
-                <div className="toolbar">
-                  <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
-                    value={this.state.searchText} size="large"
-                  />
-                </div>
-                <div className="panel-body table-panel">
-                  <Table dataSource={data} columns={columns} rowSelection={rowSelection} />
-                </div>
-              </Content>
-            </Layout>
+            <div className="toolbar">
+              <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
+                value={this.state.searchText} size="large"
+              />
+            </div>
+            <div className="panel-body table-panel">
+              <Table dataSource={data} columns={columns} rowSelection={rowSelection} />
+            </div>
             <BrokerModal />
           </div>
         </Content>

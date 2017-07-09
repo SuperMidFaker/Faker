@@ -16,7 +16,7 @@ const RadioGroup = Radio.Group;
   operation: state.cmsResources.businessUnitModal.operation,
 }), { toggleBusinessUnitModal, addBusinessUnit, updateBusinessUnit })
 
-export default class BusinessUnitModal extends React.Component {
+export default class TraderModal extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool,

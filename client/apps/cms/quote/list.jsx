@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Button, Layout, Popconfirm, Radio, Tag, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Layout, Popconfirm, Radio, Tag, Tooltip, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -59,6 +59,7 @@ export default class QuoteList extends Component {
   state = {
     selectedRowKeys: [],
   }
+  msg = descriptor => formatMsg(this.props.intl, descriptor);
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadQuoteTable(params),
     resolve: result => result.data,
@@ -384,7 +385,14 @@ export default class QuoteList extends Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{msg('quoteManage')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('billing')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('quotation')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="all">{msg('filterAll')}</RadioButton>
             <RadioButton value="selling">{msg('filterSelling')}</RadioButton>

@@ -159,9 +159,15 @@ export default class AttachedDocsPane extends React.Component {
       },
     }];
     return (
-      <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => head.status > CMS_DECL_STATUS.reviewed.value && <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
-      />
+      <div className="pane">
+        <div className="panel-header">
+          {head.status > CMS_DECL_STATUS.reviewed.value &&
+          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>}
+        </div>
+        <div className="panel-body table-panel">
+          <Table pagination={false} columns={columns} dataSource={this.state.datas} />
+        </div>
+      </div>
     );
   }
 }

@@ -488,6 +488,9 @@ export default class ExpenseList extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
+              {this.msg('billing')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
               {this.msg('expense')}
             </Breadcrumb.Item>
           </Breadcrumb>

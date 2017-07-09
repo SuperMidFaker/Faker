@@ -26,7 +26,7 @@ export default defineMessages({
     defaultMessage: '新建委托',
   },
   modifyDelegation: {
-    id: 'cms.delegation.modify',
+    id: 'cms.delegation.edit',
     defaultMessage: '修改委托',
   },
   delgClearance: {

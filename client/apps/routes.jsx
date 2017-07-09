@@ -50,9 +50,10 @@ import * as CMSExportCustoms from './cms/export/customs';
 import * as CMSExportCiq from './cms/export/ciq';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
-import * as CMSSettings from './cms/settings';
 import * as CMSBilling from './cms/billing';
-import * as CMSResources from './cms/resources';
+import * as CMSSettings from './cms/settings';
+import * as CMSBrokers from './cms/settings/brokers';
+import * as CMSTraders from './cms/settings/traders';
 import * as CMSTradeItem from './cms/classification/tradeitem';
 import * as CMSClassificationHsCode from './cms/classification/hscode';
 import * as CMSClassificationSpecial from './cms/classification/special';
@@ -343,6 +344,8 @@ export default(store, cookie) => {
             </Route>
             <Route path="settings">
               <IndexRedirect to="/clearance/settings/quotetemplates" />
+              <Route path="brokers" component={CMSBrokers.List} />
+              <Route path="traders" component={CMSTraders.List} />
               <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
               <Route path="doctemplates" component={CMSSettings.DocumentTemplates} />
               <Route path="doctemplates/invoice/edit/:id" component={CMSSettings.InvoiceContent} />
@@ -358,15 +361,6 @@ export default(store, cookie) => {
               </Route>
               <Route path="hscode" component={CMSClassificationHsCode.List} />
               <Route path="special" component={CMSClassificationSpecial.Categories} />
-            </Route>
-            <Route path="resources">
-              <IndexRedirect to="/clearance/resources/broker" />
-              <Route path="broker">
-                <IndexRoute component={CMSResources.BrokerContainer} />
-              </Route>
-              <Route path="unit">
-                <IndexRoute component={CMSResources.UnitContainer} />
-              </Route>
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>

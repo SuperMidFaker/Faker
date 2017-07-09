@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import BrokerList from '../components/brokerList';
+import BrokerList from './list';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadPartners, changePartnerStatus, deletePartner } from 'common/reducers/partner';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -27,7 +27,7 @@ function fetchData({ dispatch, state }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class ProviderListContainer extends Component {
+export default class BrokerListContainer extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     loaded: PropTypes.bool.isRequired,
