@@ -157,97 +157,87 @@ export default class StatsCard extends Component {
       </div>);
     return (
       <Card title={this.msg('stats')}
-        extra={datePicker}
+        extra={datePicker} noHovering bodyStyle={{ padding: 0 }}
       >
-        <ul className="statistics-columns">
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('total')}</h4>
-              <div className="data">
-                <div className="data-num lg text-emphasis">
-                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('total')} >{total}</Link>
-                </div>
-                <div className="data-extra">
-                  {sym}{totalValue}
-                  <div>{this.msg('totalValue')}</div>
-                </div>
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('total')}</h4>
+            <div className="data">
+              <div className="data-num lg text-emphasis">
+                <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('total')} >{total}</Link>
+              </div>
+              <div className="data-extra">
+                {sym}{totalValue}
+                <div>{this.msg('totalValue')}</div>
               </div>
             </div>
-          </li>
-          <li className="statistics-divider" />
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('sumImport')}</h4>
-              <div className="data">
-                <div className="data-num lg text-normal">
-                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumImport')} >{sumImport}</Link>
-                </div>
-                <div className="data-extra">
-                  {sym}{sumImportValue}
-                  <div>{this.msg('sumImportValue')}</div>
-                </div>
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '35%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('sumImport')}</h4>
+            <div className="data">
+              <div className="data-num lg text-normal">
+                <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumImport')} >{sumImport}</Link>
+              </div>
+              <div className="data-extra">
+                {sym}{sumImportValue}
+                <div>{this.msg('sumImportValue')}</div>
               </div>
             </div>
-          </li>
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('sumExport')}</h4>
-              <div className="data">
-                <div className="data-num lg text-normal">
-                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumExport')} >{sumExport}</Link>
-                </div>
-                <div className="data-extra">
-                  {sym}{sumExportValue}
-                  <div>{this.msg('sumExportValue')}</div>
-                </div>
+          </div>
+          <div className="statistics-cell">
+            <h4>{this.msg('sumExport')}</h4>
+            <div className="data">
+              <div className="data-num lg text-normal">
+                <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumExport')} >{sumExport}</Link>
+              </div>
+              <div className="data-extra">
+                {sym}{sumExportValue}
+                <div>{this.msg('sumExportValue')}</div>
               </div>
             </div>
-          </li>
-          <li className="statistics-divider" />
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('processing')}</h4>
-              <div className="data">
-                <div className="data-num lg text-warning">
-                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('processing')} >{processing}</Link>
-                </div>
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '30%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('processing')}</h4>
+            <div className="data">
+              <div className="data-num lg text-warning">
+                <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('processing')} >{processing}</Link>
               </div>
             </div>
-          </li>
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('declared')}</h4>
-              <div className="data">
-                <div className="data-num lg text-info">
-                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('declared')} >{declared}</Link>
-                </div>
+          </div>
+
+          <div className="statistics-cell">
+            <h4>{this.msg('declared')}</h4>
+            <div className="data">
+              <div className="data-num lg text-info">
+                <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('declared')} >{declared}</Link>
               </div>
             </div>
-          </li>
-          <li>
-            <div className="statistics-cell">
-              <h4>{this.msg('released')}</h4>
-              <div className="data">
-                <div className="data-num lg text-success">
-                  <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('released')}>{released}</Link>
-                </div>
+          </div>
+          <div className="statistics-cell">
+            <h4>{this.msg('released')}</h4>
+            <div className="data">
+              <div className="data-num lg text-success">
+                <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('released')}>{released}</Link>
               </div>
             </div>
-          </li>
-          <li className="statistics-divider" />
-          <li>
-            <div className="statistics-cell" style={{ width: 160 }}>
-              <h4>{this.msg('inspected')}</h4>
-              <div className="data">
-                <div className="data-num lg text-error">{inspected}</div>
-                <div className="data-extra">
-                  {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '15%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('inspected')}</h4>
+            <div className="data">
+              <div className="data-num lg text-error">{inspected}</div>
+              <div className="data-extra">
+                {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%
                   <div>{this.msg('inspectedRate')}</div>
-                </div>
               </div>
             </div>
-          </li>
-        </ul>
+          </div>
+        </Card.Grid>
       </Card>
     );
   }

@@ -30,7 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 ]);
 
 const initialState = {
-  listView: 'delegation',
+
   delegationsReload: false,
   delegationlist: {
     totalCount: 0,
@@ -104,7 +104,6 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         delegationlist: { ...state.delegationlist, loading: true },
         delegationsReload: false,
-        listView: 'delegation',
         listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_ACCEPT_SUCCEED: {
       return { ...state, delegationlist: { ...action.result.data, loading: false } };
@@ -116,7 +115,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CIQ:
       return { ...state,
         ciqlist: { ...state.ciqlist, loading: true },
-        listView: 'ciq',
         listFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_CIQ_SUCCEED: {
       return { ...state, ciqlist: { ...action.result.data, loading: false } };

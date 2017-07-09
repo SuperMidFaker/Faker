@@ -5,7 +5,7 @@ export default defineMessages({
     id: 'cms.forms.delg.no',
     defaultMessage: '委托编号',
   },
-  delgClient: {
+  customer: {
     id: 'cms.forms.delg.client',
     defaultMessage: '客户',
   },

@@ -47,7 +47,7 @@ export default class Clearance extends React.Component {
         single: true,
         key: 'cms-delegation',
         path: '/clearance/delegation',
-        icon: 'anticon anticon-inbox',
+        icon: 'logixon icon-business',
         text: formatMsg(intl, 'delegation'),
       }
     );

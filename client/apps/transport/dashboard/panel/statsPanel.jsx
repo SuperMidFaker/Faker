@@ -60,84 +60,74 @@ export default class StatsPanel extends Component {
     return (
       <Card title={<span>运输统计<Tooltip title="以计划提货时间为基准，一段时间内运单的总票数=未起运的数量+在途的数量+已送达的数量">
         <Icon type="question-circle-o" style={{ marginLeft: 8 }} />
-      </Tooltip></span>} extra={datePicker}
+      </Tooltip></span>} extra={datePicker} noHovering bodyStyle={{ padding: 0 }}
       >
-        <ul className="statistics-columns">
-          <li className="statistics-col">
-            <div className="statistics-cell">
-              <div className="label">{this.msg('total')}</div>
-              <div className="data">
-                <div className="data-num lg text-emphasis">
-                  <Link to={this.logsLocation('total')}>{total}</Link>
-                </div>
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <div className="label">{this.msg('total')}</div>
+            <div className="data">
+              <div className="data-num lg text-emphasis">
+                <Link to={this.logsLocation('total')}>{total}</Link>
               </div>
             </div>
-          </li>
-          <li className="statistics-divider" />
-          <li className="statistics-col">
-            <div className="statistics-cell">
-              <div className="label">{this.msg('atOrigin')}</div>
-              <div className="data">
-                <div className="data-num lg text-warning">
-                  <Link to={this.logsLocation('atOrigin')} >{atOrigin}</Link>
-                </div>
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '50%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <div className="label">{this.msg('atOrigin')}</div>
+            <div className="data">
+              <div className="data-num lg text-warning">
+                <Link to={this.logsLocation('atOrigin')} >{atOrigin}</Link>
               </div>
             </div>
-          </li>
-          <li className="statistics-col">
-            <div className="statistics-cell">
-              <div className="label">{this.msg('intransit')}</div>
-              <div className="data">
-                <div className="data-num lg text-info">
-                  <Link to={this.logsLocation('intransit')}>{intransit}</Link>
-                </div>
+          </div>
+          <div className="statistics-cell">
+            <div className="label">{this.msg('intransit')}</div>
+            <div className="data">
+              <div className="data-num lg text-info">
+                <Link to={this.logsLocation('intransit')}>{intransit}</Link>
               </div>
             </div>
-          </li>
-          <li className="statistics-col">
-            <div className="statistics-cell">
-              <div className="label">{this.msg('arrival')}</div>
-              <div className="data">
-                <div className="data-num lg text-success">
-                  <Link to={this.logsLocation('arrival')}>{arrival}</Link>
-                </div>
+          </div>
+          <div className="statistics-cell">
+            <div className="label">{this.msg('arrival')}</div>
+            <div className="data">
+              <div className="data-num lg text-success">
+                <Link to={this.logsLocation('arrival')}>{arrival}</Link>
               </div>
             </div>
-          </li>
-          <li className="statistics-divider" />
-          <li className="statistics-col">
-            <div className="statistics-cell">
-              <div className="label">{this.msg('overtime')}
-                <Tooltip title="未能按承诺时效送达的运单数量及占总票数的比例">
-                  <Icon type="question-circle-o" />
-                </Tooltip>
-              </div>
-              <div className="data">
-                <div className="data-num lg text-error"><Link to={this.logsLocation('overtime')}>{overtime}</Link></div>
-                <div className="data-extra">
-                  {total > 0 ? (overtime / total * 100).toFixed(2) : 0}%
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '30%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <div className="label">{this.msg('overtime')}
+              <Tooltip title="未能按承诺时效送达的运单数量及占总票数的比例">
+                <Icon type="question-circle-o" />
+              </Tooltip>
+            </div>
+            <div className="data">
+              <div className="data-num lg text-error"><Link to={this.logsLocation('overtime')}>{overtime}</Link></div>
+              <div className="data-extra">
+                {total > 0 ? (overtime / total * 100).toFixed(2) : 0}%
                   <div>超时率</div>
-                </div>
               </div>
             </div>
-          </li>
-          <li className="statistics-col">
-            <div className="statistics-cell">
-              <div className="label">{this.msg('exception')}
-                <Tooltip title="发生过异常事件的运单数量及占总票数的比例">
-                  <Icon type="question-circle-o" />
-                </Tooltip>
-              </div>
-              <div className="data">
-                <div className="data-num lg text-error"><Link to={this.logsLocation('exception')}>{exception}</Link></div>
-                <div className="data-extra">
-                  {total > 0 ? (exception / total * 100).toFixed(2) : 0}%
+          </div>
+          <div className="statistics-cell">
+            <div className="label">{this.msg('exception')}
+              <Tooltip title="发生过异常事件的运单数量及占总票数的比例">
+                <Icon type="question-circle-o" />
+              </Tooltip>
+            </div>
+            <div className="data">
+              <div className="data-num lg text-error"><Link to={this.logsLocation('exception')}>{exception}</Link></div>
+              <div className="data-extra">
+                {total > 0 ? (exception / total * 100).toFixed(2) : 0}%
                   <div>异常率</div>
-                </div>
               </div>
             </div>
-          </li>
-        </ul>
+          </div>
+        </Card.Grid>
       </Card>);
   }
 }

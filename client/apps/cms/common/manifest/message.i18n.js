@@ -33,7 +33,7 @@ export default defineMessages({
     id: 'cms.manifest.delg.no',
     defaultMessage: '委托编号',
   },
-  delgClient: {
+  customer: {
     id: 'cms.manifest.delg.client',
     defaultMessage: '客户',
   },

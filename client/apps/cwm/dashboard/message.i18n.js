@@ -38,9 +38,9 @@ const messages = defineMessages({
     id: 'cwm.dashboard.stats.shipping.picking.completed',
     defaultMessage: '拣货完成数',
   },
-  packingVerified: {
-    id: 'cwm.dashboard.stats.shipping.packing.verified',
-    defaultMessage: '复核装箱数',
+  shippingCompleted: {
+    id: 'cwm.dashboard.stats.shipping.completed',
+    defaultMessage: '发货完成数',
   },
   statsTasks: {
     id: 'cwm.dashboard.stats.tasks',

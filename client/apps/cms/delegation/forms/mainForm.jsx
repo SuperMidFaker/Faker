@@ -117,7 +117,7 @@ export default class MainForm extends Component {
         <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('delgClient')} style={{ display: customerName.display }}>
+              <FormItem label={this.msg('customer')} style={{ display: customerName.display }}>
                 {getFieldDecorator('customer_name', {
                   rules: [{
                     required: customerName.required, message: '客户名称必填',

@@ -65,7 +65,7 @@ export default class ShippingStatsCard extends Component {
           </li>
           <li className="col-8">
             <div className="statistics-cell">
-              <h4>{this.msg('packingVerified')}</h4>
+              <h4>{this.msg('shippingCompleted')}</h4>
               <div className="data">
                 <div className="data-num lg text-success">29</div>
               </div>
