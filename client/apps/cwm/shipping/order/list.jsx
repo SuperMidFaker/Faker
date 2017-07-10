@@ -24,12 +24,12 @@ const RadioButton = Radio.Button;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-function fetchData({ state, dispatch, location }) {
+function fetchData({ state, dispatch }) {
   dispatch(loadSos({
     whseCode: state.cwmContext.defaultWhse.code,
     pageSize: state.cwmShippingOrder.solist.pageSize,
     current: state.cwmShippingOrder.solist.current,
-    filters: { ...state.cwmShippingOrder.soFilters, status: location.query.status || state.cwmShippingOrder.soFilters.status },
+    filters: state.cwmShippingOrder.soFilters,
   }));
 }
 @connectFetch()(fetchData)
@@ -65,24 +65,6 @@ export default class ShippingOrderList extends React.Component {
     selectedRows: [],
     searchInput: '',
     createWaveEnable: true,
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location.query.status !== this.props.location.query.status) {
-      const filters = { ...this.props.filters, status: nextProps.location.query.status, isInWave: false };
-      const whseCode = this.props.defaultWhse.code;
-      this.props.loadSos({
-        whseCode,
-        pageSize: this.props.solist.pageSize,
-        current: this.props.solist.current,
-        filters,
-      }).then((result) => {
-        if (!result.error) {
-          this.setState({
-            selectedRowKeys: [],
-          });
-        }
-      });
-    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -212,10 +194,13 @@ export default class ShippingOrderList extends React.Component {
     this.context.router.push(link);
   }
   handleStatusChange = (ev) => {
-    const location = this.props.location;
-    this.context.router.push({
-      pathname: location.pathname,
-      query: { ...location.query, status: ev.target.value },
+    const filters = { ...this.props.filters, status: ev.target.value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
     });
   }
   handleOwnerChange = (value) => {

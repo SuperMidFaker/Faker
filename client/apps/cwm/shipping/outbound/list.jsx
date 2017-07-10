@@ -24,13 +24,13 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch, location }) {
+function fetchData({ state, dispatch }) {
   dispatch(loadOutbounds({
     whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
     pageSize: state.cwmOutbound.outbound.pageSize,
     current: state.cwmOutbound.outbound.current,
-    filters: { ...state.cwmOutbound.outboundFilters, status: location.query.status || state.cwmOutbound.outboundFilters.status },
+    filters: state.cwmOutbound.outboundFilters,
   }));
 }
 @connectFetch()(fetchData)
@@ -65,7 +65,7 @@ export default class OutboundList extends React.Component {
     searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || nextProps.location.query.status !== this.props.location.query.status) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
       const filters = { ...this.props.filters, status: nextProps.location.query.status };
       const whseCode = this.props.defaultWhse.code;
       this.props.loadOutbounds({
@@ -192,10 +192,14 @@ export default class OutboundList extends React.Component {
     this.props.showDock();
   }
   handleStatusChange = (ev) => {
-    const location = this.props.location;
-    this.context.router.push({
-      pathname: location.pathname,
-      query: { ...location.query, status: ev.target.value },
+    const filters = { ...this.props.filters, status: ev.target.value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadOutbounds({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.outbound.pageSize,
+      current: this.props.outbound.current,
+      filters,
     });
   }
   handleReceive = (row) => {
