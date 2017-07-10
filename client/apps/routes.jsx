@@ -470,6 +470,7 @@ export default(store, cookie) => {
                 </Route>
                 <Route path="release" >
                   <IndexRoute component={CWMSupervisionSHFTZRelease.List} />
+                  <Route path=":soNo" component={CWMSupervisionSHFTZRelease.Detail} />
                 </Route>
                 <Route path="batch" >
                   <IndexRoute component={CWMSupervisionSHFTZBatch.List} />

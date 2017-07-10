@@ -13,6 +13,10 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
   'FILE_ERS', 'FILE_ERS_SUCCEED', 'FILE_ERS_FAIL',
   'QUERY_ERI', 'QUERY_ERI_SUCCEED', 'QUERY_ERI_FAIL',
+  'REL_DETAILS_LOAD', 'REL_DETAILS_LOAD_SUCCEED', 'REL_DETAILS_LOAD_FAIL',
+  'UPDATE_RRFIELD', 'UPDATE_RRFIELD_SUCCEED', 'UPDATE_RRFIELD_FAIL',
+  'FILE_RRS', 'FILE_RRS_SUCCEED', 'FILE_RRS_FAIL',
+  'QUERY_RRI', 'QUERY_RRI_SUCCEED', 'QUERY_RRI_FAIL',
 ]);
 
 const initialState = {
@@ -43,6 +47,8 @@ const initialState = {
   },
   entry_asn: {},
   entry_regs: [],
+  rel_so: {},
+  rel_regs: [],
   params: {
     currencies: [],
     units: [],
@@ -77,7 +83,23 @@ export default function reducer(state = initialState, action) {
     case actionTypes.FILE_ERS_SUCCEED:
       return { ...state,
         entry_asn: { ...state.entry_asn, reg_status: action.result.data.status },
-        entry_regs: state.entry_regs.map(er => ({ ...er, ftz_ent_no: action.result.data.preSeqEnts[er.pre_entry_seq_no] })),
+        entry_regs: state.entry_regs.map(er => ({ ...er, ftz_ent_no: action.result.data.preSeqEnts[er.cus_decl_no] })),
+      };
+    case actionTypes.REL_DETAILS_LOAD_SUCCEED:
+      return { ...state, ...action.result.data };
+    case actionTypes.UPDATE_RRFIELD_SUCCEED:
+      return { ...state,
+        rel_regs: state.rel_regs.map((rr) => {
+          if (rr.pre_entry_seq_no === action.data.pre_entry_seq_no) {
+            return { ...rr, [action.data.field]: action.data.value };
+          } else {
+            return rr;
+          }
+        }) };
+    case actionTypes.FILE_RRS_SUCCEED:
+      return { ...state,
+        rel_so: { ...state.rel_so, reg_status: action.result.data.status },
+        rel_regs: state.rel_regs.map(rr => ({ ...rr, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
       };
     default:
       return state;
@@ -244,6 +266,66 @@ export function queryEntryRegInfos(asnNo, whseCode) {
       endpoint: 'v1/cwm/shftz/entry/regs/query',
       method: 'post',
       data: { asn_no: asnNo, whse: whseCode },
+    },
+  };
+}
+
+export function loadRelDetails(soNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REL_DETAILS_LOAD,
+        actionTypes.REL_DETAILS_LOAD_SUCCEED,
+        actionTypes.REL_DETAILS_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/rel/reg/details',
+      method: 'get',
+      params: { so_no: soNo },
+    },
+  };
+}
+
+export function updateRelReg(preRegNo, field, value) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_RRFIELD,
+        actionTypes.UPDATE_RRFIELD_SUCCEED,
+        actionTypes.UPDATE_RRFIELD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/field/value',
+      method: 'post',
+      data: { pre_entry_seq_no: preRegNo, field, value },
+    },
+  };
+}
+
+export function fileRelRegs(soNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILE_RRS,
+        actionTypes.FILE_RRS_SUCCEED,
+        actionTypes.FILE_RRS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/regs/file',
+      method: 'post',
+      data: { so_no: soNo, whse_code: whseCode },
+    },
+  };
+}
+
+export function queryRelRegInfos(soNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUERY_RRI,
+        actionTypes.QUERY_RRI_SUCCEED,
+        actionTypes.QUERY_RRI_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/regs/query',
+      method: 'post',
+      data: { so_no: soNo, whse: whseCode },
     },
   };
 }

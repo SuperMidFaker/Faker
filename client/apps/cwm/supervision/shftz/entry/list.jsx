@@ -126,7 +126,7 @@ export default class SHFTZEntryList extends React.Component {
       if (record.status === 0) {
         return (<span><RowUpdater onHit={this.handleDetail} label="发送" row={record} /></span>);
       } else if (record.status === 1) {
-        return (<span><RowUpdater label="获取状态" row={record} /></span>);
+        return (<span><RowUpdater label="获取状态" row={record} onHit={this.handleDetail} /></span>);
       } else if (record.status === 2) {
         return (<span><RowUpdater onHit={this.handleDetail} label="查看" row={record} /></span>);
       }
