@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Breadcrumb, Table, Button, Layout, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
+import moment from 'moment';
 import SearchBar from 'client/components/search-bar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BusinessUnitModal from './modal/traderModal';
-import { I_E_TYPES } from 'common/constants';
 
 const { Header, Content } = Layout;
 const rowSelection = {
@@ -38,7 +38,7 @@ export default class TraderList extends Component {
       }
     });
     const columns = [{
-      title: '公司名称',
+      title: '企业名称',
       dataIndex: 'comp_name',
       key: 'comp_name',
       width: 240,
@@ -53,19 +53,36 @@ export default class TraderList extends Component {
       key: 'customs_code',
       width: 120,
     }, {
-      title: '进出口类型',
-      dataIndex: 'i_e_type',
-      key: 'i_e_type',
-      width: 100,
-      render: (col) => {
-        const ieType = I_E_TYPES.find(item => item.key === col);
-        if (ieType) return ieType.value;
-        else return '';
+      title: '注册海关',
+      dataIndex: 'reg_customs',
+      key: 'reg_customs',
+      width: 120,
+    }, {
+      title: '经营类别',
+      dataIndex: 'business_type',
+      key: 'business_type',
+      width: 120,
+    }, {
+      title: '信用等级',
+      dataIndex: 'credit_level',
+      key: 'credit_level',
+    }, {
+      title: '创建日期',
+      dataIndex: 'created_date',
+      key: 'created_date',
+      width: 120,
+      render(o) {
+        return moment(o).format('YYYY/MM/DD HH:mm');
       },
+    }, {
+      title: '创建人',
+      dataIndex: 'created_by',
+      key: 'created_by',
+      width: 120,
     }, {
       title: '操作',
       dataIndex: 'id',
-      width: 100,
+      width: 80,
       key: 'id',
       render: (_, record) => (
         <span>

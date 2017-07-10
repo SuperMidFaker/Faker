@@ -7,6 +7,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
+import PackingDetailsPane from './tabpane/packingDetailsPane';
+import ShippingDetailsPane from './tabpane/shippingDetailsPane';
 import { loadReceiveModal } from 'common/reducers/cwmReceive';
 import { loadOutboundHead, updateOutboundMode } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
@@ -201,6 +203,12 @@ export default class OutboundDetail extends Component {
                 </TabPane>
                 <TabPane tab="拣货明细" key="pickingDetails">
                   <PickingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                </TabPane>
+                <TabPane tab="装箱明细" key="packingDetails">
+                  <PackingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                </TabPane>
+                <TabPane tab="发货明细" key="shippingDetails">
+                  <ShippingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
                 </TabPane>
               </Tabs>
             </Card>

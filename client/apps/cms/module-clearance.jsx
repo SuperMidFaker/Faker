@@ -179,10 +179,6 @@ export default class Clearance extends React.Component {
           path: '/clearance/settings/traders',
           text: formatMsg(intl, 'traders'),
         }, {
-          key: 'cms-settings-2',
-          path: '/clearance/settings/quotetemplates',
-          text: formatMsg(intl, 'quoteTemplates'),
-        }, {
           key: 'cms-settings-3',
           path: '/clearance/settings/doctemplates',
           text: formatMsg(intl, 'docTemplates'),

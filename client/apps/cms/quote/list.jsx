@@ -142,6 +142,9 @@ export default class QuoteList extends Component {
   handleQuoteView = (row) => {
     this.context.router.push(`/clearance/billing/quote/view/${row.quote_no}/${row.version}`);
   }
+  handleQuoteTemplate = () => {
+    this.context.router.push('/clearance/billing/quote/template');
+  }
   handleDeleteQuote = (quoteNo) => {
     this.props.deleteQuote(quoteNo).then((result) => {
       if (result.error) {
@@ -413,7 +416,7 @@ export default class QuoteList extends Component {
             <div className="toolbar">
               <div className="toolbar-right">
                 <Tooltip title="报价模板设置">
-                  <Button size="large" icon="setting" />
+                  <Button size="large" icon="setting" onClick={this.handleQuoteTemplate} />
                 </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

@@ -66,7 +66,7 @@ export default class ShippingOrderList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'SO编号',
-    width: 160,
+    width: 180,
     dataIndex: 'so_no',
     render: o => (
       <a onClick={() => this.handlePreview()}>

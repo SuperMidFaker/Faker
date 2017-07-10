@@ -78,14 +78,14 @@ export default class OutboundList extends React.Component {
   columns = [{
     title: 'SO编号',
     dataIndex: 'so_no',
-    width: 200,
+    width: 180,
     render: o => (
       <a onClick={this.handlePreview}>
         {o}
       </a>),
   }, {
     title: '波次号',
-    width: 120,
+    width: 180,
     dataIndex: 'wave_no',
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,

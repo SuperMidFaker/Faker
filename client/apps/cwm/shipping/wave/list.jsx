@@ -62,7 +62,7 @@ export default class WaveList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '波次编号',
-    width: 160,
+    width: 180,
     dataIndex: 'wave_no',
     render: o => (
       <a onClick={() => this.handlePreview()}>

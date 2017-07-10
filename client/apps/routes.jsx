@@ -340,13 +340,13 @@ export default(store, cookie) => {
                 <IndexRoute component={CMSQuote.List} />
                 <Route path="edit/:quoteno/:version" component={CMSQuote.Edit} />
                 <Route path="view/:quoteno/:version" component={CMSQuote.View} />
+                <Route path="template" component={CMSQuote.Template} />
               </Route>
             </Route>
             <Route path="settings">
               <IndexRedirect to="/clearance/settings/quotetemplates" />
               <Route path="brokers" component={CMSBrokers.List} />
               <Route path="traders" component={CMSTraders.List} />
-              <Route path="quotetemplates" component={CMSSettings.QuoteTemplates} />
               <Route path="doctemplates" component={CMSSettings.DocumentTemplates} />
               <Route path="doctemplates/invoice/edit/:id" component={CMSSettings.InvoiceContent} />
               <Route path="doctemplates/contract/edit/:id" component={CMSSettings.ContractContent} />

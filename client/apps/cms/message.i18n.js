@@ -117,17 +117,13 @@ const messages = defineMessages({
     id: 'cms.module.settings.brokers',
     defaultMessage: '报关报检代理',
   },
-  settingsApp: {
-    id: 'cms.module.settings.app',
-    defaultMessage: '应用设置',
-  },
-  quoteTemplates: {
-    id: 'cms.module.settings.quote.templates',
-    defaultMessage: '费用模板',
-  },
   docTemplates: {
     id: 'cms.module.settings.doc.templates',
     defaultMessage: '单据模板',
+  },
+  preferences: {
+    id: 'cms.module.settings.preferences',
+    defaultMessage: '偏好设置',
   },
 });
 export default messages;

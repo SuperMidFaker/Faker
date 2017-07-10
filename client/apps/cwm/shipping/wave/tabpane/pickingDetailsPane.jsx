@@ -54,6 +54,10 @@ export default class PickingDetailsPane extends React.Component {
     width: 200,
     render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
+    title: '拣货数量',
+    width: 200,
+    render: (o, record) => (<QuantityInput packQty={record.picked_pack_qty} pcsQty={record.picked_qty} />),
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 120,

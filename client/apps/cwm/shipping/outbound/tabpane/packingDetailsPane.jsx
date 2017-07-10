@@ -23,7 +23,7 @@ import { CWM_OUTBOUND_STATUS } from 'common/constants';
   }),
   { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc }
 )
-export default class PickingDetailsPane extends React.Component {
+export default class PackingDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
@@ -45,6 +45,11 @@ export default class PickingDetailsPane extends React.Component {
     }
   }
   columns = [{
+    title: '箱号',
+    dataIndex: 'packed_no',
+    width: 150,
+    fixed: 'left',
+  }, {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 120,
@@ -58,22 +63,9 @@ export default class PickingDetailsPane extends React.Component {
     dataIndex: 'external_lot_no',
     width: 100,
   }, {
-    title: '库位',
-    dataIndex: 'location',
-    width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
-  }, {
     title: '分配数量',
     width: 200,
     render: (o, record) => (<QuantityInput size="small" packQty={record.alloc_qty / record.sku_pack_qty} pcsQty={record.alloc_qty} disabled />),
-  }, {
-    title: '拣货数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.picked_qty / record.sku_pack_qty} pcsQty={record.picked_qty} disabled />),
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -92,36 +84,18 @@ export default class PickingDetailsPane extends React.Component {
       }
     },
   }, {
-    title: '分配人员',
+    title: '复核装箱人员',
     width: 100,
-    dataIndex: 'alloc_by',
+    dataIndex: 'chkpacked_by',
     render: (o) => {
       if (o) {
         return (<div><Icon type="user" />{o}</div>);
       }
     },
   }, {
-    title: '分配时间',
+    title: '复核装箱时间',
     width: 100,
-    dataIndex: 'alloc_date',
-    render: (o) => {
-      if (o) {
-        return (<div>{moment(o).format('MM.DD HH:mm')}</div>);
-      }
-    },
-  }, {
-    title: '拣货人员',
-    width: 100,
-    dataIndex: 'picked_by',
-    render: (o) => {
-      if (o) {
-        return (<div><Icon type="user" />{o}</div>);
-      }
-    },
-  }, {
-    title: '拣货时间',
-    width: 100,
-    dataIndex: 'picked_date',
+    dataIndex: 'chkpacked_date',
     render: (o) => {
       if (o) {
         return (<div>{moment(o).format('MM.DD HH:mm')}</div>);
