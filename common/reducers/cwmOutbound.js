@@ -55,8 +55,9 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    loading: true,
   },
-  outboundFilters: { status: 'create', ownerCode: 'all' },
+  outboundFilters: { status: 'all', ownerCode: 'all' },
   outboundFormHead: {},
   outboundProducts: [],
   outboundReload: false,
@@ -84,9 +85,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_SHIPPING_MODAL:
       return { ...state, shippingModal: { visible: false } };
     case actionTypes.LOAD_OUTBOUNDS:
-      return { ...state, outboundFilters: JSON.parse(action.params.filters) };
+      return { ...state, outboundFilters: JSON.parse(action.params.filters), outbound: { ...state.outbound, loading: true } };
     case actionTypes.LOAD_OUTBOUNDS_SUCCEED:
-      return { ...state, outbound: action.result.data };
+      return { ...state, outbound: { ...action.result.data, loading: false } };
     case actionTypes.LOAD_OUTBOUND_HEAD_SUCCEED:
       return { ...state, outboundFormHead: action.result.data, outboundReload: false };
     case actionTypes.LOAD_OUTBOUND_PRODUCTS_SUCCEED:

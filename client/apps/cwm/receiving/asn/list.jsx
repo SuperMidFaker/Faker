@@ -21,12 +21,12 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch }) {
+function fetchData({ state, dispatch, location }) {
   dispatch(loadAsnLists({
     whseCode: state.cwmContext.defaultWhse.code,
     pageSize: state.cwmReceive.asnlist.pageSize,
     current: state.cwmReceive.asnlist.current,
-    filters: state.cwmReceive.asnFilters,
+    filters: { ...state.cwmReceive.asnFilters, status: location.query.status || state.cwmReceive.asnFilters.status },
   }));
 }
 
@@ -39,6 +39,7 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.asnFilters,
     asnlist: state.cwmReceive.asnlist,
+    loading: state.cwmReceive.asnlist.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
@@ -59,6 +60,18 @@ export default class ReceivingASNList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.query.status !== this.props.location.query.status) {
+      const filters = { ...this.props.filters, status: nextProps.location.query.status };
+      const whseCode = this.props.defaultWhse.code;
+      this.props.loadAsnLists({
+        whseCode,
+        pageSize: this.props.asnlist.pageSize,
+        current: this.props.asnlist.current,
+        filters,
+      });
+    }
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -228,13 +241,10 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
-      filters,
+    const location = this.props.location;
+    this.context.router.push({
+      pathname: location.pathname,
+      query: { ...location.query, status: ev.target.value },
     });
   }
   handleOwnerChange = (value) => {
@@ -258,7 +268,7 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, owners, filters } = this.props;
+    const { whses, defaultWhse, owners, filters, loading } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -339,7 +349,7 @@ export default class ReceivingASNList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 260), 0) }}
+                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 260), 0) }} loading={loading}
               />
             </div>
           </div>

@@ -23,13 +23,13 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch }) {
+function fetchData({ state, dispatch, location }) {
   dispatch(loadInbounds({
     whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
     pageSize: state.cwmReceive.inbound.pageSize,
     current: state.cwmReceive.inbound.current,
-    filters: state.cwmReceive.inboundFilters,
+    filters: { ...state.cwmReceive.inboundFilters, status: location.query.status || state.cwmReceive.inboundFilters.status },
   }));
 }
 @connectFetch()(fetchData)
@@ -41,6 +41,7 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.inboundFilters,
     inbound: state.cwmReceive.inbound,
+    loading: state.cwmReceive.inbound.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
@@ -62,13 +63,14 @@ export default class ReceivingInboundList extends React.Component {
     selectedRowKeys: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || nextProps.location.query.status !== this.props.location.query.status) {
+      const filters = { ...this.props.filters, status: nextProps.location.query.status };
       nextProps.loadInbounds({
         whseCode: nextProps.defaultWhse.code,
         tenantId: nextProps.tenantId,
         pageSize: nextProps.inbound.pageSize,
         current: nextProps.inbound.current,
-        filters: nextProps.filters,
+        filters,
       });
     }
   }
@@ -163,13 +165,10 @@ export default class ReceivingInboundList extends React.Component {
     });
   }
   handleStatusChange = (e) => {
-    const filters = { ...this.props.filters, status: e.target.value };
-    this.props.loadInbounds({
-      whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.inbound.pageSize,
-      current: this.props.inbound.current,
-      filters,
+    const location = this.props.location;
+    this.context.router.push({
+      pathname: location.pathname,
+      query: { ...location.query, status: e.target.value },
     });
   }
   handlePreview = (asnNo) => {
@@ -205,7 +204,7 @@ export default class ReceivingInboundList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, owners, filters } = this.props;
+    const { whses, defaultWhse, owners, filters, loading } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -278,7 +277,7 @@ export default class ReceivingInboundList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
               />
             </div>
           </div>

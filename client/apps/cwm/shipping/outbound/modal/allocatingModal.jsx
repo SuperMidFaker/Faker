@@ -40,6 +40,7 @@ export default class AllocatingModal extends Component {
     modalWidth: 1000,
     inventoryData: [],
     allocatedData: [],
+    outboundProduct: {},
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -47,9 +48,12 @@ export default class AllocatingModal extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.outboundNo !== this.props.outboundNo || nextProps.outboundProduct.seq_no !== this.props.outboundProduct.seq_no) {
+    if (nextProps.visible && nextProps.visible !== this.props.visible) {
       this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters);
       this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
+      this.setState({
+        outboundProduct: nextProps.outboundProduct,
+      });
     }
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
@@ -217,6 +221,7 @@ export default class AllocatingModal extends Component {
   handleAddAllocate = (index) => {
     const inventoryData = [...this.state.inventoryData];
     const allocatedData = [...this.state.allocatedData];
+    const outboundProduct = { ...this.state.outboundProduct };
     const allocatedOne = inventoryData[index];
     const allocatedAmount = allocatedData.reduce((pre, cur) => (pre + cur.allocated_qty), 0);
     if (allocatedAmount + (allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty) > this.props.outboundProduct.order_qty) {
@@ -229,20 +234,27 @@ export default class AllocatingModal extends Component {
       allocated_qty: allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty,
       allocated_pack_qty: allocatedOne.allocated_pack_qty ? Number(allocatedOne.allocated_pack_qty) : allocatedOne.avail_pack_qty,
     });
+    outboundProduct.alloc_qty += allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty;
+    outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / allocatedOne.sku_pack_qty;
     this.setState({
       inventoryData,
       allocatedData,
+      outboundProduct,
     });
   }
   handleDeleteAllocated = (index) => {
     const inventoryData = [...this.state.inventoryData];
     const allocatedData = [...this.state.allocatedData];
+    const outboundProduct = { ...this.state.outboundProduct };
     const deleteOne = allocatedData[index];
     allocatedData.splice(index, 1);
+    outboundProduct.alloc_qty -= deleteOne.allocated_qty;
+    outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / deleteOne.sku_pack_qty;
     inventoryData.push(deleteOne);
     this.setState({
       inventoryData,
       allocatedData,
+      outboundProduct,
     });
   }
   handleCancel = () => {
@@ -264,7 +276,8 @@ export default class AllocatingModal extends Component {
     });
   }
   render() {
-    const { outboundNo, outboundProduct, filters } = this.props;
+    const { outboundNo, filters } = this.props;
+    const { outboundProduct } = this.state;
     const inventoryQueryForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
       <FormItem label="库位">
         <Input onChange={this.handleLocationChange} value={filters.location} />
@@ -306,12 +319,12 @@ export default class AllocatingModal extends Component {
         <Collapse bordered={false} defaultActiveKey={['2']}>
           <Panel header="库存查询" key="1">
             <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData.length > 0 ? this.state.inventoryData : this.props.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
+              <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
           <Panel header="分配明细" key="2">
             <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData.length > 0 ? this.state.allocatedData : this.props.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
+              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
         </Collapse>

@@ -58,6 +58,7 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    loading: true,
   },
   asnFilters: { status: 'pending', ownerCode: 'all' },
   inbound: {
@@ -65,8 +66,9 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    loading: true,
   },
-  inboundFilters: { status: 'create', ownerCode: 'all' },
+  inboundFilters: { status: 'all', ownerCode: 'all' },
   inboundFormHead: {},
   inboundProducts: [],
   inboundPutaways: [],
@@ -113,13 +115,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
       return { ...state, productNos: action.result.data };
     case actionTypes.LOAD_ASN_LISTS:
-      return { ...state, asnFilters: JSON.parse(action.params.filters) };
+      return { ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true } };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
-      return { ...state, asnlist: action.result.data };
+      return { ...state, asnlist: { ...action.result.data, loading: false } };
     case actionTypes.LOAD_INBOUNDS:
-      return { ...state, inboundFilters: JSON.parse(action.params.filters) };
+      return { ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true } };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
-      return { ...state, inbound: action.result.data };
+      return { ...state, inbound: { ...action.result.data, loading: false } };
     case actionTypes.LOAD_INBOUNDHEAD_SUCCEED:
       return { ...state, inboundFormHead: action.result.data, inboundReload: false };
     case actionTypes.LOAD_INBPRDDETAILS_SUCCEED:
