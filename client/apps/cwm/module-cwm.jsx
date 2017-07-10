@@ -44,11 +44,11 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'receiving'),
       sublinks: [{
         key: 'cwm-1-0',
-        path: '/cwm/receiving/asn?status=pending',
+        path: '/cwm/receiving/asn',
         text: formatMsg(intl, 'receivingASN'),
       }, {
         key: 'cwm-1-1',
-        path: '/cwm/receiving/inbound?status=all',
+        path: '/cwm/receiving/inbound',
         text: formatMsg(intl, 'receivingInbound'),
       },
       ],
@@ -60,15 +60,15 @@ export default class ModuleCWM extends React.Component {
       text: formatMsg(intl, 'shipping'),
       sublinks: [{
         key: 'cwm-2-0',
-        path: '/cwm/shipping/order?status=pending',
+        path: '/cwm/shipping/order',
         text: formatMsg(intl, 'shippingOrder'),
       }, {
         key: 'cwm-2-1',
-        path: '/cwm/shipping/wave?status=pending',
+        path: '/cwm/shipping/wave',
         text: formatMsg(intl, 'shippingWave'),
       }, {
         key: 'cwm-2-2',
-        path: '/cwm/shipping/outbound?status=all',
+        path: '/cwm/shipping/outbound',
         text: formatMsg(intl, 'shippingOutbound'),
       },
       ],

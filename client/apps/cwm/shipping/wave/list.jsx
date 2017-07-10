@@ -21,12 +21,12 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
-function fetchData({ state, dispatch, location }) {
+function fetchData({ state, dispatch }) {
   dispatch(loadWaves({
     whseCode: state.cwmContext.defaultWhse.code,
     pageSize: state.cwmShippingOrder.wave.pageSize,
     current: state.cwmShippingOrder.wave.current,
-    filters: { ...state.cwmShippingOrder.waveFilters, status: location.query.status || state.cwmShippingOrder.waveFilters.status },
+    filters: state.cwmShippingOrder.waveFilters,
   }));
 }
 @connectFetch()(fetchData)
@@ -59,18 +59,6 @@ export default class WaveList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location.query.status !== this.props.location.query.status) {
-      const filters = { ...this.props.filters, status: nextProps.location.query.status };
-      const whseCode = this.props.defaultWhse.code;
-      this.props.loadWaves({
-        whseCode,
-        pageSize: this.props.wave.pageSize,
-        current: this.props.wave.current,
-        filters,
-      });
-    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -165,10 +153,13 @@ export default class WaveList extends React.Component {
     this.context.router.push(link);
   }
   handleStatusChange = (ev) => {
-    const location = this.props.location;
-    this.context.router.push({
-      pathname: location.pathname,
-      query: { ...location.query, status: ev.target.value },
+    const filters = { ...this.props.filters, status: ev.target.value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadWaves({
+      whseCode,
+      pageSize: this.props.wave.pageSize,
+      current: this.props.wave.current,
+      filters,
     });
   }
   handleOwnerChange = (value) => {
