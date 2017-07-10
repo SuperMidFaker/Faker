@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
@@ -8,7 +9,26 @@ const formatMsg = format(messages);
 import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
-
+@connect(
+  state => ({
+    units: state.cmsManifest.params.units.map(un => ({
+      value: un.unit_code,
+      text: un.unit_name,
+    })),
+    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
+    currencies: state.cmsManifest.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+    })),
+    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+      value: ep.value,
+      text: ep.text,
+    })),
+  })
+)
 export default class CiqDetailsPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -59,6 +79,11 @@ export default class CiqDetailsPanel extends React.Component {
       width: 80,
       className: 'cell-align-right',
       dataIndex: 'g_unit',
+      render: (o) => {
+        const unit = this.props.units.filter(cur => cur.value === o)[0];
+        const text = unit ? `${unit.value}| ${unit.text}` : o;
+        return text;
+      },
     }, {
       title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
       width: 100,
@@ -73,6 +98,11 @@ export default class CiqDetailsPanel extends React.Component {
       title: this.msg('currency'),
       width: 100,
       dataIndex: 'trade_curr',
+      render: (o) => {
+        const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+        const text = currency ? `${currency.value}| ${currency.text}` : o;
+        return text;
+      },
     }, {
       title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
       width: 80,
@@ -92,6 +122,11 @@ export default class CiqDetailsPanel extends React.Component {
       title: this.msg('unit1'),
       width: 80,
       dataIndex: 'unit_1',
+      render: (o) => {
+        const unit = this.props.units.filter(cur => cur.value === o)[0];
+        const text = unit ? `${unit.value}| ${unit.text}` : o;
+        return text;
+      },
     }, {
       title: <div className="cell-align-right">{this.msg('qty2')}</div>,
       width: 80,
@@ -101,42 +136,38 @@ export default class CiqDetailsPanel extends React.Component {
       title: this.msg('unit2'),
       width: 80,
       dataIndex: 'unit_2',
+      render: (o) => {
+        const unit = this.props.units.filter(cur => cur.value === o)[0];
+        const text = unit ? `${unit.value}| ${unit.text}` : o;
+        return text;
+      },
     }, {
       title: this.msg('exemptionWay'),
       width: 80,
       dataIndex: 'duty_mode',
+      render: (o) => {
+        const exemption = this.props.exemptions.filter(cur => cur.value === o)[0];
+        const text = exemption ? `${exemption.value}| ${exemption.text}` : o;
+        return text;
+      },
     }, {
       title: this.msg('ecountry'),
       width: 120,
       dataIndex: 'dest_country',
+      render: (o) => {
+        const country = this.props.countries.filter(cur => cur.value === o)[0];
+        const text = country ? `${country.value}| ${country.text}` : o;
+        return text;
+      },
     }, {
       title: this.msg('icountry'),
       dataIndex: 'orig_country',
+      render: (o) => {
+        const country = this.props.countries.filter(cur => cur.value === o)[0];
+        const text = country ? `${country.value}| ${country.text}` : o;
+        return text;
+      },
     }];
-    /*
-    , {
-      title: this.msg('qtyPcs'),
-      width: 100,
-      dataIndex: 'qty_pcs',
-    }, {
-      title: this.msg('unitPcs'),
-      width: 100,
-      dataIndex: 'unit_pcs',
-    }, {
-      title: this.msg('element'),
-      width: 380,
-      dataIndex: 'element',
-    }, {
-      title: this.msg('versionNo'),
-      width: 80,
-      dataIndex: 'version_no',
-    }, {
-      title: <div className="cell-align-right">{this.msg('processingFees')}</div>,
-      width: 80,
-      className: 'cell-align-right',
-      dataIndex: 'processing_fees',
-    }
-    ];*/
     return (
       <div className="panel-body table-panel">
         <Table columns={columns} dataSource={filterProducts}
