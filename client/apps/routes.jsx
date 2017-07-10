@@ -83,13 +83,12 @@ import * as SCVInventoryTransaction from './scv/inventory/transaction';
 import * as SCVReceivingNotice from './scv/inventory/receiving';
 import * as SCVShippingOrder from './scv/inventory/shipping';
 import * as SCVInventorySku from './scv/inventory/sku';
-import * as SCVProductsTradeItem from './scv/products/tradeitem';
+import * as SCVClassification from './scv/compliance/classification';
 import * as SCVPaymentsTax from './scv/payments/tax';
 import * as SCVPaymentsBilling from './scv/payments/billing';
 import * as SCVAnalyticsKpi from './scv/analytics/kpi';
 import * as SCVAnalyticsCost from './scv/analytics/cost';
 import * as SCVResource from './scv/resources';
-import * as SCVClassification from './scv/classifications';
 import * as SCVSettings from './scv/settings';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
@@ -284,7 +283,11 @@ export default(store, cookie) => {
           <Route path={DEFAULT_MODULES.clearance.id} component={CMS}>
             <IndexRedirect to="/clearance/dashboard" />
             <Route path="dashboard" component={CMSDashboard.Index} />
-            <Route path="delegation" component={CMSDelegation.List} />
+            <Route path="delegation">
+              <IndexRoute component={CMSDelegation.List} />
+              <Route path="create" component={CMSDelegation.Create} />
+              <Route path=":delgNo" component={CMSDelegation.Detail} />
+            </Route>
             <Route path="customs">
               <IndexRoute component={CMSCustomsDecl.List} />
             </Route>
@@ -403,11 +406,13 @@ export default(store, cookie) => {
               <Route path="tax" component={SCVPaymentsTax.List} />
               <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
-            <Route path="products">
-              <Route path="tradeitem">
-                <IndexRoute component={SCVProductsTradeItem.List} />
-                <Route path="create" component={SCVProductsTradeItem.Create} />
-                <Route path="edit/:id" component={SCVProductsTradeItem.Edit} />
+            <Route path="compliance">
+              <Route path="classification">
+                <IndexRoute component={SCVClassification.List} />
+                <Route path="create" component={SCVClassification.Create} />
+                <Route path="edit/:id" component={SCVClassification.Edit} />
+                <Route path="master" component={SCVClassification.Master} />
+                <Route path="slave" component={SCVClassification.Slave} />
               </Route>
             </Route>
             <Route path="analytics">
@@ -418,11 +423,6 @@ export default(store, cookie) => {
               <IndexRoute component={SCVResource.Warehouses} />
               <Route path="warehouse" component={SCVResource.Warehouses} />
               <Route path="serviceprovider" component={SCVResource.ServiceProviders} />
-            </Route>
-            <Route path="classification">
-              <IndexRoute component={SCVClassification.Master} />
-              <Route path="master" component={SCVClassification.Master} />
-              <Route path="slave" component={SCVClassification.Slave} />
             </Route>
             <Route path="settings">
               <IndexRedirect to="/scv/settings/openapi" />

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message, Menu, Dropdown } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
@@ -248,6 +248,10 @@ export default class DelegationList extends Component {
     dataIndex: 'ciq_name',
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
+    title: this.msg('operatedBy'),
+    width: 80,
+    dataIndex: 'recv_login_name',
+  }, {
     title: this.msg('lastActTime'),
     dataIndex: 'last_act_time',
     render: (o, record) => record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-',
@@ -300,6 +304,9 @@ export default class DelegationList extends Component {
     this.setState({
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
     });
+  }
+  handleCreateBtnClick = () => {
+    this.context.router.push('/clearance/delegation/create');
   }
   handlePreview = (delgNo, record) => {
     let tabKey = 'customsDecl';
@@ -624,7 +631,9 @@ export default class DelegationList extends Component {
               <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
             </RadioGroup>
             <div className="top-bar-tools">
-              <ButtonToggle size="large" iconOff="book" iconOn="book" onClick={this.toggleRightSider} >清单模板</ButtonToggle>
+              <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
+                {this.msg('createDelegation')}
+              </Button>
             </div>
           </Header>
           <Content className="main-content" key="main">
@@ -657,6 +666,11 @@ export default class DelegationList extends Component {
                   ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
                   onChange={this.handleDateRangeChange}
                 />
+                <div className="toolbar-right">
+                  <Tooltip title="清单模板">
+                    <ButtonToggle size="large" iconOff="book" iconOn="book" onClick={this.toggleRightSider} />
+                  </Tooltip>
+                </div>
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                   <a role="presentation" onClick={this.handleDeselectRows}>不选</a>
@@ -664,7 +678,7 @@ export default class DelegationList extends Component {
               </div>
               <div className="panel-body table-panel">
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  rowKey="delg_no" scroll={{ x: 1800 }}
+                  rowKey="delg_no" scroll={{ x: 1900 }}
                 />
               </div>
             </div>

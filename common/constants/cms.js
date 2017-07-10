@@ -11,6 +11,13 @@ export const I_E_TYPES = [
   { key: 'A', value: '进出口' },
 ];
 
+export const DECL_TYPE = [
+  { key: 'IMPT', value: '进口报关' },
+  { key: 'IBND', value: '进境备案' },
+  { key: 'EXPT', value: '出口报关' },
+  { key: 'EBND', value: '出境备案' },
+];
+
 export const DECL_I_TYPE = [
   { key: 'IMPT', value: '进口报关' },
   { key: 'IBND', value: '进境备案' },

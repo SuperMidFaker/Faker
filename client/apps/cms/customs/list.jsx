@@ -93,10 +93,14 @@ export default class CustomsList extends Component {
         {o}
       </a>),
   }, {
+    title: this.msg('orderNo'),
+    width: 140,
+    dataIndex: 'order_no',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
     width: 160,
-    fixed: 'left',
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
       const preEntryLink = (
@@ -335,7 +339,6 @@ export default class CustomsList extends Component {
     remotes: this.props.customslist,
   })
   handleTableLoad = (currentPage, filter) => {
-    const ie = filter ? filter.ietype : this.props.listFilter.ietype;
     this.props.loadCustomsDecls({
       ietype: filter && filter.ietype || this.props.listFilter.ietype,
       tenantId: this.props.tenantId,

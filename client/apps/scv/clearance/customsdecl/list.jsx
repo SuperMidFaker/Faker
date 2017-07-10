@@ -197,7 +197,7 @@ export default class ScvCustomsDeclList extends Component {
     render: (o, record) => (record.id ?
     record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
   }, {
-    title: '申报人',
+    title: '申报人员',
     dataIndex: 'epsend_login_name  ',
     width: 100,
   }, {

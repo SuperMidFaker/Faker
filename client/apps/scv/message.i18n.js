@@ -37,13 +37,13 @@ const messages = defineMessages({
     id: 'scv.module.clearance.manifest',
     defaultMessage: '申报清单',
   },
-  clearanceDecl: {
-    id: 'scv.module.clearance.decl',
-    defaultMessage: '报关单证',
+  customsDecl: {
+    id: 'scv.module.clearance.customs.decl',
+    defaultMessage: '进出口报关',
   },
-  clearanceTax: {
-    id: 'scv.module.clearance.tax',
-    defaultMessage: '税金管理',
+  ciqDecl: {
+    id: 'scv.module.clearance.ciq.decl',
+    defaultMessage: '报检单证',
   },
   inventory: {
     id: 'scv.module.inventory',
@@ -75,7 +75,7 @@ const messages = defineMessages({
   },
   billing: {
     id: 'scv.module.billing',
-    defaultMessage: '费用账单',
+    defaultMessage: '账务中心',
   },
   billingExpenses: {
     id: 'scv.module.billing.expenses',
@@ -89,13 +89,17 @@ const messages = defineMessages({
     id: 'scv.module.billing.quotes',
     defaultMessage: '价格协议',
   },
-  products: {
-    id: 'scv.module.products',
-    defaultMessage: '物料归类',
+  compliance: {
+    id: 'scv.module.compliance',
+    defaultMessage: '贸易合规',
   },
-  productsTradeItem: {
-    id: 'scv.module.products.trade.item',
-    defaultMessage: '物料归类库',
+  tradeItem: {
+    id: 'scv.module.compliance.trade.item',
+    defaultMessage: '商品归类库',
+  },
+  certPermit: {
+    id: 'scv.module.compliance.cert.permit',
+    defaultMessage: '商品涉证管理',
   },
   analytics: {
     id: 'scv.module.analytics',

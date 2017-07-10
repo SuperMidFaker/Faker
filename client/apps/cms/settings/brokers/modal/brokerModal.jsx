@@ -10,9 +10,8 @@ const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 
 const options = [
-  { label: '报关', value: 'CCB' },
-  { label: '报检', value: 'CIB' },
-  { label: '鉴定办证', value: 'ICB' },
+  { label: '报关代理', value: 'CCB' },
+  { label: '报检代理', value: 'CIB' },
 ];
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -69,7 +68,7 @@ export default class BrokerModal extends React.Component {
     const { tenantId, carrier, operation } = this.props;
     const { partnerName, customsCode, partnerUniqueCode, role, business } = this.state;
     if (partnerName === '') {
-      message.error('请填写供应商名称');
+      message.error('请填写企业名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('统一社会信用代码必填');
     } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
@@ -132,16 +131,16 @@ export default class BrokerModal extends React.Component {
     return (
       <Modal title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
-          <FormItem label="服务商名称:" required>
+          <FormItem label="企业名称" required>
             <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
           </FormItem>
-          <FormItem label="统一社会信用代码:" required>
+          <FormItem label="统一社会信用代码" required>
             <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
           </FormItem>
-          <FormItem label="海关编码:" required>
+          <FormItem label="海关编码" required>
             <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
           </FormItem>
-          <FormItem label="服务商类型:" required>
+          <FormItem label="业务类型" required>
             <CheckboxGroup
               options={options}
               value={businessArray}

@@ -3,280 +3,288 @@ import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
   classification: {
-    id: 'scv.products',
+    id: 'scv.compliance',
     defaultMessage: '商品归类',
   },
   hscodeInquiry: {
-    id: 'scv.products.hscode.inquiry',
+    id: 'scv.compliance.hscode.inquiry',
     defaultMessage: 'HS编码查询',
   },
   tradeItemMaster: {
-    id: 'scv.products.tradeitem.master',
+    id: 'scv.compliance.tradeitem.master',
     defaultMessage: '物料归类库',
   },
   filterUnclassified: {
-    id: 'scv.products.tradeitem.filter.unclassified',
+    id: 'scv.compliance.tradeitem.filter.unclassified',
     defaultMessage: '未归类',
   },
   filterPending: {
-    id: 'scv.products.tradeitem.filter.pending',
+    id: 'scv.compliance.tradeitem.filter.pending',
     defaultMessage: '归类待定',
   },
   filterClassified: {
-    id: 'scv.products.tradeitem.filter.classified',
+    id: 'scv.compliance.tradeitem.filter.classified',
     defaultMessage: '已归类',
   },
   filterConflict: {
-    id: 'scv.products.tradeitem.filter.conflict',
+    id: 'scv.compliance.tradeitem.filter.conflict',
     defaultMessage: '归类冲突',
   },
   copProductNo: {
-    id: 'scv.products.tradeitem.table.cop.product.no',
+    id: 'scv.compliance.tradeitem.table.cop.product.no',
     defaultMessage: '商品货号',
   },
   contributed: {
-    id: 'scv.products.tradeitem.table.contributed',
+    id: 'scv.compliance.tradeitem.table.contributed',
     defaultMessage: '归类来源',
   },
   hscode: {
-    id: 'scv.products.tradeitem.table.hscode',
+    id: 'scv.compliance.tradeitem.table.hscode',
     defaultMessage: '商品编码',
   },
   preHscode: {
-    id: 'scv.products.tradeitem.modal.table.prehscode',
+    id: 'scv.compliance.tradeitem.modal.table.prehscode',
     defaultMessage: '商品编码(已有)',
   },
   gName: {
-    id: 'scv.products.tradeitem.g.name',
+    id: 'scv.compliance.tradeitem.g.name',
     defaultMessage: '中文品名',
   },
   enName: {
-    id: 'scv.products.tradeitem.en.name',
+    id: 'scv.compliance.tradeitem.en.name',
     defaultMessage: '英文描述',
   },
   gModel: {
-    id: 'scv.products.tradeitem.table.gmodel',
+    id: 'scv.compliance.tradeitem.table.gmodel',
     defaultMessage: '中文规格型号',
   },
   preGModel: {
-    id: 'scv.products.tradeitem.modal.table.pregmodel',
+    id: 'scv.compliance.tradeitem.modal.table.pregmodel',
     defaultMessage: '中文规格型号(已有)',
   },
   element: {
-    id: 'scv.products.tradeitem.table.element',
+    id: 'scv.compliance.tradeitem.table.element',
     defaultMessage: '申报要素',
   },
   gUnit1: {
-    id: 'scv.products.tradeitem.table.g.unit1',
+    id: 'scv.compliance.tradeitem.table.g.unit1',
     defaultMessage: '申报单位一',
   },
   gUnit2: {
-    id: 'scv.products.tradeitem.table.g.unit2',
+    id: 'scv.compliance.tradeitem.table.g.unit2',
     defaultMessage: '申报单位二',
   },
   gUnit3: {
-    id: 'scv.products.tradeitem.table.g.unit3',
+    id: 'scv.compliance.tradeitem.table.g.unit3',
     defaultMessage: '申报单位三',
   },
   unit1: {
-    id: 'scv.products.tradeitem.table.unit1',
+    id: 'scv.compliance.tradeitem.table.unit1',
     defaultMessage: '法一计量单位',
   },
   unit2: {
-    id: 'scv.products.tradeitem.table.unit2',
+    id: 'scv.compliance.tradeitem.table.unit2',
     defaultMessage: '法二计量单位',
   },
   fixedQty: {
-    id: 'scv.products.tradeitem.fixed.qty',
+    id: 'scv.compliance.tradeitem.fixed.qty',
     defaultMessage: '固定值',
   },
   fixedUnit: {
-    id: 'scv.products.tradeitem.fixed.unit',
+    id: 'scv.compliance.tradeitem.fixed.unit',
     defaultMessage: '固值单位',
   },
   origCountry: {
-    id: 'scv.products.tradeitem.table.origin.country',
+    id: 'scv.compliance.tradeitem.table.origin.country',
     defaultMessage: '产销国',
   },
   unitNetWt: {
-    id: 'scv.products.tradeitem.table.unit.netwt',
+    id: 'scv.compliance.tradeitem.table.unit.netwt',
     defaultMessage: '单个净重',
   },
   grosswt: {
-    id: 'scv.products.tradeitem.table.gross.wt',
+    id: 'scv.compliance.tradeitem.table.gross.wt',
     defaultMessage: '毛重',
   },
   netwt: {
-    id: 'scv.products.tradeitem.table.net.wt',
+    id: 'scv.compliance.tradeitem.table.net.wt',
     defaultMessage: '净重',
   },
   customsControl: {
-    id: 'scv.products.tradeitem.table.customs.control',
+    id: 'scv.compliance.tradeitem.table.customs.control',
     defaultMessage: '海关监管条件',
   },
   inspQuarantine: {
-    id: 'scv.products.tradeitem.table.inspection.quarantine',
+    id: 'scv.compliance.tradeitem.table.inspection.quarantine',
     defaultMessage: '商检检验检疫',
   },
   unitPrice: {
-    id: 'scv.products.tradeitem.table.unit.price',
+    id: 'scv.compliance.tradeitem.table.unit.price',
     defaultMessage: '单价',
   },
   currency: {
-    id: 'scv.products.tradeitem.table.currency',
+    id: 'scv.compliance.tradeitem.table.currency',
     defaultMessage: '币制',
   },
   preClassifyNo: {
-    id: 'scv.products.tradeitem.table.pre.classify.no',
+    id: 'scv.compliance.tradeitem.table.pre.classify.no',
     defaultMessage: '预归类编号',
   },
   preClassifyStartDate: {
-    id: 'scv.products.tradeitem.table.pre.classify.start.date',
+    id: 'scv.compliance.tradeitem.table.pre.classify.start.date',
     defaultMessage: '预归类日期',
   },
   preClassifyEndDate: {
-    id: 'scv.products.tradeitem.table.pre.classify.end.date',
+    id: 'scv.compliance.tradeitem.table.pre.classify.end.date',
     defaultMessage: '到期日期',
   },
   remark: {
-    id: 'scv.products.tradeitem.table.remark',
+    id: 'scv.compliance.tradeitem.table.remark',
     defaultMessage: '备注',
   },
   addRepo: {
-    id: 'scv.products.tradeitem.modal.add.owner',
+    id: 'scv.compliance.tradeitem.modal.add.owner',
     defaultMessage: '添加企业物料库',
   },
   addItem: {
-    id: 'scv.products.tradeitem.table.add',
+    id: 'scv.compliance.tradeitem.table.add',
     defaultMessage: '添加物料',
   },
   importItems: {
-    id: 'scv.products.tradeitem.items.import',
+    id: 'scv.compliance.tradeitem.items.import',
     defaultMessage: '对比导入',
   },
   importHsunit: {
-    id: 'scv.products.hscode.gunit.import',
+    id: 'scv.compliance.hscode.gunit.import',
     defaultMessage: '导入申报单位',
   },
   tradeCode: {
-    id: 'scv.products.tradeitem.tabpane.cop.code',
+    id: 'scv.compliance.tradeitem.tabpane.cop.code',
     defaultMessage: '单位代码',
   },
   compCode: {
-    id: 'scv.products.tradeitem.tabpane.comp.code',
+    id: 'scv.compliance.tradeitem.tabpane.comp.code',
     defaultMessage: '信用代码',
   },
   customsCode: {
-    id: 'scv.products.tradeitem.tabpane.customs.code',
+    id: 'scv.compliance.tradeitem.tabpane.customs.code',
     defaultMessage: '海关编码',
   },
   tradeName: {
-    id: 'scv.products.tradeitem.tabpane.cop.name',
+    id: 'scv.compliance.tradeitem.tabpane.cop.name',
     defaultMessage: '企业名称',
   },
   opColumn: {
-    id: 'scv.products.tradeitem.column.operation',
+    id: 'scv.compliance.tradeitem.column.operation',
     defaultMessage: '操作',
   },
   delete: {
-    id: 'scv.products.tradeitem.delete',
+    id: 'scv.compliance.tradeitem.delete',
     defaultMessage: '删除',
   },
   cancel: {
-    id: 'scv.products.tradeitem.cancel',
+    id: 'scv.compliance.tradeitem.cancel',
     defaultMessage: '取消',
   },
   save: {
-    id: 'scv.products.tradeitem.save',
+    id: 'scv.compliance.tradeitem.save',
     defaultMessage: '保存',
   },
   modify: {
-    id: 'scv.products.tradeitem.modify',
+    id: 'scv.compliance.tradeitem.modify',
     defaultMessage: '修改',
   },
   deleteConfirm: {
-    id: 'scv.products.tradeitem.delete.confirm',
+    id: 'scv.compliance.tradeitem.delete.confirm',
     defaultMessage: '确认删除?',
   },
   newItem: {
-    id: 'scv.products.tradeitem.new.item',
+    id: 'scv.compliance.tradeitem.new.item',
     defaultMessage: '新增物料',
   },
   editItem: {
-    id: 'scv.products.tradeitem.edit.item',
+    id: 'scv.compliance.tradeitem.edit.item',
     defaultMessage: '修改物料',
   },
   declareWay: {
-    id: 'scv.products.tradeitem.declare.way',
+    id: 'scv.compliance.tradeitem.declare.way',
     defaultMessage: '报关类型',
   },
   declareUnit: {
-    id: 'scv.products.tradeitem.declare.unit',
+    id: 'scv.compliance.tradeitem.declare.unit',
     defaultMessage: '申报单位',
   },
   declunitName: {
-    id: 'scv.products.tradeitem.declunit.name',
+    id: 'scv.compliance.tradeitem.declunit.name',
     defaultMessage: '申报单位分类名称',
   },
   declunitCode: {
-    id: 'scv.products.tradeitem.declunit.code',
+    id: 'scv.compliance.tradeitem.declunit.code',
     defaultMessage: '申报单位代码',
   },
   status: {
-    id: 'scv.products.tradeitem.status',
+    id: 'scv.compliance.tradeitem.status',
     defaultMessage: '状态',
   },
   pass: {
-    id: 'scv.products.tradeitem.pass',
+    id: 'scv.compliance.tradeitem.pass',
     defaultMessage: '通过',
   },
   refuse: {
-    id: 'scv.products.tradeitem.refuse',
+    id: 'scv.compliance.tradeitem.refuse',
     defaultMessage: '拒绝',
   },
   setStandard: {
-    id: 'scv.products.tradeitem.set.standard',
+    id: 'scv.compliance.tradeitem.set.standard',
     defaultMessage: '设为标准',
   },
   broker: {
-    id: 'scv.products.tradeitem.broker',
+    id: 'scv.compliance.tradeitem.broker',
     defaultMessage: '报关行',
   },
   nominatedBroker: {
-    id: 'scv.products.tradeitem.nominated.broker',
+    id: 'scv.compliance.tradeitem.nominated.broker',
     defaultMessage: '指定报关行',
   },
   nonNominatedBroker: {
-    id: 'scv.products.tradeitem.non.nominated.broker',
+    id: 'scv.compliance.tradeitem.non.nominated.broker',
     defaultMessage: '不指定报关行',
   },
   reason: {
-    id: 'scv.products.tradeitem.reason',
+    id: 'scv.compliance.tradeitem.reason',
     defaultMessage: '原因',
   },
   classifyShareScope: {
-    id: 'scv.products.slave.share.scope',
+    id: 'scv.compliance.slave.share.scope',
     defaultMessage: '共享范围',
   },
   classifySourceRepo: {
-    id: 'scv.products.slave.source.repo',
+    id: 'scv.compliance.slave.source.repo',
     defaultMessage: '来源物料集',
   },
   classifyAudit: {
-    id: 'scv.products.slave.audit',
+    id: 'scv.compliance.slave.audit',
     defaultMessage: '审核方式',
   },
   addSlave: {
-    id: 'scv.products.slave.add',
+    id: 'scv.compliance.slave.add',
     defaultMessage: '添加从库',
   },
-  productsTradeItem: {
-    id: 'scv.products.trade.item',
+  complianceTradeItem: {
+    id: 'scv.compliance.trade.item',
     defaultMessage: '物料归类库',
   },
   exportUnclassified: {
-    id: 'scv.products.tradeitem.export.unclassified',
+    id: 'scv.compliance.tradeitem.export.unclassified',
     defaultMessage: '导出未归类物料',
+  },
+  masterConfig: {
+    id: 'scv.classification.master.config',
+    defaultMessage: '主库配置',
+  },
+  slaveConfig: {
+    id: 'scv.classification.slave.config',
+    defaultMessage: '从库同步',
   },
 });
 export default messages;

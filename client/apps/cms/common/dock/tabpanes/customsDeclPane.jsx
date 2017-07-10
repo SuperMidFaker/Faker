@@ -133,8 +133,8 @@ export default class CustomsDeclPane extends React.Component {
               <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }}>
                 <Row gutter={8}>
                   <Col span="6">
-                    <InfoItem type="dropdown" label="执行者" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>}
-                      field={bill.preparer_name} placeholder="分配制单人" editable={assignable}
+                    <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>}
+                      field={bill.preparer_name} placeholder="分配操作人员" editable={assignable}
                       overlay={<Menu onClick={this.handleMenuClick}>
                         {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}
                       </Menu>}
