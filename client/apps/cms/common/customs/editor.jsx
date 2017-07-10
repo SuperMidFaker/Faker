@@ -45,6 +45,7 @@ const navObj = {
     head: state.cmsManifest.entryHead,
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
+    params: state.cmsManifest.params,
   }),
   { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer }
 )
@@ -154,8 +155,8 @@ export default class CustomsDeclEditor extends React.Component {
     this.props.showPreviewer(delgNo, 'customsDecl');
   }
   handlePDF = () => {
-    const { head, bodies, billMeta } = this.props;
-    const docDefinition = DocDef(head, bodies, billMeta.declWayCode);
+    const { head, bodies, billMeta, params } = this.props;
+    const docDefinition = DocDef(head, bodies, billMeta.declWayCode, params);
     window.pdfMake.fonts = {
       yahei: {
         normal: 'msyh.ttf',

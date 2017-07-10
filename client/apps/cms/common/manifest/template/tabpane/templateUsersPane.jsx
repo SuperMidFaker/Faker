@@ -38,6 +38,7 @@ export default class TemplateUsersPane extends React.Component {
     brokers: [],
   };
   componentDidMount() {
+    this.props.loadBillTemplateUsers(this.props.template.id);
     this.props.loadPartners({
       tenantId: this.props.tenantId,
       role,
@@ -99,16 +100,21 @@ export default class TemplateUsersPane extends React.Component {
     this.setState({ datas });
   }
   render() {
-    const { brokers } = this.state;
+    const { brokers, datas } = this.state;
     const { operation } = this.props;
+    let newBrokers = brokers;
+    for (let i = 0; i < datas.length; i++) {
+      const data = datas[i];
+      newBrokers = newBrokers.filter(ct => ct.partner_tenant_id !== data.tenant_id);
+    }
     const columns = [{
       dataIndex: 'tenant_name',
       render: (o, record) => {
         if (!record.id) {
           return (
-            <Select value={record.tenant_id || ''} onChange={value => this.handleTradeSel(record, value)} style={{ width: '100%' }}>
+            <Select onChange={value => this.handleTradeSel(record, value)} style={{ width: '100%' }}>
               {
-                brokers.map(opt => <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
+                newBrokers.map(opt => <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
               }
             </Select>
           );

@@ -21,12 +21,12 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch, location }) {
+function fetchData({ state, dispatch }) {
   dispatch(loadAsnLists({
     whseCode: state.cwmContext.defaultWhse.code,
     pageSize: state.cwmReceive.asnlist.pageSize,
     current: state.cwmReceive.asnlist.current,
-    filters: { ...state.cwmReceive.asnFilters, status: location.query.status || state.cwmReceive.asnFilters.status },
+    filters: state.cwmReceive.asnFilters,
   }));
 }
 
@@ -60,18 +60,6 @@ export default class ReceivingASNList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.location.query.status !== this.props.location.query.status) {
-      const filters = { ...this.props.filters, status: nextProps.location.query.status };
-      const whseCode = this.props.defaultWhse.code;
-      this.props.loadAsnLists({
-        whseCode,
-        pageSize: this.props.asnlist.pageSize,
-        current: this.props.asnlist.current,
-        filters,
-      });
-    }
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -241,10 +229,13 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   handleStatusChange = (ev) => {
-    const location = this.props.location;
-    this.context.router.push({
-      pathname: location.pathname,
-      query: { ...location.query, status: ev.target.value },
+    const filters = { ...this.props.filters, status: ev.target.value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
+      filters,
     });
   }
   handleOwnerChange = (value) => {

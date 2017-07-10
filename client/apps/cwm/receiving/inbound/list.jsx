@@ -23,13 +23,13 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch, location }) {
+function fetchData({ state, dispatch }) {
   dispatch(loadInbounds({
     whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
     pageSize: state.cwmReceive.inbound.pageSize,
     current: state.cwmReceive.inbound.current,
-    filters: { ...state.cwmReceive.inboundFilters, status: location.query.status || state.cwmReceive.inboundFilters.status },
+    filters: state.cwmReceive.inboundFilters,
   }));
 }
 @connectFetch()(fetchData)
@@ -63,7 +63,7 @@ export default class ReceivingInboundList extends React.Component {
     selectedRowKeys: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || nextProps.location.query.status !== this.props.location.query.status) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
       const filters = { ...this.props.filters, status: nextProps.location.query.status };
       nextProps.loadInbounds({
         whseCode: nextProps.defaultWhse.code,
@@ -165,10 +165,14 @@ export default class ReceivingInboundList extends React.Component {
     });
   }
   handleStatusChange = (e) => {
-    const location = this.props.location;
-    this.context.router.push({
-      pathname: location.pathname,
-      query: { ...location.query, status: e.target.value },
+    const filters = { ...this.props.filters, status: e.target.value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadInbounds({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.inbound.pageSize,
+      current: this.props.inbound.current,
+      filters,
     });
   }
   handlePreview = (asnNo) => {
