@@ -25,6 +25,7 @@ const initialState = {
   listFilter: {
     status: 'all',
     ietype: 'all',
+    inspect: 'all',
     declareType: '',
     name: '',
     sortField: '',
