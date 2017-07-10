@@ -1,6 +1,31 @@
 
-function pdfHeader(head, declWayCode) {
+function pdfHeader(head, declWayCode, params) {
   let headContent = [];
+  const countries = params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+  }));
+  const customs = params.customs.filter(cu => cu.customs_code === head.i_e_port)[0];
+  const ieport = customs || { customs_code: '', customs_name: '' };
+  const transmode = params.transModes.filter(tm => tm.trans_code === head.traf_mode)[0];
+  const trafmode = transmode || { trans_code: '', trans_spec: '' };
+  const tradeMd = params.tradeModes.filter(tr => tr.trade_mode === head.trade_mode)[0];
+  const trademode = tradeMd || { trade_mode: '', trade_abbr: '' };
+  const trcountry = countries.filter(cur => cur.value === head.trade_country)[0];
+  const tradeCountry = trcountry || { value: '', text: '' };
+  const decountry = countries.filter(cur => cur.value === head.dept_dest_country)[0];
+  const deptCountry = decountry || { value: '', text: '' };
+  const distCode = params.districts.filter(ds => ds.district_code === head.district_code)[0];
+  const district = distCode || { district_code: '', district_name: '' };
+  const trxModecode = params.trxModes.filter(tr => tr.trx_mode === head.trxn_mode)[0];
+  const trxnmode = trxModecode || { trx_mode: '', trx_spec: '' };
+  const pack = params.packs.filter(pk => pk.value === head.wrap_type)[0];
+  const wrapType = pack || { value: '', text: '' };
+  const port = params.ports.filter(pt => pt.port_code === head.dept_dest_port)[0];
+  const deptPort = port || { port_code: '', port_c_cod: '' };
+  const remissionMode = params.remissionModes.filter(rm => rm.rm_mode === head.cut_mode)[0];
+  const cutMode = remissionMode || { rm_mode: '', rm_spec: '' };
+
   if (declWayCode === 'IBND') {
     headContent = [
       { columns: [
@@ -14,16 +39,16 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['40%', '15%', '15%', '15%', '15%'],
           body: [
-            [{ text: `收发货人   ${head.trade_name || ''}`, style: 'tableCell' },
-            { text: `进境口岸   ${head.i_e_port || ''}` },
+            [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}`, style: 'tableCell' },
+            { text: `进境口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
             { text: `备案号   ${head.manual_no || ''}` },
             { text: `进境日期   ${head.i_e_date || ''}` },
             { text: `申报日期   ${head.d_date || ''}` }],
-            [{ text: `消费使用单位   ${head.owner_name || ''}` },
-            { text: `监管方式   ${head.trade_mode || ''}` },
-            { text: `贸易国(地区)   ${head.trade_country || ''}` },
-            { text: `启运国(地区)   ${head.dept_dest_country || ''}` },
-            { text: `境内目的地   ${head.district_code || ''}` }],
+            [{ text: `消费使用单位  (${head.owner_custco})\n${head.owner_name || ''}` },
+            { text: `监管方式   (${trademode.trade_mode})\n${trademode.trade_abbr}` },
+            { text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
+            { text: `启运国(地区) (${deptCountry.value})\n${deptCountry.text}` },
+            { text: `境内目的地 (${district.district_code})\n${district.district_name}` }],
           ],
         },
       },
@@ -31,23 +56,30 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['26%', '13%', '21%', '20%', '20%'],
           body: [
-            [{ colSpan: 2, text: `申报单位   ${head.agent_name || ''}` },
+            [{ colSpan: 2, text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, false, true, true] },
             {},
-            { text: `运输方式   ${head.traf_mode || ''}` },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
             { text: `运输工具名称   ${head.traf_name || ''}` },
-            { text: `提运单号   ${head.bl_wb_no || ''}` }],
-            [{ text: `许可证号   ${head.license_no || ''}` },
-            { text: `成交方式   ${head.trxn_mode || ''}` },
+            { text: `提运单号\n${head.bl_wb_no || ''}` }],
+            [{ text: `许可证号\n${head.license_no || ''}` },
+            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
-            [{ text: `件数   ${head.pack_count || ''}` },
-            { text: `毛重(千克)   ${head.gross_wt || ''}` },
-            { text: `净重(千克)   ${head.net_wt || ''}` },
+            [{ text: `件数\n   ${head.pack_count || ''}` },
+            { text: `毛重(千克)\n   ${head.gross_wt || ''}` },
+            { text: `净重(千克)\n   ${head.net_wt || ''}` },
             { colSpan: 2, text: `随附单证   ${head.cert_mark || ''}` }, {}],
-            [{ rowSpan: 3, colSpan: 5, text: `标记唛码及备注   ${head.note || ''}\n\n` }], [], [],
           ],
         },
+      },
+      {
+        style: 'table',
+        table: {
+          widths: ['100%'],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+        },
+        layout: { paddingBottom() { return 35; } },
       },
     ];
   } else if (declWayCode === 'EBND') {
@@ -63,16 +95,16 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['40%', '15%', '15%', '15%', '15%'],
           body: [
-            [{ text: `收发货人   ${head.trade_name || ''}` },
-            { text: `出境口岸   ${head.i_e_port || ''}` },
+            [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}` },
+            { text: `出境口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
             { text: `备案号   ${head.manual_no || ''}` },
             { text: `出境日期   ${head.i_e_date || ''}` },
             { text: `申报日期   ${head.d_date || ''}` }],
-            [{ text: `消费使用单位   ${head.owner_name || ''}` },
-            { text: `监管方式   ${head.trade_mode || ''}` },
-            { text: `贸易国(地区)   ${head.trade_country || ''}` },
-            { text: `运抵国(地区)   ${head.dept_dest_country || ''}` },
-            { text: `境内货源地   ${head.district_code || ''}` }],
+            [{ text: `消费使用单位  (${head.owner_custco})\n${head.owner_name || ''}` },
+            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}` },
+            { text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
+            { text: `运抵国(地区) (${deptCountry.value})\n${deptCountry.text}` },
+            { text: `境内货源地 (${district.district_code})\n${district.district_name}` }],
           ],
         },
       },
@@ -80,23 +112,30 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['26%', '13%', '21%', '20%', '20%'],
           body: [
-            [{ colSpan: 2, text: `申报单位   ${head.agent_name || ''}` },
+            [{ colSpan: 2, text: `申报单位   ${head.agent_name || ''}`, border: [true, false, true, true] },
             {},
-            { text: `运输方式   ${head.traf_mode || ''}` },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
             { text: `运输工具名称   ${head.traf_name || ''}` },
-            { text: `提运单号   ${head.bl_wb_no || ''}` }],
-            [{ text: `许可证号   ${head.license_no || ''}` },
-            { text: `成交方式   ${head.trxn_mode || ''}` },
+            { text: `提运单号\n${head.bl_wb_no || ''}` }],
+            [{ text: `许可证号\n${head.license_no || ''}` },
+            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
-            [{ text: `件数   ${head.pack_count || ''}` },
-            { text: `毛重(千克)   ${head.gross_wt || ''}` },
-            { text: `净重(千克)   ${head.net_wt || ''}` },
+            [{ text: `件数\n   ${head.pack_count || ''}` },
+            { text: `毛重(千克)\n   ${head.gross_wt || ''}` },
+            { text: `净重(千克)\n   ${head.net_wt || ''}` },
             { colSpan: 2, text: `随附单证   ${head.cert_mark || ''}` }, {}],
-            [{ rowSpan: 3, colSpan: 5, text: `标记唛码及备注   ${head.note || ''}\n\n` }], [], [],
           ],
         },
+      },
+      {
+        style: 'table',
+        table: {
+          widths: ['100%'],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+        },
+        layout: { paddingBottom() { return 35; } },
       },
     ];
   } else if (declWayCode === 'IMPT') {
@@ -112,22 +151,22 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['40%', '20%', '20%', '20%'],
           body: [
-            [{ text: `收发货人   ${head.trade_name || ''}` },
-            { text: `进口口岸   ${head.i_e_port || ''}` },
+            [{ text: `收发货人  (${head.trade_custco || ''})\n${head.trade_name || ''}` },
+            { text: `进口口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
             { text: `进口日期   ${head.i_e_date || ''}` },
             { text: `申报日期   ${head.d_date || ''}` }],
-            [{ text: `消费使用单位   ${head.owner_name || ''}` },
-            { text: `运输方式   ${head.traf_mode || ''}` },
-            { text: `运输工具名称   ${head.traf_name || ''}` },
-            { text: `提运单号   ${head.bl_wb_no || ''}` }],
-            [{ text: `申报单位   ${head.agent_name || ''}` },
-            { text: `监管方式   ${head.trade_mode || ''}` },
-            { text: `征免性质   ${head.cut_mode || ''}` },
-            { text: `备案号   ${head.manual_no || ''}` }],
-            [{ text: `贸易国(地区)   ${head.trade_country || ''}` },
-            { text: `启运国(地区)   ${head.dept_dest_country || ''}` },
-            { text: `装货港   ${head.dept_dest_port || ''}` },
-            { text: `境内目的地   ${head.district_code || ''}` }],
+            [{ text: `消费使用单位  (${head.owner_custco})\n${head.owner_name || ''}` },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
+            { text: `运输工具名称\n${head.traf_name || ''}` },
+            { text: `提运单号\n${head.bl_wb_no || ''}` }],
+            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}` },
+            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}` },
+            { text: `征免性质 (${cutMode.rm_mode})\n${cutMode.rm_spec}` },
+            { text: `备案号\n${head.manual_no || ''}` }],
+            [{ text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
+            { text: `启运国(地区) (${deptCountry.value})\n${deptCountry.text}` },
+            { text: `装货港 (${deptPort.port_code})\n${deptPort.port_c_cod}` },
+            { text: `境内目的地 (${district.district_code})\n${district.district_name}` }],
           ],
         },
       },
@@ -135,21 +174,28 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['26%', '13%', '21%', '20%', '20%'],
           body: [
-            [{ text: `许可证号   ${head.license_no || ''}` },
-            { text: `成交方式   ${head.trxn_mode || ''}` },
+            [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
+            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
-            [{ text: `合同协议号   ${head.contr_no || ''}` },
-            { text: `件数   ${head.pack_count || ''}` },
-            { text: `包装种类   ${head.wrap_type || ''}` },
-            { text: `毛重(千克)   ${head.gross_wt || ''}` },
-            { text: `净重(千克)   ${head.net_wt || ''}` }],
-            [{ text: `集装箱号   ${head.container_no || ''}` },
+            [{ text: `合同协议号\n${head.contr_no || ''}` },
+            { text: `件数\n      ${head.pack_count || ''}` },
+            { text: `包装种类 (${wrapType.value}\n${wrapType.text}` },
+            { text: `毛重(千克)\n      ${head.gross_wt || ''}` },
+            { text: `净重(千克)\n      ${head.net_wt || ''}` }],
+            [{ text: `集装箱号\n${head.container_no || ''}` },
             { colSpan: 4, text: `随附单证   ${head.cert_mark || ''}` }, {}, {}, {}],
-            [{ rowSpan: 3, colSpan: 5, text: `标记唛码及备注   ${head.note || ''}\n\n` }], [], [],
           ],
         },
+      },
+      {
+        style: 'table',
+        table: {
+          widths: ['100%'],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+        },
+        layout: { paddingBottom() { return 35; } },
       },
     ];
   } else if (declWayCode === 'EXPT') {
@@ -165,22 +211,22 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['40%', '20%', '20%', '20%'],
           body: [
-            [{ text: `收发货人   ${head.trade_name || ''}` },
-            { text: `出口口岸   ${head.i_e_port || ''}` },
-            { text: `出口日期   ${head.i_e_date || ''}` },
-            { text: `申报日期   ${head.d_date || ''}` }],
-            [{ text: `生产销售单位   ${head.owner_name || ''}` },
-            { text: `运输方式   ${head.traf_mode || ''}` },
-            { text: `运输工具名称   ${head.traf_name || ''}` },
-            { text: `提运单号   ${head.bl_wb_no || ''}` }],
-            [{ text: `申报单位   ${head.agent_name || ''}` },
-            { text: `监管方式   ${head.trade_mode || ''}` },
-            { text: `征免性质   ${head.cut_mode || ''}` },
-            { text: `备案号   ${head.manual_no || ''}` }],
-            [{ text: `贸易国(地区)   ${head.trade_country || ''}` },
-            { text: `运抵国(地区)   ${head.dept_dest_country || ''}` },
-            { text: `指运港   ${head.dept_dest_port || ''}` },
-            { text: `境内货源地   ${head.district_code || ''}` }],
+            [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}` },
+            { text: `出口口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
+            { text: `出口日期\n${head.i_e_date || ''}` },
+            { text: `申报日期\n${head.d_date || ''}` }],
+            [{ text: `生产销售单位  (${head.owner_custco})\n${head.owner_name || ''}` },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
+            { text: `运输工具名称\n${head.traf_name || ''}` },
+            { text: `提运单号\n${head.bl_wb_no || ''}` }],
+            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}` },
+            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}` },
+            { text: `征免性质 (${cutMode.rm_mode})\n${cutMode.rm_spec}` },
+            { text: `备案号\n${head.manual_no || ''}` }],
+            [{ text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
+            { text: `运抵国(地区) (${deptCountry.value})\n${deptCountry.text}` },
+            { text: `指运港 (${deptPort.port_code})\n${deptPort.port_c_cod}` },
+            { text: `境内货源地 (${district.district_code})\n${district.district_name}` }],
           ],
         },
       },
@@ -188,21 +234,28 @@ function pdfHeader(head, declWayCode) {
         table: {
           widths: ['26%', '13%', '21%', '20%', '20%'],
           body: [
-            [{ text: `许可证号   ${head.license_no || ''}` },
-            { text: `成交方式   ${head.trxn_mode || ''}` },
+            [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
+            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
-            [{ text: `合同协议号   ${head.contr_no || ''}` },
-            { text: `件数   ${head.pack_count || ''}` },
-            { text: `包装种类   ${head.wrap_type || ''}` },
-            { text: `毛重(千克)   ${head.gross_wt || ''}` },
-            { text: `净重(千克)   ${head.net_wt || ''}` }],
-            [{ text: `集装箱号   ${head.container_no || ''}` },
+            [{ text: `合同协议号\n${head.contr_no || ''}` },
+            { text: `件数\n   ${head.pack_count || ''}` },
+            { text: `包装种类 (${wrapType.value}\n${wrapType.text}` },
+            { text: `毛重(千克)\n   ${head.gross_wt || ''}` },
+            { text: `净重(千克)\n   ${head.net_wt || ''}` }],
+            [{ text: `集装箱号\n ${head.container_no || ''}` },
             { colSpan: 4, text: `随附单证   ${head.cert_mark || ''}` }, {}, {}, {}],
-            [{ rowSpan: 3, colSpan: 5, text: `标记唛码及备注   ${head.note || ''}\n\n` }], [], [],
           ],
         },
+      },
+      {
+        style: 'table',
+        table: {
+          widths: ['100%'],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+        },
+        layout: { paddingBottom() { return 35; } },
       },
     ];
   }
@@ -249,7 +302,7 @@ function pdfBody(bodydatas, declWayCode) {
   return bodytable;
 }
 
-export function DocDef(head, bodies, declWayCode) {
+export function DocDef(head, bodies, declWayCode, params) {
   const docDefinition = {
     pageSize: 'A4',
     pageMargins: [20, 30],
@@ -289,9 +342,17 @@ export function DocDef(head, bodies, declWayCode) {
         end = true;
       }
     }
-    content = pdfHeader(head, declWayCode);
+    content = pdfHeader(head, declWayCode, params);
     content.push(
-      { style: 'table', table: pdfBody(datas, declWayCode), layout: 'lightHorizontalLines' });
+      { style: 'table',
+        table: pdfBody(datas, declWayCode, params),
+        layout: {
+          paddingBottom() { return 25; },
+          vLineWidth(i, node) {
+            return (i !== 0 && i !== node.table.widths.length) ? 0 : 1;
+          },
+        },
+      });
     const pdfFooter = [
       [{ text: '\n', border: [true, false, false, true] },
       { text: '\n', border: [false, false, false, true] },
