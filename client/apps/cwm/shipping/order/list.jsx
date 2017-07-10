@@ -11,10 +11,11 @@ import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../dock/shippingDockPanel';
+import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadSos, showDock, releaseSo, createWave } from 'common/reducers/cwmShippingOrder';
+import { loadSos, showDock, releaseSo, createWave, showAddToWave } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -23,12 +24,12 @@ const RadioButton = Radio.Button;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-function fetchData({ state, dispatch }) {
+function fetchData({ state, dispatch, location }) {
   dispatch(loadSos({
     whseCode: state.cwmContext.defaultWhse.code,
     pageSize: state.cwmShippingOrder.solist.pageSize,
     current: state.cwmShippingOrder.solist.current,
-    filters: state.cwmShippingOrder.soFilters,
+    filters: { ...state.cwmShippingOrder.soFilters, status: location.query.status || state.cwmShippingOrder.soFilters.status },
   }));
 }
 @connectFetch()(fetchData)
@@ -42,9 +43,10 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     filters: state.cwmShippingOrder.soFilters,
     solist: state.cwmShippingOrder.solist,
+    loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave }
+  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave }
 )
 @connectNav({
   depth: 2,
@@ -60,8 +62,27 @@ export default class ShippingOrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    selectedRows: [],
     searchInput: '',
     createWaveEnable: true,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.query.status !== this.props.location.query.status) {
+      const filters = { ...this.props.filters, status: nextProps.location.query.status, isInWave: false };
+      const whseCode = this.props.defaultWhse.code;
+      this.props.loadSos({
+        whseCode,
+        pageSize: this.props.solist.pageSize,
+        current: this.props.solist.current,
+        filters,
+      }).then((result) => {
+        if (!result.error) {
+          this.setState({
+            selectedRowKeys: [],
+          });
+        }
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -171,6 +192,12 @@ export default class ShippingOrderList extends React.Component {
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters: this.props.filters,
+    }).then((result) => {
+      if (!result.error) {
+        this.setState({
+          selectedRowKeys: [],
+        });
+      }
     });
   }
   handleCreateSO = () => {
@@ -185,13 +212,10 @@ export default class ShippingOrderList extends React.Component {
     this.context.router.push(link);
   }
   handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value, isInWave: false };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadSos({
-      whseCode,
-      pageSize: this.props.solist.pageSize,
-      current: this.props.solist.current,
-      filters,
+    const location = this.props.location;
+    this.context.router.push({
+      pathname: location.pathname,
+      query: { ...location.query, status: ev.target.value },
     });
   }
   handleOwnerChange = (value) => {
@@ -231,14 +255,15 @@ export default class ShippingOrderList extends React.Component {
     this.props.createWave(selectedRowKeys, tenantId, tenantName, defaultWhse.code, loginId).then((result) => {
       if (!result.error) {
         this.handleReload();
-        this.setState({
-          selectedRowKeys: [],
-        });
       }
     });
   }
+  showAddToWaveModal = () => {
+    const { selectedRows } = this.state;
+    this.props.showAddToWave(selectedRows[0].owner_partner_id);
+  }
   render() {
-    const { whses, defaultWhse, owners, filters } = this.props;
+    const { whses, defaultWhse, owners, filters, loading } = this.props;
     let columns = this.columns;
     if (filters.status === 'inWave') {
       columns = [...columns];
@@ -285,7 +310,7 @@ export default class ShippingOrderList extends React.Component {
             }
           }
         }
-        this.setState({ selectedRowKeys });
+        this.setState({ selectedRowKeys, selectedRows });
       },
     };
     return (
@@ -352,17 +377,18 @@ export default class ShippingOrderList extends React.Component {
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                {this.state.createWaveEnable && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
-                <Button size="large">添加到波次计划</Button>
+                {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
+                {filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
                 <Button size="large">触发补货任务</Button>
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no" scroll={{ x: 1400 }} />
+              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no" scroll={{ x: 1400 }} loading={loading} />
             </div>
           </div>
         </Content>
         <ShippingDockPanel />
+        <AddToWaveModal reload={this.handleReload} selectedRowKeys={this.state.selectedRowKeys} />
       </QueueAnim>
     );
   }

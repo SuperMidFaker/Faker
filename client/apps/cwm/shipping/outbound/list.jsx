@@ -24,13 +24,13 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-function fetchData({ state, dispatch }) {
+function fetchData({ state, dispatch, location }) {
   dispatch(loadOutbounds({
     whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
     pageSize: state.cwmOutbound.outbound.pageSize,
     current: state.cwmOutbound.outbound.current,
-    filters: state.cwmOutbound.outboundFilters,
+    filters: { ...state.cwmOutbound.outboundFilters, status: location.query.status || state.cwmOutbound.outboundFilters.status },
   }));
 }
 @connectFetch()(fetchData)
@@ -42,6 +42,7 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmOutbound.outboundFilters,
     outbound: state.cwmOutbound.outbound,
+    loading: state.cwmOutbound.outbound.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
@@ -64,13 +65,15 @@ export default class OutboundList extends React.Component {
     searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      nextProps.loadOutbounds({
-        whseCode: nextProps.defaultWhse.code,
-        tenantId: nextProps.tenantId,
-        pageSize: nextProps.outbound.pageSize,
-        current: nextProps.outbound.current,
-        filters: nextProps.filters,
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || nextProps.location.query.status !== this.props.location.query.status) {
+      const filters = { ...this.props.filters, status: nextProps.location.query.status };
+      const whseCode = this.props.defaultWhse.code;
+      this.props.loadOutbounds({
+        whseCode,
+        tenantId: this.props.tenantId,
+        pageSize: this.props.outbound.pageSize,
+        current: this.props.outbound.current,
+        filters,
       });
     }
   }
@@ -189,13 +192,10 @@ export default class OutboundList extends React.Component {
     this.props.showDock();
   }
   handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
-    this.props.loadOutbounds({
-      whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
-      filters,
+    const location = this.props.location;
+    this.context.router.push({
+      pathname: location.pathname,
+      query: { ...location.query, status: ev.target.value },
     });
   }
   handleReceive = (row) => {
@@ -229,6 +229,7 @@ export default class OutboundList extends React.Component {
     });
   }
   render() {
+    const { defaultWhse, whses, owners, loading, filters } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadOutbounds(params),
       resolve: result => result.data,
@@ -252,7 +253,6 @@ export default class OutboundList extends React.Component {
       },
       remotes: this.props.outbound,
     });
-    const { defaultWhse, whses, owners } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -274,7 +274,7 @@ export default class OutboundList extends React.Component {
               {this.msg('shippingOutbound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="created" onChange={this.handleStatusChange} size="large">
+          <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="created">待出库</RadioButton>
             <RadioButton value="allocating">分配</RadioButton>
@@ -302,7 +302,7 @@ export default class OutboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} loading={loading} />
             </div>
           </div>
         </Content>

@@ -21,12 +21,12 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
-function fetchData({ state, dispatch }) {
+function fetchData({ state, dispatch, location }) {
   dispatch(loadWaves({
     whseCode: state.cwmContext.defaultWhse.code,
     pageSize: state.cwmShippingOrder.wave.pageSize,
     current: state.cwmShippingOrder.wave.current,
-    filters: state.cwmShippingOrder.waveFilters,
+    filters: { ...state.cwmShippingOrder.waveFilters, status: location.query.status || state.cwmShippingOrder.waveFilters.status },
   }));
 }
 @connectFetch()(fetchData)
@@ -40,6 +40,7 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     filters: state.cwmShippingOrder.waveFilters,
     wave: state.cwmShippingOrder.wave,
+    loading: state.cwmShippingOrder.wave.loading,
   }),
   { loadWaves, switchDefaultWhse, showDock, releaseWave, cancelWave }
 )
@@ -58,6 +59,18 @@ export default class WaveList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.query.status !== this.props.location.query.status) {
+      const filters = { ...this.props.filters, status: nextProps.location.query.status };
+      const whseCode = this.props.defaultWhse.code;
+      this.props.loadWaves({
+        whseCode,
+        pageSize: this.props.wave.pageSize,
+        current: this.props.wave.current,
+        filters,
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -152,13 +165,10 @@ export default class WaveList extends React.Component {
     this.context.router.push(link);
   }
   handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadWaves({
-      whseCode,
-      pageSize: this.props.wave.pageSize,
-      current: this.props.wave.current,
-      filters,
+    const location = this.props.location;
+    this.context.router.push({
+      pathname: location.pathname,
+      query: { ...location.query, status: ev.target.value },
     });
   }
   handleOwnerChange = (value) => {
@@ -193,7 +203,7 @@ export default class WaveList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, filters } = this.props;
+    const { whses, defaultWhse, filters, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadWaves(params),
       resolve: result => result.data,
@@ -255,7 +265,7 @@ export default class WaveList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading} />
             </div>
           </div>
         </Content>

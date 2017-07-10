@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { DatePicker, Form, Modal, Input, Radio } from 'antd';
@@ -20,6 +21,7 @@ const FormItem = Form.Item;
     id: state.cwmOutbound.shippingModal.id,
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
+    username: state.account.username,
   }),
   { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead }
 )
@@ -34,6 +36,13 @@ export default class ShippingModal extends Component {
   }
   state = {
     shippingMode: 0,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.visible && this.props.visible !== nextProps.visible) {
+      this.props.form.setFieldsValue({
+        waybill: '',
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
@@ -80,7 +89,7 @@ export default class ShippingModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, username } = this.props;
     const { shippingMode } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -104,12 +113,16 @@ export default class ShippingModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="发货人员" >
             {
-              getFieldDecorator('shippedBy')(<Input />)
+              getFieldDecorator('shippedBy', {
+                initialValue: username,
+              })(<Input />)
             }
           </FormItem>
           <FormItem {...formItemLayout} label="发货时间" >
             {
-              getFieldDecorator('shippedDate')(<DatePicker />)
+              getFieldDecorator('shippedDate', {
+                initialValue: moment(new Date()),
+              })(<DatePicker format={'YYYY/MM/DD hh:mm'} />)
             }
           </FormItem>
         </Form>

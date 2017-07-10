@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { DatePicker, Form, Modal, Input } from 'antd';
@@ -21,6 +22,7 @@ const FormItem = Form.Item;
     id: state.cwmOutbound.pickingModal.id,
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    username: state.account.username,
   }),
   { closePickingModal, pickConfirm, loadPickDetails, loadOutboundHead }
 )
@@ -29,9 +31,16 @@ export default class PickingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
-    pickMode: PropTypes.string.isRequired,
+    pickMode: PropTypes.string,
     selectedRows: PropTypes.array,
     resetState: PropTypes.func,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.visible && nextProps.visible !== this.props.visible) {
+      this.props.form.setFieldsValue({
+        picked_qty: '',
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
@@ -72,7 +81,7 @@ export default class PickingModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, traceId, location, pickMode } = this.props;
+    const { form: { getFieldDecorator }, traceId, location, pickMode, username } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -96,7 +105,9 @@ export default class PickingModal extends Component {
           </FormItem>}
           <FormItem {...formItemLayout} label="拣货人员" >
             {
-              getFieldDecorator('pickedBy')(<Input />)
+              getFieldDecorator('pickedBy', {
+                initialValue: username,
+              })(<Input />)
             }
           </FormItem>
           {pickMode === 'single' && <FormItem {...formItemLayout} label="拣货数量" >
@@ -106,7 +117,9 @@ export default class PickingModal extends Component {
           </FormItem>}
           <FormItem {...formItemLayout} label="拣货时间" >
             {
-              getFieldDecorator('pickedDate')(<DatePicker />)
+              getFieldDecorator('pickedDate', {
+                initialValue: moment(new Date()),
+              })(<DatePicker format={'YYYY/MM/DD'} />)
             }
           </FormItem>
         </Form>
