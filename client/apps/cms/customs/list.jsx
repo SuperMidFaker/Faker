@@ -94,9 +94,9 @@ export default class CustomsList extends Component {
       </a>),
   }, {
     title: this.msg('orderNo'),
-    width: 140,
+    width: 180,
     dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
@@ -339,6 +339,7 @@ export default class CustomsList extends Component {
     remotes: this.props.customslist,
   })
   handleTableLoad = (currentPage, filter) => {
+    const ie = filter ? filter.ietype : this.props.listFilter.ietype;
     this.props.loadCustomsDecls({
       ietype: ie,
       tenantId: this.props.tenantId,

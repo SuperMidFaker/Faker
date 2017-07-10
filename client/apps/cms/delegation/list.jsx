@@ -149,13 +149,14 @@ export default class DelegationList extends Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: this.msg('waybillLadingNo'),
-    width: 220,
+    width: 200,
     dataIndex: 'bl_wb_no',
+    render: o => <TrimSpan text={o} maxLen={25} />,
   }, {
     title: this.msg('orderNo'),
-    width: 140,
+    width: 180,
     dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: this.msg('transMode'),
     width: 100,
