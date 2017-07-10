@@ -90,14 +90,11 @@ export default class CreateDelegation extends Component {
   }
 
   render() {
-    const { form, type, submitting } = this.props;
+    const { form, submitting } = this.props;
     return (
       <div>
         <Header className="top-bar">
           <Breadcrumb>
-            <Breadcrumb.Item>
-              {type === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
-            </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('delegationManagement')}
             </Breadcrumb.Item>
@@ -118,7 +115,7 @@ export default class CreateDelegation extends Component {
           <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <MainForm form={form} ieType={type} partnershipType="CCB" />
+                <MainForm form={form} partnershipType="CCB" />
               </Col>
               <Col sm={24} md={8}>
                 <SiderForm form={form} />

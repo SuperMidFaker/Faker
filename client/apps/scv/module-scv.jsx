@@ -68,31 +68,32 @@ export default class ModuleSCV extends React.Component {
       text: formatMsg(intl, 'clearance'),
       sublinks: [{
         key: 'scv-3-0',
-        icon: 'anticon anticon-file-text',
         path: '/scv/clearance/manifest',
         text: formatMsg(intl, 'clearanceManifest'),
       }, {
         key: 'scv-3-1',
         path: '/scv/clearance/decl',
-        icon: 'anticon anticon-file',
-        text: formatMsg(intl, 'clearanceDecl'),
+        text: formatMsg(intl, 'customsDecl'),
       }, {
         key: 'scv-3-2',
         disabled: true,
         path: '/scv/clearance/tax',
-        icon: 'anticon anticon-bank',
-        text: formatMsg(intl, 'clearanceTax'),
+        text: formatMsg(intl, 'ciqDecl'),
       }],
     });
     linkMenus.push({
       single: false,
       key: 'scv-4',
       icon: 'logixon icon-resource-o',
-      text: formatMsg(intl, 'products'),
+      text: formatMsg(intl, 'compliance'),
       sublinks: [{
         key: 'scv-4-0',
-        path: '/scv/products/tradeitem',
-        text: formatMsg(intl, 'productsTradeItem'),
+        path: '/scv/compliance/classification',
+        text: formatMsg(intl, 'tradeItem'),
+      }, {
+        key: 'scv-4-1',
+        path: '/scv/compliance/permit',
+        text: formatMsg(intl, 'certPermit'),
       }],
     });
     linkMenus.push({
@@ -166,10 +167,6 @@ export default class ModuleSCV extends React.Component {
         key: 'scv-8-0',
         path: '/scv/resources',
         text: formatMsg(intl, 'resources'),
-      }, {
-        key: 'scv-8-2',
-        path: '/scv/classification',
-        text: formatMsg(intl, 'classifyTradeItem'),
       }, {
         key: 'scv-8-1',
         disabled: true,

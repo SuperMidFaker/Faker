@@ -40,6 +40,7 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     filters: state.cwmShippingOrder.waveFilters,
     wave: state.cwmShippingOrder.wave,
+    loading: state.cwmShippingOrder.wave.loading,
   }),
   { loadWaves, switchDefaultWhse, showDock, releaseWave, cancelWave }
 )
@@ -62,7 +63,7 @@ export default class WaveList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '波次编号',
-    width: 160,
+    width: 180,
     dataIndex: 'wave_no',
     render: o => (
       <a onClick={() => this.handlePreview()}>
@@ -193,7 +194,7 @@ export default class WaveList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, filters } = this.props;
+    const { whses, defaultWhse, filters, loading } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadWaves(params),
       resolve: result => result.data,
@@ -255,7 +256,7 @@ export default class WaveList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} />
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading} />
             </div>
           </div>
         </Content>

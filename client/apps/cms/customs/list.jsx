@@ -93,10 +93,14 @@ export default class CustomsList extends Component {
         {o}
       </a>),
   }, {
+    title: this.msg('orderNo'),
+    width: 180,
+    dataIndex: 'order_no',
+    render: o => <TrimSpan text={o} maxLen={20} />,
+  }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
     width: 160,
-    fixed: 'left',
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
       const preEntryLink = (
@@ -337,7 +341,7 @@ export default class CustomsList extends Component {
   handleTableLoad = (currentPage, filter) => {
     const ie = filter ? filter.ietype : this.props.listFilter.ietype;
     this.props.loadCustomsDecls({
-      ietype: filter && filter.ietype || this.props.listFilter.ietype,
+      ietype: ie,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.customslist.pageSize,
@@ -387,6 +391,14 @@ export default class CustomsList extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, ietype: ev.target.value };
+    this.setState({ selectedRowKeys: [] });
+    this.handleTableLoad(1, filter);
+  }
+  handleInspectFilter = (ev) => {
+    if (ev.target.value === this.props.listFilter.inspect) {
+      return;
+    }
+    const filter = { ...this.props.listFilter, inspect: ev.target.value };
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
   }
@@ -518,6 +530,12 @@ export default class CustomsList extends Component {
             {Object.keys(CMS_DECL_STATUS).map(declkey =>
               <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
             )}
+          </RadioGroup>
+          <span />
+          <RadioGroup value={listFilter.inspect} onChange={this.handleInspectFilter} size="large">
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="inspected">报关单查验</RadioButton>
+            <RadioButton value="clear">查验放行</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>

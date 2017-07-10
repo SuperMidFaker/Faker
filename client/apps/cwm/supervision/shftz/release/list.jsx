@@ -13,6 +13,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -58,33 +59,30 @@ export default class SHFTZReleaseList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'SO编号',
-    dataIndex: 'asn_no',
+    dataIndex: 'so_no',
     width: 180,
     fixed: 'left',
   }, {
     title: '报关单号',
     width: 150,
-    dataIndex: 'customs_decl_no',
+    dataIndex: 'cus_decl_no',
   }, {
     title: '备案类型',
-    dataIndex: 'ftz_ent_type',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">普通出库</Tag>);
-      } else if (o === 2) {
-        return (<Tag color="green">分拨出库</Tag>);
-      } else if (o === 3) {
-        return (<Tag color="yellow">区内转出</Tag>);
+    dataIndex: 'ftz_rel_type',
+    render: (reltype) => {
+      const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
+      if (regtype) {
+        return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
       }
     },
   }, {
     title: '货主',
     width: 220,
-    dataIndex: 'owner_cus_code',
+    dataIndex: 'owner_name',
   }, {
     title: '仓储企业',
     width: 220,
-    dataIndex: 'wh_ent_cus_code',
+    dataIndex: 'wh_ent_name',
   }, {
     title: '提货单位',
     width: 120,
@@ -101,29 +99,17 @@ export default class SHFTZReleaseList extends React.Component {
     title: '出口日期',
     width: 120,
     dataIndex: 'ie_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: iedate => iedate && moment(iedate).format('MM.DD HH:mm'),
   }, {
     title: '报关日期',
     width: 120,
     dataIndex: 'cus_decl_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: decldate => decldate && moment(decldate).format('MM.DD HH:mm'),
   }, {
     title: '预计出区日期',
     width: 120,
     dataIndex: 'ftz_rel_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: reldate => reldate && moment(reldate).format('MM.DD HH:mm'),
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -146,7 +132,7 @@ export default class SHFTZReleaseList extends React.Component {
       if (record.status === 0) {
         return (<span><RowUpdater onHit={this.handleDetail} label="发送" row={record} /></span>);
       } else if (record.status === 1) {
-        return (<span><RowUpdater label="获取状态" row={record} /></span>);
+        return (<span><RowUpdater label="获取状态" row={record} onHit={this.handleDetail} /></span>);
       } else if (record.status === 2) {
         return (<span><RowUpdater onHit={this.handleDetail} label="查看" row={record} /></span>);
       }
@@ -198,7 +184,7 @@ export default class SHFTZReleaseList extends React.Component {
     this.handleReleaseListLoad(1, this.props.whse.code, filter);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/release/${row.so_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
@@ -216,7 +202,7 @@ export default class SHFTZReleaseList extends React.Component {
   }
   render() {
     const { releaseList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded === 1);
+    const bondedWhses = whses.filter(wh => wh.bonded);
     this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -236,10 +222,7 @@ export default class SHFTZReleaseList extends React.Component {
               </Breadcrumb>
             </div>
             <div className="left-sider-panel">
-              <Menu
-                defaultSelectedKeys={['release']}
-                mode="inline"
-              >
+              <Menu defaultSelectedKeys={['release']} mode="inline">
                 <Menu.Item key="entry">
                   <NavLink to="/cwm/supervision/shftz/entry">
                     进库备案

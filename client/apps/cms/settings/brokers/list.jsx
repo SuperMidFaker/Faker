@@ -70,17 +70,20 @@ export default class BrokerList extends Component {
     });
     const columns = [
       {
-        title: '服务商名称',
+        title: '企业名称',
         dataIndex: 'name',
         key: 'name',
+        width: 240,
       }, {
         title: '统一社会信用代码',
         dataIndex: 'partner_unique_code',
         key: 'partner_unique_code',
+        width: 200,
       }, {
         title: '海关编码',
         dataIndex: 'customs_code',
         key: 'customs_code',
+        width: 120,
       }, {
         title: '业务类型',
         dataIndex: 'business',
@@ -94,13 +97,20 @@ export default class BrokerList extends Component {
         title: '创建日期',
         dataIndex: 'created_date',
         key: 'created_date',
+        width: 120,
         render(o) {
           return moment(o).format('YYYY/MM/DD HH:mm');
         },
       }, {
+        title: '创建人',
+        dataIndex: 'created_by',
+        key: 'created_by',
+        width: 120,
+      }, {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
+        width: 80,
         render: (_, record, index) => {
           if (record.status === 1) {
             return this.renderEditAndStopOperations(record, index);

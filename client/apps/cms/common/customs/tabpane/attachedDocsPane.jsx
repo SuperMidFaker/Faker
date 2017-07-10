@@ -161,7 +161,7 @@ export default class AttachedDocsPane extends React.Component {
     return (
       <div className="pane">
         <div className="panel-header">
-          {head.status > CMS_DECL_STATUS.reviewed.value &&
+          {head.status < CMS_DECL_STATUS.sent.value &&
           <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>}
         </div>
         <div className="panel-body table-panel">

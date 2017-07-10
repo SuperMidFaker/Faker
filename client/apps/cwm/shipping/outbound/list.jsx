@@ -42,6 +42,7 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmOutbound.outboundFilters,
     outbound: state.cwmOutbound.outbound,
+    loading: state.cwmOutbound.outbound.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
@@ -65,12 +66,14 @@ export default class OutboundList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      nextProps.loadOutbounds({
-        whseCode: nextProps.defaultWhse.code,
-        tenantId: nextProps.tenantId,
-        pageSize: nextProps.outbound.pageSize,
-        current: nextProps.outbound.current,
-        filters: nextProps.filters,
+      const filters = { ...this.props.filters, status: nextProps.location.query.status };
+      const whseCode = this.props.defaultWhse.code;
+      this.props.loadOutbounds({
+        whseCode,
+        tenantId: this.props.tenantId,
+        pageSize: this.props.outbound.pageSize,
+        current: this.props.outbound.current,
+        filters,
       });
     }
   }
@@ -78,14 +81,14 @@ export default class OutboundList extends React.Component {
   columns = [{
     title: 'SO编号',
     dataIndex: 'so_no',
-    width: 200,
+    width: 180,
     render: o => (
       <a onClick={this.handlePreview}>
         {o}
       </a>),
   }, {
     title: '波次号',
-    width: 120,
+    width: 180,
     dataIndex: 'wave_no',
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
@@ -190,8 +193,9 @@ export default class OutboundList extends React.Component {
   }
   handleStatusChange = (ev) => {
     const filters = { ...this.props.filters, status: ev.target.value };
+    const whseCode = this.props.defaultWhse.code;
     this.props.loadOutbounds({
-      whseCode: this.props.defaultWhse.code,
+      whseCode,
       tenantId: this.props.tenantId,
       pageSize: this.props.outbound.pageSize,
       current: this.props.outbound.current,
@@ -229,6 +233,7 @@ export default class OutboundList extends React.Component {
     });
   }
   render() {
+    const { defaultWhse, whses, owners, loading, filters } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadOutbounds(params),
       resolve: result => result.data,
@@ -252,7 +257,6 @@ export default class OutboundList extends React.Component {
       },
       remotes: this.props.outbound,
     });
-    const { defaultWhse, whses, owners } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -274,7 +278,7 @@ export default class OutboundList extends React.Component {
               {this.msg('shippingOutbound')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup defaultValue="created" onChange={this.handleStatusChange} size="large">
+          <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="created">待出库</RadioButton>
             <RadioButton value="allocating">分配</RadioButton>
@@ -302,7 +306,7 @@ export default class OutboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} />
+              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} loading={loading} />
             </div>
           </div>
         </Content>

@@ -75,13 +75,13 @@ export default class OrderDetailsPane extends React.Component {
     width: 120,
     render: (o) => {
       if (o) {
-        return <Button>{o}</Button>;
+        return <Button size="small">{o}</Button>;
       }
     },
   }, {
     title: '分配数量',
     width: 200,
-    render: (o, record) => (<QuantityInput packQty={record.alloc_pack_qty} pcsQty={record.alloc_qty} />),
+    render: (o, record) => (<QuantityInput size="small" packQty={record.alloc_pack_qty} pcsQty={record.alloc_qty} />),
   }, {
     title: '操作',
     width: 150,

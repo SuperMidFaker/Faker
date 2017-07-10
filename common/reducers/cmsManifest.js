@@ -135,6 +135,7 @@ const initialState = {
     agentCustCo: '',
   },
   editBodyVisible: false,
+  billDetails: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -185,6 +186,7 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         entryHead: action.result.data.head,
         entryBodies: action.result.data.hbodies,
+        billDetails: action.result.data.billDetails,
         billMeta: action.result.data.meta,
         customsDeclLoading: false };
     case actionTypes.LOAD_PARAMS_SUCCEED: {

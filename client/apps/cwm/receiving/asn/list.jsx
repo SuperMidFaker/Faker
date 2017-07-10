@@ -39,6 +39,7 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.asnFilters,
     asnlist: state.cwmReceive.asnlist,
+    loading: state.cwmReceive.asnlist.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
@@ -64,7 +65,7 @@ export default class ReceivingASNList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 220,
+    width: 180,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
@@ -258,7 +259,7 @@ export default class ReceivingASNList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, owners, filters } = this.props;
+    const { whses, defaultWhse, owners, filters, loading } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -339,7 +340,7 @@ export default class ReceivingASNList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 260), 0) }}
+                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 260), 0) }} loading={loading}
               />
             </div>
           </div>

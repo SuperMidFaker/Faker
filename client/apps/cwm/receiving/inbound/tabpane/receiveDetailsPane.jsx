@@ -152,7 +152,7 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '中文品名',
     dataIndex: 'name',
   }, {
-    title: '收货人',
+    title: '收货人员',
     width: 60,
     dataIndex: 'received_by',
   }, {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Select, Icon, Input, InputNumber, Card, Col, Row, Radio, Tooltip } from 'antd';
 import { setClientForm } from 'common/reducers/cmsDelegation';
-import { GOODSTYPES, TRANS_MODE, CLAIM_DO_AWB, DECL_I_TYPE, DECL_E_TYPE, WRAP_TYPE } from 'common/constants';
+import { GOODSTYPES, TRANS_MODE, DECL_TYPE, WRAP_TYPE } from 'common/constants';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -50,7 +50,6 @@ export default class MainForm extends Component {
     clients: PropTypes.array.isRequired,
     customs: PropTypes.array.isRequired,
     setClientForm: PropTypes.func.isRequired,
-    ieType: PropTypes.string.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleClientChange = (value) => {
@@ -67,8 +66,8 @@ export default class MainForm extends Component {
     return value;
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType, ieType } = this.props;
-    const DECL_TYPE = ieType === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
+    const { form: { getFieldDecorator, getFieldValue }, fieldInits, clients, partnershipType } = this.props;
+    // const DECL_TYPE = ieType === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     const transMode = getFieldValue('trans_mode');
     let customerName = {
       display: '',
@@ -116,6 +115,34 @@ export default class MainForm extends Component {
       <div>
         <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
+            <Col sm={24} lg={16}>
+              <FormItem label={this.msg('declareWay')} >
+                {getFieldDecorator('decl_way_code', {
+                  rules: [{ required: true, message: '报关类型必选' }],
+                  initialValue: fieldInits.decl_way_code,
+                })(
+                  <RadioGroup>
+                    <RadioButton value={DECL_TYPE[0].key}>{DECL_TYPE[0].value}</RadioButton>
+                    <RadioButton value={DECL_TYPE[1].key}>{DECL_TYPE[1].value}</RadioButton>
+                    <RadioButton value={DECL_TYPE[2].key}>{DECL_TYPE[2].value}</RadioButton>
+                    <RadioButton value={DECL_TYPE[3].key}>{DECL_TYPE[3].value}</RadioButton>
+                  </RadioGroup>
+                  )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('declareCustoms')} >
+                {getFieldDecorator('decl_port', {
+                  initialValue: fieldInits.decl_port,
+                })(<Select showSearch>
+                  {
+                    this.props.customs.map(dw =>
+                      <Option value={dw.value} key={dw.value}>{dw.text}</Option>
+                    )
+                  }
+                </Select>)}
+              </FormItem>
+            </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('customer')} style={{ display: customerName.display }}>
                 {getFieldDecorator('customer_name', {
@@ -135,40 +162,6 @@ export default class MainForm extends Component {
                       )}
                   </Select>
                   )}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('declareWay')} >
-                {getFieldDecorator('decl_way_code', {
-                  rules: [{ required: true, message: '报关类型必选' }],
-                  initialValue: fieldInits.decl_way_code,
-                })(
-                  <RadioGroup>
-                    <RadioButton value={DECL_TYPE[0].key}>{DECL_TYPE[0].value}</RadioButton>
-                    <RadioButton value={DECL_TYPE[1].key}>{DECL_TYPE[1].value}</RadioButton>
-                  </RadioGroup>
-                  )}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('declareCustoms')} >
-                {getFieldDecorator('decl_port', {
-                  rules: [{ required: true, message: '申报口岸必选' }],
-                  initialValue: fieldInits.decl_port,
-                })(<Select showSearch>
-                  {
-                    this.props.customs.map(dw =>
-                      <Option value={dw.value} key={dw.value}>{dw.text}</Option>
-                    )
-                  }
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('invoiceNo')} >
-                {getFieldDecorator('invoice_no', {
-                  initialValue: fieldInits.invoice_no,
-                })(<Input />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
@@ -233,29 +226,6 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
           </Row>
-          <Row gutter={16}>
-            <Col sm={24} lg={12}>
-              {transMode === '2' &&
-                <FormItem label="换单" >
-                  {getFieldDecorator('claim_do_awb', { initialValue: fieldInits.claim_do_awb })(<RadioGroup>
-                    <RadioButton value={CLAIM_DO_AWB.claimDO.key}>{CLAIM_DO_AWB.claimDO.value}</RadioButton>
-                    <RadioButton value={CLAIM_DO_AWB.notClaimDO.key}>{CLAIM_DO_AWB.notClaimDO.value}</RadioButton>
-                  </RadioGroup>)}
-                </FormItem>
-              }
-            </Col>
-            <Col sm={24} lg={12}>
-              {transMode === '2' &&
-                <FormItem label="海运单号" >
-                  {getFieldDecorator('swb_no', {
-                    initialValue: fieldInits.swb_no,
-                  })(<Input />)}
-                </FormItem>
-              }
-            </Col>
-          </Row>
-        </Card>
-        <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('goodsType')} >

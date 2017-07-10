@@ -169,6 +169,10 @@ export default defineMessages({
     id: 'cms.delegation.certbroker',
     defaultMessage: '鉴定办证企业',
   },
+  operatedBy: {
+    id: 'cms.delegation.opertated.by',
+    defaultMessage: '操作人员',
+  },
   goodsType: {
     id: 'cms.delegation.goodstype',
     defaultMessage: '货物类型',

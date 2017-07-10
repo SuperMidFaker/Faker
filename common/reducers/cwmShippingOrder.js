@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'CANCEL_WAVE', 'CANCEL_WAVE_SUCCEED', 'CANCEL_WAVE_FAIL',
   'LOAD_WAVE_HEAD', 'LOAD_WAVE_HEAD_SUCCEED', 'LOAD_WAVE_HEAD_FAIL',
   'REMOVE_WAVE_ORDERS', 'REMOVE_WAVE_ORDERS_SUCCEED', 'REMOVE_WAVE_ORDERS_FAIL',
+  'SHOW_ADD_TO_WAVE', 'HIDE_ADD_TO_WAVE',
+  'ADD_TO_WAVE', 'ADD_TO_WAVE_SUCCEED', 'ADD_TO_WAVE_FAIL',
 ]);
 
 const initialState = {
@@ -32,6 +34,7 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    loading: true,
   },
   soFilters: { status: 'pending', ownerCode: 'all' },
   wave: {
@@ -39,8 +42,13 @@ const initialState = {
     pageSize: 20,
     current: 1,
     data: [],
+    loading: true,
   },
   waveFilters: { status: 'pending' },
+  addToMoveModal: {
+    visible: false,
+    ownerId: '',
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -52,13 +60,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHANGE_DOCK_TAB:
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.LOAD_SOS:
-      return { ...state, soFilters: JSON.parse(action.params.filters) };
+      return { ...state, soFilters: JSON.parse(action.params.filters), solist: { ...state.solist, loading: true } };
     case actionTypes.LOAD_SOS_SUCCEED:
-      return { ...state, solist: action.result.data };
+      return { ...state, solist: { ...action.result.data, loading: false } };
     case actionTypes.LOAD_WAVES:
-      return { ...state, waveFilters: JSON.parse(action.params.filters) };
+      return { ...state, waveFilters: JSON.parse(action.params.filters), wave: { ...state.wave, loading: true } };
     case actionTypes.LOAD_WAVES_SUCCEED:
-      return { ...state, wave: action.result.data };
+      return { ...state, wave: { ...action.result.data, loading: false } };
+    case actionTypes.SHOW_ADD_TO_WAVE:
+      return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: true, ownerId: action.ownerId } };
+    case actionTypes.HIDE_ADD_TO_WAVE:
+      return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: false } };
     default:
       return state;
   }
@@ -272,6 +284,34 @@ export function removeWaveOrders(soNos, waveNo) {
         actionTypes.REMOVE_WAVE_ORDERS_FAIL,
       ],
       endpoint: 'v1/cwm/remove/wave/orders',
+      method: 'post',
+      data: { soNos, waveNo },
+    },
+  };
+}
+
+export function showAddToWave(ownerId) {
+  return {
+    type: actionTypes.SHOW_ADD_TO_WAVE,
+    ownerId,
+  };
+}
+
+export function hideAddToWave() {
+  return {
+    type: actionTypes.HIDE_ADD_TO_WAVE,
+  };
+}
+
+export function addToWave(soNos, waveNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_TO_WAVE,
+        actionTypes.ADD_TO_WAVE_SUCCEED,
+        actionTypes.ADD_TO_WAVE_FAIL,
+      ],
+      endpoint: 'v1/cwm/add/to/wave',
       method: 'post',
       data: { soNos, waveNo },
     },

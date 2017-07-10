@@ -41,6 +41,7 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.inboundFilters,
     inbound: state.cwmReceive.inbound,
+    loading: state.cwmReceive.inbound.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
@@ -63,12 +64,13 @@ export default class ReceivingInboundList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+      const filters = { ...this.props.filters, status: nextProps.location.query.status };
       nextProps.loadInbounds({
         whseCode: nextProps.defaultWhse.code,
         tenantId: nextProps.tenantId,
         pageSize: nextProps.inbound.pageSize,
         current: nextProps.inbound.current,
-        filters: nextProps.filters,
+        filters,
       });
     }
   }
@@ -164,8 +166,9 @@ export default class ReceivingInboundList extends React.Component {
   }
   handleStatusChange = (e) => {
     const filters = { ...this.props.filters, status: e.target.value };
+    const whseCode = this.props.defaultWhse.code;
     this.props.loadInbounds({
-      whseCode: this.props.defaultWhse.code,
+      whseCode,
       tenantId: this.props.tenantId,
       pageSize: this.props.inbound.pageSize,
       current: this.props.inbound.current,
@@ -205,7 +208,7 @@ export default class ReceivingInboundList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, owners, filters } = this.props;
+    const { whses, defaultWhse, owners, filters, loading } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -278,7 +281,7 @@ export default class ReceivingInboundList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
               />
             </div>
           </div>

@@ -33,6 +33,10 @@ export default defineMessages({
     id: 'cms.customs.decl.decl.ftz',
     defaultMessage: '备案清单',
   },
+  orderNo: {
+    id: 'cms.customs.decl.order.no',
+    defaultMessage: '客户订单号',
+  },
   declNo: {
     id: 'cms.customs.decl.decl.no',
     defaultMessage: '报关单号/内部编号',
