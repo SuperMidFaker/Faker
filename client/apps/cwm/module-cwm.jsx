@@ -91,10 +91,15 @@ export default class ModuleCWM extends React.Component {
       }, {
         key: 'cwm-3-2',
         disabled: true,
-        path: '/cwm/stock/replenishment',
-        text: formatMsg(intl, 'replenishment'),
+        path: '/cwm/stock/adjust',
+        text: formatMsg(intl, 'adjust'),
       }, {
         key: 'cwm-3-3',
+        disabled: true,
+        path: '/cwm/stock/transfer',
+        text: formatMsg(intl, 'transfer'),
+      }, {
+        key: 'cwm-3-4',
         disabled: true,
         path: '/cwm/stock/counting',
         text: formatMsg(intl, 'counting'),

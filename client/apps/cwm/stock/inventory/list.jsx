@@ -295,10 +295,10 @@ export default class InventoryStockList extends React.Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('inventory')}
+                {this.msg('stock')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('inventoryStock')}
+                {this.msg('inventory')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -310,9 +310,6 @@ export default class InventoryStockList extends React.Component {
               <Breadcrumb.Item>
                 {this.msg('inventory')}
               </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('inventoryStock')}
-              </Breadcrumb.Item>
             </Breadcrumb>}
             <ButtonToggle size="large"
               iconOn="menu-fold" iconOff="menu-unfold"
@@ -321,7 +318,6 @@ export default class InventoryStockList extends React.Component {
             />
             <span />
             <Select size="large" value={listFilter.wh_no} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
-              <Option value="_all_" key="_all_">{this.msg('allWarehouses')}</Option>
               {
                 warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.whse_name}</Option>)
               }

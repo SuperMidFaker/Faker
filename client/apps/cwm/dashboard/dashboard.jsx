@@ -7,9 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import ReceivingStatsCard from './card/receivingStatsCard';
-import ShippingStatsCard from './card/shippingStatsCard';
-import TaskStatsCard from './card/taskStatsCard';
+import StatsCard from './card/statsCard';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -59,16 +57,8 @@ export default class CWMDashboard extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <Row gutter={16}>
-            <Col sm={24} md={10}>
-              <ReceivingStatsCard />
-            </Col>
-            <Col sm={24} md={14}>
-              <ShippingStatsCard />
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col sm={24} md={24}>
-              <TaskStatsCard />
+            <Col sm={24}>
+              <StatsCard />
             </Col>
           </Row>
         </Content>

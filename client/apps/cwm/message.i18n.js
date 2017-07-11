@@ -40,15 +40,19 @@ const messages = defineMessages({
   },
   inventory: {
     id: 'cwm.module.stock.inventory',
-    defaultMessage: '库存查询',
+    defaultMessage: '库存余量',
   },
   movement: {
     id: 'cwm.module.stock.movement',
-    defaultMessage: '移位管理',
+    defaultMessage: '库存移动',
   },
-  replenishment: {
-    id: 'cwm.module.stock.replenishment',
-    defaultMessage: '补货管理',
+  adjust: {
+    id: 'cwm.module.stock.adjust',
+    defaultMessage: '库存调整',
+  },
+  transfer: {
+    id: 'cwm.module.stock.transfer',
+    defaultMessage: '库存转移',
   },
   counting: {
     id: 'cwm.module.stock.counting',

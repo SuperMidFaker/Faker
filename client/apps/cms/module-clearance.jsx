@@ -342,14 +342,11 @@ export default class Clearance extends React.Component {
   redirectInitialRoute(privileges) {
     // 首页跳转第一个有权限页面
     const route = findForemostRoute(privileges, 'clearance', [{
+      feat: 'dashboard',
+      route: 'dashboard',
+    }, {
       feat: 'delegation',
       route: 'delegation',
-    }, {
-      feat: 'import',
-      route: 'import',
-    }, {
-      feat: 'export',
-      route: 'export',
     }, {
       feat: 'quote',
       route: 'quote',

@@ -6,21 +6,21 @@ const messages = defineMessages({
     id: 'cwm.dashboard',
     defaultMessage: '看板',
   },
-  statsReceiving: {
-    id: 'cwm.dashboard.stats.receiving',
-    defaultMessage: '收货统计',
+  stats: {
+    id: 'cwm.dashboard.stats',
+    defaultMessage: '数据统计',
   },
   totalASN: {
     id: 'cwm.dashboard.stats.receiving.total.asn',
-    defaultMessage: '收货通知ASN数',
+    defaultMessage: '收货通知总数',
   },
   toReceive: {
     id: 'cwm.dashboard.stats.receiving.to.receive',
     defaultMessage: '待收货数',
   },
-  putawayCompleted: {
-    id: 'cwm.dashboard.stats.receiving.putaway.completed',
-    defaultMessage: '上架完成数',
+  received: {
+    id: 'cwm.dashboard.stats.receiving.received',
+    defaultMessage: '收货完成数',
   },
   statsShipping: {
     id: 'cwm.dashboard.stats.shipping',
@@ -28,11 +28,15 @@ const messages = defineMessages({
   },
   totalSO: {
     id: 'cwm.dashboard.stats.shipping.total.so',
-    defaultMessage: '发货订单数',
+    defaultMessage: '发货订单总数',
   },
   toAllocate: {
     id: 'cwm.dashboard.stats.shipping.to.allocate',
     defaultMessage: '待分配数',
+  },
+  toPick: {
+    id: 'cwm.dashboard.stats.shipping.to.pick',
+    defaultMessage: '待拣货数',
   },
   pickingCompleted: {
     id: 'cwm.dashboard.stats.shipping.picking.completed',

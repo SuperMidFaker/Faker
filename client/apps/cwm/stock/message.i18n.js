@@ -2,9 +2,9 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
-  stock: {
-    id: 'cwm.stock',
-    defaultMessage: '库存管理',
+  inventory: {
+    id: 'cwm.stock.inventory',
+    defaultMessage: '库存余量',
   },
 });
 
