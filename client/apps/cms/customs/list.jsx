@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select } from 'antd';
+import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -20,7 +20,7 @@ import DeclReleasedModal from '../common/customs/modals/declReleasedModal';
 import DeclStatusPopover from '../common/customs/declStatusPopover';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { CMS_DECL_STATUS } from 'common/constants';
+import { CMS_DECL_STATUS, CMS_DECL_TYPE } from 'common/constants';
 import SendModal from '../common/customs/modals/sendModal';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
@@ -136,21 +136,34 @@ export default class CustomsList extends Component {
     dataIndex: 'sheet_type',
     width: 100,
     render: (o, record) => {
+      let child = <span />;
       if (record.i_e_type === 0) {
         if (o === 'CDF') {
-          return <Tag color="blue">进口报关单</Tag>;
+          child = <Tag color="blue">进口报关单</Tag>;
         } else if (o === 'FTZ') {
-          return <Tag color="blue">进境备案清单</Tag>;
+          child = <Tag color="blue">进境备案清单</Tag>;
         }
       } else if (record.i_e_type === 1) {
         if (o === 'CDF') {
-          return <Tag color="cyan">出口报关单</Tag>;
+          child = <Tag color="cyan">出口报关单</Tag>;
         } else if (o === 'FTZ') {
-          return <Tag color="cyan">出境备案清单</Tag>;
+          child = <Tag color="cyan">出境备案清单</Tag>;
         }
-      } else {
-        return <span />;
       }
+      let entryDecType = '';
+      if (record.pre_entry_dec_type !== null) {
+        const decltype = CMS_DECL_TYPE.filter(ty => ty.value === (record.pre_entry_dec_type).toString())[0];
+        entryDecType = decltype ? decltype.text : '';
+      }
+      const content = (
+        <div>
+          <p>{`单证类型: ${entryDecType}`}</p>
+          <p>{`EDI用户名: ${record.pre_entry_user_info || ''}`}</p>
+        </div>
+      );
+      return (<Popover content={content}>
+        <Tag color="cyan">{child}</Tag>
+      </Popover>);
     },
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
