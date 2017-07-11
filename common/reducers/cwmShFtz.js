@@ -15,8 +15,10 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'QUERY_ERI', 'QUERY_ERI_SUCCEED', 'QUERY_ERI_FAIL',
   'REL_DETAILS_LOAD', 'REL_DETAILS_LOAD_SUCCEED', 'REL_DETAILS_LOAD_FAIL',
   'UPDATE_RRFIELD', 'UPDATE_RRFIELD_SUCCEED', 'UPDATE_RRFIELD_FAIL',
-  'FILE_RRS', 'FILE_RRS_SUCCEED', 'FILE_RRS_FAIL',
-  'QUERY_RRI', 'QUERY_RRI_SUCCEED', 'QUERY_RRI_FAIL',
+  'FILE_RSO', 'FILE_RSO_SUCCEED', 'FILE_RSO_FAIL',
+  'FILE_RTS', 'FILE_RTS_SUCCEED', 'FILE_RTS_FAIL',
+  'FILE_RPO', 'FILE_RPO_SUCCEED', 'FILE_RPO_FAIL',
+  'QUERY_POI', 'QUERY_POI_SUCCEED', 'QUERY_POI_FAIL',
 ]);
 
 const initialState = {
@@ -96,7 +98,10 @@ export default function reducer(state = initialState, action) {
             return rr;
           }
         }) };
-    case actionTypes.FILE_RRS_SUCCEED:
+    case actionTypes.FILE_RSO_SUCCEED:
+    case actionTypes.FILE_RTS_SUCCEED:
+      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status } };
+    case actionTypes.FILE_RPO_SUCCEED:
       return { ...state,
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
         rel_regs: state.rel_regs.map(rr => ({ ...rr, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
@@ -210,7 +215,7 @@ export function syncProdSKUS(data) {
   };
 }
 
-export function updatePortionEn(whseId) {
+export function updatePortionEn(whauth) {
   return {
     [CLIENT_API]: {
       types: [
@@ -218,9 +223,9 @@ export function updatePortionEn(whseId) {
         actionTypes.ENABLE_PORTION_SUCCEED,
         actionTypes.ENABLE_PORTION_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/product/cargo/portion/enable',
+      endpoint: 'v1/cwm/warehouse/owner/portion',
       method: 'post',
-      data: { whseId },
+      data: { whauth, enbale: true },
     },
   };
 }
@@ -300,30 +305,60 @@ export function updateRelReg(preRegNo, field, value) {
   };
 }
 
-export function fileRelRegs(soNo, whseCode) {
+export function fileRelStockouts(soNo, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.FILE_RRS,
-        actionTypes.FILE_RRS_SUCCEED,
-        actionTypes.FILE_RRS_FAIL,
+        actionTypes.FILE_RSO,
+        actionTypes.FILE_RSO_SUCCEED,
+        actionTypes.FILE_RSO_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/release/regs/file',
+      endpoint: 'v1/cwm/shftz/release/file/stockouts',
       method: 'post',
       data: { so_no: soNo, whse_code: whseCode },
     },
   };
 }
 
-export function queryRelRegInfos(soNo, whseCode) {
+export function fileRelTransfers(soNo, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.QUERY_RRI,
-        actionTypes.QUERY_RRI_SUCCEED,
-        actionTypes.QUERY_RRI_FAIL,
+        actionTypes.FILE_RTS,
+        actionTypes.FILE_RTS_SUCCEED,
+        actionTypes.FILE_RTS_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/release/regs/query',
+      endpoint: 'v1/cwm/shftz/release/file/transfers',
+      method: 'post',
+      data: { so_no: soNo, whse_code: whseCode },
+    },
+  };
+}
+
+export function fileRelPortionouts(soNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILE_RPO,
+        actionTypes.FILE_RPO_SUCCEED,
+        actionTypes.FILE_RPO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/file/transfers',
+      method: 'post',
+      data: { so_no: soNo, whse_code: whseCode },
+    },
+  };
+}
+
+export function queryPortionoutInfos(soNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUERY_POI,
+        actionTypes.QUERY_POI_SUCCEED,
+        actionTypes.QUERY_POI_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/portionouts/query',
       method: 'post',
       data: { so_no: soNo, whse: whseCode },
     },

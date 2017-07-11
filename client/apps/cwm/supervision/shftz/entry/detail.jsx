@@ -124,6 +124,11 @@ export default class SHFTZEntryDetail extends Component {
           description: `${asnNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
           placement: 'topLeft',
         });
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.success({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
       }
     });
   }
@@ -132,6 +137,11 @@ export default class SHFTZEntryDetail extends Component {
     this.props.queryEntryRegInfos(asnNo, this.props.entryAsn.whse_code).then((result) => {
       if (!result.error) {
         this.props.loadEntryDetails({ asnNo });
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.success({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
       }
     });
   }

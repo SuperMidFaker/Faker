@@ -7,7 +7,8 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
-import { loadRelDetails, loadParams, updateRelReg, fileRelRegs, queryRelRegInfos } from 'common/reducers/cwmShFtz';
+import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, fileRelTransfers,
+  fileRelPortionouts, queryPortionoutInfos } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -47,7 +48,7 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadRelDetails, updateRelReg, fileRelRegs, queryRelRegInfos }
+  { loadRelDetails, updateRelReg, fileRelStockouts, fileRelTransfers, fileRelPortionouts, queryPortionoutInfos }
 )
 @connectNav({
   depth: 3,
@@ -73,22 +74,53 @@ export default class SHFTZRelDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
-    this.props.fileRelRegs(soNo, this.props.relSo.whse_code).then((result) => {
-      if (!result.error) {
-        const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.relSo.bonded_outtype)[0];
-        notification.success({
-          message: '操作成功',
-          description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
-          placement: 'topLeft',
-        });
-      }
-    });
+    const relSo = this.props.relSo;
+    let fileOp;
+    let entType;
+    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
+      fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code);
+      entType = CWM_SO_BONDED_REGTYPES[0].text;
+    }
+    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
+      fileOp = this.props.fileRelPortionouts(soNo, relSo.whse_code);
+      entType = CWM_SO_BONDED_REGTYPES[1].text;
+    }
+    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value) {
+      fileOp = this.props.fileRelTransfers(soNo, relSo.whse_code);
+      entType = CWM_SO_BONDED_REGTYPES[2].text;
+    }
+    if (fileOp) {
+      fileOp.then((result) => {
+        if (!result.error) {
+          notification.success({
+            message: '操作成功',
+            description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
+            placement: 'topLeft',
+          });
+        } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+          notification.success({
+            message: '操作失败',
+            description: '仓库监管系统未配置',
+          });
+        } else {
+          notification.success({
+            message: '操作失败',
+            description: result.error.message,
+          });
+        }
+      });
+    }
   }
   handleQuery = () => {
     const soNo = this.props.params.soNo;
-    this.props.queryRelRegInfos(soNo, this.props.relSo.whse_code).then((result) => {
+    this.props.queryPortionoutInfos(soNo, this.props.relSo.whse_code).then((result) => {
       if (!result.error) {
         this.props.loadRelDetails(soNo);
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.success({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
       }
     });
   }
@@ -112,14 +144,6 @@ export default class SHFTZRelDetail extends Component {
     title: '规格型号',
     dataIndex: 'model',
     width: 200,
-  }, {
-    title: '单位',
-    dataIndex: 'unit',
-    render: (o) => {
-      const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
-    },
   }, {
     title: '数量',
     dataIndex: 'qty',
@@ -163,6 +187,7 @@ export default class SHFTZRelDetail extends Component {
     let queryable = false;
     let sentable = true;
     let unsentReason = '';
+    const columns = [...this.columns];
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
       sentable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
       if (sentable) {
@@ -178,6 +203,25 @@ export default class SHFTZRelDetail extends Component {
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
       queryable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         relRegs.filter(er => !er.ftz_rel_no).length === 0;
+      columns.unshift({
+        title: '出库明细ID',
+        dataIndex: 'ftz_rel_detail_id',
+        width: 150,
+      });
+    }
+    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value) {
+      columns.splice(6, 0, {
+        title: '转出数量',
+        dataIndex: 'out_qty',
+      }, {
+        title: '转出单位',
+        dataIndex: 'out_unit',
+        render: (o) => {
+          const unit = this.props.units.filter(cur => cur.value === o)[0];
+          const text = unit ? `${unit.value}| ${unit.text}` : o;
+          return text;
+        },
+      });
     }
     return (
       <div>
@@ -239,7 +283,7 @@ export default class SHFTZRelDetail extends Component {
                       <Row>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />报关日期</span>}
-                            field={reg.cus_decl_date} editable={relEditable}
+                            type="date" field={reg.cus_decl_date} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_date', new Date(value))}
                           />
                         </Col>
@@ -273,7 +317,7 @@ export default class SHFTZRelDetail extends Component {
                         </Col>
                       </Row>}
                     </div>
-                    <Table columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id" />
+                    <Table columns={columns} dataSource={reg.details} indentSize={8} rowKey="id" />
                   </TabPane>)
                 )}
               </Tabs>
