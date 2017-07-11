@@ -42,15 +42,17 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'dashboard'),
       });
     }
-    linkMenus.push(
-      {
-        single: true,
-        key: 'cms-delegation',
-        path: '/clearance/delegation',
-        icon: 'logixon icon-business',
-        text: formatMsg(intl, 'delegation'),
-      }
-    );
+    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
+      linkMenus.push(
+        {
+          single: true,
+          key: 'cms-delegation',
+          path: '/clearance/delegation',
+          icon: 'logixon icon-business',
+          text: formatMsg(intl, 'delegation'),
+        }
+      );
+    }
     if (this.props.navOption === 'CC' || this.props.navOption === 'ALL') {
       linkMenus.push(
         {
@@ -190,22 +192,23 @@ export default class Clearance extends React.Component {
       });
     }
     this.setState({ linkMenus });
-    /*
     if (this.props.children === null) {
       this.redirectInitialRoute(this.props.privileges);
     }
-    */
   }
-  /*
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.children === null && this.props.children !== nextProps.children) {
       this.redirectInitialRoute(nextProps.privileges);
     }
   }
-  */
+
   redirectInitialRoute(privileges) {
     // 首页跳转第一个有权限页面
     const route = findForemostRoute(privileges, 'clearance', [{
+      feat: 'delegation',
+      route: 'delegation',
+    }, {
       feat: 'import',
       route: 'import',
     }, {

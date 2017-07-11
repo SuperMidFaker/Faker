@@ -281,7 +281,6 @@ export default(store, cookie) => {
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.clearance.id} component={CMS}>
-            <IndexRedirect to="/clearance/dashboard" />
             <Route path="dashboard" component={CMSDashboard.Index} />
             <Route path="delegation">
               <IndexRoute component={CMSDelegation.List} />
