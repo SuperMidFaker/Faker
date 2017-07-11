@@ -71,8 +71,8 @@ export default class ShippingOrderList extends React.Component {
     title: 'SO编号',
     width: 180,
     dataIndex: 'so_no',
-    render: o => (
-      <a onClick={() => this.handlePreview()}>
+    render: (o, record) => (
+      <a onClick={() => this.handlePreview(o, record.outbound_no)}>
         {o}
       </a>),
   }, {
@@ -157,8 +157,8 @@ export default class ShippingOrderList extends React.Component {
       }
     },
   }]
-  handlePreview = () => {
-    this.props.showDock();
+  handlePreview = (soNo, outboundNo) => {
+    this.props.showDock(soNo, outboundNo);
   }
   handleReleaseSO = (record) => {
     const { loginId } = this.props;
@@ -363,7 +363,7 @@ export default class ShippingOrderList extends React.Component {
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
-                {filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
+                {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
                 <Button size="large">触发补货任务</Button>
               </div>
             </div>

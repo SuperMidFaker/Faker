@@ -18,6 +18,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'REMOVE_WAVE_ORDERS', 'REMOVE_WAVE_ORDERS_SUCCEED', 'REMOVE_WAVE_ORDERS_FAIL',
   'SHOW_ADD_TO_WAVE', 'HIDE_ADD_TO_WAVE',
   'ADD_TO_WAVE', 'ADD_TO_WAVE_SUCCEED', 'ADD_TO_WAVE_FAIL',
+  'LOAD_SHFTZ_RELEASE', 'LOAD_SHFTZ_RELEASE_SUCCEED', 'LOAD_SHFTZ_RELEASE_FAIL',
 ]);
 
 const initialState = {
@@ -26,6 +27,7 @@ const initialState = {
     tabKey: null,
     order: {
       so_no: '',
+      outboundNo: '',
       status: 0,
     },
   },
@@ -44,7 +46,7 @@ const initialState = {
     data: [],
     loading: true,
   },
-  waveFilters: { status: 'pending' },
+  waveFilters: { status: 'pending', ownerCode: 'all' },
   addToMoveModal: {
     visible: false,
     ownerId: '',
@@ -56,7 +58,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:
-      return { ...state, dock: { ...state.dock, visible: true } };
+      return { ...state, dock: { ...state.dock, visible: true, order: { so_no: action.soNo, outboundNo: action.outboundNo, status: 0 } } };
     case actionTypes.CHANGE_DOCK_TAB:
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.LOAD_SOS:
@@ -68,7 +70,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_WAVES_SUCCEED:
       return { ...state, wave: { ...action.result.data, loading: false } };
     case actionTypes.SHOW_ADD_TO_WAVE:
-      return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: true, ownerId: action.ownerId } };
+      return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: true, ownerCode: action.ownerCode } };
     case actionTypes.HIDE_ADD_TO_WAVE:
       return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: false } };
     default:
@@ -89,9 +91,11 @@ export function hideDock() {
   };
 }
 
-export function showDock() {
+export function showDock(soNo, outboundNo) {
   return {
     type: actionTypes.SHOW_DOCK,
+    soNo,
+    outboundNo,
   };
 }
 
@@ -290,10 +294,10 @@ export function removeWaveOrders(soNos, waveNo) {
   };
 }
 
-export function showAddToWave(ownerId) {
+export function showAddToWave(ownerCode) {
   return {
     type: actionTypes.SHOW_ADD_TO_WAVE,
-    ownerId,
+    ownerCode,
   };
 }
 
@@ -314,6 +318,21 @@ export function addToWave(soNos, waveNo) {
       endpoint: 'v1/cwm/add/to/wave',
       method: 'post',
       data: { soNos, waveNo },
+    },
+  };
+}
+
+export function loadShftzRelease(soNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHFTZ_RELEASE,
+        actionTypes.LOAD_SHFTZ_RELEASE_SUCCEED,
+        actionTypes.LOAD_SHFTZ_RELEASE_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/load',
+      method: 'get',
+      params: { soNo },
     },
   };
 }

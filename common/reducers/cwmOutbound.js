@@ -19,8 +19,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'OUTBOUNDS_SHIP', 'OUTBOUNDS_SHIP_SUCCEED', 'OUTBOUNDS_SHIP_FAIL',
   'CANCEL_TRACE_ALLOC', 'CANCEL_TRACE_ALLOC_SUCCEED', 'CANCEL_TRACE_ALLOC_FAIL',
   'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
+  'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
+  'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
 ]);
-
 const initialState = {
   listFilter: {
     sortField: '',
@@ -62,6 +63,8 @@ const initialState = {
   outboundProducts: [],
   outboundReload: false,
   pickDetails: [],
+  packDetails: [],
+  shipDetails: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -109,6 +112,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, allocatedData: action.result.data };
     case actionTypes.UPDATE_OUTBMODE_SUCCEED:
       return { ...state, outboundFormHead: { ...state.outboundFormHead, shipping_mode: action.data.shippingMode } };
+    case actionTypes.LOAD_PACK_DETAILS_SUCCEED:
+      return { ...state, packDetails: action.result.data };
+    case actionTypes.LOAD_SHIP_DETAILS_SUCCEED:
+      return { ...state, shipDetails: action.result.data };
     default:
       return state;
   }
@@ -378,6 +385,36 @@ export function updateOutboundMode(outboundNo, shippingMode) {
       endpoint: 'v1/cwm/outbound/update/shippingmode',
       method: 'post',
       data: { outboundNo, shippingMode },
+    },
+  };
+}
+
+export function loadPackDetails(outboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PACK_DETAILS,
+        actionTypes.LOAD_PACK_DETAILS_SUCCEED,
+        actionTypes.LOAD_PACK_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/pack/details/load',
+      method: 'get',
+      params: { outboundNo },
+    },
+  };
+}
+
+export function loadShipDetails(outboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHIP_DETAILS,
+        actionTypes.LOAD_SHIP_DETAILS_SUCCEED,
+        actionTypes.LOAD_SHIP_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/ship/details/load',
+      method: 'get',
+      params: { outboundNo },
     },
   };
 }
