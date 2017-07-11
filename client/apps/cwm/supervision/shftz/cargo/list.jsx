@@ -239,8 +239,8 @@ export default class SHFTZCargoList extends React.Component {
   handleRuleSave = () => {
     this.props.updateCargoRule({ type: this.state.rule, id: this.props.cargoRule.id });
   }
-  handlePorted = (owner) => {
-    this.props.updatePortionEn(owner.whseid).then((result) => {
+  handlePortionEnable = (owner) => {
+    this.props.updatePortionEn(owner.whauth).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -270,7 +270,7 @@ export default class SHFTZCargoList extends React.Component {
         if (!record.owner_portion_en) {
           return (
             <Tooltip placement="bottom" title="启用分拨">
-              <Button shape="circle" icon="arrows-alt" onClick={() => this.handlePorted(record)} />
+              <Button shape="circle" icon="arrows-alt" onClick={() => this.handlePortionEnable(record)} />
             </Tooltip>
           );
         }

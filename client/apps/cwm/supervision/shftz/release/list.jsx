@@ -63,10 +63,6 @@ export default class SHFTZReleaseList extends React.Component {
     width: 180,
     fixed: 'left',
   }, {
-    title: '报关单号',
-    width: 150,
-    dataIndex: 'cus_decl_no',
-  }, {
     title: '备案类型',
     dataIndex: 'ftz_rel_type',
     render: (reltype) => {
@@ -289,7 +285,9 @@ export default class SHFTZReleaseList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']} scroll={{ x: 2000 }} />
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
+                  indentSize={8} rowKey="id" scroll={{ x: 2000 }}
+                />
               </div>
             </div>
           </Content>
