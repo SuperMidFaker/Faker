@@ -82,8 +82,8 @@ export default class OutboundList extends React.Component {
     title: 'SO编号',
     dataIndex: 'so_no',
     width: 180,
-    render: o => (
-      <a onClick={this.handlePreview}>
+    render: (o, record) => (
+      <a onClick={() => this.handlePreview(o, record.outbound_no)}>
         {o}
       </a>),
   }, {
@@ -188,8 +188,8 @@ export default class OutboundList extends React.Component {
       }
     },
   }]
-  handlePreview = () => {
-    this.props.showDock();
+  handlePreview = (soNo, outboundNo) => {
+    this.props.showDock(soNo, outboundNo);
   }
   handleStatusChange = (ev) => {
     const filters = { ...this.props.filters, status: ev.target.value };
