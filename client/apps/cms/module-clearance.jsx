@@ -7,6 +7,7 @@ import { findForemostRoute, hasPermission } from 'client/common/decorators/withP
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import { switchNavOption } from 'common/reducers/cmsPreferences';
 
 const formatMsg = format(messages);
 
@@ -15,7 +16,8 @@ const formatMsg = format(messages);
   state => ({
     privileges: state.account.privileges,
     navOption: state.cmsPreferences.navOption,
-  })
+  }),
+  { switchNavOption }
 )
 export default class Clearance extends React.Component {
   static propTypes = {
@@ -33,6 +35,16 @@ export default class Clearance extends React.Component {
   componentWillMount() {
     const { privileges, intl } = this.props;
     const linkMenus = [];
+    let navOption = this.props.navOption;
+    if (window.localStorage) {
+      const navtopt = window.localStorage.getItem('cms-nav-option');
+      if (navtopt === null) {
+        window.localStorage.setItem('cms-nav-option', navOption);
+      } else {
+        navOption = navtopt;
+        this.props.switchNavOption(navOption);
+      }
+    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'dashboard' })) {
       linkMenus.push({
         single: true,
@@ -51,7 +63,7 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'delegation'),
       }
     );
-    if (this.props.navOption === 'CC' || this.props.navOption === 'ALL') {
+    if (navOption === 'CC' || navOption === 'ALL') {
       linkMenus.push(
         {
           single: true,
@@ -72,7 +84,7 @@ export default class Clearance extends React.Component {
         }
       );
     }
-    if (this.props.navOption === 'IE' || this.props.navOption === 'ALL') {
+    if (navOption === 'IE' || navOption === 'ALL') {
       linkMenus.push({
         single: false,
         key: 'cms-import',
@@ -195,6 +207,141 @@ export default class Clearance extends React.Component {
       this.redirectInitialRoute(this.props.privileges);
     }
     */
+  }
+  componentWillReceiveProps(nextProps) {
+    const { intl } = this.props;
+    if (nextProps.navOption !== this.props.navOption) {
+      const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'cms-import' && lm.key !== 'cms-export' && lm.key !== 'cms-customs' && lm.key !== 'cms-ciq');
+      if (nextProps.navOption === 'CC') {
+        linkMenus.splice(2, 0,
+          {
+            single: true,
+            key: 'cms-customs',
+            path: '/clearance/customs',
+            icon: 'logixon icon-customs',
+            text: formatMsg(intl, 'customsDecl'),
+          },
+          {
+            single: true,
+            disabled: true,
+            key: 'cms-ciq',
+            path: '/clearance/ciq',
+            icon: 'logixon icon-ciq',
+            text: formatMsg(intl, 'ciqDecl'),
+          }
+        );
+      } else if (nextProps.navOption === 'IE') {
+        linkMenus.splice(2, 0,
+          {
+            single: false,
+            key: 'cms-import',
+            path: '/clearance/import',
+            icon: 'icon-ikons-login',
+            text: formatMsg(intl, 'import'),
+            sublinks: [{
+              key: 'cms-import-1',
+              path: '/clearance/import/manifest',
+              text: formatMsg(intl, 'importManifest'),
+            }, {
+              key: 'cms-import-2',
+              path: '/clearance/import/customs',
+              text: formatMsg(intl, 'importCustomsDecl'),
+            }, {
+              key: 'cms-import-3',
+              disabled: true,
+              group: formatMsg(intl, 'import'),
+              path: '/clearance/import/ciq',
+              text: formatMsg(intl, 'importCiqDecl'),
+            }],
+          },
+          {
+            single: false,
+            key: 'cms-export',
+            path: '/clearance/export',
+            icon: 'icon-ikons-logout',
+            text: formatMsg(intl, 'export'),
+            sublinks: [{
+              key: 'cms-export-1',
+              path: '/clearance/export/manifest',
+              text: formatMsg(intl, 'exportManifest'),
+            }, {
+              key: 'cms-export-2',
+              path: '/clearance/export/customs',
+              text: formatMsg(intl, 'exportCustomsDecl'),
+            }, {
+              key: 'cms-export-3',
+              disabled: true,
+              group: formatMsg(intl, 'export'),
+              path: '/clearance/export/ciq',
+              text: formatMsg(intl, 'exportCiqDecl'),
+            }],
+          }
+        );
+      } else if (nextProps.navOption === 'ALL') {
+        linkMenus.splice(2, 0,
+          {
+            single: true,
+            key: 'cms-customs',
+            path: '/clearance/customs',
+            icon: 'logixon icon-customs',
+            text: formatMsg(intl, 'customsDecl'),
+          },
+          {
+            single: true,
+            disabled: true,
+            key: 'cms-ciq',
+            path: '/clearance/ciq',
+            icon: 'logixon icon-ciq',
+            text: formatMsg(intl, 'ciqDecl'),
+          },
+          {
+            single: false,
+            key: 'cms-import',
+            path: '/clearance/import',
+            icon: 'icon-ikons-login',
+            text: formatMsg(intl, 'import'),
+            sublinks: [{
+              key: 'cms-import-1',
+              path: '/clearance/import/manifest',
+              text: formatMsg(intl, 'importManifest'),
+            }, {
+              key: 'cms-import-2',
+              path: '/clearance/import/customs',
+              text: formatMsg(intl, 'importCustomsDecl'),
+            }, {
+              key: 'cms-import-3',
+              disabled: true,
+              group: formatMsg(intl, 'import'),
+              path: '/clearance/import/ciq',
+              text: formatMsg(intl, 'importCiqDecl'),
+            }],
+          },
+          {
+            single: false,
+            key: 'cms-export',
+            path: '/clearance/export',
+            icon: 'icon-ikons-logout',
+            text: formatMsg(intl, 'export'),
+            sublinks: [{
+              key: 'cms-export-1',
+              path: '/clearance/export/manifest',
+              text: formatMsg(intl, 'exportManifest'),
+            }, {
+              key: 'cms-export-2',
+              path: '/clearance/export/customs',
+              text: formatMsg(intl, 'exportCustomsDecl'),
+            }, {
+              key: 'cms-export-3',
+              disabled: true,
+              group: formatMsg(intl, 'export'),
+              path: '/clearance/export/ciq',
+              text: formatMsg(intl, 'exportCiqDecl'),
+            }],
+          }
+        );
+      }
+      this.setState({ linkMenus });
+    }
   }
   /*
   componentWillReceiveProps(nextProps) {

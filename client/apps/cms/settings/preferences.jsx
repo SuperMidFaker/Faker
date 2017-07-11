@@ -4,12 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Card, Radio, Layout } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { switchNavOption } from 'common/reducers/cmsPreferences';
 
-const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 
@@ -40,14 +37,17 @@ export default class Preferences extends Component {
   state = {
     navOption: 'CC',
   }
-
-
-  msg = key => formatMsg(this.props.intl, key);
-
+  componentWillMount() {
+    if (window.localStorage) {
+      const navOption = window.localStorage.getItem('cms-nav-option');
+      this.setState({ navOption });
+    }
+  }
   handleNavOptionChange = (ev) => {
     this.props.switchNavOption(ev.target.value);
     if (window.localStorage) {
       window.localStorage.setItem('cms-nav-option', ev.target.value);
+      this.setState({ navOption: ev.target.value });
     }
   }
   render() {
@@ -67,7 +67,7 @@ export default class Preferences extends Component {
         </Header>
         <Content className="main-content layout-fixed-width">
           <Card>
-            <RadioGroup onChange={this.handleNavOptionChange}>
+            <RadioGroup value={this.state.navOption} onChange={this.handleNavOptionChange}>
               <Radio style={radioStyle} value="CC">按报关、报检</Radio>
               <Radio style={radioStyle} value="IE">按进口、出口</Radio>
               <Radio style={radioStyle} value="ALL">同时显示</Radio>
