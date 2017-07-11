@@ -394,14 +394,6 @@ export default class CustomsList extends Component {
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
   }
-  handleInspectFilter = (ev) => {
-    if (ev.target.value === this.props.listFilter.inspect) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, inspect: ev.target.value };
-    this.setState({ selectedRowKeys: [] });
-    this.handleTableLoad(1, filter);
-  }
   handleDelete = (declId, delgNo, billNo) => {
     this.props.deleteDecl(declId, delgNo, billNo).then((result) => {
       if (result.error) {
@@ -532,10 +524,8 @@ export default class CustomsList extends Component {
             )}
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.inspect} onChange={this.handleInspectFilter} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="inspected">报关单查验</RadioButton>
-            <RadioButton value="clear">查验放行</RadioButton>
+          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+            <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
