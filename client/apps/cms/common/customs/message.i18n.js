@@ -185,9 +185,9 @@ export default defineMessages({
     id: 'cms.common.customs.form.mark.notes',
     defaultMessage: '唛码备注：',
   },
-  seqNumber: {
-    id: 'cms.common.customs.table.seq.number',
-    defaultMessage: '序号',
+  itemNo: {
+    id: 'cms.common.customs.table.item.number',
+    defaultMessage: '项号',
   },
   copGNo: {
     id: 'cms.common.customs.table.cop.gno',

@@ -7,6 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
+import TrimSpan from 'client/components/trimSpan';
 import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -142,11 +143,11 @@ export default class SHFTZEntryDetail extends Component {
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
-    width: 150,
+    width: 120,
   }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
-    width: 150,
+    width: 80,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -162,7 +163,8 @@ export default class SHFTZEntryDetail extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    width: 200,
+    width: 250,
+    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '单位',
     dataIndex: 'unit',

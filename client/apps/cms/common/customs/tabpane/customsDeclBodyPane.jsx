@@ -254,7 +254,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
     const { units, countries, currencies, exemptions } = this.props;
     const { editIndex, editBody } = this.state;
     const columns = [{
-      title: this.msg('seqNumber'),
+      title: this.msg('itemNo'),
       dataIndex: 'g_no',
       fixed: 'left',
       width: 45,

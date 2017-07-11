@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Row, Col, message } from 'antd';
+import { Avatar, Card, Badge, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import InfoItem from 'client/components/InfoItem';
+import { MdIcon } from 'client/components/FontIcon';
 import { updateCustomerNames } from 'common/reducers/crmCustomers';
 
 const formatMsg = format(messages);
@@ -40,25 +40,20 @@ export default class OverviewCard extends React.Component {
   render() {
     const { customer } = this.props;
     return (
-      <Card>
-        <Row gutter={16}>
-          <Col sm={24} lg={24}>
-            <InfoItem
-              label={this.msg('customerName')}
-              field={customer.name}
-            />
-          </Col>
-          <Col sm={24} lg={12}>
-            <InfoItem label={this.msg('displayName')} dataIndex="displayName" field={customer.display_name}
-              placeholder="添加显示名称" onEdit={this.handleEdit} editable
-            />
-          </Col>
-          <Col sm={24} lg={12}>
-            <InfoItem label={this.msg('englishName')} dataIndex="englishName" field={customer.en_name}
-              placeholder="添加英文名称" onEdit={this.handleEdit} editable
-            />
-          </Col>
-        </Row>
+      <Card noHovering bodyStyle={{ padding: 0 }}>
+        <div style={{ padding: 24 }}>
+          <Avatar shape="square" size="large" icon="user" />
+          <h4>{customer.name}</h4>
+        </div>
+        <Card.Grid style={{ width: '33%' }}>
+          <MdIcon type="clearance" />清关业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
+        </Card.Grid>
+        <Card.Grid style={{ width: '34%' }}>
+          <MdIcon type="cwm" />仓储业务 <span className="pull-right"><Badge status="default" text="未开通" /></span>
+        </Card.Grid>
+        <Card.Grid style={{ width: '33%' }}>
+          <MdIcon type="transport" />运输业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
+        </Card.Grid>
       </Card>
     );
   }

@@ -100,7 +100,7 @@ export default class TraderModal extends React.Component {
           <FormItem label="进出口类型">
             <RadioGroup onChange={e => this.setState({ ieType: e.target.value })} value={ieType}>
               {
-                I_E_TYPES.map(item => <RadioButton value={item.key}>{item.value}</RadioButton>)
+                I_E_TYPES.map(item => <RadioButton key={item.key} value={item.key}>{item.value}</RadioButton>)
               }
             </RadioGroup>
           </FormItem>

@@ -124,7 +124,7 @@ export default class TariffPane extends React.Component {
     const toData = data.filter(item => pId !== -1 && (item.recvPartnerId === pId || item.sendPartnerId === pId)
      && filters.module.indexOf(String(item.module)) >= 0);
     return (
-      <Table columns={columns} dataSource={toData} onChange={(pagination, flts) => this.setState({ filters: flts })} />
+      <Table size="middle" columns={columns} dataSource={toData} onChange={(pagination, flts) => this.setState({ filters: flts })} rowKey="id" />
     );
   }
 }

@@ -5,8 +5,8 @@ import { Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
 import { format } from 'client/common/i18n/helpers';
+
 const formatMsg = format(messages);
-import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 @connect(
@@ -56,16 +56,6 @@ export default class ManifestDetailsPane extends React.Component {
       title: this.msg('gName'),
       width: 200,
       dataIndex: 'g_name',
-    }, {
-      title: this.msg('customs'),
-      width: 250,
-      dataIndex: 'customs',
-      render: col => buildTipItems(col),
-    }, {
-      title: this.msg('inspection'),
-      width: 250,
-      dataIndex: 'inspection',
-      render: col => buildTipItems(col, true),
     }, {
       title: this.msg('gModel'),
       width: 300,
@@ -171,7 +161,7 @@ export default class ManifestDetailsPane extends React.Component {
     }];
     return (
       <div className="panel-body table-panel">
-        <Table columns={columns} dataSource={billDetails}
+        <Table columns={columns} dataSource={billDetails} bordered
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>

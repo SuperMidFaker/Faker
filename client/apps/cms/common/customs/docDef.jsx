@@ -62,7 +62,7 @@ function pdfHeader(head, declWayCode, params) {
             { text: `运输工具名称   ${head.traf_name || ''}` },
             { text: `提运单号\n${head.bl_wb_no || ''}` }],
             [{ text: `许可证号\n${head.license_no || ''}` },
-            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
+            { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
@@ -118,7 +118,7 @@ function pdfHeader(head, declWayCode, params) {
             { text: `运输工具名称   ${head.traf_name || ''}` },
             { text: `提运单号\n${head.bl_wb_no || ''}` }],
             [{ text: `许可证号\n${head.license_no || ''}` },
-            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
+            { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
@@ -175,13 +175,13 @@ function pdfHeader(head, declWayCode, params) {
           widths: ['26%', '13%', '21%', '20%', '20%'],
           body: [
             [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
-            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
+            { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
             [{ text: `合同协议号\n${head.contr_no || ''}` },
             { text: `件数\n      ${head.pack_count || ''}` },
-            { text: `包装种类 (${wrapType.value}\n${wrapType.text}` },
+            { text: `包装种类 (${wrapType.value})\n${wrapType.text}` },
             { text: `毛重(千克)\n      ${head.gross_wt || ''}` },
             { text: `净重(千克)\n      ${head.net_wt || ''}` }],
             [{ text: `集装箱号\n${head.container_no || ''}` },
@@ -235,13 +235,13 @@ function pdfHeader(head, declWayCode, params) {
           widths: ['26%', '13%', '21%', '20%', '20%'],
           body: [
             [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
-            { text: `成交方式 (${trxnmode.trxn_mode})\n${trxnmode.trx_spec}` },
+            { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${head.fee_rate || ''}` },
             { text: `保费   ${head.insur_rate || ''}` },
             { text: `杂费   ${head.other_rate || ''}` }],
             [{ text: `合同协议号\n${head.contr_no || ''}` },
             { text: `件数\n   ${head.pack_count || ''}` },
-            { text: `包装种类 (${wrapType.value}\n${wrapType.text}` },
+            { text: `包装种类 (${wrapType.value})\n${wrapType.text}` },
             { text: `毛重(千克)\n   ${head.gross_wt || ''}` },
             { text: `净重(千克)\n   ${head.net_wt || ''}` }],
             [{ text: `集装箱号\n ${head.container_no || ''}` },
@@ -262,9 +262,21 @@ function pdfHeader(head, declWayCode, params) {
   return headContent;
 }
 
-function pdfBody(bodydatas, declWayCode) {
+function pdfBody(bodydatas, declWayCode, params) {
   const pdfbody = [];
   const header = [];
+  const countries = params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+  }));
+  const units = params.units.map(un => ({
+    value: un.unit_code,
+    text: un.unit_name,
+  }));
+  const currrencies = params.currencies.map(cr => ({
+    value: cr.curr_code,
+    text: cr.curr_name,
+  }));
   header.push(
       { text: '项号', style: 'tableHeader' },
       { text: '商品编号', style: 'tableHeader' },
@@ -284,17 +296,25 @@ function pdfBody(bodydatas, declWayCode) {
   for (let i = 0; i < bodydatas.length; i++) {
     const dbody = bodydatas[i];
     const body = [];
+    const gunitFl = units.filter(ut => ut.value === dbody.g_unit)[0];
+    const gunit = gunitFl ? gunitFl.text : '';
+    const country = countries.filter(ct => ct.value === dbody.orig_country)[0];
+    const origCountry = country ? `${country.text}\n(${country.value})` : '';
+    const currency = currrencies.filter(cr => cr.value === dbody.trade_curr)[0];
+    const tradeCurr = currency ? `(${currency.value})\n${currency.text}` : '';
+    const exemptions = params.exemptionWays.filter(ep => ep.value === dbody.duty_mode)[0];
+    const dutyMode = exemptions || { value: '', text: '' };
     body.push(`${dbody.g_no || ''}`,
         `${dbody.code_t || ''}${dbody.code_s || ''}`,
-        `${dbody.g_name || ''} ${dbody.g_model || ''}`,
-        { text: `${dbody.g_qty || ''}${dbody.g_unit || ''}`, alignment: 'right' },
-        `${dbody.orig_country || ''}`,
+        `${dbody.g_name || ''}\n${dbody.g_model || ''}`,
+        { text: `${dbody.g_qty || ''}${gunit}`, alignment: 'right' },
+        `${origCountry}`,
         { text: `${dbody.dec_price || ''}`, alignment: 'right' },
         { text: `${dbody.trade_total || ''}`, alignment: 'right' },
-        `${dbody.trade_curr || ''}`,
+        `${tradeCurr}`,
       );
     if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
-      body.push(`${dbody.duty_mode || ''}`);
+      body.push(`${dutyMode.text}\n${dutyMode.value}`);
     }
     pdfbody.push(body);
   }
@@ -347,7 +367,7 @@ export function DocDef(head, bodies, declWayCode, params) {
       { style: 'table',
         table: pdfBody(datas, declWayCode, params),
         layout: {
-          paddingBottom() { return 25; },
+          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 18 : 1; },
           vLineWidth(i, node) {
             return (i !== 0 && i !== node.table.widths.length) ? 0 : 1;
           },

@@ -309,6 +309,10 @@ export default defineMessages({
     id: 'cms.forms.form.yard.code',
     defaultMessage: '货场代码',
   },
+  itemNo: {
+    id: 'cms.forms.table.item.number',
+    defaultMessage: '项号',
+  },
   seqNumber: {
     id: 'cms.forms.table.seq.number',
     defaultMessage: '序号',
@@ -323,7 +327,7 @@ export default defineMessages({
   },
   codeT: {
     id: 'cms.forms.table.codet',
-    defaultMessage: '商品编码',
+    defaultMessage: '商品编号',
   },
   codeS: {
     id: 'cms.forms.table.codes',

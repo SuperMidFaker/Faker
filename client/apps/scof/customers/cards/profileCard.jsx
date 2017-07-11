@@ -8,7 +8,6 @@ import { showCustomerModal } from 'common/reducers/crmCustomers';
 import messages from '../message.i18n';
 import DetailPane from '../pane/detailPane';
 import SubCustomerPane from '../pane/subCustomerPane';
-import ServiceTeamPane from '../pane/serviceTeamPane';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -38,9 +37,6 @@ export default class ProfileCard extends React.Component {
           </Panel>
           <Panel header={this.msg('subCustomer')} key="sub">
             {customer.parent_id === 0 ? (<SubCustomerPane customer={customer} />) : null}
-          </Panel>
-          <Panel header={this.msg('serviceTeam')} key="team">
-            <ServiceTeamPane customer={customer} />
           </Panel>
         </Collapse>
       </Card>

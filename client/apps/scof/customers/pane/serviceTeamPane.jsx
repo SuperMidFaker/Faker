@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Table } from 'antd';
+import { Button, Table } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import { showServiceTeamModal, loadServiceTeamMembers } from 'common/reducers/crmCustomers';
 import { loadDepartments } from 'common/reducers/personnel';
@@ -70,10 +70,11 @@ export default class ServiceTeam extends React.Component {
       },
     }];
     return (
-      <Card extra={<a href="#" onClick={() => this.props.showServiceTeamModal()}>添加成员</a>} >
-        <Table size="small" columns={column} dataSource={serviceTeamMembers} pagination={false} rowKey="id" />
+      <div>
+        <Button onClick={() => this.props.showServiceTeamModal()}>添加成员</Button>
+        <Table size="middle" columns={column} dataSource={serviceTeamMembers} pagination={false} rowKey="id" />
         <ServiceTeamModal customer={customer} filters={filters} selectedUserIds={this.state.selectedRowKeys} />
-      </Card>
+      </div>
     );
   }
 }

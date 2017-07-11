@@ -50,7 +50,7 @@ export default class FlowRulesPane extends React.Component {
       title: '客户追踪表',
     }];
     return (
-      <Table columns={columns} dataSource={this.state.flows} />
+      <Table size="middle" columns={columns} dataSource={this.state.flows} rowKey="id" />
     );
   }
 }

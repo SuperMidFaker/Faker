@@ -14,7 +14,6 @@ import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducer
 import { PARTNER_ROLES } from 'common/constants';
 import OverviewCard from './cards/overviewCard';
 import ResourcesCard from './cards/resourcesCard';
-import ServiceCard from './cards/serviceCard';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -185,17 +184,6 @@ export default class CustomerList extends React.Component {
             <Row gutter={16}>
               <Col sm={24} md={16}>
                 <OverviewCard customer={customer} />
-                <Row gutter={16}>
-                  <Col sm={24} md={8}>
-                    <ServiceCard />
-                  </Col>
-                  <Col sm={24} md={8}>
-                    <ServiceCard />
-                  </Col>
-                  <Col sm={24} md={8}>
-                    <ServiceCard />
-                  </Col>
-                </Row>
                 <ResourcesCard customer={customer} />
               </Col>
               <Col sm={24} md={8}>

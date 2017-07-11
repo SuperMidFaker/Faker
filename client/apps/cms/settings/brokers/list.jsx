@@ -145,7 +145,7 @@ export default class BrokerList extends Component {
               />
             </div>
             <div className="panel-body table-panel">
-              <Table dataSource={data} columns={columns} rowSelection={rowSelection} />
+              <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
             </div>
             <BrokerModal />
           </div>

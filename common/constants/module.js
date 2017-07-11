@@ -12,6 +12,82 @@ const MODULE_CLEARANCE = {
   defaultText: '清关管理',
   features: [
     {
+      id: 'dashboard',
+      text: 'featClearanceDashboard',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'delegation',
+      text: 'featClearanceDelegation',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'customs',
+      text: 'featClearanceCustoms',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'ciq',
+      text: 'featClearanceCiq',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
       id: 'import',
       text: 'featClearanceImport',
       actions: [
@@ -33,6 +109,25 @@ const MODULE_CLEARANCE = {
     {
       id: 'export',
       text: 'featClearanceExport',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'classification',
+      text: 'featClearanceClassification',
       actions: [
         {
           id: 'view',

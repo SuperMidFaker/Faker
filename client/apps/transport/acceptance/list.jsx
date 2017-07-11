@@ -28,7 +28,6 @@ import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
 import CreateSpecialCharge from 'client/apps/transport/tracking/land/modals/create-specialCharge';
-import OperatorsPopover from 'client/common/operatorsPopover';
 import DispatchDock from '../dispatch/dispatchDock';
 import SegmentDock from '../dispatch/segmentDock';
 import CustomerSelect from '../common/customerSelect';
@@ -307,12 +306,13 @@ export default class AcceptList extends React.Component {
     return shipmt.consigner_name && shipmt.consignee_province &&
       shipmt.deliver_est_date && shipmt.pickup_est_date;
   }
-  handleShipmtAccept = (row, lid, name) => {
+  handleShipmtAccept = (row) => {
     if (!this.isCompleteShipment(row)) {
       message.error('运单信息未完整, 请完善');
       return;
     }
-    this.props.acceptDispShipment([row.key], this.props.acpterId, this.props.acpterName, lid, name).then((result) => {
+
+    this.props.acceptDispShipment([row.key], this.props.acpterId, this.props.acpterName, this.props.acpterId, this.props.acpterName).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -321,7 +321,16 @@ export default class AcceptList extends React.Component {
       }
     });
   }
-  handleShipmtsAccept = (row, lid, name) => {
+  handleShipmtsAccept = () => {
+    const partnerIds = this.state.selectedPartnerIds;
+    for (let i = 0; i < partnerIds.length; i++) {
+      for (let j = 0; j < partnerIds.length; j++) {
+        if (partnerIds[i] !== partnerIds[j]) {
+          message.info('批量接单需选择同一客户');
+          return false;
+        }
+      }
+    }
     const dispIds = this.state.selectedRowKeys;
     let valid = true;
     for (let i = 0; i < dispIds.length; i++) {
@@ -335,7 +344,7 @@ export default class AcceptList extends React.Component {
     if (!valid) {
       return;
     }
-    this.props.acceptDispShipment(dispIds, this.props.acpterId, this.props.acpterName, lid, name).then((result) => {
+    this.props.acceptDispShipment(dispIds, this.props.acpterId, this.props.acpterName, this.props.acpterId, this.props.acpterName).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -424,7 +433,7 @@ export default class AcceptList extends React.Component {
             return (
               <PrivilegeCover module="transport" feature="shipment" action="edit">
                 <span>
-                  <OperatorsPopover partnerId={record.partnerId} record={record} handleAccept={this.handleShipmtAccept} module="transport" />
+                  <a onClick={() => this.handleShipmtAccept(record)}>接单</a>
                   <span className="ant-divider" />
                   <Dropdown overlay={(
                     <Menu onClick={this.handleMenuClick}>
@@ -451,7 +460,7 @@ export default class AcceptList extends React.Component {
             return (
               <span>
                 <PrivilegeCover module="transport" feature="shipment" action="edit">
-                  <OperatorsPopover partnerId={record.partnerId} record={record} handleAccept={this.handleShipmtAccept} />
+                  <a onClick={() => this.handleShipmtAccept(record)}>接单</a>
                 </PrivilegeCover>
               </span>
             );
@@ -473,7 +482,9 @@ export default class AcceptList extends React.Component {
     }];
     bulkBtns = (
       <PrivilegeCover module="transport" feature="shipment" action="edit">
-        <OperatorsPopover partnerId={this.state.selectedPartnerIds[0]} partnerIds={this.state.selectedPartnerIds} handleAccept={this.handleShipmtsAccept} module="multiple" />
+        <Button type="default" onClick={this.handleShipmtsAccept}>
+          批量接单
+        </Button>
       </PrivilegeCover>
     );
     return (

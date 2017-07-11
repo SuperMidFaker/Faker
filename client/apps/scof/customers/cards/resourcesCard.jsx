@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Tabs } from 'antd';
 import FlowRulesPane from '../pane/flowRulesPane';
+import ServiceTeamPane from '../pane/serviceTeamPane';
 import ConsignInfoPane from '../pane/consignInfoPane';
 import TariffPane from '../pane/tariffPane';
 import { format } from 'client/common/i18n/helpers';
@@ -27,14 +28,17 @@ export default class ResourcesCard extends React.Component {
     const { customer } = this.props;
     return (
       <Card bodyStyle={{ padding: 0 }}>
-        <Tabs defaultActiveKey="flowRules">
-          <TabPane tab={<span><i className="icon icon-fontello-flow-tree" />流程规则</span>} key="flowRules" >
+        <Tabs defaultActiveKey="team">
+          <TabPane tab={<span>服务团队</span>} key="team" >
+            <ServiceTeamPane customer={customer} />
+          </TabPane>
+          <TabPane tab={<span>流程规则</span>} key="flowRules" >
             <FlowRulesPane customer={customer} />
           </TabPane>
-          <TabPane tab={<span><i className="icon icon-fontello-book" />价格协议</span>} key="tariff">
+          <TabPane tab={<span>价格协议</span>} key="tariff">
             <TariffPane customer={customer} />
           </TabPane>
-          <TabPane tab={<span><i className="icon icon-fontello-doc-text" />收发货信息</span>} key="consignInfo">
+          <TabPane tab={<span>收发货信息</span>} key="consignInfo">
             <ConsignInfoPane customer={customer} />
           </TabPane>
         </Tabs>
