@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
+import { loadSku } from 'common/reducers/cwmSku';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -16,7 +17,7 @@ const InputGroup = Input.Group;
     packings: state.cwmSku.params.packings,
     skuForm: state.cwmSku.skuForm,
   }),
-  { }
+  { loadSku }
 )
 export default class PackagePopover extends Component {
   static propTypes = {
@@ -25,10 +26,14 @@ export default class PackagePopover extends Component {
   }
   state = {
     visible: false,
+    sku: {},
   }
   msg = key => formatMsg(this.props.intl, key);
   handleVisibleChange = (visible) => {
     this.setState({ visible });
+    if (visible && Object.keys(this.state.sku).length === 0) {
+      this.props.loadSku(this.props.sku);
+    }
   }
   render() {
     const sku = this.props.sku;

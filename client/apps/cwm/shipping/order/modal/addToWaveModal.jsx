@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table } from 'antd';
@@ -18,7 +19,7 @@ const formatMsg = format(messages);
     wave: state.cwmShippingOrder.wave,
     loading: state.cwmShippingOrder.wave.loading,
     visible: state.cwmShippingOrder.addToMoveModal.visible,
-    ownerId: state.cwmShippingOrder.addToMoveModal.ownerId,
+    ownerCode: state.cwmShippingOrder.addToMoveModal.ownerCode,
   }),
   { loadWaves, addToWave, hideAddToWave }
 )
@@ -34,12 +35,12 @@ export default class AddToWaveModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      const { defaultWhse, ownerId, wave } = this.props;
+      const { defaultWhse, ownerCode, wave } = nextProps;
       this.props.loadWaves({
         whseCode: defaultWhse.code,
         pageSize: wave.pageSize,
         current: wave.current,
-        filters: { status: 'pending', ownerId },
+        filters: { status: 'pending', ownerCode },
       });
     }
   }
@@ -47,6 +48,11 @@ export default class AddToWaveModal extends Component {
   columns = [{
     title: '波次号',
     dataIndex: 'wave_no',
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+    render: o => moment(o).format('MM.DD HH:mm'),
   }]
   handleSubmit = () => {
     this.props.addToWave(this.props.selectedRowKeys, this.state.selectedRowKeys[0]).then((result) => {

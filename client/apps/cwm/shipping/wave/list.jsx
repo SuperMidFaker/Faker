@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
@@ -21,15 +20,6 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
-function fetchData({ state, dispatch }) {
-  dispatch(loadWaves({
-    whseCode: state.cwmContext.defaultWhse.code,
-    pageSize: state.cwmShippingOrder.wave.pageSize,
-    current: state.cwmShippingOrder.wave.current,
-    filters: state.cwmShippingOrder.waveFilters,
-  }));
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -59,6 +49,16 @@ export default class WaveList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentWillMount() {
+    const filters = { ...this.props.filters, ownerCode: 'all' };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadWaves({
+      whseCode,
+      pageSize: this.props.wave.pageSize,
+      current: this.props.wave.current,
+      filters,
+    });
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -194,7 +194,7 @@ export default class WaveList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, filters, loading } = this.props;
+    const { whses, defaultWhse, filters, loading, owners } = this.props;
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadWaves(params),
       resolve: result => result.data,
@@ -250,6 +250,14 @@ export default class WaveList extends React.Component {
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+              >
+                <Option value="all" key="all">全部货主</Option>
+                {
+                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+                }
+              </Select>
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
