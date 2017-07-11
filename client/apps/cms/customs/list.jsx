@@ -161,9 +161,7 @@ export default class CustomsList extends Component {
           <p>{`EDI用户名: ${record.pre_entry_user_info || ''}`}</p>
         </div>
       );
-      return (<Popover content={content}>
-        <Tag color="cyan">{child}</Tag>
-      </Popover>);
+      return (<Popover content={content}>{child}</Popover>);
     },
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Table } from 'antd';
+import { Table, Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -41,6 +41,7 @@ export default class ManifestLegalInspection extends React.Component {
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
       fixed: 'left',
+      className: 'cell-align-center',
       width: 45,
     }, {
       title: this.msg('copGNo'),
@@ -82,7 +83,7 @@ export default class ManifestLegalInspection extends React.Component {
       render: (o) => {
         const unit = this.props.units.filter(cur => cur.value === o)[0];
         const text = unit ? `${unit.value}| ${unit.text}` : o;
-        return text;
+        return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
       title: <div className="cell-align-right">{this.msg('decPrice')}</div>,
@@ -101,7 +102,7 @@ export default class ManifestLegalInspection extends React.Component {
       render: (o) => {
         const currency = this.props.currencies.filter(cur => cur.value === o)[0];
         const text = currency ? `${currency.value}| ${currency.text}` : o;
-        return text;
+        return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
       title: <div className="cell-align-right">{this.msg('grosswt')}</div>,
@@ -125,7 +126,7 @@ export default class ManifestLegalInspection extends React.Component {
       render: (o) => {
         const unit = this.props.units.filter(cur => cur.value === o)[0];
         const text = unit ? `${unit.value}| ${unit.text}` : o;
-        return text;
+        return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
       title: <div className="cell-align-right">{this.msg('qty2')}</div>,
@@ -139,7 +140,7 @@ export default class ManifestLegalInspection extends React.Component {
       render: (o) => {
         const unit = this.props.units.filter(cur => cur.value === o)[0];
         const text = unit ? `${unit.value}| ${unit.text}` : o;
-        return text;
+        return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
       title: this.msg('exemptionWay'),
@@ -148,7 +149,7 @@ export default class ManifestLegalInspection extends React.Component {
       render: (o) => {
         const exemption = this.props.exemptions.filter(cur => cur.value === o)[0];
         const text = exemption ? `${exemption.value}| ${exemption.text}` : o;
-        return text;
+        return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
       title: this.msg('ecountry'),
@@ -157,7 +158,7 @@ export default class ManifestLegalInspection extends React.Component {
       render: (o) => {
         const country = this.props.countries.filter(cur => cur.value === o)[0];
         const text = country ? `${country.value}| ${country.text}` : o;
-        return text;
+        return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }, {
       title: this.msg('icountry'),
@@ -166,12 +167,12 @@ export default class ManifestLegalInspection extends React.Component {
       render: (o) => {
         const country = this.props.countries.filter(cur => cur.value === o)[0];
         const text = country ? `${country.value}| ${country.text}` : o;
-        return text;
+        return text && text.length > 0 ? <Tag>{text}</Tag> : <span />;
       },
     }];
     return (
       <div className="panel-body table-panel">
-        <Table columns={columns} dataSource={filterProducts}
+        <Table columns={columns} dataSource={filterProducts} bordered
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>
