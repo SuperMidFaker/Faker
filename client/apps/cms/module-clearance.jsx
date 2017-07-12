@@ -35,8 +35,9 @@ export default class Clearance extends React.Component {
   componentWillMount() {
     const { privileges, intl } = this.props;
     const linkMenus = [];
-    let navOption = this.props.navOption;
-    if (window.localStorage) {
+    let navOption = 'CC';
+    if (typeof window !== 'undefined' && window.localStorage) {
+      navOption = this.props.navOption;
       const navtopt = window.localStorage.getItem('cms-nav-option');
       if (navtopt === null) {
         window.localStorage.setItem('cms-nav-option', navOption);
@@ -227,10 +228,6 @@ export default class Clearance extends React.Component {
             icon: 'icon-ikons-login',
             text: formatMsg(intl, 'import'),
             sublinks: [{
-              key: 'cms-import-1',
-              path: '/clearance/import/manifest',
-              text: formatMsg(intl, 'importManifest'),
-            }, {
               key: 'cms-import-2',
               path: '/clearance/import/customs',
               text: formatMsg(intl, 'importCustomsDecl'),
@@ -249,10 +246,6 @@ export default class Clearance extends React.Component {
             icon: 'icon-ikons-logout',
             text: formatMsg(intl, 'export'),
             sublinks: [{
-              key: 'cms-export-1',
-              path: '/clearance/export/manifest',
-              text: formatMsg(intl, 'exportManifest'),
-            }, {
               key: 'cms-export-2',
               path: '/clearance/export/customs',
               text: formatMsg(intl, 'exportCustomsDecl'),
@@ -289,10 +282,6 @@ export default class Clearance extends React.Component {
             icon: 'icon-ikons-login',
             text: formatMsg(intl, 'import'),
             sublinks: [{
-              key: 'cms-import-1',
-              path: '/clearance/import/manifest',
-              text: formatMsg(intl, 'importManifest'),
-            }, {
               key: 'cms-import-2',
               path: '/clearance/import/customs',
               text: formatMsg(intl, 'importCustomsDecl'),
@@ -311,10 +300,6 @@ export default class Clearance extends React.Component {
             icon: 'icon-ikons-logout',
             text: formatMsg(intl, 'export'),
             sublinks: [{
-              key: 'cms-export-1',
-              path: '/clearance/export/manifest',
-              text: formatMsg(intl, 'exportManifest'),
-            }, {
               key: 'cms-export-2',
               path: '/clearance/export/customs',
               text: formatMsg(intl, 'exportCustomsDecl'),

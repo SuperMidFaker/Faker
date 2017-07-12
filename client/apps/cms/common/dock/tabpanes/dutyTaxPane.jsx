@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import currencyFormatter from 'currency-formatter';
 import { Card, Table, Tag, Popconfirm, message, Button } from 'antd';
 import { loadPaneTax, taxRecalculate } from 'common/reducers/cmsDelgInfoHub';
 import { CMS_FEE_UNIT } from 'common/constants';
@@ -73,7 +74,7 @@ export default class DutyTaxPane extends React.Component {
     key: 'duty_paid',
     width: 110,
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '成交方式',
@@ -91,7 +92,7 @@ export default class DutyTaxPane extends React.Component {
     key: 'duty_tax',
     width: 110,
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '增值税',
@@ -99,7 +100,7 @@ export default class DutyTaxPane extends React.Component {
     key: 'vat_tax',
     width: 110,
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '消费税',
@@ -107,7 +108,7 @@ export default class DutyTaxPane extends React.Component {
     key: 'excise_tax',
     width: 110,
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '税费总金额',
@@ -115,7 +116,7 @@ export default class DutyTaxPane extends React.Component {
     key: 'total_tax',
     width: 110,
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }]
   subCols = [{
@@ -163,7 +164,7 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'duty_paid',
     key: 'duty_paid',
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '关税率',
@@ -174,7 +175,7 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'duty_tax',
     key: 'duty_tax',
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '增值税率',
@@ -185,7 +186,7 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'vat_tax',
     key: 'vat_tax',
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '消费税率',
@@ -196,14 +197,14 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'excise_tax',
     key: 'excise_tax',
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '缴税金额',
     dataIndex: 'total_tax',
     key: 'total_tax',
     render(o) {
-      return o ? o.toFixed(3) : '';
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }]
   handleExpandDetail = (row) => {
@@ -227,7 +228,7 @@ export default class DutyTaxPane extends React.Component {
       }
     });
   }
-  renderValFixed = o => o ? o.toFixed(3) : ''
+  renderValFixed = o => o ? currencyFormatter.format(o, { code: 'CNY' }) : ''
   render() {
     return (
       <div className="pane-content tab-pane">
@@ -236,7 +237,7 @@ export default class DutyTaxPane extends React.Component {
             <Button icon="reload" loading={this.state.recalLoading}>预估税金</Button>
           </Popconfirm>
           <div style={{ float: 'right' }}>
-            <span style={{ color: '#FF9933' }}>单位：人民币元</span>
+            <span style={{ color: '#FF9933' }}>单位：CNY</span>
           </div>
         </div>
         <Card bodyStyle={{ padding: 0 }}>

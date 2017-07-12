@@ -665,14 +665,14 @@ export default class TradeItemList extends Component {
         if (record.mode === 'slave') {
           return (<div><Icon type="link" className="text-success" /> {o}
             <Strip overall={1000}
-              parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }}
+              parts={{ success: record.classified_num, warning: record.pending_num, error: record.unclassified_num }}
               hints={['已归类', '归类待定', '未归类']}
             />
           </div>);
         } else {
           return (<div>{o}
             <Strip overall={1000}
-              parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }}
+              parts={{ success: record.classified_num, warning: record.pending_num, error: record.unclassified_num }}
               hints={['已归类', '归类待定', '未归类']}
             />
           </div>);

@@ -56,6 +56,7 @@ function CreateActionForm(props) {
           <FormItem label={msg('triggerAction')}>
             <Select value={action.type} onChange={value => handleChange('type', value)}>
               <Option value="CREATE">{msg('actionCreate')}</Option>
+              <Option value="UPDATE">{msg('actionUpdate')}</Option>
               <Option value="NOTIFY">{msg('actionNotify')}</Option>
             </Select>
           </FormItem>
@@ -72,6 +73,74 @@ function CreateActionForm(props) {
 }
 
 CreateActionForm.propTypes = {
+  action: PropTypes.shape({ type: PropTypes.string }),
+  index: PropTypes.number.isRequired,
+  bizObjectOptions: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
+};
+
+function UpdateActionForm(props) {
+  const { action, index, bizObjectOptions, msg, onChange, onDel } = props;
+  function handleChange(actionKey, value) {
+    onChange(actionKey, value, index);
+  }
+  function handleDel() {
+    onDel(index);
+  }
+  return (
+    <Card extra={(
+      <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
+        <a role="presentation"><Icon type="delete" /></a>
+      </Popconfirm>)}
+    >
+      <Row gutter={16}>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerMode')}>
+            <RadioGroup value={action.instant ? 'instant' : 'scheduled'} onChange={ev => handleChange('instant', ev.target.value === 'instant')}>
+              <RadioButton value="instant"><i className="icon icon-fontello-flash-1" />{msg('instantTrigger')}</RadioButton>
+              <RadioButton value="scheduled"><i className="icon icon-fontello-back-in-time" />{msg('scheduledTrigger')}</RadioButton>
+            </RadioGroup>
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerTimer')}>
+            {action.instant && <span>-</span>}
+            {!action.instant && <span>{msg('timerWait')}
+              <InputNumber value={action.delay} min={1} max={3600} style={{ width: '25%' }}
+                onChange={value => handleChange('delay', value)}
+              />
+              {msg('timerMinutes')}</span>}
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={8}>
+          <FormItem label={msg('triggerAction')}>
+            {
+              <Select value={action.type} onChange={value => handleChange('type', value)}>
+                <Option value="CREATE" key="CREATE">{msg('actionCreate')}</Option>
+                <Option value="UPDATE">{msg('actionUpdate')}</Option>
+                <Option value="NOTIFY" key="NOTIFY">{msg('actionNotify')}</Option>
+              </Select>
+            }
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={12}>
+          <FormItem>
+            <Select value={action.biz_object} onChange={value => handleChange('biz_object', value)}>
+              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{bo.text}</Option>)}
+            </Select>
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={12}>
+          <FormItem>
+            <Select value={action.biz_object} onChange={value => handleChange('biz_object', value)}>
+              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{bo.text}</Option>)}
+            </Select>
+          </FormItem>
+        </Col>
+      </Row>
+    </Card>);
+}
+
+UpdateActionForm.propTypes = {
   action: PropTypes.shape({ type: PropTypes.string }),
   index: PropTypes.number.isRequired,
   bizObjectOptions: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
@@ -115,6 +184,7 @@ function NotifyActionForm(props) {
             {
               <Select value={action.type} onChange={value => handleChange('type', value)}>
                 <Option value="CREATE" key="CREATE">{msg('actionCreate')}</Option>
+                <Option value="UPDATE">{msg('actionUpdate')}</Option>
                 <Option value="NOTIFY" key="NOTIFY">{msg('actionNotify')}</Option>
               </Select>
             }
@@ -206,6 +276,11 @@ export default class AddTriggerModal extends React.Component {
             switch (action.type) {
               case 'CREATE': actionForm = (
                 <CreateActionForm key={action.id} action={action} onDel={this.handleActionDel}
+                  index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
+                />);
+                break;
+              case 'UPDATE': actionForm = (
+                <UpdateActionForm key={action.id} action={action} onDel={this.handleActionDel}
                   index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;

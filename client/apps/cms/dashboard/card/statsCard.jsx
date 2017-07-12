@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Card, DatePicker, Radio, Select } from 'antd';
 import moment from 'moment';
 import { Link } from 'react-router';
+import currencyFormatter from 'currency-formatter';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -48,7 +49,7 @@ export default class StatsCard extends Component {
     totalValue: 0,
     sumImportValue: 0,
     sumExportValue: 0,
-    currency: 'usd',
+    currency: 'USD',
   }
   componentDidMount() {
     if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
@@ -59,13 +60,13 @@ export default class StatsCard extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.statistics !== this.props.statistics) {
-      if (this.state.currency === 'usd') {
+      if (this.state.currency === 'USD') {
         this.setState({
           totalValue: nextProps.statistics.totVals.total_usd,
           sumImportValue: nextProps.statistics.totImVals.total_usd,
           sumExportValue: nextProps.statistics.totExVals.total_usd,
         });
-      } else if (this.state.currency === 'cny') {
+      } else if (this.state.currency === 'CNY') {
         this.setState({
           totalValue: nextProps.statistics.totVals.total_cny,
           sumImportValue: nextProps.statistics.totImVals.total_cny,
@@ -117,29 +118,25 @@ export default class StatsCard extends Component {
   }
   handleCurrencyChange = (ev) => {
     const { totVals, totImVals, totExVals } = this.props.statistics;
-    if (ev.target.value === '502') {
-      this.setState({ currency: 'usd', totalValue: totVals.total_usd, sumImportValue: totImVals.total_usd, sumExportValue: totExVals.total_usd });
-    } else if (ev.target.value === '142') {
-      this.setState({ currency: 'cny', totalValue: totVals.total_cny, sumImportValue: totImVals.total_cny, sumExportValue: totExVals.total_cny });
+    if (ev.target.value === 'USD') {
+      this.setState({ currency: 'USD', totalValue: totVals.total_usd, sumImportValue: totImVals.total_usd, sumExportValue: totExVals.total_usd });
+    } else if (ev.target.value === 'CNY') {
+      this.setState({ currency: 'CNY', totalValue: totVals.total_cny, sumImportValue: totImVals.total_cny, sumExportValue: totExVals.total_cny });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected, declcount } = this.props.statistics;
     const { totalValue, sumImportValue, sumExportValue, currency } = this.state;
-    let sym = '$';
-    if (currency === 'cny') {
-      sym = '￥';
-    }
     const clients = [{
       name: '全部客户',
       partner_id: -1,
     }].concat(this.props.clients);
     const datePicker = (
       <div>
-        <RadioGroup defaultValue="502" onChange={this.handleCurrencyChange}>
-          <RadioButton value="502">USD</RadioButton>
-          <RadioButton value="142">RMB</RadioButton>
+        <RadioGroup defaultValue="USD" onChange={this.handleCurrencyChange}>
+          <RadioButton value="USD">USD</RadioButton>
+          <RadioButton value="CNY">CNY</RadioButton>
         </RadioGroup>
         <Select showSearch optionFilterProp="children" style={{ width: 160, marginLeft: 8 }}
           onChange={this.handleClientSelectChange} defaultValue={-1}
@@ -167,7 +164,7 @@ export default class StatsCard extends Component {
                 <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('total')} >{total}</Link>
               </div>
               <div className="data-extra">
-                {sym}{totalValue}
+                {currencyFormatter.format(totalValue, { code: currency })}
                 <div>{this.msg('totalValue')}</div>
               </div>
             </div>
@@ -181,7 +178,7 @@ export default class StatsCard extends Component {
                 <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumImport')} >{sumImport}</Link>
               </div>
               <div className="data-extra">
-                {sym}{sumImportValue}
+                {currencyFormatter.format(sumImportValue, { code: currency })}
                 <div>{this.msg('sumImportValue')}</div>
               </div>
             </div>
@@ -193,7 +190,7 @@ export default class StatsCard extends Component {
                 <Link to="/clearance/delegation" onClick={() => this.handleLinkClick('sumExport')} >{sumExport}</Link>
               </div>
               <div className="data-extra">
-                {sym}{sumExportValue}
+                {currencyFormatter.format(sumExportValue, { code: currency })}
                 <div>{this.msg('sumExportValue')}</div>
               </div>
             </div>

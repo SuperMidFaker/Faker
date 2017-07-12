@@ -53,6 +53,7 @@
     "babel-polyfill": "^6.22.0",
     "babel-runtime": "^6.23.0",
     "classnames": "^2.2.5",
+    "currency-formatter": "^1.2.1",
     "detect-browser": "1.7.0",
     "echarts": "^3.5.4",
     "glob": "^7.1.1",

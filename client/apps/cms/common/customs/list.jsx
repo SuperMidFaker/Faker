@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select } from 'antd';
+import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -20,13 +20,13 @@ import DeclReleasedModal from './modals/declReleasedModal';
 import DeclStatusPopover from './declStatusPopover';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { CMS_DECL_STATUS } from 'common/constants';
+import { CMS_DECL_STATUS, CMS_DECL_TYPE } from 'common/constants';
 import SendModal from './modals/sendModal';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
-import { Logixon } from 'client/components/FontIcon';
+import { Logixon, Fontello } from 'client/components/FontIcon';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -90,13 +90,18 @@ export default class CustomsList extends Component {
         {o}
       </a>),
   }, {
+    title: this.msg('orderNo'),
+    width: 180,
+    dataIndex: 'order_no',
+    render: o => <TrimSpan text={o} maxLen={20} />,
+  }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 200,
-    fixed: 'left',
+    width: 160,
     render: (entryNO, record) => {
+      const ietype = record.i_e_type === 0 ? 'import' : 'export';
       const preEntryLink = (
-        <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
+        <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
           {record.pre_entry_seq_no}
         </NavLink>);
       switch (record.status) {
@@ -104,15 +109,13 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.reviewed.value:
           return (
             <span>
-              <Tag>预</Tag>
               {preEntryLink}
             </span>);
         case CMS_DECL_STATUS.sent.value:
           return (
             <span>
-              <Tag>预</Tag>
               {preEntryLink}
-              <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="entry_no">
+              <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
@@ -120,20 +123,85 @@ export default class CustomsList extends Component {
             </span>);
         case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
-          return (
-            <span>
-              <DeclStatusPopover entryId={entryNO}><Tag color={record.status === CMS_DECL_STATUS.released.value ? 'green' : 'blue'}><Logixon type="customs-o" /></Tag></DeclStatusPopover>
-              <NavLink to={`/clearance/${this.props.ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>
-            </span>);
+          return (<NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>);
         default:
           return <span />;
       }
+    },
+  }, {
+    title: '类型',
+    dataIndex: 'sheet_type',
+    width: 100,
+    render: (o, record) => {
+      let child = <span />;
+      if (record.i_e_type === 0) {
+        if (o === 'CDF') {
+          child = <Tag color="blue">进口报关单</Tag>;
+        } else if (o === 'FTZ') {
+          child = <Tag color="blue">进境备案清单</Tag>;
+        }
+      } else if (record.i_e_type === 1) {
+        if (o === 'CDF') {
+          child = <Tag color="cyan">出口报关单</Tag>;
+        } else if (o === 'FTZ') {
+          child = <Tag color="cyan">出境备案清单</Tag>;
+        }
+      }
+      let entryDecType = '';
+      if (record.pre_entry_dec_type !== null) {
+        const decltype = CMS_DECL_TYPE.filter(ty => ty.value === (record.pre_entry_dec_type).toString())[0];
+        entryDecType = decltype ? decltype.text : '';
+      }
+      const content = (
+        <div>
+          <p>{`单证类型: ${entryDecType}`}</p>
+          <p>{`EDI用户名: ${record.pre_entry_user_info || ''}`}</p>
+        </div>
+      );
+      return (<Popover content={content}>{child}</Popover>);
     },
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
+  }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+    render: (ost, record) => {
+      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
+      if (declkey) {
+        const decl = CMS_DECL_STATUS[declkey];
+        if (record.status > CMS_DECL_STATUS.sent.value) {
+          return (<span><Badge status={decl.badge} text={decl.text} />
+            <DeclStatusPopover entryId={record.entry_id}><a role="presentation"><Logixon type="customs-o" /></a></DeclStatusPopover>
+          </span>);
+        }
+
+        return <Badge status={decl.badge} text={decl.text} />;
+      } else {
+        return null;
+      }
+    },
+  }, {
+    title: '海关查验',
+    dataIndex: 'customs_inspect',
+    className: 'cell-align-center',
+    width: 80,
+    render: (o, record) => {
+      if (record.status > CMS_DECL_STATUS.sent.value) {
+        if (record.customs_inspect === 1) {
+          return <Tooltip title="报关单查验"><span><Fontello type="circle" color="red" /></span></Tooltip>;
+        } else if (record.customs_inspect === 2) {
+          return <Tooltip title="查验放行"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+        } else {
+          return <Tooltip title="未查验"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        }
+      } else {
+        return null;
+      }
+    },
   }, {
     title: '收发货人',
     dataIndex: 'trade_name',
@@ -145,9 +213,8 @@ export default class CustomsList extends Component {
     width: 160,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: '进出口岸',
+    title: '进/出口口岸',
     dataIndex: 'i_e_port',
-    width: 80,
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';
@@ -157,38 +224,13 @@ export default class CustomsList extends Component {
       return <TrimSpan text={port} maxLen={14} />;
     },
   }, {
-    title: '类型',
-    dataIndex: 'sheet_type',
-    width: 100,
-    render: (o) => {
-      if (o === 'CDF') {
-        return <Tag color="blue-inverse">报关单</Tag>;
-      } else if (o === 'FTZ') {
-        return <Tag color="blue">备案清单</Tag>;
-      } else {
-        return <span />;
-      }
-    },
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    render: (ost) => {
-      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
-      if (declkey) {
-        const decl = CMS_DECL_STATUS[declkey];
-        return <Badge status={decl.badge} text={decl.text} />;
-      } else {
-        return null;
-      }
-    },
-  }, {
-    title: '进出口日期',
+    title: '进/出口日期',
     dataIndex: 'i_e_date',
     width: 100,
     render: (o, record) => (record.id ?
       record.i_e_date && moment(record.i_e_date).format('YYYY.MM.DD') : '-'),
   }, {
-    title: '创建时间',
+    title: '制单时间',
     dataIndex: 'created_date',
     width: 100,
     render: createdt => (createdt ? moment(createdt).format('MM.DD HH:mm') : '-'),
@@ -196,16 +238,21 @@ export default class CustomsList extends Component {
     title: '发送时间',
     dataIndex: 'epsend_date',
     width: 100,
-    render: senddate => (senddate ? moment(senddate).format('MM.DD HH:mm') : '-'),
-  }, {
-    title: '发送人',
-    dataIndex: 'epsend_login_name',
-    width: 100,
+    render: sendDate => (sendDate ? moment(sendDate).format('MM.DD HH:mm') : '-'),
   }, {
     title: '回执时间',
     dataIndex: 'backfill_date',
     width: 100,
     render: backdt => (backdt ? moment(backdt).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '放行时间',
+    dataIndex: 'clear_date',
+    width: 100,
+    render: clearDate => (clearDate ? moment(clearDate).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '报关人员',
+    dataIndex: 'epsend_login_name',
+    width: 100,
   }, {
     title: this.msg('opColumn'),
     width: 140,
@@ -214,25 +261,19 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowUpdater onHit={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
-            </PrivilegeCover>
-            <span className="ant-divider" />
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete(record.id, record.delg_no, record.bill_seq_no)}>
-                <a role="presentation"><Icon type="delete" /></a>
-              </Popconfirm>
             </PrivilegeCover>
           </span>
         );
       } else if (record.status === CMS_DECL_STATUS.reviewed.value) {
         return (
           <span>
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
             </PrivilegeCover>
             <span className="ant-divider" />
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+            <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
             </PrivilegeCover>
           </span>
@@ -241,7 +282,7 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status !== CMS_DECL_STATUS.released.value) {
           spanElems.push(
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit" key="clear">
+            <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />放行确认</span>}
               />
@@ -258,7 +299,7 @@ export default class CustomsList extends Component {
             >
               <a><Icon type="down" /></a>
             </Dropdown>);
-        } else if (record.ep_receipt_filename && record.status > CMS_DECL_STATUS.sent.value) {
+        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <Dropdown key="receipt" overlay={(<Menu>
               <Menu.Item key="edit">
@@ -268,6 +309,8 @@ export default class CustomsList extends Component {
             >
               <a><Icon type="down" /></a>
             </Dropdown>);
+        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.released.value) {
+          spanElems.push(<a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>);
         }
         if (spanElems.length === 2) {
           spanElems.splice(1, 0, <span className="ant-divider" key="divid1" />);
@@ -342,7 +385,7 @@ export default class CustomsList extends Component {
     }
     return newFilters;
   }
-  handleRadioChange = (ev) => {
+  handleStatusFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
@@ -469,11 +512,15 @@ export default class CustomsList extends Component {
               {this.msg('customsDeclaration')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             {Object.keys(CMS_DECL_STATUS).map(declkey =>
               <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
             )}
+          </RadioGroup>
+          <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+            <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools" />
         </Header>
@@ -497,9 +544,9 @@ export default class CustomsList extends Component {
                 {bulkBtns}
               </div>
             </div>
-            <div className="panel-body table-panel expandable">
+            <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
-                loading={customslist.loading} scroll={{ x: 1750 }}
+                loading={customslist.loading} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
               />
             </div>
             <FillCustomsNoModal reload={this.handleTableLoad} />

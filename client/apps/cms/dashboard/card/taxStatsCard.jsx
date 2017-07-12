@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, DatePicker, Select } from 'antd';
 import moment from 'moment';
+import currencyFormatter from 'currency-formatter';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -85,7 +86,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('totalPaid')}</h4>
               <div className="data">
-                <div className="data-num text-error">{totalPaid}</div>
+                <div className="data-num text-error">{currencyFormatter.format(totalPaid, { code: 'CNY' })}</div>
               </div>
             </div>
           </li>
@@ -94,7 +95,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('duty')}</h4>
               <div className="data">
-                <div className="data-num text-emphasis">{dutyTax}</div>
+                <div className="data-num text-emphasis">{currencyFormatter.format(dutyTax, { code: 'CNY' })}</div>
               </div>
             </div>
           </li>
@@ -102,7 +103,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('VAT')}</h4>
               <div className="data">
-                <div className="data-num text-emphasis">{vatTax}</div>
+                <div className="data-num text-emphasis">{currencyFormatter.format(vatTax, { code: 'CNY' })}</div>
               </div>
             </div>
           </li>
@@ -110,7 +111,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('comsuTax')}</h4>
               <div className="data">
-                <div className="data-num text-emphasis">{comsuTax}</div>
+                <div className="data-num text-emphasis">{currencyFormatter.format(comsuTax, { code: 'CNY' })}</div>
               </div>
             </div>
           </li>
@@ -119,7 +120,7 @@ export default class TaxStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('totalWithdrawn')}</h4>
               <div className="data">
-                <div className="data-num text-success">{totalWithdrawn}</div>
+                <div className="data-num text-success">{currencyFormatter.format(totalWithdrawn, { code: 'CNY' })}</div>
               </div>
             </div>
           </li>

@@ -35,7 +35,9 @@ export default class ClassificationStatsCard extends Component {
     const { repoCount, classifiedItems, pendingItems, unclassifiedItems } = this.props.itemsStats;
     return (
       <Card title={this.msg('classificationStats')}
-        extra={<div style={{ width: 300, marginTop: 10 }}><Strip parts={{ success: classifiedItems, processing: pendingItems, warning: unclassifiedItems }} hints={['已归类', '归类待定', '未归类']} /></div>}
+        extra={<div style={{ width: 300, marginTop: 4 }}>
+          <Strip parts={{ success: classifiedItems, warning: pendingItems, error: unclassifiedItems }} hints={['已归类', '归类待定', '未归类']} />
+        </div>}
       >
         <ul className="statistics-columns">
           <li className="col-3">
@@ -59,7 +61,7 @@ export default class ClassificationStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('pendingItems')}</h4>
               <div className="data">
-                <div className="data-num text-info">{pendingItems}</div>
+                <div className="data-num text-warning">{pendingItems}</div>
               </div>
             </div>
           </li>
@@ -67,7 +69,7 @@ export default class ClassificationStatsCard extends Component {
             <div className="statistics-cell">
               <h4>{this.msg('unclassifiedItems')}</h4>
               <div className="data">
-                <div className="data-num text-warning">{unclassifiedItems}</div>
+                <div className="data-num text-error">{unclassifiedItems}</div>
               </div>
             </div>
           </li>
