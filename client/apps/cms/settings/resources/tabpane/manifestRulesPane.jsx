@@ -63,20 +63,24 @@ export default class ManifestRulesPane extends React.Component {
   render() {
     const columns = [
       {
-        title: '模板名称',
+        title: '规则名称',
         dataIndex: 'template_name',
         key: 'template_name',
-        width: 120,
+
       }, {
         title: '类型',
         dataIndex: 'i_e_type',
         key: 'i_e_type',
-        width: 40,
+        width: 200,
         render: o => <Tag>{o === 0 ? '进口' : '出口'}</Tag>,
       }, {
-        title: '关联客户',
-        dataIndex: 'customer_name',
-        key: 'customer_name',
+        title: '修改人',
+        dataIndex: 'modify_name',
+        key: 'modify_name',
+      }, {
+        title: '最后更新时间',
+        dataIndex: 'last_updated_date',
+        key: 'last_updated_date',
       }, {
         title: '操作',
         dataIndex: 'status',
