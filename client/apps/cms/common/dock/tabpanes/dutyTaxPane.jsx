@@ -214,6 +214,7 @@ export default class DutyTaxPane extends React.Component {
         columns={this.subCols}
         dataSource={data}
         pagination={false}
+        bordered
       />
     );
   }

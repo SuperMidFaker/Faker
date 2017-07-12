@@ -164,14 +164,15 @@ export default class CustomsList extends Component {
       if (record.pre_entry_dec_type !== null) {
         const decltype = CMS_DECL_TYPE.filter(ty => ty.value === (record.pre_entry_dec_type).toString())[0];
         entryDecType = decltype ? decltype.text : '';
+        const content = (
+          <div>
+            <p>{`${entryDecType}`}</p>
+            <p>{`${record.pre_entry_user_info || ''}`}</p>
+          </div>
+        );
+        return <Popover placement="right" content={content}>{child}</Popover>;
       }
-      const content = (
-        <div>
-          <p>{`单证类型: ${entryDecType}`}</p>
-          <p>{`EDI用户名: ${record.pre_entry_user_info || ''}`}</p>
-        </div>
-      );
-      return (<Popover content={content}>{child}</Popover>);
+      return child;
     },
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
