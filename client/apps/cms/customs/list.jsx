@@ -82,7 +82,15 @@ export default class CustomsList extends Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleTableLoad();
+    let filters = { status: 'all' };
+    if (window.localStorage && window.localStorage.cmsCustomsListFilters) {
+      filters = JSON.parse(window.localStorage.cmsCustomsListFilters || '{"status":"all"}');
+    }
+    this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters });
+    if (window.localStorage) {
+      const fv = { ...JSON.parse(window.localStorage.cmsCustomsListFilters), acptDate: [] };
+      window.localStorage.cmsCustomsListFilters = JSON.stringify(fv);
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -342,6 +350,7 @@ export default class CustomsList extends Component {
       const params = {
         ietype: this.props.listFilter.ietype,
         tenantId: this.props.tenantId,
+        loginId: this.props.loginId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
       };
@@ -356,6 +365,7 @@ export default class CustomsList extends Component {
     this.props.loadCustomsDecls({
       ietype: ie,
       tenantId: this.props.tenantId,
+      loginId: this.props.loginId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.customslist.pageSize,
       currentPage: currentPage || this.props.customslist.current,
@@ -377,7 +387,7 @@ export default class CustomsList extends Component {
   }
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
-    this.handleTableLoad(1, filters);
+    this.handleTableLoad(1, { ...filters, acptDate: [] });
   }
   mergeFilters(curFilters, value) {
     const newFilters = {};
@@ -395,7 +405,7 @@ export default class CustomsList extends Component {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: ev.target.value };
+    const filter = { ...this.props.listFilter, status: ev.target.value, acptDate: [] };
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
   }
@@ -403,7 +413,7 @@ export default class CustomsList extends Component {
     if (ev.target.value === this.props.listFilter.ietype) {
       return;
     }
-    const filter = { ...this.props.listFilter, ietype: ev.target.value };
+    const filter = { ...this.props.listFilter, ietype: ev.target.value, acptDate: [] };
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
   }
@@ -480,8 +490,16 @@ export default class CustomsList extends Component {
     if (value !== 'all') {
       tradesView = this.props.trades.find(data => data.id === value);
     }
-    const filter = { ...this.props.listFilter, tradesView };
+    const filter = { ...this.props.listFilter, tradesView, acptDate: [] };
     this.handleTableLoad(1, filter);
+  }
+  handleViewChange = (value) => {
+    const filter = { ...this.props.listFilter, viewStatus: value, acptDate: [] };
+    this.handleTableLoad(1, filter);
+  }
+  handleDateRangeChange = (value, dateString) => {
+    const filters = { ...this.props.listFilter, filterDate: dateString, acptDate: [] };
+    this.handleTableLoad(1, filters);
   }
   render() {
     const { customslist, listFilter, trades } = this.props;
