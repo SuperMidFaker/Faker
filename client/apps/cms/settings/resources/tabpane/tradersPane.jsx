@@ -9,9 +9,6 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import TraderModal from '../modal/traderModal';
 
 const { Content } = Layout;
-const rowSelection = {
-  onSelect() {},
-};
 
 function fetchData({ dispatch, state, cookie }) {
   return dispatch(loadBusinessUnits(cookie, state.account.tenantId));
@@ -68,12 +65,12 @@ export default class TraderList extends Component {
       title: '企业名称',
       dataIndex: 'comp_name',
       key: 'comp_name',
-      width: 240,
+      width: 300,
     }, {
       title: '统一社会信用代码',
       dataIndex: 'comp_code',
       key: 'comp_code',
-      width: 200,
+      width: 180,
     }, {
       title: '海关编码',
       dataIndex: 'customs_code',
@@ -133,7 +130,7 @@ export default class TraderList extends Component {
           </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">
-          <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
+          <Table dataSource={data} columns={columns} rowKey="id" />
         </div>
         <TraderModal />
       </Content>

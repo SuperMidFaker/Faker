@@ -663,12 +663,18 @@ export default class TradeItemList extends Component {
       key: 'owner_name',
       render: (o, record) => {
         if (record.mode === 'slave') {
-          return (<div style={{ paddingLeft: 8 }}><Icon type="link" className="text-success" /> {o}
-            <Strip overall={1000} parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }} hints={['已归类', '归类待定', '未归类']} />
+          return (<div><Icon type="link" className="text-success" /> {o}
+            <Strip overall={1000}
+              parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }}
+              hints={['已归类', '归类待定', '未归类']}
+            />
           </div>);
         } else {
-          return (<div style={{ paddingLeft: 8 }}>{o}
-            <Strip overall={1000} parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }} hints={['已归类', '归类待定', '未归类']} />
+          return (<div>{o}
+            <Strip overall={1000}
+              parts={{ success: record.classified_num, processing: record.pending_num, warning: record.unclassified_num }}
+              hints={['已归类', '归类待定', '未归类']}
+            />
           </div>);
         }
       },
