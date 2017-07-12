@@ -408,6 +408,10 @@ export default class CustomsList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value, acptDate: [] };
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
+    if (window.localStorage) {
+      const fv = { ...JSON.parse(window.localStorage.cmsCustomsListFilters), status: ev.target.value };
+      window.localStorage.cmsCustomsListFilters = JSON.stringify(fv);
+    }
   }
   handleIEFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.ietype) {
