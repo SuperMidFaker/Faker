@@ -109,9 +109,9 @@ const messages = defineMessages({
     id: 'cms.module.settings',
     defaultMessage: '设置',
   },
-  traders: {
-    id: 'cms.module.settings.traders',
-    defaultMessage: '进出口收发货人',
+  resources: {
+    id: 'cms.module.settings.resources',
+    defaultMessage: '资源设置',
   },
   brokers: {
     id: 'cms.module.settings.brokers',

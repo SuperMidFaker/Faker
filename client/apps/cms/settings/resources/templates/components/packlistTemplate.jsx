@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Icon, Layout, Collapse, Checkbox, Form, Input } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import ContractDetials from './contractDetails';
+import PackinglistContent from './packlistContent';
 import { formatMsg } from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
@@ -55,10 +55,10 @@ function fetchData({ dispatch, state, params }) {
   { saveTempChange }
 )
 @connectNav({
-  depth: 2,
+  depth: 3,
   moduleName: 'clearance',
 })
-export default class ContractContent extends React.Component {
+export default class PackinglistTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -78,7 +78,7 @@ export default class ContractContent extends React.Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="left" /> <NavLink to="/clearance/settings/doctemplates">{this.msg('contract')}</NavLink>
+                <Icon type="left" /> <NavLink to="/clearance/settings/doctemplates">{this.msg('packingList')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {`${this.props.template.template_name}`}
@@ -88,14 +88,14 @@ export default class ContractContent extends React.Component {
           <div className="left-sider-panel">
             <Collapse accordion defaultActiveKey="header">
               <Panel header={'Header'} key="header">
-                <FormItem label="日期：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-                  <Input value={invData.days_ago} addonBefore="生成合同前" addonAfter="天" onChange={ev => this.handleCheckChange('days_ago', ev.target.value)} />
+                <FormItem label="发票日期：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                  <Input value={invData.days_ago} addonBefore="生成发票前" addonAfter="天" onChange={ev => this.handleCheckChange('days_ago', ev.target.value)} />
                 </FormItem>
               </Panel>
               <Panel header={'Item Table'} key="item">
-                <MSCheckbox field="unit_price_en"
-                  text={this.msg('unitPrice')}
-                  onChange={this.handleCheckChange} checked={invData.unit_price_en}
+                <MSCheckbox field="containerno_en"
+                  text={this.msg('containerNo')}
+                  onChange={this.handleCheckChange} checked={invData.containerno_en}
                 />
                 <MSCheckbox field="eng_name_en"
                   text={this.msg('enGName')}
@@ -121,15 +121,11 @@ export default class ContractContent extends React.Component {
                   text={this.msg('remark')}
                   onChange={this.handleCheckChange} checked={invData.remark_en}
                 />
-                <MSCheckbox field="sign_en"
-                  text={this.msg('sign')}
-                  onChange={this.handleCheckChange} checked={invData.sign_en}
-                />
               </Panel>
             </Collapse>
           </div>
         </Sider>
-        <ContractDetials />
+        <PackinglistContent />
       </Layout>
     );
   }

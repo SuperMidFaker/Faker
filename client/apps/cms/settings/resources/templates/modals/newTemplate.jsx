@@ -52,9 +52,9 @@ export default class InvTemplateModal extends React.Component {
         } else if (formData.docu_type === CMS_DOCU_TYPE.contract) {
           type = 'contract';
         } else if (formData.docu_type === CMS_DOCU_TYPE.packingList) {
-          type = 'packingList';
+          type = 'packinglist';
         }
-        this.context.router.push(`/clearance/settings/doctemplates/${type}/edit/${result.data.id}`);
+        this.context.router.push(`/clearance/settings/resources/templates/${type}/${result.data.id}`);
       }
     });
   }

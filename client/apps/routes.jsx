@@ -53,7 +53,6 @@ import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
-import * as CMSTraders from './cms/settings/traders';
 import * as CMSTradeItem from './cms/classification/tradeitem';
 import * as CMSClassificationHsCode from './cms/classification/hscode';
 import * as CMSClassificationSpecial from './cms/classification/special';
@@ -297,8 +296,8 @@ export default(store, cookie) => {
                 <IndexRoute component={CMSImportManifest.List} />
                 <Route path=":billno" component={CMSImportManifest.Make} />
                 <Route path="view/:billno" component={CMSImportManifest.View} />
-                <Route path="billtemplates/edit/:id" component={CMSImportManifest.TemplateEdit} />
-                <Route path="billtemplates/view/:id" component={CMSImportManifest.TemplateView} />
+                <Route path="rules/edit/:id" component={CMSImportManifest.RuleEdit} />
+                <Route path="rules/view/:id" component={CMSImportManifest.RuleView} />
               </Route>
               <Route path="customs">
                 <IndexRoute component={CMSImportCustoms.DeclList} />
@@ -312,8 +311,8 @@ export default(store, cookie) => {
                 <IndexRoute component={CMSExportManifest.List} />
                 <Route path=":billno" component={CMSExportManifest.Make} />
                 <Route path="view/:billno" component={CMSExportManifest.View} />
-                <Route path="billtemplates/edit/:id" component={CMSExportManifest.TemplateEdit} />
-                <Route path="billtemplates/view/:id" component={CMSExportManifest.TemplateView} />
+                <Route path="rules/edit/:id" component={CMSExportManifest.RuleEdit} />
+                <Route path="rules/view/:id" component={CMSExportManifest.RuleView} />
               </Route>
               <Route path="customs">
                 <IndexRoute component={CMSExportCustoms.DeclList} />
@@ -346,14 +345,15 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="settings">
-              <IndexRedirect to="/clearance/settings/quotetemplates" />
+              <IndexRedirect to="/clearance/settings/resources" />
               <Route path="brokers" component={CMSBrokers.List} />
-              <Route path="traders" component={CMSTraders.List} />
-              <Route path="doctemplates" component={CMSSettings.DocumentTemplates} />
-              <Route path="doctemplates/invoice/edit/:id" component={CMSSettings.InvoiceContent} />
-              <Route path="doctemplates/contract/edit/:id" component={CMSSettings.ContractContent} />
-              <Route path="doctemplates/packingList/edit/:id" component={CMSSettings.PackingListContent} />
               <Route path="preferences" component={CMSSettings.Preferences} />
+              <Route path="resources">
+                <IndexRoute component={CMSSettings.Resources} />
+                <Route path="templates/invoice/:id" component={CMSSettings.InvoiceTemplate} />
+                <Route path="templates/contract/:id" component={CMSSettings.ContractTemplate} />
+                <Route path="templates/packinglist/:id" component={CMSSettings.PackingListTemplate} />
+              </Route>
             </Route>
             <Route path="classification">
               <Route path="tradeitem">

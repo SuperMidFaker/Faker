@@ -61,8 +61,11 @@ export default class Preferences extends Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
+                设置
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
                 偏好设置
-              </Breadcrumb.Item>
+            </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
         <Content className="main-content layout-fixed-width">

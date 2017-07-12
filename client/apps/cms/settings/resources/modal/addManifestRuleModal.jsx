@@ -18,7 +18,7 @@ const RadioGroup = Radio.Group;
   customers: state.crmCustomers.customers,
 }), { toggleBillTempModal, createBillTemplate })
 @Form.create()
-export default class AddTemplateModal extends React.Component {
+export default class AddManifestRuleModal extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,

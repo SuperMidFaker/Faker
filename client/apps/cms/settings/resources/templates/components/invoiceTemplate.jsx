@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Icon, Layout, Collapse, Checkbox, Form, Input } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import PackingListDetials from './packlistDetails';
+import InvoiceContent from './invoiceContent';
 import { formatMsg } from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
@@ -55,10 +55,10 @@ function fetchData({ dispatch, state, params }) {
   { saveTempChange }
 )
 @connectNav({
-  depth: 2,
+  depth: 3,
   moduleName: 'clearance',
 })
-export default class PackingListContent extends React.Component {
+export default class InvoiceTemplate extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -78,7 +78,7 @@ export default class PackingListContent extends React.Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="left" /> <NavLink to="/clearance/settings/doctemplates">{this.msg('packingList')}</NavLink>
+                <Icon type="left" /> <NavLink to="/clearance/settings/doctemplates">{this.msg('invoice')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {`${this.props.template.template_name}`}
@@ -93,9 +93,9 @@ export default class PackingListContent extends React.Component {
                 </FormItem>
               </Panel>
               <Panel header={'Item Table'} key="item">
-                <MSCheckbox field="containerno_en"
-                  text={this.msg('containerNo')}
-                  onChange={this.handleCheckChange} checked={invData.containerno_en}
+                <MSCheckbox field="unit_price_en"
+                  text={this.msg('unitPrice')}
+                  onChange={this.handleCheckChange} checked={invData.unit_price_en}
                 />
                 <MSCheckbox field="eng_name_en"
                   text={this.msg('enGName')}
@@ -125,7 +125,7 @@ export default class PackingListContent extends React.Component {
             </Collapse>
           </div>
         </Sider>
-        <PackingListDetials />
+        <InvoiceContent />
       </Layout>
     );
   }

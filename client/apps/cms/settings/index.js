@@ -1,6 +1,6 @@
 export Preferences from './preferences';
-export QuoteTemplates from './quoteTemplates';
-export DocumentTemplates from './documentTemplates';
-export InvoiceContent from './components/invoiceContent';
-export ContractContent from './components/contractContent';
-export PackingListContent from './components/packlistContent';
+export Resources from './resources/list';
+export InvoiceTemplate from './resources/templates/components/invoiceTemplate';
+export ContractTemplate from './resources/templates/components/contractTemplate';
+export PackingListTemplate from './resources/templates/components/packlistTemplate';
+

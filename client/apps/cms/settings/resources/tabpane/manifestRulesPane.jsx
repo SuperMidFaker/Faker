@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Table, Button, Popconfirm, Tag, message } from 'antd';
+import { Icon, Table, Button, Layout, Popconfirm, Tag, message } from 'antd';
 import NavLink from 'client/components/nav-link';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import AddTemplateModal from './modal/addTemplateModal';
+import AddManifestRuleModal from '../modal/addManifestRuleModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 
+const { Content } = Layout;
 const formatMsg = format(messages);
 
 @injectIntl
@@ -23,7 +24,7 @@ const formatMsg = format(messages);
   { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, loadCustomers }
 )
 
-export default class ManifestTemplateList extends React.Component {
+export default class ManifestRulesPane extends React.Component {
   static PropTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -100,15 +101,15 @@ export default class ManifestTemplateList extends React.Component {
       },
     ];
     return (
-      <div>
+      <Content>
         <div className="toolbar">
           <Button type="primary" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新增</Button>
         </div>
         <div className="panel-body table-panel">
           <Table size="middle" columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
         </div>
-        <AddTemplateModal ietype={this.props.ietype} />
-      </div>
+        <AddManifestRuleModal ietype={this.props.ietype} />
+      </Content>
     );
   }
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import connectNav from 'client/common/decorators/connect-nav';
 import { Card, Form, Layout, Row, Col, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from './message.i18n';
@@ -26,12 +25,9 @@ const { Content } = Layout;
   }),
   { saveTempChange }
 )
-@connectNav({
-  depth: 2,
-  moduleName: 'clearance',
-})
+
 @Form.create()
-export default class PackingListDetials extends React.Component {
+export default class PackingListContent extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     invoice: PropTypes.object.isRequired,
