@@ -99,12 +99,12 @@ export default class SHFTZRelDetail extends Component {
             placement: 'topLeft',
           });
         } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-          notification.success({
+          notification.error({
             message: '操作失败',
             description: '仓库监管系统未配置',
           });
         } else {
-          notification.success({
+          notification.error({
             message: '操作失败',
             description: result.error.message,
           });
@@ -118,7 +118,7 @@ export default class SHFTZRelDetail extends Component {
       if (!result.error) {
         this.props.loadRelDetails(soNo);
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-        notification.success({
+        notification.error({
           message: '操作失败',
           description: '仓库监管系统未配置',
         });

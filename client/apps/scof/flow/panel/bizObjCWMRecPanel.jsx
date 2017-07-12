@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadCwmRecBizParams } from 'common/reducers/scofFlow';
+import { loadCwmBizParams } from 'common/reducers/scofFlow';
 import FlowNodePanel from './compose/flowNodePanel';
 import ReceivingPane from './bizpane/cwmReceivingPane';
 import { formatMsg } from '../message.i18n';
@@ -15,17 +15,17 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     partnerId: state.scofFlow.currentFlow.partner_id,
   }),
-  { loadCwmRecBizParams }
+  { loadCwmBizParams }
 )
 @Form.create()
-export default class FlowCwmNodePanel extends Component {
+export default class FlowCwmRecPanel extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     onFormInit: PropTypes.func.isRequired,
   }
   componentDidMount() {
-    this.props.loadCwmRecBizParams(this.props.tenantId, this.props.partnerId);
+    this.props.loadCwmBizParams(this.props.tenantId, this.props.partnerId);
     this.props.onFormInit(this.props.form);
   }
   msg = formatMsg(this.props.intl)

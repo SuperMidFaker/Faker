@@ -345,7 +345,7 @@ export function fileRelPortionouts(soNo, whseCode) {
         actionTypes.FILE_RPO_SUCCEED,
         actionTypes.FILE_RPO_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/release/file/transfers',
+      endpoint: 'v1/cwm/shftz/release/file/portionouts',
       method: 'post',
       data: { so_no: soNo, whse_code: whseCode },
     },

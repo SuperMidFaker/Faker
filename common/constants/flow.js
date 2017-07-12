@@ -76,6 +76,10 @@ const cwmRecBizObjects = [{
     text: 'onCreated',
     actionText: 'asnCreate',
   }, {
+    key: 'asnReleased',
+    text: 'onAsnReleased',
+    actionText: 'asnRelease',
+  }, {
     key: 'asnInbound',
     text: 'onAsnInbound',
     actionText: 'asnInbound',
@@ -89,7 +93,23 @@ const cwmRecBizObjects = [{
 const cwmShippingBizObjects = [{
   key: 'cwmShipping',
   text: 'cwmShippingOrder',
-  triggers: CMS_DELEGATION_TRIGGERS,
+  triggers: [{
+    key: 'soCreated',
+    text: 'onCreated',
+    actionText: 'soCreate',
+  }, {
+    key: 'soReleased',
+    text: 'onSoReleased',
+    actionText: 'soRelease',
+  }, {
+    key: 'soOutbound',
+    text: 'onSoOutbound',
+    actionText: 'soOutbound',
+  }, {
+    key: 'soFinished',
+    text: 'onSoFinished',
+    actionText: 'soFinish',
+  }],
 }];
 
 exports.NODE_BIZ_OBJECTS = {

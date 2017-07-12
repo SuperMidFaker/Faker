@@ -6,12 +6,14 @@ import InfoItem from 'client/components/InfoItem';
 import { loadOrderNodesTriggers, hideDock, getAsnNo } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmReceive';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
+
 const Step = Steps.Step;
+
 @connect(
   () => ({}),
   { hideDock, showDock, loadOrderNodesTriggers, getAsnNo }
 )
-export default class CWMNodeCard extends React.Component {
+export default class CWMInboundNodeCard extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     children: PropTypes.any,
@@ -48,6 +50,7 @@ export default class CWMNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[0].key]: 0,
     [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[1].key]: 1,
     [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[2].key]: 2,
+    [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[3].key]: 3,
   }
   handlePreview = (uuid) => {
     if (this.state.trigger === -1) {
