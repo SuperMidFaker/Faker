@@ -34,8 +34,11 @@ export default class CWMDashboard extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
+    this.props.switchDefaultWhse(value).then((result) => {
+      if (!result.error) {
+        message.info('当前仓库已切换');
+      }
+    });
   }
   render() {
     const { whses, defaultWhse } = this.props;
