@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Breadcrumb, DatePicker, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -33,6 +33,8 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
+const OptGroup = Select.OptGroup;
+const RangePicker = DatePicker.RangePicker;
 
 @injectIntl
 @connect(
@@ -555,6 +557,20 @@ export default class CustomsList extends Component {
                 >{data.name}</Option>)
                 )}
               </Select>
+              <span />
+              <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+                onChange={this.handleViewChange}
+              >
+                <OptGroup label="常用视图">
+                  <Option value="all">全部委托</Option>
+                  <Option value="my">我负责的委托</Option>
+                </OptGroup>
+              </Select>
+              <span />
+              <RangePicker size="large"
+                ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+                onChange={this.handleDateRangeChange}
+              />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 {bulkBtns}
