@@ -9,11 +9,10 @@ import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
-import ShippingDockPanel from '../dock/shippingDockPanel';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadWaves, showDock, releaseWave, cancelWave } from 'common/reducers/cwmShippingOrder';
+import { loadWaves, releaseWave, cancelWave } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -32,7 +31,7 @@ const Option = Select.Option;
     wave: state.cwmShippingOrder.wave,
     loading: state.cwmShippingOrder.wave.loading,
   }),
-  { loadWaves, switchDefaultWhse, showDock, releaseWave, cancelWave }
+  { loadWaves, switchDefaultWhse, releaseWave, cancelWave }
 )
 @connectNav({
   depth: 2,
@@ -65,10 +64,6 @@ export default class WaveList extends React.Component {
     title: '波次编号',
     width: 180,
     dataIndex: 'wave_no',
-    render: o => (
-      <a onClick={() => this.handlePreview()}>
-        {o}
-      </a>),
   }, {
     title: '波次状态',
     dataIndex: 'status',
@@ -118,9 +113,6 @@ export default class WaveList extends React.Component {
       }
     },
   }]
-  handlePreview = () => {
-    this.props.showDock();
-  }
   handleReleaseWave = (record) => {
     const { loginId } = this.props;
     this.props.releaseWave(record.wave_no, loginId).then((result) => {
@@ -268,7 +260,6 @@ export default class WaveList extends React.Component {
             </div>
           </div>
         </Content>
-        <ShippingDockPanel />
       </QueueAnim>
     );
   }

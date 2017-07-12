@@ -88,9 +88,11 @@ export default class ShippingDockPanel extends React.Component {
         <TabPane tab={this.msg('tabOrder')} key="order">
           <OrderPane soHead={soHead} soBody={soBody} />
         </TabPane>
-        <TabPane tab={this.msg('tabFTZ')} key="ftz">
-          <FTZPane soNo={order.so_no} />
-        </TabPane>
+        {
+          soHead.bonded && <TabPane tab={this.msg('tabFTZ')} key="ftz">
+            <FTZPane soNo={order.so_no} />
+          </TabPane>
+        }
         <TabPane tab={this.msg('tabOutbound')} key="outbound">
           <OutboundPane outboundNo={order.outboundNo} />
         </TabPane>

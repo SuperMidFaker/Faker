@@ -115,6 +115,10 @@ export default class StatsCard extends Component {
       }
       window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
     }
+    if (window.localStorage && type === 'inspected') {
+      window.localStorage.cmsCustomsListFilters =
+      JSON.stringify({ status: 'inspect', acptDate: [startDate, endDate] });
+    }
   }
   handleCurrencyChange = (ev) => {
     const { totVals, totImVals, totExVals } = this.props.statistics;
@@ -227,7 +231,9 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('inspected')}</h4>
             <div className="data">
-              <div className="data-num lg text-error">{inspected}</div>
+              <div className="data-num lg text-error">
+                <Link to="/clearance/customs" onClick={() => this.handleLinkClick('inspected')}>{inspected}</Link>
+              </div>
               <div className="data-extra">
                 {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%
                   <div>{this.msg('inspectedRate')}</div>

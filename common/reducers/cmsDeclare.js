@@ -25,6 +25,9 @@ const initialState = {
   listFilter: {
     status: 'all',
     ietype: 'all',
+    viewStatus: 'all',
+    filterDate: [],
+    acptDate: [],
     declareType: '',
     name: '',
     sortField: '',
