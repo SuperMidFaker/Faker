@@ -10,7 +10,7 @@ import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGrap
   loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
-import { MdIcon, Ikons } from 'client/components/FontIcon';
+import { MdIcon, Ikons, Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
 import BizObjCMSPanel from './panel/bizObjCMSPanel';
@@ -491,8 +491,8 @@ export default class FlowDesigner extends React.Component {
       <RadioButton value="nodeimport"><Tooltip title={`添加${this.msg('flowNodeImport')}节点`}><span><Ikons type="login" /></span></Tooltip></RadioButton>
       <RadioButton value="nodeexport"><Tooltip title={`添加${this.msg('flowNodeExport')}节点`}><span><Ikons type="logout" /></span></Tooltip></RadioButton>
       <RadioButton value="nodetms"><Tooltip title={`添加${this.msg('flowNodeTMS')}节点`}><span><MdIcon type="truck" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodecwmrec"><Tooltip title={`添加${this.msg('flowNodeCWMRec')}节点`}><span><MdIcon type="trending-down" /></span></Tooltip></RadioButton>
-      <RadioButton value="nodecwmship"><Tooltip title={`添加${this.msg('flowNodeCWMShip')}节点`}><span><MdIcon type="trending-up" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodecwmrec"><Tooltip title={`添加${this.msg('flowNodeCWMRec')}节点`}><span><Logixon type="receiving" /></span></Tooltip></RadioButton>
+      <RadioButton value="nodecwmship"><Tooltip title={`添加${this.msg('flowNodeCWMShip')}节点`}><span><Logixon type="shipping" /></span></Tooltip></RadioButton>
       <RadioButton value="nodeterminal"><Tooltip title={`添加${this.msg('flowNodeTerminal')}节点`}><span><MdIcon type="dot-circle" /></span></Tooltip></RadioButton>
     </RadioGroup>
     );
