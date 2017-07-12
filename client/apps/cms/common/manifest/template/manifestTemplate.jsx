@@ -18,6 +18,54 @@ const { Header, Content, Sider } = Layout;
 const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 
+function getFieldInits(formData) {
+  const init = { mergeOpt_arr: [], specialHsSortArr: [] };
+  if (formData) {
+    ['rule_currency', 'rule_orig_country', 'rule_net_wt',
+    ].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : '1';
+    });
+    ['rule_g_name', 'rule_g_unit'].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : '0';
+    });
+    init.rule_gunit_num = formData.rule_gunit_num ? formData.rule_gunit_num : 'g_unit_1';
+    init.rule_element = formData.rule_element ? formData.rule_element : '$g_model';
+    if (formData.merge_byhscode) {
+      init.mergeOpt_arr.push('byHsCode');
+    }
+    if (formData.merge_bygname) {
+      init.mergeOpt_arr.push('byGName');
+    }
+    if (formData.merge_bycurr) {
+      init.mergeOpt_arr.push('byCurr');
+    }
+    if (formData.merge_bycountry) {
+      init.mergeOpt_arr.push('byCountry');
+    }
+    if (formData.merge_bycopgno) {
+      init.mergeOpt_arr.push('byCopGNo');
+    }
+    if (formData.merge_byengno) {
+      init.mergeOpt_arr.push('byEmGNo');
+    }
+    if (formData.split_spl_category) {
+      const splArr = formData.split_spl_category.split(',');
+      splArr.forEach((data) => {
+        const numData = Number(data);
+        init.specialHsSortArr.push(numData);
+      });
+    }
+    ['merge_checked', 'sort_customs'].forEach((fd) => {
+      init[fd] = formData[fd] === 0 ? formData[fd] : 1;
+    });
+    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr', 'set_special_code', 'set_merge_split'].forEach((fd) => {
+      init[fd] = formData[fd] ? formData[fd] : 0;
+    });
+    init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
+  }
+  return init;
+}
+
 @injectIntl
 @connect(
   state => ({
@@ -29,6 +77,7 @@ const TabPane = Tabs.TabPane;
     ietype: state.cmsManifest.template.ietype,
     templateName: state.cmsManifest.template.template_name,
     formData: state.cmsManifest.formData,
+    fieldInits: getFieldInits(state.cmsManifest.formData),
     changeTimes: state.cmsManifest.changeTimes,
     customers: state.crmCustomers.customers.map(tm => ({
       key: tm.id,
@@ -70,10 +119,13 @@ export default class ManifestTemplate extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    const { template } = this.props;
-    const element = Mention.toString(this.props.form.getFieldValue('rule_element'));
-    const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
-    const specialHsSortArr = this.props.form.getFieldValue('split_spl_category');
+    const { template, fieldInits } = this.props;
+    let element = this.props.form.getFieldValue('rule_element') || fieldInits.rule_element;
+    if (typeof element !== 'string') {
+      element = Mention.toString(element);
+    }
+    const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr') || fieldInits.mergeOpt_arr;
+    const specialHsSortArr = this.props.form.getFieldValue('split_spl_category') || fieldInits.specialHsSortArr;
     const mergeObj = { merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0 };
     for (const mergeOpt of mergeOptArr) {
       if (mergeOpt === 'byHsCode') {
@@ -124,7 +176,7 @@ export default class ManifestTemplate extends Component {
     });
   }
   render() {
-    const { form, ietype, templateName, formData, template, operation, customers } = this.props;
+    const { form, ietype, templateName, formData, template, operation, customers, fieldInits } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
@@ -160,10 +212,10 @@ export default class ManifestTemplate extends Component {
                     <HeadRulesPane ietype={ietype} form={form} formData={formData} />
                   </TabPane>
                   <TabPane tab="特殊字段规则" key="importRules">
-                    <ImportRulesPane form={form} formData={formData} />
+                    <ImportRulesPane form={form} formData={fieldInits} />
                   </TabPane>
                   <TabPane tab="归并拆分规则" key="mergeSplitRules">
-                    <MergeSplitRulesPane form={form} formData={formData} />
+                    <MergeSplitRulesPane form={form} formData={fieldInits} />
                   </TabPane>
                 </Tabs>
               </Form>
