@@ -129,7 +129,7 @@ export default class TraderList extends Component {
       <Content>
         <div className="toolbar">
           <PrivilegeCover module="clearance" feature="resources" action="create">
-            <Button type="primary" onClick={() => onAddBtnClicked(type)} icon="plus">新增</Button>
+            <Button type="primary" onClick={() => onAddBtnClicked(type)} icon="plus-circle-o">新增</Button>
           </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">

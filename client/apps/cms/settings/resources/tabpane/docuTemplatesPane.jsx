@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Table, Button, Layout, Menu, Popconfirm, message } from 'antd';
+import { Table, Button, Icon, Layout, Menu, Popconfirm, Popover, Upload, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import withPrivilege from 'client/common/decorators/withPrivilege';
@@ -42,6 +42,7 @@ export default class InvoiceTemplate extends Component {
   }
   state = {
     current: JSON.stringify(this.props.docuType),
+    excelTemplCount: 0,
   }
   componentDidMount() {
     this.handleListLoad(this.props.docuType);
@@ -85,6 +86,13 @@ export default class InvoiceTemplate extends Component {
     });
     this.handleListLoad(parseInt(ev.key, 10));
   }
+  fileList = [{
+    uid: -1,
+    name: 'xxx.png',
+    status: 'done',
+    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+    thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+  }];
   render() {
     const columns = [{
       title: '模板名称',
@@ -109,6 +117,17 @@ export default class InvoiceTemplate extends Component {
           <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a>删除</a></Popconfirm>
         </span>),
     }];
+    const uploadProps = {
+      action: '//jsonplaceholder.typicode.com/posts/',
+      listType: 'text',
+      defaultFileList: [...this.fileList],
+    };
+    const excelTemplPopover = (<div style={{ width: 300 }}>
+      <Upload {...uploadProps}>
+        <Button>
+          <Icon type="upload" /> upload
+        </Button>
+      </Upload></div>);
     return (
       <Layout className="main-wrapper">
         <Sider className="nav-sider">
@@ -124,7 +143,10 @@ export default class InvoiceTemplate extends Component {
         </Sider>
         <Content className="nav-content">
           <div className="nav-content-head">
-            <Button type="primary" onClick={this.handleCreateNew} icon="plus">新增</Button>
+            <Button type="primary" onClick={this.handleCreateNew} icon="plus-circle-o">新增</Button>
+            <Popover placement="bottom" content={excelTemplPopover}>
+              <Button icon="file-excel">Excel数据模板 {this.state.excelTemplCount}</Button>
+            </Popover>
           </div>
           <div className="panel-body table-panel">
             <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
