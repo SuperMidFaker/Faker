@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table, Tag, Tooltip } from 'antd';
-import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn } from 'common/reducers/cwmShFtz';
+import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn,
+  fileCargos, confirmCargos } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import RemoteTable from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
+import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -51,7 +52,14 @@ function fetchData({ dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadProductCargo, switchDefaultWhse, updateCargoRule, syncProdSKUS, updatePortionEn, loadWhse }
+  { loadProductCargo,
+    switchDefaultWhse,
+    updateCargoRule,
+    syncProdSKUS,
+    updatePortionEn,
+    fileCargos,
+    confirmCargos,
+    loadWhse }
 )
 @connectNav({
   depth: 2,
@@ -248,6 +256,22 @@ export default class SHFTZCargoList extends React.Component {
       }
     });
   }
+  handleCargoSend = () => {
+    this.props.fileCargos(this.state.owner.customs_code, this.props.whse.code).then((result) => {
+      if (!result.error) {
+        const filter = { ...this.props.listFilter, status: 'sent' };
+        this.handleCargoLoad(1, filter);
+      }
+    });
+  }
+  handleCargoConfirm = () => {
+    this.props.confirmCargos(this.state.owner.customs_code, this.props.whse.code).then((result) => {
+      if (!result.error) {
+        const filter = { ...this.props.listFilter, status: 'completed' };
+        this.handleCargoLoad(1, filter);
+      }
+    });
+  }
   render() {
     const { cargolist, listFilter, loading, whses, whse } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
@@ -345,6 +369,16 @@ export default class SHFTZCargoList extends React.Component {
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
+                {listFilter.status === 'pending' && !!owner.owner_portion_en && cargolist.totalCount > 0 &&
+                <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoSend} style={{ marginLeft: 20 }}>
+                  发送备案
+                </Button>
+                }
+                {listFilter.status === 'sent' && !!owner.owner_portion_en && cargolist.totalCount > 0 &&
+                <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoConfirm} style={{ marginLeft: 20 }}>
+                  确认备案
+                </Button>
+                }
               </div>
               <div className="panel-body table-panel">
                 <RemoteTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"

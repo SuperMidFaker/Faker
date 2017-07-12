@@ -16,7 +16,7 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    recParams: state.scofFlow.cwmRecParams,
+    recParams: state.scofFlow.cwmParams,
   }),
 )
 export default class CWMReceivingPane extends Component {
@@ -74,7 +74,7 @@ export default class CWMReceivingPane extends Component {
             </Col>
             {
               getFieldValue('bonded') &&
-              <Col sm={24} lg={8} >
+              <Col sm={24} lg={12} >
                 <FormItem label="保税监管方式">
                   {getFieldDecorator('bonded_reg_type', {
                     initialValue: model.bonded_reg_type,

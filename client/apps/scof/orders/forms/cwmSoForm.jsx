@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Form, Row, Col, Card, DatePicker, Input, Select, Radio } from 'antd';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -23,7 +23,7 @@ const RadioGroup = Radio.Group;
   }),
   { setClientForm, loadFlowNodeData }
 )
-export default class CwmReceivingForm extends Component {
+export default class CwmSoForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     index: PropTypes.number.isRequired,
@@ -59,8 +59,8 @@ export default class CwmReceivingForm extends Component {
       this.handleSetClientForm({
         bonded: ev.target.value,
         bonded_reg_type: null,
-        rec_after_decl_days: '',
-        expected_receive_date: null,
+        ship_after_decl_days: '',
+        expected_shipping_date: null,
       });
     }
   }
@@ -81,9 +81,9 @@ export default class CwmReceivingForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="ASN类型">
-              <Select placeholder="ASN类型" value={node.asn_type} onChange={value => this.handleCommonFieldChange('asn_type', value)}>
-                {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+            <FormItem label="SO类型">
+              <Select placeholder="SO类型" value={node.so_type} onChange={value => this.handleCommonFieldChange('so_type', value)}>
+                {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
               </Select>
             </FormItem>
           </Col>
@@ -103,25 +103,25 @@ export default class CwmReceivingForm extends Component {
                 <RadioGroup value={node.bonded_reg_type}
                   onChange={ev => this.handleCommonFieldChange('bonded_reg_type', ev.target.value)}
                 >
-                  {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.text}</RadioButton>)}
+                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.text}</RadioButton>)}
                 </RadioGroup>
               </FormItem>
             </Col>
           }
-          {node.bonded_reg_type === CWM_ASN_BONDED_REGTYPES[0].value &&
+          {node.bonded_reg_type === CWM_SO_BONDED_REGTYPES[0].value &&
           <Col sm={24} lg={8}>
-            <FormItem label="保税入库预期收货日期">
-              <Input addonBefore="晚于申报日期" addonAfter="天" value={node.rec_after_decl_days}
-                onChange={ev => this.handleCommonFieldChange('rec_after_decl_days', ev.target.value)}
+            <FormItem label="保税预期发货日期">
+              <Input addonBefore="晚于申报日期" addonAfter="天" value={node.ship_after_decl_days}
+                onChange={ev => this.handleCommonFieldChange('ship_after_decl_days', ev.target.value)}
               />
             </FormItem>
           </Col>}
-          {node.bonded_reg_type !== CWM_ASN_BONDED_REGTYPES[0].value &&
+          {node.bonded_reg_type !== CWM_SO_BONDED_REGTYPES[0].value &&
           <Col sm={24} lg={8}>
             <FormItem label="预期收货日期">
               <DatePicker format="YYYY/MM/DD" style={{ width: '100%' }}
-                value={node.expect_receive_date && moment(node.expect_receive_date)}
-                onChange={expectDate => this.handleCommonFieldChange('expect_receive_date', expectDate && expectDate.valueOf())}
+                value={node.expect_shipping_date && moment(node.expect_shipping_date)}
+                onChange={expectDate => this.handleCommonFieldChange('expect_shipping_date', expectDate && expectDate.valueOf())}
               />
             </FormItem>
           </Col>
@@ -131,3 +131,4 @@ export default class CwmReceivingForm extends Component {
     );
   }
 }
+

@@ -19,6 +19,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'FILE_RTS', 'FILE_RTS_SUCCEED', 'FILE_RTS_FAIL',
   'FILE_RPO', 'FILE_RPO_SUCCEED', 'FILE_RPO_FAIL',
   'QUERY_POI', 'QUERY_POI_SUCCEED', 'QUERY_POI_FAIL',
+  'FILE_CARGO', 'FILE_CARGO_SUCCEED', 'FILE_CARGO_FAIL',
+  'CONFIRM_CARGO', 'CONFIRM_CARGO_SUCCEED', 'CONFIRM_CARGO_FAIL',
 ]);
 
 const initialState = {
@@ -225,7 +227,7 @@ export function updatePortionEn(whauth) {
       ],
       endpoint: 'v1/cwm/warehouse/owner/portion',
       method: 'post',
-      data: { whauth, enbale: true },
+      data: { whauth, enable: true },
     },
   };
 }
@@ -343,7 +345,7 @@ export function fileRelPortionouts(soNo, whseCode) {
         actionTypes.FILE_RPO_SUCCEED,
         actionTypes.FILE_RPO_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/release/file/transfers',
+      endpoint: 'v1/cwm/shftz/release/file/portionouts',
       method: 'post',
       data: { so_no: soNo, whse_code: whseCode },
     },
@@ -361,6 +363,36 @@ export function queryPortionoutInfos(soNo, whseCode) {
       endpoint: 'v1/cwm/shftz/release/portionouts/query',
       method: 'post',
       data: { so_no: soNo, whse: whseCode },
+    },
+  };
+}
+
+export function fileCargos(ownerCusCode, whse) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILE_CARGO,
+        actionTypes.FILE_CARGO_SUCCEED,
+        actionTypes.FILE_CARGO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/product/file/cargos',
+      method: 'post',
+      data: { owner_cus_code: ownerCusCode, whse },
+    },
+  };
+}
+
+export function confirmCargos(ownerCusCode, whse) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CONFIRM_CARGO,
+        actionTypes.CONFIRM_CARGO_SUCCEED,
+        actionTypes.CONFIRM_CARGO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/product/confirm/cargos',
+      method: 'post',
+      data: { owner_cus_code: ownerCusCode, whse },
     },
   };
 }

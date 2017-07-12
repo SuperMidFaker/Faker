@@ -141,17 +141,17 @@ exports.CWM_SO_TYPES = [{
 }];
 
 exports.CWM_SO_BONDED_REGTYPES = [{
-  value: '1',
+  value: 'normal',
   text: '先报关后出库',
   ftztext: '普通出库',
   tagcolor: 'blue',
 }, {
-  value: '2',
+  value: 'portion',
   text: '先出库后报关',
   ftztext: '分拨出库',
   tagcolor: 'green',
 }, {
-  value: '3',
+  value: 'transfer',
   text: '不报关',
   ftztext: '区内转出',
   tagcolor: 'yellow',

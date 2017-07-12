@@ -625,6 +625,10 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.shipmt.pod',
     defaultMessage: '回单',
   },
+  asnRelease: {
+    id: 'scof.orders.progress.action.asn.release',
+    defaultMessage: '释放',
+  },
   asnInbound: {
     id: 'scof.orders.progress.action.asn.inbound',
     defaultMessage: '收货',
@@ -632,6 +636,18 @@ const messages = defineMessages({
   asnFinish: {
     id: 'scof.orders.progress.action.asn.finished',
     defaultMessage: '入库',
+  },
+  soRelease: {
+    id: 'scof.orders.progress.action.asn.release',
+    defaultMessage: '释放',
+  },
+  soOutbound: {
+    id: 'scof.orders.progress.action.so.outbound',
+    defaultMessage: '出库',
+  },
+  soFinish: {
+    id: 'scof.orders.progress.action.so.finished',
+    defaultMessage: '发货',
   },
   tabOrder: {
     id: 'scof.orders.dock.tab.order',
