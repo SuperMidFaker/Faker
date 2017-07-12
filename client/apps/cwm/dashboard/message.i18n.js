@@ -10,45 +10,65 @@ const messages = defineMessages({
     id: 'cwm.dashboard.stats',
     defaultMessage: '数据统计',
   },
-  totalASN: {
-    id: 'cwm.dashboard.stats.receiving.total.asn',
-    defaultMessage: '收货通知总数',
+  totalInbound: {
+    id: 'cwm.dashboard.stats.inbound.total.asn',
+    defaultMessage: '入库单总数',
   },
   toReceive: {
-    id: 'cwm.dashboard.stats.receiving.to.receive',
-    defaultMessage: '待收货数',
+    id: 'cwm.dashboard.stats.inbound.to.receive',
+    defaultMessage: '待入库数',
   },
   received: {
-    id: 'cwm.dashboard.stats.receiving.received',
-    defaultMessage: '收货完成数',
+    id: 'cwm.dashboard.stats.inbound.received',
+    defaultMessage: '入库完成数',
   },
-  statsShipping: {
-    id: 'cwm.dashboard.stats.shipping',
-    defaultMessage: '发货统计',
-  },
-  totalSO: {
-    id: 'cwm.dashboard.stats.shipping.total.so',
-    defaultMessage: '发货订单总数',
+  totalOutbound: {
+    id: 'cwm.dashboard.stats.outbound.total.so',
+    defaultMessage: '出库单总数',
   },
   toAllocate: {
-    id: 'cwm.dashboard.stats.shipping.to.allocate',
+    id: 'cwm.dashboard.stats.outbound.to.allocate',
     defaultMessage: '待分配数',
   },
   toPick: {
-    id: 'cwm.dashboard.stats.shipping.to.pick',
+    id: 'cwm.dashboard.stats.outbound.to.pick',
     defaultMessage: '待拣货数',
   },
-  pickingCompleted: {
-    id: 'cwm.dashboard.stats.shipping.picking.completed',
-    defaultMessage: '拣货完成数',
+  toShip: {
+    id: 'cwm.dashboard.stats.outbound.to.ship',
+    defaultMessage: '待发货数',
   },
   shippingCompleted: {
-    id: 'cwm.dashboard.stats.shipping.completed',
-    defaultMessage: '发货完成数',
+    id: 'cwm.dashboard.stats.outbound.completed',
+    defaultMessage: '出库完成数',
   },
-  statsTasks: {
-    id: 'cwm.dashboard.stats.tasks',
-    defaultMessage: '作业量统计',
+  tasksTotal: {
+    id: 'cwm.dashboard.stats.tasks.total',
+    defaultMessage: '总量',
+  },
+  tasksCompleted: {
+    id: 'cwm.dashboard.stats.tasks.completed',
+    defaultMessage: '完成量',
+  },
+  receipts: {
+    id: 'cwm.dashboard.stats.tasks.receipts',
+    defaultMessage: '收货',
+  },
+  putaways: {
+    id: 'cwm.dashboard.stats.tasks.putaways',
+    defaultMessage: '上架',
+  },
+  pickings: {
+    id: 'cwm.dashboard.stats.tasks.pickings',
+    defaultMessage: '拣货',
+  },
+  shipments: {
+    id: 'cwm.dashboard.stats.tasks.shipments',
+    defaultMessage: '发货',
+  },
+  replenishments: {
+    id: 'cwm.dashboard.stats.tasks.replenishments',
+    defaultMessage: '补货',
   },
 });
 

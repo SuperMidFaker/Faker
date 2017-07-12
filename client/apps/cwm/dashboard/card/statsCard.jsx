@@ -46,7 +46,7 @@ export default class StatsCard extends Component {
       >
         <Card.Grid style={{ width: '14%' }} className="statistics-columns">
           <div className="statistics-cell">
-            <h4>{this.msg('totalASN')}</h4>
+            <h4>{this.msg('totalInbound')}</h4>
             <div className="data">
               <div className="data-num lg text-emphasis">{statsCard.inbounds}</div>
             </div>
@@ -56,7 +56,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('toReceive')}</h4>
             <div className="data">
-              <div className="data-num lg text-info">{statsCard.creates}</div>
+              <div className="data-num lg text-warning">{statsCard.creates}</div>
             </div>
           </div>
         </Card.Grid>
@@ -70,7 +70,7 @@ export default class StatsCard extends Component {
         </Card.Grid>
         <Card.Grid style={{ width: '14%' }} className="statistics-columns">
           <div className="statistics-cell">
-            <h4>{this.msg('totalSO')}</h4>
+            <h4>{this.msg('totalOutbound')}</h4>
             <div className="data">
               <div className="data-num lg text-emphasis">{statsCard.outbounds}</div>
             </div>
@@ -94,7 +94,7 @@ export default class StatsCard extends Component {
         </Card.Grid>
         <Card.Grid style={{ width: '12%' }} className="statistics-columns">
           <div className="statistics-cell">
-            <h4>{this.msg('pickingCompleted')}</h4>
+            <h4>{this.msg('toShip')}</h4>
             <div className="data">
               <div className="data-num lg text-info">{statsCard.picked}</div>
             </div>
@@ -112,44 +112,53 @@ export default class StatsCard extends Component {
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('receipts')}</h4>
-            <Progress type="dashboard" percent={(statsCard.receipts / statsCard.inboundProducts * 100).toFixed(1)} width={80} />
-            <p>Total: {statsCard.inboundProducts} Items</p>
-            <p>Completed: {statsCard.receipts} Items</p>
+            <div className="chart">
+              <Progress type="dashboard" percent={(statsCard.receipts / statsCard.inboundProducts * 100).toFixed(1)} width={80} />
+              <p>{this.msg('tasksTotal')}: {statsCard.inboundProducts} Items</p>
+              <p>{this.msg('tasksCompleted')}: {statsCard.receipts} Items</p>
+            </div>
           </div>
         </Card.Grid>
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('putaways')}</h4>
-            <Progress type="dashboard" percent={(statsCard.putaways / statsCard.inboundProducts * 100).toFixed(1)} width={80} />
-            <p>Total: {statsCard.inboundProducts} Items</p>
-            <p>Completed: {statsCard.putaways} Items</p>
+            <div className="chart">
+              <Progress type="dashboard" percent={(statsCard.putaways / statsCard.inboundProducts * 100).toFixed(1)} width={80} />
+              <p>{this.msg('tasksTotal')}: {statsCard.inboundProducts} Items</p>
+              <p>{this.msg('tasksCompleted')}: {statsCard.putaways} Items</p>
+            </div>
           </div>
         </Card.Grid>
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('pickings')}</h4>
-            <Progress type="dashboard" percent={(statsCard.pickings / statsCard.outboundDetails * 100).toFixed(1)} width={80} />
-            <p>Total: {statsCard.outboundDetails} Items</p>
-            <p>Completed: {statsCard.pickings} Items</p>
+            <div className="chart">
+              <Progress type="dashboard" percent={(statsCard.pickings / statsCard.outboundDetails * 100).toFixed(1)} width={80} />
+              <p>{this.msg('tasksTotal')}: {statsCard.outboundDetails} Items</p>
+              <p>{this.msg('tasksCompleted')}: {statsCard.pickings} Items</p>
+            </div>
           </div>
         </Card.Grid>
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('shipments')}</h4>
-            <Progress type="dashboard" percent={(statsCard.shipments / statsCard.outboundDetails * 100).toFixed(1)} width={80} />
-            <p>Total: {statsCard.outboundDetails} Items</p>
-            <p>Completed: {statsCard.shipments} Items</p>
+            <div className="chart">
+              <Progress type="dashboard" percent={(statsCard.shipments / statsCard.outboundDetails * 100).toFixed(1)} width={80} />
+              <p>{this.msg('tasksTotal')}: {statsCard.outboundDetails} Items</p>
+              <p>{this.msg('tasksCompleted')}: {statsCard.shipments} Items</p>
+            </div>
           </div>
         </Card.Grid>
         <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('replenishments')}</h4>
-            <Progress type="dashboard" percent={75} width={80} />
-            <p>Total: 561 Items</p>
-            <p>Completed: 165 Items</p>
+            <div className="chart">
+              <Progress type="dashboard" percent={75} width={80} />
+              <p>{this.msg('tasksTotal')}: 561 Items</p>
+              <p>{this.msg('tasksCompleted')}: 165 Items</p>
+            </div>
           </div>
         </Card.Grid>
-
       </Card>
     );
   }
