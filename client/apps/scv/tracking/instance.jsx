@@ -66,7 +66,7 @@ export default class Instance extends Component {
       current: 1,
       sorter: JSON.stringify({
         field: this.state.sorter.field,
-        order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
+        order: this.state.sorter.order === 'ascend' ? 'ASC' : 'DESC',
       }),
       filters: JSON.stringify(this.state.filters),
     });
@@ -156,13 +156,14 @@ export default class Instance extends Component {
       showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination, filters, sorter) => {
+      console.log(sorter);
       this.setState({ sorter });
       const params = {
         pageSize: pagination.pageSize,
         current: pagination.current,
         sorter: {
           field: sorter.field,
-          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
+          order: sorter.order === 'ascend' ? 'ASC' : 'DESC',
         },
       };
       return params;
@@ -177,7 +178,7 @@ export default class Instance extends Component {
       current: 1,
       sorter: JSON.stringify({
         field: this.state.sorter.field,
-        order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
+        order: this.state.sorter.order === 'ascend' ? 'ASC' : 'DESC',
       }),
       filters: JSON.stringify(this.state.filters),
     }).then((result) => {
@@ -204,7 +205,7 @@ export default class Instance extends Component {
       current: 1,
       sorter: JSON.stringify({
         field: this.state.sorter.field,
-        order: this.state.sorter.order === 'descend' ? 'DESC' : 'ASC',
+        order: this.state.sorter.order === 'ascend' ? 'ASC' : 'DESC',
       }),
     });
   }
