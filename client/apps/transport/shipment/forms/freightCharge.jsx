@@ -73,7 +73,7 @@ export default class FreightCharge extends React.Component {
       consignee_city,
       consignee_district,
       consignee_street,
-      transport_mode_id, transport_mode_code,
+      transport_mode_code,
     } = this.props.formData;
     const { goods_type, container: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date } =
       this.props.formhoc.getFieldsValue([
@@ -97,7 +97,6 @@ export default class FreightCharge extends React.Component {
       consignee_district,
       consignee_street,
       goods_type,
-      trans_mode: transport_mode_id,
       transport_mode_code,
       ctn,
       tenant_id: this.props.tenantId,

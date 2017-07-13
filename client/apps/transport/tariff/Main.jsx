@@ -75,11 +75,12 @@ export default class Main extends Component {
   submit = () => {
     const { tariffId, tenantId, tenantName, loginId, formData: { quoteNo, version } } = this.props;
     const editForm = this.props.form.getFieldsValue();
-    const tms = this.props.formParams.transModes.find(tm => tm.id === Number(editForm.transModeCode));
+    const tms = this.props.formParams.transModes.find(tm => tm.mode_code === editForm.transModeCode);
     const forms = {
       ...this.props.formData,
       ...editForm,
-      transMode: tms.mode_code,
+      transMode: tms.mode_name,
+      transModeCode: tms.mode_code,
     };
     forms.id = tariffId;
     forms.tenantId = tenantId;

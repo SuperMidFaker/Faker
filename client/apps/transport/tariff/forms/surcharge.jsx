@@ -24,7 +24,6 @@ const Option = Select.Option;
     loginName: state.account.username,
     tariffId: state.transportTariff.tariffId,
     fees: state.transportTariff.fees,
-    formParams: state.transportTariff.formParams,
     agreement: state.transportTariff.agreement,
   }),
   { updateFee, deleteFee, addFee }
@@ -40,7 +39,6 @@ export default class SurchargeForm extends React.Component {
     fees: PropTypes.array.isRequired,
     updateFee: PropTypes.func.isRequired,
     deleteFee: PropTypes.func.isRequired,
-    formParams: PropTypes.object.isRequired,
     agreement: PropTypes.object.isRequired,
     addFee: PropTypes.func.isRequired,
   }
@@ -85,9 +83,7 @@ export default class SurchargeForm extends React.Component {
         }
       });
     } else {
-      const tms = this.props.formParams.transModes.find(tm => tm.id === Number(this.props.agreement.transModeCode));
-      const transMode = tms.mode_code;
-      this.props.addFee(this.props.tariffId, transMode, row).then((result) => {
+      this.props.addFee(this.props.tariffId, this.props.agreement.transModeCode, row).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }

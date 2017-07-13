@@ -127,7 +127,7 @@ export default class DetailPane extends React.Component {
     const promises = [];
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
-      transport_mode_id, transport_mode_code, goods_type, container: ctn,
+      transport_mode_code, goods_type, container: ctn,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date,
     } = this.props.formData;
     const created = this.props.formData.created_date || Date.now();
@@ -137,7 +137,6 @@ export default class DetailPane extends React.Component {
         consigner_region_code,
         consignee_region_code,
         goods_type,
-        trans_mode: transport_mode_id,
         transport_mode_code,
         ctn,
         tenant_id: this.props.tenantId,
@@ -159,7 +158,6 @@ export default class DetailPane extends React.Component {
         consigner_region_code,
         consignee_region_code,
         goods_type,
-        trans_mode: transport_mode_id,
         transport_mode_code,
         ctn,
         tenant_id: tenantId,
@@ -304,7 +302,7 @@ export default class DetailPane extends React.Component {
       transport_mode: mode.mode_name,
     };
     const msg = `运输模式：${formData.transport_mode} 变更为 ${mode.mode_name}`;
-    this.computeSaleCharge({ trans_mode: mode.id }, form, type, msg);
+    this.computeSaleCharge({ transport_mode_code: mode.mode_code }, form, type, msg);
   }
   handleSaveVehicleType = (value, type = '') => {
     const { formData, vehicleTypes } = this.props;

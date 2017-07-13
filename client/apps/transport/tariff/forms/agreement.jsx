@@ -86,10 +86,7 @@ export default class AgreementForm extends React.Component {
     this.props.changeTariff({ intervals: intervals || [], vehicleTypes: vehicleTypes || [], priceChanged: true });
   }
   modeSelect = (value) => {
-    if (isNaN(value)) {
-      return;
-    }
-    const tms = this.props.formParams.transModes.filter(tm => tm.id === Number(value));
+    const tms = this.props.formParams.transModes.filter(tm => tm.mode_code === value);
     if (tms.length !== 1) {
       return;
     }
@@ -187,13 +184,12 @@ export default class AgreementForm extends React.Component {
               <Col sm={8}>
                 <FormItem label="运输模式" {...formItemLayout}>
                   {getFieldDecorator('transModeCode', {
-                    initialValue: isNaN(formData.transModeCode) ? undefined :
-                        parseInt(formData.transModeCode, 10),
-                    rules: [{ required: true, type: 'number', message: '运输模式必选' }],
+                    initialValue: formData.transModeCode,
+                    rules: [{ required: true, type: 'string', message: '运输模式必选' }],
                   })(<Select onSelect={this.handleModeSelect} disabled={readonly}>
                     {
                       formParams.transModes.map(tm =>
-                        <Option value={tm.id} key={tm.id}>{tm.mode_name}</Option>
+                        <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
                       )
                     }
                   </Select>)}

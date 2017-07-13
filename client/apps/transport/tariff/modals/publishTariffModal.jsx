@@ -65,7 +65,7 @@ export default class PublishTariffModal extends React.Component {
     const tariffFormData = this.props.tariffForm.getFieldsValue();
     const { id } = this.props.agreement;
     const { tenantId, loginName } = this.props;
-    const tms = this.props.formParams.transModes.find(tm => tm.id === Number(tariffFormData.transModeCode));
+    const tms = this.props.formParams.transModes.find(tm => tm.mode_code === tariffFormData.transModeCode);
     this.props.publishTariff({
       tariffId: id,
       loginName,
@@ -73,7 +73,8 @@ export default class PublishTariffModal extends React.Component {
       ...this.props.agreement,
       ...tariffFormData,
       ...formData,
-      transMode: tms.mode_code,
+      transMode: tms.mode_name,
+      transModeCode: tms.mode_code,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
