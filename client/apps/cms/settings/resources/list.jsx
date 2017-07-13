@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -10,6 +11,7 @@ import DocuTemplatesPane from './tabpane/docuTemplatesPane';
 import { formatMsg } from './message.i18n';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { setResTabkey } from 'common/reducers/cmsResources';
 
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
@@ -33,12 +35,15 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     customers: state.partner.partners,
+    tabkey: state.cmsResources.tabkey,
   }),
+  { setResTabkey }
 )
 @Form.create()
 export default class ResourcesList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    tabkey: PropTypes.string.isRequired,
   }
   state = {
     collapsed: false,
@@ -56,6 +61,9 @@ export default class ResourcesList extends Component {
     this.setState({
       customer: record,
     });
+  }
+  handleTabChange = (tabkey) => {
+    this.props.setResTabkey(tabkey);
   }
   msg = formatMsg(this.props.intl)
   render() {
@@ -101,7 +109,7 @@ export default class ResourcesList extends Component {
           </Header>
           <Content className="main-content">
             <div className="page-body tabbed">
-              <Tabs defaultActiveKey="owners">
+              <Tabs activeKey={this.props.tabkey} onChange={this.handleTabChange}>
                 <TabPane tab="收发货人" key="owners">
                   <TradersPane />
                 </TabPane>

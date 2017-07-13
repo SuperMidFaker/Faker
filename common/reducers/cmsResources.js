@@ -6,7 +6,7 @@ const actionTypes = createActionTypes('@@welogix/cms/resources/', [
   'ADD_BUSINESS_UNIT', 'ADD_BUSINESS_UNIT_SUCCEED', 'ADD_BUSINESS_UNIT_FAIL',
   'UPDATE_BUSINESS_UNIT', 'UPDATE_BUSINESS_UNIT_SUCCEED', 'UPDATE_BUSINESS_UNIT_FAIL',
   'DELETE_BUSINESS_UNIT', 'DELETE_BUSINESS_UNIT_SUCCEED', 'DELETE_BUSINESS_UNIT_FAIL',
-  'TOGGLE_BUSINESS_UNIT',
+  'TOGGLE_BUSINESS_UNIT', 'SET_RES_TABKEY',
 ]);
 
 const initialState = {
@@ -17,6 +17,7 @@ const initialState = {
     visible: false,
     businessUnit: {},
   },
+  tabkey: 'owners',
 };
 
 export default function reducer(state = initialState, action) {
@@ -35,6 +36,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TOGGLE_BUSINESS_UNIT: {
       return { ...state, businessUnitModal: { ...state.businessUnitModal, ...action.data } };
     }
+    case actionTypes.SET_RES_TABKEY:
+      return { ...state, tabkey: action.data.key };
     default:
       return state;
   }
@@ -104,5 +107,12 @@ export function toggleBusinessUnitModal(visible, operation, businessUnit = {}) {
   return {
     type: actionTypes.TOGGLE_BUSINESS_UNIT,
     data: { visible, operation, businessUnit },
+  };
+}
+
+export function setResTabkey(key) {
+  return {
+    type: actionTypes.SET_RES_TABKEY,
+    data: { key },
   };
 }
