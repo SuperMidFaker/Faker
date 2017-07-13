@@ -44,7 +44,7 @@ export default class Instance extends Component {
   }
   state = {
     tracking: {},
-    sorter: { field: '', order: '' },
+    sorter: { field: '', order: 'descend' },
     filters: {},
   }
   componentWillMount() {
