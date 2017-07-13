@@ -293,6 +293,10 @@ export default class ReceivingASNList extends React.Component {
       columns = [...columns];
       columns.splice(10, 10);
     }
+    if (!defaultWhse.bonded) {
+      columns = [...columns];
+      columns.splice(9, 1);
+    }
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">

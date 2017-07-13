@@ -254,6 +254,10 @@ export default class ShippingOrderList extends React.Component {
       columns = [...columns];
       columns.splice(-1, 1);
     }
+    if (!defaultWhse.bonded) {
+      columns = [...columns];
+      columns.splice(10, 1);
+    }
     const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadSos(params),
       resolve: result => result.data,

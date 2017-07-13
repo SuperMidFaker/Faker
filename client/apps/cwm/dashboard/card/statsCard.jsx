@@ -16,6 +16,7 @@ const RangePicker = DatePicker.RangePicker;
   state => ({
     tenantId: state.account.tenantId,
     statsCard: state.cwmDashboard.statsCard,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
   { loadStatsCard }
 )
@@ -26,17 +27,19 @@ export default class StatsCard extends Component {
     inboundNo: PropTypes.string.isRequired,
   }
   componentWillMount() {
-    this.props.loadStatsCard();
+    const { defaultWhse, tenantId } = this.props;
+    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code, tenantId);
   }
   onDateChange = (data, dataString) => {
-    this.props.loadStatsCard(dataString[0], dataString[1]);
+    const { defaultWhse, tenantId } = this.props;
+    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code, tenantId);
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { statsCard } = this.props;
     const datePicker = (
       <div>
-        <RangePicker onChange={this.onDateChange}
+        <RangePicker onChange={this.onDateChange} defaultValue={[moment(new Date(), 'YYYY-MM-DD'), moment(new Date(), 'YYYY-MM-DD')]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }} allowClear={false}
         />
       </div>);
@@ -113,7 +116,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('receipts')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={(statsCard.receipts / statsCard.inboundProducts * 100).toFixed(1)} width={80} />
+              <Progress type="dashboard" percent={statsCard.inboundProducts ? (statsCard.receipts / statsCard.inboundProducts * 100).toFixed(1) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.inboundProducts} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.receipts} Items</p>
             </div>
@@ -123,7 +126,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('putaways')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={(statsCard.putaways / statsCard.inboundProducts * 100).toFixed(1)} width={80} />
+              <Progress type="dashboard" percent={statsCard.inboundProducts ? (statsCard.putaways / statsCard.inboundProducts * 100).toFixed(1) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.inboundProducts} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.putaways} Items</p>
             </div>
@@ -133,7 +136,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('pickings')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={(statsCard.pickings / statsCard.outboundDetails * 100).toFixed(1)} width={80} />
+              <Progress type="dashboard" percent={statsCard.outboundDetails ? (statsCard.pickings / statsCard.outboundDetails * 100).toFixed(1) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.outboundDetails} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.pickings} Items</p>
             </div>
@@ -143,7 +146,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('shipments')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={(statsCard.shipments / statsCard.outboundDetails * 100).toFixed(1)} width={80} />
+              <Progress type="dashboard" percent={statsCard.outboundDetails ? (statsCard.shipments / statsCard.outboundDetails * 100).toFixed(1) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.outboundDetails} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.shipments} Items</p>
             </div>

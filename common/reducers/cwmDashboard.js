@@ -33,7 +33,7 @@ export default function reducer(state = initState, action) {
   }
 }
 
-export function loadStatsCard(startDate, endDate) {
+export function loadStatsCard(startDate, endDate, whseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -43,7 +43,7 @@ export function loadStatsCard(startDate, endDate) {
       ],
       endpoint: 'v1/cwm/stats',
       method: 'get',
-      params: { startDate, endDate },
+      params: { startDate, endDate, whseCode, tenantId },
     },
   };
 }
