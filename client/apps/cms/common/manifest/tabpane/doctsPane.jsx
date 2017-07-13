@@ -26,6 +26,7 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     docuDatas: state.cmsInvoice.docuDatas,
     invTemplates: state.cmsInvoice.invTemplates,
+    billMeta: state.cmsManifest.billMeta,
     docu: state.cmsInvoice.docu,
     docuBody: state.cmsInvoice.docuBody,
     trxModes: state.cmsInvoice.params.trxModes.map(tm => ({
@@ -75,7 +76,7 @@ export default class DocuPane extends React.Component {
       document.body.appendChild(script);
     }
     this.props.loadTempParams();
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: [0, 1, 2] });
+    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: [0, 1, 2], partnerId: this.props.billMeta.customerId });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.docuDatas !== this.props.docuDatas) {

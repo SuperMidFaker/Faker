@@ -6,7 +6,7 @@ const actionTypes = createActionTypes('@@welogix/cms/resources/', [
   'ADD_BUSINESS_UNIT', 'ADD_BUSINESS_UNIT_SUCCEED', 'ADD_BUSINESS_UNIT_FAIL',
   'UPDATE_BUSINESS_UNIT', 'UPDATE_BUSINESS_UNIT_SUCCEED', 'UPDATE_BUSINESS_UNIT_FAIL',
   'DELETE_BUSINESS_UNIT', 'DELETE_BUSINESS_UNIT_SUCCEED', 'DELETE_BUSINESS_UNIT_FAIL',
-  'TOGGLE_BUSINESS_UNIT', 'SET_RES_TABKEY',
+  'TOGGLE_BUSINESS_UNIT', 'SET_RES_TABKEY', 'SET_CUSTOMER',
 ]);
 
 const initialState = {
@@ -17,6 +17,7 @@ const initialState = {
     visible: false,
     businessUnit: {},
   },
+  customer: {},
   tabkey: 'owners',
 };
 
@@ -38,6 +39,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.SET_RES_TABKEY:
       return { ...state, tabkey: action.data.key };
+    case actionTypes.SET_CUSTOMER:
+      return { ...state, customer: action.data.customer };
     default:
       return state;
   }
@@ -114,5 +117,12 @@ export function setResTabkey(key) {
   return {
     type: actionTypes.SET_RES_TABKEY,
     data: { key },
+  };
+}
+
+export function setCustomer(customer) {
+  return {
+    type: actionTypes.SET_CUSTOMER,
+    data: { customer },
   };
 }

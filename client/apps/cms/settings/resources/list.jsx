@@ -11,7 +11,7 @@ import DocuTemplatesPane from './tabpane/docuTemplatesPane';
 import { formatMsg } from './message.i18n';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
-import { setResTabkey } from 'common/reducers/cmsResources';
+import { setResTabkey, setCustomer } from 'common/reducers/cmsResources';
 
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
@@ -36,8 +36,9 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     customers: state.partner.partners,
     tabkey: state.cmsResources.tabkey,
+    customer: state.cmsResources.customer,
   }),
-  { setResTabkey }
+  { setResTabkey, setCustomer }
 )
 @Form.create()
 export default class ResourcesList extends Component {
@@ -48,25 +49,22 @@ export default class ResourcesList extends Component {
   state = {
     collapsed: false,
     currentPage: 1,
-    customer: {},
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.customers !== this.props.customers && !this.state.customer.id) {
-      this.setState({
-        customer: nextProps.customers.length === 0 ? {} : nextProps.customers[0],
-      });
+    if (nextProps.customers !== this.props.customers && !this.props.customer.id) {
+      const customer = nextProps.customers.length === 0 ? {} : nextProps.customers[0];
+      this.handleRowClick(customer);
     }
   }
   handleRowClick = (record) => {
-    this.setState({
-      customer: record,
-    });
+    this.props.setCustomer(record);
   }
   handleTabChange = (tabkey) => {
     this.props.setResTabkey(tabkey);
   }
   msg = formatMsg(this.props.intl)
   render() {
+    const { customers, customer } = this.props;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -93,9 +91,9 @@ export default class ResourcesList extends Component {
             <div className="toolbar">
               <Search placeholder={this.msg('searchPlaceholder')} size="large" />
             </div>
-            <Table size="middle" columns={columns} dataSource={this.props.customers} showHeader={false} onRowClick={this.handleRowClick}
+            <Table size="middle" columns={columns} dataSource={customers} showHeader={false} onRowClick={this.handleRowClick}
               pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
-              rowClassName={record => record.id === this.state.customer.id ? 'table-row-selected' : ''} rowKey="code"
+              rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="code"
             />
           </div>
         </Sider>
@@ -103,7 +101,7 @@ export default class ResourcesList extends Component {
           <Header className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.state.customer.name}
+                {customer.name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </Header>
@@ -114,7 +112,7 @@ export default class ResourcesList extends Component {
                   <TradersPane />
                 </TabPane>
                 <TabPane tab="制单规则" key="location">
-                  <ManifestRulesPane customer={this.state.customer} />
+                  <ManifestRulesPane />
                 </TabPane>
                 <TabPane tab="随附单据模板" key="dock">
                   <DocuTemplatesPane />

@@ -20,6 +20,7 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
     billtemplates: state.cmsManifest.billtemplates,
+    customer: state.cmsResources.customer,
   }),
   { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal }
 )

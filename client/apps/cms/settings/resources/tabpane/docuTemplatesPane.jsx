@@ -22,6 +22,7 @@ const { Content, Sider } = Layout;
     loginName: state.account.username,
     invTemplates: state.cmsInvoice.invTemplates,
     docuType: state.cmsInvoice.docuType,
+    customer: state.cmsResources.customer,
   }),
   { toggleInvTempModal, loadInvTemplates, deleteInvTemplate }
 )
@@ -36,6 +37,7 @@ export default class InvoiceTemplate extends Component {
     tenantId: PropTypes.number.isRequired,
     invTemplates: PropTypes.array.isRequired,
     docuType: PropTypes.number.isRequired,
+    customer: PropTypes.object,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -45,14 +47,21 @@ export default class InvoiceTemplate extends Component {
     excelTemplCount: 0,
   }
   componentDidMount() {
-    this.handleListLoad(this.props.docuType);
+    if (this.props.customer.id) {
+      this.handleListLoad(this.props.docuType);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.customer !== this.props.customer) {
+      this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: this.props.docuType, partnerId: nextProps.customer.id });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
   handleListLoad = (type) => {
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: type });
+    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: type, partnerId: this.props.customer.id });
   }
   handleCreateNew = () => {
     this.props.toggleInvTempModal(true);
@@ -112,9 +121,9 @@ export default class InvoiceTemplate extends Component {
       width: 100,
       render: (_, record) => (
         <span>
-          <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
+          <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
           <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a>删除</a></Popconfirm>
+          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a><Icon type="delete" /></a></Popconfirm>
         </span>),
     }];
     const uploadProps = {
@@ -150,7 +159,7 @@ export default class InvoiceTemplate extends Component {
           </div>
           <div className="panel-body table-panel">
             <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
-            <InvTemplateModal />
+            <InvTemplateModal customer={this.props.customer} />
           </div>
         </Content>
       </Layout>
