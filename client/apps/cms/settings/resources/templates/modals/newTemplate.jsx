@@ -26,6 +26,7 @@ export default class InvTemplateModal extends React.Component {
     loginName: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
     docuType: PropTypes.number.isRequired,
+    customer: PropTypes.object,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -39,8 +40,8 @@ export default class InvTemplateModal extends React.Component {
     }
   }
   handleAddNew = (formData) => {
-    const { tenantId, loginName } = this.props;
-    const params = { ...formData, tenant_id: tenantId, modify_name: loginName };
+    const { tenantId, loginName, customer } = this.props;
+    const params = { ...formData, tenant_id: tenantId, modify_name: loginName, customer_name: customer.name, customer_partner_id: customer.id };
     this.props.createInvTemplate(params).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
