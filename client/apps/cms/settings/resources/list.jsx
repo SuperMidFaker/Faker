@@ -2,16 +2,27 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { Layout, Table, Input, Breadcrumb, Tabs, Form } from 'antd';
 import TradersPane from './tabpane/tradersPane';
 import ManifestRulesPane from './tabpane/manifestRulesPane';
 import DocuTemplatesPane from './tabpane/docuTemplatesPane';
 import { formatMsg } from './message.i18n';
+import { loadPartners } from 'common/reducers/partner';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
 
+function fetchData({ state, dispatch }) {
+  return dispatch(loadPartners({
+    tenantId: state.account.tenantId,
+    role: PARTNER_ROLES.CUS,
+    businessType: PARTNER_BUSINESSE_TYPES.clearance,
+  }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connectNav({
   depth: 2,
@@ -21,9 +32,8 @@ const TabPane = Tabs.TabPane;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-
+    customers: state.partner.partners,
   }),
-  { }
 )
 @Form.create()
 export default class ResourcesList extends Component {
@@ -34,18 +44,26 @@ export default class ResourcesList extends Component {
     collapsed: false,
     currentPage: 1,
     customer: {},
-    customerList: [],
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.customers !== this.props.customers && !this.state.customer.id) {
+      this.setState({
+        customer: nextProps.customers.length === 0 ? {} : nextProps.customers[0],
+      });
+    }
+  }
+  handleRowClick = (record) => {
+    this.setState({
+      customer: record,
+    });
+  }
   msg = formatMsg(this.props.intl)
-
   render() {
     const columns = [{
       dataIndex: 'name',
       key: 'name',
       render: o => (<span className="menu-sider-item">{o}</span>),
     }];
-
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
@@ -67,9 +85,9 @@ export default class ResourcesList extends Component {
             <div className="toolbar">
               <Search placeholder={this.msg('searchPlaceholder')} size="large" />
             </div>
-            <Table size="middle" columns={columns} dataSource={this.state.customerList} showHeader={false} onRowClick={this.handleRowClick}
+            <Table size="middle" columns={columns} dataSource={this.props.customers} showHeader={false} onRowClick={this.handleRowClick}
               pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
-              rowClassName={record => record.code === this.state.customer.code ? 'table-row-selected' : ''} rowKey="code"
+              rowClassName={record => record.id === this.state.customer.id ? 'table-row-selected' : ''} rowKey="code"
             />
           </div>
         </Sider>
@@ -88,7 +106,7 @@ export default class ResourcesList extends Component {
                   <TradersPane />
                 </TabPane>
                 <TabPane tab="制单规则" key="location">
-                  <ManifestRulesPane />
+                  <ManifestRulesPane customer={this.state.customer} />
                 </TabPane>
                 <TabPane tab="随附单据模板" key="dock">
                   <DocuTemplatesPane />

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Icon, Table, Button, Layout, Popconfirm, Tag, message } from 'antd';
 import NavLink from 'client/components/nav-link';
 import { loadPartners } from 'common/reducers/partner';
@@ -9,8 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import AddManifestRuleModal from '../modal/addManifestRuleModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
-import { loadCustomers } from 'common/reducers/crmCustomers';
+import { CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 
 const { Content } = Layout;
 const formatMsg = format(messages);
@@ -21,7 +21,7 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     billtemplates: state.cmsManifest.billtemplates,
   }),
-  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, loadCustomers }
+  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal }
 )
 
 export default class ManifestRulesPane extends React.Component {
@@ -29,13 +29,13 @@ export default class ManifestRulesPane extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     billtemplates: PropTypes.array,
+    customer: PropTypes.object,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   componentWillMount() {
     this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: this.props.ietype });
-    this.props.loadCustomers({ tenantId: this.props.tenantId });
   }
   msg = key => formatMsg(this.props.intl, key);
   handleEdit = (record) => {
@@ -53,11 +53,6 @@ export default class ManifestRulesPane extends React.Component {
     });
   }
   handleAddBtnClicked = () => {
-    this.props.loadPartners({
-      tenantId: this.props.tenantId,
-      role: PARTNER_ROLES.CUS,
-      businessType: PARTNER_BUSINESSE_TYPES.clearance,
-    });
     this.props.toggleBillTempModal(true, 'add');
   }
   render() {
@@ -79,8 +74,9 @@ export default class ManifestRulesPane extends React.Component {
         key: 'modify_name',
       }, {
         title: '最后更新时间',
-        dataIndex: 'last_updated_date',
-        key: 'last_updated_date',
+        dataIndex: 'modify_date',
+        key: 'modify_date',
+        render: date => date ? moment(date).format('MM.DD HH:mm') : '-',
       }, {
         title: '操作',
         dataIndex: 'status',
@@ -104,15 +100,16 @@ export default class ManifestRulesPane extends React.Component {
         },
       },
     ];
+    const datas = this.props.billtemplates.filter(tp => tp.customer_partner_id === this.props.customer.id);
     return (
       <Content>
         <div className="toolbar">
           <Button type="primary" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新增</Button>
         </div>
         <div className="panel-body table-panel">
-          <Table size="middle" columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
+          <Table size="middle" columns={columns} dataSource={datas} rowKey="id" />
         </div>
-        <AddManifestRuleModal ietype={this.props.ietype} />
+        <AddManifestRuleModal customer={this.props.customer} />
       </Content>
     );
   }
