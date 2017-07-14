@@ -27,6 +27,7 @@ const CODE_AS_STATE = {
   state => ({
     formRequire: state.cmsManifest.params,
     ietype: state.cmsManifest.template.ietype,
+    template: state.cmsManifest.template,
   }),
   { loadSearchedParam }
 )
@@ -38,6 +39,7 @@ export default class HeadRulesPane extends React.Component {
     formData: PropTypes.object.isRequired,
     formRequire: PropTypes.object.isRequired,
     loadSearchedParam: PropTypes.func.isRequired,
+    template: PropTypes.object.isRequired,
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleSheetSave = (ev) => {
@@ -71,13 +73,14 @@ export default class HeadRulesPane extends React.Component {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
   render() {
-    const { form, formData, formRequire, ietype, intl, ruleRequired } = this.props;
+    const { form, formData, formRequire, ietype, intl, ruleRequired, template } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
       formData,
       required: ruleRequired,
     };
+    const tradesOpt = formRequire.trades.filter(data => data.customer_partner_id === template.customer_partner_id);
     return (
       <div className="pane">
         <div className="pane-content">
@@ -88,7 +91,7 @@ export default class HeadRulesPane extends React.Component {
                   codeField="trade_co" custCodeField="trade_custco" nameField="trade_name"
                   codeRules={[{ required: false }]} nameRules={[{ required: false }]}
                   onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                  {...formProps} options={formRequire.trades}
+                  {...formProps} options={tradesOpt}
                 />
               </Col>
               <Col span="16">
@@ -112,7 +115,7 @@ export default class HeadRulesPane extends React.Component {
                   } codeField="owner_code" custCodeField="owner_custco" nameField="owner_name" intl={intl}
                   codeRules={[{ required: false }]} nameRules={[{ required: false }]}
                   onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                  {...formProps} options={formRequire.owners}
+                  {...formProps} options={tradesOpt}
                 />
               </Col>
               <Transport {...formProps} intl={intl} formRequire={formRequire} />

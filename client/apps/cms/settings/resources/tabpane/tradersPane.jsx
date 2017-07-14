@@ -10,8 +10,8 @@ import TraderModal from '../modal/traderModal';
 
 const { Content } = Layout;
 
-function fetchData({ dispatch, state, cookie }) {
-  return dispatch(loadBusinessUnits(cookie, state.account.tenantId));
+function fetchData({ dispatch, state }) {
+  return dispatch(loadBusinessUnits({ tenantId: state.account.tenantId, customerPartnerId: state.cmsResources.customer.id }));
 }
 
 @connectFetch()(fetchData)
@@ -19,11 +19,13 @@ function fetchData({ dispatch, state, cookie }) {
   loaded: state.cmsResources.loaded,
   businessUnits: state.cmsResources.businessUnits,
   tenantId: state.account.tenantId,
+  customer: state.cmsResources.customer,
 }), { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal })
 export default class TraderList extends Component {
   static propTyps = {
     tenantId: PropTypes.number.isRequired,
     loaded: PropTypes.bool.isRequired,
+    customer: PropTypes.object.isRequired,
     businessUnits: PropTypes.array.isRequired,
     loadBusinessUnits: PropTypes.func.isRequired,
     deleteBusinessUnit: PropTypes.func.isRequired,
@@ -34,8 +36,8 @@ export default class TraderList extends Component {
     searchText: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.loaded) {
-      this.props.loadBusinessUnits(null, nextProps.tenantId);
+    if (!nextProps.loaded || this.props.customer !== nextProps.customer) {
+      this.props.loadBusinessUnits({ tenantId: nextProps.tenantId, customerPartnerId: nextProps.customer.id });
     }
   }
   handleEditBtnClick = (businessUnit) => {
@@ -51,7 +53,7 @@ export default class TraderList extends Component {
     this.setState({ searchText: value });
   }
   render() {
-    const { businessUnits, onAddBtnClicked } = this.props;
+    const { businessUnits } = this.props;
     const { type } = this.state;
     const data = businessUnits.filter(item => item.relation_type === type).filter((item) => {
       if (this.state.searchText) {
@@ -100,24 +102,27 @@ export default class TraderList extends Component {
       },
     }, {
       title: '创建人',
-      dataIndex: 'created_by',
-      key: 'created_by',
+      dataIndex: 'creater_name',
+      key: 'creater_name',
       width: 120,
     }, {
       title: '操作',
-      dataIndex: 'id',
-      width: 80,
+      width: 120,
       key: 'id',
       render: (_, record) => (
         <span>
           <PrivilegeCover module="corp" feature="partners" action="edit">
-            <a onClick={() => this.props.onEditBtnClick(record)}>修改</a>
+            <a onClick={() => this.handleEditBtnClick(record)}>修改</a>
           </PrivilegeCover>
           <span className="ant-divider" />
           <PrivilegeCover module="corp" feature="partners" action="delete">
-            <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(record.id)}>
+            <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.deleteBusinessUnit(record.id)}>
               <a>删除</a>
             </Popconfirm>
+          </PrivilegeCover>
+          <span className="ant-divider" />
+          <PrivilegeCover module="corp" feature="partners" action="edit">
+            <a onClick={() => this.handleRuleBtnClick(record)}>授权</a>
           </PrivilegeCover>
         </span>
         ),
@@ -126,7 +131,7 @@ export default class TraderList extends Component {
       <Content>
         <div className="toolbar">
           <PrivilegeCover module="clearance" feature="resources" action="create">
-            <Button type="primary" onClick={() => onAddBtnClicked(type)} icon="plus-circle-o">新增</Button>
+            <Button type="primary" onClick={() => this.handleAddBtnClick(type)} icon="plus-circle-o">新增</Button>
           </PrivilegeCover>
         </div>
         <div className="panel-body table-panel">
