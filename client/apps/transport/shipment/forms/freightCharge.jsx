@@ -48,8 +48,6 @@ export default class FreightCharge extends React.Component {
     tariffType: 'normal', // normal base all
     baseTariffAvailable: false,
     tariff: {},
-    result: {},
-    params: {},
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleCompute = (tariffType) => {
@@ -181,8 +179,6 @@ export default class FreightCharge extends React.Component {
         this.setState({
           computed: true,
           tariff: result.data.tariff,
-          result: result.data,
-          params: data,
           tariffType,
         });
         // todo 起步价运费公式? pickup mode=1 x数量?
@@ -211,6 +207,9 @@ export default class FreightCharge extends React.Component {
           pickup_checked: true,
           deliver_checked: true,
           transit_time: transitTime,
+
+          total_weight: data.total_weight,
+          total_volume: data.total_volume,
         });
         this.handleTransitChange(transitTime);
       }
@@ -403,8 +402,6 @@ export default class FreightCharge extends React.Component {
       computed: false,
       baseTariffAvailable: false,
       tariff: {},
-      result: {},
-      params: {},
     });
     this.props.formhoc.setFieldsValue({
       freight_charge: undefined,
@@ -415,10 +412,15 @@ export default class FreightCharge extends React.Component {
       distance: undefined,
     });
     this.props.setConsignFields({
-      charge_gradient: undefined,
-      charge_amount: undefined,
+      charge_gradient: null,
+      charge_amount: null,
       pickup_checked: false,
       deliver_checked: false,
+      quote_no: '',
+      unit_ratio: null,
+      miles: null,
+      adjust_coefficient: null,
+      meter: null,
     });
   }
   handleTotalChange = (ev) => {
@@ -427,37 +429,38 @@ export default class FreightCharge extends React.Component {
       freight_charge: ev.target.value,
     });
   }
-  renderTmsTariff = (tariff) => {
-    let text = tariff.quoteNo;
-    const tms = this.props.formRequire.transitModes.find(tm => tm.id === Number(tariff.agreement.transModeCode));
-    const meter = TARIFF_METER_METHODS.find(m => m.value === tariff.agreement.meter);
-    const goodType = GOODS_TYPES.find(m => m.value === tariff.agreement.goodsType);
+  renderTmsTariff = (quoteNo, transModeCode, meter, goodsType) => {
+    let text = quoteNo;
+    const tms = this.props.formRequire.transitModes.find(tm => tm.id === transModeCode);
+    const mt = TARIFF_METER_METHODS.find(m => m.value === meter);
+    const goodType = GOODS_TYPES.find(m => m.value === goodsType);
     if (tms) text = `${text}-${tms.mode_name}`;
-    if (meter) text = `${text}/${meter.text}`;
+    if (mt) text = `${text}/${mt.text}`;
     if (goodType) text = `${text}/${goodType.text}`;
     return text;
   }
   render() {
     const { formhoc, formData } = this.props;
-    const { computed, alert, baseTariffAvailable, tariffType, tariff, result, params } = this.state;
+    const { alert, baseTariffAvailable, tariffType } = this.state;
+    const computed = this.state.computed || (formData.charge_gradient && formData.charge_gradient > 0);
     const dataSource = [{
       key: '公斤',
-      value: params.total_weight ? params.total_weight : '',
+      value: formData.total_weight ? formData.total_weight : '',
     }, {
       key: '立方米',
-      value: params.total_volume ? params.total_volume : '',
+      value: formData.total_volume ? formData.total_volume : '',
     }, {
       key: '公里数',
-      value: result.miles,
+      value: formData.miles,
     }, {
       key: '单位转换系数',
-      value: result.unitRatio,
+      value: formData.unit_ratio,
     }, {
       key: '路线梯度费率',
-      value: result.gradient,
+      value: formData.charge_gradient,
     }, {
       key: '调价系数',
-      value: tariff.agreement ? tariff.agreement.adjustCoefficient : '',
+      value: formData.adjust_coefficient,
     }];
     const title = (<span>{this.msg('freightCharge')} - 销售{tariffType === 'base' ? '基准' : ''}价</span>);
     return (
@@ -486,7 +489,9 @@ export default class FreightCharge extends React.Component {
           />
         }
         <FormItem label="价格协议">
-          <Input readOnly value={tariff && tariff.agreement ? this.renderTmsTariff(tariff) : ''} />
+          <Input readOnly
+            value={computed ? this.renderTmsTariff(formData.quote_no, formData.transport_mode_code, formData.meter, formData.goods_type) : formData.quote_no}
+          />
         </FormItem>
         {
           computed &&
