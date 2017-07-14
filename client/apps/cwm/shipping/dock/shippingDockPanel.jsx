@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Icon, Col, Row, Tabs } from 'antd';
+import { Icon, Col, Row, Tabs, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
-import { hideDock, changeDockTab, getSo } from 'common/reducers/cwmShippingOrder';
+import { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo } from 'common/reducers/cwmShippingOrder';
+import { loadOrderDetail } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpane/orderPane';
@@ -26,8 +27,9 @@ const TabPane = Tabs.TabPane;
     tabKey: state.cwmShippingOrder.dock.tabKey,
     order: state.cwmShippingOrder.dock.order,
     defaultWhse: state.cwmContext.defaultWhse,
+    uuid: state.cwmShippingOrder.dock.order.uuid,
   }),
-  { hideDock, changeDockTab, getSo }
+  { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, loadOrderDetail }
 )
 export default class ShippingDockPanel extends React.Component {
   static propTypes = {
@@ -45,6 +47,7 @@ export default class ShippingDockPanel extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.order.so_no !== this.props.order.so_no || this.state.soBody.length === 0) {
+      this.props.getSoUuid(nextProps.order.so_no);
       this.props.getSo(nextProps.order.so_no).then(
         (result) => {
           if (!result.error) {
@@ -63,6 +66,15 @@ export default class ShippingDockPanel extends React.Component {
   }
   handleClose = () => {
     this.props.hideDock();
+  }
+  goHomeDock = () => {
+    const { uuid } = this.props;
+    this.props.getShipmtOrderNo(uuid).then(
+      (result) => {
+        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+        this.props.hideDock();
+      }
+    );
   }
   renderStatus(status) {
     switch (status) {
@@ -122,12 +134,18 @@ export default class ShippingDockPanel extends React.Component {
         </Col>
       </Row>);
   }
-
+  renderTitle = () => {
+    const { uuid, order } = this.props;
+    const button = uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
+    return (
+      <span>{button}<span>{order.so_no}</span></span>
+    );
+  }
   render() {
-    const { visible, order } = this.props;
+    const { visible } = this.props;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
-        title={order.so_no}
+        title={this.renderTitle()}
         status={this.renderStatus(0)} statusText={this.renderStatusMsg(0)}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}

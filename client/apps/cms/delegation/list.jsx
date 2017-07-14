@@ -27,6 +27,8 @@ import { format } from 'client/common/i18n/helpers';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import OperatorPopover from 'client/common/operatorsPopover';
+import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
+import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -687,6 +689,8 @@ export default class DelegationList extends Component {
           <DelegationDockPanel />
           <OrderDockPanel />
           <ShipmentDockPanel />
+          <ReceiveDockPanel />
+          <ShippingDockPanel />
         </Layout>
         <Sider
           trigger={null}

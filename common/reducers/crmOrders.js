@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'CANCEL_ORDER', 'CANCEL_ORDER_SUCCEED', 'CANCEL_ORDER_FAIL',
   'CLOSE_ORDER', 'CLOSE_ORDER_SUCCEED', 'CLOSE_ORDER_FAIL',
   'GET_ASNNO', 'GET_ASNNO_SUCCEED', 'GET_ASNNO_FAIL',
+  'GET_SONO', 'GET_SONO_SUCCEED', 'GET_SONO_FAIL',
 ]);
 
 const initialState = {
@@ -419,6 +420,21 @@ export function getAsnNo(uuid) {
         actionTypes.GET_ASNNO_FAIL,
       ],
       endpoint: 'v1/cwm/get/asnno',
+      method: 'get',
+      params: { uuid },
+    },
+  };
+}
+
+export function getSoNo(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SONO,
+        actionTypes.GET_SONO_SUCCEED,
+        actionTypes.GET_SONO_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/sono',
       method: 'get',
       params: { uuid },
     },

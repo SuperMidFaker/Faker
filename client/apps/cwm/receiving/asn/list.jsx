@@ -16,6 +16,9 @@ import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { formatMsg } from '../message.i18n';
 import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -350,6 +353,9 @@ export default class ReceivingASNList extends React.Component {
           </div>
         </Content>
         <ReceivingDockPanel />
+        <OrderDockPanel />
+        <DelegationDockPanel />
+        <ShipmentDockPanel />
       </QueueAnim>
     );
   }

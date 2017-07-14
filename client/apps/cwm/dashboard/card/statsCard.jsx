@@ -30,6 +30,12 @@ export default class StatsCard extends Component {
     const { defaultWhse, tenantId } = this.props;
     this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code, tenantId);
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+      const { defaultWhse, tenantId } = nextProps;
+      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code, tenantId);
+    }
+  }
   onDateChange = (data, dataString) => {
     const { defaultWhse, tenantId } = this.props;
     this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code, tenantId);
