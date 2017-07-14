@@ -433,7 +433,7 @@ export function loadScvTrackings(tenantId) {
   };
 }
 
-export function loadTariffsByTransportInfo(partnerId, transitMode, goodsType) {
+export function loadTariffsByTransportInfo(partnerId, transModeCode, goodsType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -444,7 +444,7 @@ export function loadTariffsByTransportInfo(partnerId, transitMode, goodsType) {
       endpoint: 'v1/scof/transport/tariffs/byTransportInfo',
       origin: 'mongo',
       method: 'get',
-      params: { partnerId, transitMode, goodsType },
+      params: { partnerId, transModeCode, goodsType },
     },
   };
 }

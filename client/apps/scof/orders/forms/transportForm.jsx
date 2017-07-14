@@ -117,7 +117,7 @@ export default class TransportForm extends Component {
             remark: '',
             package: '',
             uuid: uuidWithoutDash() });
-          this.props.loadTariffsByTransportInfo(customerPartnerId, transitMode.id, nodedata.goods_type).then((result1) => {
+          this.props.loadTariffsByTransportInfo(customerPartnerId, nodedata.transit_mode, nodedata.goods_type).then((result1) => {
             this.setState({
               tariffs: result1.data || [],
             });
@@ -125,7 +125,7 @@ export default class TransportForm extends Component {
         }
       });
     } else {
-      this.props.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_id, node.goods_type).then((result1) => {
+      this.props.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_code, node.goods_type).then((result1) => {
         this.setState({
           tariffs: result1.data || [],
         });
@@ -136,7 +136,7 @@ export default class TransportForm extends Component {
     if (nextProps.needLoadTariff) {
       const { formData, customerPartnerId } = nextProps;
       const node = formData.node;
-      nextProps.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_id, node.goods_type).then((result1) => {
+      nextProps.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_code, node.goods_type).then((result1) => {
         this.setState({
           tariffs: result1.data || [],
         }, () => {
@@ -148,7 +148,7 @@ export default class TransportForm extends Component {
   handleLoadTariffs = (props) => {
     const { formData, customerPartnerId } = props;
     const node = formData.node;
-    props.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_id, node.goods_type).then((result1) => {
+    props.loadTariffsByTransportInfo(customerPartnerId, node.trs_mode_code, node.goods_type).then((result1) => {
       this.setState({
         tariffs: result1.data || [],
       });
@@ -387,7 +387,7 @@ export default class TransportForm extends Component {
   handleTransmodeChange = (value) => {
     const { formData, customerPartnerId } = this.props;
     const transportMode = this.props.formRequires.transitModes.find(item => item.id === value);
-    this.props.loadTariffsByTransportInfo(customerPartnerId, transportMode.id, formData.node.goods_type).then((result) => {
+    this.props.loadTariffsByTransportInfo(customerPartnerId, transportMode.mode_code, formData.node.goods_type).then((result) => {
       this.setState({ tariffs: result.data });
     });
     if (formData.node.quote_no) {
@@ -486,7 +486,7 @@ export default class TransportForm extends Component {
   handleCommonFieldChange = (filed, value) => {
     if (filed === 'goods_type') {
       const { formData, customerPartnerId } = this.props;
-      this.props.loadTariffsByTransportInfo(customerPartnerId, formData.node.trs_mode_id, value).then((result) => {
+      this.props.loadTariffsByTransportInfo(customerPartnerId, formData.node.trs_mode_code, value).then((result) => {
         this.setState({ tariffs: result.data });
       });
       if (formData.node.quote_no) {
