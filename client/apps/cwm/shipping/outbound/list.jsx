@@ -18,6 +18,9 @@ import { showDock } from 'common/reducers/cwmShippingOrder';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -66,8 +69,8 @@ export default class OutboundList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const filters = { ...this.props.filters, status: nextProps.location.query.status };
-      const whseCode = this.props.defaultWhse.code;
+      const filters = { ...this.props.filters };
+      const whseCode = nextProps.defaultWhse.code;
       this.props.loadOutbounds({
         whseCode,
         tenantId: this.props.tenantId,
@@ -311,6 +314,9 @@ export default class OutboundList extends React.Component {
           </div>
         </Content>
         <ShippingDockPanel />
+        <OrderDockPanel />
+        <DelegationDockPanel />
+        <ShipmentDockPanel />
       </QueueAnim>
     );
   }

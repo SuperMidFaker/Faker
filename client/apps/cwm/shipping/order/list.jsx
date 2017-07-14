@@ -16,6 +16,9 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave } from 'common/reducers/cwmShippingOrder';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -380,6 +383,9 @@ export default class ShippingOrderList extends React.Component {
           </div>
         </Content>
         <ShippingDockPanel />
+        <OrderDockPanel />
+        <DelegationDockPanel />
+        <ShipmentDockPanel />
         <AddToWaveModal reload={this.handleReload} selectedRowKeys={this.state.selectedRowKeys} />
       </QueueAnim>
     );
