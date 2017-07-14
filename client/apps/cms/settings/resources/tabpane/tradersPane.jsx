@@ -33,7 +33,6 @@ export default class TraderList extends Component {
   }
   state = {
     type: 'trade',
-    searchText: '',
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded || this.props.customer !== nextProps.customer) {
@@ -48,9 +47,6 @@ export default class TraderList extends Component {
   }
   handleDeleteBtnClick = (id) => {
     this.props.deleteBusinessUnit(id);
-  }
-  handleSearch = (value) => {
-    this.setState({ searchText: value });
   }
   render() {
     const { businessUnits } = this.props;
