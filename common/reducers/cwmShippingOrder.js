@@ -19,6 +19,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'SHOW_ADD_TO_WAVE', 'HIDE_ADD_TO_WAVE',
   'ADD_TO_WAVE', 'ADD_TO_WAVE_SUCCEED', 'ADD_TO_WAVE_FAIL',
   'LOAD_SHFTZ_RELEASE', 'LOAD_SHFTZ_RELEASE_SUCCEED', 'LOAD_SHFTZ_RELEASE_FAIL',
+  'GET_SO_UUID', 'GET_SO_UUID_SUCCEED', 'GET_SO_UUID_FAIL',
+  'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
 ]);
 
 const initialState = {
@@ -29,6 +31,7 @@ const initialState = {
       so_no: '',
       outboundNo: '',
       status: 0,
+      uuid: '',
     },
   },
   solist: {
@@ -73,6 +76,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: true, ownerCode: action.ownerCode } };
     case actionTypes.HIDE_ADD_TO_WAVE:
       return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: false } };
+    case actionTypes.GET_SO_UUID_SUCCEED:
+      return { ...state, dock: { ...state.dock, order: { ...state.dock.order, uuid: action.result.data.flow_instance_uuid } } };
     default:
       return state;
   }
@@ -336,3 +341,34 @@ export function loadShftzRelease(soNo) {
     },
   };
 }
+
+export function getSoUuid(soNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SO_UUID,
+        actionTypes.GET_SO_UUID_SUCCEED,
+        actionTypes.GET_SO_UUID_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/so/uuid',
+      method: 'get',
+      params: { soNo },
+    },
+  };
+}
+
+export function getShipmtOrderNo(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SHIPMT_ORDERNO,
+        actionTypes.GET_SHIPMT_ORDERNO_SUCCEED,
+        actionTypes.GET_SHIPMT_ORDERNO_FAIL,
+      ],
+      endpoint: 'v1/crm/get/shipmt/order/no',
+      method: 'get',
+      params: { uuid, type: 'outbound' },
+    },
+  };
+}
+

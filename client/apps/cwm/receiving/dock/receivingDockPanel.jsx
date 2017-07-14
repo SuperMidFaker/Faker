@@ -5,7 +5,8 @@ import moment from 'moment';
 import { Icon, Col, Row, Tabs, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
-import { hideDock, changeDockTab, loadAsn } from 'common/reducers/cwmReceive';
+import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid } from 'common/reducers/cwmReceive';
+import { loadOrderDetail } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import ASNPane from './tabpane/asnPane';
@@ -25,8 +26,9 @@ const TabPane = Tabs.TabPane;
     visible: state.cwmReceive.dock.visible,
     tabKey: state.cwmReceive.dock.tabKey,
     asn: state.cwmReceive.dock.asn,
+    uuid: state.cwmReceive.dock.asn.uuid,
   }),
-  { hideDock, changeDockTab, loadAsn }
+  { hideDock, changeDockTab, loadAsn, getInstanceUuid, loadOrderDetail, getAsnUuid }
 )
 export default class ReceivingDockPanel extends React.Component {
   static propTypes = {
@@ -44,6 +46,7 @@ export default class ReceivingDockPanel extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.asn.asn_no !== this.props.asn.asn_no || this.state.asnBody.length === 0) {
+      this.props.getAsnUuid(nextProps.asn.asn_no);
       this.props.loadAsn(nextProps.asn.asn_no).then(
         (result) => {
           if (!result.error) {
@@ -66,6 +69,15 @@ export default class ReceivingDockPanel extends React.Component {
   handleClose = () => {
     this.props.hideDock();
   }
+  goHomeDock = () => {
+    const { uuid } = this.props;
+    this.props.getShipmtOrderNo(uuid).then(
+      (result) => {
+        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+        this.props.hideDock();
+      }
+    );
+  }
   renderStatus(status) {
     switch (status) {
       case CWM_ASN_STATUS.PENDING.value: return 'default';
@@ -83,9 +95,10 @@ export default class ReceivingDockPanel extends React.Component {
     }
   }
   renderTitle = () => {
-    const button = <Button shape="circle" icon="home" onClick={this.goHomeDock} />;
+    const { uuid, asn } = this.props;
+    const button = uuid ? <Button shape="circle" icon="home" onClick={this.goHomeDock} /> : '';
     return (
-      <span>{button}</span>
+      <span>{button}<span>{asn.asn_no}</span></span>
     );
   }
   renderTabs() {
@@ -129,10 +142,10 @@ export default class ReceivingDockPanel extends React.Component {
   }
 
   render() {
-    const { visible, asn } = this.props;
+    const { visible } = this.props;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
-        title={asn.asn_no}
+        title={this.renderTitle()}
         status={this.renderStatus(0)} statusText={this.renderStatusMsg(0)}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}

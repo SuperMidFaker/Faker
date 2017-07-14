@@ -17,6 +17,9 @@ import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { showDock, loadInbounds } from 'common/reducers/cwmReceive';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Strip from 'client/components/Strip';
+import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -64,7 +67,7 @@ export default class ReceivingInboundList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const filters = { ...this.props.filters, status: nextProps.location.query.status };
+      const filters = { ...this.props.filters };
       nextProps.loadInbounds({
         whseCode: nextProps.defaultWhse.code,
         tenantId: nextProps.tenantId,
@@ -287,6 +290,9 @@ export default class ReceivingInboundList extends React.Component {
           </div>
         </Content>
         <ReceivingDockPanel />
+        <OrderDockPanel />
+        <DelegationDockPanel />
+        <ShipmentDockPanel />
       </QueueAnim>
     );
   }

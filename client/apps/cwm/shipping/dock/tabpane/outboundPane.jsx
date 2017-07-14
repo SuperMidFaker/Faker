@@ -36,6 +36,13 @@ export default class InboundPane extends React.Component {
     this.props.loadPackDetails(this.props.outboundNo);
     this.props.loadShipDetails(this.props.outboundNo);
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.outboundNo !== this.props.outboundNo) {
+      this.props.loadPickDetails(nextProps.outboundNo);
+      this.props.loadPackDetails(nextProps.outboundNo);
+      this.props.loadShipDetails(nextProps.outboundNo);
+    }
+  }
   pickColumns = [{
     title: 'SKU',
     dataIndex: 'product_sku',

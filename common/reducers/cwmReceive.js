@@ -32,6 +32,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_ASN_HEAD', 'LOAD_ASN_HEAD_SUCCEED', 'LOAD_ASN_HEAD_FAIL',
   'LOAD_ASN_INBOUNDS', 'LOAD_ASN_INBOUNDS_SUCCEED', 'LOAD_ASN_INBOUNDS_FAIL',
   'LOAD_SHFTZ_ENTRY', 'LOAD_SHFTZ_ENTRY_SUCCEED', 'LOAD_SHFTZ_ENTRY_FAIL',
+  'GET_ASN_UUID', 'GET_ASN_UUID_SUCCEED', 'GET_ASN_UUID_FAIL',
+  'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
 ]);
 
 const initialState = {
@@ -41,6 +43,7 @@ const initialState = {
     asn: {
       asn_no: '',
       status: 0,
+      uuid: '',
     },
   },
   receiveModal: {
@@ -145,6 +148,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.PUTAWAY_BATCH_SUCCEED:
     case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
       return { ...state, inboundReload: true };
+    case actionTypes.GET_ASN_UUID_SUCCEED:
+      return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
     default:
       return state;
   }
@@ -589,6 +594,36 @@ export function loadShftzEntry(asnNo) {
       endpoint: 'v1/cwm/shftz/entry/load',
       method: 'get',
       params: { asnNo },
+    },
+  };
+}
+
+export function getAsnUuid(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_ASN_UUID,
+        actionTypes.GET_ASN_UUID_SUCCEED,
+        actionTypes.GET_ASN_UUID_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/asn/uuid',
+      method: 'get',
+      params: { asnNo },
+    },
+  };
+}
+
+export function getShipmtOrderNo(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SHIPMT_ORDERNO,
+        actionTypes.GET_SHIPMT_ORDERNO_SUCCEED,
+        actionTypes.GET_SHIPMT_ORDERNO_FAIL,
+      ],
+      endpoint: 'v1/crm/get/shipmt/order/no',
+      method: 'get',
+      params: { uuid, type: 'inbound' },
     },
   };
 }

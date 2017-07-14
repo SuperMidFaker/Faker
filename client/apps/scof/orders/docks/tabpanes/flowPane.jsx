@@ -73,7 +73,7 @@ export default class FlowPane extends React.Component {
                 } else {
                   return (
                     <Timeline.Item dot={<MdIcon type="layers" />} key={item.name}>
-                      <CWMOutboundNodeCard uuid={item.uuid} title={item.name} in_degree={item.in_degree} />
+                      <CWMOutboundNodeCard uuid={item.uuid} kind={item.kind} title={item.name} in_degree={item.in_degree} />
                     </Timeline.Item>
                   );
                 }
