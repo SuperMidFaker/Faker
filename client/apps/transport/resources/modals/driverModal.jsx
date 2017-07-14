@@ -82,7 +82,7 @@ export default class DriverModal extends Component {
           <FormItem {...formItemLayout} label="备注">
             {getFieldDecorator('remark', {
               initialValue: driver.remark,
-            })(<Input type="textarea" />)}
+            })(<Input.TextArea />)}
           </FormItem>
         </Form>
       </Modal>

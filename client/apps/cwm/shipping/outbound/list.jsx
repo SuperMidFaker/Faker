@@ -154,7 +154,8 @@ export default class OutboundList extends React.Component {
   }, {
     title: '操作模式',
     dataIndex: 'shipping_mode',
-    width: 150,
+    width: 80,
+    className: 'cell-align-center',
     render: (o) => {
       if (o === 'scan') {
         return (<Tooltip title="扫码发货"><Icon type="scan" /></Tooltip>);
@@ -306,7 +307,7 @@ export default class OutboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1200 }} loading={loading} />
+              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1300 }} loading={loading} />
             </div>
           </div>
         </Content>

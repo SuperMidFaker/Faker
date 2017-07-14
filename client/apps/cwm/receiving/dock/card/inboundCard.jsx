@@ -182,16 +182,14 @@ export default class InboundCard extends Component {
       <Card bodyStyle={{ padding: 0 }}>
         <Collapse bordered={false} defaultActiveKey={['receiveDetails', 'putAwayDetails']}>
           <Panel header={inboundNo} key="receiveDetails" >
-            <Card bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="inbound">
-                <TabPane tab="收货明细" key="inbound">
-                  <Table size="middle" columns={this.inboundColumns} dataSource={inbound} scroll={{ x: 1210 }} />
-                </TabPane>
-                <TabPane tab="上架明细" key="putaway" >
-                  <Table size="middle" columns={this.putawayColumns} dataSource={putaway} scroll={{ x: 1230 }} />
-                </TabPane>
-              </Tabs>
-            </Card>
+            <Tabs defaultActiveKey="inbound">
+              <TabPane tab="收货明细" key="inbound">
+                <Table size="middle" columns={this.inboundColumns} dataSource={inbound} scroll={{ x: 1210 }} />
+              </TabPane>
+              <TabPane tab="上架明细" key="putaway" >
+                <Table size="middle" columns={this.putawayColumns} dataSource={putaway} scroll={{ x: 1230 }} />
+              </TabPane>
+            </Tabs>
           </Panel>
         </Collapse>
       </Card>

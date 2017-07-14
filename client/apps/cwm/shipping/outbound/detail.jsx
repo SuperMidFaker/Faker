@@ -139,7 +139,7 @@ export default class OutboundDetail extends Component {
               {defaultWhse.name}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('outboundAllocating')}
+              {this.msg('shippingOutbound')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.props.params.outboundNo}

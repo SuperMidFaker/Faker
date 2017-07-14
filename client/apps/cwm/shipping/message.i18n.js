@@ -9,6 +9,10 @@ const messages = defineMessages({
     id: 'cwm.shipping.order',
     defaultMessage: '发货订单SO',
   },
+  createSO: {
+    id: 'cwm.shipping.order.create',
+    defaultMessage: '创建发货订单',
+  },
   shippingWave: {
     id: 'cwm.shipping.wave',
     defaultMessage: '波次',

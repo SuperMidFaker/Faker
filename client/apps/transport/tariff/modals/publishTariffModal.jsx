@@ -114,9 +114,8 @@ export default class PublishTariffModal extends React.Component {
           </FormItem>
           <FormItem label="备注" {...formItemLayout}>
             {getFieldDecorator('publishCommit', {
-              rules: [{ required: true, message: '备注必填' }],
             })(
-              <Input type="textarea" />
+              <Input.TextArea />
             )}
           </FormItem>
         </Form>

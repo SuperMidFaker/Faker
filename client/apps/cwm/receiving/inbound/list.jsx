@@ -106,7 +106,7 @@ export default class ReceivingInboundList extends React.Component {
       } else if (o === 3) {
         return (<Badge status="processing" text="上架" />);
       } else if (o === 5) {
-        return (<Badge status="success" text="入库完成" />);
+        return (<Badge status="success" text="已入库" />);
       }
     },
   }, {
@@ -121,7 +121,7 @@ export default class ReceivingInboundList extends React.Component {
   }, {
     title: '操作模式',
     dataIndex: 'rec_mode',
-    width: 100,
+    width: 80,
     className: 'cell-align-center',
     render: (o) => {
       if (o === 'scan') {
@@ -281,7 +281,7 @@ export default class ReceivingInboundList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
+                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} loading={loading}
               />
             </div>
           </div>

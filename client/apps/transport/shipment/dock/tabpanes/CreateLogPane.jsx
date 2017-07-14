@@ -62,7 +62,7 @@ export default class CreateLogPane extends React.Component {
           {getFieldDecorator('message', {
             initialValue: '',
           })(
-            <Input type="textarea" id="control-textarea" rows="5" placeholder="点击添加备注内容" />
+            <Input.TextArea id="control-textarea" rows="5" placeholder="点击添加备注内容" />
           )}
         </Row>
         <Row style={{ marginTop: 20 }}>

@@ -102,7 +102,7 @@ export default class CreateSpecialCharge extends React.Component {
             {getFieldDecorator('remark', {
               initialValue: '',
             })(
-              <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入备注信息" />
+              <Input.TextArea id="control-textarea" rows="5" placeholder="请输入备注信息" />
             )}
           </FormItem>
         </Form>

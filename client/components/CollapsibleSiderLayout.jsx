@@ -52,9 +52,22 @@ export default class CollapsibleSiderLayout extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     this.setOpenSelectedKeys(nextProps.location.pathname);
+    /*
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const menuCollapsedLocal = window.localStorage.getItem('navCollapsed');
+      if (menuCollapsedLocal === null) {
+        window.localStorage.setItem('navCollapsed', this.state.collapsed);
+      } else {
+        this.setState({ collapsed: menuCollapsedLocal });
+      }
+    }*/
   }
   onCollapse = (collapsed) => {
     this.setState({ collapsed });
+    /*
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem('navCollapsed', collapsed);
+    }*/
   }
   setOpenSelectedKeys(path) {
     for (let i = 0; i < this.props.links.length; i++) {

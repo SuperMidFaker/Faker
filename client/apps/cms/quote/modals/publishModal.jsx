@@ -99,7 +99,7 @@ export default class CreateQtModal extends React.Component {
             {getFieldDecorator('publish_commit', {
               rules: [{ required: true, message: '备注必填' }],
             })(
-              <Input type="textarea" row={3} />
+              <Input.TextArea row={3} />
             )}
           </FormItem>
         </Form>

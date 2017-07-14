@@ -109,13 +109,13 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待出货" />);
+        return (<Badge status="default" text="订单接收" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已释放" />);
       } else if (o === 2) {
-        return (<Badge status="warning" text="部分出货" />);
+        return (<Badge status="warning" text="部分发货" />);
       } else if (o === 3) {
-        return (<Badge status="success" text="出货完成" />);
+        return (<Badge status="success" text="发货完成" />);
       }
     },
   }, {
@@ -144,7 +144,7 @@ export default class ShippingOrderList extends React.Component {
     },
   }, {
     title: '操作',
-    width: 120,
+    width: 150,
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
@@ -315,10 +315,13 @@ export default class ShippingOrderList extends React.Component {
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="pending">订单接收</RadioButton>
-            <RadioButton value="inWave">已加入波次计划</RadioButton>
             <RadioButton value="outbound">已释放</RadioButton>
-            <RadioButton value="partial">部分出库</RadioButton>
-            <RadioButton value="completed">订单完成</RadioButton>
+            <RadioButton value="partial">部分发货</RadioButton>
+            <RadioButton value="completed">发货完成</RadioButton>
+          </RadioGroup>
+          <span />
+          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioButton value="inWave">已加入波次计划</RadioButton>
           </RadioGroup>
           <div className="top-bar-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>

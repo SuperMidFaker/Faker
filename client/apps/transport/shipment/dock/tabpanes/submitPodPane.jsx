@@ -107,7 +107,7 @@ export default class SubmitPodPane extends React.Component {
           </RadioGroup>
         </Row>
         <Row style={{ marginTop: 20 }}>
-          <Input type="textarea" placeholder={this.msg('signRemark')}
+          <Input.TextArea placeholder={this.msg('signRemark')}
             rows="5" value={remark} onChange={this.handleFieldChange}
           />
         </Row>

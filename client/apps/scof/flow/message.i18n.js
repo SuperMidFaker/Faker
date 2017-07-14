@@ -302,6 +302,14 @@ const messages = defineMessages({
     id: 'scof.flow.trigger.action.create',
     defaultMessage: '创建业务对象',
   },
+  actionUpdate: {
+    id: 'scof.flow.trigger.action.update',
+    defaultMessage: '更新业务状态',
+  },
+  actionExecute: {
+    id: 'scof.flow.trigger.action.execute',
+    defaultMessage: '执行业务操作',
+  },
   actionNotify: {
     id: 'scof.flow.trigger.action.notify',
     defaultMessage: '发送通知',

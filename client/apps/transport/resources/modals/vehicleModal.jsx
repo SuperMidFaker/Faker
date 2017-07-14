@@ -171,7 +171,7 @@ export default class VehicleModal extends Component {
           <FormItem label="备注" {...formItemLayout}>
             {getFieldDecorator('remark', {
               initialValue: vehicle.remark,
-            })(<Input type="textarea" />)}
+            })(<Input.TextArea />)}
           </FormItem>
         </Form>
       </Modal>

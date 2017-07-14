@@ -77,7 +77,7 @@ export default class EditableCell extends React.Component {
       case 'textarea':
         return (<div className="editable-cell-outer">
           <div className="editable-cell-inner">
-            <Input type="textarea" autosize value={value} onChange={this.handleChange} />
+            <Input.TextArea autosize value={value} onChange={this.handleChange} />
           </div>
           <span className="editable-cell-actions">
             <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />

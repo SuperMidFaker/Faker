@@ -150,14 +150,14 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('g_model', {
                   initialValue: fieldInits.g_model,
                   rules: [{ required: true, message: '规格型号必填' }],
-                })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}
+                })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('element')}>
                 {getFieldDecorator('element', {
                   initialValue: fieldInits.element,
-                })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} disabled />)}
+                })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} disabled />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>

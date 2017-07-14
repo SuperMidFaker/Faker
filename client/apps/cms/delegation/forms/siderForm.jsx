@@ -53,7 +53,7 @@ export default class SiderForm extends Component {
               <FormItem label="备注">
                 {getFieldDecorator('remark', {
                   initialValue: fieldInits.remark,
-                })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 4 }} />)}
+                })(<Input.TextArea autosize={{ minRows: 1, maxRows: 4 }} />)}
               </FormItem>
             </Col>
           </Row>

@@ -68,7 +68,7 @@ export default class RevokejectModal extends React.Component {
       <Modal title={this.msg('revokejectModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Input type="textarea" rows="4" onBlur={this.handleReasonChange} />
+        <Input.TextArea rows="4" onBlur={this.handleReasonChange} />
       </Modal>
     );
   }

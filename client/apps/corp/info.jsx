@@ -187,7 +187,7 @@ export default class CorpInfo extends React.Component {
             </Col>
             <Col sm={24} md={24}>
               <FormItem label={msg('companyAbout')} >
-                {getFieldDecorator('remark', { initialValue: remark })(<Input type="textarea" rows="3" />)}
+                {getFieldDecorator('remark', { initialValue: remark })(<Input.TextArea rows="3" />)}
               </FormItem>
             </Col>
           </Row>

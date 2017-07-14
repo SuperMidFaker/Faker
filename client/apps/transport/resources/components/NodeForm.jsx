@@ -96,7 +96,7 @@ export default class NodeForm extends Component {
           {getFieldDecorator('email')(<Input />)}
         </FormItem>
         <FormItem label="备注:" {...formItemLayout}>
-          {getFieldDecorator('remark')(<Input type="textarea" />)}
+          {getFieldDecorator('remark')(<Input.TextArea />)}
         </FormItem>
         {mode === 'edit' && (
           <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>

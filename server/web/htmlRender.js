@@ -8,14 +8,11 @@ import appWrapped from 'client/common/appWrapped';
 import fetchInitialState from '../util/fetch-initial-state';
 import { version } from '../../package.json';
 import thirdPart from './thirdPart';
-import hotjar from './hotjar';
 
 let trackJs = '';
-let hotjarJs = '';
 let routes;
 if (__PROD__) {
   trackJs = thirdPart;
-  hotjarJs = hotjar;
   routes = require('../../client/apps/routes');
 }
 
@@ -44,7 +41,6 @@ function renderAsHtml(pageCss, pageJs, content) {
     <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.1.14/es5-shim.min.js,es5-shim/4.1.14/es5-sham.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
   <![endif]-->
   ${trackJs}
-  ${hotjarJs}
 </head>
 <body>
   <div id="mount" class="full-container">${content}</div>

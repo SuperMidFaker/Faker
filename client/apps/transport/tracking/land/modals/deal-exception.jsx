@@ -114,7 +114,7 @@ export default class DealException extends React.Component {
               initialValue: '',
               rules: [{ type: 'string', message: '请填写异常原因或解决方案' }],
             })(
-              <Input type="textarea" id="control-textarea" rows="5" placeholder="请填写异常原因或解决方案" />
+              <Input.TextArea id="control-textarea" rows="5" placeholder="请填写异常原因或解决方案" />
             )}
           </FormItem>
 

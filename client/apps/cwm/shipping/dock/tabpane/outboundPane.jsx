@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Card, Table, Button, Tag, Icon } from 'antd';
-import QuantityInput from '../../../common/quantityInput';
 import { loadPickDetails, loadPackDetails, loadShipDetails } from 'common/reducers/cwmOutbound';
 import { } from 'common/constants';
 // import InfoItem from 'client/components/InfoItem';
@@ -60,12 +59,12 @@ export default class InboundPane extends React.Component {
     },
   }, {
     title: '分配数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.alloc_qty / record.sku_pack_qty} pcsQty={record.alloc_qty} disabled />),
+    dataIndex: 'alloc_qty',
+    width: 100,
   }, {
     title: '拣货数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.picked_qty / record.sku_pack_qty} pcsQty={record.picked_qty} disabled />),
+    dataIndex: 'picked_qty',
+    width: 100,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -141,7 +140,7 @@ export default class InboundPane extends React.Component {
   }, {
     title: '装箱数量',
     dataIndex: 'chkpacked_qty',
-    width: 200,
+    width: 100,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -207,7 +206,7 @@ export default class InboundPane extends React.Component {
   }, {
     title: '发货数量',
     dataIndex: 'shipped_qty',
-    width: 200,
+    width: 100,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -251,13 +250,13 @@ export default class InboundPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Collapse bordered={false} defaultActiveKey={'pickDetails'}>
             <Panel header="拣货明细" key="pickDetails" >
-              <Table columns={this.pickColumns} dataSource={pickDetails} scroll={{ x: 1000 }} />
+              <Table size="middle" columns={this.pickColumns} dataSource={pickDetails} scroll={{ x: 1400 }} />
             </Panel>
             <Panel header="装箱明细" key="packDetails" >
-              <Table columns={this.packColumns} dataSource={packDetails} scroll={{ x: 1000 }} />
+              <Table size="middle" columns={this.packColumns} dataSource={packDetails} scroll={{ x: 1400 }} />
             </Panel>
             <Panel header="发货明细" key="shipDetails" >
-              <Table columns={this.shipColumns} dataSource={shipDetails} scroll={{ x: 1000 }} />
+              <Table size="middle" columns={this.shipColumns} dataSource={shipDetails} scroll={{ x: 1400 }} />
             </Panel>
           </Collapse>
         </Card>

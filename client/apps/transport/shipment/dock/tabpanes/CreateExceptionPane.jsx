@@ -131,7 +131,7 @@ export default class CreateExceptionPane extends React.Component {
           {getFieldDecorator('excp_event', {
             initialValue: '',
           })(
-            <Input type="textarea" id="control-textarea" rows="5" placeholder="请输入对异常的描述" />
+            <Input.TextArea id="control-textarea" rows="5" placeholder="请输入对异常的描述" />
           )}
         </Row>
         <Row style={{ marginTop: 20 }}>

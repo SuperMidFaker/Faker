@@ -85,7 +85,7 @@ export default class ShippingDockPanel extends React.Component {
     const { order } = this.props;
     return (
       <Tabs defaultActiveKey="order" onChange={this.handleTabChange}>
-        <TabPane tab={this.msg('tabOrder')} key="order">
+        <TabPane tab={this.msg('shippingOrder')} key="order">
           <OrderPane soHead={soHead} soBody={soBody} />
         </TabPane>
         {
@@ -93,7 +93,7 @@ export default class ShippingDockPanel extends React.Component {
             <FTZPane soNo={order.so_no} />
           </TabPane>
         }
-        <TabPane tab={this.msg('tabOutbound')} key="outbound">
+        <TabPane tab={this.msg('shippingOutbound')} key="outbound">
           <OutboundPane outboundNo={order.outboundNo} />
         </TabPane>
       </Tabs>

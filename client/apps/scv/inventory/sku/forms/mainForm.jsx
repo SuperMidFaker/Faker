@@ -84,7 +84,7 @@ export default class MainForm extends Component {
             <Col sm={24} lg={24}>
               <FormItem label={this.msg('description')}>
                 {getFieldDecorator('product_desc', {
-                })(<Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />)}
+                })(<Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>

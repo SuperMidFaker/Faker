@@ -63,7 +63,7 @@ export default class InfoItem extends React.Component {
     switch (this.props.type) {
       case 'textarea':
         return (
-          <Input type="textarea" autosize defaultValue={value} />
+          <Input.TextArea autosize defaultValue={value} />
         );
       default:
         return (

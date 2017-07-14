@@ -206,14 +206,14 @@ export default class EditBodyForm extends Component {
             <FormItem label={this.msg('gModel')}>
               {getFieldDecorator('g_model', {
                 initialValue: editBody.g_model,
-              })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} />)}
+              })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} />)}
             </FormItem>
           </Col>
           <Col sm={24} lg={24}>
             <FormItem label={this.msg('element')}>
               {getFieldDecorator('element', {
                 initialValue: editBody.element,
-              })(<Input type="textarea" autosize={{ minRows: 1, maxRows: 16 }} disabled />)}
+              })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} disabled />)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>

@@ -43,7 +43,7 @@ export default class SiderForm extends Component {
           <Col sm={24}>
             <FormItem label={this.msg('model')} >
               {getFieldDecorator('model', {
-              })(<Input type="textarea" autosize={{ minRows: 2, maxRows: 6 }} />)}
+              })(<Input.TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
             </FormItem>
           </Col>
         </Row>
