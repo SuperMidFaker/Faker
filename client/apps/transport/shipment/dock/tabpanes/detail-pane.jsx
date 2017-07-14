@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, Button, message, notification } from 'antd';
@@ -75,6 +74,9 @@ export default class DetailPane extends React.Component {
     charges: PropTypes.object.isRequired,
     showChangeActDateModal: PropTypes.func.isRequired,
     loadShipmtCharges: PropTypes.func.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   componentDidMount() {
     this.props.loadForm(null, {
@@ -371,7 +373,7 @@ export default class DetailPane extends React.Component {
     this.props.showChangeActDateModal(true, type);
   }
   render() {
-    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings, charges } = this.props;
+    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings, charges, upstream } = this.props;
     const pckg = packagings.find(item => item.package_code === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
@@ -406,44 +408,47 @@ export default class DetailPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Card
-          bodyStyle={{ padding: 0 }}
+          bodyStyle={{ padding: 16 }}
           title="运单"
-          extra={<span><Link to={`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`}>地图跟踪 <Icon type="environment-o" /></Link></span>}
+          extra={<span>
+            <Button icon="environment-o"
+              onClick={() => this.context.router.push(`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`)}
+            >地图跟踪</Button>
+          </span>}
         >
-          <Card.Grid style={{ width: '40%' }}>
-            <Row>
-              <Col span="12">
-                <InfoItem label="执行者"
-                  field={dispatch.sp_disp_login_name}
-                />
-              </Col>
-              <Col span="12">
-                <InfoItem label="接单时间"
-                  addonBefore={<Icon type="calendar" />}
-                  field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''}
-                />
-              </Col>
-            </Row>
-          </Card.Grid>
-          <Card.Grid style={{ width: '60%' }}>
-            <Row>
-              <Col span="8">
-                <InfoItem label="运输时效"
-                  field={`${shipmt.transit_time}${this.msg('day')}`}
-                />
-              </Col>
-              <Col span="8">
-                <InfoItem label="公里数"
-                  field={charges.revenue.miles}
-                />
-              </Col>
-              <Col span="8">
-                <InfoItem label="基本运费（元）"
-                  field={charges.revenue.total_charge}
-                />
-              </Col>
-            </Row>
-          </Card.Grid>
+          <Row>
+            <Col span="5">
+              <InfoItem label="执行者"
+                addonBefore={<Icon type="customer-service" />}
+                field={upstream.sp_disp_login_name}
+              />
+            </Col>
+            <Col span="5">
+              <InfoItem label="接单时间"
+                addonBefore={<Icon type="calendar" />}
+                field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''}
+              />
+            </Col>
+
+            <Col span="5">
+              <InfoItem label="运输时效"
+                addonBefore={<Icon type="clock-circle-o" />}
+                field={`${shipmt.transit_time}${this.msg('day')}`}
+              />
+            </Col>
+            <Col span="5">
+              <InfoItem label="公里数"
+                addonBefore={<Icon type="flag" />}
+                field={charges.revenue.miles}
+              />
+            </Col>
+            <Col span="4">
+              <InfoItem label="基本运费（元）"
+                addonBefore={<Icon type="pay-circle-o" />}
+                field={charges.revenue.total_charge}
+              />
+            </Col>
+          </Row>
         </Card>
         <Card
           title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')} ${distanceStr}`}
