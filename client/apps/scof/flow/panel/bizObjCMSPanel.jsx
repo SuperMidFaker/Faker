@@ -29,11 +29,22 @@ export default class FlowCmsNodePanel extends Component {
     onFormInit: PropTypes.func.isRequired,
     onNodeActionsChange: PropTypes.func.isRequired,
   }
-  componentDidMount() {
+  componentWillMount() {
     const model = this.props.node.get('model');
-    this.props.loadCmsBizParams(this.props.tenantId, this.props.partnerId, model.kind);
-    this.props.loadCustomerCmsQuotes(this.props.tenantId, this.props.partnerId);
+    this.handleParamsLoad(model, this.props);
+  }
+  componentDidMount() {
     this.props.onFormInit(this.props.form);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.node !== this.props.node) {
+      const model = nextProps.node.get('model');
+      this.handleParamsLoad(model, nextProps);
+    }
+  }
+  handleParamsLoad = (model, nextProps) => {
+    this.props.loadCmsBizParams(nextProps.tenantId, nextProps.partnerId, model.kind);
+    this.props.loadCustomerCmsQuotes(nextProps.tenantId, nextProps.partnerId);
   }
   msg = formatMsg(this.props.intl)
   render() {

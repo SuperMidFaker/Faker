@@ -26,7 +26,7 @@ export function getRowKey(row) {
 
 export function getEndTableVarColumns(agreement, transModes, VEHICLE_TYPES, VEHICLE_LENGTH_TYPES) {
   const columns = [];
-  const tms = transModes.filter(tm => tm.id === parseInt(agreement.transModeCode, 10));
+  const tms = transModes.filter(tm => tm.mode_code === agreement.transModeCode);
   const tmCode = tms.length === 1 ? tms[0].mode_code : null;
   if (tmCode === PRESET_TRANSMODES.ftl) {
     for (let i = 0; i < agreement.intervals.length; i++) {

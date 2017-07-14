@@ -131,9 +131,9 @@ export default class FeesList extends React.Component {
   handleSearchInput = (value) => {
     this.props.changeFeesFilter('searchValue', value);
   }
-  handleShowShipmentAdvanceModal = ({ visible, dispId, shipmtNo, transportModeId, goodsType, type }) => {
+  handleShowShipmentAdvanceModal = ({ visible, dispId, shipmtNo, transModeCode, goodsType, type }) => {
     // todo 取parentDisp sr_tenant_id
-    this.props.showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType, type });
+    this.props.showAdvanceModal({ visible, dispId, shipmtNo, transModeCode, goodsType, type });
   }
   handleShowSpecialChargeModal = (row, dispId, type) => {
     this.props.showSpecialChargeModal({ visible: true, dispId, shipmtNo: row.shipmt_no, spTenantId: row.sp_tenant_id, type });
@@ -185,7 +185,7 @@ export default class FeesList extends React.Component {
                 visible: true,
                 dispId: row.parent_id,
                 shipmtNo: row.shipmt_no,
-                transportModeId: row.transport_mode_id,
+                transModeCode: row.transport_mode_code,
                 goodsType: row.goods_type,
                 type: 1 })}
               >
@@ -283,7 +283,7 @@ export default class FeesList extends React.Component {
                 visible: true,
                 dispId: row.disp_id,
                 shipmtNo: row.shipmt_no,
-                transportModeId: row.transport_mode_id,
+                transModeCode: row.transport_mode_code,
                 goodsType: row.goods_type,
                 type: -1 })}
               >

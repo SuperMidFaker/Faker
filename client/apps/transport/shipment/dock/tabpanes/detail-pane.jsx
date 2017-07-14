@@ -75,6 +75,9 @@ export default class DetailPane extends React.Component {
     showChangeActDateModal: PropTypes.func.isRequired,
     loadShipmtCharges: PropTypes.func.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   componentDidMount() {
     this.props.loadForm(null, {
       tenantId: this.props.tenantId,
@@ -88,6 +91,7 @@ export default class DetailPane extends React.Component {
         tenantId: this.props.tenantId,
         shipmtNo: nextProps.shipmt.shipmt_no,
       });
+      this.props.loadShipmtCharges(nextProps.dispatch.id, this.props.tenantId);
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -127,7 +131,7 @@ export default class DetailPane extends React.Component {
     const promises = [];
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
-      transport_mode_id, transport_mode_code, goods_type, container: ctn,
+      transport_mode_code, goods_type, container: ctn,
       vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date,
     } = this.props.formData;
     const created = this.props.formData.created_date || Date.now();
@@ -137,7 +141,6 @@ export default class DetailPane extends React.Component {
         consigner_region_code,
         consignee_region_code,
         goods_type,
-        trans_mode: transport_mode_id,
         transport_mode_code,
         ctn,
         tenant_id: this.props.tenantId,
@@ -159,7 +162,6 @@ export default class DetailPane extends React.Component {
         consigner_region_code,
         consignee_region_code,
         goods_type,
-        trans_mode: transport_mode_id,
         transport_mode_code,
         ctn,
         tenant_id: tenantId,
@@ -304,7 +306,7 @@ export default class DetailPane extends React.Component {
       transport_mode: mode.mode_name,
     };
     const msg = `运输模式：${formData.transport_mode} 变更为 ${mode.mode_name}`;
-    this.computeSaleCharge({ trans_mode: mode.id }, form, type, msg);
+    this.computeSaleCharge({ transport_mode_code: mode.mode_code }, form, type, msg);
   }
   handleSaveVehicleType = (value, type = '') => {
     const { formData, vehicleTypes } = this.props;
@@ -371,7 +373,7 @@ export default class DetailPane extends React.Component {
     this.props.showChangeActDateModal(true, type);
   }
   render() {
-    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings } = this.props;
+    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings, charges, upstream } = this.props;
     const pckg = packagings.find(item => item.package_code === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
@@ -405,6 +407,49 @@ export default class DetailPane extends React.Component {
     const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
       <div className="pane-content tab-pane">
+        <Card
+          bodyStyle={{ padding: 16 }}
+          title="运单"
+          extra={<span>
+            <Button icon="environment-o"
+              onClick={() => this.context.router.push(`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`)}
+            >地图跟踪</Button>
+          </span>}
+        >
+          <Row>
+            <Col span="5">
+              <InfoItem label="执行者"
+                addonBefore={<Icon type="customer-service" />}
+                field={upstream.sp_disp_login_name}
+              />
+            </Col>
+            <Col span="5">
+              <InfoItem label="接单时间"
+                addonBefore={<Icon type="calendar" />}
+                field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''}
+              />
+            </Col>
+
+            <Col span="5">
+              <InfoItem label="运输时效"
+                addonBefore={<Icon type="clock-circle-o" />}
+                field={`${shipmt.transit_time}${this.msg('day')}`}
+              />
+            </Col>
+            <Col span="5">
+              <InfoItem label="公里数"
+                addonBefore={<Icon type="flag" />}
+                field={charges.revenue.miles}
+              />
+            </Col>
+            <Col span="4">
+              <InfoItem label="基本运费（元）"
+                addonBefore={<Icon type="pay-circle-o" />}
+                field={charges.revenue.total_charge}
+              />
+            </Col>
+          </Row>
+        </Card>
         <Card
           title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')} ${distanceStr}`}
           bodyStyle={{ padding: 16 }}

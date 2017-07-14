@@ -8,7 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import InvTemplateModal from '../templates/modals/newTemplate';
-import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
+import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile } from 'common/reducers/cmsInvoice';
 import { CMS_DOCU_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -22,8 +22,10 @@ const { Content, Sider } = Layout;
     loginName: state.account.username,
     invTemplates: state.cmsInvoice.invTemplates,
     docuType: state.cmsInvoice.docuType,
+    customer: state.cmsResources.customer,
+    tempFile: state.cmsInvoice.tempFile,
   }),
-  { toggleInvTempModal, loadInvTemplates, deleteInvTemplate }
+  { toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile }
 )
 @connectNav({
   depth: 2,
@@ -34,8 +36,11 @@ export default class InvoiceTemplate extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
     invTemplates: PropTypes.array.isRequired,
     docuType: PropTypes.number.isRequired,
+    customer: PropTypes.object.isRequired,
+    tempFile: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -43,16 +48,58 @@ export default class InvoiceTemplate extends Component {
   state = {
     current: JSON.stringify(this.props.docuType),
     excelTemplCount: 0,
+    attachments: [],
   }
-  componentDidMount() {
-    this.handleListLoad(this.props.docuType);
+  componentWillMount() {
+    if (this.props.customer.id) {
+      this.props.loadTempFile({ tenantId: this.props.tenantId, partnerId: this.props.customer.id }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else if (result.data && result.data.id) {
+          this.setState({
+            excelTemplCount: 1,
+            attachments: [{
+              uid: -1,
+              name: result.data.doc_name,
+              url: result.data.url,
+              status: 'done',
+            }],
+          });
+        } else {
+          this.setState({ excelTemplCount: 0, attachments: [] });
+        }
+      });
+      this.handleListLoad(this.props.docuType);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.customer !== this.props.customer) {
+      this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: this.props.docuType, partnerId: nextProps.customer.id });
+      this.props.loadTempFile({ tenantId: this.props.tenantId, partnerId: nextProps.customer.id }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 5);
+        } else if (result.data && result.data.id) {
+          this.setState({
+            excelTemplCount: 1,
+            attachments: [{
+              uid: -1,
+              name: result.data.doc_name,
+              url: result.data.url,
+              status: 'done',
+            }],
+          });
+        } else {
+          this.setState({ excelTemplCount: 0, attachments: [] });
+        }
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleNavigationTo(to, query) {
     this.context.router.push({ pathname: to, query });
   }
   handleListLoad = (type) => {
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: type });
+    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: type, partnerId: this.props.customer.id });
   }
   handleCreateNew = () => {
     this.props.toggleInvTempModal(true);
@@ -86,13 +133,45 @@ export default class InvoiceTemplate extends Component {
     });
     this.handleListLoad(parseInt(ev.key, 10));
   }
-  fileList = [{
-    uid: -1,
-    name: 'xxx.png',
-    status: 'done',
-    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-  }];
+  handleImport = (info) => {
+    if (info.file.status === 'removed') {
+      return;
+    }
+    if (info.file.status === 'uploading') {
+      this.setState({
+        attachments: [...this.state.attachments, info.file],
+      });
+      return;
+    }
+    if (info.file.response.status !== 200) {
+      message.error(info.file.response.msg);
+      return;
+    }
+    const file = info.file;
+    const nextFile = {
+      uid: file.uid,
+      name: file.name,
+      url: file.response.data,
+      status: 'done',
+    };
+    this.setState({
+      attachments: [nextFile],
+    });
+    const params = {
+      fileId: this.props.tempFile.id || -1,
+      doc_name: file.name,
+      url: file.response.data,
+      tenant_id: this.props.tenantId,
+      customer_partner_id: this.props.customer.id,
+      customer_name: this.props.customer.name,
+      creater_login_id: this.props.loginId,
+    };
+    this.props.saveDoctsTempFile(params);
+  }
+  handleRemove = () => {
+    this.setState({ attachments: [], excelTemplCount: 0 });
+    this.props.deleteTempFile({ fileId: this.props.tempFile.id });
+  }
   render() {
     const columns = [{
       title: '模板名称',
@@ -112,18 +191,16 @@ export default class InvoiceTemplate extends Component {
       width: 100,
       render: (_, record) => (
         <span>
-          <a onClick={() => this.handleEdit(record)}>{this.msg('edit')}</a>
+          <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
           <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a>删除</a></Popconfirm>
+          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a><Icon type="delete" /></a></Popconfirm>
         </span>),
     }];
-    const uploadProps = {
-      action: '//jsonplaceholder.typicode.com/posts/',
-      listType: 'text',
-      defaultFileList: [...this.fileList],
-    };
     const excelTemplPopover = (<div style={{ width: 300 }}>
-      <Upload {...uploadProps}>
+      <Upload listType="text" fileList={this.state.attachments} accept=".xls,.xlsx,.xlsm"
+        onRemove={this.handleRemove} onChange={this.handleImport}
+        action={`${API_ROOTS.default}v1/upload/img/`} withCredentials
+      >
         <Button>
           <Icon type="upload" /> upload
         </Button>
@@ -144,13 +221,13 @@ export default class InvoiceTemplate extends Component {
         <Content className="nav-content">
           <div className="nav-content-head">
             <Button type="primary" onClick={this.handleCreateNew} icon="plus-circle-o">新增</Button>
-            <Popover placement="bottom" content={excelTemplPopover}>
+            <Popover placement="bottom" content={excelTemplPopover} trigger="click">
               <Button icon="file-excel">Excel数据模板 {this.state.excelTemplCount}</Button>
             </Popover>
           </div>
           <div className="panel-body table-panel">
             <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
-            <InvTemplateModal />
+            <InvTemplateModal customer={this.props.customer} />
           </div>
         </Content>
       </Layout>

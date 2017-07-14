@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -12,7 +11,6 @@ import { loadRatesSources } from 'common/reducers/transportTariff';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-
 
 @injectIntl
 @connect(

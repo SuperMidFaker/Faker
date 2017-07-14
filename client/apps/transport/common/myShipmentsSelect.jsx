@@ -30,11 +30,14 @@ export default class MyShipmentsSelect extends React.Component {
     }
   }
   saveFieldsValue = (fieldsValue) => {
-    if (window.localStorage) {
-      const fv = { ...JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue), ...fieldsValue };
-      window.localStorage.tmsAdvancedSearchFieldsValue = JSON.stringify(fv);
-      this.setState({ fieldsValue: fv });
+    let fv;
+    if (window.localStorage && window.localStorage.tmsAdvancedSearchFieldsValue) {
+      fv = { ...JSON.parse(window.localStorage.tmsAdvancedSearchFieldsValue), ...fieldsValue };
+    } else {
+      fv = fieldsValue;
     }
+    window.localStorage.tmsAdvancedSearchFieldsValue = JSON.stringify(fv);
+    this.setState({ fieldsValue: fv });
   }
 
   handleChange = (value) => {

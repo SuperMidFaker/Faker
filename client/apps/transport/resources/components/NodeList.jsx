@@ -43,6 +43,7 @@ export default function NodeList(props) {
       title: '关联方',
       dataIndex: 'ref_partner_name',
       key: 'ref_partner_name',
+      filters: props.partners.map(item => ({ text: item.partner_code ? `${item.partner_code} | ${item.name}` : item.name, value: item.partner_id })),
       render: (col, row) => {
         if (row.ref_partner_id === -1) return '公用';
         return col;
@@ -146,7 +147,7 @@ export default function NodeList(props) {
                 </PrivilegeCover>
               </div>
               <div className="panel-body table-panel">
-                <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} />
+                <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} onChange={props.handleTableChange} />
                 <NodeModal />
               </div>
             </Content>
@@ -165,4 +166,6 @@ NodeList.propsTypes = {
   onAddNoteBtnClick: PropTypes.func.isRequired,   // 新建按钮点击后执行的回调函数
   onSearch: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
+  partners: PropTypes.array.isRequired,
+  handleTableChange: PropTypes.func.isRequired,
 };

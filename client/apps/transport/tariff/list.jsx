@@ -273,7 +273,7 @@ export default class TariffList extends React.Component {
       width: 220,
       render: (col, row) => {
         let text = '';
-        const tms = formParams.transModes.find(tm => tm.id === Number(row.transModeCode));
+        const tms = formParams.transModes.find(tm => tm.mode_code === row.transModeCode);
         const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
         const goodType = GOODS_TYPES.find(m => m.value === row.goodsType);
         if (tms) text = tms.mode_name;
@@ -416,7 +416,7 @@ export default class TariffList extends React.Component {
         width: 220,
         render: (col, row) => {
           let text = '';
-          const tms = formParams.transModes.find(tm => tm.id === Number(row.transModeCode));
+          const tms = formParams.transModes.find(tm => tm.mode_code === row.transModeCode);
           const meter = TARIFF_METER_METHODS.find(m => m.value === row.meter);
           const goodType = GOODS_TYPES.find(m => m.value === row.goodsType);
           if (tms) text = tms.mode_name;

@@ -179,7 +179,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_HEAD_NETWT_SUCCEED:
       return { ...state, billHead: action.result.data }; // gross_wt float is string TODO
     case actionTypes.LOAD_CUSTOMS_DECL:
-      return { ...state, customsDeclLoading: true, billMeta: initialState.billMeta };
+      return { ...state, customsDeclLoading: true, billMeta: { ...state.billMeta, ...initialState.billMeta } };
     case actionTypes.LOAD_CUSTOMS_DECL_FAILED:
       return { ...state, customsDeclLoading: false };
     case actionTypes.LOAD_CUSTOMS_DECL_SUCCEED:
@@ -187,7 +187,7 @@ export default function reducer(state = initialState, action) {
         entryHead: action.result.data.head,
         entryBodies: action.result.data.hbodies,
         billDetails: action.result.data.billDetails,
-        billMeta: action.result.data.meta,
+        billMeta: { ...state.billMeta, ...action.result.data.meta },
         customsDeclLoading: false };
     case actionTypes.LOAD_PARAMS_SUCCEED: {
       const retParams = action.result.data;
@@ -303,7 +303,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_EDIT_BODY_MODAL:
       return { ...state, editBodyVisible: action.data };
     case actionTypes.LOAD_BILL_META_SUCCEED:
-      return { ...state, billMeta: action.result.data.meta };
+      return { ...state, billMeta: { ...state.billMeta, ...action.result.data.meta } };
     case actionTypes.CHANGE_TEMP_INFO_SUCCEED:
       return { ...state, template: { ...state.template, ...action.data.change } };
     default:

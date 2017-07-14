@@ -131,7 +131,7 @@ export default class AddLineModal extends React.Component {
       >
         <Row>
           <FormItem label={this.msg('quoteNo')}>
-            <Input disabled defaultValue={this.renderTmsTariff(tariff)} />
+            <Input disabled value={this.renderTmsTariff(tariff)} />
           </FormItem>
         </Row>
         <Card>

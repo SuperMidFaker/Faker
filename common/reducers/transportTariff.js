@@ -469,7 +469,7 @@ export function delRateEnd(rateId, id) {
   };
 }
 
-export function addFee(tariffId, transMode, fee) {
+export function addFee(tariffId, transModeCode, fee) {
   return {
     [CLIENT_API]: {
       types: [
@@ -479,7 +479,7 @@ export function addFee(tariffId, transMode, fee) {
       ],
       endpoint: 'v1/transport/tariff/fee/add',
       method: 'post',
-      data: { tariffId, transMode, fee },
+      data: { tariffId, transModeCode, fee },
       origin: 'mongo',
     },
   };

@@ -128,7 +128,7 @@ export default class ChargePanel extends React.Component {
         visible: true,
         dispId,
         shipmtNo: shipmt.shipmt_no,
-        transportModeId: shipmt.transport_mode_id,
+        transModeCode: shipmt.transport_mode_code,
         goodsType: shipmt.goods_type,
         type: 1,
       });
@@ -152,7 +152,7 @@ export default class ChargePanel extends React.Component {
         visible: true,
         dispId,
         shipmtNo: shipmt.shipmt_no,
-        transportModeId: shipmt.transport_mode_id,
+        transModeCode: shipmt.transport_mode_code,
         goodsType: shipmt.goods_type,
         type: -1,
       });

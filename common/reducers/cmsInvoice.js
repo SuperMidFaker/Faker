@@ -14,6 +14,9 @@ const actionTypes = createActionTypes('@@welogix/cms/invoice/', [
   'SAVE_DOCU_CHANGE', 'SAVE_DOCU_CHANGE_SUCCEED', 'SAVE_DOCU_CHANGE_FAIL',
   'UPDATE_DOCU_TEMPLATE', 'UPDATE_DOCU_TEMPLATE_SUCCEED', 'UPDATE_DOCU_TEMPLATE_FAIL',
   'SET_DOCU',
+  'LOAD_TEMPLATE_FILE', 'LOAD_TEMPLATE_FILE_SUCCEED', 'LOAD_TEMPLATE_FILE_FAIL',
+  'SAVE_TEMPLATE_FILE', 'SAVE_TEMPLATE_FILE_SUCCEED', 'SAVE_TEMPLATE_FILE_FAIL',
+  'DELETE_TEMPLATE_FILE', 'DELETE_TEMPLATE_FILE_SUCCEED', 'DELETE_TEMPLATE_FILE_FAIL',
 ]);
 
 const initialState = {
@@ -31,6 +34,7 @@ const initialState = {
   docuType: 0,
   docuDatas: [],
   docuBody: [],
+  tempFile: { doc_name: '', url: '' },
 };
 
 export default function reducer(state = initialState, action) {
@@ -53,6 +57,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, docu: action.data };
     case actionTypes.UPDATE_DOCU_TEMPLATE_SUCCEED:
       return { ...state, docu: { ...state.docu, ...action.result.data } };
+    case actionTypes.LOAD_TEMPLATE_FILE_SUCCEED:
+      return { ...state, tempFile: { ...initialState.tempFile, ...action.result.data } };
+    case actionTypes.DELETE_TEMPLATE_FILE_SUCCEED:
+      return { ...state, tempFile: initialState.tempFile };
     default:
       return state;
   }
@@ -218,6 +226,51 @@ export function updateDocuTemplate(data) {
         actionTypes.UPDATE_DOCU_TEMPLATE_FAIL,
       ],
       endpoint: 'v1/cms/mainfest/document/template/update',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function saveDoctsTempFile(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_TEMPLATE_FILE,
+        actionTypes.SAVE_TEMPLATE_FILE_SUCCEED,
+        actionTypes.SAVE_TEMPLATE_FILE_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/template/file/save',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadTempFile(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TEMPLATE_FILE,
+        actionTypes.LOAD_TEMPLATE_FILE_SUCCEED,
+        actionTypes.LOAD_TEMPLATE_FILE_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/template/file/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function deleteTempFile(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_TEMPLATE_FILE,
+        actionTypes.DELETE_TEMPLATE_FILE_SUCCEED,
+        actionTypes.DELETE_TEMPLATE_FILE_FAIL,
+      ],
+      endpoint: 'v1/cms/invoice/template/file/delete',
       method: 'post',
       data,
     },
