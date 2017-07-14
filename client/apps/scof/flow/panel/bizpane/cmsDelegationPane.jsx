@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
+import { loadEpList } from 'common/reducers/scofFlow';
 
 const FormItem = Form.Item;
 const Panel = Collapse.Panel;
@@ -14,16 +15,33 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     bizDelegation: state.scofFlow.cmsParams.bizDelegation,
     cmsQuotes: state.scofFlow.cmsQuotes,
   }),
+  { loadEpList }
 )
 export default class CMSDelegationPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
   }
+  componentWillMount() {
+    this.queryEpList(this.props.tenantId, this.props.model.customs_partner_id, this.props.bizDelegation.customsBrokers);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.bizDelegation !== this.props.bizDelegation) {
+      this.queryEpList(nextProps.tenantId, nextProps.model.customs_partner_id, nextProps.bizDelegation.customsBrokers);
+    }
+  }
   msg = formatMsg(this.props.intl)
+  handleCustomsChange = (customsPid) => {
+    this.queryEpList(this.props.tenantId, customsPid, this.props.bizDelegation.customsBrokers);
+  }
+  queryEpList = (tenantId, customsPid, customsBrokers) => {
+    const customs = customsBrokers.filter(cb => cb.partner_id === customsPid)[0];
+    this.props.loadEpList(tenantId, customs && customs.customs_code);
+  }
   render() {
     const { form: { getFieldDecorator }, onNodeActionsChange, model,
       bizDelegation: { declPorts, customsBrokers, ciqBrokers }, cmsQuotes } = this.props;
@@ -73,6 +91,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('customsBroker')}>
                 {getFieldDecorator('customs_partner_id', {
                   initialValue: model.customs_partner_id,
+                  onChange: this.handleCustomsChange,
                 })(<Select allowClear>
                   {
                     customsBrokers.map(cb =>

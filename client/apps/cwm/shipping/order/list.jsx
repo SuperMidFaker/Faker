@@ -157,6 +157,9 @@ export default class ShippingOrderList extends React.Component {
       }
     },
   }]
+  handleEntryReg = (row) => {
+    this.context.router.push(`/cwm/supervision/shftz/release/${row.so_no}`);
+  }
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
   }

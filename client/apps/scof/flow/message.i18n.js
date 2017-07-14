@@ -130,6 +130,14 @@ const messages = defineMessages({
     id: 'scof.flow.biz.cms.manifest.template',
     defaultMessage: '清单模板',
   },
+  customsDeclType: {
+    id: 'scof.flow.biz.cms.customs.decl.type',
+    defaultMessage: '单证类型',
+  },
+  customsEasipass: {
+    id: 'scof.flow.biz.cms.customs.easipass',
+    defaultMessage: 'EDI EP',
+  },
   consigner: {
     id: 'scof.flow.biz.tms.consigner',
     defaultMessage: '发货人',

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Collapse, Form, Row, Col, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { CMS_DECL_TYPE } from 'common/constants';
+import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
@@ -14,7 +14,7 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
+    eplist: state.scofFlow.eplist,
   })
 )
 export default class CMSCustomsDeclPane extends Component {
@@ -22,34 +22,37 @@ export default class CMSCustomsDeclPane extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
   }
-  state = {
-    easipassList: [],
-  }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, model, onNodeActionsChange } = this.props;
+    const { form: { getFieldDecorator }, model, eplist, onNodeActionsChange } = this.props;
+    let cmsDeclTypes = [];
+    if (model.kind === 'import') {
+      cmsDeclTypes = CMS_IMPORT_DECL_TYPE;
+    } else if (model.kind === 'export') {
+      cmsDeclTypes = CMS_EXPORT_DECL_TYPE;
+    }
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('declType')}>
-                {getFieldDecorator('dec_type', {
-                  initialValue: model.dec_type,
+              <FormItem label={this.msg('customsDeclType')}>
+                {getFieldDecorator('ep_dec_type', {
+                  initialValue: model.ep_dec_type,
                 })(<Select allowClear>
                   {
-                    CMS_DECL_TYPE.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))
+                    cmsDeclTypes.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))
                   }
                 </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('easipass')}>
-                {getFieldDecorator('easipass', {
-                  initialValue: model.easipass,
+              <FormItem label={this.msg('customsEasipass')}>
+                {getFieldDecorator('ep_app_uuid', {
+                  initialValue: model.ep_app_uuid,
                 })(<Select allowClear>
                   {
-                    this.state.easipassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
+                    eplist.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
                   }
                 </Select>)}
               </FormItem>

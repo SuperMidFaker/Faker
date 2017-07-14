@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/scof/flow/', [
   'OPEN_ADD_TRIGGER_MODAL', 'CLOSE_ADD_TRIGGER_MODAL',
   'LOAD_FLOWLIST', 'LOAD_FLOWLIST_SUCCEED', 'LOAD_FLOWLIST_FAIL',
   'LOAD_CMSBIZPARAMS', 'LOAD_CMSBIZPARAMS_SUCCEED', 'LOAD_CMSBIZPARAMS_FAIL',
+  'LOAD_EPLIST', 'LOAD_EPLIST_SUCCEED', 'LOAD_EPLIST_FAIL',
   'LOAD_TMSBIZPARAMS', 'LOAD_TMSBIZPARAMS_SUCCEED', 'LOAD_TMSBIZPARAMS_FAIL',
   'LOAD_CWMBIZPARAMS', 'LOAD_CWMBIZPARAMS_SUCCEED', 'LOAD_CWMBIZPARAMS_FAIL',
   'LOAD_CUSTOMERQUOTES', 'LOAD_CUSTOMERQUOTES_SUCCEED', 'LOAD_CUSTOMERQUOTES_FAIL',
@@ -61,6 +62,7 @@ const initialState = {
     quotes: [],
     bizManifest: { trades: [], agents: [], templates: [] },
   },
+  eplist: [],
   cmsQuotes: [],
   tmsParams: { consigners: [], consignees: [], transitModes: [], packagings: [] },
   cwmParams: { whses: [] },
@@ -98,6 +100,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, visibleTriggerModal: false };
     case actionTypes.LOAD_CMSBIZPARAMS_SUCCEED:
       return { ...state, cmsParams: { ...state.cmsParams, ...action.result.data } };
+    case actionTypes.LOAD_EPLIST_SUCCEED:
+      return { ...state, eplist: action.result.data };
     case actionTypes.LOAD_CUSTOMERQUOTES_SUCCEED:
       return { ...state, cmsQuotes: action.result.data };
     case actionTypes.LOAD_TMSBIZPARAMS_SUCCEED:
@@ -298,6 +302,21 @@ export function loadCmsBizParams(tenantId, partnerId, ietype) {
       endpoint: 'v1/scof/flow/cms/params',
       method: 'get',
       params: { tenantId, partnerId, ietype },
+    },
+  };
+}
+
+export function loadEpList(tenantId, agentCustCo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EPLIST,
+        actionTypes.LOAD_EPLIST_SUCCEED,
+        actionTypes.LOAD_EPLIST_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/easipassList',
+      method: 'get',
+      params: { tenantId, agentCustCo },
     },
   };
 }

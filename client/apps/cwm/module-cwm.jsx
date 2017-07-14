@@ -106,6 +106,19 @@ export default class ModuleCWM extends React.Component {
       },
       ],
     });
+    if (this.props.whse.bonded) {
+      linkMenus.push({
+        single: false,
+        key: 'cwm-ftz',
+        icon: 'logixon icon-customs',
+        text: formatMsg(intl, 'supervision'),
+        sublinks: [{
+          key: 'cwm-ftz-0',
+          path: '/cwm/supervision/shftz',
+          text: formatMsg(intl, 'supervisionSHFTZ'),
+        }],
+      });
+    }
     linkMenus.push({
       single: false,
       key: 'cwm-5',
@@ -147,19 +160,6 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'templates'),
       }],
     });
-    if (this.props.whse.bonded) {
-      linkMenus.splice(4, 0, {
-        single: false,
-        key: 'cwm-ftz',
-        icon: 'logixon icon-customs',
-        text: formatMsg(intl, 'supervision'),
-        sublinks: [{
-          key: 'cwm-ftz-0',
-          path: '/cwm/supervision/shftz',
-          text: formatMsg(intl, 'supervisionSHFTZ'),
-        }],
-      });
-    }
     this.setState({ linkMenus });
     if (!this.props.whse.code && typeof window !== 'undefined') {
       let defaultWhse = this.props.whses.length > 0 ? this.props.whses[0].code : null;
