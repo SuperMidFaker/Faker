@@ -322,7 +322,7 @@ export default class DelegationPane extends React.Component {
                     case 'exchange':
                       return (
                         <Timeline.Item dot={<Icon type="retweet" />} key={activity.id}>
-                          <ActivityEditCard title="换单" createdDate={activity.created_date} leftLabel="海运单号"
+                          <ActivityEditCard title="换单" createdDate={activity.oper_date} leftLabel="海运单号"
                             leftValue={delegation.swb_no} rightLabel="提货单号" rightValue={delegation.bl_wb_no}
                             onSave={this.handleBlNoExchange}
                           />
@@ -339,7 +339,7 @@ export default class DelegationPane extends React.Component {
                       }
                       return (<Timeline.Item dot={<Icon type="exception" />} color="red" key={activity.id}>
                         <Card title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
-                          <small className="timestamp">{moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</small></span>}
+                          <small className="timestamp">{moment(activity.oper_date).format('YYYY-MM-DD HH:mm')}</small></span>}
                           extra={<span className="toolbar-right">
                             {inspect !== INSPECT_STATUS.finish &&
                             <Tooltip title="标记查验通过" placement="left">
@@ -381,7 +381,7 @@ export default class DelegationPane extends React.Component {
                       const certText = CERTS.filter(ct => ct.value === certKey)[0].text;
                       return (
                         <Timeline.Item dot={<Icon type="addfile" />} key={activity.id}>
-                          <ActivityEditCard title="办证" createdDate={activity.created_date} leftLabel="办证类别"
+                          <ActivityEditCard title="办证" createdDate={activity.oper_date} leftLabel="办证类别"
                             leftValue={certText} rightLabel="型号数量" rightValue={certQty}
                             onSave={this.handleSaveCert} field={certKey}
                           />
@@ -391,7 +391,7 @@ export default class DelegationPane extends React.Component {
                     default: {
                       const descObj = ACTIVITY_DESC_MAP[activity.type];
                       return (<Timeline.Item dot={<Icon type={descObj.icon} />} key={activity.id}>
-                        <p>{descObj.text} {moment(activity.created_date).format('YYYY-MM-DD HH:mm')}</p>
+                        <p>{descObj.text} {moment(activity.oper_date).format('YYYY-MM-DD HH:mm')}</p>
                         <p>{activity.oper_name} {activity.oper_tenant_name}</p>
                       </Timeline.Item>);
                     }
