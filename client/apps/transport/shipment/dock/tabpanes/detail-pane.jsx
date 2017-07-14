@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, Button, message, notification } from 'antd';
@@ -88,6 +89,7 @@ export default class DetailPane extends React.Component {
         tenantId: this.props.tenantId,
         shipmtNo: nextProps.shipmt.shipmt_no,
       });
+      this.props.loadShipmtCharges(nextProps.dispatch.id, this.props.tenantId);
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -369,7 +371,7 @@ export default class DetailPane extends React.Component {
     this.props.showChangeActDateModal(true, type);
   }
   render() {
-    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings } = this.props;
+    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings, charges } = this.props;
     const pckg = packagings.find(item => item.package_code === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
@@ -403,6 +405,46 @@ export default class DetailPane extends React.Component {
     const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
       <div className="pane-content tab-pane">
+        <Card
+          bodyStyle={{ padding: 0 }}
+          title="运单"
+          extra={<span><Link to={`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`}>地图跟踪 <Icon type="environment-o" /></Link></span>}
+        >
+          <Card.Grid style={{ width: '40%' }}>
+            <Row>
+              <Col span="12">
+                <InfoItem label="执行者"
+                  field={dispatch.sp_disp_login_name}
+                />
+              </Col>
+              <Col span="12">
+                <InfoItem label="接单时间"
+                  addonBefore={<Icon type="calendar" />}
+                  field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''}
+                />
+              </Col>
+            </Row>
+          </Card.Grid>
+          <Card.Grid style={{ width: '60%' }}>
+            <Row>
+              <Col span="8">
+                <InfoItem label="运输时效"
+                  field={`${shipmt.transit_time}${this.msg('day')}`}
+                />
+              </Col>
+              <Col span="8">
+                <InfoItem label="公里数"
+                  field={charges.revenue.miles}
+                />
+              </Col>
+              <Col span="8">
+                <InfoItem label="基本运费（元）"
+                  field={charges.revenue.total_charge}
+                />
+              </Col>
+            </Row>
+          </Card.Grid>
+        </Card>
         <Card
           title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')} ${distanceStr}`}
           bodyStyle={{ padding: 16 }}

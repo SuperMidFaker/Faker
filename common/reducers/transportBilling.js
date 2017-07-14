@@ -85,7 +85,7 @@ const initialState = {
     visible: false,
     dispId: -1,
     shipmtNo: '',
-    transportModeId: -1,
+    transModeCode: '',
     goodsType: -1,
     advances: [],
     type: -2,
@@ -536,7 +536,7 @@ export function changeBillingsFilter(key, value) {
   return { type: actionTypes.CHANGE_BILLINGS_FILTER, data: { key, value } };
 }
 
-export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, goodsType, type }) {
+export function showAdvanceModal({ visible, dispId, shipmtNo, transModeCode, goodsType, type }) {
   if (visible) {
     return {
       [CLIENT_API]: {
@@ -548,11 +548,11 @@ export function showAdvanceModal({ visible, dispId, shipmtNo, transportModeId, g
         endpoint: 'v1/transport/advanceCharges',
         method: 'get',
         params: { dispId },
-        data: { visible, dispId, shipmtNo, transportModeId, goodsType, type },
+        data: { visible, dispId, shipmtNo, transModeCode, goodsType, type },
       },
     };
   } else {
-    return { type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL, data: { visible, dispId, shipmtNo, transportModeId, goodsType } };
+    return { type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL, data: { visible, dispId, shipmtNo, transModeCode, goodsType } };
   }
 }
 

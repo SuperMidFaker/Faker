@@ -494,41 +494,41 @@ export default class FreightCharge extends React.Component {
           />
         </FormItem>
         {
-          computed &&
-          <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}
-            field="freight_charge" fieldProps={{ initialValue: formData.freight_charge }}
-            colSpan={8} readOnly
-          />
+          computed ?
+            <InputItem formhoc={formhoc} labelName={this.msg('basicCharge')} addonAfter={this.msg('CNY')}
+              field="freight_charge" fieldProps={{ initialValue: formData.freight_charge }}
+              colSpan={8} readOnly
+            /> : ''
         }
         {
-          computed &&
-          <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
-            labelName={<span>
-              <Checkbox checked={formData.pickup_checked} onChange={this.handlePickupCheck} />
-              {this.msg('pickupCharge')}
-            </span>}
-            field="pickup_charge" fieldProps={{ initialValue: formData.pickup_charge }}
-            colSpan={8} readOnly colon={false}
-          />
+          computed ?
+            <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
+              labelName={<span>
+                <Checkbox checked={formData.pickup_checked} onChange={this.handlePickupCheck} />
+                {this.msg('pickupCharge')}
+              </span>}
+              field="pickup_charge" fieldProps={{ initialValue: formData.pickup_charge }}
+              colSpan={8} readOnly colon={false}
+            /> : ''
         }
         {
-          computed &&
-          <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
-            labelName={<span>
-              <Checkbox checked={formData.deliver_checked} onChange={this.handleDeliverCheck} />
-              {this.msg('deliverCharge')}
-            </span>}
-            field="deliver_charge" fieldProps={{ initialValue: formData.deliver_charge }}
-            colSpan={8} readOnly colon={false}
-          />
+          computed ?
+            <InputItem formhoc={formhoc} addonAfter={this.msg('CNY')}
+              labelName={<span>
+                <Checkbox checked={formData.deliver_checked} onChange={this.handleDeliverCheck} />
+                {this.msg('deliverCharge')}
+              </span>}
+              field="deliver_charge" fieldProps={{ initialValue: formData.deliver_charge }}
+              colSpan={8} readOnly colon={false}
+            /> : ''
         }
         {
-          computed &&
-          <InputItem formhoc={formhoc} labelName={this.msg('surcharge')} addonAfter={this.msg('CNY')}
-            field="surcharge" fieldProps={{ initialValue: formData.surcharge,
-              onChange: this.handleSurchargeChange }}
-            colSpan={8}
-          />
+          computed ?
+            <InputItem formhoc={formhoc} labelName={this.msg('surcharge')} addonAfter={this.msg('CNY')}
+              field="surcharge" fieldProps={{ initialValue: formData.surcharge,
+                onChange: this.handleSurchargeChange }}
+              colSpan={8}
+            /> : ''
         }
         <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
           field="total_charge" fieldProps={{ initialValue: formData.total_charge,

@@ -20,7 +20,7 @@ const Option = Select.Option;
     visible: state.transportBilling.advanceModal.visible,
     dispId: state.transportBilling.advanceModal.dispId,
     shipmtNo: state.transportBilling.advanceModal.shipmtNo,
-    transportModeId: state.transportBilling.advanceModal.transportModeId,
+    transModeCode: state.transportBilling.advanceModal.transModeCode,
     goodsType: state.transportBilling.advanceModal.goodsType,
     type: state.transportBilling.advanceModal.type,
     fees: state.transportBilling.advanceModal.fees,
@@ -40,7 +40,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     showAdvanceModal: PropTypes.func.isRequired,
     createAdvances: PropTypes.func.isRequired,
-    transportModeId: PropTypes.number.isRequired,
+    transModeCode: PropTypes.number.isRequired,
     goodsType: PropTypes.number.isRequired,
     type: PropTypes.number.isRequired,
     fees: PropTypes.array.isRequired,
@@ -53,11 +53,11 @@ export default class ShipmentAdvanceModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.shipmtNo && this.props.shipmtNo !== nextProps.shipmtNo) {
-      const { transportModeId, goodsType, dispId, type, tenantId } = nextProps;
+      const { transModeCode, goodsType, dispId, type, tenantId } = nextProps;
       this.props.loadShipmtDispatch(dispId).then((result) => {
         if (type === 1) {
           this.props.getTariffByTransportInfo({
-            transModeCode: transportModeId,
+            transModeCode,
             partnerId: result.data.sr_partner_id,
             goodsType,
             partnerTenantId: result.data.sr_tenant_id,
@@ -74,7 +74,7 @@ export default class ShipmentAdvanceModal extends React.Component {
           });
         } else if (type === -1) {
           this.props.getTariffByTransportInfo({
-            transModeCode: transportModeId,
+            transModeCode,
             partnerId: result.data.sp_partner_id,
             goodsType,
             partnerTenantId: result.data.sp_tenant_id,
@@ -154,7 +154,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     });
   }
   handleCancel = () => {
-    this.props.showAdvanceModal({ visible: false, shipmtNo: '', dispId: -1, transportModeId: -1, goodsType: -1 });
+    this.props.showAdvanceModal({ visible: false, shipmtNo: '', dispId: -1, transModeCode: '', goodsType: -1 });
   }
   handleAmountChange = (index, value) => {
     const advances = [...this.state.advances];

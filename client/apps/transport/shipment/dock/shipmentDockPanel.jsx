@@ -31,7 +31,6 @@ import { showVehicleModal } from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/notification';
-import OperatorsPopover from 'client/common/operatorsPopover';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -80,7 +79,6 @@ function getTrackStatusMsg(status, eff) {
     filters: state.transportDispatch.filters,
     expandList: state.transportDispatch.expandList,
     charges: state.shipment.charges,
-    partnerId: state.shipment.previewer.dispatch.sr_partner_id,
   }),
   { hidePreviewer,
     sendTrackingDetailSMSMessage,
@@ -174,9 +172,9 @@ export default class PreviewPanel extends React.Component {
     const domain = window.location.host;
     window.open(`${API_ROOTS.default}v1/transport/tracking/exportShipmentPodPDF/${createFilename('pod')}.pdf?shipmtNo=${shipmt.shipmt_no}&podId=${dispatch.pod_id}&publickKey=${shipmt.public_key}&domain=${domain}`);
   }
-  handleShipmtAccept = (record, lid, name) => {
+  handleShipmtAccept = () => {
     const dispId = this.props.previewer.dispatch.id;
-    this.props.acceptDispShipment([dispId], this.props.loginId, this.props.loginName, lid, name).then(
+    this.props.acceptDispShipment([dispId], this.props.loginId, this.props.loginName, this.props.loginId, this.props.loginName).then(
       (result) => {
         if (!result.error) {
           return this.props.reload && this.props.reload();
@@ -347,7 +345,7 @@ export default class PreviewPanel extends React.Component {
     );
   }
   renderButtons = () => {
-    const { tenantId, previewer: { shipmt, dispatch, upstream, downstream, params: { sourceType } }, charges, partnerId } = this.props;
+    const { tenantId, previewer: { shipmt, dispatch, upstream, downstream, params: { sourceType } }, charges } = this.props;
     const needRecalculate = charges.revenue.need_recalculate === 1 || charges.expense.need_recalculate === 1;
     let buttons = [];
     if (sourceType === 'sp') {
@@ -355,16 +353,20 @@ export default class PreviewPanel extends React.Component {
         if (dispatch.source === SHIPMENT_SOURCE.consigned) {
           buttons.push(<PrivilegeCover module="transport" feature="shipment" action="edit">
             <Button key="change" onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)} style={{ marginRight: 8 }}>
-                  修改
-                </Button>
+              修改
+            </Button>
           </PrivilegeCover>,
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <OperatorsPopover partnerId={partnerId} module="shipment" handleAccept={this.handleShipmtAccept} />
+              <Button key="accept" type="primary" icon="check" onClick={this.handleShipmtAccept}>
+                接单
+              </Button>
             </PrivilegeCover>);
         } else if (dispatch.source === SHIPMENT_SOURCE.subcontracted) {
           buttons.push(
             <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <OperatorsPopover partnerId={partnerId} module="shipment" handleAccept={this.handleShipmtAccept} />
+              <Button key="accept" type="primary" icon="check" onClick={this.handleShipmtAccept}>
+                接单
+              </Button>
             </PrivilegeCover>
           );
         }

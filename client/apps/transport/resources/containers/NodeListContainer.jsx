@@ -23,6 +23,7 @@ function fetchData({ dispatch, state }) {
   loading: state.transportResources.loading,
   nodes: state.transportResources.nodes,
   nodeType: state.transportResources.nodeType,
+  partners: state.shipment.partners,
 }), { setNodeType, removeNode, toggleNodeModal, loadNodeList })
 @connectNav({
   depth: 2,
@@ -39,9 +40,11 @@ export default class NodeListContainer extends Component {
     removeNode: PropTypes.func.isRequired,            // 移除某个节点时的action creator
     toggleNodeModal: PropTypes.func.isRequired,
     loadNodeList: PropTypes.func.isRequired,
+    partners: PropTypes.array.isRequired,
   }
   state = {
     searchText: '',
+    filters: {},
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.loaded && !nextProps.loading) {
@@ -60,6 +63,9 @@ export default class NodeListContainer extends Component {
   handleSearch = (searchText) => {
     this.setState({ searchText });
   }
+  handleTableChange = (pagination, filters) => {
+    this.setState({ filters });
+  }
   render() {
     const { nodes, nodeType } = this.props;
     const toDisplayNodes = nodes.filter(node => node.type === nodeType).filter((item) => {
@@ -67,6 +73,17 @@ export default class NodeListContainer extends Component {
         const reg = new RegExp(this.state.searchText);
         return reg.test(item.name) || reg.test(item.province) || reg.test(item.city) || reg.test(item.district) || reg.test(item.addr) ||
         reg.test(item.contact) || reg.test(item.mobile) || reg.test(item.email);
+      } else {
+        return true;
+      }
+    }).filter((item) => {
+      const flts = this.state.filters.ref_partner_name;
+      if (flts) {
+        if (flts.length > 0 && !flts.find(flt => flt === String(item.ref_partner_id))) {
+          return false;
+        } else {
+          return true;
+        }
       } else {
         return true;
       }
@@ -79,6 +96,8 @@ export default class NodeListContainer extends Component {
         onDeleteBtnClick={this.handleDeleteBtnClick}
         onSearch={this.handleSearch}
         searchText={this.state.searchText}
+        partners={this.props.partners}
+        handleTableChange={this.handleTableChange}
       />
     );
   }
