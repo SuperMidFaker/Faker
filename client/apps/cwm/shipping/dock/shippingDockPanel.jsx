@@ -60,6 +60,9 @@ export default class ShippingDockPanel extends React.Component {
       );
     }
   }
+  componentWillUnmount() {
+    this.props.hideDock();
+  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleTabChange = (tabKey) => {
     this.props.changeDockTab(tabKey);

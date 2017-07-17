@@ -2,7 +2,7 @@ import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button } from 'antd';
+import { Table, Button, notification } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
@@ -112,7 +112,18 @@ export default class OrderDetailsPane extends React.Component {
       this.props.loginId, this.props.loginName);
   }
   handleOutboundAutoAlloc = () => {
-    this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName);
+    this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName).then((result) => {
+      if (!result.error) {
+        if (result.data.length > 0) {
+          const seqNos = result.data.join(',');
+          const args = {
+            message: `第${seqNos}行货品数量不足`,
+            duration: 0,
+          };
+          notification.open(args);
+        }
+      }
+    });
   }
   handleManualAlloc = (row) => {
     this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
