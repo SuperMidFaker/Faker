@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
+import { createFilename } from 'client/util/dataTransform';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
@@ -322,6 +323,9 @@ export default class ManifestEditor extends React.Component {
       this.props.loadDocuDatas({ billSeqNo: this.props.billHead.bill_seq_no });
     }
   }
+  handleDoctsDownload = () => {
+    window.open(`${API_ROOTS.default}v1/cms/manifest/docts/download/${createFilename('doctsDatas')}.xlsx?billSeqNo=${this.props.billHead.bill_seq_no}&tenantId=${this.props.tenantId}`);
+  }
   renderOverlayMenu(editable) {
     let lockMenuItem = null;
     if (editable) {
@@ -413,6 +417,9 @@ export default class ManifestEditor extends React.Component {
                 (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                   loading={this.state.generating} onClick={this.handleGenerateEntry}
                 >{this.msg('generateEntry')}</Button>) }
+              {billMeta.entries.length > 0 &&
+                <Button type="primary" size="large" icon="export" onClick={this.handleDoctsDownload}>下载单据数据</Button>
+              }
               {sendable &&
                 <Button type="primary" size="large" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>
               }
