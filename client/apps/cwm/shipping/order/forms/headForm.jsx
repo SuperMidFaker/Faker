@@ -102,7 +102,7 @@ export default class HeadForm extends Component {
                 initialValue: soHead && soHead.bonded_intype,
               })(
                 <RadioGroup>
-                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.text}</RadioButton>)}
+                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
                 </RadioGroup>
                   )}
             </FormItem>

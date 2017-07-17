@@ -347,7 +347,7 @@ export default class ReceivingASNList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 260), 0) }} loading={loading}
+                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
               />
             </div>
           </div>

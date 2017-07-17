@@ -164,9 +164,9 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('replenishments')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={75} width={80} />
-              <p>{this.msg('tasksTotal')}: 561 Items</p>
-              <p>{this.msg('tasksCompleted')}: 165 Items</p>
+              <Progress type="dashboard" percent={0} width={80} />
+              <p>{this.msg('tasksTotal')}: 0 Items</p>
+              <p>{this.msg('tasksCompleted')}: 0 Items</p>
             </div>
           </div>
         </Card.Grid>
