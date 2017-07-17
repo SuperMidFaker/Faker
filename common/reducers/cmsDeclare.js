@@ -27,7 +27,6 @@ const initialState = {
     ietype: 'all',
     viewStatus: 'all',
     filterDate: [],
-    acptDate: [],
     declareType: '',
     name: '',
     sortField: '',
