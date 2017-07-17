@@ -107,6 +107,9 @@ export default class DelegationList extends Component {
   }
   componentDidMount() {
     const filters = this.initializeFilters();
+    if (window.location.search.indexOf('dashboard') < 0) {
+      filters.acptDate = [];
+    }
     this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
@@ -473,10 +476,6 @@ export default class DelegationList extends Component {
   }
   handleDateRangeChange = (value, dateString) => {
     const filters = { ...this.props.listFilter, acptDate: dateString };
-    if (window.localStorage) {
-      const fv = { ...JSON.parse(window.localStorage.cmsDelegationListFilters), acptDate: [] };
-      window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
-    }
     this.handleDelgListLoad(1, filters);
   }
   render() {

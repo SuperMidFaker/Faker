@@ -593,17 +593,21 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.delg.release',
     defaultMessage: '放行',
   },
-  mainfestCreate: {
-    id: 'scof.orders.progress.action.manifest.generate',
-    defaultMessage: '制单',
-  },
   manifestGenerate: {
     id: 'scof.orders.progress.action.manifest.generate',
     defaultMessage: '制单',
   },
-  customsReviewed: {
-    id: 'scof.orders.progress.action.customs.reviewed',
+  customsReview: {
+    id: 'scof.orders.progress.action.customs.review',
     defaultMessage: '复核',
+  },
+  customsDeclare: {
+    id: 'scof.orders.progress.action.customs.delcare',
+    defaultMessage: '报关单申报',
+  },
+  customsRelease: {
+    id: 'scof.orders.progress.action.customs.release',
+    defaultMessage: '报关单放行',
   },
   shipmtAccept: {
     id: 'scof.orders.progress.action.shipmt.accept',
@@ -638,7 +642,7 @@ const messages = defineMessages({
     defaultMessage: '入库',
   },
   soRelease: {
-    id: 'scof.orders.progress.action.asn.release',
+    id: 'scof.orders.progress.action.so.release',
     defaultMessage: '释放',
   },
   soOutbound: {

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Layout, Form, Select } from 'antd';
+import { Button, Layout, Form, Select, message } from 'antd';
 import { formatMsg } from '../message.i18n';
-import { showWhseOwnersModal, loadwhseOwners } from 'common/reducers/cwmWarehouse';
+import { updateWhse } from 'common/reducers/cwmWarehouse';
+import { loadWhseSupervisionApps } from 'common/reducers/openIntegration';
 
 const { Content } = Layout;
 const FormItem = Form.Item;
@@ -13,30 +14,61 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    whseOwners: state.cwmWarehouse.whseOwners,
+    whseSupervisonApps: state.openIntegration.whseSupervisonApps,
   }),
-  { showWhseOwnersModal, loadwhseOwners }
+  { loadWhseSupervisionApps, updateWhse }
 )
 export default class SupervisionPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
-    whseTenantId: PropTypes.number.isRequired,
+    ftzAppId: PropTypes.string,
+  }
+  state = { ftzAppId: '' }
+  componentWillMount() {
+    this.props.loadWhseSupervisionApps();
+    if (this.props.ftzAppId) {
+      this.setState({ ftzAppId: this.props.ftzAppId });
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.ftzAppId !== this.props.ftzAppId) {
+      this.setState({ ftzAppId: nextProps.ftzAppId });
+    }
   }
 
   msg = formatMsg(this.props.intl)
+  handleFtzAppSelect = (appid) => {
+    this.setState({ ftzAppId: appid });
+  }
+  handleSaveFtzApp = () => {
+    const ftz = this.props.whseSupervisonApps.filter(wsa => wsa.uuid === this.state.ftzAppId)[0];
+    if (ftz) {
+      this.props.updateWhse({ ftz_type: ftz.app_type, ftz_integration_app_id: ftz.uuid }, this.props.whseCode).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else {
+          message.info('监管系统已设置');
+        }
+      });
+    }
+  }
   render() {
+    const { whseSupervisonApps } = this.props;
     return (
       <Content style={{ padding: 24 }}>
         <Form layout="inline">
           <FormItem label="保税监管系统">
-            <Select placeholder="请选择保税监管系统" allowClear style={{ width: 300 }}>
-              <Option value="shftz">上海自贸区监管系统(东方支付)</Option>
-              <Option value="szftz">苏州综保区监管系统(海讯通)</Option>
+            <Select placeholder="请选择保税监管系统" allowClear style={{ width: 300 }}
+              value={this.state.ftzAppId} onSelect={this.handleFtzAppSelect}
+            >
+              {whseSupervisonApps.map(wsa =>
+                <Option value={wsa.uuid}>{wsa.name}</Option>
+              )}
             </Select>
           </FormItem>
           <FormItem >
-            <Button type="primary" size="large">保存</Button>
+            <Button type="primary" size="large" onClick={this.handleSaveFtzApp}>保存</Button>
           </FormItem>
         </Form>
       </Content>

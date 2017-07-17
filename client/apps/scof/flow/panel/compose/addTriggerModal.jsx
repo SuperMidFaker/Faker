@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Button, Card, Popconfirm, Col, Modal, Form, Checkbox, Icon, Input, InputNumber, Radio, Row, Select } from 'antd';
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
+import { NODE_BIZ_OBJECTS_EXECUTABLES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -79,6 +80,7 @@ CreateActionForm.propTypes = {
   bizObjectOptions: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
 };
 
+  /*
 function UpdateActionForm(props) {
   const { action, index, bizObjectOptions, msg, onChange, onDel } = props;
   function handleChange(actionKey, value) {
@@ -144,7 +146,7 @@ UpdateActionForm.propTypes = {
   action: PropTypes.shape({ type: PropTypes.string }),
   index: PropTypes.number.isRequired,
   bizObjectOptions: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
-};
+}; */
 
 function ExecuteActionForm(props) {
   const { action, index, bizObjectOptions, msg, onChange, onDel } = props;
@@ -154,6 +156,7 @@ function ExecuteActionForm(props) {
   function handleDel() {
     onDel(index);
   }
+  const bizobj = bizObjectOptions.filter(boo => boo.key === action.biz_object)[0];
   return (
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
@@ -191,18 +194,19 @@ function ExecuteActionForm(props) {
         </Col>
         <Col sm={24} lg={12}>
           <FormItem label={msg('bizObject')}>
-            <Select value={action.biz_object} onChange={value => handleChange('biz_object', value)}>
-              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{bo.text}</Option>)}
+            <Select value={action.biz_object} onChange={(value) => { handleChange('biz_trigger', ''); handleChange('biz_object', value); }}>
+              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{msg(bo.text)}</Option>)}
             </Select>
           </FormItem>
         </Col>
+        {bizobj &&
         <Col sm={24} lg={12}>
           <FormItem label={msg('bizObjOperation')}>
-            <Select value={action.biz_object} onChange={value => handleChange('biz_object_operation', value)}>
-              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{bo.text}</Option>)}
+            <Select value={action.biz_trigger} onChange={value => handleChange('biz_trigger', value)}>
+              {bizobj.triggers.map(bot => <Option value={bot.action} key={bot.action}>{msg(bot.actionText)}</Option>)}
             </Select>
           </FormItem>
-        </Col>
+        </Col>}
       </Row>
     </Card>);
 }
@@ -329,8 +333,9 @@ export default class AddTriggerModal extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { visible, bizObjects } = this.props;
+    const { visible, bizObjects, kind } = this.props;
     const { actions } = this.state;
+    const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[kind];
     return (
       <Modal title={this.msg('triggerActions')}
         width={800} visible={visible} maskClosable={false}
@@ -345,14 +350,15 @@ export default class AddTriggerModal extends React.Component {
                   index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;
+                /*
               case 'UPDATE': actionForm = (
                 <UpdateActionForm key={action.id} action={action} onDel={this.handleActionDel}
                   index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
                 />);
-                break;
+                break; */
               case 'EXECUTE': actionForm = (
                 <ExecuteActionForm key={action.id} action={action} onDel={this.handleActionDel}
-                  index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
+                  index={index} bizObjectOptions={bizobjExecutes} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;
               case 'NOTIFY': actionForm = (

@@ -5,14 +5,14 @@ import { message, Button, Card, Breadcrumb, Form, Icon, Layout, Row } from 'antd
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import InfoItem from 'client/components/InfoItem';
-import { loadEasipassApp, updateEasipassApp } from 'common/reducers/openIntegration';
+import { loadShftzApp, updateShftzApp } from 'common/reducers/openIntegration';
 import MainForm from './forms/mainForm';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
 
 function fetchData({ dispatch, params }) {
-  return dispatch(loadEasipassApp(params.uuid));
+  return dispatch(loadShftzApp(params.uuid));
 }
 
 @connectFetch()(fetchData)
@@ -20,9 +20,9 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    easipass: state.openIntegration.easipassApp,
+    shftz: state.openIntegration.shftzApp,
   }),
-  { updateEasipassApp }
+  { updateShftzApp }
 )
 @Form.create()
 export default class ConfigSHFTZ extends React.Component {
@@ -37,11 +37,11 @@ export default class ConfigSHFTZ extends React.Component {
   state = { submitting: false }
   msg = formatMsg(this.props.intl);
   handleSaveBtnClick = () => {
-    const { easipass } = this.props;
+    const { shftz } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.setState({ submitting: true });
-        this.props.updateEasipassApp({ ...values, uuid: easipass.uuid }).then((result) => {
+        this.props.updateShftzApp({ ...values, uuid: shftz.uuid }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);
@@ -57,7 +57,7 @@ export default class ConfigSHFTZ extends React.Component {
   }
 
   render() {
-    const { form, easipass } = this.props;
+    const { form, shftz } = this.props;
     return (
       <div>
         <Header className="top-bar">
@@ -69,7 +69,7 @@ export default class ConfigSHFTZ extends React.Component {
               {this.msg('appSHFTZ')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {easipass.name}
+              {shftz.name}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">
@@ -84,11 +84,11 @@ export default class ConfigSHFTZ extends React.Component {
         <Content className="main-content layout-fixed-width">
           <Form layout="vertical">
             <Card>
-              <InfoItem label={this.msg('integrationName')} field={easipass.name} />
+              <InfoItem label={this.msg('integrationName')} field={shftz.name} />
             </Card>
             <Card title={this.msg('apiConfig')}>
               <Row gutter={16}>
-                <MainForm form={form} easipass={easipass} />
+                <MainForm form={form} shftz={shftz} />
               </Row>
             </Card>
           </Form>

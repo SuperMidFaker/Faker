@@ -482,9 +482,11 @@ export default class DocuPane extends React.Component {
                 {docu.docu_type === CMS_DOCU_TYPE.contract && '合同'}
                 {docu.docu_type === CMS_DOCU_TYPE.packingList && '箱单'}
               </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {`${docu.docu_code}`}
-              </Breadcrumb.Item>
+              { docu.docu_code &&
+                <Breadcrumb.Item>
+                  {`${docu.docu_code}`}
+                </Breadcrumb.Item>
+              }
             </Breadcrumb>
             <div className="toolbar-right">
               <Button size="large" icon="file-pdf" onClick={this.handlePDF}>PDF</Button>

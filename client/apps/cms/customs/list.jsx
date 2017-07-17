@@ -82,15 +82,17 @@ export default class CustomsList extends Component {
     searchInput: '',
   }
   componentDidMount() {
-    let filters = { status: 'all' };
-    if (window.localStorage && window.localStorage.cmsCustomsListFilters) {
-      filters = JSON.parse(window.localStorage.cmsCustomsListFilters || '{"status":"all"}');
+    let filters = { status: 'all', filterDate: [] };
+    if (window.location.search.indexOf('inspect') > 0) {
+      filters = { status: 'inspect' };
+      console.log('window.localStorage', window.localStorage);
+      if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
+        const listFilters = JSON.parse(window.localStorage.cmsDelegationListFilters);
+        filters = { ...filters, filterDate: listFilters.acptDate };
+        console.log('filters', filters);
+      }
     }
     this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters });
-    if (window.localStorage) {
-      const fv = { ...JSON.parse(window.localStorage.cmsCustomsListFilters), acptDate: [] };
-      window.localStorage.cmsCustomsListFilters = JSON.stringify(fv);
-    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -388,7 +390,7 @@ export default class CustomsList extends Component {
   }
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
-    this.handleTableLoad(1, { ...filters, acptDate: [] });
+    this.handleTableLoad(1, { ...filters });
   }
   mergeFilters(curFilters, value) {
     const newFilters = {};
@@ -406,13 +408,9 @@ export default class CustomsList extends Component {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
-    const filter = { ...this.props.listFilter, status: ev.target.value, acptDate: [] };
+    const filter = { ...this.props.listFilter, status: ev.target.value };
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
-    if (window.localStorage) {
-      const fv = { ...JSON.parse(window.localStorage.cmsCustomsListFilters), status: ev.target.value };
-      window.localStorage.cmsCustomsListFilters = JSON.stringify(fv);
-    }
   }
   handleIEFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.ietype) {
@@ -516,6 +514,10 @@ export default class CustomsList extends Component {
       },
     };
     const status = this.props.listFilter.status;
+    let dateVal = [];
+    if (listFilter.filterDate.length > 0 && listFilter.filterDate[0] !== '') {
+      dateVal = [moment(listFilter.filterDate[0]), moment(listFilter.filterDate[1])];
+    }
     let bulkBtns = '';
     if (status === 'proposed') {
       bulkBtns = (
@@ -590,7 +592,7 @@ export default class CustomsList extends Component {
                 </OptGroup>
               </Select>
               <span />
-              <RangePicker size="large"
+              <RangePicker size="large" value={dateVal}
                 ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
                 onChange={this.handleDateRangeChange}
               />

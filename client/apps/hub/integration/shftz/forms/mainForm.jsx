@@ -11,35 +11,27 @@ export default class MainForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    easipass: PropTypes.shape({
-      send_dir: PropTypes.string.isRequired,
+    shftz: PropTypes.shape({
+      ftz_host: PropTypes.string.isRequired,
     }),
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, easipass } = this.props;
+    const { form: { getFieldDecorator }, shftz } = this.props;
     return (
       <Row gutter={16}>
-        <Col sm={24} lg={18}>
-          <FormItem label={this.msg('server')}>
-            {getFieldDecorator('server', {
-              initialValue: easipass.ftp_server,
+        <Col sm={24} lg={24}>
+          <FormItem label={this.msg('ftzserver')}>
+            {getFieldDecorator('ftz_host', {
+              initialValue: shftz.ftz_host,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
-            })(<Input />)}
-          </FormItem>
-        </Col>
-        <Col sm={24} lg={6}>
-          <FormItem label={this.msg('port')}>
-            {getFieldDecorator('port', {
-              initialValue: easipass.ftp_server,
-              rules: [{ required: true, message: this.msg('parameterRequired') }],
-            })(<Input />)}
+            })(<Input addonBefore="http://" />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
           <FormItem label={this.msg('username')}>
             {getFieldDecorator('username', {
-              initialValue: easipass.username,
+              initialValue: shftz.username,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>
@@ -47,7 +39,7 @@ export default class MainForm extends Component {
         <Col sm={24} lg={12}>
           <FormItem label={this.msg('password')}>
             {getFieldDecorator('password', {
-              initialValue: easipass.password,
+              initialValue: shftz.password,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
             })(<Input />)}
           </FormItem>

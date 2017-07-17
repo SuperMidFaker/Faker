@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, Collapse, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, message } from 'antd';
+import { Card, Collapse, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, message, Checkbox } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
+import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -27,6 +28,7 @@ const Panel = Collapse.Panel;
     defaultWhse: state.cwmContext.defaultWhse,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    outboundHead: state.cwmOutbound.outboundFormHead,
   }),
   { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc }
 )
@@ -49,7 +51,9 @@ export default class AllocatingModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters);
+      const { outboundHead } = nextProps;
+      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters,
+        outboundHead.bonded, outboundHead.bonded_outtype);
       this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
       this.setState({
         outboundProduct: nextProps.outboundProduct,
@@ -276,7 +280,7 @@ export default class AllocatingModal extends Component {
     });
   }
   render() {
-    const { outboundNo, filters } = this.props;
+    const { outboundNo, filters, outboundHead } = this.props;
     const { outboundProduct } = this.state;
     const inventoryQueryForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
       <FormItem label="库位">
@@ -291,6 +295,17 @@ export default class AllocatingModal extends Component {
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
       </FormItem>
+      { outboundHead.bonded === 1 &&
+        <FormItem label="已备案">
+          <Checkbox defaultChecked disabled />
+        </FormItem>
+      }
+      { outboundHead.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
+      <FormItem label="已分拨">
+        <Checkbox defaultChecked disabled />
+      </FormItem>
+      }
+
     </Form>);
 
     return (

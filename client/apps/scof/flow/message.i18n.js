@@ -274,6 +274,38 @@ const messages = defineMessages({
     id: 'scof.flow.biz.event.so.finished',
     defaultMessage: '已发货',
   },
+  delgDeclare: {
+    id: 'scof.flow.biz.action.delg.declare',
+    defaultMessage: '申报',
+  },
+  manifestGenerate: {
+    id: 'scof.flow.biz.action.manifest.generate',
+    defaultMessage: '制单',
+  },
+  customsReview: {
+    id: 'scof.flow.biz.action.customs.review',
+    defaultMessage: '复核',
+  },
+  customsDeclare: {
+    id: 'scof.flow.biz.action.customs.delcare',
+    defaultMessage: '报关单申报',
+  },
+  customsRelease: {
+    id: 'scof.flow.biz.action.customs.release',
+    defaultMessage: '报关单放行',
+  },
+  shipmtAccept: {
+    id: 'scof.flow.biz.action.shipmt.accept',
+    defaultMessage: '接单',
+  },
+  asnRelease: {
+    id: 'scof.flow.biz.action.asn.release',
+    defaultMessage: '释放',
+  },
+  soRelease: {
+    id: 'scof.flow.biz.action.so.release',
+    defaultMessage: '释放',
+  },
   triggerActions: {
     id: 'scof.flow.trigger',
     defaultMessage: '事件触发器',

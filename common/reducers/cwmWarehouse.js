@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'SHOW_WAREHOUSE_MODAL', 'HIDE_WAREHOUSE_MODAL',
   'ADD_WAREHOUSE', 'ADD_WAREHOUSE_SUCCEED', 'ADD_WAREHOUSE_FAIL',
+  'UPDATE_WHSE', 'UPDATE_WHSE_SUCCEED', 'UPDATE_WHSE_FAIL',
   'ADD_ZONE', 'ADD_ZONE_SUCCEED', 'ADD_ZONE_FAIL',
   'LOAD_ZONE', 'LOAD_ZONE_SUCCEED', 'LOAD_ZONE_FAIL',
   'SHOW_LOCATION_MODAL', 'HIDE_LOCATION_MODAL',
@@ -91,6 +92,21 @@ export function addWarehouse(params) {
       endpoint: 'v1/cwm/warehouse/add',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function updateWhse(whse, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_WHSE,
+        actionTypes.UPDATE_WHSE_SUCCEED,
+        actionTypes.UPDATE_WHSE_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/update',
+      method: 'post',
+      data: { whse, whse_code: whseCode },
     },
   };
 }

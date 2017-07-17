@@ -134,6 +134,14 @@ const messages = defineMessages({
     id: 'hub.integration.arctm.webservice.url',
     defaultMessage: 'web service接口',
   },
+  apiConfig: {
+    id: 'hub.integration.shftz.api.config',
+    defaultMessage: '监管接口配置',
+  },
+  ftzserver: {
+    id: 'hub.integration.shftz.host.url',
+    defaultMessage: '监管接口地址',
+  },
 });
 
 export default messages;
