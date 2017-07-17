@@ -59,7 +59,7 @@ export default class FlowTriggerTable extends React.Component {
     }
     return (<div>
       <Table size="middle" columns={this.eventColumns} dataSource={events} pagination={false} showHeader={false} />
-      <AddTriggerModal bizObjects={creatableBizObjects} onModalOK={this.handleTriggerModalChange} />
+      <AddTriggerModal bizObjects={creatableBizObjects} onModalOK={this.handleTriggerModalChange} kind={kind} />
     </div>);
   }
 }

@@ -7,7 +7,7 @@ exports.NODE_TRIGGERS = [{
 }];
 
 const CMS_DELEGATION_TRIGGERS = [
-  { key: 'created', text: 'onCreated', actionText: 'delgCreate' },
+  { key: 'created', text: 'onCreated' },
   { key: 'declared', text: 'onDelgDeclared', actionText: 'delgDeclare' },
   { key: 'inspected', text: 'onDelgInspected', actionText: 'delgInspect' },
   { key: 'released', text: 'onDelgReleased', actionText: 'delgRelease' },
@@ -19,9 +19,9 @@ const CMS_MANIFEST_TRIGGERS = [
 ];
 
 const CMS_CUSTOMS_TRIGGERS = [
-  { key: 'reviewed', text: 'onCustomsReviewed', actionText: 'customsReviewed' },
-  { key: 'declared', text: 'onDelgDeclared' },
-  { key: 'released', text: 'onDelgReleased' },
+  { key: 'reviewed', text: 'onCustomsReviewed', actionText: 'customsReview' },
+  { key: 'declared', text: 'onDelgDeclared', actionText: 'customsDelcare' },
+  { key: 'released', text: 'onDelgReleased', actionText: 'customsRelease' },
 ];
 
 const cmsBizObjects = [{
@@ -126,4 +126,48 @@ exports.NODE_CREATABLE_BIZ_OBJECTS = {
   tms: tmsBizObjects,
   cwmrec: cwmRecBizObjects,
   cwmship: cwmShippingBizObjects,
+};
+
+exports.NODE_BIZ_OBJECTS_EXECUTABLES = {
+  import: [{
+    key: 'cmsDelegation',
+    text: 'cmsDelegation',
+    triggers: [{ action: 'declare', actionText: 'delgDeclare' }],
+  }, {
+    key: 'cmsManifest',
+    text: 'cmsDeclManifest',
+    triggers: [{ action: 'generate', actionText: 'manifestGenerate' }],
+  }, {
+    key: 'cmsCustomsDecl',
+    text: 'cmsCustomsDecl',
+    triggers: [{ action: 'review', actionText: 'customsReview' }, { action: 'declare', actionText: 'customsDeclare' }],
+  }],
+  export: [{
+    key: 'cmsDelegation',
+    text: 'cmsDelegation',
+    triggers: [{ action: 'declare', actionText: 'delgDeclare' }],
+  }, {
+    key: 'cmsManifest',
+    text: 'cmsDeclManifest',
+    triggers: [{ action: 'generate', actionText: 'manifestGenerate' }],
+  }, {
+    key: 'cmsCustomsDecl',
+    text: 'cmsCustomsDecl',
+    triggers: [{ action: 'review', actionText: 'customsReview' }, { action: 'declare', actionText: 'customsDeclare' }],
+  }],
+  tms: [{
+    key: 'tmsShipment',
+    text: 'tmsShipment',
+    triggers: [{ action: 'accept', actionText: 'shipmtAccept' }],
+  }],
+  cwmrec: [{
+    key: 'cwmReceiving',
+    text: 'cwmRecAsn',
+    triggers: [{ action: 'asnReleased', actionText: 'asnRelease' }],
+  }],
+  cwmship: [{
+    key: 'cwmShipping',
+    text: 'cwmShippingOrder',
+    triggers: [{ action: 'soReleased', actionText: 'soRelease' }],
+  }],
 };
