@@ -11,6 +11,10 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
   'LOAD_ARC', 'LOAD_ARC_SUCCEED', 'LOAD_ARC_FAIL',
   'INSTALL_ARC', 'INSTALL_ARC_SUCCEED', 'INSTALL_ARC_FAIL',
   'UPDATE_ARC', 'UPDATE_ARC_SUCCEED', 'UPDATE_ARC_FAIL',
+  'LOAD_SHFTZ', 'LOAD_SHFTZ_SUCCEED', 'LOAD_SHFTZ_FAIL',
+  'INSTALL_SHFTZ', 'INSTALL_SHFTZ_SUCCEED', 'INSTALL_SHFTZ_FAIL',
+  'UPDATE_SHFTZ', 'UPDATE_SHFTZ_SUCCEED', 'UPDATE_SHFTZ_FAIL',
+  'LOAD_WHSESUPV', 'LOAD_WHSESUPV_SUCCEED', 'LOAD_WHSESUPV_FAIL',
 ]);
 
 const initialState = {
@@ -28,6 +32,8 @@ const initialState = {
   listFilter: {},
   easipassApp: {},
   arctm: {},
+  shftzApp: {},
+  whseSupervisonApps: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -45,6 +51,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, easipassApp: action.result.data };
     case actionTypes.LOAD_ARC_SUCCEED:
       return { ...state, arctm: action.result.data };
+    case actionTypes.LOAD_SHFTZ_SUCCEED:
+      return { ...state, shftzApp: action.result.data };
+    case actionTypes.LOAD_WHSESUPV_SUCCEED:
+      return { ...state, whseSupervisonApps: action.result.data };
     default:
       return state;
   }
@@ -181,6 +191,65 @@ export function updateArCtmApp(arctm) {
       endpoint: 'v1/platform/integration/update/arctm',
       method: 'post',
       data: arctm,
+    },
+  };
+}
+
+export function loadShftzApp(uuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHFTZ,
+        actionTypes.LOAD_SHFTZ_SUCCEED,
+        actionTypes.LOAD_SHFTZ_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/shftz',
+      method: 'get',
+      params: { uuid },
+    },
+  };
+}
+
+export function installShftzApp(shftz) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INSTALL_SHFTZ,
+        actionTypes.INSTALL_SHFTZ_SUCCEED,
+        actionTypes.INSTALL_SHFTZ_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/install/shftz',
+      method: 'post',
+      data: shftz,
+    },
+  };
+}
+
+export function updateShftzApp(shftz) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_SHFTZ,
+        actionTypes.UPDATE_SHFTZ_SUCCEED,
+        actionTypes.UPDATE_SHFTZ_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/update/shftz',
+      method: 'post',
+      data: shftz,
+    },
+  };
+}
+
+export function loadWhseSupervisionApps() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WHSESUPV,
+        actionTypes.LOAD_WHSESUPV_SUCCEED,
+        actionTypes.LOAD_WHSESUPV_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/whse/supervisions',
+      method: 'get',
     },
   };
 }

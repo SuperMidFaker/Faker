@@ -52,6 +52,8 @@ export default class InstalledAppsList extends React.Component {
         return 'EASIPASS EDI';
       } else if (app === 'ARCTM') {
         return 'AmberRoad CTM';
+      } else if (app === 'SHFTZ') {
+        return '上海自贸区监管系统';
       }
     },
   }, {
@@ -80,6 +82,8 @@ export default class InstalledAppsList extends React.Component {
           configLink = <NavLink to={`/hub/integration/easipass/config/${row.uuid}`}>配置</NavLink>;
         } else if (row.app_type === 'ARCTM') {
           configLink = <NavLink to={`/hub/integration/arctm/config/${row.uuid}`}>配置</NavLink>;
+        } else if (row.app_type === 'SHFTZ') {
+          configLink = <NavLink to={`/hub/integration/shftz/config/${row.uuid}`}>配置</NavLink>;
         }
         return (<span>
           {configLink}

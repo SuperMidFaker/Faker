@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { message, Button, Breadcrumb, Form, Input, Card, Icon, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { installEasipassApp } from 'common/reducers/openIntegration';
+import { installShftzApp } from 'common/reducers/openIntegration';
 import MainForm from './forms/mainForm';
 import { formatMsg } from '../message.i18n';
 
@@ -15,9 +15,10 @@ const { Header, Content } = Layout;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    customsCode: state.account.customsCode,
+    loginId: state.account.loginId,
+    shftz: state.openIntegration.shftzApp,
   }),
-  { installEasipassApp }
+  { installShftzApp }
 )
 @Form.create()
 export default class InstallSHFTZ extends React.Component {
@@ -31,19 +32,13 @@ export default class InstallSHFTZ extends React.Component {
   }
   state = { submitting: false }
   msg = formatMsg(this.props.intl)
-  defaultEasipassConfig = {
-    send_trade_code: this.props.customsCode,
-    receive_trade_code: this.props.customsCode,
-    send_dir: 'send',
-    recv_dir: 'recv',
-  }
   handleInstallBtnClick = () => {
-    const { tenantId } = this.props;
+    const { tenantId, loginId } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const uuid = uuidWithoutDash();
         this.setState({ submitting: true });
-        this.props.installEasipassApp({ ...values, uuid, app_type: 'EASIPASS', tenant_id: tenantId }).then((result) => {
+        this.props.installShftzApp({ ...values, uuid, tenant_id: tenantId, login_id: loginId }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);
@@ -59,7 +54,7 @@ export default class InstallSHFTZ extends React.Component {
   }
 
   render() {
-    const { form } = this.props;
+    const { form, shftz } = this.props;
     return (
       <div>
         <Header className="top-bar">
@@ -95,7 +90,7 @@ export default class InstallSHFTZ extends React.Component {
               </FormItem>
             </Card>
             <Card title={this.msg('apiConfig')}>
-              <MainForm form={form} easipass={this.defaultEasipassConfig} />
+              <MainForm form={form} shftz={shftz} />
             </Card>
           </Form>
         </Content>
