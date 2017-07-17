@@ -11,20 +11,26 @@ const RadioGroup = Radio.Group;
 
 @connect(state => ({
   tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  loginName: state.account.username,
   visible: state.cmsResources.businessUnitModal.visible,
   businessUnit: state.cmsResources.businessUnitModal.businessUnit,
   operation: state.cmsResources.businessUnitModal.operation,
+  customer: state.cmsResources.customer,
 }), { toggleBusinessUnitModal, addBusinessUnit, updateBusinessUnit })
 
 export default class TraderModal extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
     visible: PropTypes.bool,
     operation: PropTypes.string, // add  edit
     businessUnit: PropTypes.object,
     addBusinessUnit: PropTypes.func.isRequired,
     updateBusinessUnit: PropTypes.func.isRequired,
     toggleBusinessUnitModal: PropTypes.func.isRequired,
+    customer: PropTypes.object.isRequired,
   }
 
   state = {
@@ -68,9 +74,9 @@ export default class TraderModal extends React.Component {
     }
   }
   handleAddPartner = () => {
-    const { tenantId } = this.props;
+    const { tenantId, loginId, loginName, customer } = this.props;
     const { name, code, customsCode, type, ieType } = this.state;
-    this.props.addBusinessUnit(name, code, customsCode, type, ieType, tenantId).then((result1) => {
+    this.props.addBusinessUnit({ name, code, customsCode, type, ieType, tenantId, loginId, loginName, customerPartnerId: customer.id }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message, 10);
       } else {

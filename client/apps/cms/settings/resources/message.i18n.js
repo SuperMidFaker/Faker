@@ -34,6 +34,10 @@ const messages = defineMessages({
     id: 'cms.settings.customer.auth',
     defaultMessage: '授权',
   },
+  searchPlaceholder: {
+    id: 'cms.settings.resources.searchPlaceholder',
+    defaultMessage: '搜索客户',
+  },
 });
 
 export default messages;

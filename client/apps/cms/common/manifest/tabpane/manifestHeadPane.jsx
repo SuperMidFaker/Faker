@@ -30,6 +30,7 @@ const CODE_AS_STATE = {
 @connect(
   state => ({
     formRequire: state.cmsManifest.params,
+    billMeta: state.cmsManifest.billMeta,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
   { loadSearchedParam, saveBillHead, resetBillHead }
@@ -88,7 +89,7 @@ export default class ManifestHeadPanel extends React.Component {
   }
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl, billHeadFieldsChangeTimes } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl, billHeadFieldsChangeTimes, billMeta } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -101,6 +102,7 @@ export default class ManifestHeadPanel extends React.Component {
       disabled: readonly,
       formData,
     };
+    const tradesOpt = formRequire.trades.filter(data => data.customer_partner_id === billMeta.customerId);
     return (
       <div className="pane">
         <div className="panel-header">
@@ -122,7 +124,7 @@ export default class ManifestHeadPanel extends React.Component {
                     codeField="trade_co" custCodeField="trade_custco" nameField="trade_name"
                     codeRules={[{ required: false }]} nameRules={[{ required: true }]}
                     onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                    {...formProps} options={formRequire.trades}
+                    {...formProps} options={tradesOpt}
                   />
                 </Col>
                 <Col span="16">
@@ -144,7 +146,7 @@ export default class ManifestHeadPanel extends React.Component {
                 } codeField="owner_code" custCodeField="owner_custco" nameField="owner_name" intl={intl}
                     codeRules={[{ required: false }]} nameRules={[{ required: true }]}
                     onSelect={this.handleRelationSel} onChange={this.handleRelationChange}
-                    {...formProps} options={formRequire.owners}
+                    {...formProps} options={tradesOpt}
                   />
                 </Col>
                 <Transport {...formProps} intl={intl} formRequire={formRequire} />

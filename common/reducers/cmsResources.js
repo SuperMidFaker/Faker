@@ -46,7 +46,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadBusinessUnits(cookie, tenantId) {
+export function loadBusinessUnits(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -56,12 +56,12 @@ export function loadBusinessUnits(cookie, tenantId) {
       ],
       endpoint: 'v1/cms/resources/business_units',
       method: 'get',
-      params: { tenantId },
+      params,
     },
   };
 }
 
-export function addBusinessUnit(name, code, customsCode, type, ieType, tenantId) {
+export function addBusinessUnit(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -71,7 +71,7 @@ export function addBusinessUnit(name, code, customsCode, type, ieType, tenantId)
       ],
       endpoint: 'v1/cms/resources/business_unit/add',
       method: 'post',
-      data: { name, code, customsCode, type, ieType, tenantId },
+      data,
     },
   };
 }

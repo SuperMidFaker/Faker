@@ -24,7 +24,9 @@ const RangePicker = DatePicker.RangePicker;
 export default class StatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    inboundNo: PropTypes.string.isRequired,
+    statsCard: PropTypes.shape({
+      inbounds: PropTypes.number,
+    }),
   }
   componentWillMount() {
     const { defaultWhse, tenantId } = this.props;

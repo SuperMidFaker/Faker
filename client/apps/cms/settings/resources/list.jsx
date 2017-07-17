@@ -49,12 +49,14 @@ export default class ResourcesList extends Component {
   state = {
     collapsed: false,
     currentPage: 1,
+    customers: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.customers !== this.props.customers && !this.props.customer.id) {
       const customer = nextProps.customers.length === 0 ? {} : nextProps.customers[0];
       this.handleRowClick(customer);
     }
+    this.setState({ customers: nextProps.customers });
   }
   handleRowClick = (record) => {
     this.props.setCustomer(record);
@@ -62,9 +64,19 @@ export default class ResourcesList extends Component {
   handleTabChange = (tabkey) => {
     this.props.setResTabkey(tabkey);
   }
+  handleSearch = (value) => {
+    let customers = this.props.customers;
+    if (value) {
+      customers = this.props.customers.filter((item) => {
+        const reg = new RegExp(value);
+        return reg.test(item.name) || reg.test(item.id);
+      });
+    }
+    this.setState({ customers, currentPage: 1 });
+  }
   msg = formatMsg(this.props.intl)
   render() {
-    const { customers, customer } = this.props;
+    const { customer } = this.props;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -89,9 +101,9 @@ export default class ResourcesList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search placeholder={this.msg('searchPlaceholder')} size="large" />
+              <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} size="large" />
             </div>
-            <Table size="middle" columns={columns} dataSource={customers} showHeader={false} onRowClick={this.handleRowClick}
+            <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false} onRowClick={this.handleRowClick}
               pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
               rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="code"
             />

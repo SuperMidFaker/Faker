@@ -404,7 +404,6 @@ export default class DetailPane extends React.Component {
         </Dropdown>
       );
     }
-    const distanceStr = shipmt.distance ? `${shipmt.distance}${this.msg('kilometer')}` : '';
     return (
       <div className="pane-content tab-pane">
         <Card
@@ -426,7 +425,7 @@ export default class DetailPane extends React.Component {
             <Col span="5">
               <InfoItem label="接单时间"
                 addonBefore={<Icon type="calendar" />}
-                field={dispatch.acpt_time ? moment(dispatch.acpt_time).format('YYYY.MM.DD') : ''}
+                field={upstream.acpt_time ? moment(upstream.acpt_time).format('YYYY.MM.DD') : ''}
               />
             </Col>
 
@@ -451,7 +450,7 @@ export default class DetailPane extends React.Component {
           </Row>
         </Card>
         <Card
-          title={`${this.msg('shipmtSchedule')} ${shipmt.transit_time || '当'}${this.msg('day')} ${distanceStr}`}
+          title={`${this.msg('shipmtSchedule')}`}
           bodyStyle={{ padding: 16 }}
           extra={shipmtScheduleExtra}
         >
