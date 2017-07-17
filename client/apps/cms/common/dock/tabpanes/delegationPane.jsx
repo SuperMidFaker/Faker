@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Button, Card, Checkbox, Col, Row, Collapse, DatePicker, Dropdown, Form, Icon,
-  Input, InputNumber, Mention, Menu, Popover, Radio, Select, Tabs, Timeline, Tooltip, message } from 'antd';
+import { Button, Card, Checkbox, Col, Row, Collapse, Dropdown, Form, Icon, Menu, Popover, Timeline, Tooltip, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadBasicInfo, loadCustPanel, loadDeclCiqPanel, updateCertParam, exchangeBlNo } from 'common/reducers/cmsDelgInfoHub';
 import { loadDeclHead, setInspect } from 'common/reducers/cmsDeclare';
@@ -13,14 +12,7 @@ import { CERTS, INSPECT_STATUS } from 'common/constants';
 import MainInfoCard from '../card/mainInfoCard';
 import ActivityEditCard from '../card/activityEditCard';
 
-const Option = Select.Option;
-const FormItem = Form.Item;
-const TabPane = Tabs.TabPane;
 const Panel = Collapse.Panel;
-const formItemLayout = {
-  labelCol: { span: 3 },
-  wrapperCol: { span: 21 },
-};
 
 const ACTIVITY_DESC_MAP = {
   create: { text: '创建清关委托', icon: 'plus-circle-o' },
@@ -196,8 +188,8 @@ export default class DelegationPane extends React.Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, previewer, declHeadsPane } = this.props;
-    const { delegation, delgDispatch, activities } = previewer;
+    const { previewer } = this.props;
+    const { delegation, activities } = previewer;
     const selectActivities = this.state.filterActivities || activities;
     const menu = (
       <Menu>
@@ -232,6 +224,7 @@ export default class DelegationPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <MainInfoCard />
+        {/*
         <Card bodyStyle={{ padding: 8, paddingBottom: 40 }} >
           <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
             <TabPane tab={<span><Icon type="message" />备注</span>} key="message">
@@ -313,6 +306,7 @@ export default class DelegationPane extends React.Component {
             </div>
           </div>
         </Card>
+        */}
         <Collapse bordered={false} defaultActiveKey={['timeline']}>
           <Panel header={timelineHeader} key="timeline">
             <Timeline>

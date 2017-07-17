@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Row, Col, Icon, Popover } from 'antd';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
+import TrimSpan from 'client/components/trimSpan';
 
 @injectIntl
 @connect(
@@ -35,7 +36,7 @@ export default class OrderNoColumn extends React.Component {
         <Row type="flex">
           <Col className="col-flex-primary">
             <a onClick={() => this.props.loadOrderDetail(order.shipmt_order_no, this.props.tenantId)}>{order.shipmt_order_no}</a>
-            <div>{order.customer_name}</div>
+            <div><TrimSpan text={order.customer_name} maxLen={14} /></div>
             <div className="mdc-text-grey">{order.cust_order_no} {order.cust_invoice_no && <Popover placement="right" content={content} title="发票号"><Icon type="caret-right" /></Popover>}</div>
           </Col>
         </Row>

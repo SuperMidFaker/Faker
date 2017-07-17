@@ -106,7 +106,7 @@ export default class OrderList extends React.Component {
       }
     });
   }
-  handleAccept = (shipmtOrderNo) => {
+  handleStart = (shipmtOrderNo) => {
     const { loginId, username } = this.props;
     this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
@@ -220,7 +220,7 @@ export default class OrderList extends React.Component {
           return (
             <div>
               {record.flow_node_num > 0 &&
-              <a onClick={() => this.handleAccept(record.shipmt_order_no)}><Icon type="play-circle" /></a>
+              <a onClick={() => this.handleStart(record.shipmt_order_no)}><Icon type="play-circle" /></a>
               }
               {record.flow_node_num > 0 &&
               <span className="ant-divider" />
