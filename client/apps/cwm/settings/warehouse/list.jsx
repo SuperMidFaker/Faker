@@ -7,14 +7,15 @@ import RowUpdater from 'client/components/rowUpdater';
 import WarehouseModal from './modal/warehouseModal';
 import LocationModal from './modal/locationModal';
 import { MdIcon } from 'client/components/FontIcon';
-import ZoneEditPopover from './popover/zoneEditPopover';
 import OwnersPane from './tabpane/ownersPane';
 import SupervisionPane from './tabpane/supervisionPane';
 import { showWarehouseModal, addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
-  editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
+  editLocation, deleteZone, showZoneModal, batchDeleteLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from './message.i18n';
 import ExcelUpload from 'client/components/excelUploader';
+import ZoneEditModal from './modal/zoneEditModal';
 import './warehouse.less';
+import { CWM_LOCATION_TYPES, CWM_LOCATION_STATUS } from 'common/constants';
 
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
@@ -34,6 +35,7 @@ const FormItem = Form.Item;
     whses: state.cwmContext.whses,
     zoneList: state.cwmWarehouse.zoneList,
     locations: state.cwmWarehouse.locations,
+    locationLoading: state.cwmWarehouse.locationLoading,
   }),
   { showWarehouseModal,
     addZone,
@@ -42,7 +44,9 @@ const FormItem = Form.Item;
     loadLocations,
     deleteLocation,
     editLocation,
-    deleteZone }
+    deleteZone,
+    showZoneModal,
+    batchDeleteLocations }
 )
 @Form.create()
 export default class WareHouse extends Component {
@@ -60,6 +64,7 @@ export default class WareHouse extends Component {
     zones: [],
     zone: {},
     selectKeys: [],
+    selectedRowKeys: [],
   }
   componentWillMount() {
     this.setState({
@@ -85,6 +90,9 @@ export default class WareHouse extends Component {
     if (nextProps.whses.length !== this.props.whses.length) {
       this.setState({ warehouses: nextProps.whses });
     }
+  }
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
   }
   msg = formatMsg(this.props.intl)
   showWarehouseModal = () => {
@@ -181,8 +189,9 @@ export default class WareHouse extends Component {
       zones: data,
     });
   }
-  handleDeleteZone = (zoneCode) => {
+  handleDeleteZone = () => {
     const whseCode = this.state.warehouse.code;
+    const zoneCode = this.state.zone.zone_code;
     this.props.deleteZone(whseCode, zoneCode).then(
       (result) => {
         if (!result.error) {
@@ -210,6 +219,21 @@ export default class WareHouse extends Component {
     const { zoneCode } = this.state;
     this.props.loadLocations(whseCode, zoneCode);
   }
+  showZoneModal = () => {
+    this.props.showZoneModal();
+  }
+  batchDeleteLocations = () => {
+    const whseCode = this.state.warehouse.code;
+    const zoneCode = this.state.zone.zone_code;
+    this.props.batchDeleteLocations(this.state.selectedRowKeys).then((result) => {
+      if (!result.error) {
+        this.props.loadLocations(whseCode, zoneCode);
+        this.setState({
+          selectedRowKeys: [],
+        });
+      }
+    });
+  }
   locationColumns = [{
     title: 'location',
     dataIndex: 'location',
@@ -218,10 +242,12 @@ export default class WareHouse extends Component {
     title: '库位类型',
     dataIndex: 'type',
     key: 'type',
+    render: o => CWM_LOCATION_TYPES.find(item => item.value === Number(o)) ? CWM_LOCATION_TYPES.find(item => item.value === Number(o)).text : '',
   }, {
     title: '库位状态',
     dataIndex: 'status',
     key: 'status',
+    render: o => CWM_LOCATION_STATUS.find(item => item.value === Number(o)) ? CWM_LOCATION_STATUS.find(item => item.value === Number(o)).text : '',
   }, {
     title: '操作',
     width: 100,
@@ -235,8 +261,22 @@ export default class WareHouse extends Component {
   },
   ]
   render() {
-    const { form: { getFieldDecorator }, zoneList } = this.props;
-    const { warehouse, warehouses, zone, selectKeys } = this.state;
+    const { form: { getFieldDecorator }, zoneList, locationLoading, locations } = this.props;
+    const { warehouse, warehouses, zone, selectKeys, selectedRowKeys } = this.state;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+      selections: [{
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          this.setState({
+            selectedRowKeys: locations.map(item => item.id),  // 0...45
+          });
+        },
+      }],
+      onSelection: this.onSelection,
+    };
     const whseColumns = [{
       dataIndex: 'name',
       key: 'name',
@@ -327,7 +367,6 @@ export default class WareHouse extends Component {
                           {
                           zoneList.map(item => (<Menu.Item key={item.zone_code}>
                             <span>{item.zone_name}</span>
-                            <ZoneEditPopover id={item.id} zoneCode={item.zone_code} whseCode={warehouse.code} stateChange={this.handleStateChange} deleteZone={this.handleDeleteZone} />
                           </Menu.Item>))
                         }
                         </SubMenu>
@@ -342,10 +381,10 @@ export default class WareHouse extends Component {
                     </Sider>
                     <Content className="nav-content">
                       <div className="toolbar">
-                        <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
+                        {zoneList.length > 0 && <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
                           创建库位
-                        </Button>
-                        <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
+                        </Button>}
+                        {zoneList.length > 0 && <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
                           formData={{
                             data: JSON.stringify({
                               tenantId: this.props.tenantId,
@@ -356,10 +395,14 @@ export default class WareHouse extends Component {
                           <Button type="primary" ghost icon="upload">
                             批量导入库位
                           </Button>
-                        </ExcelUpload>
+                        </ExcelUpload>}
+                        <Button type="primary" ghost icon="edit" onClick={this.showZoneModal}>编辑库区</Button>
+                        <Button type="primary" ghost icon="delete" onClick={this.handleDeleteZone}>删除库区</Button>
+                        {this.state.selectedRowKeys.length > 0 && <Button type="primary" ghost icon="delete" onClick={this.batchDeleteLocations}>批量删除库位</Button>}
+                        <ZoneEditModal zone={zone} whseCode={warehouse.code} stateChange={this.handleStateChange} />
                       </div>
                       <div className="panel-body table-panel">
-                        <Table columns={this.locationColumns} dataSource={this.props.locations} />
+                        <Table columns={this.locationColumns} dataSource={locations} rowKey="id" loading={locationLoading} rowSelection={rowSelection} />
                       </div>
                       <LocationModal whseCode={warehouse.code} zoneCode={zone.zone_code} />
                     </Content>

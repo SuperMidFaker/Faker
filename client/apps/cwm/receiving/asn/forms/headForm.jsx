@@ -18,6 +18,7 @@ const RadioGroup = Radio.Group;
 @connect(
   state => ({
     owners: state.cwmContext.whseAttrs.owners,
+    defaultWhse: state.cwmContext.defaultWhse,
   })
 )
 export default class HeadForm extends Component {
@@ -69,7 +70,7 @@ export default class HeadForm extends Component {
     this.props.handleOwnerChange(true, value);
   }
   render() {
-    const { form: { getFieldDecorator }, owners, asnHead } = this.props;
+    const { form: { getFieldDecorator }, owners, asnHead, defaultWhse } = this.props;
     const { bonded } = this.state;
     return (
       <Card>
@@ -95,7 +96,7 @@ export default class HeadForm extends Component {
               })(
                 <RadioGroup onChange={this.handleBondedChange}>
                   <RadioButton value={0}>非保税</RadioButton>
-                  <RadioButton value={1}>保税</RadioButton>
+                  { defaultWhse.bonded === 1 && <RadioButton value={1}>保税</RadioButton> }
                 </RadioGroup>
                   )}
             </FormItem>

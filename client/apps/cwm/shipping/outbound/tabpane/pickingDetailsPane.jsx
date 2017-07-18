@@ -9,6 +9,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import QuantityInput from '../../../common/quantityInput';
+import PackagePopover from '../../../common/popover/packagePopover';
 import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
@@ -50,7 +51,7 @@ export default class PickingDetailsPane extends React.Component {
     width: 120,
     render: (o) => {
       if (o) {
-        return <Button size="small">{o}</Button>;
+        return <PackagePopover sku={o} />;
       }
     },
   }, {

@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Tag, Icon, Button } from 'antd';
+import { Table, Tag, Icon } from 'antd';
 import { loadShipDetails } from 'common/reducers/cwmOutbound';
+import PackagePopover from '../../../common/popover/packagePopover';
 
 @injectIntl
 @connect(
@@ -47,7 +48,7 @@ export default class ShippingDetailsPane extends React.Component {
     width: 120,
     render: (o) => {
       if (o) {
-        return <Button size="small">{o}</Button>;
+        return <PackagePopover sku={o} />;
       }
     },
   }, {

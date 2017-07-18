@@ -4,7 +4,7 @@ import { Button, Popover, Form, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../../message.i18n';
+import messages from '../../message.i18n';
 import { loadSku } from 'common/reducers/cwmSku';
 
 const formatMsg = format(messages);

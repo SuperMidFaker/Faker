@@ -7,6 +7,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
 import QuantityInput from '../../../common/quantityInput';
+import PackagePopover from '../../../common/popover/packagePopover';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
@@ -75,7 +76,7 @@ export default class OrderDetailsPane extends React.Component {
     width: 120,
     render: (o) => {
       if (o) {
-        return <Button size="small">{o}</Button>;
+        return <PackagePopover sku={o} />;
       }
     },
   }, {

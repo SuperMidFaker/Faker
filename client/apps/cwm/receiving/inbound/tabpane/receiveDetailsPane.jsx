@@ -5,7 +5,7 @@ import { Modal, Select, Button, Table } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
-import PackagePopover from '../popover/packagePopover';
+import PackagePopover from '../../../common/popover/packagePopover';
 import ReceivingModal from '../modal/receivingModal';
 import QuantityInput from '../../../common/quantityInput';
 import BatchReceivingModal from '../modal/batchReceivingModal';

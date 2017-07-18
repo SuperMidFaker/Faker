@@ -61,7 +61,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:
-      return { ...state, dock: { ...state.dock, visible: true, order: { so_no: action.soNo, outboundNo: action.outboundNo, status: 0 } } };
+      return { ...state, dock: { ...state.dock, visible: true, order: { ...state.dock.order, so_no: action.soNo, outboundNo: action.outboundNo, status: 0 } } };
     case actionTypes.CHANGE_DOCK_TAB:
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.LOAD_SOS:

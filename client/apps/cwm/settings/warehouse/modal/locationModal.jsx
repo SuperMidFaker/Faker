@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
 import { hideLocationModal, addLocation, loadLocations, updateLocation } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
+import { CWM_LOCATION_TYPES, CWM_LOCATION_STATUS } from 'common/constants';
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -107,17 +108,12 @@ export default class AddLocationModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="库位类型">
             <RadioGroup value={type} onChange={this.typeChange}>
-              <RadioButton value={1}>货架</RadioButton>
-              <RadioButton value={2}>窄巷道货架</RadioButton>
-              <RadioButton value={3}>重力式货架</RadioButton>
-              <RadioButton value={4}>地面平仓</RadioButton>
+              {CWM_LOCATION_TYPES.map(item => <RadioButton value={item.value}>{item.text}</RadioButton>)}
             </RadioGroup>
           </FormItem>
           <FormItem {...formItemLayout} label="库位状态">
             <RadioGroup value={status} onChange={this.statusChange}>
-              <RadioButton value={1}>正常</RadioButton>
-              <RadioButton value={0}>封存</RadioButton>
-              <RadioButton value={-1}>禁用</RadioButton>
+              {CWM_LOCATION_STATUS.map(item => <RadioButton value={item.value}>{item.text}</RadioButton>)}
             </RadioGroup>
           </FormItem>
         </Form>

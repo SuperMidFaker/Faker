@@ -1,38 +1,34 @@
 import React, { Component } from 'react';
+import { PropTypes } from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Form, message, Popover, Icon, Input, Button, Dropdown, Menu } from 'antd';
-import { updateZone, loadZones, loadLocations } from 'common/reducers/cwmWarehouse';
+import { Form, message, Input, Modal } from 'antd';
+import { updateZone, loadZones, loadLocations, hideZoneModal } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
 
 @injectIntl
 @connect(
-  () => ({}),
-  { updateZone, loadZones, loadLocations }
+  state => ({
+    visible: state.cwmWarehouse.zoneModal.visible,
+  }),
+  { updateZone, loadZones, loadLocations, hideZoneModal }
 )
 @Form.create()
-export default class ZoneEditPopover extends Component {
+export default class ZoneEditModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    zone: PropTypes.object.isRequired,
   }
   state = {
     popoverVisible: false,
     dropdownVisible: false,
   }
   msg = formatMsg(this.props.intl)
-  handleVisibleChange = (visible) => {
-    this.setState({ popoverVisible: visible });
-    if (this.state.popoverVisible) {
-      this.setState({
-        dropdownVisible: !this.state.popoverVisible,
-      });
-    }
-  }
   editZone = (e) => {
     e.preventDefault();
-    const { id, whseCode } = this.props;
+    const { zone: { id }, whseCode } = this.props;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { zoneCode, zoneName } = values;
@@ -45,6 +41,7 @@ export default class ZoneEditPopover extends Component {
                   if (!data.error && data.data.length !== 0) {
                     this.props.stateChange(data.data[0].zone_code, data.data);
                     this.props.loadLocations(whseCode, data.data[0].zone_code);
+                    this.props.hideZoneModal();
                   }
                 }
               );
@@ -54,22 +51,18 @@ export default class ZoneEditPopover extends Component {
       }
     });
   }
-  handleDropdownVisible = () => {
-    this.setState({
-      dropdownVisible: !this.state.dropdownVisible,
-    });
-  }
-  handleZoneDelete = () => {
-    this.props.deleteZone(this.props.zoneCode);
+  handleCancel = () => {
+    this.props.hideZoneModal();
   }
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, zone } = this.props;
     const zonePopoverContent = (
       <Form>
         <FormItem>
           {
             getFieldDecorator('zoneCode', {
               rules: [{ required: true, messages: 'please input zoneCode' }],
+              initialValue: zone.zone_code,
             })(<Input placeholder="库区编号" />)
           }
         </FormItem>
@@ -77,31 +70,15 @@ export default class ZoneEditPopover extends Component {
           {
             getFieldDecorator('zoneName', {
               rules: [{ required: true, messages: 'please input zoneName' }],
+              initialValue: zone.zone_name,
             })(<Input placeholder="库区描述" />)
           }
         </FormItem>
-        <FormItem>
-          <Button size="large" type="primary" style={{ width: '100%', marginTop: 10 }} onClick={this.editZone}>确定</Button>
-        </FormItem>
       </Form>);
     return (
-      <Dropdown visible={this.state.dropdownVisible} overlay={
-        <Menu>
-          <Menu.Item key="edit">
-            <Popover content={zonePopoverContent}
-              title="编辑库区" trigger="click" visible={this.state.popoverVisible}
-              onVisibleChange={this.handleVisibleChange}
-            >
-              <a><Icon type="edit" /> 编辑</a>
-            </Popover>
-          </Menu.Item>
-          <Menu.Item key="delete">
-            <a onClick={this.handleZoneDelete}><Icon type="delete" /> 删除</a>
-          </Menu.Item>
-        </Menu>}
-      >
-        <span style={{ float: 'right' }} onClick={this.handleDropdownVisible}><Icon type="ellipsis" /></span>
-      </Dropdown>
+      <Modal visible={this.props.visible} title="编辑库区" onCancel={this.handleCancel} onOk={this.editZone}>
+        {zonePopoverContent}
+      </Modal>
     );
   }
 }

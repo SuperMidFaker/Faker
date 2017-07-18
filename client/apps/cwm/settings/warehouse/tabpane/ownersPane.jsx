@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Table } from 'antd';
-import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal } from 'common/reducers/cwmWarehouse';
+import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, freezeLocation, activeLocation } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
@@ -16,7 +16,7 @@ const { Content } = Layout;
   state => ({
     whseOwners: state.cwmWarehouse.whseOwners,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal }
+  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, freezeLocation, activeLocation }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -54,13 +54,28 @@ export default class OwnersPane extends Component {
       <span>
         <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={this.editDeleteLocation} label="停用" row={record} />
+        {record.active === 0 ? <RowUpdater onHit={() => this.activeLocation(record.id)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.freezeLocation(record.id)} label="停用" row={record} />}
       </span>
-      ),
+    ),
   }]
   msg = formatMsg(this.props.intl)
   handleOwnerControl = () => {
     this.props.showOwnerControlModal();
+  }
+  freezeLocation = (id) => {
+    this.props.freezeLocation(id).then((result) => {
+      if (!result.error) {
+        this.props.loadwhseOwners(this.props.whseCode);
+      }
+    });
+  }
+  activeLocation = (id) => {
+    this.props.activeLocation(id).then((result) => {
+      if (!result.error) {
+        this.props.loadwhseOwners(this.props.whseCode);
+      }
+    });
   }
   render() {
     const { whseCode, whseTenantId, whseOwners } = this.props;
