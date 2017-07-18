@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Icon, Layout, Radio, Menu, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
+import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -20,7 +21,6 @@ const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -95,17 +95,17 @@ export default class SHFTZReleaseList extends React.Component {
     title: '出口日期',
     width: 120,
     dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('MM.DD HH:mm'),
+    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
   }, {
     title: '报关日期',
     width: 120,
     dataIndex: 'cus_decl_date',
-    render: decldate => decldate && moment(decldate).format('MM.DD HH:mm'),
+    render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
   }, {
     title: '预计出区日期',
     width: 120,
     dataIndex: 'ftz_rel_date',
-    render: reldate => reldate && moment(reldate).format('MM.DD HH:mm'),
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -270,23 +270,24 @@ export default class SHFTZReleaseList extends React.Component {
                 <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                   onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
                 >
-                  <OptGroup>
-                    <Option value="all">全部货主</Option>
-                    {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-                      search={`${data.partner_code}${data.name}`}
-                    >{data.name}
-                    </Option>)
+                  <Option value="all">全部货主</Option>
+                  {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+                    search={`${data.partner_code}${data.name}`}
+                  >{data.name}
+                  </Option>)
                     )}
-                  </OptGroup>
                 </Select>
+                <span />
+                <ButtonToggle size="large" disabled><Icon type="filter" />筛选报关申请</ButtonToggle>
                 <div className="toolbar-right" />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                  <Button size="large">发送报关申请</Button>
                 </div>
               </div>
               <div className="panel-body table-panel">
                 <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-                  indentSize={8} rowKey="id" scroll={{ x: 2000 }}
+                  indentSize={8} rowKey="id" scroll={{ x: 1700 }}
                 />
               </div>
             </div>

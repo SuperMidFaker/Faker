@@ -92,7 +92,7 @@ export default class SHFTZEntryList extends React.Component {
     dataIndex: 'ie_date',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
+        return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
@@ -101,7 +101,7 @@ export default class SHFTZEntryList extends React.Component {
     dataIndex: 'ftz_ent_date',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
+        return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
