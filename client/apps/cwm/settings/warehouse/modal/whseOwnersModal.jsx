@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Table, message } from 'antd';
-import { loadwhseOwners, addWhseOwners, hideWhseOwnersModal } from 'common/reducers/cwmWarehouse';
+import { loadwhseOwners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode } from 'common/reducers/cwmWarehouse';
 import { loadPartners } from 'common/reducers/partner';
+import EditableCell from 'client/components/EditableCell';
 import { PARTNER_BUSINESSE_TYPES, PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -15,7 +16,7 @@ import { formatMsg } from '../message.i18n';
     visible: state.cwmWarehouse.whseOwnersModal.visible,
     loginId: state.account.loginId,
   }),
-  { loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal }
+  { loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode }
 )
 export default class WhseOwnersModal extends Component {
   static propTypes = {
@@ -27,12 +28,20 @@ export default class WhseOwnersModal extends Component {
   state = {
     selectedRowKeys: [],
     selectedRows: [],
+    filterPartners: [],
   }
   componentWillMount() {
     this.props.loadPartners({
       tenantId: this.props.whseTenantId,
       role: PARTNER_ROLES.CUS,
       businessType: PARTNER_BUSINESSE_TYPES.warehousing,
+    }).then((result) => {
+      if (!result.error) {
+        const filterPartners = result.data.filter(partner => !this.props.whseOwners.find(owners => owners.owner_partner_id === partner.id));
+        this.setState({
+          filterPartners,
+        });
+      }
     });
   }
   componentWillReceiveProps(nextProps) {
@@ -42,14 +51,36 @@ export default class WhseOwnersModal extends Component {
         tenantId,
         role: PARTNER_ROLES.CUS,
         businessType: PARTNER_BUSINESSE_TYPES.warehousing,
+      }).then((result) => {
+        if (!result.error) {
+          const filterPartners = result.data.filter(partner => !this.props.whseOwners.find(owners => owners.owner_partner_id === partner.id));
+          this.setState({
+            filterPartners,
+          });
+        }
       });
     }
+  }
+  SaveOwnerCode = (index, code) => {
+    const filterPartners = [...this.state.filterPartners];
+    filterPartners[index].partner_code = code;
+    this.setState({
+      filterPartners,
+    });
   }
   msg = formatMsg(this.props.intl)
   columns = [{
     title: '货主代码',
     dataIndex: 'partner_code',
-  }, {
+    render: (o, record, index) => {
+      if (!o) {
+        return <EditableCell value={o} onSave={code => this.SaveOwnerCode(index, code)} />;
+      } else {
+        return o;
+      }
+    },
+  },
+  {
     title: '货主名称',
     dataIndex: 'name',
   }]
@@ -58,6 +89,11 @@ export default class WhseOwnersModal extends Component {
   }
   handleAdd = () => {
     const whseCode = this.props.whseCode;
+    const validation = this.state.selectedRows.find(item => !item.partner_code);
+    if (validation) {
+      message.info('请编辑货主代码为空的项');
+      return;
+    }
     const data = this.state.selectedRows.map(obj => ({
       partnerId: obj.id,
       name: obj.name,
@@ -72,19 +108,25 @@ export default class WhseOwnersModal extends Component {
           message.info('添加成功');
           this.props.hideWhseOwnersModal();
           this.props.loadwhseOwners(whseCode);
+          const filterPartners = this.state.filterPartners.filter(partner => !this.state.selectedRows.find(owners => owners.id === partner.id));
+          this.setState({
+            filterPartners,
+            selectedRowKeys: [],
+            selectedRows: [],
+          });
         }
       }
     );
   }
   render() {
-    const { visible, partners, whseOwners } = this.props;
+    const { visible } = this.props;
+    const { filterPartners } = this.state;
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys, selectedRows });
       },
       selectedRowKeys: this.state.selectedRowKeys,
     };
-    const filterPartners = partners.filter(partner => !whseOwners.find(owners => owners.owner_partner_id === partner.id));
     return (
       <Modal title="添加货主" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Table columns={this.columns} dataSource={filterPartners} rowKey="id" rowSelection={rowSelection} pagination={false} />

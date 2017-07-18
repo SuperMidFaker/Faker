@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Table, Button, Modal } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import QuantityInput from '../../../common/quantityInput';
-import PackagePopover from '../popover/packagePopover';
+import PackagePopover from '../../../common/popover/packagePopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
 import { CWM_INBOUND_STATUS } from 'common/constants';

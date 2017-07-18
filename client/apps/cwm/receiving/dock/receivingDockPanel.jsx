@@ -109,9 +109,9 @@ export default class ReceivingDockPanel extends React.Component {
         <TabPane tab={this.msg('tabASN')} key="asn">
           <ASNPane asnHead={asnHead} asnBody={asnBody} />
         </TabPane>
-        <TabPane tab={this.msg('tabFTZ')} key="ftz">
+        { asnHead.bonded && <TabPane tab={this.msg('tabFTZ')} key="ftz">
           <FTZPane asnNo={asn.asn_no} />
-        </TabPane>
+        </TabPane>}
         <TabPane tab={this.msg('tabInbound')} key="inbound">
           <InboundPane asnNo={asn.asn_no} />
         </TabPane>

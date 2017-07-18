@@ -47,14 +47,29 @@ export default class ReceiveInbound extends Component {
   }
   state = {
     printed: false,
+    activeTab: '',
   }
   componentWillMount() {
-    this.props.loadInboundHead(this.props.params.inboundNo);
+    this.props.loadInboundHead(this.props.params.inboundNo).then((result) => {
+      if (!result.error) {
+        const activeTab = result.data.status === CWM_INBOUND_STATUS.COMPLETED.value ? 'putawayDetails' : 'receiveDetails';
+        this.setState({
+          activeTab,
+        });
+      }
+    });
     this.props.loadLocations(this.props.defaultWhse.code);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      this.props.loadInboundHead(nextProps.params.inboundNo);
+      this.props.loadInboundHead(nextProps.params.inboundNo).then((result) => {
+        if (!result.error) {
+          const activeTab = result.data.status === CWM_INBOUND_STATUS.COMPLETED.value ? 'putawayDetails' : 'receiveDetails';
+          this.setState({
+            activeTab,
+          });
+        }
+      });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -66,7 +81,9 @@ export default class ReceiveInbound extends Component {
       printed: true,
     });
   }
-
+  handleTabChange = (activeTab) => {
+    this.setState({ activeTab });
+  }
   render() {
     const { defaultWhse, inboundHead } = this.props;
     const tagMenu = (
@@ -152,7 +169,7 @@ export default class ReceiveInbound extends Component {
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="receiveDetails" onChange={this.handleTabChange}>
+              <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
                 <TabPane tab="收货明细" key="receiveDetails">
                   <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
                 </TabPane>

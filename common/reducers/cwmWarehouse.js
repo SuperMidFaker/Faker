@@ -18,6 +18,11 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'LOAD_WHSE_OWNERS', 'LOAD_WHSE_OWNERS_SUCCEED', 'LOAD_WHSE_OWNERS_FAIL',
   'ADD_WHSE_OWNERS', 'ADD_WHSE_OWNERS_SUCCEED', 'ADD_WHSE_OWNERS_FAIL',
   'SHOW_OWNER_CONTROL_MODAL', 'HIDE_OWNER_CONTROL_MODAL',
+  'SAVE_OWNER_CODE', 'SAVE_OWNER_CODE_SUCCEED', 'SAVE_OWNER_CODE_FAIL',
+  'SHOW_ZONE_MODAL', 'HIDE_ZONE_MODAL',
+  'FREEZE_LOCATION', 'FREEZE_LOCATION_SUCCEED', 'FREEZE_LOCATION_FAIL',
+  'ACTIVE_LOCATION', 'ACTIVE_LOCATION_SUCCEED', 'ACTIVE_LOCATION_FAIL',
+  'DELETE_LOCATIONS', 'DELETE_LOCATIONS_SUCCEED', 'DELETE_LOCATIONS_FAIL',
 ]);
 
 const initialState = {
@@ -36,8 +41,12 @@ const initialState = {
   warehouseList: [],
   zoneList: [],
   locations: [],
+  locationLoading: true,
   record: {},
   whseOwners: [],
+  zoneModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -46,8 +55,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, warehouseModal: { ...state.warehouseModal, visible: true } };
     case actionTypes.HIDE_WAREHOUSE_MODAL:
       return { ...state, warehouseModal: { ...state.warehouseModal, visible: false } };
+    case actionTypes.LOAD_ZONE:
+      return { ...state, locationLoading: true };
     case actionTypes.LOAD_ZONE_SUCCEED:
-      return { ...state, zoneList: action.result.data };
+      return { ...state, zoneList: action.result.data, locationLoading: false };
     case actionTypes.SHOW_LOCATION_MODAL:
       return { ...state, locationModal: { ...state.locationModal, visible: true }, record: action.data ? action.data : {} };
     case actionTypes.HIDE_LOCATION_MODAL:
@@ -64,6 +75,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: false } };
     case actionTypes.LOAD_WHSE_OWNERS_SUCCEED:
       return { ...state, whseOwners: action.result.data };
+    case actionTypes.SHOW_ZONE_MODAL:
+      return { ...state, zoneModal: { ...state.zoneModal, visible: true } };
+    case actionTypes.HIDE_ZONE_MODAL:
+      return { ...state, zoneModal: { ...state.zoneModal, visible: false } };
     default:
       return state;
   }
@@ -294,6 +309,78 @@ export function addWhseOwners(data, loginId) {
       endpoint: 'v1/cwm/warehouse/owners/add',
       method: 'post',
       data: { owners: data, loginId },
+    },
+  };
+}
+
+export function saveOwnerCode(ownerCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_OWNER_CODE,
+        actionTypes.SAVE_OWNER_CODE_SUCCEED,
+        actionTypes.SAVE_OWNER_CODE_FAIL,
+      ],
+      endpoint: 'v1/cwm/owner/code/save',
+      method: 'post',
+      data: { ownerCode },
+    },
+  };
+}
+
+export function showZoneModal() {
+  return {
+    type: actionTypes.SHOW_ZONE_MODAL,
+  };
+}
+
+export function hideZoneModal() {
+  return {
+    type: actionTypes.HIDE_ZONE_MODAL,
+  };
+}
+
+export function freezeLocation(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FREEZE_LOCATION,
+        actionTypes.FREEZE_LOCATION_SUCCEED,
+        actionTypes.FREEZE_LOCATION_FAIL,
+      ],
+      endpoint: 'v1/cwm/freeze/location',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function activeLocation(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ACTIVE_LOCATION,
+        actionTypes.ACTIVE_LOCATION_SUCCEED,
+        actionTypes.ACTIVE_LOCATION_FAIL,
+      ],
+      endpoint: 'v1/cwm/active/location',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function batchDeleteLocations(ids) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_LOCATIONS,
+        actionTypes.DELETE_LOCATIONS_SUCCEED,
+        actionTypes.DELETE_LOCATIONS_FAIL,
+      ],
+      endpoint: 'v1/cwm/delete/locations',
+      method: 'post',
+      data: { ids },
     },
   };
 }

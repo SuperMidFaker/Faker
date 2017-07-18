@@ -6,7 +6,6 @@ import { Layout, Table, Button, Input, Popover, Menu, Form, message } from 'antd
 import LocationModal from '../modal/locationModal';
 import { MdIcon } from 'client/components/FontIcon';
 import RowUpdater from 'client/components/rowUpdater';
-import ZoneEditPopover from '../popover/zoneEditPopover';
 import { addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
@@ -48,17 +47,17 @@ export default class ZoneLocationPane extends Component {
   }
   componentWillReceiveProps() {
     this.props.loadZones(this.props.warehouse.whse_code).then(
-        (result) => {
-          if (!result.error && result.data.length !== 0) {
-            this.props.loadLocations(this.props.warehouse.whse_code, result.data[0].zone_code);
-            this.setState({
-              zone: result.data[0],
-              zones: result.data,
-              selectKeys: [result.data[0].zone_code],
-            });
-          }
+      (result) => {
+        if (!result.error && result.data.length !== 0) {
+          this.props.loadLocations(this.props.warehouse.whse_code, result.data[0].zone_code);
+          this.setState({
+            zone: result.data[0],
+            zones: result.data,
+            selectKeys: [result.data[0].zone_code],
+          });
         }
-      );
+      }
+    );
   }
   createZone = (e) => {
     e.preventDefault();
@@ -169,7 +168,7 @@ export default class ZoneLocationPane extends Component {
         <span className="ant-divider" />
         <RowUpdater onHit={this.editDeleteLocation} label="edit" row={record} />
       </span>
-      ),
+    ),
   },
   ]
   msg = formatMsg(this.props.intl)
@@ -202,11 +201,10 @@ export default class ZoneLocationPane extends Component {
           <Menu defaultOpenKeys={['zoneMenu']} mode="inline" selectedKeys={selectKeys} onClick={this.handleZoneClick}>
             <SubMenu key="zoneMenu" title={<span><MdIcon mode="fontello" type="sitemap" />库区</span>} >
               {
-                          zoneList.map(item => (<Menu.Item key={item.zone_code}>
-                            <span>{item.zone_name}</span>
-                            <ZoneEditPopover id={item.id} zoneCode={item.zone_code} whseCode={warehouse.whse_code} stateChange={this.handleStateChange} deleteZone={this.handleDeleteZone} />
-                          </Menu.Item>))
-                        }
+                zoneList.map(item => (<Menu.Item key={item.zone_code}>
+                  <span>{item.zone_name}</span>
+                </Menu.Item>))
+              }
             </SubMenu>
           </Menu>
           <div className="nav-sider-footer">
@@ -220,8 +218,8 @@ export default class ZoneLocationPane extends Component {
         <Content className="nav-content">
           <div className="nav-content-head">
             <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
-                          创建库位
-                        </Button>
+              创建库位
+            </Button>
           </div>
           <div className="panel-body table-panel">
             <Table columns={this.locationColumns} dataSource={this.props.locations} />
