@@ -42,17 +42,17 @@ export default class OverviewCard extends React.Component {
     return (
       <Card noHovering bodyStyle={{ padding: 0 }}>
         <div style={{ padding: 24 }}>
-          <Avatar shape="square" size="large" icon="user" />
-          <h4>{customer.name}</h4>
+          <Avatar shape="square" size="large" icon="global" />
+          <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{customer.name}</h2>
         </div>
-        <Card.Grid style={{ width: '33%' }}>
-          <MdIcon type="clearance" />清关业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
+        <Card.Grid style={{ width: '33%', fontSize: 16 }}>
+          <MdIcon type="clearance" /> 清关业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
         </Card.Grid>
-        <Card.Grid style={{ width: '34%' }}>
-          <MdIcon type="cwm" />仓储业务 <span className="pull-right"><Badge status="default" text="未开通" /></span>
+        <Card.Grid style={{ width: '34%', fontSize: 16 }}>
+          <MdIcon type="cwm" /> 仓储业务 <span className="pull-right"><Badge status="default" text="未开通" /></span>
         </Card.Grid>
-        <Card.Grid style={{ width: '33%' }}>
-          <MdIcon type="transport" />运输业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
+        <Card.Grid style={{ width: '33%', fontSize: 16 }}>
+          <MdIcon type="transport" /> 运输业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
         </Card.Grid>
       </Card>
     );
