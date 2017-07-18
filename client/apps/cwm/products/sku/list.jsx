@@ -220,7 +220,7 @@ export default class CWMSkuList extends React.Component {
       .then((result) => {
         if (result.error) {
           if (result.error.message === 'NO_OWNER_REPO') {
-            message.error('当前货主企业物料库未创建');
+            message.error('该客户暂无企业物料库');
           }
         } else {
           this.props.loadOwnerSkus({

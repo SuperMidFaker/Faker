@@ -163,11 +163,11 @@ exports.NODE_BIZ_OBJECTS_EXECUTABLES = {
   cwmrec: [{
     key: 'cwmReceiving',
     text: 'cwmRecAsn',
-    triggers: [{ action: 'asnReleased', actionText: 'asnRelease' }],
+    triggers: [],
   }],
   cwmship: [{
     key: 'cwmShipping',
     text: 'cwmShippingOrder',
-    triggers: [{ action: 'soReleased', actionText: 'soRelease' }],
+    triggers: [{ action: 'soReleased', actionText: 'soRelease' }, { action: 'autoAlloc', actionText: '订单自动分配' }],
   }],
 };

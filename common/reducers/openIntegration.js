@@ -240,7 +240,7 @@ export function updateShftzApp(shftz) {
   };
 }
 
-export function loadWhseSupervisionApps() {
+export function loadWhseSupervisionApps(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -250,6 +250,7 @@ export function loadWhseSupervisionApps() {
       ],
       endpoint: 'v1/platform/integration/whse/supervisions',
       method: 'get',
+      params: { tenantId },
     },
   };
 }
