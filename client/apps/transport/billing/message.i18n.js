@@ -5,6 +5,14 @@ export default defineMessages({
     id: 'transport.billing',
     defaultMessage: '账单',
   },
+  billingCenter: {
+    id: 'transport.billing.center',
+    defaultMessage: '账务中心',
+  },
+  billingManagement: {
+    id: 'transport.billing.management',
+    defaultMessage: '费用管理',
+  },
   receivable: {
     id: 'transport.billing.receivable',
     defaultMessage: '应收',

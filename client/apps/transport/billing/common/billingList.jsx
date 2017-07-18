@@ -306,7 +306,7 @@ export default class BillingList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              {this.msg('expense')}
+              {this.msg('billingCenter')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg(type)}{this.msg('billing')}

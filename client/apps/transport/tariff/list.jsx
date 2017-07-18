@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Radio, Button, Popconfirm, message, Layout } from 'antd';
+import { Radio, Button, Popconfirm, message, Layout, Breadcrumb } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -466,7 +466,14 @@ export default class TariffList extends React.Component {
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="top-bar">
-          <span>{this.msg('transportTariff')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('billingCenter')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('transportTariff')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup onChange={this.handleKindChange} value={this.state.kind} size="large">
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="sale">销售价</RadioButton>

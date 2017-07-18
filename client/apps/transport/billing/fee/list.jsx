@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Tag, Layout, Icon, DatePicker, Select, Radio } from 'antd';
+import { Button, Tag, Layout, Icon, DatePicker, Select, Radio, Breadcrumb } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -160,7 +160,7 @@ export default class FeesList extends React.Component {
   render() {
     const { customers, carriers, billingType } = this.state;
     const { loading } = this.props;
-    let tableWidth = 1260;
+    let tableWidth = 1360;
     const columns = [{
       title: '运单号',
       dataIndex: 'shipmt_no',
@@ -420,6 +420,11 @@ export default class FeesList extends React.Component {
         return (<AddressColumn shipment={record} consignType="consignee" />);
       },
     }, {
+      title: '接单时间',
+      dataIndex: 'acpt_time',
+      width: 100,
+      render: (o, record) => record.acpt_time ? moment(record.acpt_time).format('YYYY.MM.DD') : '',
+    }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
       width: 100,
@@ -487,7 +492,14 @@ export default class FeesList extends React.Component {
     return (
       <div>
         <Header className="top-bar">
-          <span>{this.msg('expense')}</span>
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('billingCenter')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg('billingManagement')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
           <RadioGroup onChange={this.handleRadioChange} value={filters.shipmtStatus} size="large">
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="atOrigin">未启运</RadioButton>

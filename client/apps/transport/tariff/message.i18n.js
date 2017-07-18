@@ -1,6 +1,10 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  billingCenter: {
+    id: 'transport.billing.center',
+    defaultMessage: '账务中心',
+  },
   transportTariff: {
     id: 'transport.tariff',
     defaultMessage: '价格管理',
