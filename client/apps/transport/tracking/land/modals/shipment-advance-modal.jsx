@@ -40,7 +40,7 @@ export default class ShipmentAdvanceModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     showAdvanceModal: PropTypes.func.isRequired,
     createAdvances: PropTypes.func.isRequired,
-    transModeCode: PropTypes.number.isRequired,
+    transModeCode: PropTypes.string.isRequired,
     goodsType: PropTypes.number.isRequired,
     type: PropTypes.number.isRequired,
     fees: PropTypes.array.isRequired,

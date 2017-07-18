@@ -44,6 +44,7 @@ const initialState = {
       sp_name: [],
       p_status: [],
       status: [],
+      shipmtStatus: 'all',
     },
   },
   billings: {

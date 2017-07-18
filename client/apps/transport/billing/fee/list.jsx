@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Tag, Layout, Icon, DatePicker, Select } from 'antd';
+import { Button, Tag, Layout, Icon, DatePicker, Select, Radio } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -29,6 +29,8 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 function fetchData({ cookie, state, dispatch }) {
   const startDate = new Date();
@@ -118,6 +120,20 @@ export default class FeesList extends React.Component {
       endDate,
       searchValue,
       filters,
+    });
+  }
+  handleRadioChange = (e) => {
+    this.handleSelectionClear();
+    const { tenantId } = this.props;
+    const { pageSize, currentPage, filters, startDate, endDate, searchValue } = this.props.fees;
+    this.props.loadFees({
+      tenantId,
+      pageSize,
+      currentPage,
+      startDate,
+      endDate,
+      searchValue,
+      filters: { ...filters, shipmtStatus: e.target.value },
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
@@ -455,7 +471,7 @@ export default class FeesList extends React.Component {
           searchValue,
           startDate,
           endDate,
-          filters,
+          filters: { ...this.props.filters, ...filters },
         };
         return params;
       },
@@ -467,11 +483,17 @@ export default class FeesList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const { startDate, endDate } = this.props.fees;
+    const { startDate, endDate, filters } = this.props.fees;
     return (
       <div>
         <Header className="top-bar">
           <span>{this.msg('expense')}</span>
+          <RadioGroup onChange={this.handleRadioChange} value={filters.shipmtStatus} size="large">
+            <RadioButton value="all">全部</RadioButton>
+            <RadioButton value="atOrigin">未启运</RadioButton>
+            <RadioButton value="intransit">在途</RadioButton>
+            <RadioButton value="delivered">已送货</RadioButton>
+          </RadioGroup>
           <div className="top-bar-tools">
             <Button size="large" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
           </div>
