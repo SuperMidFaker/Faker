@@ -49,7 +49,6 @@ export default class CustomerList extends React.Component {
     loadCustomers: PropTypes.func.isRequired,
     deleteCustomer: PropTypes.func.isRequired,
     showCustomerModal: PropTypes.func.isRequired,
-    updateCustomerNames: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
@@ -61,7 +60,7 @@ export default class CustomerList extends React.Component {
     customers: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.customers !== this.props.customers && !this.state.customer.id) {
+    if (nextProps.customers !== this.props.customers) {
       this.setState({
         customer: nextProps.customers.length === 0 ? {} : nextProps.customers[0],
       });

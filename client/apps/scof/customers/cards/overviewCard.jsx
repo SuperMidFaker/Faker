@@ -7,6 +7,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { MdIcon } from 'client/components/FontIcon';
 import { updateCustomerNames } from 'common/reducers/crmCustomers';
+import { CUSTOMER_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -45,15 +46,22 @@ export default class OverviewCard extends React.Component {
           <Avatar shape="square" size="large" icon="global" />
           <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{customer.name}</h2>
         </div>
-        <Card.Grid style={{ width: '33%', fontSize: 16 }}>
-          <MdIcon type="clearance" /> 清关业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
-        </Card.Grid>
-        <Card.Grid style={{ width: '34%', fontSize: 16 }}>
-          <MdIcon type="cwm" /> 仓储业务 <span className="pull-right"><Badge status="default" text="未开通" /></span>
-        </Card.Grid>
-        <Card.Grid style={{ width: '33%', fontSize: 16 }}>
-          <MdIcon type="transport" /> 运输业务 <span className="pull-right"><Badge status="success" text="开通" /></span>
-        </Card.Grid>
+        {
+          CUSTOMER_TYPES.map((item) => {
+            let iconType = item.value;
+            if (item.value === 'warehousing') {
+              iconType = 'cwm';
+            }
+            return (
+              <Card.Grid style={{ width: `${1 / CUSTOMER_TYPES.length * 100}%`, fontSize: 16 }}>
+                <MdIcon type={iconType} /> {item.label}业务
+                <span className="pull-right">
+                  {customer.business_type && customer.business_type.indexOf(item.value) >= 0 ? <Badge status="success" text="开通" /> : <Badge status="default" text="未开通" /> }
+                </span>
+              </Card.Grid>
+            );
+          })
+        }
       </Card>
     );
   }
