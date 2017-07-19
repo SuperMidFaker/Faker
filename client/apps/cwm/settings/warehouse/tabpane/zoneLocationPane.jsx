@@ -82,6 +82,15 @@ export default class ZoneLocationPane extends Component {
       );
     }
   }
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
+  }
+  handleStateChange = (key, data) => {
+    this.setState({
+      selectZone: [key],
+      zones: data,
+    });
+  }
   createZone = (e) => {
     e.preventDefault();
     const { tenantId, loginId } = this.props;
@@ -136,6 +145,7 @@ export default class ZoneLocationPane extends Component {
     this.setState({
       selectZone: [key],
       zone: zones.find(zone => zone.zone_code === key),
+      selectedRowKeys: [],
     });
     this.props.loadLocations(whseCode, key);
   }
@@ -150,12 +160,6 @@ export default class ZoneLocationPane extends Component {
         }
       }
     );
-  }
-  handleStateChange = (key, data) => {
-    this.setState({
-      selectZone: [key],
-      zones: data,
-    });
   }
   handleDeleteZone = () => {
     const whseCode = this.props.warehouse.code;
@@ -202,12 +206,7 @@ export default class ZoneLocationPane extends Component {
   showZoneModal = () => {
     this.props.showZoneModal();
   }
-  handleStateChange = (key, data) => {
-    this.setState({
-      selectZone: [key],
-      zones: data,
-    });
-  }
+
   handleEditLocation = (row) => {
     this.props.showLocationModal(row);
   }
