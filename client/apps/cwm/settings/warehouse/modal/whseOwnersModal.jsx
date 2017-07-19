@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Table, message } from 'antd';
+import { Alert, Modal, Table, message } from 'antd';
 import { loadwhseOwners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode } from 'common/reducers/cwmWarehouse';
 import { loadPartners } from 'common/reducers/partner';
 import EditableCell from 'client/components/EditableCell';
@@ -129,7 +129,8 @@ export default class WhseOwnersModal extends Component {
     };
     return (
       <Modal title="添加货主" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
-        <Table columns={this.columns} dataSource={filterPartners} rowKey="id" rowSelection={rowSelection} pagination={false} />
+        <Alert message="请确认在客户管理中已加入该货主，并开通了仓储业务" type="info" showIcon />
+        <Table size="middle" columns={this.columns} dataSource={filterPartners} rowKey="id" rowSelection={rowSelection} pagination={false} />
       </Modal>
     );
   }
