@@ -44,7 +44,7 @@ export default class AddLocationModal extends Component {
       });
     } else {
       this.setState({
-        location: '',
+        location: nextProps.record.location ? nextProps.record.location : '',
         type: 1,
         status: 1,
       });
