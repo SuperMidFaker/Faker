@@ -104,8 +104,8 @@ export default class TrackingModal extends React.Component {
     this.props.toggleTrackingModal(false);
   }
   filterOption = (inputValue, option) => {
-    const reg = new RegExp(option.title);
-    return reg.test(inputValue);
+    const reg = new RegExp(inputValue);
+    return reg.test(option.title);
   }
   render() {
     const { visible } = this.props;

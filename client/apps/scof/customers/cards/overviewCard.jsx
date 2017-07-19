@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Avatar, Card, Badge, message } from 'antd';
+import { Avatar, Card, Badge } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { MdIcon } from 'client/components/FontIcon';
-import { updateCustomerNames } from 'common/reducers/crmCustomers';
 import { CUSTOMER_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -14,7 +13,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   () => ({}),
-  { updateCustomerNames },
+  { },
 )
 export default class OverviewCard extends React.Component {
   static propTypes = {
@@ -22,22 +21,6 @@ export default class OverviewCard extends React.Component {
     customer: PropTypes.object.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleEdit = (value, filed) => {
-    const id = this.props.customer.id;
-    const type = filed === 'displayName' ? 'display_name' : 'en_name';
-    const data = {
-      id,
-      type,
-      value,
-    };
-    this.props.updateCustomerNames(data).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('修改成功');
-      }
-    });
-  }
   render() {
     const { customer } = this.props;
     return (

@@ -9,7 +9,6 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'SHOW_CUSTOMER_MODAL', 'HIDE_CUSTOMER_MODAL',
   'LOAD_SUB_CUSTOMERS', 'LOAD_SUB_CUSTOMERS_FAIL', 'LOAD_SUB_CUSTOMERS_SUCCEED',
   'SHOW_SUB_CUSTOMER_MODAL', 'HIDE_SUB_CUSTOMER_MODAL',
-  'UPDATE_CUSTOMER_NAMES', 'UPDATE_CUSTOMER_NAMES_SUCCEED', 'UPDATE_CUSTOMER_NAMES_FAIL',
   'LOAD_CUSTOMER_FLOWS', 'LOAD_CUSTOMER_FLOWS_FAIL', 'LOAD_CUSTOMER_FLOWS_SUCCEED',
   'HIDE_SERVICETEAM_MODAL', 'SHOW_SERVICETEAM_MODAL',
   'LOAD_SERVICETEAM_MEMBERS', 'LOAD_SERVICETEAM_MEMBERS_SUCCEED', 'LOAD_SERVICETEAM_MEMBERS_FAIL',
@@ -99,9 +98,6 @@ export default function reducer(state = initialState, action) {
           ...initialState.subCustomerModal,
           visible: false,
         } };
-    }
-    case actionTypes.UPDATE_CUSTOMER_NAMES_SUCCEED: {
-      return { ...state, loaded: false };
     }
     case actionTypes.HIDE_SERVICETEAM_MODAL: {
       return { ...state,
@@ -229,21 +225,6 @@ export function showSubCustomerModal(operation = '', customer = {}) {
 
 export function hideSubCustomerModal() {
   return { type: actionTypes.HIDE_SUB_CUSTOMER_MODAL };
-}
-
-export function updateCustomerNames(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_CUSTOMER_NAMES,
-        actionTypes.UPDATE_CUSTOMER_NAMES_SUCCEED,
-        actionTypes.UPDATE_CUSTOMER_NAMES_FAIL,
-      ],
-      endpoint: 'v1/crm/customerNames/edit',
-      method: 'post',
-      data,
-    },
-  };
 }
 
 export function loadCustomerFlows(params) {
