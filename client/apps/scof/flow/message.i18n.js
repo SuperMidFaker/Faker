@@ -326,6 +326,22 @@ const messages = defineMessages({
     id: 'scof.flow.trigger.action',
     defaultMessage: '触发动作',
   },
+  notifyContent: {
+    id: 'scof.flow.notify.content',
+    defaultMessage: '通知内容',
+  },
+  platformMsg: {
+    id: 'scof.flow.notify.platformMsg',
+    defaultMessage: '平台消息',
+  },
+  mail: {
+    id: 'scof.flow.notify.mail',
+    defaultMessage: '邮箱',
+  },
+  sms: {
+    id: 'scof.flow.notify.sms',
+    defaultMessage: '短信',
+  },
   timerWait: {
     id: 'scof.flow.trigger.timer.wait',
     defaultMessage: '等待',

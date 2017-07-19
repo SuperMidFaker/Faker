@@ -12,13 +12,6 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
-const CheckboxGroup = Checkbox.Group;
-
-const notifyOptions = [
-  { label: 'Email', value: 'email' },
-  { label: 'WeChat', value: 'wechat' },
-  { label: 'SMS', value: 'sms' },
-];
 
 function CreateActionForm(props) {
   const { action, index, bizObjectOptions, msg, onChange, onDel } = props;
@@ -260,19 +253,39 @@ function NotifyActionForm(props) {
             </Select>
           </FormItem>
         </Col>
-        <Col sm={24} lg={8}>
-          <FormItem>
+        <Col sm={24} lg={24}>
+          <FormItem label={msg('notifyContent')}>
             <Input placeholder={msg('receiverPlaceholder')} />
           </FormItem>
         </Col>
-        <Col sm={24} lg={8}>
-          <FormItem >
-            <Select placeholder={msg('content')} />
+        <Col sm={24} lg={24}>
+          <FormItem label={
+            <span>
+              <Checkbox checked={!!action.recv_login_ids} onCh />
+              {msg('platformMsg')}
+            </span>}
+          >
+            <Input placeholder={msg('receiverPlaceholder')} />
           </FormItem>
         </Col>
-        <Col sm={24} lg={8}>
-          <FormItem>
-            <CheckboxGroup options={notifyOptions} defaultValue={['email', 'wechat']} />
+        <Col sm={24} lg={24}>
+          <FormItem label={
+            <span>
+              <Checkbox checked={!!action.recv_emails} o />
+              {msg('mail')}
+            </span>}
+          >
+            <Input placeholder={msg('receiverPlaceholder')} />
+          </FormItem>
+        </Col>
+        <Col sm={24} lg={24}>
+          <FormItem label={
+            <span>
+              <Checkbox checked={!!action.recv_tels} />
+              {msg('sms')}
+            </span>}
+          >
+            <Input placeholder={msg('receiverPlaceholder')} />
           </FormItem>
         </Col>
       </Row>
