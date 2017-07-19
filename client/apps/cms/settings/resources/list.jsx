@@ -74,6 +74,9 @@ export default class ResourcesList extends Component {
     }
     this.setState({ customers, currentPage: 1 });
   }
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  }
   msg = formatMsg(this.props.intl)
   render() {
     const { customer } = this.props;
@@ -104,7 +107,7 @@ export default class ResourcesList extends Component {
               <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} size="large" />
             </div>
             <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false} onRowClick={this.handleRowClick}
-              pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
+              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
               rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="code"
             />
           </div>

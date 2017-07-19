@@ -417,7 +417,7 @@ export default class ManifestEditor extends React.Component {
                 (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                   loading={this.state.generating} onClick={this.handleGenerateEntry}
                 >{this.msg('generateEntry')}</Button>) }
-              {billMeta.entries.length > 0 &&
+              {billMeta.docts &&
                 <Button type="primary" size="large" icon="export" onClick={this.handleDoctsDownload}>下载单据数据</Button>
               }
               {sendable &&
