@@ -593,6 +593,10 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.delg.release',
     defaultMessage: '放行',
   },
+  manifestCreate: {
+    id: 'scof.orders.progress.action.manifest.create',
+    defaultMessage: '生成清单',
+  },
   manifestGenerate: {
     id: 'scof.orders.progress.action.manifest.generate',
     defaultMessage: '制单',

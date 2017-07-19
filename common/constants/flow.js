@@ -14,7 +14,7 @@ const CMS_DELEGATION_TRIGGERS = [
 ];
 
 const CMS_MANIFEST_TRIGGERS = [
-  { key: 'created', text: 'onCreated' },
+  { key: 'created', text: 'onCreated', actionText: 'manifestCreate' },
   { key: 'generated', text: 'onManifestGenerated', actionText: 'manifestGenerate' },
 ];
 
