@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Form, Tag } from 'antd';
+import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Form, Tag, Icon } from 'antd';
 import WarehouseModal from './modal/warehouseModal';
 import OwnersPane from './tabpane/ownersPane';
 import ZoneLocationPane from './tabpane/zoneLocationPane';

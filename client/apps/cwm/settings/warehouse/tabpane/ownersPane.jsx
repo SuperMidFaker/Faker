@@ -47,6 +47,16 @@ export default class OwnersPane extends Component {
     dataIndex: 'owner_name',
     width: 250,
   }, {
+    title: '状态',
+    dataIndex: 'active',
+    render: (o) => {
+      if (o) {
+        return '启用';
+      } else {
+        return '停用';
+      }
+    },
+  }, {
     title: '结算方',
     dataIndex: 'billing_party',
   }, {
