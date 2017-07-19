@@ -4,9 +4,10 @@ import { Table, Button, Layout, Popconfirm } from 'antd';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal } from 'common/reducers/cmsResources';
+import { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers } from 'common/reducers/cmsResources';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import TraderModal from '../modal/traderModal';
+import TraderUserModal from '../modal/traderUserModal';
 
 const { Content } = Layout;
 
@@ -20,7 +21,7 @@ function fetchData({ dispatch, state }) {
   businessUnits: state.cmsResources.businessUnits,
   tenantId: state.account.tenantId,
   customer: state.cmsResources.customer,
-}), { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal })
+}), { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers })
 export default class TraderList extends Component {
   static propTyps = {
     tenantId: PropTypes.number.isRequired,
@@ -47,6 +48,10 @@ export default class TraderList extends Component {
   }
   handleDeleteBtnClick = (id) => {
     this.props.deleteBusinessUnit(id);
+  }
+  handleRuleBtnClick = (record) => {
+    this.props.toggleUnitRuleSetModal(true, record.id);
+    this.props.loadBusinessUnitUsers(record.id);
   }
   render() {
     const { businessUnits } = this.props;
@@ -134,6 +139,7 @@ export default class TraderList extends Component {
           <Table dataSource={data} columns={columns} rowKey="id" />
         </div>
         <TraderModal />
+        <TraderUserModal />
       </Content>
 
     );
