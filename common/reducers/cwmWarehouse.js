@@ -4,6 +4,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'SHOW_WAREHOUSE_MODAL', 'HIDE_WAREHOUSE_MODAL',
   'ADD_WAREHOUSE', 'ADD_WAREHOUSE_SUCCEED', 'ADD_WAREHOUSE_FAIL',
+  'EDIT_WAREHOUSE', 'EDIT_WAREHOUSE_SUCCEED', 'EDIT_WAREHOUSE_FAIL',
   'UPDATE_WHSE', 'UPDATE_WHSE_SUCCEED', 'UPDATE_WHSE_FAIL',
   'ADD_ZONE', 'ADD_ZONE_SUCCEED', 'ADD_ZONE_FAIL',
   'LOAD_ZONE', 'LOAD_ZONE_SUCCEED', 'LOAD_ZONE_FAIL',
@@ -20,9 +21,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'SHOW_OWNER_CONTROL_MODAL', 'HIDE_OWNER_CONTROL_MODAL',
   'SAVE_OWNER_CODE', 'SAVE_OWNER_CODE_SUCCEED', 'SAVE_OWNER_CODE_FAIL',
   'SHOW_ZONE_MODAL', 'HIDE_ZONE_MODAL', 'CLEAR_LOCATIONS',
-  'FREEZE_LOCATION', 'FREEZE_LOCATION_SUCCEED', 'FREEZE_LOCATION_FAIL',
-  'ACTIVE_LOCATION', 'ACTIVE_LOCATION_SUCCEED', 'ACTIVE_LOCATION_FAIL',
+  'CHNAGE_OWNER_STATUS', 'CHNAGE_OWNER_STATUS_SUCCEED', 'CHNAGE_OWNER_STATUS_FAIL',
   'DELETE_LOCATIONS', 'DELETE_LOCATIONS_SUCCEED', 'DELETE_LOCATIONS_FAIL',
+  'SHOW_EDIT_WHSE', 'HIDE_EDIT_WHSE',
 ]);
 
 const initialState = {
@@ -45,6 +46,9 @@ const initialState = {
   record: {},
   whseOwners: [],
   zoneModal: {
+    visible: false,
+  },
+  editWarehouseModal: {
     visible: false,
   },
 };
@@ -81,6 +85,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, zoneModal: { ...state.zoneModal, visible: false } };
     case actionTypes.CLEAR_LOCATIONS:
       return { ...state, locations: [] };
+    case actionTypes.SHOW_EDIT_WHSE:
+      return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: true } };
+    case actionTypes.HIDE_EDIT_WHSE:
+      return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: false } };
     default:
       return state;
   }
@@ -109,6 +117,21 @@ export function addWarehouse(params) {
       endpoint: 'v1/cwm/warehouse/add',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function editWarehouse(code, name, address, bonded, tenantId, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_WAREHOUSE,
+        actionTypes.EDIT_WAREHOUSE_SUCCEED,
+        actionTypes.EDIT_WAREHOUSE_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/edit',
+      method: 'post',
+      data: { code, name, address, bonded, tenantId, loginId },
     },
   };
 }
@@ -342,32 +365,17 @@ export function hideZoneModal() {
   };
 }
 
-export function freezeLocation(id) {
+export function changeOwnerStatus(id, status) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.FREEZE_LOCATION,
-        actionTypes.FREEZE_LOCATION_SUCCEED,
-        actionTypes.FREEZE_LOCATION_FAIL,
+        actionTypes.CHNAGE_OWNER_STATUS,
+        actionTypes.CHNAGE_OWNER_STATUS_SUCCEED,
+        actionTypes.CHNAGE_OWNER_STATUS_FAIL,
       ],
-      endpoint: 'v1/cwm/freeze/location',
+      endpoint: 'v1/cwm/change/owner/status',
       method: 'post',
-      data: { id },
-    },
-  };
-}
-
-export function activeLocation(id) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ACTIVE_LOCATION,
-        actionTypes.ACTIVE_LOCATION_SUCCEED,
-        actionTypes.ACTIVE_LOCATION_FAIL,
-      ],
-      endpoint: 'v1/cwm/active/location',
-      method: 'post',
-      data: { id },
+      data: { id, status },
     },
   };
 }
@@ -390,5 +398,17 @@ export function batchDeleteLocations(ids) {
 export function clearLocations() {
   return {
     type: actionTypes.CLEAR_LOCATIONS,
+  };
+}
+
+export function showEditWhseModal() {
+  return {
+    type: actionTypes.SHOW_EDIT_WHSE,
+  };
+}
+
+export function hideEditWhseModal() {
+  return {
+    type: actionTypes.HIDE_EDIT_WHSE,
   };
 }
