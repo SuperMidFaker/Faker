@@ -68,11 +68,11 @@ export default class FTZPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 150,
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 150,
+    width: 90,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',

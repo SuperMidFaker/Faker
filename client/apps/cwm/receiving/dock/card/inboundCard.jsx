@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Card, Tabs, Table, Select } from 'antd';
@@ -67,16 +66,14 @@ export default class InboundCard extends Component {
     title: '行号',
     dataIndex: 'asn_seq_no',
     width: 50,
-    fixed: 'left',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
-    fixed: 'left',
+    width: 150,
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 120,
+    width: 150,
   }, {
     title: '预期数量',
     width: 180,
@@ -121,59 +118,32 @@ export default class InboundCard extends Component {
     title: '中文品名',
     dataIndex: 'name',
     width: 100,
-  }, {
-    title: '收货人',
-    width: 60,
-    dataIndex: 'received_by',
-  }, {
-    title: '收货时间',
-    width: 100,
-    dataIndex: 'received_date',
   }]
 
   putawayColumns = [{
     title: '容器编号',
     dataIndex: 'convey_no',
-    width: 150,
-    fixed: 'left',
+    width: 120,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
-    fixed: 'left',
+    width: 150,
+  }, {
+    title: 'SKU',
+    dataIndex: 'product_sku',
+    width: 150,
   }, {
     title: '上架库位',
     dataIndex: 'putaway_location',
     width: 120,
   }, {
-    title: '目标库位',
-    dataIndex: 'target_location',
-    width: 120,
-  }, {
-    title: '收货库位',
-    dataIndex: 'receive_location',
-    width: 120,
-  }, {
-    title: '收货数量',
+    title: '上架数量',
     width: 180,
     render: (o, record) => (<QuantityInput size="small" packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} disabled />),
-  }, {
-    title: 'SKU',
-    dataIndex: 'product_sku',
-    width: 120,
   }, {
     title: '中文品名',
     dataIndex: 'name',
     width: 100,
-  }, {
-    title: '上架人',
-    width: 100,
-    dataIndex: 'allocate_by',
-  }, {
-    title: '上架时间',
-    width: 100,
-    dataIndex: 'allocate_date',
-    render: allocateDt => allocateDt && moment(allocateDt).format('YYYY.MM.DD'),
   }]
   render() {
     const { inboundNo } = this.props;
