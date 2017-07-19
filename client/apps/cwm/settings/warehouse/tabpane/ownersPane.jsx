@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Table } from 'antd';
-import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, freezeLocation, activeLocation } from 'common/reducers/cwmWarehouse';
+import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseOwnersModal from '../modal/whseOwnersModal';
@@ -18,7 +18,7 @@ const { Content } = Layout;
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, freezeLocation, activeLocation, loadWhse }
+  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -66,8 +66,8 @@ export default class OwnersPane extends Component {
       <span>
         <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
         <span className="ant-divider" />
-        {record.active === 0 ? <RowUpdater onHit={() => this.activeLocation(record.id)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.freezeLocation(record.id)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
       </span>
     ),
   }]
@@ -75,18 +75,8 @@ export default class OwnersPane extends Component {
   handleOwnerControl = () => {
     this.props.showOwnerControlModal();
   }
-  freezeLocation = (id) => {
-    this.props.freezeLocation(id).then((result) => {
-      if (!result.error) {
-        this.props.loadwhseOwners(this.props.whseCode);
-        if (this.props.whseCode === this.props.defaultWhse.code) {
-          this.props.loadWhse(this.props.whseCode);
-        }
-      }
-    });
-  }
-  activeLocation = (id) => {
-    this.props.activeLocation(id).then((result) => {
+  changeOwnerStatus = (id, status) => {
+    this.props.changeOwnerStatus(id, status).then((result) => {
       if (!result.error) {
         this.props.loadwhseOwners(this.props.whseCode);
         if (this.props.whseCode === this.props.defaultWhse.code) {

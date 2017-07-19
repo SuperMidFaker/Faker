@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Button, Icon, Layout, Radio, Menu, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
+import TrimSpan from 'client/components/trimSpan';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -63,6 +64,10 @@ export default class SHFTZReleaseList extends React.Component {
     width: 180,
     fixed: 'left',
   }, {
+    title: '监管出库单号',
+    width: 150,
+    dataIndex: 'ftz_rel_no',
+  }, {
     title: '备案类型',
     dataIndex: 'ftz_rel_type',
     render: (reltype) => {
@@ -73,24 +78,24 @@ export default class SHFTZReleaseList extends React.Component {
     },
   }, {
     title: '货主',
-    width: 220,
+    width: 180,
     dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '仓储企业',
-    width: 220,
+    width: 180,
     dataIndex: 'wh_ent_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '提货单位',
-    width: 120,
+    width: 180,
     dataIndex: 'receiver_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '运输单位',
-    width: 120,
+    width: 180,
     dataIndex: 'carrier_name',
-  }, {
-    title: '出库备案号',
-    width: 120,
-    dataIndex: 'ftz_rel_no',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '出口日期',
     width: 120,
@@ -287,7 +292,7 @@ export default class SHFTZReleaseList extends React.Component {
               </div>
               <div className="panel-body table-panel">
                 <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-                  indentSize={8} rowKey="id" scroll={{ x: 1700 }}
+                  indentSize={8} rowKey="id" scroll={{ x: 1900 }}
                 />
               </div>
             </div>

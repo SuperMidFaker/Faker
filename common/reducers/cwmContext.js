@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/context/', [
   'LOAD_WHCONTEXT', 'LOAD_WHCONTEXT_SUCCEED', 'LOAD_WHCONTEXT_FAIL',
   'LOAD_WHSE', 'LOAD_WHSE_SUCCEED', 'LOAD_WHSE_FAIL',
   'SWITCH_DEFWHSE',
+  'SEARCH_WHSE', 'SEARCH_WHSE_SUCCEED', 'SEARCH_WHSE_FAIL',
 ]);
 
 const initialState = {
@@ -24,6 +25,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, defaultWhse: state.whses.filter(wh => wh.code === action.data)[0] || {} };
     case actionTypes.LOAD_WHSE_SUCCEED:
       return { ...state, whseAttrs: action.result.data };
+    case actionTypes.SEARCH_WHSE_SUCCEED:
+      return { ...state, whses: action.result.data, loaded: true };
     default:
       return state;
   }
@@ -62,6 +65,21 @@ export function loadWhse(whseCode) {
       endpoint: 'v1/cwm/context/warehouse',
       method: 'get',
       params: { whse_code: whseCode },
+    },
+  };
+}
+
+export function searchWhse(data, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_WHSE,
+        actionTypes.SEARCH_WHSE_SUCCEED,
+        actionTypes.SEARCH_WHSE_FAIL,
+      ],
+      endpoint: 'v1/cwm/search/whse',
+      method: 'get',
+      params: { data, tenantId },
     },
   };
 }
