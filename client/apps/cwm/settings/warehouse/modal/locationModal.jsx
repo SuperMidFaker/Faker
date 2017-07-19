@@ -108,12 +108,12 @@ export default class AddLocationModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="库位类型">
             <RadioGroup value={type} onChange={this.typeChange}>
-              {CWM_LOCATION_TYPES.map(item => <RadioButton value={item.value}>{item.text}</RadioButton>)}
+              {CWM_LOCATION_TYPES.map(item => <RadioButton key={item.value} value={item.value}>{item.text}</RadioButton>)}
             </RadioGroup>
           </FormItem>
           <FormItem {...formItemLayout} label="库位状态">
             <RadioGroup value={status} onChange={this.statusChange}>
-              {CWM_LOCATION_STATUS.map(item => <RadioButton value={item.value}>{item.text}</RadioButton>)}
+              {CWM_LOCATION_STATUS.map(item => <RadioButton key={item.value} value={item.value}>{item.text}</RadioButton>)}
             </RadioGroup>
           </FormItem>
         </Form>

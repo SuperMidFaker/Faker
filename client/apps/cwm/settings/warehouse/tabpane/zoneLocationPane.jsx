@@ -225,7 +225,7 @@ export default class ZoneLocationPane extends Component {
     });
   }
   locationColumns = [{
-    title: 'location',
+    title: '库位编号',
     dataIndex: 'location',
     key: 'location',
   }, {
@@ -239,8 +239,16 @@ export default class ZoneLocationPane extends Component {
     key: 'status',
     render: o => CWM_LOCATION_STATUS.find(item => item.value === Number(o)) ? CWM_LOCATION_STATUS.find(item => item.value === Number(o)).text : '',
   }, {
+    title: '最后修改时间',
+    dataIndex: 'last_modified_date',
+    width: 120,
+  }, {
+    title: '创建时间',
+    dataIndex: 'created_date',
+    width: 120,
+  }, {
     title: '操作',
-    width: 100,
+    width: 80,
     render: record => (
       <span>
         <RowUpdater onHit={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
@@ -292,6 +300,20 @@ export default class ZoneLocationPane extends Component {
     return (
       <Layout>
         <Sider className="nav-sider">
+          <div className="nav-sider-head">
+            <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
+              formData={{
+                data: JSON.stringify({
+                  tenantId: this.props.tenantId,
+                  loginId: this.props.loginId,
+                }),
+              }} onUploaded={this.locationsUploaded}
+            >
+              <Button type="primary" size="large" icon="upload">
+                导入库区库位
+              </Button>
+            </ExcelUpload>
+          </div>
           <Menu defaultOpenKeys={['zoneMenu']} mode="inline" selectedKeys={selectZone} onClick={this.handleZoneClick}>
             <SubMenu key="zoneMenu" title={<span><MdIcon mode="fontello" type="sitemap" />库区</span>} >
               {
@@ -305,38 +327,28 @@ export default class ZoneLocationPane extends Component {
             <Popover content={zonePopoverContent} placement="bottom" title="创建库区" trigger="click" visible={this.state.visible}
               onVisibleChange={this.handleVisibleChange}
             >
-              <Button type="dashed" size="large" icon="plus-circle" >创建库区</Button>
+              <Button type="dashed" icon="plus-circle" >新增库区</Button>
             </Popover>
           </div>
         </Sider>
         <Content className="nav-content">
           <div className="toolbar">
             {zoneList.length > 0 && <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
-              创建库位
+              新增库位
             </Button>}
-            {<ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
-              formData={{
-                data: JSON.stringify({
-                  tenantId: this.props.tenantId,
-                  loginId: this.props.loginId,
-                }),
-              }} onUploaded={this.locationsUploaded}
-            >
-              <Button type="primary" ghost icon="upload">
-                批量导入库位
-              </Button>
-            </ExcelUpload>}
-            { zoneList.length > 0 && <Button type="primary" ghost icon="edit" onClick={this.showZoneModal}>编辑库区</Button> }
-            { zoneList.length > 0 &&
-            <Popconfirm title="Are you sure delete this task?" onConfirm={this.handleDeleteZone} okText="Yes" cancelText="No">
-              <Button type="primary" ghost icon="delete" >删除库区</Button>
-            </Popconfirm>
-            }
             {this.state.selectedRowKeys.length > 0 &&
             <Popconfirm title="Are you sure delete this task?" onConfirm={this.batchDeleteLocations} okText="Yes" cancelText="No">
               <Button type="primary" ghost icon="delete">批量删除库位</Button>
             </Popconfirm>
             }
+            <div className="toolbar-right">
+              { zoneList.length > 0 && <Button icon="edit" onClick={this.showZoneModal}>编辑库区</Button> }
+              { zoneList.length > 0 &&
+              <Popconfirm title="Are you sure delete this task?" onConfirm={this.handleDeleteZone} okText="Yes" cancelText="No">
+                <Button type="danger" icon="delete" >删除库区</Button>
+              </Popconfirm>
+              }
+            </div>
             <ZoneEditModal zone={zone} whseCode={warehouse.code} stateChange={this.handleStateChange} />
           </div>
           <div className="panel-body table-panel">
