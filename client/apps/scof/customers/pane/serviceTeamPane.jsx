@@ -77,7 +77,7 @@ export default class ServiceTeam extends React.Component {
         <div className="panel-body table-panel">
           <Table size="middle" columns={column} dataSource={serviceTeamMembers} pagination={false} rowKey="id" />
         </div>
-        <ServiceTeamModal customer={customer} filters={filters} selectedUserIds={this.state.selectedRowKeys} />
+        <ServiceTeamModal customer={customer} selectedUserIds={this.state.selectedRowKeys} />
       </div>
     );
   }
