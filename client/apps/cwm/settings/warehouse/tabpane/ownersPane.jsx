@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Layout, Table } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, freezeLocation, activeLocation } from 'common/reducers/cwmWarehouse';
+import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
@@ -15,8 +16,9 @@ const { Content } = Layout;
 @connect(
   state => ({
     whseOwners: state.cwmWarehouse.whseOwners,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, freezeLocation, activeLocation }
+  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, freezeLocation, activeLocation, loadWhse }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -45,6 +47,16 @@ export default class OwnersPane extends Component {
     dataIndex: 'owner_name',
     width: 250,
   }, {
+    title: '状态',
+    dataIndex: 'active',
+    render: (o) => {
+      if (o) {
+        return '启用';
+      } else {
+        return '停用';
+      }
+    },
+  }, {
     title: '结算方',
     dataIndex: 'billing_party',
   }, {
@@ -67,6 +79,9 @@ export default class OwnersPane extends Component {
     this.props.freezeLocation(id).then((result) => {
       if (!result.error) {
         this.props.loadwhseOwners(this.props.whseCode);
+        if (this.props.whseCode === this.props.defaultWhse.code) {
+          this.props.loadWhse(this.props.whseCode);
+        }
       }
     });
   }
@@ -74,6 +89,9 @@ export default class OwnersPane extends Component {
     this.props.activeLocation(id).then((result) => {
       if (!result.error) {
         this.props.loadwhseOwners(this.props.whseCode);
+        if (this.props.whseCode === this.props.defaultWhse.code) {
+          this.props.loadWhse(this.props.whseCode);
+        }
       }
     });
   }

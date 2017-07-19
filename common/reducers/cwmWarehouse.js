@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'ADD_WHSE_OWNERS', 'ADD_WHSE_OWNERS_SUCCEED', 'ADD_WHSE_OWNERS_FAIL',
   'SHOW_OWNER_CONTROL_MODAL', 'HIDE_OWNER_CONTROL_MODAL',
   'SAVE_OWNER_CODE', 'SAVE_OWNER_CODE_SUCCEED', 'SAVE_OWNER_CODE_FAIL',
-  'SHOW_ZONE_MODAL', 'HIDE_ZONE_MODAL',
+  'SHOW_ZONE_MODAL', 'HIDE_ZONE_MODAL', 'CLEAR_LOCATIONS',
   'FREEZE_LOCATION', 'FREEZE_LOCATION_SUCCEED', 'FREEZE_LOCATION_FAIL',
   'ACTIVE_LOCATION', 'ACTIVE_LOCATION_SUCCEED', 'ACTIVE_LOCATION_FAIL',
   'DELETE_LOCATIONS', 'DELETE_LOCATIONS_SUCCEED', 'DELETE_LOCATIONS_FAIL',
@@ -79,6 +79,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, zoneModal: { ...state.zoneModal, visible: true } };
     case actionTypes.HIDE_ZONE_MODAL:
       return { ...state, zoneModal: { ...state.zoneModal, visible: false } };
+    case actionTypes.CLEAR_LOCATIONS:
+      return { ...state, locations: [] };
     default:
       return state;
   }
@@ -382,5 +384,11 @@ export function batchDeleteLocations(ids) {
       method: 'post',
       data: { ids },
     },
+  };
+}
+
+export function clearLocations() {
+  return {
+    type: actionTypes.CLEAR_LOCATIONS,
   };
 }

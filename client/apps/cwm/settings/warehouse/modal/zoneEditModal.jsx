@@ -38,7 +38,7 @@ export default class ZoneEditModal extends Component {
               message.info('保存成功');
               this.props.loadZones(whseCode).then(
                 (data) => {
-                  if (!data.error && data.data.length !== 0) {
+                  if (!data.error) {
                     this.props.stateChange(data.data[0].zone_code, data.data);
                     this.props.loadLocations(whseCode, data.data[0].zone_code);
                     this.props.hideZoneModal();
@@ -58,7 +58,7 @@ export default class ZoneEditModal extends Component {
     const { form: { getFieldDecorator }, zone } = this.props;
     const zonePopoverContent = (
       <Form>
-        <FormItem>
+        <FormItem label="库区代码">
           {
             getFieldDecorator('zoneCode', {
               rules: [{ required: true, messages: 'please input zoneCode' }],
@@ -66,7 +66,7 @@ export default class ZoneEditModal extends Component {
             })(<Input placeholder="库区编号" />)
           }
         </FormItem>
-        <FormItem>
+        <FormItem label="库区名称">
           {
             getFieldDecorator('zoneName', {
               rules: [{ required: true, messages: 'please input zoneName' }],

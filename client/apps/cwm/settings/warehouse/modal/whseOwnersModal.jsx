@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Modal, Table, message } from 'antd';
+import { Alert, Modal, Table, message, Input } from 'antd';
 import { loadwhseOwners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode } from 'common/reducers/cwmWarehouse';
 import { loadPartners } from 'common/reducers/partner';
-import EditableCell from 'client/components/EditableCell';
 import { PARTNER_BUSINESSE_TYPES, PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -45,7 +44,7 @@ export default class WhseOwnersModal extends Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.whseCode !== this.props.whseCode) {
+    if (nextProps.whseOwners !== this.props.whseOwners) {
       const tenantId = nextProps.whseTenantId;
       this.props.loadPartners({
         tenantId,
@@ -53,7 +52,7 @@ export default class WhseOwnersModal extends Component {
         businessType: PARTNER_BUSINESSE_TYPES.warehousing,
       }).then((result) => {
         if (!result.error) {
-          const filterPartners = result.data.filter(partner => !this.props.whseOwners.find(owners => owners.owner_partner_id === partner.id));
+          const filterPartners = result.data.filter(partner => !nextProps.whseOwners.find(owners => owners.owner_partner_id === partner.id));
           this.setState({
             filterPartners,
           });
@@ -61,7 +60,7 @@ export default class WhseOwnersModal extends Component {
       });
     }
   }
-  SaveOwnerCode = (index, code) => {
+  setOwnerCode = (index, code) => {
     const filterPartners = [...this.state.filterPartners];
     filterPartners[index].partner_code = code;
     this.setState({
@@ -72,13 +71,7 @@ export default class WhseOwnersModal extends Component {
   columns = [{
     title: '货主代码',
     dataIndex: 'partner_code',
-    render: (o, record, index) => {
-      if (!o) {
-        return <EditableCell value={o} onSave={code => this.SaveOwnerCode(index, code)} />;
-      } else {
-        return o;
-      }
-    },
+    render: (o, record, index) => <Input onChange={e => this.setOwnerCode(index, e.target.value)} value={o} />,
   },
   {
     title: '货主名称',
@@ -92,6 +85,10 @@ export default class WhseOwnersModal extends Component {
     const validation = this.state.selectedRows.find(item => !item.partner_code);
     if (validation) {
       message.info('请编辑货主代码为空的项');
+      return;
+    }
+    if (this.state.selectedRows.length === 0) {
+      message.info('请选择货主');
       return;
     }
     const data = this.state.selectedRows.map(obj => ({
