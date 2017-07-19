@@ -278,9 +278,13 @@ const messages = defineMessages({
     id: 'scof.flow.biz.action.delg.declare',
     defaultMessage: '申报',
   },
+  manifestCreate: {
+    id: 'scof.flow.biz.action.manifest.create',
+    defaultMessage: '生成清单',
+  },
   manifestGenerate: {
     id: 'scof.flow.biz.action.manifest.generate',
-    defaultMessage: '制单',
+    defaultMessage: '生成报关建议书',
   },
   customsReview: {
     id: 'scof.flow.biz.action.customs.review',

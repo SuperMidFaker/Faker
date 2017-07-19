@@ -70,9 +70,8 @@ export default class CMSNodeCard extends React.Component {
   }
   render() {
     const { name, children, declWayCode, transMode, blWbNo, in_degree: indegree } = this.props;
-    let declWay = '';
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
-    declWay = declWayMap.find(item => item.key === declWayCode).value;
+    const declWayItem = declWayMap.find(item => item.key === declWayCode);
     const extra = indegree === 0 ?
     (<div>
       <Tooltip title="进入详情">
@@ -96,7 +95,7 @@ export default class CMSNodeCard extends React.Component {
           </Col>
           <Col span="8">
             <InfoItem label="报关类型" addonBefore={<Icon type="tag-o" />}
-              field={declWay} placeholder="添加报关类型"
+              field={declWayItem && declWayItem.value} placeholder="添加报关类型"
             />
           </Col>
         </Row>

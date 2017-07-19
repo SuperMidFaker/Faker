@@ -84,11 +84,6 @@ export default function reducer(state = initialState, action) {
       });
       return { ...state, entry_regs: regs };
     }
-    case actionTypes.FILE_ERS_SUCCEED:
-      return { ...state,
-        entry_asn: { ...state.entry_asn, reg_status: action.result.data.status },
-        entry_regs: state.entry_regs.map(er => ({ ...er, ftz_ent_no: action.result.data.preSeqEnts[er.cus_decl_no] })),
-      };
     case actionTypes.REL_DETAILS_LOAD_SUCCEED:
       return { ...state, ...action.result.data };
     case actionTypes.UPDATE_RRFIELD_SUCCEED:

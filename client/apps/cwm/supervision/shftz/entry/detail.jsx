@@ -120,11 +120,19 @@ export default class SHFTZEntryDetail extends Component {
     this.props.fileEntryRegs(asnNo, this.props.entryAsn.whse_code).then((result) => {
       if (!result.error) {
         const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.entryAsn.bonded_intype)[0];
-        notification.success({
-          message: '操作成功',
-          description: `${asnNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
-          placement: 'topLeft',
-        });
+        this.props.loadEntryDetails({ asnNo });
+        if (result.data.errorMsg) {
+          notification.warn({
+            message: '结果异常',
+            description: result.data.errorMsg,
+          });
+        } else {
+          notification.success({
+            message: '操作成功',
+            description: `${asnNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
+            placement: 'topLeft',
+          });
+        }
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
