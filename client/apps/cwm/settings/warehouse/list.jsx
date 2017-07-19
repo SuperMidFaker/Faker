@@ -67,9 +67,6 @@ export default class WareHouse extends Component {
   componentWillUnmount() {
     this.props.loadWhseContext(this.props.tenantId);
   }
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
-  }
   msg = formatMsg(this.props.intl)
   showWarehouseModal = () => {
     this.props.showWarehouseModal();
