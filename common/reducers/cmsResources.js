@@ -7,6 +7,11 @@ const actionTypes = createActionTypes('@@welogix/cms/resources/', [
   'UPDATE_BUSINESS_UNIT', 'UPDATE_BUSINESS_UNIT_SUCCEED', 'UPDATE_BUSINESS_UNIT_FAIL',
   'DELETE_BUSINESS_UNIT', 'DELETE_BUSINESS_UNIT_SUCCEED', 'DELETE_BUSINESS_UNIT_FAIL',
   'TOGGLE_BUSINESS_UNIT', 'SET_RES_TABKEY', 'SET_CUSTOMER',
+  'TOGGLE_UNIT_RULE_SET',
+  'LOAD_BUSINESS_UNITS_USERS', 'LOAD_BUSINESS_UNITS_USERS_SUCCEED', 'LOAD_BUSINESS_UNITS_USERS_FAIL',
+  'ADD_TRADE_USER', 'ADD_TRADE_USER_SUCCEED', 'ADD_TRADE_USER_FAIL',
+  'DELETE_TRADE_USER', 'DELETE_TRADE_USER_SUCCEED', 'DELETE_TRADE_USER_FAIL',
+  'LOAD_BROKERS', 'LOAD_BROKERS_SUCCEED', 'LOAD_BROKERS_FAIL',
 ]);
 
 const initialState = {
@@ -19,6 +24,11 @@ const initialState = {
   },
   customer: {},
   tabkey: 'owners',
+  unitRuleSetModal: {
+    visible: false,
+    relationId: null,
+  },
+  businessUnitUsers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -41,6 +51,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, tabkey: action.data.key };
     case actionTypes.SET_CUSTOMER:
       return { ...state, customer: action.data.customer };
+    case actionTypes.TOGGLE_UNIT_RULE_SET:
+      return { ...state, unitRuleSetModal: { ...state.unitRuleSetModal, ...action.data } };
+    case actionTypes.LOAD_BUSINESS_UNITS_USERS_SUCCEED:
+      return { ...state, businessUnitUsers: action.result.data };
     default:
       return state;
   }
@@ -124,5 +138,72 @@ export function setCustomer(customer) {
   return {
     type: actionTypes.SET_CUSTOMER,
     data: { customer },
+  };
+}
+
+export function toggleUnitRuleSetModal(visible, relationId) {
+  return {
+    type: actionTypes.TOGGLE_UNIT_RULE_SET,
+    data: { visible, relationId },
+  };
+}
+
+export function loadBusinessUnitUsers(relationId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BUSINESS_UNITS_USERS,
+        actionTypes.LOAD_BUSINESS_UNITS_USERS_SUCCEED,
+        actionTypes.LOAD_BUSINESS_UNITS_USERS_FAIL,
+      ],
+      endpoint: 'v1/cms/resources/business_units/users/get',
+      method: 'get',
+      params: { relationId },
+    },
+  };
+}
+
+export function loadBrokers(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BROKERS,
+        actionTypes.LOAD_BROKERS_SUCCEED,
+        actionTypes.LOAD_BROKERS_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partners',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function addTradeUser(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_TRADE_USER,
+        actionTypes.ADD_TRADE_USER_SUCCEED,
+        actionTypes.ADD_TRADE_USER_FAIL,
+      ],
+      endpoint: 'v1/cms/resources/business_units/user/add',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function deleteTradeUser(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_TRADE_USER,
+        actionTypes.DELETE_TRADE_USER_SUCCEED,
+        actionTypes.DELETE_TRADE_USER_FAIL,
+      ],
+      endpoint: 'v1/cms/resources/business_units/user/delete',
+      method: 'post',
+      data: { id },
+    },
   };
 }
