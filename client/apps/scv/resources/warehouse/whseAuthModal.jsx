@@ -81,6 +81,7 @@ export default class WhseAuthModal extends React.Component {
       whse_name: whse.whse_name,
       removedOwners: this.state.removedKeys,
       appendOwners,
+      tenantId: this.props.tenantId,
     });
   }
   handleCancel = () => {

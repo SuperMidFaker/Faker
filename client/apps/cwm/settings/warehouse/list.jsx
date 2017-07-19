@@ -7,7 +7,9 @@ import WarehouseModal from './modal/warehouseModal';
 import OwnersPane from './tabpane/ownersPane';
 import ZoneLocationPane from './tabpane/zoneLocationPane';
 import SupervisionPane from './tabpane/supervisionPane';
-import { showWarehouseModal, loadZones, loadLocations } from 'common/reducers/cwmWarehouse';
+import EditWhseModal from './modal/editWarehouseModal';
+import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal } from 'common/reducers/cwmWarehouse';
+import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from './message.i18n';
 import './warehouse.less';
 
@@ -29,7 +31,7 @@ const TabPane = Tabs.TabPane;
     locations: state.cwmWarehouse.locations,
     locationLoading: state.cwmWarehouse.locationLoading,
   }),
-  { showWarehouseModal, loadZones, loadLocations }
+  { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext }
 )
 @Form.create()
 export default class WareHouse extends Component {
@@ -54,9 +56,16 @@ export default class WareHouse extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.whses.length !== this.props.whses.length) {
-      this.setState({ warehouses: nextProps.whses });
+    if (nextProps.whses !== this.props.whses) {
+      const warehouse = nextProps.whses.find(whse => whse.code === this.state.warehouse.code) || {};
+      this.setState({
+        warehouses: nextProps.whses,
+        warehouse,
+      });
     }
+  }
+  componentWillUnmount() {
+    this.props.loadWhseContext(this.props.tenantId);
   }
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
@@ -86,6 +95,12 @@ export default class WareHouse extends Component {
         }
       }
     );
+  }
+  handleEditWarehouse = () => {
+    this.props.showEditWhseModal();
+  }
+  handleSearchWhse = (e) => {
+    this.props.searchWhse(e.target.value, this.props.tenantId);
   }
   render() {
     const { warehouse, warehouses } = this.state;
@@ -118,13 +133,14 @@ export default class WareHouse extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search placeholder={this.msg('searchPlaceholder')} size="large" />
+              <Search placeholder={this.msg('searchPlaceholder')} size="large" onChange={this.handleSearchWhse} />
             </div>
             <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false} onRowClick={this.handleRowClick}
               pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
               rowClassName={record => record.code === warehouse.code ? 'table-row-selected' : ''} rowKey="code"
             />
             <WarehouseModal />
+            <EditWhseModal warehouse={warehouse} />
           </div>
         </Sider>
         <Layout>
