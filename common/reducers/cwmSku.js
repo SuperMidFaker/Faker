@@ -80,8 +80,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SYNC_TRADESKU:
       return { ...state, skuSyncing: true, loading: true };
     case actionTypes.SYNC_TRADESKU_SUCCEED:
-    case actionTypes.SYNC_TRADESKU_FAIL:
       return { ...state, skuSyncing: false };
+    case actionTypes.SYNC_TRADESKU_FAIL:
+      return { ...state, skuSyncing: false, loading: false };
     case actionTypes.LOAD_SKU_SUCCEED:
       return { ...state, skuForm: action.result.data };
     case actionTypes.OPEN_PACKING_RULE_MODAL:

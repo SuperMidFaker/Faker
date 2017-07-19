@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Button, Card, Popconfirm, Col, Modal, Form, Checkbox, Icon, Input, InputNumber, Radio, Row, Select } from 'antd';
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { NODE_BIZ_OBJECTS_EXECUTABLES } from 'common/constants';
+import { NODE_BIZ_OBJECTS_EXECUTABLES, NODE_CREATABLE_BIZ_OBJECTS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -66,7 +66,7 @@ function CreateActionForm(props) {
         <Col sm={24} lg={24}>
           <FormItem>
             <Select value={action.biz_object} onChange={value => handleChange('biz_object', value)}>
-              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{bo.text}</Option>)}
+              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{msg(bo.text)}</Option>)}
             </Select>
           </FormItem>
         </Col>
@@ -297,16 +297,27 @@ export default class AddTriggerModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    bizObjects: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
     closeAddTriggerModal: PropTypes.func.isRequired,
     onModalOK: PropTypes.func.isRequired,
   }
   state = {
     actions: [],
+    bizobjExecutes: [],
+    creatableBizObjects: [],
+  }
+  componentWillMount() {
+    const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[this.props.kind];
+    const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[this.props.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
+    this.setState({ bizobjExecutes, creatableBizObjects });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.actions !== this.props.actions) {
       this.setState({ actions: nextProps.actions });
+    }
+    if (nextProps.kind !== this.props.kind) {
+      const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[nextProps.kind];
+      const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[nextProps.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
+      this.setState({ bizobjExecutes, creatableBizObjects });
     }
   }
   handleActionAdd = () => {
@@ -333,9 +344,8 @@ export default class AddTriggerModal extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { visible, bizObjects, kind } = this.props;
-    const { actions } = this.state;
-    const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[kind];
+    const { visible } = this.props;
+    const { actions, bizobjExecutes, creatableBizObjects } = this.state;
     return (
       <Modal title={this.msg('triggerActions')}
         width={800} visible={visible} maskClosable={false}
@@ -347,7 +357,7 @@ export default class AddTriggerModal extends React.Component {
             switch (action.type) {
               case 'CREATE': actionForm = (
                 <CreateActionForm key={action.id} action={action} onDel={this.handleActionDel}
-                  index={index} bizObjectOptions={bizObjects} onChange={this.handleFormChange} msg={this.msg}
+                  index={index} bizObjectOptions={creatableBizObjects} onChange={this.handleFormChange} msg={this.msg}
                 />);
                 break;
                 /*
