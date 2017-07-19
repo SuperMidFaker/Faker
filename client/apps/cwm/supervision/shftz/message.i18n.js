@@ -19,7 +19,7 @@ const messages = defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.supervision.shftz.search.placeholder',
-    defaultMessage: 'ANS编号/海关编号/入库备案号',
+    defaultMessage: 'ANS编号/海关编号/监管入库单号',
   },
   ownerSearchPlaceholder: {
     id: 'cms.supervision.shftz.owner.search.placeholder',

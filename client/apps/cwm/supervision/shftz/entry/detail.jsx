@@ -163,7 +163,7 @@ export default class SHFTZEntryDetail extends Component {
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
-    width: 120,
+    width: 150,
   }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
@@ -171,11 +171,11 @@ export default class SHFTZEntryDetail extends Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 150,
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 120,
+    width: 90,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -191,7 +191,7 @@ export default class SHFTZEntryDetail extends Component {
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
-      return text;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
     title: '数量',
@@ -212,7 +212,7 @@ export default class SHFTZEntryDetail extends Component {
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
-      return text;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
     title: '原产国',
@@ -220,7 +220,7 @@ export default class SHFTZEntryDetail extends Component {
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
       const text = country ? `${country.value}| ${country.text}` : o;
-      return text;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
   handleTabChange = (tabKey) => {
@@ -291,7 +291,7 @@ export default class SHFTZEntryDetail extends Component {
                     <div className="panel-header">
                       <Row>
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="入库备案号" field={reg.ftz_ent_no} editable={entryEditable}
+                          <InfoItem size="small" addonBefore="监管入库单号" field={reg.ftz_ent_no} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
                           />
                         </Col>

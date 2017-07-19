@@ -132,11 +132,11 @@ export default class SHFTZRelDetail extends Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 150,
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 120,
+    width: 90,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -165,7 +165,7 @@ export default class SHFTZRelDetail extends Component {
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
-      return text;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
     title: '原产国',
@@ -173,7 +173,7 @@ export default class SHFTZRelDetail extends Component {
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
       const text = country ? `${country.value}| ${country.text}` : o;
-      return text;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
   handleTabChange = (tabKey) => {
@@ -221,7 +221,7 @@ export default class SHFTZRelDetail extends Component {
         render: (o) => {
           const unit = this.props.units.filter(cur => cur.value === o)[0];
           const text = unit ? `${unit.value}| ${unit.text}` : o;
-          return text;
+          return text && text.length > 0 && <Tag>{text}</Tag>;
         },
       });
     }
@@ -305,7 +305,7 @@ export default class SHFTZRelDetail extends Component {
                       {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
                       <Row>
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="出库备案号" field={reg.ftz_rel_no} editable={relEditable}
+                          <InfoItem size="small" addonBefore="监管出库单号" field={reg.ftz_rel_no} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>

@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
+import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -60,13 +61,17 @@ export default class SHFTZEntryList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 220,
+    width: 180,
     fixed: 'left',
   }, {
     title: '报关单号',
     width: 150,
     dataIndex: 'pre_entry_seq_no',
     render: (preno, row) => row.cus_decl_no || preno,
+  }, {
+    title: '监管入库单号',
+    width: 150,
+    dataIndex: 'ftz_ent_no',
   }, {
     title: '备案类型',
     dataIndex: 'ftz_ent_type',
@@ -76,16 +81,14 @@ export default class SHFTZEntryList extends React.Component {
     },
   }, {
     title: '货主',
-    width: 220,
+    width: 180,
     dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '仓储企业',
-    width: 220,
+    width: 180,
     dataIndex: 'wh_ent_name',
-  }, {
-    title: '入库备案号',
-    width: 120,
-    dataIndex: 'ftz_ent_no',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '进口日期',
     width: 120,
@@ -111,11 +114,11 @@ export default class SHFTZEntryList extends React.Component {
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="pending" text="待备案" />);
+        return (<Badge status="default" text="待备案" />);
       } else if (o === 1) {
-        return (<Badge status="send" text="已发送" />);
+        return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="completed" text="备案完成" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
   }, {
@@ -288,7 +291,7 @@ export default class SHFTZEntryList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']} scroll={{ x: 1500 }} />
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']} scroll={{ x: 1400 }} />
               </div>
             </div>
           </Content>
