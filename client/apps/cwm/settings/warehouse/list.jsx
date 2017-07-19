@@ -280,7 +280,7 @@ export default class WareHouse extends Component {
     const whseColumns = [{
       dataIndex: 'name',
       key: 'name',
-      render: o => (<span className="menu-sider-item">{o}</span>),
+      render: (o, record) => (<div className="menu-sider-item">{o} ({record.code}) <span className="pull-right">{record.bonded === 1 ? <Tag>保税仓</Tag> : <Tag>非保税仓</Tag>}</span></div>),
     }];
     const zonePopoverContent = (
       <Form layout="vertical">
