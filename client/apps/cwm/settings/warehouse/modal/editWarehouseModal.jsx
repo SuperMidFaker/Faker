@@ -81,7 +81,7 @@ export default class WareHouseModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal title="添加仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>
+      <Modal title="编辑仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>
         <Form>
           <FormItem {...formItemLayout} label="仓库代码" >
             {

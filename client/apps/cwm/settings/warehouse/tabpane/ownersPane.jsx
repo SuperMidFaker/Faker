@@ -32,11 +32,11 @@ export default class OwnersPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadwhseOwners(this.props.whseCode);
+    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadwhseOwners(nextProps.whseCode);
+      this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
   columns = [{
@@ -89,7 +89,7 @@ export default class OwnersPane extends Component {
   changeOwnerStatus = (id, status) => {
     this.props.changeOwnerStatus(id, status).then((result) => {
       if (!result.error) {
-        this.props.loadwhseOwners(this.props.whseCode);
+        this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
         if (this.props.whseCode === this.props.defaultWhse.code) {
           this.props.loadWhse(this.props.whseCode);
         }

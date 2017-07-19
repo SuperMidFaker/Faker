@@ -291,7 +291,7 @@ export default class SHFTZCargoList extends React.Component {
       width: 40,
       fixed: 'right',
       render: (o, record) => {
-        if (!record.owner_portion_en) {
+        if (!record.portion_enabled) {
           return (
             <Tooltip placement="bottom" title="启用分拨">
               <Button shape="circle" icon="arrows-alt" onClick={() => this.handlePortionEnable(record)} />
@@ -347,19 +347,19 @@ export default class SHFTZCargoList extends React.Component {
                 {owner.name}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large" disabled={!owner.owner_portion_en}>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large" disabled={!owner.portion_enabled}>
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
             <div className="top-bar-tools">
-              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs} disabled={!owner.owner_portion_en}>
+              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs} disabled={!owner.portion_enabled}>
                 同步货品SKU
               </Button>
               <ButtonToggle size="large"
                 iconOn="fork" iconOff="fork"
                 onClick={this.toggleRightSider}
-                disabled={!owner.owner_portion_en}
+                disabled={!owner.portion_enabled}
               >
                 映射规则
               </ButtonToggle>
@@ -369,12 +369,12 @@ export default class SHFTZCargoList extends React.Component {
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
-                {listFilter.status === 'pending' && !!owner.owner_portion_en && cargolist.totalCount > 0 &&
+                {listFilter.status === 'pending' && !!owner.portion_enabled && cargolist.totalCount > 0 &&
                 <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoSend} style={{ marginLeft: 20 }}>
                   发送备案
                 </Button>
                 }
-                {listFilter.status === 'sent' && !!owner.owner_portion_en && cargolist.totalCount > 0 &&
+                {listFilter.status === 'sent' && !!owner.portion_enabled && cargolist.totalCount > 0 &&
                 <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoConfirm} style={{ marginLeft: 20 }}>
                   确认备案
                 </Button>
