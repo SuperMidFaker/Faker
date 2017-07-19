@@ -124,7 +124,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('receipts')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={statsCard.inboundProducts ? (statsCard.receipts / statsCard.inboundProducts * 100).toFixed(1) : 0} width={80} />
+              <Progress type="dashboard" percent={statsCard.inboundProducts ? Number((statsCard.receipts / statsCard.inboundProducts * 100).toFixed(1)) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.inboundProducts} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.receipts} Items</p>
             </div>
@@ -134,7 +134,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('putaways')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={statsCard.inboundProducts ? (statsCard.putaways / statsCard.inboundProducts * 100).toFixed(1) : 0} width={80} />
+              <Progress type="dashboard" percent={statsCard.inboundProducts ? Number((statsCard.putaways / statsCard.inboundProducts * 100).toFixed(1)) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.inboundProducts} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.putaways} Items</p>
             </div>
@@ -144,7 +144,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('pickings')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={statsCard.outboundDetails ? (statsCard.pickings / statsCard.outboundDetails * 100).toFixed(1) : 0} width={80} />
+              <Progress type="dashboard" percent={statsCard.outboundDetails ? Number((statsCard.pickings / statsCard.outboundDetails * 100).toFixed(1)) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.outboundDetails} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.pickings} Items</p>
             </div>
@@ -154,7 +154,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('shipments')}</h4>
             <div className="chart">
-              <Progress type="dashboard" percent={statsCard.outboundDetails ? (statsCard.shipments / statsCard.outboundDetails * 100).toFixed(1) : 0} width={80} />
+              <Progress type="dashboard" percent={statsCard.outboundDetails ? Number((statsCard.shipments / statsCard.outboundDetails * 100).toFixed(1)) : 0} width={80} />
               <p>{this.msg('tasksTotal')}: {statsCard.outboundDetails} Items</p>
               <p>{this.msg('tasksCompleted')}: {statsCard.shipments} Items</p>
             </div>

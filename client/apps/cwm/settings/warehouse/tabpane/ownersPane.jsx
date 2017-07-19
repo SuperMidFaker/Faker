@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Button, Layout, Table } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { loadWhse } from 'common/reducers/cwmContext';
@@ -59,6 +60,16 @@ export default class OwnersPane extends Component {
   }, {
     title: '结算方',
     dataIndex: 'billing_party',
+  }, {
+    title: '最后修改时间',
+    dataIndex: 'last_updated_date',
+    width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
+    title: '创建时间',
+    dataIndex: 'created_date',
+    width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 150,

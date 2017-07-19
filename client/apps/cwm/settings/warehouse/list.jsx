@@ -11,7 +11,6 @@ import EditWhseModal from './modal/editWarehouseModal';
 import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal } from 'common/reducers/cwmWarehouse';
 import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from './message.i18n';
-import './warehouse.less';
 
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
@@ -34,7 +33,7 @@ const TabPane = Tabs.TabPane;
   { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext }
 )
 @Form.create()
-export default class WareHouse extends Component {
+export default class WarehouseList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }

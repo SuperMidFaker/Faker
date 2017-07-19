@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Layout, Table, Button, Input, Popover, Menu, Form, message, Popconfirm, Icon } from 'antd';
 import LocationModal from '../modal/locationModal';
 import { MdIcon } from 'client/components/FontIcon';
@@ -239,12 +240,14 @@ export default class ZoneLocationPane extends Component {
     render: o => CWM_LOCATION_STATUS.find(item => item.value === Number(o)) ? CWM_LOCATION_STATUS.find(item => item.value === Number(o)).text : '',
   }, {
     title: '最后修改时间',
-    dataIndex: 'last_modified_date',
+    dataIndex: 'last_updated_date',
     width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 80,
@@ -252,7 +255,7 @@ export default class ZoneLocationPane extends Component {
       <span>
         <RowUpdater onHit={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <Popconfirm title="Are you sure delete this task?" onConfirm={() => this.handleDeleteLocation(record)} okText="Yes" cancelText="No">
+        <Popconfirm title="确定要删除?" onConfirm={() => this.handleDeleteLocation(record)} okText="是" cancelText="否">
           <RowUpdater label={<Icon type="delete" />} />
         </Popconfirm>
       </span>
@@ -293,7 +296,7 @@ export default class ZoneLocationPane extends Component {
           }
         </FormItem>
         <FormItem>
-          <Button className="createZone" size="large" type="primary" style={{ width: '100%' }} onClick={this.createZone}>创建</Button>
+          <Button size="large" type="primary" style={{ width: '100%' }} onClick={this.createZone}>创建</Button>
         </FormItem>
       </Form>);
     return (
@@ -336,14 +339,14 @@ export default class ZoneLocationPane extends Component {
               新增库位
             </Button>}
             {this.state.selectedRowKeys.length > 0 &&
-            <Popconfirm title="Are you sure delete this task?" onConfirm={this.batchDeleteLocations} okText="Yes" cancelText="No">
-              <Button type="primary" ghost icon="delete">批量删除库位</Button>
+            <Popconfirm title="确定要删除?" onConfirm={this.batchDeleteLocations} okText="是" cancelText="否">
+              <Button type="danger" ghost icon="delete">批量删除库位</Button>
             </Popconfirm>
             }
             <div className="toolbar-right">
               { zoneList.length > 0 && <Button icon="edit" onClick={this.showZoneModal}>编辑库区</Button> }
               { zoneList.length > 0 &&
-              <Popconfirm title="Are you sure delete this task?" onConfirm={this.handleDeleteZone} okText="Yes" cancelText="No">
+              <Popconfirm title="确定要删除?" onConfirm={this.handleDeleteZone} okText="是" cancelText="否">
                 <Button type="danger" icon="delete" >删除库区</Button>
               </Popconfirm>
               }
