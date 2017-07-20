@@ -103,7 +103,7 @@ export default class OwnersPane extends Component {
         <div className="toolbar">
           <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加货主</Button>
         </div>
-        <Table columns={this.columns} dataSource={whseOwners} />
+        <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} />
       </Content>
