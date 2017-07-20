@@ -44,7 +44,7 @@ export default class TemplateUsersPane extends React.Component {
       role,
       businessType,
     }).then((result) => {
-      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
+      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1 && item.status === 1) });
     });
   }
   componentWillReceiveProps(nextProps) {

@@ -5,7 +5,7 @@ const actionTypes = createActionTypes('@@welogix/scv/inventory/stock/', [
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
   'LOAD_LOTSTOCKS', 'LOAD_LOTSTOCKS_SUCCEED', 'LOAD_LOTSTOCKS_FAIL',
   'LOAD_STOCKSEARCHOPT', 'LOAD_STOCKSEARCHOPT_SUCCEED', 'LOAD_STOCKSEARCHOPT_FAIL',
-  'CHECK_DISPLAY_COLUMN',
+  'CHECK_OWNER_COLUMN', 'CHECK_PRODUCT_COLUMN', 'CHECK_LOCATION_COLUMN',
 ]);
 
 const initialState = {
@@ -18,12 +18,12 @@ const initialState = {
   },
   displayedColumns: {
     product_no: false,
-    product_category: false,
-    external_lot_no: false,
-    serial_no: false,
-    spec_date: false,
-    unit_price: false,
-    stock_cost: false,
+    avail_qty: false,
+    alloc_qty: false,
+    frozen_qty: false,
+    whse_location: false,
+    owner: false,
+    unit: false,
   },
   sortFilter: {
     field: '',
@@ -31,10 +31,7 @@ const initialState = {
   },
   listFilter: {
     product_no: null,
-    product_category: null,
-    wh_no: '_all_',
-    group_by_sku: false,
-    lot_property: null,
+    whse_code: 'all',
   },
   searchOption: {
     warehouses: [],
@@ -50,11 +47,14 @@ export default function reducer(state = initialState, action) {
         listFilter: JSON.parse(action.params.filter),
         sortFilter: JSON.parse(action.params.sorter),
         displayedColumns: { ...state.displayedColumns,
-          external_lot_no: false,
-          serial_no: false,
-          spec_date: false,
-          unit_price: false,
-          stock_cost: false },
+          product_no: false,
+          avail_qty: false,
+          alloc_qty: false,
+          frozen_qty: false,
+          whse_location: false,
+          owner: false,
+          unit: false,
+        },
       };
     case actionTypes.LOAD_STOCKS_FAIL:
       return { ...state, loading: false };
@@ -71,7 +71,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, list: action.result.data, loading: false, displayedColumns: { ...state.displayedColumns, ...action.lot_column } };
     case actionTypes.LOAD_STOCKSEARCHOPT_SUCCEED:
       return { ...state, searchOption: action.result.data };
-    case actionTypes.CHECK_DISPLAY_COLUMN:
+    case actionTypes.CHECK_OWNER_COLUMN:
+      return { ...state, displayedColumns: { ...state.displayedColumns, [action.data.column]: action.data.visible } };
+    case actionTypes.CHECK_PRODUCT_COLUMN:
+      return { ...state,
+        displayedColumns: {
+          ...state.displayedColumns,
+          avail_qty: action.data.visible,
+          alloc_qty: action.data.visible,
+          frozen_qty: action.data.visible,
+          product_no: action.data.visible,
+        } };
+    case actionTypes.CHECK_LOCATION_COLUMN:
       return { ...state, displayedColumns: { ...state.displayedColumns, [action.data.column]: action.data.visible } };
     default:
       return state;
@@ -124,9 +135,23 @@ export function loadStockSearchOptions(tenantId) {
   };
 }
 
-export function checkDisplayColumn(column, visible) {
+export function checkOwnerColumn(column, visible) {
   return {
-    type: actionTypes.CHECK_DISPLAY_COLUMN,
+    type: actionTypes.CHECK_OWNER_COLUMN,
+    data: { column, visible },
+  };
+}
+
+export function checkProductColumn(visible) {
+  return {
+    type: actionTypes.CHECK_PRODUCT_COLUMN,
+    data: { visible },
+  };
+}
+
+export function checkLocationColumn(column, visible) {
+  return {
+    type: actionTypes.CHECK_LOCATION_COLUMN,
     data: { column, visible },
   };
 }

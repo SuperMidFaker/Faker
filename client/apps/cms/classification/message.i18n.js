@@ -53,6 +53,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.en.description',
     defaultMessage: '英文描述',
   },
+  specialNo: {
+    id: 'cms.classificagtion.tradeitem.special.no',
+    defaultMessage: '特殊货号合并',
+  },
   gModel: {
     id: 'cms.classificagtion.tradeitem.table.gmodel',
     defaultMessage: '中文规格型号',
@@ -244,6 +248,18 @@ const messages = defineMessages({
   exportUnclassified: {
     id: 'cms.classificagtion.tradeitem.export.unclassified',
     defaultMessage: '导出未归类物料',
+  },
+  spcialSearchPh: {
+    id: 'cms.classificagtion.tradeitem.special.search',
+    defaultMessage: '分类名称',
+  },
+  specialSplit: {
+    id: 'cms.classificagtion.tradeitem.special.split',
+    defaultMessage: '独立拆分',
+  },
+  specialMerge: {
+    id: 'cms.classificagtion.tradeitem.special.merge',
+    defaultMessage: '货号合并',
   },
 });
 export default messages;

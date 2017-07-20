@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Icon, Col, Row, Tabs, Button } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
-import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid } from 'common/reducers/cwmReceive';
+import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid, getShipmtOrderNo } from 'common/reducers/cwmReceive';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -28,7 +28,7 @@ const TabPane = Tabs.TabPane;
     asn: state.cwmReceive.dock.asn,
     uuid: state.cwmReceive.dock.asn.uuid,
   }),
-  { hideDock, changeDockTab, loadAsn, getInstanceUuid, loadOrderDetail, getAsnUuid }
+  { hideDock, changeDockTab, loadAsn, getInstanceUuid, loadOrderDetail, getAsnUuid, getShipmtOrderNo }
 )
 export default class ReceivingDockPanel extends React.Component {
   static propTypes = {

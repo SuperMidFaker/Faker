@@ -23,7 +23,7 @@ export default class SegmentDock extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
     shipmts: PropTypes.array.isRequired,
     nodeLocations: PropTypes.array.isRequired,
     transitModes: PropTypes.array.isRequired,
@@ -38,7 +38,7 @@ export default class SegmentDock extends React.Component {
     };
     this.onCloseWrapper = (reload) => {
       this.setState({
-        segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
+        segments: [(<Button key="0" type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
         twoable: false,
         errable: false,
         segGroupFirst: {
@@ -61,7 +61,7 @@ export default class SegmentDock extends React.Component {
   }
 
   state = {
-    segments: [(<Button type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
+    segments: [(<Button key="0" type="dashed" style={{ width: 400 }} onClick={() => this.handleAddSegment(true)}><Icon type="plus" />添加中转站</Button>)],
     twoable: false,
     errable: false,
     segGroupFirst: {

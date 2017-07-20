@@ -166,7 +166,7 @@ export function addZone(params) {
   };
 }
 
-export function loadZones(whseCode) {
+export function loadZones(whseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -176,7 +176,7 @@ export function loadZones(whseCode) {
       ],
       endpoint: 'v1/cwm/warehouse/zone/load',
       method: 'get',
-      params: { whseCode },
+      params: { whseCode, tenantId },
     },
   };
 }
@@ -209,7 +209,7 @@ export function addLocation(whseCode, zoneCode, location, type, status, tenantId
   };
 }
 
-export function loadLocations(whseCode, zoneCode) {
+export function loadLocations(whseCode, zoneCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -219,7 +219,7 @@ export function loadLocations(whseCode, zoneCode) {
       ],
       endpoint: 'v1/cwm/warehouse/location/load',
       method: 'get',
-      params: { whseCode, zoneCode },
+      params: { whseCode, zoneCode, tenantId },
     },
   };
 }
@@ -254,7 +254,7 @@ export function updateLocation(type, status, location, id, loginId) {
   };
 }
 
-export function deleteZone(whseCode, zoneCode) {
+export function deleteZone(whseCode, zoneCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -264,7 +264,7 @@ export function deleteZone(whseCode, zoneCode) {
       ],
       endpoint: 'v1/cwm/warehouse/zone/delete',
       method: 'get',
-      params: { whseCode, zoneCode },
+      params: { whseCode, zoneCode, tenantId },
     },
   };
 }
