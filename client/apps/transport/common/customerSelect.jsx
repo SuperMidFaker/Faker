@@ -21,7 +21,7 @@ export default class CustomerSelect extends React.Component {
   }
   handleChange = (value) => {
     const client = this.props.clients.find(item => item.partner_id === Number(value));
-    this.props.onChange(value, client ? client.tid : -2);
+    this.props.onChange(Number(value), client ? client.tid : -2);
   }
   render() {
     const clients = [{
@@ -30,7 +30,7 @@ export default class CustomerSelect extends React.Component {
     }].concat(this.props.clients);
     return (
       <Select
-        defaultValue={-1}
+        defaultValue="-1"
         onChange={this.handleChange}
         style={{ ...this.props.style, width: 160 }}
         showSearch
@@ -43,7 +43,7 @@ export default class CustomerSelect extends React.Component {
         {
           clients.map(pt => (
             <Option searched={`${pt.partner_code}${pt.name}`}
-              value={pt.partner_id} key={pt.partner_id}
+              value={String(pt.partner_id)} key={pt.partner_id}
             >
               {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
             </Option>)

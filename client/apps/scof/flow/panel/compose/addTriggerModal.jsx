@@ -182,39 +182,40 @@ function NotifyActionForm(props) {
             </Select>
           </FormItem>
         </Col>
+
         <Col sm={24} lg={24}>
           <FormItem label={msg('notifyContent')}>
-            <Input placeholder={msg('receiverPlaceholder')} />
+            <Input placeholder={msg('receiverPlaceholder')} value={action.content} onChange={e => handleChange('content', e.target.value)} />
           </FormItem>
         </Col>
         <Col sm={24} lg={24}>
           <FormItem label={
             <span>
-              <Checkbox checked={!!action.recv_login_ids} onCh />
-              {msg('platformMsg')}
+              <Checkbox checked={!!action.recv_login_ids} />
+              <span style={{ marginLeft: 10 }}>{msg('platformMsg')}</span>
             </span>}
           >
-            <Input placeholder={msg('receiverPlaceholder')} />
+            <Input placeholder={msg('receiverPlaceholder')} value={action.recv_login_ids} onChange={e => handleChange('recv_login_ids', e.target.value)} />
           </FormItem>
         </Col>
         <Col sm={24} lg={24}>
           <FormItem label={
             <span>
-              <Checkbox checked={!!action.recv_emails} o />
-              {msg('mail')}
+              <Checkbox checked={!!action.recv_emails} />
+              <span style={{ marginLeft: 10 }}>{msg('mail')}</span>
             </span>}
           >
-            <Input placeholder={msg('receiverPlaceholder')} />
+            <Input placeholder={msg('receiverPlaceholder')} value={action.recv_emails} onChange={e => handleChange('recv_emails', e.target.value)} />
           </FormItem>
         </Col>
         <Col sm={24} lg={24}>
           <FormItem label={
             <span>
               <Checkbox checked={!!action.recv_tels} />
-              {msg('sms')}
+              <span style={{ marginLeft: 10 }}>{msg('sms')}</span>
             </span>}
           >
-            <Input placeholder={msg('receiverPlaceholder')} />
+            <Input placeholder={msg('receiverPlaceholder')} value={action.recv_tels} onChange={e => handleChange('recv_tels', e.target.value)} />
           </FormItem>
         </Col>
       </Row>
