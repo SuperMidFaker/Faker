@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Button, Breadcrumb, Layout, Radio, Menu, Select, Table, Tag } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Table } from 'antd';
 import NavLink from 'client/components/nav-link';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -40,8 +40,8 @@ export default class SupervisionSHFTZList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'ANS编号',
-    dataIndex: 'asn_no',
+    title: '集中报关编号',
+    dataIndex: 'batch_decl_no',
     width: 120,
     fixed: 'left',
   }, {
@@ -68,37 +68,8 @@ export default class SupervisionSHFTZList extends React.Component {
     dataIndex: 'received_date',
   }, {
     title: '状态',
-    dataIndex: 'status',
-    fixed: 'right',
-    width: 120,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待收货" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="已释放" />);
-      } else if (o === 2) {
-        return (<Badge status="warning" text="部分收货" />);
-      } else if (o === 3) {
-        return (<Badge status="success" text="收货完成" />);
-      }
-    },
-  }, {
-    title: '货物属性',
-    width: 100,
-    dataIndex: 'bonded',
-    fixed: 'right',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
-        return (<Tag>非保税</Tag>);
-      }
-    },
-  }, {
-    title: '监管备案',
     dataIndex: 'reg_status',
     width: 120,
-    fixed: 'right',
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" />);
@@ -110,19 +81,9 @@ export default class SupervisionSHFTZList extends React.Component {
     },
   }, {
     title: '操作',
-    width: 120,
+    width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowUpdater label="释放" row={record} /><span className="ant-divider" /><RowUpdater label="修改" row={record} /></span>);
-      } else if (record.status === 1) {
-        if (record.bonded === 1 && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /><span className="ant-divider" /><RowUpdater label="备案" row={record} /></span>);
-        } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库" row={record} /></span>);
-        }
-      }
-    },
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="报关明细" row={record} />,
   }]
 
   dataSource = [{
@@ -217,7 +178,7 @@ export default class SupervisionSHFTZList extends React.Component {
                 </Menu.Item>
                 <Menu.Item key="batch">
                   <NavLink to="/cwm/supervision/shftz/batch">
-                    集中报关申请
+                    集中报关
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="cargo">
@@ -254,16 +215,12 @@ export default class SupervisionSHFTZList extends React.Component {
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-                {this.msg('createASN')}
-              </Button>
-            </div>
+            <div className="top-bar-tools" />
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+                <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
                 <span />
                 <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                   onChange={this.handleClientSelectChange} defaultValue="all"

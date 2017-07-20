@@ -11,15 +11,23 @@ const messages = defineMessages({
   },
   ftzBatchReg: {
     id: 'cwm.supervision.shftz.batch.reg',
-    defaultMessage: '集中报关申请',
+    defaultMessage: '集中报关',
   },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',
     defaultMessage: '货物备案',
   },
-  searchPlaceholder: {
-    id: 'cms.supervision.shftz.search.placeholder',
-    defaultMessage: 'ANS编号/海关编号/监管入库单号',
+  entrySearchPlaceholder: {
+    id: 'cms.supervision.shftz.entry.search.placeholder',
+    defaultMessage: 'ANS编号/报关单号/监管入库单号',
+  },
+  releaseSearchPlaceholder: {
+    id: 'cms.supervision.shftz.release.search.placeholder',
+    defaultMessage: 'SO编号/报关单号/监管出库单号',
+  },
+  batchSearchPlaceholder: {
+    id: 'cms.supervision.shftz.batch.search.placeholder',
+    defaultMessage: '报关单号/监管出库单号',
   },
   ownerSearchPlaceholder: {
     id: 'cms.supervision.shftz.owner.search.placeholder',

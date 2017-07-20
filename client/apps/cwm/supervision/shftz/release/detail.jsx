@@ -193,19 +193,21 @@ export default class SHFTZRelDetail extends Component {
     const { relSo, relRegs, whse } = this.props;
     const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+    const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
+    const sendText = sent ? '重新发送' : '发送备案';
     let queryable = false;
-    let sentable = true;
+    let sendable = true;
     let unsentReason = '';
     const columns = [...this.columns];
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
-      sentable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-      if (sentable) {
+      sendable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+      if (sendable) {
         const nonCusDeclRegs = relRegs.filter(er => !(er.cus_decl_date && er.ie_date));
         if (nonCusDeclRegs.length === 0) {
-          sentable = true;
+          sendable = true;
         } else {
           unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}未申报`;
-          sentable = false;
+          sendable = false;
         }
       }
     }
@@ -252,8 +254,8 @@ export default class SHFTZRelDetail extends Component {
           <div className="top-bar-tools">
             {queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {relEditable &&
-            <Button type="primary" size="large" icon="export" onClick={this.handleSend} disabled={!sentable}>发送备案</Button>}
-            {!sentable && <Tooltip title={unsentReason} placement="left"><Icon type="question-circle-o" /></Tooltip>}
+            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
+            {!sendable && <Tooltip title={unsentReason} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>
         <Content className="main-content">

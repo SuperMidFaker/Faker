@@ -62,7 +62,7 @@ export default class SHFTZEntryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    sentable: false,
+    sendable: false,
     queryable: false,
     whyunsent: '',
     tabKey: '',
@@ -71,18 +71,18 @@ export default class SHFTZEntryDetail extends Component {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
       const queryable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      let sentable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+      let sendable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
       let unsentReason = '';
-      if (sentable) {
+      if (sendable) {
         const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
         if (nonCusDeclRegs.length === 0) {
-          sentable = true;
+          sendable = true;
         } else {
           unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}未申报`;
-          sentable = false;
+          sendable = false;
         }
       }
-      const newState = { queryable, sentable, whyunsent: unsentReason };
+      const newState = { queryable, sendable, whyunsent: unsentReason };
       if (this.state.tabKey === '') {
         newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
       }
@@ -241,6 +241,8 @@ export default class SHFTZEntryDetail extends Component {
     const { entryAsn, entryRegs, whse } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+    const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
+    const sendText = sent ? '重新发送' : '发送备案';
     return (
       <div>
         <Header className="top-bar">
@@ -261,8 +263,8 @@ export default class SHFTZEntryDetail extends Component {
           <div className="top-bar-tools">
             {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {entryEditable &&
-            <Button type="primary" size="large" icon="export" onClick={this.handleSend} disabled={!this.state.sentable}>发送备案</Button>}
-            {!this.state.sentable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
+            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
+            {!this.state.sendable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>
         <Content className="main-content">

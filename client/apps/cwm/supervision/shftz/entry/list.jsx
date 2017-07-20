@@ -125,15 +125,7 @@ export default class SHFTZEntryList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleDetail} label="发送" row={record} /></span>);
-      } else if (record.status === 1) {
-        return (<span><RowUpdater label="获取状态" row={record} onHit={this.handleDetail} /></span>);
-      } else if (record.status === 2) {
-        return (<span><RowUpdater onHit={this.handleDetail} label="查看" row={record} /></span>);
-      }
-    },
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadEntryRegDatas(params),
@@ -237,7 +229,7 @@ export default class SHFTZEntryList extends React.Component {
                 </Menu.Item>
                 <Menu.Item key="batch">
                   <NavLink to="/cwm/supervision/shftz/batch">
-                    集中报关申请
+                    集中报关
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="cargo">
@@ -271,7 +263,7 @@ export default class SHFTZEntryList extends React.Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+                <SearchBar placeholder={this.msg('entrySearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
                 <span />
                 <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                   onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
