@@ -61,6 +61,7 @@ export default class SpecialCategories extends React.Component {
     hscodeCategories: [],
     editIndex: -1,
     type: 'split',
+    currentPage: 1,
   }
   componentWillReceiveProps(nextProps) {
     const hscodeCategories = nextProps.hscodeCategories.filter(ct => ct.type === this.state.type);
@@ -125,6 +126,19 @@ export default class SpecialCategories extends React.Component {
   handleSearch = (value) => {
     const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
     this.props.loadCategoryHsCode({ categoryId, current, pageSize, searchText: value });
+  }
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  }
+  handleNameSearch = (value) => {
+    let hscodeCategories = this.props.hscodeCategories.filter(ct => ct.type === this.state.type);
+    if (value) {
+      hscodeCategories = hscodeCategories.filter((item) => {
+        const reg = new RegExp(value);
+        return reg.test(item.name);
+      });
+    }
+    this.setState({ hscodeCategories, currentPage: 1 });
   }
   render() {
     const { hscodeCategory } = this.state;
@@ -206,12 +220,13 @@ export default class SpecialCategories extends React.Component {
           >
             <div className="right-sider-panel" >
               <div className="toolbar">
-                <SearchBar placeholder={this.msg('spcialSearchPh')} onInputSearch={this.handleSearch}
-                  value={this.props.categoryHscodes.searchText} size="large"
+                <SearchBar placeholder={this.msg('spcialSearchPh')} onInputSearch={this.handleNameSearch}
+                  size="large"
                 />
               </div>
               <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-                pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
               />
             </div>
           </Sider>
