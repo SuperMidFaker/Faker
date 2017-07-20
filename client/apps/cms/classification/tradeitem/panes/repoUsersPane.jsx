@@ -45,7 +45,7 @@ export default class RepoUsersPane extends React.Component {
       role,
       businessType,
     }).then((result) => {
-      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
+      this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1 && item.status === 1) });
     });
     if (this.props.repoId) {
       this.props.loadRepoUsers(this.props.repoId);

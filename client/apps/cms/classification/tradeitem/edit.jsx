@@ -51,7 +51,8 @@ export default class EditTradeItem extends Component {
     this.props.form.validateFields((errors) => {
       if (!errors) {
         const value = this.props.form.getFieldsValue();
-        const item = { ...this.props.itemData, ...value };
+        const specialMark = value.specialMark.join('/');
+        const item = { ...this.props.itemData, ...value, special_mark: specialMark };
         this.props.itemEditedSave({ item }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);

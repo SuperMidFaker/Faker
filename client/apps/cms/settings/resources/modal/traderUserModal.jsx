@@ -33,7 +33,7 @@ export default class TraderUserModal extends React.Component {
       businessType: PARTNER_BUSINESSE_TYPES.clearance,
     }).then((result) => {
       if (result.data && result.data.length > 0) {
-        this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1) });
+        this.setState({ brokers: result.data.filter(item => item.partner_tenant_id !== -1 && item.status === 1) });
       }
     });
   }

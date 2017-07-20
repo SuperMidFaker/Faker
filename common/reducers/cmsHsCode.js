@@ -91,7 +91,7 @@ export function loadHsCodeCategories(tenantId) {
   };
 }
 
-export function addHsCodeCategory(tenantId, name) {
+export function addHsCodeCategory(tenantId, name, type) {
   return {
     [CLIENT_API]: {
       types: [
@@ -101,7 +101,7 @@ export function addHsCodeCategory(tenantId, name) {
       ],
       endpoint: 'v1/cms/cmsTradeitem/hscode/category/add',
       method: 'post',
-      data: { tenantId, name },
+      data: { tenantId, name, type },
     },
   };
 }
