@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Table, Layout, Icon, Input, Tooltip, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Table, Layout, Icon, Input, Tooltip, message, Popconfirm, Radio } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -10,12 +10,13 @@ import messages from '../message.i18n';
 import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
-import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
 import '../index.less';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
@@ -59,12 +60,14 @@ export default class SpecialCategories extends React.Component {
     hscodeCategory: {},
     hscodeCategories: [],
     editIndex: -1,
+    type: 'split',
   }
   componentWillReceiveProps(nextProps) {
+    const hscodeCategories = nextProps.hscodeCategories.filter(ct => ct.type === this.state.type);
     if (this.state.hscodeCategory.id === undefined) {
-      this.setState({ hscodeCategory: nextProps.hscodeCategories[0] || {} });
+      this.setState({ hscodeCategory: hscodeCategories[0] || {} });
     }
-    this.setState({ hscodeCategories: nextProps.hscodeCategories });
+    this.setState({ hscodeCategories });
   }
   msg = key => formatMsg(this.props.intl, key)
   toggle = () => {
@@ -79,7 +82,7 @@ export default class SpecialCategories extends React.Component {
   }
   handleRemove = (id) => {
     this.props.removeHsCodeCategory(id).then(() => {
-      this.setState({ hscodeCategory: this.props.hscodeCategories[0] || {} });
+      this.setState({ hscodeCategory: this.state.hscodeCategories[0] || {} });
     });
   }
   handleShowAddCategory = () => {
@@ -89,11 +92,11 @@ export default class SpecialCategories extends React.Component {
   handleAddCategory = () => {
     const { editIndex, hscodeCategories } = this.state;
     if (hscodeCategories[editIndex].name) {
-      this.props.addHsCodeCategory(this.props.tenantId, hscodeCategories[editIndex].name).then((result) => {
+      this.props.addHsCodeCategory(this.props.tenantId, hscodeCategories[editIndex].name, this.state.type).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.setState({ editIndex: -1 });
+          this.setState({ editIndex: -1, hscodeCategory: result.data });
         }
       });
     } else {
@@ -111,7 +114,14 @@ export default class SpecialCategories extends React.Component {
       message.error('分类名称不能为空');
     }
   }
-
+  handleRadioChange = (ev) => {
+    if (ev.target.value === this.state.type) {
+      return;
+    }
+    const type = ev.target.value;
+    const hscodeCategories = this.props.hscodeCategories.filter(ct => ct.type === type);
+    this.setState({ type, hscodeCategories, hscodeCategory: hscodeCategories[0] });
+  }
   handleSearch = (value) => {
     const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
     this.props.loadCategoryHsCode({ categoryId, current, pageSize, searchText: value });
@@ -170,50 +180,41 @@ export default class SpecialCategories extends React.Component {
     }];
     return (
       <Layout className="ant-layout-wrapper">
-        <Sider width={280} className="menu-sider" key="sider" trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          collapsedWidth={0}
-        >
-          <div className="top-bar">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('classification')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                特殊商品编码分类
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="pull-right">
-              <Tooltip placement="bottom" title="添加特殊商品编码分类">
-                <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowAddCategory()} />
-              </Tooltip>
+        <Header className="top-bar">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('classification')}
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              特殊商品编码分类
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <Tooltip placement="bottom" title="添加特殊商品编码分类">
+            <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowAddCategory()} />
+          </Tooltip>
+          <span />
+          <RadioGroup value={this.state.type} onChange={this.handleRadioChange} size="large">
+            <RadioButton value="split">{this.msg('specialSplit')}</RadioButton>
+            <RadioButton value="merge">{this.msg('specialMerge')}</RadioButton>
+          </RadioGroup>
+        </Header>
+        <Layout className="ant-layout-wrapper">
+          <Sider width={280} className="right-sider" key="sider" trigger={null}
+            collapsible
+            collapsed={this.state.collapsed}
+            collapsedWidth={0}
+          >
+            <div className="right-sider-panel" >
+              <div className="toolbar">
+                <SearchBar placeholder={this.msg('spcialSearchPh')} onInputSearch={this.handleSearch}
+                  value={this.props.categoryHscodes.searchText} size="large"
+                />
+              </div>
+              <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
+                pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
+              />
             </div>
-          </div>
-          <div className="left-sider-panel" >
-            <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-              pagination={false} rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
-            />
-          </div>
-        </Sider>
-        <Layout>
-          <Header className="top-bar">
-
-            { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('classification')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                特殊商品编码分类
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          }
-            <ButtonToggle size="large"
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-          </Header>
+          </Sider>
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
