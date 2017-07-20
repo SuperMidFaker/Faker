@@ -372,7 +372,7 @@ export default class ManifestList extends Component {
         >
           <div className="right-sider-panel">
             <div className="panel-header">
-              <h3>清单模板</h3>
+              <h3>制单规则</h3>
             </div>
             <Templates ietype={this.props.ietype} />
           </div>
