@@ -119,7 +119,7 @@ export function addSo(data) {
   };
 }
 
-export function loadSos({ whseCode, pageSize, current, filters }) {
+export function loadSos({ whseCode, tenantId, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -129,7 +129,7 @@ export function loadSos({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/shipping/sos/load',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -179,7 +179,7 @@ export function releaseSo(soNo, loginId) {
   };
 }
 
-export function loadWaves({ whseCode, pageSize, current, filters }) {
+export function loadWaves({ whseCode, tenantId, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -189,7 +189,7 @@ export function loadWaves({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/waves',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }

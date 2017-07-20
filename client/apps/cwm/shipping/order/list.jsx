@@ -30,6 +30,7 @@ const { RangePicker } = DatePicker;
 function fetchData({ state, dispatch }) {
   dispatch(loadSos({
     whseCode: state.cwmContext.defaultWhse.code,
+    tenantId: state.account.tenantId,
     pageSize: state.cwmShippingOrder.solist.pageSize,
     current: state.cwmShippingOrder.solist.current,
     filters: state.cwmShippingOrder.soFilters,
@@ -177,6 +178,7 @@ export default class ShippingOrderList extends React.Component {
   handleReload = () => {
     this.props.loadSos({
       whseCode: this.props.defaultWhse.code,
+      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters: this.props.filters,
@@ -204,6 +206,7 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
+      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -214,6 +217,7 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
+      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -224,6 +228,7 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
+      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -235,6 +240,7 @@ export default class ShippingOrderList extends React.Component {
     const filters = this.props.filters;
     this.props.loadSos({
       whseCode: value,
+      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -278,6 +284,7 @@ export default class ShippingOrderList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
+          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,

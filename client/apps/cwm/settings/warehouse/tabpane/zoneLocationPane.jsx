@@ -56,9 +56,9 @@ export default class ZoneLocationPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadZones(this.props.warehouse.code).then((result) => {
+    this.props.loadZones(this.props.warehouse.code, this.props.tenantId).then((result) => {
       if (!result.error && result.data.length !== 0) {
-        this.props.loadLocations(this.props.warehouse.code, result.data[0].zone_code);
+        this.props.loadLocations(this.props.warehouse.code, result.data[0].zone_code, this.props.tenantId);
         this.setState({
           zone: result.data[0],
           zones: result.data,
@@ -70,9 +70,9 @@ export default class ZoneLocationPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.warehouse.code !== this.props.warehouse.code) {
-      this.props.loadZones(nextProps.warehouse.code).then((result) => {
+      this.props.loadZones(nextProps.warehouse.code, nextProps.tenantId).then((result) => {
         if (!result.error && result.data.length !== 0) {
-          this.props.loadLocations(nextProps.warehouse.code, result.data[0].zone_code);
+          this.props.loadLocations(nextProps.warehouse.code, result.data[0].zone_code, nextProps.tenantId);
           this.setState({
             zone: result.data[0],
             zones: result.data,
@@ -117,7 +117,7 @@ export default class ZoneLocationPane extends Component {
                 zoneName: '',
               });
             }
-            this.props.loadZones(whseCode).then(
+            this.props.loadZones(whseCode, tenantId).then(
               (data) => {
                 if (!data.error) {
                   this.setState({
@@ -148,7 +148,7 @@ export default class ZoneLocationPane extends Component {
       zone: zones.find(zone => zone.zone_code === key),
       selectedRowKeys: [],
     });
-    this.props.loadLocations(whseCode, key);
+    this.props.loadLocations(whseCode, key, this.props.tenantId);
   }
   handleDeleteLocation = (row) => {
     const whseCode = this.props.warehouse.code;
@@ -157,7 +157,7 @@ export default class ZoneLocationPane extends Component {
       (result) => {
         if (!result.error) {
           message.info('库位已删除');
-          this.props.loadLocations(whseCode, zoneCode);
+          this.props.loadLocations(whseCode, zoneCode, this.props.tenantId);
         }
       }
     );
@@ -165,11 +165,12 @@ export default class ZoneLocationPane extends Component {
   handleDeleteZone = () => {
     const whseCode = this.props.warehouse.code;
     const zoneCode = this.state.zone.zone_code;
-    this.props.deleteZone(whseCode, zoneCode).then(
+    const { tenantId } = this.props;
+    this.props.deleteZone(whseCode, zoneCode, tenantId).then(
       (result) => {
         if (!result.error) {
           message.info('库区已删除');
-          this.props.loadZones(whseCode).then(
+          this.props.loadZones(whseCode, this.props.tenantId).then(
             (data) => {
               if (!data.error && data.data.length !== 0) {
                 this.setState({
@@ -177,7 +178,7 @@ export default class ZoneLocationPane extends Component {
                   zone: data.data[0],
                   selectZone: [data.data[0].zone_code],
                 });
-                this.props.loadLocations(whseCode, data.data[0].zone_code);
+                this.props.loadLocations(whseCode, data.data[0].zone_code, this.props.tenantId);
               } else {
                 this.setState({
                   zones: [],
@@ -197,7 +198,7 @@ export default class ZoneLocationPane extends Component {
     const zoneCode = this.state.zone.zone_code;
     this.props.batchDeleteLocations(this.state.selectedRowKeys).then((result) => {
       if (!result.error) {
-        this.props.loadLocations(whseCode, zoneCode);
+        this.props.loadLocations(whseCode, zoneCode, this.props.tenantId);
         this.setState({
           selectedRowKeys: [],
         });
@@ -213,14 +214,14 @@ export default class ZoneLocationPane extends Component {
   }
   locationsUploaded = () => {
     const whseCode = this.props.warehouse.code;
-    this.props.loadZones(whseCode).then((result) => {
+    this.props.loadZones(whseCode, this.props.tenantId).then((result) => {
       if (!result.error) {
         this.setState({
           zones: result.data,
           zone: result.data[0],
           selectKeys: [result.data[0].zone_code],
         });
-        this.props.loadLocations(whseCode, result.data[0].zone_code);
+        this.props.loadLocations(whseCode, result.data[0].zone_code, this.props.tenantId);
       }
     });
   }

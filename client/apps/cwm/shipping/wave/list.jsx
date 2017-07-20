@@ -54,6 +54,7 @@ export default class WaveList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadWaves({
       whseCode,
+      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
       current: this.props.wave.current,
       filters,
@@ -149,6 +150,7 @@ export default class WaveList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadWaves({
       whseCode,
+      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
       current: this.props.wave.current,
       filters,
@@ -159,6 +161,7 @@ export default class WaveList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadWaves({
       whseCode,
+      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
       current: this.props.wave.current,
       filters,
@@ -169,6 +172,7 @@ export default class WaveList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadWaves({
       whseCode,
+      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
       current: this.props.wave.current,
       filters,
@@ -180,6 +184,7 @@ export default class WaveList extends React.Component {
     const filters = this.props.filters;
     this.props.loadWaves({
       whseCode: value,
+      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
       current: this.props.wave.current,
       filters,
@@ -201,6 +206,7 @@ export default class WaveList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
+          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,
