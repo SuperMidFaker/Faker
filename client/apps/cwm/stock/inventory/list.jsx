@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Checkbox, Select, message, Layout } from 'antd';
+import { Breadcrumb, Button, Select, message, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks, loadStockSearchOptions, loadLotStocks } from 'common/reducers/scvInventoryStock';
@@ -63,83 +63,66 @@ export default class InventoryStockList extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   columns = [{
+    title: this.msg('owner'),
+    dataIndex: 'owner',
+    width: 150,
+    sorter: true,
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
     title: this.msg('sku'),
-    dataIndex: 'sku_no',
-    width: 100,
+    dataIndex: 'product_sku',
+    width: 150,
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('product'),
     dataIndex: 'product_no',
-    width: 100,
+    width: 150,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('category'),
-    dataIndex: 'product_category',
+    title: this.msg('descCN'),
+    dataIndex: 'desc_cn',
+    width: 150,
+    sorter: true,
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
+    title: this.msg('whseLocation'),
     width: 120,
+    dataIndex: 'whse_location',
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
+    title: this.msg('unit'),
+    width: 120,
+    dataIndex: 'unit',
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('stockQty'),
-    width: 80,
-    dataIndex: 'avail_stock',
+    width: 100,
+    dataIndex: 'avail_qty',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('lotNo'),
-    width: 120,
-    dataIndex: 'external_lot_no',
+    title: this.msg('allocQty'),
+    width: 100,
+    dataIndex: 'alloc_qty',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('serialNo'),
-    width: 120,
-    dataIndex: 'serial_no',
-    sorter: true,
+    title: this.msg('frozenQty'),
+    width: 100,
+    dataIndex: 'frozen_qty',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('unitPrice'),
-    width: 80,
-    dataIndex: 'unit_price',
-    sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('stockCost'),
-    width: 80,
-    dataIndex: 'stock_cost',
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('specificDate'),
-    width: 80,
-    dataIndex: 'spec_date',
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('skuCbm'),
-    width: 80,
-    dataIndex: 'unit_cbm',
+    title: this.msg('availQty'),
+    width: 100,
+    dataIndex: 'avail_qty',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('cbm'),
-    width: 60,
     dataIndex: 'cbm',
     render: (text, row) => this.renderNormalCol((row.unit_cbm * row.avail_stock).toFixed(2), row),
   }, {
-    title: this.msg('cartonLength'),
-    width: 80,
-    dataIndex: 'length',
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('cartonWidth'),
-    width: 80,
-    dataIndex: 'width',
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('cartonHeight'),
-    width: 80,
-    dataIndex: 'height',
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('productDesc'),
-    width: 220,
-    dataIndex: 'product_desc',
+    title: this.msg('grossWeight'),
+    dataIndex: 'gross_weight',
     render: (text, row) => this.renderNormalCol(text, row),
   }]
   dataSource = new Table.DataSource({
@@ -243,7 +226,7 @@ export default class InventoryStockList extends React.Component {
   }
   render() {
     const { stocklist, loading, listFilter, displayedColumns, searchOption: { warehouses } } = this.props;
-    let columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
+    const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
     if (listFilter.wh_no === '_all_' && !listFilter.group_by_sku) {
       const data = [];
       const whnoMap = {};
@@ -266,22 +249,6 @@ export default class InventoryStockList extends React.Component {
         pageSize: data.length > stocklist.pageSize ? data.length : stocklist.pageSize,
         data,
       };
-      columns = [{
-        title: this.msg('warehouse'),
-        width: 100,
-        render: (text, row) => {
-          if (row.key === 'wh_no') {
-            return ({
-              children: row.value,
-              props: {
-                colSpan: columns.length + 1,
-              },
-            });
-          } else {
-            return null;
-          }
-        },
-      }].concat(columns);
     } else {
       this.dataSource.remotes = stocklist;
     }
@@ -322,11 +289,6 @@ export default class InventoryStockList extends React.Component {
                 warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.whse_name}</Option>)
               }
             </Select>
-            <span />
-            {
-              listFilter.wh_no === '_all_' &&
-              <Checkbox onChange={this.handleSkuGroupCheck}>{this.msg('groupBySku')}</Checkbox>
-            }
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="export" ghost>
                 {this.msg('exportInventory')}
