@@ -47,6 +47,7 @@ export default class CreateTradeItem extends Component {
       if (!errors) {
         const { repoId, tenantId, loginId, loginName } = this.props;
         const item = this.props.form.getFieldsValue();
+        item.special_mark = item.specialMark.join('/');
         this.props.createTradeItem({
           item, repoId, tenantId, loginId, loginName,
         }).then((result) => {

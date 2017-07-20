@@ -24,6 +24,7 @@ function getFieldInits(formData) {
     ['unit_net_wt', 'unit_price', 'fixed_qty', 'pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
       init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
+    init.specialMark = formData.special_mark ? formData.special_mark.split('/') : [];
   }
   return init;
 }
@@ -104,6 +105,10 @@ export default class BasicForm extends Component {
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
       search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
     }));
+    const specialDatas = [
+      { value: 'A', text: '特殊货号' },
+      { value: '3C', text: '3C认证' },
+    ];
     return (
       <div>
         <Card bodyStyle={{ padding: 16 }}>
@@ -129,6 +134,16 @@ export default class BasicForm extends Component {
                       )}
                 </Select>
                   )}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={24}>
+              <FormItem label={this.msg('specialNo')}>
+                {getFieldDecorator('specialMark', {
+                  initialValue: fieldInits.specialMark,
+                })(<Select mode="multiple" style={{ width: '100%' }} >
+                  { specialDatas.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>)
+                      )}
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>

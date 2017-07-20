@@ -53,6 +53,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.en.description',
     defaultMessage: '英文描述',
   },
+  specialNo: {
+    id: 'cms.classificagtion.tradeitem.special.no',
+    defaultMessage: '特殊货号合并',
+  },
   gModel: {
     id: 'cms.classificagtion.tradeitem.table.gmodel',
     defaultMessage: '中文规格型号',
