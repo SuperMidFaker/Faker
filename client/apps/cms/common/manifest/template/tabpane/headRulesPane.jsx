@@ -52,7 +52,7 @@ export default class HeadRulesPane extends React.Component {
     if (rels.length === 0) {
       rels = this.props.formRequire[CODE_AS_STATE[custCodeField]].filter(rel => rel.custcode === value);
     }
-    if (rels.length === 1) {
+    if (rels.length > 0) {
       this.props.form.setFieldsValue({
         [codeField]: rels[0].code,
         [custCodeField]: rels[0].custcode,
