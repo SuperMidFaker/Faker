@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Layout, Table } from 'antd';
+import { Button, Layout, Table, Tag } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
@@ -52,9 +52,9 @@ export default class OwnersPane extends Component {
     dataIndex: 'active',
     render: (o) => {
       if (o) {
-        return '启用';
+        return <Tag color="green">正常</Tag>;
       } else {
-        return '停用';
+        return <Tag>停用</Tag>;
       }
     },
   }, {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Icon, Col, Row, Steps, message } from 'antd';
+import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadOrderNodesTriggers, hideDock } from 'common/reducers/crmOrders';
 import { loadShipmtDetail } from 'common/reducers/shipment';
@@ -93,19 +93,13 @@ export default class TMSNodeCard extends React.Component {
       <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handleShipmtPreview(this.props.uuid)}>
         <Row>
           <Col span="8">
-            <InfoItem label="发货方" addonBefore={<Icon type="tag-o" />}
-              field={consignerName} placeholder="添加发货方"
-            />
+            <InfoItem label="发货方" field={consignerName} />
           </Col>
           <Col span="8">
-            <InfoItem label="收货方" addonBefore={<Icon type="tag-o" />}
-              field={consigneeName} placeholder="添加收货方"
-            />
+            <InfoItem label="收货方" field={consigneeName} />
           </Col>
           <Col span="8">
-            <InfoItem label="运输方式" addonBefore={<Icon type="tag-o" />}
-              field={trsMode} placeholder="添加运输方式"
-            />
+            <InfoItem label="运输方式" field={trsMode} />
           </Col>
         </Row>
         {children}

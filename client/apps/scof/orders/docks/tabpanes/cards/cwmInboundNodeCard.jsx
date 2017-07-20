@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Icon, Col, Row, Steps, message } from 'antd';
+import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadOrderNodesTriggers, hideDock, getAsnNo } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmReceive';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
+import { Logixon } from 'client/components/FontIcon';
 
 const Step = Steps.Step;
 
@@ -78,19 +79,13 @@ export default class CWMInboundNodeCard extends React.Component {
       >
         <Row>
           <Col span="8">
-            <InfoItem label="ASN编号" addonBefore={<Icon type="tag-o" />}
-              field={''}
-            />
+            <InfoItem label="ASN编号" field={''} />
           </Col>
           <Col span="8">
-            <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />}
-              field={''}
-            />
+            <InfoItem label="仓库" addonBefore={<Logixon type="warehouse" />} field={''} />
           </Col>
           <Col span="8">
-            <InfoItem label="货物属性" addonBefore={<Icon type="tag-o" />}
-              field={''}
-            />
+            <InfoItem label="货物属性" field={''} />
           </Col>
         </Row>
         {children}

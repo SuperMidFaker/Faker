@@ -101,12 +101,12 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 150,
     fixed: 'left',
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 120,
+    width: 150,
     render: o => (<PackagePopover sku={o} />),
   }, {
     title: '预期数量',

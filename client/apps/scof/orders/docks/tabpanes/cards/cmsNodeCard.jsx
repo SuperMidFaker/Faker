@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Icon, Col, Row, Steps } from 'antd';
+import { Button, Tooltip, Card, Col, Row, Steps } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadOrderNodesTriggers, hideDock } from 'common/reducers/crmOrders';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { NODE_BIZ_OBJECTS, TRANS_MODE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
+import { MdIcon } from 'client/components/FontIcon';
 
 const Step = Steps.Step;
 @connect(
@@ -72,6 +73,7 @@ export default class CMSNodeCard extends React.Component {
     const { name, children, declWayCode, transMode, blWbNo, in_degree: indegree } = this.props;
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     const declWayItem = declWayMap.find(item => item.key === declWayCode);
+    const tm = TRANS_MODE.filter(item => item.value === transMode)[0];
     const extra = indegree === 0 ?
     (<div>
       <Tooltip title="进入详情">
@@ -82,19 +84,17 @@ export default class CMSNodeCard extends React.Component {
       <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handlePreview(this.props.uuid)}>
         <Row>
           <Col span="8">
-            <InfoItem label="运输方式" addonBefore={<Icon type="tag-o" />}
-              field={
-                TRANS_MODE.map(item => item.value === transMode ? item.text : '')
-              } placeholder="添加运输方式"
-            />
-          </Col>
-          <Col span="8">
-            <InfoItem label="提运单号" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="提运单号"
               field={blWbNo} placeholder="添加提运单号"
             />
           </Col>
           <Col span="8">
-            <InfoItem label="报关类型" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="运输方式" addonBefore={tm && <MdIcon type={tm.icon} />}
+              field={tm && tm.text}
+            />
+          </Col>
+          <Col span="8">
+            <InfoItem label="报关类型"
               field={declWayItem && declWayItem.value} placeholder="添加报关类型"
             />
           </Col>

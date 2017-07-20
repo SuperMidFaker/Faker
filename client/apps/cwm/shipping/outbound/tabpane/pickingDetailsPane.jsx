@@ -48,7 +48,7 @@ export default class PickingDetailsPane extends React.Component {
   columns = [{
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 120,
+    width: 150,
     render: (o) => {
       if (o) {
         return <PackagePopover sku={o} />;
@@ -78,7 +78,7 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 150,
   }, {
     title: '中文品名',
     dataIndex: 'name',

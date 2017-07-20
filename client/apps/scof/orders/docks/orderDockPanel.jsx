@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import { Button, Icon, Col, Row, Tabs, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER, TRANS_MODE } from 'common/constants';
+import { CRM_ORDER_STATUS, SCOF_ORDER_TRANSFER } from 'common/constants';
 import { hideDock, changeDockTab, cancelOrder, closeOrder } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
-import { MdIcon } from 'client/components/FontIcon';
 import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpanes/orderPane';
 import FlowPane from './tabpanes/flowPane';
@@ -120,18 +119,18 @@ export default class OrderDockPanel extends React.Component {
   renderExtra() {
     const { order } = this.props;
     const transfer = SCOF_ORDER_TRANSFER.filter(sot => sot.value === order.cust_shipmt_transfer)[0];
-    const transMode = TRANS_MODE.filter(tm => tm.value === order.cust_shipmt_trans_mode)[0];
-    const wbNo = order.cust_shipmt_bill_lading || (order.cust_shipmt_hawb ? `${order.cust_shipmt_mawb}_${order.cust_shipmt_hawb}` : order.cust_shipmt_mawb);
+    // const transMode = TRANS_MODE.filter(tm => tm.value === order.cust_shipmt_trans_mode)[0];
+    // const wbNo = order.cust_shipmt_bill_lading || (order.cust_shipmt_hawb ? `${order.cust_shipmt_mawb}_${order.cust_shipmt_hawb}` : order.cust_shipmt_mawb);
     return (
       <Row>
         <Col span="8">
           <InfoItem label="客户" field={order.customer_name} />
         </Col>
+        <Col span="6">
+          <InfoItem label="客户订单号" field={order.cust_order_no} />
+        </Col>
         <Col span="4">
           <InfoItem label="货物流向" addonBefore={transfer && <Icon type={transfer.icon} />} field={transfer && transfer.text} />
-        </Col>
-        <Col span="6">
-          <InfoItem label="提运单号" addonBefore={transMode && <MdIcon type={transMode.icon} />} field={wbNo} />
         </Col>
         <Col span="6">
           <InfoItem label="接单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />
