@@ -78,6 +78,10 @@ const messages = defineMessages({
     id: 'scof.flow.biz.object',
     defaultMessage: '业务对象',
   },
+  bizObjOperation: {
+    id: 'scof.flow.biz.object.operation',
+    defaultMessage: '操作',
+  },
   cmsDelegation: {
     id: 'scof.flow.biz.cms.delegation',
     defaultMessage: '委托',
