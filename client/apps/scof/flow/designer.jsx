@@ -44,6 +44,8 @@ function fetchData({ state, dispatch }) {
   return Promise.all(promises);
 }
 
+// in_degree wrong count
+
 @connectFetch()(fetchData)
 @injectIntl
 @connect(

@@ -93,11 +93,18 @@ export default class SHFTZRelDetail extends Component {
     if (fileOp) {
       fileOp.then((result) => {
         if (!result.error) {
-          notification.success({
-            message: '操作成功',
-            description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
-            placement: 'topLeft',
-          });
+          if (result.data.errorMsg) {
+            notification.warn({
+              message: '结果异常',
+              description: result.data.errorMsg,
+            });
+          } else {
+            notification.success({
+              message: '操作成功',
+              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
+              placement: 'topLeft',
+            });
+          }
         } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
           notification.error({
             message: '操作失败',

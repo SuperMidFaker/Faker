@@ -25,14 +25,17 @@ export default class FlowTriggerTable extends React.Component {
   eventColumns = [
     { dataIndex: 'name' },
     { dataIndex: 'operation',
-      width: 76,
-      render: (di, row) =>
-        <a onClick={() => this.handleTriggerActions(row.key, row.name)}>{this.msg('triggerActions')}</a> },
+      width: 90,
+      render: (di, row) => {
+        const { bizObj, nodeActions } = this.props;
+        const actions = nodeActions.filter(na => bizObj ?
+          (na.node_biz_object === bizObj && na.trigger_name === row.key) : (na.trigger_name === row.key));
+        const label = actions.length > 0 ? `${actions.length}个触发器` : '新增触发器';
+        return <a onClick={() => this.handleTriggerActions(row.key, row.name, actions, bizObj)}>{label}</a>;
+      },
+    },
   ]
-  handleTriggerActions = (key, name) => {
-    const { bizObj, nodeActions } = this.props;
-    const actions = nodeActions.filter(na => bizObj ?
-      (na.node_biz_object === bizObj && na.trigger_name === key) : (na.trigger_name === key));
+  handleTriggerActions = (key, name, actions, bizObj) => {
     this.props.openAddTriggerModal({ key, name, actions, node_biz_object: bizObj });
   }
   handleTriggerModalChange = (nodeBizObject, triggerName, newActions) => {

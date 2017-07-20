@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Collapse, Form, Col, Row, Select } from 'antd';
+import { Collapse, Form, Col, Row, Select, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
@@ -37,6 +37,14 @@ export default class CMSDeclManifestPane extends Component {
                       templates.map(tmp => <Option value={tmp.id} key={tmp.id}>{tmp.name}</Option>)
                     }
                 </Select>)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
+              <FormItem label="关联导入">
+                {getFieldDecorator('correl', {
+                  valuePropName: 'checked',
+                  initialValue: model.correl,
+                })(<Switch />)}
               </FormItem>
             </Col>
           </Row>
