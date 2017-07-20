@@ -288,7 +288,7 @@ export function loadAsn(asnNo) {
   };
 }
 
-export function loadAsnLists({ whseCode, pageSize, current, filters }) {
+export function loadAsnLists({ whseCode, tenantId, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -298,7 +298,7 @@ export function loadAsnLists({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/receive/asnLists/load',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }

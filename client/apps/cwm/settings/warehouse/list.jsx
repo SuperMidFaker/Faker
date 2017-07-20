@@ -8,7 +8,7 @@ import OwnersPane from './tabpane/ownersPane';
 import ZoneLocationPane from './tabpane/zoneLocationPane';
 import SupervisionPane from './tabpane/supervisionPane';
 import EditWhseModal from './modal/editWarehouseModal';
-import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal } from 'common/reducers/cwmWarehouse';
+import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, clearLocations } from 'common/reducers/cwmWarehouse';
 import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from './message.i18n';
 
@@ -30,7 +30,7 @@ const TabPane = Tabs.TabPane;
     locations: state.cwmWarehouse.locations,
     locationLoading: state.cwmWarehouse.locationLoading,
   }),
-  { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext }
+  { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext, clearLocations }
 )
 @Form.create()
 export default class WarehouseList extends Component {
@@ -77,17 +77,17 @@ export default class WarehouseList extends Component {
     this.setState({
       warehouse: record,
     });
-    this.props.loadZones(record.code).then(
+    this.props.loadZones(record.code, this.props.tenantId).then(
       (result) => {
         if (!result.error && result.data.length !== 0) {
-          this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code);
+          this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code, this.props.tenantId);
           this.setState({
             zone: result.data[0],
             zones: result.data,
             selectKeys: [result.data[0].zone_code],
           });
         } else {
-          this.props.loadLocations(this.state.warehouse.code);
+          this.props.clearLocations();
         }
       }
     );

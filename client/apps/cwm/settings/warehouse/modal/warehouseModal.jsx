@@ -48,15 +48,15 @@ export default class WareHouseModal extends Component {
           isBonded,
           tenantId,
           tenantName,
-        }).then(
-          (result) => {
-            if (!result.error) {
-              message.info('添加仓库成功');
-              this.props.hideWarehouseModal();
-              this.props.loadWhseContext(tenantId);
-            }
+        }).then((result) => {
+          if (!result.error) {
+            message.info('添加仓库成功');
+            this.props.hideWarehouseModal();
+            this.props.loadWhseContext(tenantId);
+          } else {
+            message.info(result.error.message);
           }
-        );
+        });
       }
     });
   }

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Select, message, Layout } from 'antd';
+import { Breadcrumb, Button, Select, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadStocks, loadStockSearchOptions, loadLotStocks } from 'common/reducers/scvInventoryStock';
+import { loadStockSearchOptions, loadStocks } from 'common/reducers/scvInventoryStock';
 import Table from 'client/components/remoteAntTable';
 import ButtonToggle from 'client/components/ButtonToggle';
 import StockSearchForm from './searchForm';
@@ -17,13 +17,6 @@ const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   const proms = [];
   proms.push(dispatch(loadStockSearchOptions(state.account.tenantId)));
-  proms.push(dispatch(loadStocks({
-    tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.scvInventoryStock.listFilter),
-    sorter: JSON.stringify(state.scvInventoryStock.sortFilter),
-    pageSize: state.scvInventoryStock.list.pageSize,
-    current: state.scvInventoryStock.list.current,
-  })));
   return Promise.all(proms);
 }
 
@@ -39,7 +32,7 @@ function fetchData({ state, dispatch }) {
     sortFilter: state.scvInventoryStock.sortFilter,
     searchOption: state.scvInventoryStock.searchOption,
   }),
-  { loadStocks, loadLotStocks }
+  { loadStockSearchOptions, loadStocks }
 )
 @connectNav({
   depth: 2,
@@ -54,11 +47,10 @@ export default class InventoryStockList extends React.Component {
     listFilter: PropTypes.object.isRequired,
     sortFilter: PropTypes.object.isRequired,
     searchOption: PropTypes.shape({
-      warehouses: PropTypes.arrayOf(PropTypes.shape({ wh_no: PropTypes.string })),
+      warehouses: PropTypes.arrayOf(PropTypes.shape({ whse_code: PropTypes.string })),
     }),
   }
   state = {
-    lot_query: false,
     collapsed: false,
   }
   msg = formatMsg(this.props.intl);
@@ -112,11 +104,6 @@ export default class InventoryStockList extends React.Component {
     dataIndex: 'frozen_qty',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('availQty'),
-    width: 100,
-    dataIndex: 'avail_qty',
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
     title: this.msg('cbm'),
     dataIndex: 'cbm',
     render: (text, row) => this.renderNormalCol((row.unit_cbm * row.avail_stock).toFixed(2), row),
@@ -153,68 +140,15 @@ export default class InventoryStockList extends React.Component {
       collapsed: !this.state.collapsed,
     });
   }
-  handleStockQuery = (filter, sorter, newCurrent) => {
-    let prom;
-    const { tenantId, stocklist: { pageSize }, sortFilter } = this.props;
-    if (this.state.lot_query) {
-      const lotColumn = {
-        external_lot_no: false,
-        serial_no: false,
-        spec_date: false,
-        unit_price: false,
-        stock_cost: false,
-      };
-      if (filter.lot_property === 'unit_price') {
-        lotColumn.unit_price = true;
-        lotColumn.stock_cost = true;
-      } else if (filter.lot_property === 'lot_no') {
-        lotColumn.external_lot_no = true;
-      } else if (filter.lot_property === 'serial_no') {
-        lotColumn.serial_no = true;
-      } else if (filter.lot_property === 'spec_date') {
-        lotColumn.spec_date = true;
-      }
-      prom = this.props.loadLotStocks({
-        tenantId,
-        filter: JSON.stringify(filter),
-        sorter: JSON.stringify(sorter || sortFilter),
-        pageSize,
-        current: newCurrent || 1,
-      }, lotColumn);
-    } else {
-      prom = this.props.loadStocks({
-        tenantId,
-        filter: JSON.stringify(filter),
-        sorter: JSON.stringify(sorter || sortFilter),
-        pageSize,
-        current: newCurrent || 1,
-      });
-    }
-    prom.then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      }
-    });
+  handleStockQuery = (filter) => {
+    this.props.loadStocks(filter);
   }
-  handleSearch = (searchForm, checkLotProperty, lotProperty) => {
+  handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm };
-    if (checkLotProperty) {
-      this.state.lot_query = true;
-      filter.lot_property = lotProperty;
-    } else {
-      this.state.lot_query = false;
-      filter.lot_property = null;
-    }
     this.handleStockQuery(filter);
   }
   handleWarehouseSelect = (whno) => {
-    const filter = { ...this.props.listFilter,
-      wh_no: whno,
-      group_by_sku: whno !== '_all_' ? false : this.props.listFilter.group_by_sku };
-    this.handleStockQuery(filter);
-  }
-  handleSkuGroupCheck = (ev) => {
-    const filter = { ...this.props.listFilter, group_by_sku: ev.target.checked };
+    const filter = { ...this.props.listFilter, whse_code: whno };
     this.handleStockQuery(filter);
   }
   renderNormalCol(text, row) {
@@ -227,7 +161,7 @@ export default class InventoryStockList extends React.Component {
   render() {
     const { stocklist, loading, listFilter, displayedColumns, searchOption: { warehouses } } = this.props;
     const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
-    if (listFilter.wh_no === '_all_' && !listFilter.group_by_sku) {
+    if (listFilter.whse_code === 'all' && !listFilter.group_by_sku) {
       const data = [];
       const whnoMap = {};
       stocklist.data.forEach((row) => {
@@ -284,9 +218,10 @@ export default class InventoryStockList extends React.Component {
               toggle
             />
             <span />
-            <Select size="large" value={listFilter.wh_no} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
+            <Select size="large" value={listFilter.whse_code} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
+              <Option value="all" >all</Option>
               {
-                warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.whse_name}</Option>)
+                warehouses.map(whse => <Option key={whse.id} value={whse.whse_code}>{whse.whse_name}</Option>)
               }
             </Select>
             <div className="top-bar-tools">
