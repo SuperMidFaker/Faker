@@ -80,7 +80,7 @@ const messages = defineMessages({
   },
   bizObjOperation: {
     id: 'scof.flow.biz.object.operation',
-    defaultMessage: '操作',
+    defaultMessage: '业务操作',
   },
   cmsDelegation: {
     id: 'scof.flow.biz.cms.delegation',
@@ -132,7 +132,7 @@ const messages = defineMessages({
   },
   manifestTemplate: {
     id: 'scof.flow.biz.cms.manifest.template',
-    defaultMessage: '清单模板',
+    defaultMessage: '制单规则',
   },
   customsDeclType: {
     id: 'scof.flow.biz.cms.customs.decl.type',
@@ -216,7 +216,7 @@ const messages = defineMessages({
   },
   onDelgDeclared: {
     id: 'scof.flow.biz.event.cms.declared',
-    defaultMessage: '已申报',
+    defaultMessage: '已发送申报',
   },
   onDelgInspected: {
     id: 'scof.flow.biz.event.cms.inspected',
@@ -232,7 +232,7 @@ const messages = defineMessages({
   },
   onCustomsReviewed: {
     id: 'scof.flow.biz.event.cms.customs.reviewed',
-    defaultMessage: '已审核',
+    defaultMessage: '已复核',
   },
   onShipmtAccepted: {
     id: 'scof.flow.biz.event.tms.shipmt.accepted',
@@ -280,7 +280,7 @@ const messages = defineMessages({
   },
   delgDeclare: {
     id: 'scof.flow.biz.action.delg.declare',
-    defaultMessage: '申报',
+    defaultMessage: '自动申报（仅适用于接口对接模式）',
   },
   manifestCreate: {
     id: 'scof.flow.biz.action.manifest.create',
@@ -296,7 +296,7 @@ const messages = defineMessages({
   },
   customsDeclare: {
     id: 'scof.flow.biz.action.customs.delcare',
-    defaultMessage: '报关单申报',
+    defaultMessage: '发送申报',
   },
   customsRelease: {
     id: 'scof.flow.biz.action.customs.release',

@@ -69,7 +69,7 @@ export default class AddManifestRuleModal extends React.Component {
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
-      <Modal title="新增清单模板" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal title="新增制单规则" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           <FormItem label="模板名称">
             {getFieldDecorator('template_name', {

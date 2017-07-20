@@ -669,7 +669,7 @@ export default class DelegationList extends Component {
                   onChange={this.handleDateRangeChange}
                 />
                 <div className="toolbar-right">
-                  <Tooltip title="清单模板">
+                  <Tooltip title="制单规则">
                     <ButtonToggle size="large" iconOff="book" iconOn="book" onClick={this.toggleRightSider} />
                   </Tooltip>
                 </div>
@@ -702,7 +702,7 @@ export default class DelegationList extends Component {
         >
           <div className="right-sider-panel">
             <div className="panel-header">
-              <h3>清单模板</h3>
+              <h3>制单规则</h3>
             </div>
             <ManifestTemplates ietype={this.props.ietype} />
           </div>

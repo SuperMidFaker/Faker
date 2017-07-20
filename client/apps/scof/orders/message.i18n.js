@@ -583,7 +583,7 @@ const messages = defineMessages({
   },
   delgDeclare: {
     id: 'scof.orders.progress.action.delg.declare',
-    defaultMessage: '申报',
+    defaultMessage: '发送申报',
   },
   delgInspect: {
     id: 'scof.orders.progress.action.delg.inspect',
@@ -599,7 +599,7 @@ const messages = defineMessages({
   },
   manifestGenerate: {
     id: 'scof.orders.progress.action.manifest.generate',
-    defaultMessage: '制单',
+    defaultMessage: '生成报关建议书',
   },
   customsReview: {
     id: 'scof.orders.progress.action.customs.review',
@@ -607,7 +607,7 @@ const messages = defineMessages({
   },
   customsDeclare: {
     id: 'scof.orders.progress.action.customs.delcare',
-    defaultMessage: '报关单申报',
+    defaultMessage: '发送申报',
   },
   customsRelease: {
     id: 'scof.orders.progress.action.customs.release',

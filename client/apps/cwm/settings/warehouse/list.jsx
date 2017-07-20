@@ -133,7 +133,7 @@ export default class WarehouseList extends Component {
             </div>
             <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false} onRowClick={this.handleRowClick}
               pagination={{ current: this.state.currentPage, defaultPageSize: 15 }}
-              rowClassName={record => record.code === warehouse.code ? 'table-row-selected' : ''} rowKey="code"
+              rowClassName={record => record.code === warehouse.code ? 'table-row-selected' : ''} rowKey="id"
             />
             <WarehouseModal />
             <EditWhseModal warehouse={warehouse} />

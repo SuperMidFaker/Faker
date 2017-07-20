@@ -475,7 +475,7 @@ export default defineMessages({
   },
   billTemplates: {
     id: 'cms.app.settings.bill.templates',
-    defaultMessage: '清单模板',
+    defaultMessage: '制单规则',
   },
   relatedCustomers: {
     id: 'cms.app.settings.related.customers',
