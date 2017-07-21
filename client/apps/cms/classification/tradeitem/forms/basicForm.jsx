@@ -7,6 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
+import { SPECIAL_COPNO_TERM } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -105,10 +106,6 @@ export default class BasicForm extends Component {
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
       search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
     }));
-    const specialDatas = [
-      { value: 'A', text: '特殊货号' },
-      { value: '3C', text: '3C认证' },
-    ];
     return (
       <div>
         <Card bodyStyle={{ padding: 16 }}>
@@ -141,8 +138,7 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('specialMark', {
                   initialValue: fieldInits.specialMark,
                 })(<Select mode="multiple" style={{ width: '100%' }} >
-                  { specialDatas.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>)
-                      )}
+                  { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
                 </Select>)}
               </FormItem>
             </Col>

@@ -5,7 +5,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Radio, Checkbox, Select, Row, Col, Form, Collapse } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
-import { CMS_SPLIT_COUNT } from 'common/constants';
+import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -14,7 +14,6 @@ const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 const Panel = Collapse.Panel;
-const RadioGroup = Radio.Group;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
@@ -36,6 +35,20 @@ export default class MergeSplitForm extends React.Component {
     hscodeCategories: PropTypes.array.isRequired,
     form: PropTypes.object.isRequired,
     formData: PropTypes.object.isRequired,
+  }
+  state = {
+    mergeOpt: {
+      checked: this.props.formData.merge_checked,
+    },
+    splitCategories: [],
+    mergeCategories: [],
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hscodeCategories !== this.props.hscodeCategories && nextProps.hscodeCategories.length > 0) {
+      const splitCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'split');
+      const mergeCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'merge');
+      this.setState({ splitCategories, mergeCategories });
+    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   mergeConditions = [{
@@ -67,34 +80,75 @@ export default class MergeSplitForm extends React.Component {
       opt[chk] = true;
     });
   }
+  handleMergeRadioChange = () => {
+    this.setState({
+      mergeOpt: { checked: !this.state.mergeOpt.checked },
+    });
+    this.props.form.setFieldsValue({ merge_checked: !this.state.mergeOpt.checked });
+  }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, hscodeCategories, formData } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, formData } = this.props;
+    const { splitCategories, mergeCategories } = this.state;
     return (
       <Row style={{ marginBottom: 24 }}>
         <Collapse bordered={false} defaultActiveKey={['merge', 'split', 'sort']}>
           <Panel key="merge" header={this.msg('mergePrinciple')} >
-            <Row>
+            <FormItem>
               <Col span="3">
-                <FormItem>
-                  {getFieldDecorator('merge_checked', { initialValue: formData.merge_checked })(
-                    <RadioGroup>
-                      <Radio value={1}>{this.msg('conditionalMerge')}</Radio>
-                      <Radio value={0}>{this.msg('nonMerge')}</Radio>
-                    </RadioGroup>)}
-                </FormItem>
+                <Radio checked={this.state.mergeOpt.checked} onChange={this.handleMergeRadioChange}>
+                  {this.msg('conditionalMerge')}
+                </Radio>
               </Col>
               <Col offset="2" span="19">
-                <Row style={{ padding: 6 }}>
-                  {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr,
-                  })(<CheckboxGroup options={this.mergeConditions} disabled={!getFieldValue('merge_checked')}
-                    onChange={this.handleMergeCheck}
-                  />)}
-                </Row>
-                <Row style={{ padding: 8 }}>
-                  按清单数据直接生成报关建议书
-                </Row>
+                {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr,
+                })(<CheckboxGroup options={this.mergeConditions} disabled={!this.state.mergeOpt.checked}
+                  onChange={this.handleMergeCheck}
+                />)}
               </Col>
-            </Row>
+            </FormItem>
+            {this.state.mergeOpt.checked ? <Col offset="5">
+              <FormItem>
+                {getFieldDecorator('merge_bysplhs', { initialValue: formData.merge_bysplhs === 1 })(
+                  <Checkbox defaultChecked={formData.merge_bysplhs}>{this.msg('mergeSpecialHscode')}</Checkbox>)
+                  }
+                {getFieldValue('merge_bysplhs') &&
+                <div>
+                  {getFieldDecorator('merge_spl_hs', {
+                    rules: [{ type: 'array' }],
+                    initialValue: formData.splHsMergeArr,
+                  })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
+                    {mergeCategories.map(ct =>
+                      <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
+                  </Select>)}
+                </div>
+                  }
+              </FormItem>
+              <FormItem>
+                {getFieldDecorator('merge_bysplno', { initialValue: formData.merge_bysplno === 1 })(
+                  <Checkbox defaultChecked={formData.merge_bysplno}>{this.msg('mergeSpecialNo')}</Checkbox>)
+                  }
+                {getFieldValue('merge_bysplno') &&
+                <div>
+                  {getFieldDecorator('merge_spl_no', {
+                    rules: [{ type: 'array' }],
+                    initialValue: formData.splNoMergeArr,
+                  })(<Select size="large" mode="multiple">
+                    { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
+                  </Select>)}
+                </div>
+                  }
+              </FormItem>
+            </Col> : null}
+            <FormItem>
+              <Col span="3">
+                <Radio checked={!this.state.mergeOpt.checked} onChange={this.handleMergeRadioChange}>
+                  {this.msg('nonMerge')}
+                </Radio>
+              </Col>
+              <Col offset="2" span="19">
+                按清单数据直接生成报关建议书
+              </Col>
+            </FormItem>
           </Panel>
           <Panel key="split" header={this.msg('splitPrinciple')} >
             <FormItem>
@@ -116,7 +170,7 @@ export default class MergeSplitForm extends React.Component {
                       rules: [{ type: 'array' }],
                       initialValue: formData.specialHsSortArr,
                     })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
-                      {hscodeCategories.map(ct =>
+                      {splitCategories.map(ct =>
                         <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
                     </Select>)}
                 </div>

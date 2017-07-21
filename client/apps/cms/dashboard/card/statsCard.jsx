@@ -36,6 +36,7 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     statistics: state.cmsDashboard.statistics,
     clients: state.partner.partners,
+    listFilter: state.cmsDelegation.listFilter,
   }),
   { loadCmsStatistics }
 )
@@ -44,6 +45,7 @@ export default class StatsCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     statistics: PropTypes.object.isRequired,
+    listFilter: PropTypes.object.isRequired,
   }
   state = {
     totalValue: 0,
@@ -133,6 +135,13 @@ export default class StatsCard extends Component {
       name: '全部客户',
       partner_id: -1,
     }].concat(this.props.clients);
+    let clientPid = -1;
+    if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
+      const fv = JSON.parse(window.localStorage.cmsDelegationListFilters);
+      if (fv.clientView.partnerIds.length > 0) {
+        clientPid = fv.clientView.partnerIds[0];
+      }
+    }
     const datePicker = (
       <div>
         <RadioGroup defaultValue="USD" onChange={this.handleCurrencyChange}>
@@ -140,7 +149,7 @@ export default class StatsCard extends Component {
           <RadioButton value="CNY">CNY</RadioButton>
         </RadioGroup>
         <Select showSearch optionFilterProp="children" style={{ width: 160, marginLeft: 8 }}
-          onChange={this.handleClientSelectChange} defaultValue={-1}
+          onChange={this.handleClientSelectChange} value={clientPid}
           dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
         >
           {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}

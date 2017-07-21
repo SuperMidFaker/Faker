@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Radio, Mention, Row, Col } from 'antd';
-import { closeRuleModel, saveBillRules } from 'common/reducers/cmsManifest';
+import { closeRuleModel } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import { SOURCE_CHOOSE } from 'common/constants';
 import messages from '../message.i18n';
@@ -27,7 +27,7 @@ const formItemLayout = {
     tenantId: state.account.tenantId,
     billRule: state.cmsManifest.billRule,
   }),
-  { closeRuleModel, saveBillRules }
+  { closeRuleModel }
 )
 export default class ImportRuleForm extends React.Component {
   static propTypes = {

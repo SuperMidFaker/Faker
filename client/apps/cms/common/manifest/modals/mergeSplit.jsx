@@ -6,7 +6,7 @@ import { Modal, Card, Radio, Checkbox, Select, message, notification, Row, Col, 
 import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
-import { CMS_SPLIT_COUNT } from 'common/constants';
+import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -71,6 +71,10 @@ export default class MergeSplitModal extends React.Component {
       byCountry: false,
       byCopGNo: false,
       byEmGNo: false,
+      bySplHscode: false,
+      bySplCopNo: false,
+      splHsSorts: [],
+      splNoSorts: [],
     },
     splitOpt: {
       byHsCode: false,
@@ -86,6 +90,8 @@ export default class MergeSplitModal extends React.Component {
       hsCodeAsc: false,
     },
     mergeOptArr: [],
+    splitCategories: [],
+    mergeCategories: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billRule !== this.props.billRule) {
@@ -117,6 +123,15 @@ export default class MergeSplitModal extends React.Component {
           specialHsSortArr.push(numData);
         });
       }
+      const splHsMergeArr = [];
+      if (rule.merge_spl_hs) {
+        const splArr = rule.merge_spl_hs.split(',');
+        splArr.forEach((data) => {
+          const numData = Number(data);
+          splHsMergeArr.push(numData);
+        });
+      }
+      const splNoMergeArr = rule.merge_spl_no ? rule.merge_spl_no.split(',') : [];
       this.setState({
         mergeOpt: {
           checked: rule.merge_checked,
@@ -126,6 +141,10 @@ export default class MergeSplitModal extends React.Component {
           byCountry: rule.merge_bycountry,
           byCopGNo: rule.merge_bycopgno,
           byEmGNo: rule.merge_byengno,
+          bySplHscode: rule.merge_bysplhs,
+          bySplCopNo: rule.merge_bysplno,
+          splHsSorts: splHsMergeArr,
+          splNoSorts: splNoMergeArr,
         },
         splitOpt: {
           byHsCode: rule.split_hscode,
@@ -140,6 +159,11 @@ export default class MergeSplitModal extends React.Component {
         },
         mergeOptArr,
       });
+    }
+    if (nextProps.hscodeCategories !== this.props.hscodeCategories && nextProps.hscodeCategories.length > 0) {
+      const splitCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'split');
+      const mergeCategories = nextProps.hscodeCategories.filter(ct => ct.type === 'merge');
+      this.setState({ splitCategories, mergeCategories });
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -237,8 +261,8 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   render() {
-    const { mergeOpt, splitOpt } = this.state;
-    const { form: { getFieldDecorator }, hscodeCategories } = this.props;
+    const { mergeOpt, splitOpt, splitCategories, mergeCategories } = this.state;
+    const { form: { getFieldDecorator } } = this.props;
     let mergeConditions = this.mergeConditions;
     if (this.props.isCustomRegisted) {
       mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
@@ -263,6 +287,38 @@ export default class MergeSplitModal extends React.Component {
                     />
                   </Col>
                 </FormItem>
+                {mergeOpt.checked ? <Col offset="5">
+                  <FormItem>
+                    <MSCheckbox fieldOpt="mergeOpt" field="bySplHscode"
+                      text={this.msg('mergeSpecialHscode')}
+                      onChange={this.handleCheckChange} state={this.state}
+                    />
+                    { mergeOpt.bySplHscode ?
+                      <div>
+                        {getFieldDecorator('mergeHsSort', {
+                          rules: [{ type: 'array' }],
+                          initialValue: mergeOpt.splHsSorts,
+                        })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '80%' }}>
+                          { mergeCategories.map(ct => <Option value={ct.id} key={ct.id}>{ct.name}</Option>) }
+                        </Select>)}
+                      </div> : null}
+                  </FormItem>
+                  <FormItem>
+                    <MSCheckbox fieldOpt="mergeOpt" field="bySplCopNo"
+                      text={this.msg('mergeSpecialNo')}
+                      onChange={this.handleCheckChange} state={this.state}
+                    />
+                    { mergeOpt.bySplCopNo ?
+                      <div>
+                        {getFieldDecorator('mergeNoSort', {
+                          rules: [{ type: 'array' }],
+                          initialValue: mergeOpt.splHsSorts,
+                        })(<Select size="large" mode="multiple" style={{ width: '80%' }}>
+                          { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
+                        </Select>)}
+                      </div> : null}
+                  </FormItem>
+                </Col> : null}
                 <FormItem>
                   <Col span="3">
                     <Radio checked={!mergeOpt.checked} onChange={this.handleMergeRadioChange}>
@@ -270,8 +326,8 @@ export default class MergeSplitModal extends React.Component {
                     </Radio>
                   </Col>
                   <Col offset="2" span="19">
-                  按清单数据直接生成报关建议书
-                </Col>
+                    按清单数据直接生成报关建议书
+                  </Col>
                 </FormItem>
               </Card>
             </Col>
@@ -296,7 +352,7 @@ export default class MergeSplitModal extends React.Component {
                         initialValue: splitOpt.hsCategory,
                       })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
                         {
-                          hscodeCategories.map(ct =>
+                          splitCategories.map(ct =>
                             <Option value={ct.id} key={ct.id}>{ct.name}</Option>
                           )
                         }
