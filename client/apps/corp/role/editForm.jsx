@@ -207,7 +207,7 @@ export default class RoleForm extends React.Component {
                 options={{ getFieldDecorator, initialValue: desc }}
               />
               <FormItem label="属于管理层" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                {getFieldDecorator('layer', { initialValue: false })(<Switch />)}
+                {getFieldDecorator('bureau', { initialValue: false })(<Switch />)}
               </FormItem>
             </Col>
           </Row>

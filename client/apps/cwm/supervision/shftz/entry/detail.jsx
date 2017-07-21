@@ -151,6 +151,10 @@ export default class SHFTZEntryDetail extends Component {
     this.props.queryEntryRegInfos(asnNo, this.props.entryAsn.whse_code).then((result) => {
       if (!result.error) {
         this.props.loadEntryDetails({ asnNo });
+        notification.success({
+          message: '操作成功',
+          description: '备案明细ID已获取',
+        });
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
@@ -264,7 +268,7 @@ export default class SHFTZEntryDetail extends Component {
             {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
-            {!this.state.sendable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
+            {entryEditable && !this.state.sendable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>
         <Content className="main-content">

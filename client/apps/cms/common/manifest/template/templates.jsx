@@ -34,7 +34,7 @@ export default class ManifestTemplateList extends React.Component {
   }
   componentWillMount() {
     this.props.loadBillemplates({ tenantId: this.props.tenantId, ietype: this.props.ietype });
-    this.props.loadCustomers({ tenantId: this.props.tenantId });
+    this.props.loadCustomers(this.props.tenantId);
   }
   msg = key => formatMsg(this.props.intl, key);
   handleEdit = (record) => {
