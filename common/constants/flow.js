@@ -171,11 +171,3 @@ exports.NODE_BIZ_OBJECTS_EXECUTABLES = {
     triggers: [{ action: 'soReleased', actionText: 'soRelease' }, { action: 'autoAlloc', actionText: '订单自动分配' }],
   }],
 };
-
-exports.NODE_BIZ_OBJECTS_NOTIFIES = {
-  tms: [{
-    key: 'tmsShipment',
-    text: 'tmsShipment',
-    triggers: [{ action: 'accept', actionText: 'shipmtAccept' }],
-  }],
-};
