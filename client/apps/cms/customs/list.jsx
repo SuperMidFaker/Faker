@@ -85,11 +85,9 @@ export default class CustomsList extends Component {
     let filters = { status: 'all', filterDate: [] };
     if (window.location.search.indexOf('inspect') > 0) {
       filters = { status: 'inspect' };
-      console.log('window.localStorage', window.localStorage);
       if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
         const listFilters = JSON.parse(window.localStorage.cmsDelegationListFilters);
         filters = { ...filters, filterDate: listFilters.acptDate };
-        console.log('filters', filters);
       }
     }
     this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters });
