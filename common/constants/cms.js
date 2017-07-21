@@ -392,3 +392,7 @@ export const CMS_DOCU_TYPE = {
   contract: 1,
   packingList: 2,
 };
+
+export const SPECIAL_COPNO_TERM = [
+  { value: 'A', text: '特殊货号' },
+];
