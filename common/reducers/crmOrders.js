@@ -37,6 +37,11 @@ const initialState = {
       // cush_charges: [],
       // tot_sercharges: {},
     ],
+    asn_no: '',
+    so_no: '',
+    whse_code: '',
+    whse_name: '',
+    bonded: '',
   },
   formData: {
     shipmt_order_no: '',
@@ -138,6 +143,10 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_ORDER_NODES_SUCCEED:
       return { ...state, kinds: action.result.data };
+    case actionTypes.GET_SONO_SUCCEED:
+      return { ...state, dock: { ...state.dock, ...action.result.data } };
+    case actionTypes.GET_ASNNO_SUCCEED:
+      return { ...state, dock: { ...state.dock, ...action.result.data } };
     default:
       return state;
   }
@@ -411,7 +420,7 @@ export function closeOrder(orderNo) {
   };
 }
 
-export function getAsnNo(uuid) {
+export function getAsnByUuid(uuid, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -421,12 +430,12 @@ export function getAsnNo(uuid) {
       ],
       endpoint: 'v1/cwm/get/asnno',
       method: 'get',
-      params: { uuid },
+      params: { uuid, tenantId },
     },
   };
 }
 
-export function getSoNo(uuid) {
+export function getSoByUuid(uuid, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -436,7 +445,7 @@ export function getSoNo(uuid) {
       ],
       endpoint: 'v1/cwm/get/sono',
       method: 'get',
-      params: { uuid },
+      params: { uuid, tenantId },
     },
   };
 }

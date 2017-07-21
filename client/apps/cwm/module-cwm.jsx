@@ -13,6 +13,7 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
   }),
@@ -182,7 +183,7 @@ export default class ModuleCWM extends React.Component {
           window.localStorage.setItem('whse-code', nextProps.whse.code);
         }
       }
-      nextProps.loadWhse(nextProps.whse.code);
+      nextProps.loadWhse(nextProps.whse.code, nextProps.tenantId);
       const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'cwm-ftz');
       if (nextProps.whse.bonded) {
         linkMenus.splice(4, 0, {

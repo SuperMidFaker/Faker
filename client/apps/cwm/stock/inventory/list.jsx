@@ -113,7 +113,7 @@ export default class InventoryStockList extends React.Component {
     render: (text, row) => this.renderNormalCol(text, row),
   }]
   dataSource = new Table.DataSource({
-    fetcher: params => this.handleStockQuery(this.props.listFilter, params.sorter, params.current),
+    fetcher: () => this.handleStockQuery(this.props.listFilter),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -141,7 +141,13 @@ export default class InventoryStockList extends React.Component {
     });
   }
   handleStockQuery = (filter) => {
-    this.props.loadStocks(filter);
+    const { tenantId, stocklist: { pageSize, current } } = this.props;
+    this.props.loadStocks({
+      tenantId,
+      filter: JSON.stringify(filter),
+      pageSize,
+      current,
+    });
   }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm };
