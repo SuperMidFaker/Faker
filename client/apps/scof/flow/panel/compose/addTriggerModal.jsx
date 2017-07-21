@@ -6,7 +6,7 @@ import { Button, Card, Popconfirm, Col, Modal, Form, Checkbox, Icon, Input, Inpu
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { loadServiceTeamMembers } from 'common/reducers/crmCustomers';
-import { NODE_BIZ_OBJECTS_EXECUTABLES, NODE_CREATABLE_BIZ_OBJECTS, NODE_BIZ_OBJECTS_NOTIFIES } from 'common/constants';
+import { NODE_BIZ_OBJECTS_EXECUTABLES, NODE_CREATABLE_BIZ_OBJECTS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -142,14 +142,13 @@ ExecuteActionForm.propTypes = {
 };
 
 function NotifyActionForm(props) {
-  const { action, index, msg, onChange, onDel, bizObjectOptions, serviceTeamMembers } = props;
+  const { action, index, msg, onChange, onDel, serviceTeamMembers } = props;
   function handleChange(actionKey, value) {
     onChange(actionKey, value, index);
   }
   function handleDel() {
     onDel(index);
   }
-  const bizobj = bizObjectOptions.filter(boo => boo.key === action.biz_object)[0];
   return (
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
@@ -184,21 +183,6 @@ function NotifyActionForm(props) {
             </Select>
           </FormItem>
         </Col>
-        <Col sm={24} lg={12}>
-          <FormItem label={msg('bizObject')}>
-            <Select value={action.biz_object} onChange={(value) => { handleChange('biz_trigger', ''); handleChange('biz_object', value); }}>
-              {bizObjectOptions.map(bo => <Option value={bo.key} key={bo.key}>{msg(bo.text)}</Option>)}
-            </Select>
-          </FormItem>
-        </Col>
-        {bizobj &&
-        <Col sm={24} lg={12}>
-          <FormItem label={msg('bizObjOperation')}>
-            <Select value={action.biz_trigger} onChange={value => handleChange('biz_trigger', value)}>
-              {bizobj.triggers.map(bot => <Option value={bot.action} key={bot.action}>{msg(bot.actionText)}</Option>)}
-            </Select>
-          </FormItem>
-        </Col>}
 
         <Col sm={24} lg={24}>
           <FormItem label={msg('notifyContent')}>
@@ -251,7 +235,6 @@ function NotifyActionForm(props) {
 NotifyActionForm.propTypes = {
   action: PropTypes.shape({ type: PropTypes.string }),
   index: PropTypes.number.isRequired,
-  bizObjectOptions: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string })),
   serviceTeamMembers: PropTypes.array,
 };
 
@@ -280,13 +263,11 @@ export default class AddTriggerModal extends React.Component {
     actions: [],
     bizobjExecutes: [],
     creatableBizObjects: [],
-    bizobjNotifies: [],
   }
   componentWillMount() {
     const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[this.props.kind];
     const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[this.props.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
-    const bizobjNotifies = NODE_BIZ_OBJECTS_NOTIFIES[this.props.kind];
-    this.setState({ bizobjExecutes, creatableBizObjects, bizobjNotifies });
+    this.setState({ bizobjExecutes, creatableBizObjects });
     this.props.loadServiceTeamMembers(this.props.partnerId);
   }
   componentWillReceiveProps(nextProps) {
@@ -299,8 +280,7 @@ export default class AddTriggerModal extends React.Component {
     if (nextProps.kind !== this.props.kind) {
       const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[nextProps.kind];
       const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[nextProps.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
-      const bizobjNotifies = NODE_BIZ_OBJECTS_NOTIFIES[this.props.kind];
-      this.setState({ bizobjExecutes, creatableBizObjects, bizobjNotifies });
+      this.setState({ bizobjExecutes, creatableBizObjects });
     }
   }
   handleActionAdd = () => {
@@ -328,7 +308,7 @@ export default class AddTriggerModal extends React.Component {
   msg = formatMsg(this.props.intl)
   render() {
     const { visible, serviceTeamMembers } = this.props;
-    const { actions, bizobjExecutes, creatableBizObjects, bizobjNotifies } = this.state;
+    const { actions, bizobjExecutes, creatableBizObjects } = this.state;
     return (
       <Modal title={this.msg('triggerActions')}
         width={800} visible={visible} maskClosable={false}
@@ -350,7 +330,7 @@ export default class AddTriggerModal extends React.Component {
                 break;
               case 'NOTIFY': actionForm = (
                 <NotifyActionForm key={action.id} action={action} onDel={this.handleActionDel}
-                  index={index} bizObjectOptions={bizobjNotifies} onChange={this.handleFormChange} msg={this.msg}
+                  index={index} onChange={this.handleFormChange} msg={this.msg}
                   serviceTeamMembers={serviceTeamMembers}
                 />);
                 break;

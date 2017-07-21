@@ -3,15 +3,18 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadOrderNodesTriggers, hideDock, getSoNo } from 'common/reducers/crmOrders';
+import { loadOrderNodesTriggers, hideDock, getSoByUuid } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
 import { Logixon } from 'client/components/FontIcon';
 
 const Step = Steps.Step;
 @connect(
-  () => ({}),
-  { hideDock, showDock, loadOrderNodesTriggers, getSoNo }
+  state => ({
+    tenantId: state.account.tenantId,
+    dock: state.crmOrders.dock,
+  }),
+  { hideDock, showDock, loadOrderNodesTriggers, getSoByUuid }
 )
 export default class CWMOutboundNodeCard extends React.Component {
   static propTypes = {
@@ -22,7 +25,7 @@ export default class CWMOutboundNodeCard extends React.Component {
     trigger: -1,
   }
   componentWillMount() {
-    const { uuid, kind } = this.props;
+    const { uuid, kind, tenantId } = this.props;
     this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then(
       (result) => {
         if (!result.data) return;
@@ -31,9 +34,10 @@ export default class CWMOutboundNodeCard extends React.Component {
         });
       }
     );
+    this.props.getSoByUuid(uuid, tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    const { uuid, kind } = nextProps;
+    const { uuid, kind, tenantId } = nextProps;
     if (uuid !== this.props.uuid) {
       this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then(
         (result) => {
@@ -43,6 +47,7 @@ export default class CWMOutboundNodeCard extends React.Component {
           });
         }
       );
+      this.props.getSoByUuid(uuid, tenantId);
     }
   }
   triggerStepMap = {
@@ -52,19 +57,16 @@ export default class CWMOutboundNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[3].key]: 3,
   }
   handlePreview = () => {
+    const { dock } = this.props;
     if (this.state.trigger === -1) {
       message.info('订单尚未创建');
     } else {
-      this.props.getSoNo(this.props.uuid).then((result) => {
-        if (!result.error) {
-          this.props.hideDock();
-          this.props.showDock(result.data.so_no);
-        }
-      });
+      this.props.hideDock();
+      this.props.showDock(dock.so_no);
     }
   }
   render() {
-    const { title, children } = this.props;
+    const { title, children, dock } = this.props;
     return (
       <Card title={<span>{title}</span>} extra={
         <Tooltip title="进入详情">
@@ -74,13 +76,19 @@ export default class CWMOutboundNodeCard extends React.Component {
       >
         <Row>
           <Col span="8">
-            <InfoItem label="SO编号" field={''} />
+            <InfoItem label="SO编号" addonBefore={<Icon type="tag-o" />}
+              field={dock.so_no}
+            />
           </Col>
           <Col span="8">
-            <InfoItem label="仓库" addonBefore={<Logixon type="warehouse" />} field={''} />
+            <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />}
+              field={dock.whse_name}
+            />
           </Col>
           <Col span="8">
-            <InfoItem label="货物属性" field={''} />
+            <InfoItem label="货物属性" addonBefore={<Icon type="tag-o" />}
+              field={dock.bonded ? '保税' : '非保税'}
+            />
           </Col>
         </Row>
         {children}

@@ -16,6 +16,7 @@ const { Content } = Layout;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -91,7 +92,7 @@ export default class OwnersPane extends Component {
       if (!result.error) {
         this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
         if (this.props.whseCode === this.props.defaultWhse.code) {
-          this.props.loadWhse(this.props.whseCode);
+          this.props.loadWhse(this.props.whseCode, this.props.tenantId);
         }
       }
     });

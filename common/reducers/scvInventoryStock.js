@@ -32,6 +32,8 @@ const initialState = {
   listFilter: {
     product_no: null,
     whse_code: 'all',
+    owner: '',
+    whse_location: '',
   },
   searchOption: {
     warehouses: [],
@@ -45,7 +47,6 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         loading: true,
         listFilter: JSON.parse(action.params.filter),
-        sortFilter: JSON.parse(action.params.sorter),
         displayedColumns: { ...state.displayedColumns,
           product_no: false,
           avail_qty: false,
