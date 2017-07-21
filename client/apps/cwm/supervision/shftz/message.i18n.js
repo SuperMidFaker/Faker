@@ -9,8 +9,8 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.release.reg',
     defaultMessage: '出库备案',
   },
-  ftzBatchReg: {
-    id: 'cwm.supervision.shftz.batch.reg',
+  ftzBatchDecl: {
+    id: 'cwm.supervision.shftz.batch.decl',
     defaultMessage: '集中报关',
   },
   ftzCargoReg: {

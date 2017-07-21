@@ -272,18 +272,16 @@ export default class SHFTZEntryDetail extends Component {
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
+                  <InfoItem addonBefore="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="经营单位" field={entryAsn.owner_name} />
+                  <InfoItem addonBefore="经营单位" field={entryAsn.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={entryAsn.wh_ent_tenant_name} />
+                  <InfoItem addonBefore="收货单位" field={entryAsn.wh_ent_tenant_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="备案时间" addonBefore={<span><Icon type="calendar" /></span>}
-                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY-MM-DD HH:mm')}
-                  />
+                  <InfoItem addonBefore="备案时间" field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY-MM-DD HH:mm')} />
                 </Col>
               </Row>
               <div className="card-footer">
@@ -312,13 +310,13 @@ export default class SHFTZEntryDetail extends Component {
                         </Col>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
-                            type="date" field={reg.ie_date} editable={entryEditable}
+                            type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY.MM.DD')} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
                           />
                         </Col>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                            type="date" field={reg.ftz_ent_date} editable={entryEditable}
+                            type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY.MM.DD')} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                           />
                         </Col>
