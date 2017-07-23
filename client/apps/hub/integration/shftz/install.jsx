@@ -60,10 +60,7 @@ export default class InstallSHFTZ extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="appstore-o" /> {this.msg('integration')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('appsStore')}
+              <Icon type="shop" /> {this.msg('appsStore')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('appSHFTZ')}

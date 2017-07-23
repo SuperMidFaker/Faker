@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   openPlatform: {
     id: 'hub.integration.parent',
-    defaultMessage: '开放平台',
+    defaultMessage: '协作平台',
   },
   integration: {
     id: 'hub.integration',
@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
   appsStore: {
     id: 'hub.integration.apps.store',
-    defaultMessage: '应用中心',
+    defaultMessage: '应用商店',
   },
   installedApps: {
     id: 'hub.integration.installed.apps',

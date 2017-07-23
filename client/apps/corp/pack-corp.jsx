@@ -11,10 +11,12 @@ import NavLink from 'client/components/nav-link';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';
+
 const formatMsg = format(messages);
 const { Header, Sider } = Layout;
 const MenuItem = Menu.Item;
-const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
+
 @injectIntl
 @connect(
   state => ({
@@ -99,12 +101,12 @@ export default class CorpPack extends React.Component {
                   <MdIcon mode="fontello" type="gauge" />{formatMsg(intl, 'corpOverview')}
                 </NavLink>
               </MenuItem>
-              <SubMenu key="corpMenu" title={<span><Icon type="setting" />企业设置</span>}>
+              <MenuItemGroup key="corpMenu" title="企业设置">
                 {corpMenu}
-              </SubMenu>
-              <SubMenu key="dataMenu" title={<span><Icon type="database" />数据监控</span>}>
+              </MenuItemGroup>
+              <MenuItemGroup key="dataMenu" title="数据监控">
                 {dataMenu}
-              </SubMenu>
+              </MenuItemGroup>
             </Menu>
           </Sider>
           <Layout>

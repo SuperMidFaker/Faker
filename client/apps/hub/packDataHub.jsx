@@ -7,7 +7,7 @@ import CorpHeaderBar from 'client/components/corpHeaderBar';
 import { setNavTitle } from 'common/reducers/navbar';
 
 const { Sider, Header, Content } = Layout;
-const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 @connect()
 export default class DataHubPack extends React.Component {
@@ -24,7 +24,7 @@ export default class DataHubPack extends React.Component {
     return (
       <Layout className="layout-wrapper">
         <Header>
-          <CorpHeaderBar title="开放平台" />
+          <CorpHeaderBar title="协作平台" />
         </Header>
         <Layout>
           <Sider className="menu-sider">
@@ -33,22 +33,22 @@ export default class DataHubPack extends React.Component {
               defaultOpenKeys={['integration', 'api']}
               mode="inline"
             >
-              <SubMenu key="integration" title={<span><Icon type="appstore-o" /><span>应用整合</span></span>}>
+              <MenuItemGroup key="integration" title="应用">
                 <Menu.Item key="installed">
                   <NavLink to="/hub/integration/installed">
-                    已安装应用
+                    <Icon type="appstore-o" />应用整合
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="apps">
                   <NavLink to="/hub/integration/apps">
-                    应用中心
+                    <Icon type="shop" />应用商店
                   </NavLink>
                 </Menu.Item>
-              </SubMenu>
-              <SubMenu key="api" title={<span><Icon type="api" /><span>开放API接口</span></span>}>
+              </MenuItemGroup>
+              <MenuItemGroup key="api" title="接口">
                 <Menu.Item key="auth">
                   <NavLink to="/hub/api/auth">
-                    API接口授权
+                    <Icon type="api" />API接口授权
                   </NavLink>
                 </Menu.Item>
                 <Menu.Item key="webhook">
@@ -56,7 +56,14 @@ export default class DataHubPack extends React.Component {
                     提醒目标Webhook
                   </NavLink>
                 </Menu.Item>
-              </SubMenu>
+              </MenuItemGroup>
+              <MenuItemGroup key="collab" title="协作">
+                <Menu.Item key="partners">
+                  <NavLink to="/hub/collab/partners">
+                    <span><Icon type="team" /><span>协作邀请</span></span>
+                  </NavLink>
+                </Menu.Item>
+              </MenuItemGroup>
               <Menu.Item key="docs" disabled>
                 <span><Icon type="book" /><span>开发文档</span></span>
               </Menu.Item>

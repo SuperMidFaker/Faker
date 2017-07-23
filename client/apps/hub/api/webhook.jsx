@@ -83,9 +83,6 @@ export default class WebhookList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="api" /> 开放API
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
               提醒目标Webhook
             </Breadcrumb.Item>
           </Breadcrumb>

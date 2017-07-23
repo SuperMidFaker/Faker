@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   openPlatform: {
     id: 'hub.api.parent',
-    defaultMessage: '开放平台',
+    defaultMessage: '协作平台',
   },
   apiDesc: {
     id: 'hub.api.desc',

@@ -166,10 +166,7 @@ export default class InstalledAppsList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="appstore-o" /> 应用整合
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              已安装应用
+              <Icon type="appstore-o" /> {this.msg('integration')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools" />
