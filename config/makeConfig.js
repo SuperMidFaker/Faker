@@ -56,7 +56,7 @@ module.exports = (serverPort, dirName, appName) => {
       default: 'https://api.welogix.cn/',
       mongo: 'https://api1.welogix.cn/',
       scv: 'https://api2.welogix.cn/',
-      notify: 'https://api100.welogix.cn:3100/',
+      notify: 'https://notify.welogix.cn/',
       self: '/',
     });
     config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
@@ -65,7 +65,7 @@ module.exports = (serverPort, dirName, appName) => {
         default: 'https://api.welogix.co/',
         mongo: 'https://api1.welogix.co/',
         scv: 'https://api2.welogix.co/',
-        notify: 'https://api100.welogix.co:3100/',
+        notify: 'https://notify.welogix.co/',
         self: '/',
       });
       config.set('CDN_URL', '');

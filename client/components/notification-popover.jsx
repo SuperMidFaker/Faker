@@ -11,7 +11,7 @@ import NavLink from './nav-link';
 import { countMessages, messageBadgeNum, recordMessages, showNotificationDock } from 'common/reducers/notification';
 import { prompt } from 'common/reducers/shipment';
 import { getDriver } from 'common/reducers/transportResources';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 import { PROMPT_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -54,59 +54,8 @@ export default class NotificationPopover extends React.Component {
   state = {
     visible: false,
   }
-  easemob = {
-    conn: null,
-    WebIM: null,
-    socket: null,
-  }
   componentDidMount() {
     const { tenantId, loginId, loginName } = this.props;
-    if (!this.easemob.conn && window) {
-      const WebIM = window.WebIM;
-      WebIM.config = {
-        xmppURL: 'im-api.easemob.com',
-        apiURL: `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//a1.easemob.com`,
-        appkey: 'welogix#welogixweb',
-        https: true,
-        isMultiLoginSessions: true,
-        isAutoLogin: true,
-      };
-      const conn = new WebIM.connection({
-        https: WebIM.config.https,
-        url: WebIM.config.xmppURL,
-        isAutoLogin: WebIM.config.isAutoLogin,
-        isMultiLoginSessions: WebIM.config.isMultiLoginSessions,
-      });
-      conn.listen({
-        onOpened: () => {          // 连接成功回调
-          // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
-          conn.setPresence();
-        },
-        onClosed: () => {},         // 连接关闭回调
-        onTextMessage: (msg) => {
-          const data = JSON.parse(msg.data);
-          this.notif(data.tenantName, {
-            body: data.msg,
-            icon: data.logo,
-            url: '',
-          });
-          this.props.messageBadgeNum(this.props.unreadMessagesNum + 1);
-        },
-        onError: (msg) => { },           // 失败回调
-      });
-
-      const user = {
-        apiUrl: WebIM.config.apiURL,
-        user: `L_${loginId}`,
-        pwd: `L_${loginId}`,
-        appKey: WebIM.config.appkey,
-      };
-
-      conn.open(user);
-      this.easemob.conn = conn;
-      this.easemob.WebIM = WebIM;
-    }
-
     if (("Notification" in window) && Notification.permission !== 'granted') {
       Notification.requestPermission(status => {
         if (Notification.permission !== status) {
@@ -115,24 +64,28 @@ export default class NotificationPopover extends React.Component {
       });
     }
 
-    // const socket = io(`${API_ROOTS.notify}notify`);
-    // socket.on('connect', () => {
-    //   socket.emit('login', {login_id: loginId});
-    // });
-    // socket.on('message', (data) => {
-    //   console.log(data);
-    // });
-    // this.setState({ socket });
+    const socket = io(`${API_ROOTS.notify}notify`);
+    socket.on('connect', () => {
+      socket.emit('login', {login_id: loginId});
+    });
+    socket.on('message', (data) => {
+      this.notif({
+        content: data.content,
+        body: data.content,
+        icon: data.logo,
+        url: data.url,
+      });
+      this.props.messageBadgeNum(this.props.unreadMessagesNum + 1);
+    });
+    this.setState({ socket });
   }
-  componentWillUnmount() {
-    this.easemob.conn.close();
-  }
-  componentWillReceiveProps(nextProps) {
-    const { tenantId, loginId, loginName, tenantName, logo } = this.props;
-    if (nextProps.newMessage.count !== this.props.newMessage.count) {
-      const { module, promptType, shipment } = nextProps.newMessage;
-    }
-  }
+
+  // componentWillReceiveProps(nextProps) {
+  //   const { tenantId, loginId, loginName, tenantName, logo } = this.props;
+  //   if (nextProps.newMessage.count !== this.props.newMessage.count) {
+  //     const { module, promptType, shipment } = nextProps.newMessage;
+  //   }
+  // }
   handleRecordMessage({ loginId, tenantId, loginName, messages }) {
     this.props.recordMessages({ loginId, tenantId, loginName, messages }).then(result => {
       if (result.error) {
@@ -142,20 +95,13 @@ export default class NotificationPopover extends React.Component {
       }
     });
   }
-  handleSendMessage(data) {
-    const id = this.easemob.conn.getUniqueId();// 生成本地消息id
-    const msg = new this.easemob.WebIM.message('txt', id);// 创建文本消息
+  // handleSendMessage(data) {
 
-    msg.set({
-      msg: data.content,
-      to: data.to,
-    });
-
-    this.easemob.conn.send(msg.body);
-  }
-  notif(title, data) {
+  // }
+  notif(data) {
+    // console.log(data);
     if (("Notification" in window) && Notification.permission === 'granted') {
-      const n = new Notification(title, data);
+      const n = new Notification(data.content, data);
       n.onclick = () => {
         // this.handleNavigationTo(data.url);
         n.close();
@@ -172,8 +118,8 @@ export default class NotificationPopover extends React.Component {
         </Button>
       );
       notification.open({
-        message: title,
-        description: data.body,
+        message: '消息',
+        description: data.content,
         btn,
         key,
       });
