@@ -38,7 +38,7 @@ export default class EditBodyModal extends React.Component {
         const { tenantId, loginId, billSeqNo } = this.props;
         const values = this.props.form.getFieldsValue();
         if (this.props.editBody.id) {
-          const body = { ...values, id: this.props.editBody.id };
+          const body = { ...values, id: this.props.editBody.id, tenant_id: tenantId };
           this.props.editBillBody(body).then((result) => {
             if (result.error) {
               message.error(result.error.message, 10);
