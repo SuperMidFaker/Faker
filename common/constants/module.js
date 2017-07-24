@@ -578,19 +578,19 @@ const MODULE_SCV = {
   features: [],
 };
 
-const MODULE_CORPORATION = {
-  id: 'corp',
-  text: 'moduleCorporation',
-  features: [
-  ],
-};
-
 const appModules = [
   MODULE_SCOF,
   MODULE_CLEARANCE,
   MODULE_TRANSPORT,
   MODULE_CWM,
   MODULE_SCV,
+];
+
+const spnModules = [
+  MODULE_SCOF,
+  MODULE_CLEARANCE,
+  MODULE_TRANSPORT,
+  MODULE_CWM,
 ];
 
 export const DEFAULT_MODULES = {};
@@ -607,6 +607,5 @@ appModules.forEach((mod, index) => {
 });
 
 export const INTRINSIC_MODULE_FEATURES = [
-  ...appModules,
-  MODULE_CORPORATION,
+  ...spnModules,
 ];
