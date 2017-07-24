@@ -38,9 +38,9 @@ const messages = defineMessages({
     id: 'cwm.module.stock',
     defaultMessage: '库存',
   },
-  inventory: {
-    id: 'cwm.module.stock.inventory',
-    defaultMessage: '库存余量',
+  query: {
+    id: 'cwm.module.stock.query',
+    defaultMessage: '库存查询',
   },
   movement: {
     id: 'cwm.module.stock.movement',

@@ -70,9 +70,9 @@ const messages = defineMessages({
     id: 'cms.expense.agent.name',
     defaultMessage: '报关代理',
   },
-  invoiceNo: {
-    id: 'cms.expense.invoice.no',
-    defaultMessage: '发票号',
+  orderNo: {
+    id: 'cms.expense.order.no',
+    defaultMessage: '订单号',
   },
   bLNo: {
     id: 'cms.expense.bill.lading.no',
@@ -80,35 +80,35 @@ const messages = defineMessages({
   },
   revenue: {
     id: 'cms.expense.revenue',
-    defaultMessage: '收入',
+    defaultMessage: '应收',
   },
   serviceRevenue: {
     id: 'cms.expense.revenue.service',
-    defaultMessage: '服务收入',
+    defaultMessage: '服务应收',
   },
   cushBill: {
     id: 'cms.expense.cushion.bill',
-    defaultMessage: '代垫收入',
+    defaultMessage: '代垫应收',
   },
   allBill: {
     id: 'cms.expense.all.bill',
-    defaultMessage: '收入合计',
+    defaultMessage: '应收合计',
   },
   cost: {
     id: 'cms.expense.cost',
-    defaultMessage: '成本',
+    defaultMessage: '应付',
   },
   servCost: {
     id: 'cms.expense.service.cost',
-    defaultMessage: '服务成本',
+    defaultMessage: '服务应付',
   },
   cushCost: {
     id: 'cms.expense.cushion.cost',
-    defaultMessage: '代垫成本',
+    defaultMessage: '代垫应付',
   },
   allCost: {
     id: 'cms.expense.all.cost',
-    defaultMessage: '成本合计',
+    defaultMessage: '应付合计',
   },
   profit: {
     id: 'cms.expense.profit',

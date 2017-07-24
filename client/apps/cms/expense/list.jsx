@@ -521,9 +521,9 @@ export default class ExpenseList extends Component {
                   size="large"
                 >
                   <OptGroup label="常用视图">
-                    <Option value="both">显示收入与成本</Option>
+                    <Option value="both">显示收入与支出</Option>
                     <Option value="revenueOnly">仅显示收入</Option>
-                    <Option value="costOnly">仅显示成本</Option>
+                    <Option value="costOnly">仅显示支出</Option>
                   </OptGroup>
                 </Select>
                 <Tooltip title="费用与计费设置">

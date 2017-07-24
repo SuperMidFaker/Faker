@@ -5,10 +5,8 @@ import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, To
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
-import OrderDetailsPane from './tabpane/orderDetailsPane';
-import PickingDetailsPane from './tabpane/pickingDetailsPane';
-import PackingDetailsPane from './tabpane/packingDetailsPane';
-import ShippingDetailsPane from './tabpane/shippingDetailsPane';
+import MovementDetailsPane from './tabpane/movementDetailsPane';
+import { loadReceiveModal } from 'common/reducers/cwmReceive';
 import { loadOutboundHead, updateOutboundMode } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
@@ -34,14 +32,14 @@ const TabPane = Tabs.TabPane;
     outboundHead: state.cwmOutbound.outboundFormHead,
     reload: state.cwmOutbound.outboundReload,
   }),
-  { loadOutboundHead, updateOutboundMode }
+  { loadReceiveModal, loadOutboundHead, updateOutboundMode }
 )
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
 })
 @Form.create()
-export default class OutboundDetail extends Component {
+export default class MovementDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -197,17 +195,8 @@ export default class OutboundDetail extends Component {
             </Card>
             <Card bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
-                <TabPane tab="订单明细" key="orderDetails">
-                  <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-                <TabPane tab="拣货明细" key="pickingDetails">
-                  <PickingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-                <TabPane tab="装箱明细" key="packingDetails">
-                  <PackingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-                <TabPane tab="发货明细" key="shippingDetails">
-                  <ShippingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                <TabPane tab="移动明细" key="orderDetails">
+                  <MovementDetailsPane outboundNo={this.props.params.outboundNo} />
                 </TabPane>
               </Tabs>
             </Card>

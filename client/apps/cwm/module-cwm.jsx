@@ -83,10 +83,9 @@ export default class ModuleCWM extends React.Component {
       sublinks: [{
         key: 'cwm-3-0',
         path: '/cwm/stock/inventory',
-        text: formatMsg(intl, 'inventory'),
+        text: formatMsg(intl, 'query'),
       }, {
         key: 'cwm-3-1',
-        disabled: true,
         path: '/cwm/stock/movement',
         text: formatMsg(intl, 'movement'),
       }, {

@@ -28,10 +28,11 @@ export default class BatchDeclModal extends Component {
   }
   state = {
     modalWidth: 1000,
+    modalHeight: 800,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ modalWidth: window.innerWidth - 96 });
+      this.setState({ modalWidth: window.innerWidth, modalHeight: window.innerHeight });
     }
   }
 
@@ -138,7 +139,7 @@ export default class BatchDeclModal extends Component {
     </Form>);
 
     return (
-      <Modal title="集中报关" width={this.state.modalWidth} maskClosable={false} style={{ top: 24 }}
+      <Modal title="集中报关" width={this.state.modalWidth} maskClosable={false} style={{ top: 0, bottom: 0 }}
         onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
       >
         <Collapse bordered={false} defaultActiveKey={['1', '2']}>
