@@ -77,6 +77,10 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.opColumn',
     defaultMessage: '操作',
   },
+  createBatchDecl: {
+    id: 'cwm.supervision.shftz.filter.batchdecl',
+    defaultMessage: '筛选待报关',
+  },
 });
 
 export default messages;

@@ -10,7 +10,7 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openBatchDeclModal } from 'common/reducers/cwmShFtz';
+import { openBatchDeclModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import BatchDeclModal from './modal/batchDeclModal';
 import { format } from 'client/common/i18n/helpers';
@@ -27,13 +27,13 @@ const OptGroup = Select.OptGroup;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    entryList: state.cwmShFtz.entryList,
+    batchlist: state.cwmShFtz.batchApplyList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { openBatchDeclModal, switchDefaultWhse }
+  { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList }
 )
 @connectNav({
   depth: 2,
@@ -43,7 +43,6 @@ export default class SHFTZBatchDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    entryList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -54,7 +53,36 @@ export default class SHFTZBatchDeclList extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
   }
+  componentDidMount() {
+    this.handleBatchApplyLoad();
+  }
   msg = key => formatMsg(this.props.intl, key);
+  manifColumns = [{
+    title: '集中报关编号',
+    dataIndex: 'batch_decl_no',
+    width: 150,
+    fixed: 'left',
+  }, {
+    title: '委托编号',
+    width: 180,
+    dataIndex: 'delg_no',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '货主',
+    width: 180,
+    dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '收货单位',
+    width: 180,
+    dataIndex: 'receiver_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '操作',
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />,
+  }]
   columns = [{
     title: '集中报关编号',
     dataIndex: 'batch_decl_no',
@@ -76,7 +104,7 @@ export default class SHFTZBatchDeclList extends React.Component {
   }, {
     title: '收货单位',
     width: 180,
-    dataIndex: 'seller_name',
+    dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '申请类型',
@@ -105,7 +133,7 @@ export default class SHFTZBatchDeclList extends React.Component {
   }, {
     title: '申报日期',
     width: 120,
-    dataIndex: 'expect_receive_date',
+    dataIndex: 'cus_decl_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
@@ -114,7 +142,7 @@ export default class SHFTZBatchDeclList extends React.Component {
   }, {
     title: '放行日期',
     width: 120,
-    dataIndex: 'received_date',
+    dataIndex: 'clear_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
@@ -122,7 +150,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     },
   }, {
     title: '状态',
-    dataIndex: 'reg_status',
+    dataIndex: 'status',
     width: 120,
     render: (o) => {
       if (o === 0) {
@@ -140,57 +168,50 @@ export default class SHFTZBatchDeclList extends React.Component {
     render: (o, record) => <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />,
   }]
 
-  dataSource = [{
-    id: '1',
-    asn_no: 'N04601170548',
-    bonded: 1,
-    whse_code: '0961|希雅路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7IR2730',
-    status: 0,
-  }, {
-    id: '2',
-    asn_no: 'N04601170547',
-    bonded: 0,
-    whse_code: '0086|物流大道仓库',
-    owner_code: '03701|西门子国际贸易',
-    ref_order_no: 'NUE0394488',
-    status: 1,
-  }, {
-    id: '3',
-    asn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 1,
-    reg_status: 0,
-  }, {
-    id: '4',
-    asn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 2,
-    reg_status: 1,
-  }, {
-    id: '5',
-    asn_no: 'N04601170546',
-    bonded: 1,
-    whse_code: '0962|富特路仓库',
-    owner_code: '04601|米思米(中国)精密机械贸易',
-    ref_order_no: '7FJ1787',
-    status: 3,
-    reg_status: 2,
-  }];
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadBatchApplyList(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+    }),
+    getParams: (pagination) => {
+      const params = {
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        currentPage: pagination.current,
+        whseCode: this.props.whse.code,
+      };
+      const filter = { ...this.props.listFilter };
+      params.filter = JSON.stringify(filter);
+      return params;
+    },
+    remotes: this.props.batchlist,
+  })
+  handleBatchApplyLoad = (currentPage, whsecode, filter) => {
+    const { tenantId, listFilter, whse, batchlist: { pageSize, current } } = this.props;
+    this.props.loadBatchApplyList({
+      tenantId,
+      filter: JSON.stringify(filter || listFilter),
+      pageSize,
+      currentPage: currentPage || current,
+      whseCode: whsecode || whse.code,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
+  }
 
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleEntryListLoad(1, this.props.whse.code, filter);
+    this.handleBatchApplyLoad(1, this.props.whse.code, filter);
   }
   handleCreateBatchDecl = () => {
     this.props.openBatchDeclModal();
@@ -202,18 +223,22 @@ export default class SHFTZBatchDeclList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    // this.handleEntryListLoad(1, value);
+    this.handleBatchApplyLoad(1, value);
   }
 
   render() {
     const { listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded === 1);
+    const bondedWhses = whses.filter(wh => wh.bonded);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    let columns = this.columns;
+    if (listFilter.status === 'manifesting') {
+      columns = this.manifColumns;
+    }
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -267,6 +292,7 @@ export default class SHFTZBatchDeclList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioButton value="manifesting">制单中</RadioButton>
               <RadioButton value="pending">待申请</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="applied">申请完成</RadioButton>
@@ -301,8 +327,8 @@ export default class SHFTZBatchDeclList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
-                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+                <Table columns={columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
+                  scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>
             </div>

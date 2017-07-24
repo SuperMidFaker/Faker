@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Icon, Layout, Radio, Menu, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Menu, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
-import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -256,7 +255,6 @@ export default class SHFTZReleaseList extends React.Component {
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
-              <RadioButton value="pendingDecl">待集中报关</RadioButton>
             </RadioGroup>
             <div className="top-bar-tools" />
           </Header>
@@ -276,7 +274,6 @@ export default class SHFTZReleaseList extends React.Component {
                     )}
                 </Select>
                 <span />
-                <ButtonToggle size="large" disabled><Icon type="filter" />筛选待报关</ButtonToggle>
                 <div className="toolbar-right" />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
