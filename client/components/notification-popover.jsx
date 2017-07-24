@@ -11,6 +11,7 @@ import NavLink from './nav-link';
 import { countMessages, messageBadgeNum, recordMessages, showNotificationDock } from 'common/reducers/notification';
 import { prompt } from 'common/reducers/shipment';
 import { getDriver } from 'common/reducers/transportResources';
+// import io from 'socket.io-client';
 import { PROMPT_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
@@ -56,6 +57,7 @@ export default class NotificationPopover extends React.Component {
   easemob = {
     conn: null,
     WebIM: null,
+    socket: null,
   }
   componentDidMount() {
     const { tenantId, loginId, loginName } = this.props;
@@ -112,6 +114,15 @@ export default class NotificationPopover extends React.Component {
         }
       });
     }
+
+    // const socket = io(`${API_ROOTS.notify}notify`);
+    // socket.on('connect', () => {
+    //   socket.emit('login', {login_id: loginId});
+    // });
+    // socket.on('message', (data) => {
+    //   console.log(data);
+    // });
+    // this.setState({ socket });
   }
   componentWillUnmount() {
     this.easemob.conn.close();
