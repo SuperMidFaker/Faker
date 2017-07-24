@@ -2,32 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Checkbox } from 'antd';
+import { Button, Form, Input, Select, Radio, Row } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn } from 'common/reducers/scvInventoryStock';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
-
-function CheckboxLabel(props) {
-  const { field, label, onChange, checked } = props;
-  function handleCheck(ev) {
-    onChange(field, ev.target.checked);
-  }
-  return (<span><Checkbox checked={checked} onChange={handleCheck} />{label}</span>);
-}
-
-CheckboxLabel.propTypes = {
-  field: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  checked: PropTypes.bool.isRequired,
-};
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 @connect(
   state => ({
     searchOption: state.scvInventoryStock.searchOption,
     displayedColumns: state.scvInventoryStock.displayedColumns,
+    owners: state.cwmContext.whseAttrs.owners,
   }),
   { checkOwnerColumn, checkProductColumn, checkLocationColumn }
 )
@@ -43,8 +31,12 @@ export default class InventoryStockSearchForm extends React.Component {
     onSearch: PropTypes.func.isRequired,
   }
   state = {
-    lot_property_checked: false,
-    lot_property: null,
+    searchType: 1,
+  }
+  onChange = (e) => {
+    this.setState({
+      value: e.target.value,
+    });
   }
   handleStockSearch = (ev) => {
     ev.preventDefault();
@@ -52,49 +44,41 @@ export default class InventoryStockSearchForm extends React.Component {
     this.props.onSearch(formData);
   }
   msg = formatMsg(this.props.intl);
-  handleOwnerCheck = (field, checked) => {
-    if (!this.props.displayedColumns.product_no) {
-      this.props.checkOwnerColumn(field, checked);
-    }
-    if (!checked) {
-      this.props.form.setFieldsValue({ [field]: null });
-    }
-  }
-  handleProductCheck = (field, checked) => {
-    this.props.checkProductColumn(checked);
-    if (!checked) {
-      this.props.form.setFieldsValue({ [field]: null });
-    }
-  }
-  handleLocationCheck = (field, checked) => {
-    this.props.checkLocationColumn(field, checked);
-    if (!checked) {
-      this.props.form.setFieldsValue({ [field]: null });
-    }
-  }
   render() {
-    const { form: { getFieldDecorator }, displayedColumns } = this.props;
+    const { form: { getFieldDecorator }, owners } = this.props;
     return (
       <Form layout="vertical" className="left-sider-panel">
-        <FormItem label={
-          <CheckboxLabel field="owner" checked={displayedColumns.owner}
-            label={this.msg('owner')} onChange={this.handleOwnerCheck}
-          />}
-        >
-          {getFieldDecorator('owner')(<Input placeholder="货主名称" disabled={!displayedColumns.owner} />)}
+        <FormItem >
+          {getFieldDecorator('owner', {
+            initialValue: 'all',
+          })(
+            <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange}
+              dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+            >
+              <Option key="all" value="all">全部货主</Option>
+              {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
+            </Select>
+          )}
         </FormItem>
-        <FormItem label={
-          <CheckboxLabel field="product_no" checked={displayedColumns.product_no}
-            label={this.msg('product')} onChange={this.handleProductCheck}
-          />}
-        >
-          {getFieldDecorator('product_no')(<Input placeholder="货号或者sku" disabled={!displayedColumns.product_no} />)}
+        <FormItem>
+          {getFieldDecorator('product_no')(<Input placeholder="货号或者sku" />)}
         </FormItem>
-        <FormItem label={<CheckboxLabel field="whse_location" checked={displayedColumns.whse_location}
-          label={this.msg('whseLocation')} onChange={this.handleLocationCheck}
-        />}
-        >
-          {getFieldDecorator('whse_location')(<Input placeholder="库位号" disabled={!displayedColumns.whse_location} />)}
+        <FormItem>
+          {getFieldDecorator('whse_location')(<Input placeholder="库位号" />)}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('search_type')(
+            <RadioGroup onChange={this.onChange} value={this.state.searchType}>
+              <Row>
+                <Radio value="1">按货主查询</Radio>
+                <Radio value="2">按产品查询</Radio>
+              </Row>
+              <Row>
+                <Radio value="3">按库位查询</Radio>
+                <Radio value="4">按产品/库位查询</Radio>
+              </Row>
+            </RadioGroup>
+          )}
         </FormItem>
         <FormItem>
           <Button type="primary" size="large" onClick={this.handleStockSearch} style={{ width: '100%' }}>{this.msg('query')}</Button>

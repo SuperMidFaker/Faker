@@ -538,7 +538,7 @@ export function undoReceives(inboundNo, loginId, traceIds) {
   };
 }
 
-export function batchPutaways(traceIds, location, allocater, allocateDt, loginId, inboundNo) {
+export function batchPutaways(traceIds, location, allocater, allocateDt, loginId, inboundNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -548,12 +548,12 @@ export function batchPutaways(traceIds, location, allocater, allocateDt, loginId
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/batch',
       method: 'post',
-      data: { traceIds, location, allocater, allocateDt, loginId, inboundNo },
+      data: { traceIds, location, allocater, allocateDt, loginId, inboundNo, tenantId },
     },
   };
 }
 
-export function expressPutaways(loginId, loginName, inboundNo) {
+export function expressPutaways(loginId, loginName, inboundNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -563,7 +563,7 @@ export function expressPutaways(loginId, loginName, inboundNo) {
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/express',
       method: 'post',
-      data: { loginName, loginId, inboundNo },
+      data: { loginName, loginId, inboundNo, tenantId },
     },
   };
 }

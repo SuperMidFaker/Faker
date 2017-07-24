@@ -106,7 +106,7 @@ export default class PutawayDetailsPane extends React.Component {
       title: '是否确认上架完成?',
       content: '默认将收货库位设为最终储存库位，确认上架后不能操作取消收货',
       onOk() {
-        return props.expressPutaways(props.loginId, props.loginName, props.inboundNo);
+        return props.expressPutaways(props.loginId, props.loginName, props.inboundNo, props.tenantId);
       },
       onCancel() {},
       okText: '确认上架',
