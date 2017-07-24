@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
+import { Button, Tooltip, Card, Col, Row, Icon, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadOrderNodesTriggers, hideDock, getSoByUuid } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
-import { Logixon } from 'client/components/FontIcon';
+// import { Logixon } from 'client/components/FontIcon';
 
 const Step = Steps.Step;
 @connect(
