@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Card, Popconfirm, Col, Modal, Form, Checkbox, Icon, Input, InputNumber, Radio, Row, Select } from 'antd';
+import { Button, Card, Popconfirm, Col, Modal, Form, Checkbox, Icon, Input, InputNumber, Radio, Row, Select, Mention } from 'antd';
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { loadServiceTeamMembers } from 'common/reducers/crmCustomers';
-import { NODE_BIZ_OBJECTS_EXECUTABLES, NODE_CREATABLE_BIZ_OBJECTS } from 'common/constants';
+import { NODE_BIZ_OBJECTS_EXECUTABLES, NODE_CREATABLE_BIZ_OBJECTS, NODE_NOTIFY_CONTENTS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -142,7 +142,7 @@ ExecuteActionForm.propTypes = {
 };
 
 function NotifyActionForm(props) {
-  const { action, index, msg, onChange, onDel, serviceTeamMembers } = props;
+  const { action, index, msg, onChange, onDel, serviceTeamMembers, notifyContents } = props;
   function handleChange(actionKey, value) {
     onChange(actionKey, value, index);
   }
@@ -186,13 +186,19 @@ function NotifyActionForm(props) {
 
         <Col sm={24} lg={24}>
           <FormItem label={msg('notifyContent')}>
-            <Input placeholder={msg('receiverPlaceholder')} value={action.content} onChange={e => handleChange('content', e.target.value)} />
+            <Mention
+              prefix="$"
+              placeholder={msg('receiverPlaceholder')}
+              defaultValue={action.content ? Mention.toContentState(action.content) : null}
+              onChange={editorState => handleChange('content', Mention.toString(editorState))}
+              suggestions={notifyContents.map(item => item.text)}
+            />
           </FormItem>
         </Col>
         <Col sm={24} lg={24}>
           <FormItem label={
             <span>
-              <Checkbox checked={!!action.recv_login_ids} />
+              <Checkbox checked={!!action.recv_login_ids} onChange={e => e.target.checked ? e.target.checked : handleChange('recv_login_ids', '')} />
               <span style={{ marginLeft: 5 }}>{msg('platformMsg')}</span>
             </span>}
           >
@@ -211,7 +217,7 @@ function NotifyActionForm(props) {
         <Col sm={24} lg={24}>
           <FormItem label={
             <span>
-              <Checkbox checked={!!action.recv_emails} />
+              <Checkbox checked={!!action.recv_emails} onChange={e => e.target.checked ? e.target.checked : handleChange('recv_emails', '')} />
               <span style={{ marginLeft: 5 }}>{msg('mail')}</span>
             </span>}
           >
@@ -221,11 +227,11 @@ function NotifyActionForm(props) {
         <Col sm={24} lg={24}>
           <FormItem label={
             <span>
-              <Checkbox checked={!!action.recv_tels} />
+              <Checkbox checked={!!action.recv_tels} onChange={e => e.target.checked ? e.target.checked : handleChange('recv_tels', '')} disabled />
               <span style={{ marginLeft: 5 }}>{msg('sms')}</span>
             </span>}
           >
-            <Input placeholder="多个使用英文逗号分割" value={action.recv_tels} onChange={e => handleChange('recv_tels', e.target.value)} />
+            <Input placeholder="多个使用英文逗号分割" value={action.recv_tels} onChange={e => handleChange('recv_tels', e.target.value)} disabled />
           </FormItem>
         </Col>
       </Row>
@@ -236,6 +242,7 @@ NotifyActionForm.propTypes = {
   action: PropTypes.shape({ type: PropTypes.string }),
   index: PropTypes.number.isRequired,
   serviceTeamMembers: PropTypes.array,
+  notifyContents: PropTypes.array,
 };
 
 @injectIntl
@@ -263,11 +270,13 @@ export default class AddTriggerModal extends React.Component {
     actions: [],
     bizobjExecutes: [],
     creatableBizObjects: [],
+    notifyContents: [],
   }
   componentWillMount() {
     const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[this.props.kind];
     const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[this.props.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
-    this.setState({ bizobjExecutes, creatableBizObjects });
+    const notifyContents = NODE_NOTIFY_CONTENTS[this.props.kind];
+    this.setState({ bizobjExecutes, creatableBizObjects, notifyContents });
     this.props.loadServiceTeamMembers(this.props.partnerId);
   }
   componentWillReceiveProps(nextProps) {
@@ -280,7 +289,8 @@ export default class AddTriggerModal extends React.Component {
     if (nextProps.kind !== this.props.kind) {
       const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[nextProps.kind];
       const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[nextProps.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
-      this.setState({ bizobjExecutes, creatableBizObjects });
+      const notifyContents = NODE_NOTIFY_CONTENTS[this.props.kind];
+      this.setState({ bizobjExecutes, creatableBizObjects, notifyContents });
     }
   }
   handleActionAdd = () => {
@@ -308,7 +318,7 @@ export default class AddTriggerModal extends React.Component {
   msg = formatMsg(this.props.intl)
   render() {
     const { visible, serviceTeamMembers } = this.props;
-    const { actions, bizobjExecutes, creatableBizObjects } = this.state;
+    const { actions, bizobjExecutes, creatableBizObjects, notifyContents } = this.state;
     return (
       <Modal title={this.msg('triggerActions')}
         width={800} visible={visible} maskClosable={false}
@@ -331,7 +341,7 @@ export default class AddTriggerModal extends React.Component {
               case 'NOTIFY': actionForm = (
                 <NotifyActionForm key={action.id} action={action} onDel={this.handleActionDel}
                   index={index} onChange={this.handleFormChange} msg={this.msg}
-                  serviceTeamMembers={serviceTeamMembers}
+                  serviceTeamMembers={serviceTeamMembers} notifyContents={notifyContents}
                 />);
                 break;
               default:

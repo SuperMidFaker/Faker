@@ -37,7 +37,7 @@ export default class TMSShipmentPane extends Component {
     loadTariffsByTransportInfo: PropTypes.func.isRequired,
     toggleAddLineModal: PropTypes.func.isRequired,
     needLoadTariff: PropTypes.bool.isRequired,
-    isLineIntariff: PropTypes.bool.isRequired,
+    isLineIntariff: PropTypes.func.isRequired,
     toggleAddLocationModal: PropTypes.func.isRequired,
   }
   state = {

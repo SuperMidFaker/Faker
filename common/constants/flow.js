@@ -171,3 +171,13 @@ exports.NODE_BIZ_OBJECTS_EXECUTABLES = {
     triggers: [{ action: 'soReleased', actionText: 'soRelease' }, { action: 'autoAlloc', actionText: '订单自动分配' }],
   }],
 };
+
+exports.NODE_NOTIFY_CONTENTS = {
+  import: [],
+  export: [],
+  tms: [
+    { key: 'cust_order_no', text: '订单号' },
+  ],
+  cwmrec: [],
+  cwmship: [],
+};
