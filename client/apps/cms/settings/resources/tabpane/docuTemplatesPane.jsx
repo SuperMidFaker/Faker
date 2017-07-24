@@ -199,7 +199,7 @@ export default class InvoiceTemplate extends Component {
     const excelTemplPopover = (<div style={{ width: 300 }}>
       <Upload listType="text" fileList={this.state.attachments} accept=".xls,.xlsx,.xlsm"
         onRemove={this.handleRemove} onChange={this.handleImport}
-        action={`${API_ROOTS.default}v1/upload/excel/`} withCredentials
+        action={`${API_ROOTS.default}v1/upload/img/`} withCredentials
       >
         <Button>
           <Icon type="upload" /> upload
