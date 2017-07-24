@@ -54,9 +54,9 @@ export default class PuttingAwayModal extends Component {
   }
   handleSubmit = () => {
     const { location, allocater, date } = this.state;
-    const { details, loginId, inboundNo } = this.props;
+    const { details, loginId, inboundNo, tenantId } = this.props;
     const traceIds = details.map(detail => detail.trace_id);
-    this.props.batchPutaways(traceIds, location, allocater, date, loginId, inboundNo).then((result) => {
+    this.props.batchPutaways(traceIds, location, allocater, date, loginId, inboundNo, tenantId).then((result) => {
       if (!result.error) {
         this.handleCancel();
       }

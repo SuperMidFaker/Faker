@@ -89,6 +89,11 @@ export default class InventoryStockList extends React.Component {
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
+    title: this.msg('totalQty'),
+    width: 100,
+    dataIndex: 'total_qty',
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
     title: this.msg('stockQty'),
     width: 100,
     dataIndex: 'avail_qty',

@@ -273,7 +273,7 @@ export default class AllocatingModal extends Component {
       trace_id: ad.trace_id,
       allocated_qty: ad.allocated_qty,
       allocated_pack_qty: ad.allocated_pack_qty,
-    }), this.props.loginId, this.props.loginName)).then((result) => {
+    })), this.props.loginId, this.props.loginName).then((result) => {
       if (!result.error) {
         this.handleCancel();
       }
