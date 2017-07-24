@@ -214,7 +214,7 @@ export default class RoleForm extends React.Component {
           <Row gutter={16}>
             {
             tenantModules.map(tnm => (
-              <Col md={24} lg={12} key={tnm.text}>
+              <Col md={24} lg={24} key={tnm.text}>
                 <Card title={formatGlobalMsg(intl, tnm.text)}>
                   <Row style={{ paddingBottom: 10 }}>
                     <Col span={4} offset={2}>
@@ -234,7 +234,7 @@ export default class RoleForm extends React.Component {
                             {formatGlobalMsg(intl, feat.text)}
                           </Col>
                           <Col span={2} offset={2}>
-                            <Switch checked={this.isFullFeature(privileges, tnm.id, feat.id)}
+                            <Switch size="small" checked={this.isFullFeature(privileges, tnm.id, feat.id)}
                               onChange={checked => this.handleFeatureFullCheck(tnm.id, feat.id, checked)}
                             />
                           </Col>

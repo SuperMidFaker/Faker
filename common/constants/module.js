@@ -3,6 +3,101 @@ const MODULE_SCOF = {
   text: 'moduleSCOF',
   defaultText: '客户订单流',
   features: [
+    {
+      id: 'dashboard',
+      text: 'featScofDashboard',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'orders',
+      text: 'featScofOrders',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'billing',
+      text: 'featScofBilling',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'flow',
+      text: 'featScofFlow',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'customers',
+      text: 'featScofCustomers',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
   ],
 };
 
@@ -226,7 +321,7 @@ const MODULE_CLEARANCE = {
 const MODULE_TRANSPORT = {
   id: 'transport',
   text: 'moduleTransport',
-  defaultText: '国内运输',
+  defaultText: '运输管理',
   features: [
     {
       id: 'dashboard',
@@ -339,6 +434,139 @@ const MODULE_CWM = {
   defaultText: '仓储协同',
   status: 'alpha',
   features: [
+    {
+      id: 'dashboard',
+      text: 'featCwmDashboard',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'receiving',
+      text: 'featCwmReceiving',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'shipping',
+      text: 'featCwmShipping',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'stock',
+      text: 'featCwmStock',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'supervision',
+      text: 'featCwmSupervision',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'products',
+      text: 'featCwmProducts',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
+    {
+      id: 'settings',
+      text: 'featCwmSettings',
+      actions: [
+        {
+          id: 'view',
+          text: 'featActionView',
+        }, {
+          id: 'edit',
+          text: 'featActionEdit',
+        }, {
+          id: 'create',
+          text: 'featActionCreate',
+        }, {
+          id: 'delete',
+          text: 'featActionDelete',
+        },
+      ],
+    },
   ],
 };
 
@@ -354,105 +582,6 @@ const MODULE_CORPORATION = {
   id: 'corp',
   text: 'moduleCorporation',
   features: [
-    {
-      id: 'overview',
-      text: 'featCorpOverview',
-      actions: [
-        {
-          id: 'view',
-          text: 'featActionView',
-        },
-      ],
-    },
-    {
-      id: 'info',
-      text: 'featCorpInfo',
-      actions: [
-        {
-          id: 'view',
-          text: 'featActionView',
-        }, {
-          id: 'edit',
-          text: 'featActionEdit',
-        },
-      ],
-    },
-    {
-      id: 'personnel',
-      text: 'featCorpPersonnel',
-      actions: [
-        {
-          id: 'view',
-          text: 'featActionView',
-        }, {
-          id: 'edit',
-          text: 'featActionEdit',
-        }, {
-          id: 'create',
-          text: 'featActionCreate',
-        }, {
-          id: 'delete',
-          text: 'featActionDelete',
-        },
-      ],
-    },
-    {
-      id: 'organization',
-      text: 'featCorpOrganization',
-      actions: [
-        {
-          id: 'view',
-          text: 'featActionView',
-        }, {
-          id: 'edit',
-          text: 'featActionEdit',
-        }, {
-          id: 'create',
-          text: 'featActionCreate',
-        }, {
-          id: 'delete',
-          text: 'featActionDelete',
-        },
-      ],
-    },
-    {
-      id: 'role',
-      text: 'featCorpRole',
-      actions: [
-        {
-          id: 'view',
-          text: 'featActionView',
-        }, {
-          id: 'edit',
-          text: 'featActionEdit',
-        }, {
-          id: 'create',
-          text: 'featActionCreate',
-        }, {
-          id: 'delete',
-          text: 'featActionDelete',
-        },
-      ],
-    },
-    {
-      id: 'partners',
-      text: 'featCorpPartners',
-      actions: [
-        {
-          id: 'view',
-          text: 'featActionView',
-        }, {
-          id: 'edit',
-          text: 'featActionEdit',
-        }, {
-          id: 'create',
-          text: 'featActionCreate',
-        }, {
-          id: 'delete',
-          text: 'featActionDelete',
-        },
-      ],
-    },
   ],
 };
 

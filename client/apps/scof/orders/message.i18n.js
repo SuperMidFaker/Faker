@@ -259,7 +259,7 @@ const messages = defineMessages({
   },
   personResponsible: {
     id: 'scof.orders.responsible.person',
-    defaultMessage: '责任人',
+    defaultMessage: '执行者',
   },
   addMore: {
     id: 'scof.orders.delg.addMore',

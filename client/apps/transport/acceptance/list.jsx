@@ -507,14 +507,11 @@ export default class AcceptList extends React.Component {
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
               <span />
+              <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+              <span />
+              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
-              </div>
-              <span />
-              <div className="toolbar-right">
-                <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
-                <span />
-                <CustomerSelect onChange={this.handleCustomerChange} size="large" />
               </div>
             </div>
             <div className="panel-body table-panel">

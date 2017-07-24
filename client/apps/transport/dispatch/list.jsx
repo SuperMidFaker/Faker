@@ -1048,14 +1048,13 @@ export default class DispatchList extends React.Component {
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
               <span />
+              <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+              <span />
+              <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
+              <span />
               <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
-              </div>
-              <div className="toolbar-right">
-                <CustomerSelect onChange={this.handleCustomerChange} size="large" />
-                <span />
-                <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
               </div>
             </div>
             <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
