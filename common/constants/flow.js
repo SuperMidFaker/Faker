@@ -176,7 +176,7 @@ exports.NODE_NOTIFY_CONTENTS = {
   import: [],
   export: [],
   tms: [
-    { key: 'shipmt_no', text: '运单号' },
+    { key: 'cust_order_no', text: '订单号' },
   ],
   cwmrec: [],
   cwmship: [],
