@@ -1248,3 +1248,25 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
 }
 
+.fullscreen-modal {
+  .ant-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-bottom: 0;
+    .ant-modal-content {
+      height: 100%;
+      overflow: visible;
+      border-radius: 0;
+      .ant-modal-footer {
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+    }
+  }
+}

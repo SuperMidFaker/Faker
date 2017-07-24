@@ -139,7 +139,7 @@ export default class BatchDeclModal extends Component {
     </Form>);
 
     return (
-      <Modal title="集中报关" width={this.state.modalWidth} maskClosable={false} style={{ top: 0, bottom: 0 }}
+      <Modal title="集中报关" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
         onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
       >
         <Collapse bordered={false} defaultActiveKey={['1', '2']}>

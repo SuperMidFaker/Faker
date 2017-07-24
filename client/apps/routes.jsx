@@ -62,7 +62,7 @@ import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingWave from './cwm/shipping/wave';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
-import * as CWMStockInventory from './cwm/stock/inventory';
+import * as CWMStockQuery from './cwm/stock/query';
 import * as CWMStockMovement from './cwm/stock/movement';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMSettings from './cwm/settings';
@@ -454,7 +454,7 @@ export default(store, cookie) => {
               </Route>
             </Route>
             <Route path="stock">
-              <Route path="inventory" component={CWMStockInventory.List} />
+              <Route path="query" component={CWMStockQuery.List} />
               <Route path="movement">
                 <IndexRoute component={CWMStockMovement.List} />
                 <Route path=":movementNo" component={CWMStockMovement.Detail} />

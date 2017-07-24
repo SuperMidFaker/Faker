@@ -20,7 +20,7 @@ const RadioGroup = Radio.Group;
   { checkOwnerColumn, checkProductColumn, checkLocationColumn }
 )
 @Form.create()
-export default class InventoryStockSearchForm extends React.Component {
+export default class StockQueryForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -48,7 +48,7 @@ export default class InventoryStockSearchForm extends React.Component {
     const { form: { getFieldDecorator }, owners } = this.props;
     return (
       <Form layout="vertical" className="left-sider-panel">
-        <FormItem >
+        <FormItem label="货主">
           {getFieldDecorator('owner', {
             initialValue: 'all',
           })(
@@ -60,10 +60,10 @@ export default class InventoryStockSearchForm extends React.Component {
             </Select>
           )}
         </FormItem>
-        <FormItem>
+        <FormItem label="货品">
           {getFieldDecorator('product_no')(<Input placeholder="货号或者sku" />)}
         </FormItem>
-        <FormItem>
+        <FormItem label="库位">
           {getFieldDecorator('whse_location')(<Input placeholder="库位号" />)}
         </FormItem>
         <FormItem>

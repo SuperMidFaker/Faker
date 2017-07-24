@@ -11,11 +11,13 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
+import { openMovementModal } from 'common/reducers/cwmStock';
 import { loadOutbounds } from 'common/reducers/cwmOutbound';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import MovementModal from './modal/movementModal';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -44,7 +46,7 @@ function fetchData({ state, dispatch }) {
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
   }),
-  { switchDefaultWhse, showDock, loadOutbounds }
+  { openMovementModal, switchDefaultWhse, showDock, loadOutbounds }
 )
 @connectNav({
   depth: 2,
@@ -147,6 +149,9 @@ export default class MovementList extends React.Component {
       }
     },
   }]
+  handleCreateMovement = () => {
+    this.props.openMovementModal();
+  }
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
   }
@@ -266,6 +271,7 @@ export default class MovementList extends React.Component {
             </div>
           </div>
         </Content>
+        <MovementModal />
       </QueueAnim>
     );
   }

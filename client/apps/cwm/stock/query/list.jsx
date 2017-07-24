@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Select, Layout } from 'antd';
+import { Breadcrumb, Button, Select, Layout, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStockSearchOptions, loadStocks } from 'common/reducers/scvInventoryStock';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
-import ButtonToggle from 'client/components/ButtonToggle';
 import StockSearchForm from './searchForm';
 import { formatMsg } from '../message.i18n';
 
@@ -24,6 +24,8 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
+    whses: state.cwmContext.whses,
+    defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
     loading: state.scvInventoryStock.loading,
     stocklist: state.scvInventoryStock.list,
@@ -32,13 +34,13 @@ function fetchData({ state, dispatch }) {
     sortFilter: state.scvInventoryStock.sortFilter,
     searchOption: state.scvInventoryStock.searchOption,
   }),
-  { loadStockSearchOptions, loadStocks }
+  { loadStockSearchOptions, loadStocks, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
   moduleName: 'cwm',
 })
-export default class InventoryStockList extends React.Component {
+export default class StockQueryList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -145,6 +147,10 @@ export default class InventoryStockList extends React.Component {
       collapsed: !this.state.collapsed,
     });
   }
+  handleWhseChange = (value) => {
+    this.props.switchDefaultWhse(value);
+    message.info('当前仓库已切换');
+  }
   handleStockQuery = (filter) => {
     const { tenantId, stocklist: { pageSize, current } } = this.props;
     this.props.loadStocks({
@@ -170,7 +176,7 @@ export default class InventoryStockList extends React.Component {
     return colObj;
   }
   render() {
-    const { stocklist, loading, listFilter, displayedColumns, searchOption: { warehouses } } = this.props;
+    const { defaultWhse, whses, stocklist, loading, listFilter, displayedColumns } = this.props;
     const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
     if (listFilter.whse_code === 'all' && !listFilter.group_by_sku) {
       const data = [];
@@ -207,10 +213,14 @@ export default class InventoryStockList extends React.Component {
           <div className="top-bar">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('stock')}
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {
+                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                  }
+                </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('inventory')}
+                {this.msg('query')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -218,23 +228,6 @@ export default class InventoryStockList extends React.Component {
         </Sider>
         <Layout>
           <Header className="top-bar">
-            { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('inventory')}
-              </Breadcrumb.Item>
-            </Breadcrumb>}
-            <ButtonToggle size="large"
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <span />
-            <Select size="large" value={listFilter.whse_code} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
-              <Option value="all" >all</Option>
-              {
-                warehouses.map(whse => <Option key={whse.id} value={whse.whse_code}>{whse.whse_name}</Option>)
-              }
-            </Select>
             <div className="top-bar-tools">
               <Button type="primary" size="large" icon="export" ghost>
                 {this.msg('exportInventory')}
