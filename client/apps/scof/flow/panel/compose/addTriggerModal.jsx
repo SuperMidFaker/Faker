@@ -189,7 +189,7 @@ function NotifyActionForm(props) {
             <Mention
               prefix="$"
               placeholder={msg('receiverPlaceholder')}
-              defaultValue={Mention.toContentState(action.content)}
+              defaultValue={action.content ? Mention.toContentState(action.content) : null}
               onChange={editorState => handleChange('content', Mention.toString(editorState))}
               suggestions={notifyContents.map(item => item.text)}
             />
