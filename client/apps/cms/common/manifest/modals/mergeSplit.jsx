@@ -193,8 +193,7 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   handleMergeCheck = (checkeds) => {
-    const opt = {
-      checked: this.state.mergeOpt.checked,
+    const opt = { ...this.state.mergeOpt,
       byHsCode: false,
       byGName: false,
       byCurr: false,
@@ -243,6 +242,12 @@ export default class MergeSplitModal extends React.Component {
         mergeOpt.byCountry || mergeOpt.byCopGNo || mergeOpt.byEmGNo)) {
         return message.error('请选择归并项');
       }
+    }
+    if (mergeOpt.bySplHscode) {
+      mergeOpt.splHsSorts = this.props.form.getFieldValue('mergeHsSort');
+    }
+    if (mergeOpt.bySplCopNo) {
+      mergeOpt.splNoSorts = this.props.form.getFieldValue('mergeNoSort');
     }
     if (splitOpt.byHsCode) {
       splitOpt.hsCategory = this.props.form.getFieldValue('specialSort');
@@ -312,7 +317,7 @@ export default class MergeSplitModal extends React.Component {
                       <div>
                         {getFieldDecorator('mergeNoSort', {
                           rules: [{ type: 'array' }],
-                          initialValue: mergeOpt.splHsSorts,
+                          initialValue: mergeOpt.splNoSorts,
                         })(<Select size="large" mode="multiple" style={{ width: '80%' }}>
                           { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
                         </Select>)}
