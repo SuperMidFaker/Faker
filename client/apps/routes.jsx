@@ -15,9 +15,8 @@ import CorpInfo from './corp/info';
 import * as Organization from './corp/organization';
 import * as CorpMembers from './corp/members';
 import * as Role from './corp/role';
-import PackNetwork from './network/packNetwork';
-import * as Network from './network';
 import PackDataHub from './hub/packDataHub';
+import * as Collab from './hub/collab';
 import * as OpenAPI from './hub/api';
 import * as OpenIntegration from './hub/integration';
 import * as IntegraionArCTM from './hub/integration/arctm';
@@ -66,10 +65,10 @@ import * as CWMShippingOutbound from './cwm/shipping/outbound';
 import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMSettings from './cwm/settings';
-import * as CWMSupervisionSHFTZEntry from './cwm/supervision/shftz/entry';
-import * as CWMSupervisionSHFTZRelease from './cwm/supervision/shftz/release';
-import * as CWMSupervisionSHFTZBatch from './cwm/supervision/shftz/batch';
-import * as CWMSupervisionSHFTZCargo from './cwm/supervision/shftz/cargo';
+import * as CWMSupSHFTZEntry from './cwm/supervision/shftz/entry';
+import * as CWMSupSHFTZRelease from './cwm/supervision/shftz/release';
+import * as CWMSupSHFTZBatch from './cwm/supervision/shftz/batch';
+import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
 import * as SCVOrders from './scv/orders';
@@ -161,13 +160,6 @@ export default(store, cookie) => {
           <Route path="profile" component={MyProfile} />
           <Route path="password" component={Password} />
         </Route>
-        <Route path="network" component={PackNetwork}>
-          <Route path="partners">
-            <IndexRoute component={Network.Partners} />
-            <Route path="invitations/in" component={Network.Received} />
-            <Route path="invitations/out" component={Network.Sent} />
-          </Route>
-        </Route>
         <Route path="hub" component={PackDataHub}>
           <IndexRedirect to="/hub/integration/installed" />
           <Route path="api">
@@ -189,6 +181,9 @@ export default(store, cookie) => {
               <Route path="install" component={IntegraionSHFTZ.Install} />
               <Route path="config/:uuid" component={IntegraionSHFTZ.Config} />
             </Route>
+          </Route>
+          <Route path="collab">
+            <Route path="partners" component={Collab.Partners} />
           </Route>
         </Route>
         <Route path="corp" component={Corp}>
@@ -464,18 +459,19 @@ export default(store, cookie) => {
               <Route path="shftz">
                 <IndexRedirect to="/cwm/supervision/shftz/entry" />
                 <Route path="entry" >
-                  <IndexRoute component={CWMSupervisionSHFTZEntry.List} />
-                  <Route path=":asnNo" component={CWMSupervisionSHFTZEntry.Detail} />
+                  <IndexRoute component={CWMSupSHFTZEntry.List} />
+                  <Route path=":asnNo" component={CWMSupSHFTZEntry.Detail} />
                 </Route>
                 <Route path="release" >
-                  <IndexRoute component={CWMSupervisionSHFTZRelease.List} />
-                  <Route path=":soNo" component={CWMSupervisionSHFTZRelease.Detail} />
+                  <IndexRoute component={CWMSupSHFTZRelease.List} />
+                  <Route path=":soNo" component={CWMSupSHFTZRelease.Detail} />
                 </Route>
                 <Route path="batch" >
-                  <IndexRoute component={CWMSupervisionSHFTZBatch.List} />
+                  <IndexRoute component={CWMSupSHFTZBatch.List} />
+                  <Route path=":batchNo" component={CWMSupSHFTZBatch.Detail} />
                 </Route>
                 <Route path="cargo" >
-                  <IndexRoute component={CWMSupervisionSHFTZCargo.List} />
+                  <IndexRoute component={CWMSupSHFTZCargo.List} />
                 </Route>
               </Route>
             </Route>

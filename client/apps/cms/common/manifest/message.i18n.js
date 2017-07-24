@@ -429,13 +429,21 @@ export default defineMessages({
     id: 'cms.manifest.modal.non.merge',
     defaultMessage: '不归并:',
   },
+  mergeSpecialHscode: {
+    id: 'cms.manifest.modal.merge.special.hscode',
+    defaultMessage: '特殊商品编码合并',
+  },
+  mergeSpecialNo: {
+    id: 'cms.manifest.modal.merge.special.productno',
+    defaultMessage: '特殊商品货号合并',
+  },
   specialHscodeDeclare: {
     id: 'cms.manifest.modal.split.special.hscode',
     defaultMessage: '特殊商品编码独立报关',
   },
   specialHscodeSort: {
     id: 'cms.manifest.modal.split.special.hscode.sort',
-    defaultMessage: '特殊商品分类:',
+    defaultMessage: '特殊商品编码分类:',
   },
   customControlDeclare: {
     id: 'cms.manifest.modal.split.custom.declare',

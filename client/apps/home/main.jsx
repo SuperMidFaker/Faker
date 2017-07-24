@@ -72,14 +72,7 @@ export default class Home extends React.Component {
     ];
     if (this.state.corpMenuLink) {
       tenantMenus.push(
-        <MenuItem key="network">
-          <NavLink to="/network/partners">
-            <i className="icon-fontello-network" /> {formatMsg(intl, 'network')}
-          </NavLink>
-        </MenuItem>
-      );
-      tenantMenus.push(
-        <MenuItem key="openPlatform">
+        <MenuItem key="hub">
           <NavLink to="/hub">
             <i className="icon-fontello-puzzle" /> {formatMsg(intl, 'openPlatform')}
           </NavLink>

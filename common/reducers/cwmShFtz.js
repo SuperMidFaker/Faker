@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
+  'OPEN_BATCH_DECL_MODAL', 'CLOSE_BATCH_DECL_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
@@ -24,6 +25,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
 ]);
 
 const initialState = {
+  batchDeclModal: {
+    visible: false,
+  },
   entryList: {
     totalCount: 0,
     current: 1,
@@ -62,6 +66,10 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.OPEN_BATCH_DECL_MODAL:
+      return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: true, ...action.data } };
+    case actionTypes.CLOSE_BATCH_DECL_MODAL:
+      return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: false } };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
       return { ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.ENTRY_DETAILS_LOAD_SUCCEED:
@@ -106,6 +114,19 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function openBatchDeclModal(modalInfo) {
+  return {
+    type: actionTypes.OPEN_BATCH_DECL_MODAL,
+    data: modalInfo,
+  };
+}
+
+export function closeBatchDeclModal() {
+  return {
+    type: actionTypes.CLOSE_BATCH_DECL_MODAL,
+  };
 }
 
 export function loadEntryRegDatas(params) {

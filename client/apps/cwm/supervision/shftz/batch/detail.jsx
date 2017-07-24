@@ -55,7 +55,7 @@ function fetchData({ dispatch, params }) {
   depth: 3,
   moduleName: 'cwm',
 })
-export default class SHFTZRelDetail extends Component {
+export default class SHFTZBatchDeclDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -245,10 +245,10 @@ export default class SHFTZRelDetail extends Component {
               {whse.name}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('ftzReleaseReg')}
+              {this.msg('ftzBatchDecl')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.props.params.soNo}
+              {this.props.params.batchNo}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools">

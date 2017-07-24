@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 const Step = Steps.Step;
 
 function getFieldInits(formData) {
-  const init = { mergeOpt_arr: [], specialHsSortArr: [] };
+  const init = { mergeOpt_arr: [], specialHsSortArr: [], splHsMergeArr: [], splNoMergeArr: [] };
   if (formData) {
     ['rule_currency', 'rule_orig_country', 'rule_net_wt',
     ].forEach((fd) => {
@@ -50,10 +50,20 @@ function getFieldInits(formData) {
         init.specialHsSortArr.push(numData);
       });
     }
+    if (formData.merge_spl_hs) {
+      const splArr = formData.merge_spl_hs.split(',');
+      splArr.forEach((data) => {
+        const numData = Number(data);
+        init.splHsMergeArr.push(numData);
+      });
+    }
+    if (formData.merge_spl_no) {
+      init.splNoMergeArr = formData.merge_spl_no.split(',');
+    }
     ['merge_checked', 'sort_customs'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 1;
     });
-    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr'].forEach((fd) => {
+    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
     init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
@@ -137,6 +147,8 @@ export default class SaveAsTemplateModal extends React.Component {
     }
     const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr');
     const specialHsSortArr = this.props.form.getFieldValue('split_spl_category');
+    const splHsMergeArr = this.props.form.getFieldValue('merge_spl_hs');
+    const splNoMergeArr = this.props.form.getFieldValue('merge_spl_no');
     const mergeObj = { merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0 };
     for (const mergeOpt of mergeOptArr) {
       if (mergeOpt === 'byHsCode') {
@@ -157,12 +169,22 @@ export default class SaveAsTemplateModal extends React.Component {
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');
     }
+    let splHsMergeSorts = '';
+    if (splHsMergeArr) {
+      splHsMergeSorts = splHsMergeArr.join(',');
+    }
+    let splNoMergeSorts = '';
+    if (splNoMergeArr) {
+      splNoMergeSorts = splNoMergeArr.join(',');
+    }
     const ruleDatas = { ...billHead,
       ...formData,
       ...this.props.form.getFieldsValue(),
       ...mergeObj,
       rule_element: element,
-      split_spl_category: specialHsSorts };
+      split_spl_category: specialHsSorts,
+      merge_spl_hs: splHsMergeSorts,
+      merge_spl_no: splNoMergeSorts };
     this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);

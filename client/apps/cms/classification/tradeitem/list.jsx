@@ -383,9 +383,7 @@ export default class TradeItemList extends Component {
     this.setState({ protected: repo.protected });
   }
   handleAddOwener = () => {
-    this.props.loadCustomers({
-      tenantId: this.props.tenantId,
-    });
+    this.props.loadCustomers(this.props.tenantId);
     this.props.openAddModal();
   }
   handleButtonClick = (ev) => {

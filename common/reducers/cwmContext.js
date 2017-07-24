@@ -54,7 +54,7 @@ export function switchDefaultWhse(whno) {
   };
 }
 
-export function loadWhse(whseCode) {
+export function loadWhse(whseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -64,7 +64,7 @@ export function loadWhse(whseCode) {
       ],
       endpoint: 'v1/cwm/context/warehouse',
       method: 'get',
-      params: { whse_code: whseCode },
+      params: { whse_code: whseCode, tenantId },
     },
   };
 }

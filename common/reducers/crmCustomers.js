@@ -118,7 +118,7 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         serviceTeamModal: {
           ...state.serviceTeamModal,
-          tenantUsers: action.result.data.tenantUsers,
+          tenantUsers: action.result.data.users,
         },
       };
     }
@@ -133,7 +133,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadCustomers(params) {
+export function loadCustomers(tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -141,9 +141,9 @@ export function loadCustomers(params) {
         actionTypes.LOAD_CUSTOMERS_SUCCEED,
         actionTypes.LOAD_CUSTOMERS_FAIL,
       ],
-      endpoint: 'v1/crm/customers',
+      endpoint: 'v1/cooperation/partners',
       method: 'get',
-      params,
+      params: { tenantId, role: 'CUS' },
     },
   };
 }
@@ -254,7 +254,7 @@ export function loadTenantUsers(tenantId) {
         actionTypes.LOAD_TENANT_USERS_SUCCEED,
         actionTypes.LOAD_TENANT_USERS_FAIL,
       ],
-      endpoint: 'v1/scof/customer/load/tenant/users',
+      endpoint: 'v1/user/corp/tenant/users',
       method: 'get',
       params: { tenantId },
     },

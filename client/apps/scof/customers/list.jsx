@@ -20,9 +20,7 @@ const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadCustomers({
-    tenantId: state.account.tenantId,
-  }));
+  return dispatch(loadCustomers(state.account.tenantId));
 }
 @connectFetch()(fetchData)
 @injectIntl
@@ -88,9 +86,7 @@ export default class CustomerList extends React.Component {
     this.props.form.setFieldsValue(record);
   }
   handleTableLoad = () => {
-    this.props.loadCustomers({
-      tenantId: this.props.tenantId,
-    });
+    this.props.loadCustomers(this.props.tenantId);
   }
   handleDelCustomer = () => {
     this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS).then(() => {

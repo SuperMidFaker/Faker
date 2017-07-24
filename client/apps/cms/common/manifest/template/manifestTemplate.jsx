@@ -19,7 +19,7 @@ const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 
 function getFieldInits(formData) {
-  const init = { mergeOpt_arr: [], specialHsSortArr: [] };
+  const init = { mergeOpt_arr: [], specialHsSortArr: [], splHsMergeArr: [], splNoMergeArr: [] };
   if (formData) {
     ['rule_currency', 'rule_orig_country', 'rule_net_wt',
     ].forEach((fd) => {
@@ -55,10 +55,20 @@ function getFieldInits(formData) {
         init.specialHsSortArr.push(numData);
       });
     }
+    if (formData.merge_spl_hs) {
+      const splArr = formData.merge_spl_hs.split(',');
+      splArr.forEach((data) => {
+        const numData = Number(data);
+        init.splHsMergeArr.push(numData);
+      });
+    }
+    if (formData.merge_spl_no) {
+      init.splNoMergeArr = formData.merge_spl_no.split(',');
+    }
     ['merge_checked', 'sort_customs'].forEach((fd) => {
       init[fd] = formData[fd] === 0 ? formData[fd] : 1;
     });
-    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr', 'set_special_code', 'set_merge_split'].forEach((fd) => {
+    ['sort_dectotal', 'sort_hscode', 'split_hscode', 'split_curr', 'set_special_code', 'set_merge_split', 'merge_bysplhs', 'merge_bysplno'].forEach((fd) => {
       init[fd] = formData[fd] ? formData[fd] : 0;
     });
     init.split_percount = formData.split_percount ? formData.split_percount.toString() : '20';
@@ -126,6 +136,8 @@ export default class ManifestTemplate extends Component {
     }
     const mergeOptArr = this.props.form.getFieldValue('mergeOpt_arr') || fieldInits.mergeOpt_arr;
     const specialHsSortArr = this.props.form.getFieldValue('split_spl_category') || fieldInits.specialHsSortArr;
+    const splHsMergeArr = this.props.form.getFieldValue('merge_spl_hs') || fieldInits.splHsMergeArr;
+    const splNoMergeArr = this.props.form.getFieldValue('merge_spl_no') || fieldInits.splNoMergeArr;
     const mergeObj = { merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0 };
     for (const mergeOpt of mergeOptArr) {
       if (mergeOpt === 'byHsCode') {
@@ -146,7 +158,20 @@ export default class ManifestTemplate extends Component {
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');
     }
-    const head = { ...this.props.form.getFieldsValue(), ...mergeObj, rule_element: element, split_spl_category: specialHsSorts };
+    let splHsMergeSorts = '';
+    if (splHsMergeArr) {
+      splHsMergeSorts = splHsMergeArr.join(',');
+    }
+    let splNoMergeSorts = '';
+    if (splNoMergeArr) {
+      splNoMergeSorts = splNoMergeArr.join(',');
+    }
+    const head = { ...this.props.form.getFieldsValue(),
+      ...mergeObj,
+      rule_element: element,
+      split_spl_category: specialHsSorts,
+      merge_spl_hs: splHsMergeSorts,
+      merge_spl_no: splNoMergeSorts };
     this.props.saveTemplateData({ head, templateId: template.id }).then(
       (result) => {
         if (result.error) {

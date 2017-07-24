@@ -74,7 +74,7 @@ export default class ConfigAmberRoadCTM extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="appstore-o" />{this.msg('integration')}
+              <Icon type="appstore-o" /> {this.msg('integration')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
               {this.msg('appAmberRoadCTM')}

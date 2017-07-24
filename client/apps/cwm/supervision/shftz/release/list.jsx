@@ -256,6 +256,7 @@ export default class SHFTZReleaseList extends React.Component {
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
+              <RadioButton value="pendingDecl">待集中报关</RadioButton>
             </RadioGroup>
             <div className="top-bar-tools" />
           </Header>
@@ -275,7 +276,7 @@ export default class SHFTZReleaseList extends React.Component {
                     )}
                 </Select>
                 <span />
-                <ButtonToggle size="large" disabled><Icon type="filter" />筛选报关申请</ButtonToggle>
+                <ButtonToggle size="large" disabled><Icon type="filter" />筛选待报关</ButtonToggle>
                 <div className="toolbar-right" />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
@@ -284,7 +285,7 @@ export default class SHFTZReleaseList extends React.Component {
               </div>
               <div className="panel-body table-panel">
                 <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-                  indentSize={8} rowKey="id" scroll={{ x: 1900 }}
+                  indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>
             </div>

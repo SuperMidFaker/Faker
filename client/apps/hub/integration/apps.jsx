@@ -24,10 +24,7 @@ export default class IntegrationAppsList extends React.Component {
         <Header className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="appstore-o" /> 应用整合
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              应用中心
+              <Icon type="shop" /> 应用商店
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="top-bar-tools" />

@@ -252,7 +252,7 @@ export default class SHFTZCargoList extends React.Component {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
-        this.props.loadWhse(this.props.whse.code);
+        this.props.loadWhse(this.props.whse.code, this.props.tenantId);
       }
     });
   }

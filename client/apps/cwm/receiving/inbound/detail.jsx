@@ -58,7 +58,7 @@ export default class ReceiveInbound extends Component {
         });
       }
     });
-    this.props.loadLocations(this.props.defaultWhse.code);
+    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
