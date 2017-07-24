@@ -99,7 +99,7 @@ const messages = defineMessages({
   },
   moduleCWM: {
     id: 'component.module.cwm',
-    defaultMessage: '仓储协同',
+    defaultMessage: '保税仓储',
   },
   moduleSCV: {
     id: 'component.module.scv',

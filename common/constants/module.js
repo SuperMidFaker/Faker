@@ -431,8 +431,8 @@ const MODULE_TRANSPORT = {
 const MODULE_CWM = {
   id: 'cwm',
   text: 'moduleCWM',
-  defaultText: '仓储协同',
-  status: 'alpha',
+  defaultText: '保税仓储',
+  status: 'beta',
   features: [
     {
       id: 'dashboard',
@@ -574,23 +574,23 @@ const MODULE_SCV = {
   id: 'scv',
   text: 'moduleSCV',
   defaultText: 'SCV',
-  status: 'beta',
+  status: 'alpha',
   features: [],
 };
 
 const appModules = [
   MODULE_SCOF,
   MODULE_CLEARANCE,
-  MODULE_TRANSPORT,
   MODULE_CWM,
+  MODULE_TRANSPORT,
   MODULE_SCV,
 ];
 
 const spnModules = [
   MODULE_SCOF,
   MODULE_CLEARANCE,
-  MODULE_TRANSPORT,
   MODULE_CWM,
+  MODULE_TRANSPORT,
 ];
 
 export const DEFAULT_MODULES = {};
