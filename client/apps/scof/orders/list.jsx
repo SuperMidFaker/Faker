@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import connectFetch from 'client/common/decorators/connect-fetch';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
@@ -23,7 +23,7 @@ import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
-import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS } from 'common/constants';
+import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
 import CreatorSelect from './creatorSelect';
 
 const { Header, Content } = Layout;
@@ -33,21 +33,21 @@ const RadioButton = Radio.Button;
 const Option = Select.Option;
 
 // 暂时由 CreatorSelect 触发获取list
-// function fetchData({ state, dispatch }) {
-//   const promises = [
-//     dispatch(loadOrders({
-//       tenantId: state.account.tenantId,
-//       pageSize: state.crmOrders.orders.pageSize,
-//       current: state.crmOrders.orders.current,
-//       filters: state.crmOrders.orderFilters,
-//       partners: state.partner.partners,
-//     })),
-//     dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
-//   ];
-//   return Promise.all(promises);
-// }
+function fetchData({ state, dispatch }) {
+  const promises = [
+    // dispatch(loadOrders({
+    //   tenantId: state.account.tenantId,
+    //   pageSize: state.crmOrders.orders.pageSize,
+    //   current: state.crmOrders.orders.current,
+    //   filters: state.crmOrders.orderFilters,
+    //   partners: state.partner.partners,
+    // })),
+    dispatch(loadPartners({ tenantId: state.account.tenantId, role: PARTNER_ROLES.CUS })),
+  ];
+  return Promise.all(promises);
+}
 
-// @connectFetch()(fetchData)
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
