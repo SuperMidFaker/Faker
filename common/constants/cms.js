@@ -8,7 +8,6 @@ export const RELATION_TYPES = [
 export const I_E_TYPES = [
   { key: 'I', value: '进口' },
   { key: 'E', value: '出口' },
-  { key: 'A', value: '进出口' },
 ];
 
 export const DECL_TYPE = [

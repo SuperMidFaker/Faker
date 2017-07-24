@@ -22,6 +22,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'QUERY_POI', 'QUERY_POI_SUCCEED', 'QUERY_POI_FAIL',
   'FILE_CARGO', 'FILE_CARGO_SUCCEED', 'FILE_CARGO_FAIL',
   'CONFIRM_CARGO', 'CONFIRM_CARGO_SUCCEED', 'CONFIRM_CARGO_FAIL',
+  'LOAD_BALIST', 'LOAD_BALIST_SUCCEED', 'LOAD_BALIST_FAIL',
 ]);
 
 const initialState = {
@@ -35,6 +36,12 @@ const initialState = {
     data: [],
   },
   releaseList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  batchApplyList: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
@@ -111,6 +118,12 @@ export default function reducer(state = initialState, action) {
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
         rel_regs: state.rel_regs.map(rr => ({ ...rr, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
       };
+    case actionTypes.LOAD_BALIST:
+      return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
+    case actionTypes.LOAD_BALIST_SUCCEED:
+      return { ...state, loading: false, batchApplyList: action.result.data };
+    case actionTypes.LOAD_BALIST_FAIL:
+      return { ...state, loading: false };
     default:
       return state;
   }
@@ -409,6 +422,21 @@ export function confirmCargos(ownerCusCode, whse) {
       endpoint: 'v1/cwm/shftz/product/confirm/cargos',
       method: 'post',
       data: { owner_cus_code: ownerCusCode, whse },
+    },
+  };
+}
+
+export function loadBatchApplyList(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BALIST,
+        actionTypes.LOAD_BALIST_SUCCEED,
+        actionTypes.LOAD_BALIST_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/applies',
+      method: 'get',
+      params,
     },
   };
 }
