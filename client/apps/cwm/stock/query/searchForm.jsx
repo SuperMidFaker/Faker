@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Row } from 'antd';
-import { checkOwnerColumn, checkProductColumn, checkLocationColumn } from 'common/reducers/scvInventoryStock';
+import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/scvInventoryStock';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -15,9 +15,10 @@ const RadioGroup = Radio.Group;
   state => ({
     searchOption: state.scvInventoryStock.searchOption,
     displayedColumns: state.scvInventoryStock.displayedColumns,
+    filter: state.scvInventoryStock.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn }
+  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList }
 )
 @Form.create()
 export default class StockQueryForm extends React.Component {
@@ -30,27 +31,35 @@ export default class StockQueryForm extends React.Component {
     displayedColumns: PropTypes.shape({ product_no: PropTypes.bool }),
     onSearch: PropTypes.func.isRequired,
   }
-  state = {
-    searchType: 1,
-  }
   onChange = (e) => {
-    this.setState({
-      value: e.target.value,
-    });
+    this.props.changeSearchType(e.target.value);
+    this.props.clearList();
   }
   handleStockSearch = (ev) => {
     ev.preventDefault();
     const formData = this.props.form.getFieldsValue();
     this.props.onSearch(formData);
   }
+  checkOwners = () => {
+    this.props.checkOwnerColumn();
+  }
+  checkProduct = () => {
+    this.props.checkProductColumn();
+  }
+  checkLocation = () => {
+    this.props.checkLocationColumn();
+  }
+  checkProAndLocation = () => {
+    this.props.checkProAndLocation();
+  }
   msg = formatMsg(this.props.intl);
   render() {
-    const { form: { getFieldDecorator }, owners } = this.props;
+    const { form: { getFieldDecorator }, owners, filter } = this.props;
     return (
       <Form layout="vertical" className="left-sider-panel">
         <FormItem label="货主">
           {getFieldDecorator('owner', {
-            initialValue: 'all',
+            initialValue: filter.owner,
           })(
             <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange}
               dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
@@ -61,21 +70,27 @@ export default class StockQueryForm extends React.Component {
           )}
         </FormItem>
         <FormItem label="货品">
-          {getFieldDecorator('product_no')(<Input placeholder="货号或者sku" />)}
+          {getFieldDecorator('product_no', {
+            initialValue: filter.product_no,
+          })(<Input placeholder="货号或者sku" />)}
         </FormItem>
         <FormItem label="库位">
-          {getFieldDecorator('whse_location')(<Input placeholder="库位号" />)}
+          {getFieldDecorator('whse_location', {
+            initialValue: filter.whse_location,
+          })(<Input placeholder="库位号" />)}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('search_type')(
-            <RadioGroup onChange={this.onChange} value={this.state.searchType}>
+          {getFieldDecorator('search_type', {
+            initialValue: filter.search_type,
+          })(
+            <RadioGroup onChange={this.onChange}>
               <Row>
-                <Radio value="1">按货主查询</Radio>
-                <Radio value="2">按产品查询</Radio>
+                <Radio value={1} onClick={this.checkOwners}>按货主查询</Radio>
+                <Radio value={2} onClick={this.checkProduct}>按产品查询</Radio>
               </Row>
               <Row>
-                <Radio value="3">按库位查询</Radio>
-                <Radio value="4">按产品/库位查询</Radio>
+                <Radio value={3} onClick={this.checkLocation}>按库位查询</Radio>
+                <Radio value={4} onClick={this.checkProAndLocation}>按产品/库位查询</Radio>
               </Row>
             </RadioGroup>
           )}
