@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Input, Radio, message } from 'antd';
+import { Modal, Form, Input, message } from 'antd';
 import { connect } from 'react-redux';
 import { toggleBusinessUnitModal, addBusinessUnit, updateBusinessUnit } from 'common/reducers/cmsResources';
-import { I_E_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+const formItemLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
+};
 
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -53,15 +54,13 @@ export default class TraderModal extends React.Component {
     const { businessUnit } = this.props;
     const { name, code, customsCode, ieType } = this.state;
     if (name === '') {
-      message.error('请填写公司名称');
+      message.error('请填写企业名称');
     } else if (code === '' && customsCode === '') {
-      message.error('请填写社会信用代码或者海关编码');
+      message.error('请填写统一社会信用代码或者海关编码');
     } else if (code && code.length !== 18) {
-      message.error(`社会信用代码必须为18位, 当前${code.length}位`);
+      message.error('社会信用代码必须为18位字符');
     } else if (customsCode && customsCode.length !== 10) {
-      message.error(`海关10位编码必须为10位, 当前${customsCode.length}位`);
-    } else if (ieType === '') {
-      message.error('请选择进出口类型');
+      message.error('海关编码必须为10位');
     } else if (this.props.operation === 'edit') {
       this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode, ieType).then((result) => {
         if (result.error) {
@@ -90,25 +89,18 @@ export default class TraderModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { name, code, customsCode, ieType } = this.state;
+    const { name, code, customsCode } = this.state;
     return (
-      <Modal title={this.props.operation === 'add' ? '新增进出口收发货人' : '修改进出口收发货人'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <Form layout="vertical">
-          <FormItem label="公司名称" required>
+      <Modal title={this.props.operation === 'add' ? '新增收发货人' : '修改收发货人'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+        <Form layout="horizontal">
+          <FormItem label="企业名称" required {...formItemLayout}>
             <Input required value={name} onChange={e => this.setState({ name: e.target.value })} />
           </FormItem>
-          <FormItem label="统一社会信用代码">
+          <FormItem label="统一社会信用代码" {...formItemLayout}>
             <Input required value={code} onChange={e => this.setState({ code: e.target.value })} placeholder="18位统一社会信用代码" />
           </FormItem>
-          <FormItem label="海关编码">
+          <FormItem label="海关编码" {...formItemLayout}>
             <Input required value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} placeholder="10位海关编码" />
-          </FormItem>
-          <FormItem label="进出口类型">
-            <RadioGroup onChange={e => this.setState({ ieType: e.target.value })} value={ieType}>
-              {
-                I_E_TYPES.map(item => <RadioButton key={item.key} value={item.key}>{item.value}</RadioButton>)
-              }
-            </RadioGroup>
           </FormItem>
         </Form>
       </Modal>

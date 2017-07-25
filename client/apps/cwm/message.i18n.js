@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   receiving: {
     id: 'cwm.module.receiving',
-    defaultMessage: '收货',
+    defaultMessage: '入库',
   },
   receivingASN: {
     id: 'cwm.module.receiving.asn',
@@ -20,7 +20,7 @@ const messages = defineMessages({
   },
   shipping: {
     id: 'cwm.module.shipping',
-    defaultMessage: '发货',
+    defaultMessage: '出库',
   },
   shippingOrder: {
     id: 'cwm.module.shipping.order',
@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   stock: {
     id: 'cwm.module.stock',
-    defaultMessage: '库存',
+    defaultMessage: '在库',
   },
   query: {
     id: 'cwm.module.stock.query',

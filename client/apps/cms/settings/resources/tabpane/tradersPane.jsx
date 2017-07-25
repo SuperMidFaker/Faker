@@ -79,6 +79,7 @@ export default class TraderList extends Component {
       dataIndex: 'customs_code',
       key: 'customs_code',
       width: 120,
+  /*
     }, {
       title: '注册海关',
       dataIndex: 'reg_customs',
@@ -92,7 +93,7 @@ export default class TraderList extends Component {
     }, {
       title: '信用等级',
       dataIndex: 'credit_level',
-      key: 'credit_level',
+      key: 'credit_level',*/
     }, {
       title: '创建日期',
       dataIndex: 'created_date',

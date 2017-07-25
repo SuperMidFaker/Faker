@@ -24,6 +24,7 @@ import ImportComparisonModal from './modals/importComparison';
 import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 import Strip from 'client/components/Strip';
+import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -661,14 +662,14 @@ export default class TradeItemList extends Component {
       key: 'owner_name',
       render: (o, record) => {
         if (record.mode === 'slave') {
-          return (<div><Icon type="link" className="text-success" /> {o}
+          return (<div><Icon type="link" className="text-success" /> <TrimSpan text={o} maxLen={16} />
             <Strip overall={1000}
               parts={{ success: record.classified_num, warning: record.pending_num, error: record.unclassified_num }}
               hints={['已归类', '归类待定', '未归类']}
             />
           </div>);
         } else {
-          return (<div>{o}
+          return (<div><TrimSpan text={o} maxLen={16} />
             <Strip overall={1000}
               parts={{ success: record.classified_num, warning: record.pending_num, error: record.unclassified_num }}
               hints={['已归类', '归类待定', '未归类']}

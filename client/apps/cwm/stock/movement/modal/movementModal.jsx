@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, Collapse, DatePicker, Table, Form, Modal, Input, Tag, Button } from 'antd';
+import { Card, Collapse, DatePicker, Table, Select, Form, Modal, Input, Tag, Button } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
@@ -58,17 +58,9 @@ export default class MovementModal extends Component {
     dataIndex: 'serial_no',
     width: 100,
   }, {
-    title: '库位',
+    title: '当前库位',
     dataIndex: 'location',
     width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
-  }, {
-    title: '库别',
-    dataIndex: 'virtual_whse',
     render: (o) => {
       if (o) {
         return <Tag>{o}</Tag>;
@@ -80,27 +72,31 @@ export default class MovementModal extends Component {
     width: 180,
     render: o => moment(o).format('YYYY.MM.DD'),
   }, {
-    title: '破损级别',
-    dataIndex: 'damage_level',
-  }, {
     title: '可用数量',
     dataIndex: 'avail_qty',
     width: 200,
     fixed: 'right',
     render: (o, record) => (<QuantityInput packQty={record.avail_pack_qty} pcsQty={record.avail_qty} />),
   }, {
-    title: '出库数量',
+    title: '目标库位',
+    width: 100,
+    render: (o) => {
+      if (o) {
+        return <Tag>{o}</Tag>;
+      }
+    },
+  }, {
+    title: '移动数量',
     width: 200,
     fixed: 'right',
     render: (o, record, index) => (<QuantityInput onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '添加',
     width: 80,
-    fixed: 'right',
     render: (o, record, index) => <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} />,
   }]
 
-  allocatedColumns = [{
+  movementColumns = [{
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 120,
@@ -126,7 +122,7 @@ export default class MovementModal extends Component {
     dataIndex: 'serial_no',
     width: 100,
   }, {
-    title: '库位',
+    title: '当前库位',
     dataIndex: 'location',
     width: 100,
     render: (o) => {
@@ -135,21 +131,12 @@ export default class MovementModal extends Component {
       }
     },
   }, {
-    title: '库别',
-    dataIndex: 'virtual_whse',
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
-  }, {
-    title: '分配数量',
+    title: '移库数量',
     width: 200,
     render: (o, record) => (<QuantityInput packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: '删除',
     width: 80,
-    fixed: 'right',
     render: (o, record, index) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} /></span>),
   }]
 
@@ -161,14 +148,17 @@ export default class MovementModal extends Component {
 
   render() {
     const inventoryQueryForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
+      <FormItem label="货品">
+        <Input onChange={this.handleProductChange} />
+      </FormItem>
       <FormItem label="库位">
-        <Input onChange={this.handleLocationChange} value={'filters.location'} />
+        <Input onChange={this.handleLocationChange} />
       </FormItem>
       <FormItem label="批次号">
-        <Input onChange={this.handleLotnoChange} value={'filters.external_lot_no'} />
+        <Input onChange={this.handleLotnoChange} />
       </FormItem>
       <FormItem label="序列号">
-        <Input onChange={this.handleSonoChange} value={'filters.serial_no'} />
+        <Input onChange={this.handleSonoChange} />
       </FormItem>
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
@@ -179,15 +169,28 @@ export default class MovementModal extends Component {
       <Modal title="创建库存移动单" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
         onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
       >
-        <Collapse bordered={false} defaultActiveKey={['1', '2']}>
-          <Panel header="库存查询" key="1">
-            <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
+        <Card style={{ marginBottom: 8 }}>
+          <Form layout="inline" style={{ display: 'inline-block' }}>
+            <FormItem label="货主">
+              <Select onChange={this.handleOwnerChange} style={{ width: 160 }} />
+            </FormItem>
+            <FormItem label="移库类型">
+              <Select style={{ width: 160 }} />
+            </FormItem>
+            <FormItem label="原因">
+              <Input />
+            </FormItem>
+          </Form>
+        </Card>
+        <Collapse bordered={false} defaultActiveKey={['query', 'detail']}>
+          <Panel header="库存查询" key="query">
+            <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 8 }}>
               <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
-          <Panel header="移库明细" key="2">
-            <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
+          <Panel header="库存移动明细" key="detail">
+            <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 8 }}>
+              <Table size="middle" columns={this.movementColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
         </Collapse>

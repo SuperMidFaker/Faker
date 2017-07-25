@@ -151,7 +151,7 @@ const messages = defineMessages({
   },
   repoOwner: {
     id: 'cms.classificagtion.tradeitem.modal.repo.owner',
-    defaultMessage: '货主',
+    defaultMessage: '所属客户',
   },
   addItem: {
     id: 'cms.classificagtion.tradeitem.table.add',
