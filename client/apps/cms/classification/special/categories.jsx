@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Table, Layout, Icon, Input, Tooltip, message, Popconfirm, Radio } from 'antd';
+import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Radio } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -147,7 +147,7 @@ export default class SpecialCategories extends React.Component {
       key: 'index',
       title: '序号',
       className: 'hscode-list-left',
-      width: 55,
+      width: 50,
       render: (col, row, index) => index + 1,
     }, {
       dataIndex: 'name',
@@ -194,42 +194,43 @@ export default class SpecialCategories extends React.Component {
     }];
     return (
       <Layout className="ant-layout-wrapper">
-        <Header className="top-bar">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('classification')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
+        <Sider width={280} className="menu-sider" key="sider" trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+          collapsedWidth={0}
+        >
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('classification')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
               特殊商品编码分类
             </Breadcrumb.Item>
-          </Breadcrumb>
-          <Tooltip placement="bottom" title="添加特殊商品编码分类">
-            <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowAddCategory()} />
-          </Tooltip>
-          <span />
-          <RadioGroup value={this.state.type} onChange={this.handleRadioChange} size="large">
-            <RadioButton value="split">{this.msg('specialSplit')}</RadioButton>
-            <RadioButton value="merge">{this.msg('specialMerge')}</RadioButton>
-          </RadioGroup>
-        </Header>
-        <Layout className="ant-layout-wrapper">
-          <Sider width={280} className="right-sider" key="sider" trigger={null}
-            collapsible
-            collapsed={this.state.collapsed}
-            collapsedWidth={0}
-          >
-            <div className="right-sider-panel" >
-              <div className="toolbar">
-                <SearchBar placeholder={this.msg('spcialSearchPh')} onInputSearch={this.handleNameSearch}
-                  size="large"
-                />
-              </div>
-              <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-                rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
-              />
+            </Breadcrumb>
+          </div>
+          <div className="left-sider-panel" >
+            <div className="toolbar">
+              <RadioGroup value={this.state.type} onChange={this.handleRadioChange} size="large">
+                <RadioButton value="split">{this.msg('specialSplit')}</RadioButton>
+                <RadioButton value="merge">{this.msg('specialMerge')}</RadioButton>
+              </RadioGroup>
             </div>
-          </Sider>
+            <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
+              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+              rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
+              footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} style={{ width: '100%' }}>添加分类</Button>}
+            />
+          </div>
+        </Sider>
+        <Layout>
+          <Header className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {hscodeCategory.name}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
