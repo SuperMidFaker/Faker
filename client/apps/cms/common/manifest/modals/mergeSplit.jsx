@@ -292,7 +292,7 @@ export default class MergeSplitModal extends React.Component {
                     />
                   </Col>
                 </FormItem>
-                {mergeOpt.checked ? <Col offset="5">
+                {mergeOpt.checked && !mergeOpt.byCopGNo ? <Col offset="5">
                   <FormItem>
                     <MSCheckbox fieldOpt="mergeOpt" field="bySplHscode"
                       text={this.msg('mergeSpecialHscode')}
