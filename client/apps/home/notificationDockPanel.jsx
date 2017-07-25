@@ -71,11 +71,10 @@ export default class NotificationDockPanel extends React.Component {
     });
   }
   renderColumnText(status, text, record) {
-    let style = {};
     if (status === MESSAGE_STATUS.read.key) {
-      style = { color: '#CCC' };
+      return <a style={{ color: '#CCC' }}>{text}</a>;
     }
-    return <a onClick={() => this.handleReadMessage(record)} style={style}>{text}</a>;
+    return <a onClick={() => this.handleReadMessage(record)} >{text}</a>;
   }
   render() {
     const { visible } = this.props;

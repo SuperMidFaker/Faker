@@ -84,7 +84,6 @@ export default class NotificationPopover extends React.Component {
     });
     if (__DEV__) {
       socket.on('connect_error', (error) => {
-        console.log('socket.io connet error');
         socket.close();
       });
     }
@@ -164,7 +163,6 @@ export default class NotificationPopover extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    console.log(this.state.messages);
     const { unreadMessagesNum } = this.props;
     const notificationContent = (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
