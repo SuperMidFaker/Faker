@@ -134,7 +134,7 @@ export default class DelegationList extends Component {
   saveFilters = (filters) => {
     if (window.localStorage) {
       window.localStorage.cmsDelegationListFilters =
-      JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}'), viewStatus: filters.viewStatus });
+      JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters || '{"viewStatus":"all"}'), ...filters });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -360,6 +360,7 @@ export default class DelegationList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.setState({ selectedRowKeys: [] });
     this.handleDelgListLoad(1, filter);
+    this.saveFilters({ status: ev.target.value });
   }
   handleIEFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.ietype) {
@@ -367,6 +368,7 @@ export default class DelegationList extends Component {
     }
     const filter = { ...this.props.listFilter, ietype: ev.target.value };
     this.handleDelgListLoad(1, filter);
+    this.saveFilters({ ietype: ev.target.value });
   }
   handleCiqFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
