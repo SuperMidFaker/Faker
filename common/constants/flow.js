@@ -172,12 +172,9 @@ exports.NODE_BIZ_OBJECTS_EXECUTABLES = {
   }],
 };
 
-exports.NODE_NOTIFY_CONTENTS = {
-  import: [],
-  export: [],
-  tms: [
-    { key: 'cust_order_no', text: '订单号' },
-  ],
-  cwmrec: [],
-  cwmship: [],
-};
+exports.NODE_NOTIFY_CONTENTS = [
+  { key: 'shipmt_order_no', text: '业务编号' },
+  { key: 'cust_order_no', text: '订单号' },
+  { key: 'cust_invoice_no', text: '发票号' },
+  { key: 'cust_contract_no', text: '合同号' },
+];
