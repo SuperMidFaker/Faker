@@ -167,26 +167,27 @@ export default class CustomizeTracking extends React.Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="left-sider-panel">
-            <div className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('shipmentsTrackingCustomize')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <div className="pull-right">
-                <Tooltip placement="bottom" title="新增跟踪表">
-                  <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowTrackingModal()} />
-                </Tooltip>
-              </div>
+
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('shipmentsTrackingCustomize')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="pull-right">
+              <Tooltip placement="bottom" title="新增跟踪表">
+                <Button type="primary" shape="circle" icon="plus" onClick={() => this.handleShowTrackingModal()} />
+              </Tooltip>
             </div>
-            <div className="left-sider-panel">
-              <div className="toolbar">
-                <Search
-                  placeholder={this.msg('searchPlaceholder')}
-                  onSearch={this.handleSearch} size="large"
-                />
-              </div>
+          </div>
+          <div className="left-sider-panel">
+            <div className="toolbar">
+              <Search
+                placeholder={this.msg('searchPlaceholder')}
+                onSearch={this.handleSearch} size="large"
+              />
+            </div>
+            <div className="list-body">
               <Table size="middle" dataSource={this.state.trackings} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === tracking.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}

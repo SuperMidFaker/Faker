@@ -720,10 +720,12 @@ export default class TradeItemList extends Component {
             <div className="toolbar">
               <Search placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} size="large" />
             </div>
-            <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
-              rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''} loading={this.props.reposLoading}
-            />
+            <div className="list-body">
+              <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
+                rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''} loading={this.props.reposLoading}
+              />
+            </div>
           </div>
         </Sider>
         <Layout>

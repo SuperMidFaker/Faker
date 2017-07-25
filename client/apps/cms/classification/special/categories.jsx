@@ -216,11 +216,13 @@ export default class SpecialCategories extends React.Component {
                 <RadioButton value="merge">{this.msg('specialMerge')}</RadioButton>
               </RadioGroup>
             </div>
-            <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
-              footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} style={{ width: '100%' }}>添加分类</Button>}
-            />
+            <div className="list-body">
+              <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
+                footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} style={{ width: '100%' }}>添加分类</Button>}
+              />
+            </div>
           </div>
         </Sider>
         <Layout>

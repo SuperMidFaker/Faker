@@ -204,41 +204,39 @@ export default class SHFTZEntryList extends React.Component {
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
-          <div className="left-sider-panel">
-            <div className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
                   上海自贸区监管
                 </Breadcrumb.Item>
-              </Breadcrumb>
-            </div>
-            <div className="left-sider-panel">
-              <Menu
-                defaultSelectedKeys={['entry']}
-                mode="inline"
-              >
-                <Menu.Item key="entry">
-                  <NavLink to="/cwm/supervision/shftz/entry">
+            </Breadcrumb>
+          </div>
+          <div className="left-sider-panel">
+            <Menu
+              defaultSelectedKeys={['entry']}
+              mode="inline"
+            >
+              <Menu.Item key="entry">
+                <NavLink to="/cwm/supervision/shftz/entry">
                     进库备案
                   </NavLink>
-                </Menu.Item>
-                <Menu.Item key="release">
-                  <NavLink to="/cwm/supervision/shftz/release">
+              </Menu.Item>
+              <Menu.Item key="release">
+                <NavLink to="/cwm/supervision/shftz/release">
                     出库备案
                   </NavLink>
-                </Menu.Item>
-                <Menu.Item key="batch">
-                  <NavLink to="/cwm/supervision/shftz/batch">
+              </Menu.Item>
+              <Menu.Item key="batch">
+                <NavLink to="/cwm/supervision/shftz/batch">
                     集中报关
                   </NavLink>
-                </Menu.Item>
-                <Menu.Item key="cargo">
-                  <NavLink to="/cwm/supervision/shftz/cargo">
+              </Menu.Item>
+              <Menu.Item key="cargo">
+                <NavLink to="/cwm/supervision/shftz/cargo">
                     货物备案
                   </NavLink>
-                </Menu.Item>
-              </Menu>
-            </div>
+              </Menu.Item>
+            </Menu>
           </div>
         </Sider>
         <Layout>

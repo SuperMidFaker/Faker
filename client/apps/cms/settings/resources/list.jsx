@@ -106,10 +106,12 @@ export default class ResourcesList extends Component {
             <div className="toolbar">
               <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} size="large" />
             </div>
-            <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false} onRowClick={this.handleRowClick}
-              pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-              rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="code"
-            />
+            <div className="list-body">
+              <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false} onRowClick={this.handleRowClick}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="code"
+              />
+            </div>
           </div>
         </Sider>
         <Layout>

@@ -258,24 +258,24 @@ export default class CWMSkuList extends React.Component {
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider">
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('productsSku')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
           <div className="left-sider-panel">
-            <div className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {this.msg('productsSku')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
+            <div className="toolbar">
+              <Search placeholder={this.msg('ownerSearch')} size="large" onSearch={this.handleOwnerSearch} />
             </div>
-            <div className="left-sider-panel">
-              <div className="toolbar">
-                <Search placeholder={this.msg('ownerSearch')} size="large" onSearch={this.handleOwnerSearch} />
-              </div>
-              <Table columns={this.ownerColumns} showHeader={false} dataSource={this.state.tableOwners} rowKey="id"
+            <div className="list-body">
+              <Table size="middle" columns={this.ownerColumns} showHeader={false} dataSource={this.state.tableOwners} rowKey="id"
                 rowClassName={row => row.id === this.props.owner.id ? 'table-row-selected' : ''} onRowClick={this.handleOwnerSelect}
               />
             </div>

@@ -167,10 +167,12 @@ export default class FlowList extends React.Component {
             <div className="toolbar">
               <Search onSearch={this.handleSearch} size="large" />
             </div>
-            <Table showHeader={false} size="middle" dataSource={this.dataSource} columns={this.columns} onRowClick={this.handleRowClick}
-              rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
-              rowKey="id" scroll={{ y: 640 }}
-            />
+            <div className="list-body">
+              <Table showHeader={false} size="middle" dataSource={this.dataSource} columns={this.columns} onRowClick={this.handleRowClick}
+                rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
+                rowKey="id" scroll={{ y: 640 }}
+              />
+            </div>
           </div>
         </Sider>
         <CreateFlowModal />

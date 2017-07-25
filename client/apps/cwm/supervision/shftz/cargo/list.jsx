@@ -308,23 +308,23 @@ export default class SHFTZCargoList extends React.Component {
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" >
-          <div className="left-sider-panel">
-            <div className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <NavLink to="/cwm/supervision/shftz">
-                    <Icon type="left" /> 上海自贸区监管
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <NavLink to="/cwm/supervision/shftz">
+                  <Icon type="left" /> 上海自贸区监管
                   </NavLink>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {this.msg('ftzCargoReg')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('ftzCargoReg')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+          <div className="left-sider-panel">
+            <div className="toolbar">
+              <SearchBar size="large" placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
             </div>
-            <div className="left-sider-panel">
-              <div className="toolbar">
-                <SearchBar size="large" placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
-              </div>
+            <div className="list-body">
               <Table columns={ownerColumns} dataSource={owners} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''} rowKey="id"

@@ -26,7 +26,7 @@ export default class MoreApplications extends React.Component {
   }
   render() {
     return (
-      <div className="left-sider-panel">
+      <div className="right-sider-panel">
         <div className="top-bar">
           <Breadcrumb>
             <Breadcrumb.Item>

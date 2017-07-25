@@ -45,7 +45,7 @@ const initialState = {
   partnerFlows: [],
   flowList: {
     totalCount: 0,
-    pageSize: 20,
+    pageSize: 50,
     current: 1,
     data: [],
   },

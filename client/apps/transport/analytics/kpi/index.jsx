@@ -252,22 +252,22 @@ export default class Kpi extends React.Component {
           collapsed={collapsed}
           collapsedWidth={0}
         >
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {clientStr}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div style={{ float: 'right' }}><Button onClick={this.toggleSourceType} icon="swap">{swap}</Button></div>
+          </div>
           <div className="left-sider-panel">
-            <div className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {clientStr}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <div style={{ float: 'right' }}><Button onClick={this.toggleSourceType} icon="swap">{swap}</Button></div>
+            <div className="toolbar">
+              <Search
+                placeholder="搜索"
+                onSearch={this.handleSearch} size="large"
+              />
             </div>
-            <div className="left-sider-panel">
-              <div className="toolbar">
-                <Search
-                  placeholder="搜索"
-                  onSearch={this.handleSearch} size="large"
-                />
-              </div>
+            <div className="list-body">
               <Table size="middle" dataSource={this.state.clients} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="partner_id"
                 rowClassName={record => record.partner_id === customer.partner_id ? 'table-row-selected' : ''}

@@ -12,6 +12,7 @@ import ProfileCard from './cards/profileCard';
 import CustomerModal from './modals/customerModal';
 import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
 import { PARTNER_ROLES } from 'common/constants';
+import TrimSpan from 'client/components/trimSpan';
 import OverviewCard from './cards/overviewCard';
 import ResourcesCard from './cards/resourcesCard';
 
@@ -113,7 +114,7 @@ export default class CustomerList extends React.Component {
     const columns = [{
       dataIndex: 'name',
       key: 'name',
-      render: o => (<span className="menu-sider-item">{o}</span>),
+      render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={16} /></span>),
     }];
     return (
       <Layout>
@@ -122,32 +123,33 @@ export default class CustomerList extends React.Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="left-sider-panel">
-            <div className="top-bar">
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  {this.msg('customer')}
-                </Breadcrumb.Item>
-              </Breadcrumb>
-              <div className="pull-right">
-                <Tooltip placement="bottom" title="新增客户">
-                  <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
-                </Tooltip>
-              </div>
+
+          <div className="top-bar">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('customer')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="pull-right">
+              <Tooltip placement="bottom" title="新增客户">
+                <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
+              </Tooltip>
             </div>
-            <div className="left-sider-panel">
-              <div className="toolbar">
-                <Search
-                  placeholder={this.msg('searchPlaceholder')}
-                  onSearch={this.handleSearch} size="large"
-                />
-              </div>
+          </div>
+          <div className="left-sider-panel">
+            <div className="toolbar">
+              <Search
+                placeholder={this.msg('searchPlaceholder')}
+                onSearch={this.handleSearch} size="large"
+              />
+            </div>
+            <div className="list-body">
               <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
               />
-              <CustomerModal onOk={this.handleTableLoad} />
             </div>
+            <CustomerModal onOk={this.handleTableLoad} />
           </div>
         </Sider>
         <Layout>
