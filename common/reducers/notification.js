@@ -5,7 +5,6 @@ const actionTypes = createActionTypes('@@welogix/notification/', [
   'LOADCORPMESSAGES', 'LOADCORPMESSAGES_SUCCEED', 'LOADCORPMESSAGES_FAIL',
   'MARK_MESSAGES', 'MARK_MESSAGES_SUCCEED', 'MARK_MESSAGES_FAIL',
   'MARK_MESSAGE', 'MARK_MESSAGE_SUCCEED', 'MARK_MESSAGE_FAIL',
-  'RECORD_MESSAGES', 'RECORD_MESSAGES_SUCCEED', 'RECORD_MESSAGES_FAIL',
   'COUNT_MESSAGES', 'COUNT_MESSAGES_SUCCEED', 'COUNT_MESSAGES_FAIL',
   'ADD_MESSAGE_BADGE', 'SEND_MESSAGE_SUCCEED',
   'SHOW_NOTIFICATION_DOCK', 'HIDE_NOTIFICATION_DOCK',
@@ -37,7 +36,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, messages };
     }
     case actionTypes.MARK_MESSAGE_SUCCEED: {
-      return state;
+      return { ...state, unreadMessagesNum: state.unreadMessagesNum - 1 };
     }
     case actionTypes.MARK_MESSAGES_SUCCEED: {
       return { ...state, unreadMessagesNum: 0, messages: initialState.messages };
@@ -60,18 +59,6 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-
-export function recordMessages({ loginId, tenantId, loginName, messages }) {
-  return {
-    [CLIENT_API]: {
-      types: [actionTypes.RECORD_MESSAGES, actionTypes.RECORD_MESSAGES_SUCCEED, actionTypes.RECORD_MESSAGES_FAIL],
-      endpoint: 'v1/user/messages/record',
-      method: 'post',
-      data: { loginId, tenantId, loginName, messages },
-    },
-  };
 }
 
 export function loadMessages(cookie, params) {

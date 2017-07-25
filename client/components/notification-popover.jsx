@@ -8,11 +8,11 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import NavLink from './nav-link';
-import { countMessages, messageBadgeNum, recordMessages, showNotificationDock } from 'common/reducers/notification';
+import { countMessages, messageBadgeNum, showNotificationDock, loadMessages, markMessages, markMessage } from 'common/reducers/notification';
 import { prompt } from 'common/reducers/shipment';
 import { getDriver } from 'common/reducers/transportResources';
 import io from 'socket.io-client';
-import { PROMPT_TYPES } from 'common/constants';
+import { PROMPT_TYPES, MESSAGE_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -33,8 +33,9 @@ function fetchData({ state, dispatch, cookie }) {
   logo: state.account.logo,
   unreadMessagesNum: state.notification.unreadMessagesNum,
   newMessage: state.notification.newMessage,
+  messages: state.notification.messages,
 }), {
-  messageBadgeNum, recordMessages, prompt, showNotificationDock
+  messageBadgeNum, prompt, showNotificationDock, loadMessages, markMessages, markMessage
 })
 export default class NotificationPopover extends React.Component {
   static propTypes = {
@@ -45,14 +46,18 @@ export default class NotificationPopover extends React.Component {
     tenantName: PropTypes.string.isRequired,
     logo: PropTypes.string,
     newMessage: PropTypes.object.isRequired,
-    recordMessages: PropTypes.func.isRequired,
     prompt: PropTypes.func.isRequired,
+    loadMessages: PropTypes.func.isRequired,
+    messages: PropTypes.object.isRequired,
+    markMessages: PropTypes.func.isRequired,
+    markMessage: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     visible: false,
+    messages: [],
   }
   componentDidMount() {
     const { tenantId, loginId, loginName } = this.props;
@@ -86,20 +91,24 @@ export default class NotificationPopover extends React.Component {
     this.setState({ socket });
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   const { tenantId, loginId, loginName, tenantName, logo } = this.props;
-  //   if (nextProps.newMessage.count !== this.props.newMessage.count) {
-  //     const { module, promptType, shipment } = nextProps.newMessage;
-  //   }
-  // }
-  handleRecordMessage({ loginId, tenantId, loginName, messages }) {
-    this.props.recordMessages({ loginId, tenantId, loginName, messages }).then(result => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.info('催促成功');
-      }
-    });
+  componentWillReceiveProps(nextProps) {
+    const { messages } = nextProps;
+    let tempMessages = messages.data.filter(item => item.status === MESSAGE_STATUS.notRead.key);
+    if (tempMessages.length > 3) {
+      tempMessages = tempMessages.slice(0, 3);
+    }
+    this.setState({ messages: tempMessages });
+  }
+  markAllRead = () => {
+    const { loginId } = this.props;
+    const promises = this.state.messages.map(item => this.props.markMessage({id: item.id, status: MESSAGE_STATUS.read.key}));
+    Promise.all(promises).then(this.handleLoad);
+  }
+  handleReadMessage = (record) => {
+    this.props.markMessage({
+      id: record.id,
+      status: MESSAGE_STATUS.read.key,
+    }).then(this.handleLoad);
   }
   // handleSendMessage(data) {
 
@@ -134,7 +143,19 @@ export default class NotificationPopover extends React.Component {
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
   }
+  handleLoad = () => {
+    const { loginId, messages } = this.props;
+    this.props.loadMessages(null, {
+      loginId,
+      pageSize: messages.pageSize,
+      currentPage: 1,
+    });
+  }
   handleVisibleChange = (visible) => {
+    const { loginId } = this.props;
+    if (visible) {
+      this.handleLoad();
+    }
     this.setState({ visible });
   }
   handleShowDock = () => {
@@ -143,33 +164,25 @@ export default class NotificationPopover extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
+    console.log(this.state.messages);
     const { unreadMessagesNum } = this.props;
     const notificationContent = (<div className="navbar-popover" style={{ width: 360 }}>
       <div className="popover-header">
         <div className="toolbar-right">
-          <a role="presentation" ><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a>
+          <a role="presentation" onClick={this.markAllRead}><i className="zmdi zmdi-check-all zmdi-hc-lg" /></a>
         </div>
         <span>{this.msg('notification')}</span>
       </div>
       <div className="popover-body">
-      <Alert
-        message="Additional description and informations."
-        type="info"
-        showIcon
-        closable
-      />
-      <Alert
-        message="This is a warning notice about copywriting."
-        type="warning"
-        showIcon
-        closable
-      />
-      <Alert
-        message="This is an error message about copywriting."
-        type="error"
-        showIcon
-        closable
-      />
+      {this.state.messages.map(item => (
+        <Alert
+          message={item.content}
+          type="info"
+          showIcon
+          closable
+          onClose={() => this.handleReadMessage(item)}
+        />
+      ))}
       </div>
       <div className="popover-footer">
         <a onClick={this.handleShowDock}>{this.msg('seeAll')}</a>

@@ -18,7 +18,6 @@ function fetchData({ state, dispatch, cookie }) {
     loginId: state.account.loginId,
     pageSize: state.notification.messages.pageSize,
     currentPage: state.notification.messages.currentPage,
-    status: state.notification.messages.status,
   }));
 }
 @connectFetch()(fetchData)
@@ -34,20 +33,43 @@ function fetchData({ state, dispatch, cookie }) {
 export default class NotificationDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    loginId: PropTypes.number.isRequired,
+    messages: PropTypes.object.isRequired,
     loadMessages: PropTypes.func.isRequired,
     markMessages: PropTypes.func.isRequired,
     markMessage: PropTypes.func.isRequired,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.visible && nextProps.visible) {
+      this.handleLoad();
+    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   handleReadMessage = (record) => {
     this.props.markMessage({
       id: record.id,
-      status: 1,
-    });
+      status: MESSAGE_STATUS.read.key,
+    }).then(this.handleLoad);
     // this.handleNavigationTo(record.url);
   }
 
+  markAllRead = () => {
+    const { loginId } = this.props;
+    this.props.markMessages({ loginId, status: MESSAGE_STATUS.read.key }).then(this.handleLoad);
+  }
+  deleteAllRead = () => {
+    const { loginId } = this.props;
+    this.props.markMessages({ loginId, status: MESSAGE_STATUS.delete3.key }).then(this.handleLoad);
+  }
+  handleLoad = () => {
+    const { loginId } = this.props;
+    this.props.loadMessages(null, {
+      loginId,
+      pageSize: this.props.messages.pageSize,
+      currentPage: this.props.messages.currentPage,
+    });
+  }
   renderColumnText(status, text, record) {
     let style = {};
     if (status === MESSAGE_STATUS.read.key) {
@@ -55,7 +77,6 @@ export default class NotificationDockPanel extends React.Component {
     }
     return <a onClick={() => this.handleReadMessage(record)} style={style}>{text}</a>;
   }
-
   render() {
     const { visible } = this.props;
     const columns = [
