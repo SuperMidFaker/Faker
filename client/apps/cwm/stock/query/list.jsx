@@ -58,7 +58,7 @@ export default class StockQueryList extends React.Component {
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('owner'),
-    dataIndex: 'owner',
+    dataIndex: 'owner_name',
     width: 150,
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
@@ -80,9 +80,9 @@ export default class StockQueryList extends React.Component {
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('whseLocation'),
+    title: this.msg('Location'),
     width: 120,
-    dataIndex: 'whse_location',
+    dataIndex: 'location',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('unit'),
@@ -113,35 +113,12 @@ export default class StockQueryList extends React.Component {
   }, {
     title: this.msg('cbm'),
     dataIndex: 'cbm',
-    render: (text, row) => this.renderNormalCol((row.unit_cbm * row.avail_stock).toFixed(2), row),
+    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('grossWeight'),
     dataIndex: 'gross_weight',
     render: (text, row) => this.renderNormalCol(text, row),
   }]
-  dataSource = new Table.DataSource({
-    fetcher: () => this.handleStockQuery(this.props.listFilter),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: false,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-      showTotal: total => `共 ${total} 条`,
-    }),
-    getParams: (pagination, filters, sorter) => {
-      const params = {
-        current: pagination.current,
-        sorter: {
-          field: sorter.field,
-          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
-        },
-      };
-      return params;
-    },
-    remotes: this.props.stocklist,
-  })
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
@@ -161,7 +138,7 @@ export default class StockQueryList extends React.Component {
     });
   }
   handleSearch = (searchForm) => {
-    const filter = { ...this.props.listFilter, ...searchForm };
+    const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(filter);
   }
   handleWarehouseSelect = (whno) => {
@@ -176,33 +153,31 @@ export default class StockQueryList extends React.Component {
     return colObj;
   }
   render() {
-    const { defaultWhse, whses, stocklist, loading, listFilter, displayedColumns } = this.props;
+    const { defaultWhse, whses, loading, displayedColumns } = this.props;
     const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
-    if (listFilter.whse_code === 'all' && !listFilter.group_by_sku) {
-      const data = [];
-      const whnoMap = {};
-      stocklist.data.forEach((row) => {
-        if (!whnoMap[row.whse_name]) {
-          whnoMap[row.whse_name] = [row];
-        } else {
-          whnoMap[row.whse_name].push(row);
-        }
-      });
-      let total = stocklist.totalCount;
-      Object.keys(whnoMap).forEach((whno) => {
-        data.push({ key: 'wh_no', id: whno, value: whno });
-        data.push(...whnoMap[whno]);
-        total += 1;
-      });
-      this.dataSource.remotes = {
-        totalCount: total,
-        current: stocklist.current,
-        pageSize: data.length > stocklist.pageSize ? data.length : stocklist.pageSize,
-        data,
-      };
-    } else {
-      this.dataSource.remotes = stocklist;
-    }
+    const dataSource = new Table.DataSource({
+      fetcher: () => this.handleStockQuery(this.props.listFilter),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        total: result.totalCount,
+        current: resolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: false,
+        showQuickJumper: false,
+        pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
+      }),
+      getParams: (pagination, filters, sorter) => {
+        const params = {
+          current: pagination.current,
+          sorter: {
+            field: sorter.field,
+            order: sorter.order === 'descend' ? 'DESC' : 'ASC',
+          },
+        };
+        return params;
+      },
+      remotes: this.props.stocklist,
+    });
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
@@ -237,7 +212,7 @@ export default class StockQueryList extends React.Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="panel-body table-panel">
-                <Table columns={columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
+                <Table columns={columns} dataSource={dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
               </div>
             </div>
           </Content>
