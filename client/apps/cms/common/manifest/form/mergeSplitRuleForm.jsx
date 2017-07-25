@@ -39,6 +39,7 @@ export default class MergeSplitForm extends React.Component {
   state = {
     mergeOpt: {
       checked: this.props.formData.merge_checked,
+      byCopGNo: (this.props.formData.mergeOpt_arr.indexOf('byCopGNo') !== -1),
     },
     splitCategories: [],
     mergeCategories: [],
@@ -79,6 +80,7 @@ export default class MergeSplitForm extends React.Component {
     checkeds.forEach((chk) => {
       opt[chk] = true;
     });
+    this.setState({ mergeOpt: { ...this.state.mergeOpt, byCopGNo: opt.byCopGNo } });
   }
   handleMergeRadioChange = () => {
     this.setState({
@@ -88,25 +90,25 @@ export default class MergeSplitForm extends React.Component {
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, formData } = this.props;
-    const { splitCategories, mergeCategories } = this.state;
+    const { splitCategories, mergeCategories, mergeOpt } = this.state;
     return (
       <Row style={{ marginBottom: 24 }}>
         <Collapse bordered={false} defaultActiveKey={['merge', 'split', 'sort']}>
           <Panel key="merge" header={this.msg('mergePrinciple')} >
             <FormItem>
               <Col span="3">
-                <Radio checked={this.state.mergeOpt.checked} onChange={this.handleMergeRadioChange}>
+                <Radio checked={mergeOpt.checked} onChange={this.handleMergeRadioChange}>
                   {this.msg('conditionalMerge')}
                 </Radio>
               </Col>
               <Col offset="2" span="19">
                 {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr,
-                })(<CheckboxGroup options={this.mergeConditions} disabled={!this.state.mergeOpt.checked}
+                })(<CheckboxGroup options={this.mergeConditions} disabled={!mergeOpt.checked}
                   onChange={this.handleMergeCheck}
                 />)}
               </Col>
             </FormItem>
-            {this.state.mergeOpt.checked ? <Col offset="5">
+            {mergeOpt.checked && !mergeOpt.byCopGNo ? <Col offset="5">
               <FormItem>
                 {getFieldDecorator('merge_bysplhs', { initialValue: formData.merge_bysplhs === 1 })(
                   <Checkbox defaultChecked={formData.merge_bysplhs}>{this.msg('mergeSpecialHscode')}</Checkbox>)
