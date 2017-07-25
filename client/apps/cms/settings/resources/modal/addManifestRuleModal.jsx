@@ -6,6 +6,10 @@ import { toggleBillTempModal, createBillTemplate } from 'common/reducers/cmsMani
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const formItemLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 14 },
+};
 
 @connect(state => ({
   tenantId: state.account.tenantId,
@@ -36,7 +40,7 @@ export default class AddManifestRuleModal extends React.Component {
     const formData = {};
     const field = this.props.form.getFieldsValue();
     if (!field.template_name) {
-      message.error('请填写模板名称');
+      message.error('请填写规则名称');
     } else {
       const customer = this.props.customer;
       formData.customer_partner_id = customer.id;
@@ -70,17 +74,17 @@ export default class AddManifestRuleModal extends React.Component {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
       <Modal title="新增制单规则" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <Form layout="vertical">
-          <FormItem label="模板名称">
+        <Form layout="horizontal">
+          <FormItem label="规则名称" {...formItemLayout}>
             {getFieldDecorator('template_name', {
-              rules: [{ required: true, message: '模板名称必填' }],
+              rules: [{ required: true, message: '规则名称必填' }],
             })(
               <Input />
             )}
           </FormItem>
-          <FormItem>
+          <FormItem label="进出口类型" {...formItemLayout}>
             {getFieldDecorator('i_e_type', {
-              rules: [{ required: true, message: '进口或出口必选' }],
+              rules: [{ required: true, message: '进出口类型必选' }],
             })(
               <RadioGroup onChange={this.handleIEChange}>
                 <Radio value={0}>进口</Radio>
