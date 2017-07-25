@@ -63,7 +63,7 @@ export default class NotificationPopover extends React.Component {
         }
       });
     }
-
+    
     const socket = io(`${API_ROOTS.notify}notify`);
     socket.on('connect', () => {
       socket.emit('login', {login_id: loginId});
@@ -77,6 +77,12 @@ export default class NotificationPopover extends React.Component {
       });
       this.props.messageBadgeNum(this.props.unreadMessagesNum + 1);
     });
+    if (__DEV__) {
+      socket.on('connect_error', (error) => {
+        console.log('socket.io connet error');
+        socket.close();
+      });
+    }
     this.setState({ socket });
   }
 
