@@ -121,7 +121,7 @@ export default class SpecialCategories extends React.Component {
     }
     const type = ev.target.value;
     const hscodeCategories = this.props.hscodeCategories.filter(ct => ct.type === type);
-    this.setState({ type, hscodeCategories, hscodeCategory: hscodeCategories[0] });
+    this.setState({ type, hscodeCategories, hscodeCategory: hscodeCategories[0] || {} });
   }
   handleSearch = (value) => {
     const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
