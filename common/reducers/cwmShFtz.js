@@ -23,12 +23,17 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'FILE_CARGO', 'FILE_CARGO_SUCCEED', 'FILE_CARGO_FAIL',
   'CONFIRM_CARGO', 'CONFIRM_CARGO_SUCCEED', 'CONFIRM_CARGO_FAIL',
   'LOAD_BALIST', 'LOAD_BALIST_SUCCEED', 'LOAD_BALIST_FAIL',
+  'LOAD_PORS', 'LOAD_PORS_SUCCEED', 'LOAD_PORS_FAIL',
+  'LOAD_PTDS', 'LOAD_PTDS_SUCCEED', 'LOAD_PTDS_FAIL',
+  'BEGIN_BD', 'BEGIN_BD_SUCCEED', 'BEGIN_BD_FAIL',
 ]);
 
 const initialState = {
   batchDeclModal: {
     visible: false,
+    ownerCusCode: '',
   },
+  portionout_regs: [],
   entryList: {
     totalCount: 0,
     current: 1,
@@ -124,6 +129,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, batchApplyList: action.result.data };
     case actionTypes.LOAD_BALIST_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_PORS_SUCCEED:
+      return { ...state, portionout_regs: action.result.data };
     default:
       return state;
   }
@@ -437,6 +444,51 @@ export function loadBatchApplyList(params) {
       endpoint: 'v1/cwm/shftz/batch/applies',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadPortionOutRegs(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PORS,
+        actionTypes.LOAD_PORS_SUCCEED,
+        actionTypes.LOAD_PORS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/portionouts',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadPortionDetails(relNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PTDS,
+        actionTypes.LOAD_PTDS_SUCCEED,
+        actionTypes.LOAD_PTDS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/portion/details',
+      method: 'get',
+      params: { rel_no: relNo },
+    },
+  };
+}
+
+export function beginBatchDecl(detailIds, relCounts, owner) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BEGIN_BD,
+        actionTypes.BEGIN_BD_SUCCEED,
+        actionTypes.BEGIN_BD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/decl/begin',
+      method: 'post',
+      data: { detailIds, relCounts, owner },
     },
   };
 }

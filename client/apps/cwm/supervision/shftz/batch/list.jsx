@@ -31,7 +31,7 @@ const OptGroup = Select.OptGroup;
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners,
+    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
   }),
   { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList }
 )
@@ -133,7 +133,7 @@ export default class SHFTZBatchDeclList extends React.Component {
   }, {
     title: '申报日期',
     width: 120,
-    dataIndex: 'cus_decl_date',
+    dataIndex: 'decl_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
@@ -214,7 +214,9 @@ export default class SHFTZBatchDeclList extends React.Component {
     this.handleBatchApplyLoad(1, this.props.whse.code, filter);
   }
   handleCreateBatchDecl = () => {
-    this.props.openBatchDeclModal();
+    const { listFilter, owners } = this.props;
+    const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
+    this.props.openBatchDeclModal({ ownerCusCode });
   }
   handleDetail = (row) => {
     const link = `/cwm/supervision/shftz/batch/${row.batch_decl_no}`;
@@ -224,6 +226,14 @@ export default class SHFTZBatchDeclList extends React.Component {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
     this.handleBatchApplyLoad(1, value);
+  }
+  handleSearch = (searchVal) => {
+    const filters = { ...this.props.listFilter, filterNo: searchVal };
+    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
+  }
+  handleOwnerSelectChange = (value) => {
+    const filters = { ...this.props.listFilter, ownerView: value };
+    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
   }
 
   render() {

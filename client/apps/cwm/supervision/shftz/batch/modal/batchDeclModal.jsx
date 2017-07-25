@@ -3,154 +3,267 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Collapse, DatePicker, Table, Form, Modal, Select, Tag, Input } from 'antd';
+import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeBatchDeclModal } from 'common/reducers/cwmShFtz';
+import { closeBatchDeclModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Panel = Collapse.Panel;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
   state => ({
     visible: state.cwmShFtz.batchDeclModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
+    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
+    ownerCusCode: state.cwmShFtz.batchDeclModal.ownerCusCode,
+    portionRegs: state.cwmShFtz.portionout_regs,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    units: state.cwmShFtz.params.units.map(un => ({
+      value: un.unit_code,
+      text: un.unit_name,
+    })),
+    currencies: state.cwmShFtz.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+    })),
+    tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
   }),
-  { closeBatchDeclModal }
+  { closeBatchDeclModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl }
 )
 export default class BatchDeclModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
   state = {
-    modalWidth: 1000,
-    modalHeight: 800,
+    ownerCusCode: '',
+    relDateRange: [],
+    relNo: '',
+    portionRegs: [],
+    regDetails: [],
   }
   componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ modalWidth: window.innerWidth, modalHeight: window.innerHeight });
+    this.setState({ ownerCusCode: this.props.ownerCusCode });
+    if (this.props.ownerCusCode) {
+      this.props.loadPortionOutRegs({
+        owner_cus_code: this.props.ownerCusCode,
+        whse_code: this.props.defaultWhse.code,
+      });
+    }
+    this.props.loadParams();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.portionRegs !== this.props.portionRegs) {
+      this.setState({ portionRegs: nextProps.portionRegs });
+    }
+    if (nextProps.visible && nextProps.ownerCusCode) {
+      this.props.loadPortionOutRegs({
+        owner_cus_code: nextProps.ownerCusCode,
+        whse_code: nextProps.defaultWhse.code,
+      });
     }
   }
 
   msg = key => formatMsg(this.props.intl, key);
-  inventoryColumns = [{
+  portionRegColumns = [{
     title: '分拨出库单号',
-    dataIndex: 'product_no',
-    width: 120,
+    dataIndex: 'ftz_rel_no',
+    width: 300,
   }, {
     title: '货主',
-    dataIndex: 'name',
+    dataIndex: 'owner_name',
     width: 150,
   }, {
     title: '收货单位',
-    dataIndex: 'external_lot_no',
-    width: 100,
+    dataIndex: 'receiver_name',
+    width: 200,
   }, {
     title: '出库日期',
-    dataIndex: 'created_date',
-
-    render: o => moment(o).format('YYYY.MM.DD'),
+    dataIndex: 'ftz_rel_date',
+    render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: '添加',
     width: 80,
     fixed: 'right',
-    render: (o, record, index) => <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} />,
+    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddReg(record)} />,
   }]
 
-  allocatedColumns = [{
+  regDetailColumns = [{
     title: '备案料号',
-    dataIndex: 'product_sku',
-    width: 120,
+    dataIndex: 'product_no',
+    width: 150,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
       }
     },
   }, {
+    title: '出库明细ID',
+    dataIndex: 'ftz_rel_detail_id',
+    width: 120,
+  }, {
     title: 'HS编码',
-    dataIndex: 'product_no',
+    dataIndex: 'hscode',
     width: 120,
   }, {
     title: '中文品名',
-    dataIndex: 'name',
+    dataIndex: 'g_name',
     width: 150,
   }, {
     title: '规格型号',
-    dataIndex: 'external_lot_no',
-    width: 100,
+    dataIndex: 'model',
+    render: o => <TrimSpan text={o} maxLen={30} />,
   }, {
     title: '原产国',
-    dataIndex: 'serial_no',
-    width: 100,
+    dataIndex: 'country',
+    width: 150,
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      const text = country ? `${country.value}| ${country.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
   }, {
     title: '单位',
-    dataIndex: 'location',
+    dataIndex: 'out_unit',
     width: 100,
     render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
     title: '数量',
-    width: 200,
+    width: 100,
+    dataIndex: 'qty',
   }, {
     title: '毛重',
-    width: 200,
+    width: 100,
+    dataIndex: 'gross_wt',
   }, {
     title: '净重',
-    width: 200,
+    width: 100,
+    dataIndex: 'net_wt',
   }, {
     title: '金额',
-    width: 200,
+    width: 100,
+    dataIndex: 'amount',
   }, {
     title: '币制',
-    dataIndex: 'virtual_whse',
+    width: 100,
+    dataIndex: 'currency',
     render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
     title: '删除',
     width: 80,
     fixed: 'right',
-    render: (o, record, index) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} /></span>),
+    render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
+  handleAddReg = (row) => {
+    this.props.loadPortionDetails(row.pre_entry_seq_no).then((result) => {
+      if (!result.error) {
+        const relNo = row.ftz_rel_no;
+        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(
+          result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
+        const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
+        this.setState({ regDetails, portionRegs });
+      }
+    });
+  }
+  handleDelDetail = (detail) => {
+    const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
+    const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
+    this.setState({ regDetails, portionRegs });
+  }
   handleCancel = () => {
+    this.setState({ ownerCusCode: '', portionRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
     this.props.closeBatchDeclModal();
   }
-
+  handleOwnerChange = (ownerCusCode) => {
+    this.setState({ ownerCusCode });
+  }
+  handleRelNoChange = (ev) => {
+    this.setState({ relNo: ev.target.value });
+  }
+  handleRelRangeChange = (relDateRange) => {
+    this.setState({ relDateRange });
+  }
+  handlePortionOutsQuery = () => {
+    const { ownerCusCode, relNo, relDateRange } = this.state;
+    this.props.loadPortionOutRegs({
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      rel_no: relNo,
+      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
+      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
+    });
+  }
+  handleBatchDecl = () => {
+    const detailIds = [];
+    const relCountObj = {};
+    this.state.regDetails.forEach((regd) => {
+      detailIds.push(regd.id);
+      if (relCountObj[regd.ftz_rel_no]) {
+        relCountObj[regd.ftz_rel_no] += 1;
+      } else {
+        relCountObj[regd.ftz_rel_no] = 1;
+      }
+    });
+    const relCounts = Object.keys(relCountObj).map(relNo => ({
+      rel_no: relNo,
+      count: relCountObj[relNo],
+    }));
+    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode)[0];
+    this.props.beginBatchDecl(detailIds, relCounts, owner).then((result) => {
+      if (!result.error) {
+        this.handleCancel();
+      }
+    });
+  }
   render() {
-    const inventoryQueryForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
+    const { ownerCusCode, relNo, relDateRange } = this.state;
+    const portionForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
       <FormItem label="货主">
-        <Select onChange={this.handleOwnerChange} style={{ width: 160 }} />
+        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} value={ownerCusCode}>
+          {this.props.owners.map(data => (
+            <Option key={data.customs_code} value={data.customs_code}>
+              {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
+            </Option>))}
+        </Select>
       </FormItem>
       <FormItem label="单号">
-        <Input />
+        <Input value={relNo} onChange={this.handleRelNoChange} />
       </FormItem>
       <FormItem label="出库日期">
-        <RangePicker onChange={this.handleDateChange} />
+        <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
       </FormItem>
+      <Button onClick={this.handlePortionOutsQuery}>查询</Button>
     </Form>);
 
     return (
       <Modal title="集中报关" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
-        onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
+        onOk={this.handleBatchDecl} onCancel={this.handleCancel} visible={this.props.visible}
       >
         <Collapse bordered={false} defaultActiveKey={['1', '2']}>
           <Panel header="分拨出库单" key="1">
-            <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
+            <Card title={portionForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
+              <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
           <Panel header="报关申请明细" key="2">
             <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
+              <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
         </Collapse>
