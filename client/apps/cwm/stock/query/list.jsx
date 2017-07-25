@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Select, Layout, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadStockSearchOptions, loadStocks } from 'common/reducers/scvInventoryStock';
+import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import StockSearchForm from './searchForm';
@@ -27,12 +27,12 @@ function fetchData({ state, dispatch }) {
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
-    loading: state.scvInventoryStock.loading,
-    stocklist: state.scvInventoryStock.list,
-    displayedColumns: state.scvInventoryStock.displayedColumns,
-    listFilter: state.scvInventoryStock.listFilter,
-    sortFilter: state.scvInventoryStock.sortFilter,
-    searchOption: state.scvInventoryStock.searchOption,
+    loading: state.cwmInventoryStock.loading,
+    stocklist: state.cwmInventoryStock.list,
+    displayedColumns: state.cwmInventoryStock.displayedColumns,
+    listFilter: state.cwmInventoryStock.listFilter,
+    sortFilter: state.cwmInventoryStock.sortFilter,
+    searchOption: state.cwmInventoryStock.searchOption,
   }),
   { loadStockSearchOptions, loadStocks, switchDefaultWhse }
 )

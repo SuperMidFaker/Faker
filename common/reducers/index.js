@@ -60,6 +60,7 @@ import cwmWarehouse from './cwmWarehouse';
 import cwmShFtz from './cwmShFtz';
 import cwmShippingOrder from './cwmShippingOrder';
 import cwmDashboard from './cwmDashboard';
+import cwmInventoryStock from './cwmInventoryStock';
 
 export default combineReducers({
   activities,
@@ -123,4 +124,5 @@ export default combineReducers({
   cwmShFtz,
   cwmShippingOrder,
   cwmDashboard,
+  cwmInventoryStock,
 });

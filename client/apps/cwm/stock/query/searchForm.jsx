@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Row } from 'antd';
-import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/scvInventoryStock';
+import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -13,9 +13,9 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    searchOption: state.scvInventoryStock.searchOption,
-    displayedColumns: state.scvInventoryStock.displayedColumns,
-    filter: state.scvInventoryStock.listFilter,
+    searchOption: state.cwmInventoryStock.searchOption,
+    displayedColumns: state.cwmInventoryStock.displayedColumns,
+    filter: state.cwmInventoryStock.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
   }),
   { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList }
@@ -37,8 +37,12 @@ export default class StockQueryForm extends React.Component {
   }
   handleStockSearch = (ev) => {
     ev.preventDefault();
-    const formData = this.props.form.getFieldsValue();
-    this.props.onSearch(formData);
+    this.props.form.validateFields((err) => {
+      if (!err) {
+        const formData = this.props.form.getFieldsValue();
+        this.props.onSearch(formData);
+      }
+    });
   }
   checkOwners = () => {
     this.props.checkOwnerColumn();
@@ -60,11 +64,15 @@ export default class StockQueryForm extends React.Component {
         <FormItem label="货主">
           {getFieldDecorator('owner', {
             initialValue: filter.owner,
+            rules: [{
+              required: filter.search_type === 1,
+              message: 'Please select your owner',
+            }],
           })(
             <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange}
               dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
             >
-              <Option key="all" value="all">全部货主</Option>
+              <Option key="all" value="">全部货主</Option>
               {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
             </Select>
           )}
@@ -72,11 +80,19 @@ export default class StockQueryForm extends React.Component {
         <FormItem label="货品">
           {getFieldDecorator('product_no', {
             initialValue: filter.product_no,
-          })(<Input placeholder="货号或者sku" />)}
+            rules: [{
+              required: filter.search_type === 2 || filter.search_type === 4,
+              message: 'Please input your product_no',
+            }],
+          })(<Input placeholder="货号" />)}
         </FormItem>
         <FormItem label="库位">
           {getFieldDecorator('whse_location', {
             initialValue: filter.whse_location,
+            rules: [{
+              required: filter.search_type === 3 || filter.search_type === 4,
+              message: 'Please input your whse_location',
+            }],
           })(<Input placeholder="库位号" />)}
         </FormItem>
         <FormItem>
