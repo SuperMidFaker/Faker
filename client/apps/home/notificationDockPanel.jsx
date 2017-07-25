@@ -39,6 +39,9 @@ export default class NotificationDockPanel extends React.Component {
     markMessages: PropTypes.func.isRequired,
     markMessage: PropTypes.func.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible) {
       this.handleLoad();
@@ -51,7 +54,8 @@ export default class NotificationDockPanel extends React.Component {
       id: record.id,
       status: MESSAGE_STATUS.read.key,
     }).then(this.handleLoad);
-    // this.handleNavigationTo(record.url);
+    this.props.hideNotificationDock();
+    this.context.router.push(record.url);
   }
 
   markAllRead = () => {
@@ -72,7 +76,7 @@ export default class NotificationDockPanel extends React.Component {
   }
   renderColumnText(status, text, record) {
     if (status === MESSAGE_STATUS.read.key) {
-      return <a style={{ color: '#CCC' }}>{text}</a>;
+      return <a onClick={() => this.context.router.push(record.url)} style={{ color: '#CCC' }}>{text}</a>;
     }
     return <a onClick={() => this.handleReadMessage(record)} >{text}</a>;
   }

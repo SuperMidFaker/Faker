@@ -174,7 +174,7 @@ export default class NotificationPopover extends React.Component {
       <div className="popover-body">
       {this.state.messages.map(item => (
         <Alert
-          message={item.content}
+          message={<a onClick={() => this.context.router.push(item.url)} >{item.content}</a>}
           type="info"
           showIcon
           closable

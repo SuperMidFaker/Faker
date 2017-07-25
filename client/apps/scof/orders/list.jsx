@@ -11,7 +11,7 @@ import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock } from 'common/reducers/crmOrders';
+import { loadOrders, removeOrder, setClientForm, acceptOrder, hideDock, loadOrderDetail } from 'common/reducers/crmOrders';
 import { loadPartners } from 'common/reducers/partner';
 import { emptyFlows } from 'common/reducers/scofFlow';
 import moment from 'moment';
@@ -59,7 +59,7 @@ function fetchData({ state, dispatch }) {
     orders: state.crmOrders.orders,
     filters: state.crmOrders.orderFilters,
     partners: state.partner.partners,
-  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadPartners }
+  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadOrderDetail }
 )
 @connectNav({
   depth: 2,
@@ -79,6 +79,7 @@ export default class OrderList extends React.Component {
     removeOrder: PropTypes.func.isRequired,
     setClientForm: PropTypes.func.isRequired,
     acceptOrder: PropTypes.func.isRequired,
+    loadOrderDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -88,6 +89,21 @@ export default class OrderList extends React.Component {
   }
   componentWillMount() {
     this.props.hideDock();
+  }
+  componentDidMount() {
+    const query = this.props.location.query;
+    if (query.shipmt_order_no) {
+      this.props.loadOrderDetail(query.shipmt_order_no, this.props.tenantId);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location) {
+      const query = this.props.location.query;
+      const nextQuery = nextProps.location.query;
+      if (query.shipmt_order_no !== nextQuery.shipmt_order_no) {
+        this.props.loadOrderDetail(nextQuery.shipmt_order_no, this.props.tenantId);
+      }
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCreate = () => {
