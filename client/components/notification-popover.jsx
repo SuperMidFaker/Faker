@@ -89,9 +89,6 @@ export default class NotificationPopover extends React.Component {
       });
     }
     this.setState({ socket });
-    var n = new Notification("sir, you got a message", {  
-        body: 'you will have a meeting 5 minutes later.'  
-    });  
   }
 
   componentWillReceiveProps(nextProps) {
