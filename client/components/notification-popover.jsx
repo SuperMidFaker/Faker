@@ -179,6 +179,7 @@ export default class NotificationPopover extends React.Component {
           showIcon
           closable
           onClose={() => this.handleReadMessage(item)}
+          key={item.id}
         />
       ))}
       </div>
