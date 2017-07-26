@@ -74,6 +74,8 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         displayedColumns: {
           product_no: false,
+          product_sku: false,
+          desc_cn: false,
           avail_qty: false,
           alloc_qty: false,
           frozen_qty: false,
@@ -88,6 +90,8 @@ export default function reducer(state = initialState, action) {
           alloc_qty: true,
           frozen_qty: true,
           product_no: true,
+          product_sku: true,
+          desc_cn: true,
           location: false,
           unit: false,
           owner_name: true,
@@ -96,11 +100,13 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         displayedColumns: {
           product_no: false,
+          product_sku: false,
+          desc_cn: false,
           avail_qty: false,
           alloc_qty: false,
           frozen_qty: false,
           location: true,
-          owner_name: true,
+          owner_name: false,
           unit: false,
         } };
     case actionTypes.CHECK_PRODUCT_LOCATION:
@@ -108,6 +114,8 @@ export default function reducer(state = initialState, action) {
         ...state,
         displayedColumns: {
           product_no: true,
+          product_sku: true,
+          desc_cn: true,
           avail_qty: true,
           alloc_qty: true,
           frozen_qty: true,

@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   location: {
     id: 'cwm.stock.location',
-    defaultMessage: 'SKU',
+    defaultMessage: '库位',
   },
   totalQty: {
     id: 'cwm.stock.total.qty',
