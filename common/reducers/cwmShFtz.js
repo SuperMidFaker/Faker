@@ -26,6 +26,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_PORS', 'LOAD_PORS_SUCCEED', 'LOAD_PORS_FAIL',
   'LOAD_PTDS', 'LOAD_PTDS_SUCCEED', 'LOAD_PTDS_FAIL',
   'BEGIN_BD', 'BEGIN_BD_SUCCEED', 'BEGIN_BD_FAIL',
+  'APPLY_DETAILS_LOAD', 'APPLY_DETAILS_LOAD_SUCCEED', 'APPLY_DETAILS_LOAD_FAIL',
+  'FILE_BA', 'FILE_BA_SUCCEED', 'FILE_BA_FAIL',
 ]);
 
 const initialState = {
@@ -69,6 +71,8 @@ const initialState = {
   entry_regs: [],
   rel_so: {},
   rel_regs: [],
+  batch_decl: {},
+  batch_applies: [],
   params: {
     currencies: [],
     units: [],
@@ -131,6 +135,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false };
     case actionTypes.LOAD_PORS_SUCCEED:
       return { ...state, portionout_regs: action.result.data };
+    case actionTypes.APPLY_DETAILS_LOAD_SUCCEED:
+      return { ...state, ...action.result.data };
     default:
       return state;
   }
@@ -478,7 +484,7 @@ export function loadPortionDetails(relNo) {
   };
 }
 
-export function beginBatchDecl(detailIds, relCounts, owner) {
+export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -488,7 +494,37 @@ export function beginBatchDecl(detailIds, relCounts, owner) {
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
-      data: { detailIds, relCounts, owner },
+      data: { detailIds, relCounts, owner, loginId, loginName },
+    },
+  };
+}
+
+export function loadApplyDetails(batchNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.APPLY_DETAILS_LOAD,
+        actionTypes.APPLY_DETAILS_LOAD_SUCCEED,
+        actionTypes.APPLY_DETAILS_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/apply/details',
+      method: 'get',
+      params: { batch_no: batchNo },
+    },
+  };
+}
+
+export function fileBatchApply(batchNo, whseCode, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FILE_BA,
+        actionTypes.FILE_BA_SUCCEED,
+        actionTypes.FILE_BA_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/apply/file',
+      method: 'post',
+      data: { batchNo, whseCode, loginId },
     },
   };
 }
