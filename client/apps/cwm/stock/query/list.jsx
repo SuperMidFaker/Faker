@@ -8,6 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
+import TrimSpan from 'client/components/trimSpan';
 import StockSearchForm from './searchForm';
 import { formatMsg } from '../message.i18n';
 
@@ -61,17 +62,17 @@ export default class StockQueryList extends React.Component {
     dataIndex: 'owner_name',
     width: 150,
     sorter: true,
+    render: o => <TrimSpan text={o} maxLen={10} />,
+  }, {
+    title: this.msg('productNo'),
+    dataIndex: 'product_no',
+    width: 150,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('sku'),
+    title: this.msg('SKU'),
     dataIndex: 'product_sku',
     width: 150,
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('product'),
-    dataIndex: 'product_no',
-    width: 150,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('descCN'),
@@ -80,7 +81,7 @@ export default class StockQueryList extends React.Component {
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('Location'),
+    title: this.msg('location'),
     width: 120,
     dataIndex: 'location',
     render: (text, row) => this.renderNormalCol(text, row),
@@ -94,30 +95,40 @@ export default class StockQueryList extends React.Component {
     title: this.msg('totalQty'),
     width: 100,
     dataIndex: 'total_qty',
+    className: 'cell-align-right text-emphasis',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('stockQty'),
+    title: this.msg('availQty'),
     width: 100,
     dataIndex: 'avail_qty',
+    className: 'cell-align-right text-success',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('allocQty'),
     width: 100,
     dataIndex: 'alloc_qty',
+    className: 'cell-align-right text-warning',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('frozenQty'),
     width: 100,
     dataIndex: 'frozen_qty',
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('cbm'),
-    dataIndex: 'cbm',
+    className: 'cell-align-right text-error',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('grossWeight'),
     dataIndex: 'gross_weight',
+    className: 'cell-align-right',
+    width: 150,
     render: (text, row) => this.renderNormalCol(text, row),
+  }, {
+    title: this.msg('cbm'),
+    dataIndex: 'cbm',
+    className: 'cell-align-right',
+    width: 150,
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
+    dataIndex: 'spacer',
   }]
   toggle = () => {
     this.setState({
@@ -161,7 +172,7 @@ export default class StockQueryList extends React.Component {
       getPagination: (result, resolve) => ({
         total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
-        showSizeChanger: false,
+        showSizeChanger: true,
         showQuickJumper: false,
         pageSize: result.pageSize,
         showTotal: total => `共 ${total} 条`,
@@ -203,16 +214,21 @@ export default class StockQueryList extends React.Component {
         </Sider>
         <Layout>
           <Header className="page-header">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('查询类型')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
             <div className="page-header-tools">
-              <Button type="primary" size="large" icon="export" ghost>
-                {this.msg('exportInventory')}
+              <Button size="large" icon="export">
+                {this.msg('export')}
               </Button>
             </div>
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="panel-body table-panel">
-                <Table columns={columns} dataSource={dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
+                <Table columns={columns} dataSource={dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} bordered />
               </div>
             </div>
           </Content>

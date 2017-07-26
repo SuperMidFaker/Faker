@@ -31,43 +31,43 @@ const messages = defineMessages({
     defaultMessage: 'SKU号或序列号或流水号',
   },
   warehouse: {
-    id: 'cwm.receiving.transactions.warehouse',
+    id: 'cwm.receiving.warehouse',
     defaultMessage: '仓库',
   },
   inboundNo: {
-    id: 'cwm.receiving.transactions.inboundNo',
+    id: 'cwm.receiving.inboundNo',
     defaultMessage: '入库单号',
   },
   inboundDate: {
-    id: 'cwm.receiving.transactions.inboundDate',
+    id: 'cwm.receiving.inboundDate',
     defaultMessage: '入库日期',
   },
   sku: {
-    id: 'cwm.receiving.transactions.sku',
+    id: 'cwm.receiving.sku',
     defaultMessage: 'SKU',
   },
   actualQty: {
-    id: 'cwm.receiving.transactions.actual.qty',
+    id: 'cwm.receiving.actual.qty',
     defaultMessage: '入库数量',
   },
   postQty: {
-    id: 'cwm.receiving.transactions.postqty',
+    id: 'cwm.receiving.postqty',
     defaultMessage: '库存数量',
   },
   lotserialNo: {
-    id: 'cwm.receiving.transactions.lot.serialno',
+    id: 'cwm.receiving.lot.serialno',
     defaultMessage: '批次号/序列号',
   },
   vendor: {
-    id: 'cwm.receiving.transactions.vendor',
+    id: 'cwm.receiving.vendor',
     defaultMessage: '供应商',
   },
   unitPrice: {
-    id: 'cwm.receiving.transactions.unit.price',
+    id: 'cwm.receiving.unit.price',
     defaultMessage: '单价',
   },
   manufexpiryDate: {
-    id: 'cwm.receiving.transactions.manuf.expiry.date',
+    id: 'cwm.receiving.manuf.expiry.date',
     defaultMessage: '生产/失效日期',
   },
   asnPlaceholder: {
