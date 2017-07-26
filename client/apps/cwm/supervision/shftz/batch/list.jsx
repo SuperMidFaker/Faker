@@ -74,7 +74,6 @@ export default class SHFTZBatchDeclList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '收货单位',
-    width: 180,
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
@@ -165,7 +164,11 @@ export default class SHFTZBatchDeclList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />,
+    render: (o, record) => {
+      if (record.status < 2) {
+        return <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />;
+      }
+    },
   }]
 
   dataSource = new Table.DataSource({
@@ -205,7 +208,9 @@ export default class SHFTZBatchDeclList extends React.Component {
       }
     });
   }
-
+  handleBatchDeclLoad = () => {
+    this.handleBatchApplyLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
+  }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
@@ -217,6 +222,11 @@ export default class SHFTZBatchDeclList extends React.Component {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
     this.props.openBatchDeclModal({ ownerCusCode });
+  }
+  handleDelgManifest = (row) => {
+    const ietype = row.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${ietype}/manifest/`;
+    this.context.router.push(`${link}${row.delg_no}`);
   }
   handleDetail = (row) => {
     const link = `/cwm/supervision/shftz/batch/${row.batch_decl_no}`;
@@ -237,7 +247,7 @@ export default class SHFTZBatchDeclList extends React.Component {
   }
 
   render() {
-    const { listFilter, whses, whse, owners } = this.props;
+    const { listFilter, whses, whse, owners, batchlist } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -249,6 +259,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     if (listFilter.status === 'manifesting') {
       columns = this.manifColumns;
     }
+    this.dataSource.remotes = batchlist;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -304,7 +315,7 @@ export default class SHFTZBatchDeclList extends React.Component {
               <RadioButton value="pending">待申请</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="applied">申请完成</RadioButton>
-              <RadioButton value="cleared">报关放行</RadioButton>
+              <RadioButton value="cleared">已报关</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBatchDecl}>
@@ -342,7 +353,7 @@ export default class SHFTZBatchDeclList extends React.Component {
             </div>
           </Content>
         </Layout>
-        <BatchDeclModal />
+        <BatchDeclModal reload={this.handleBatchDeclLoad} />
       </Layout>
     );
   }

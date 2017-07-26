@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, Collapse, DatePicker, Table, Form, Modal, Select, Tag, Input } from 'antd';
+import { Button, Card, Collapse, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -42,6 +43,7 @@ const Option = Select.Option;
 export default class BatchDeclModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    reload: PropTypes.func.isRequired,
   }
   state = {
     ownerCusCode: '',
@@ -224,10 +226,19 @@ export default class BatchDeclModal extends Component {
       rel_no: relNo,
       count: relCountObj[relNo],
     }));
-    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode)[0];
-    this.props.beginBatchDecl(detailIds, relCounts, owner).then((result) => {
+    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode).map(own => ({
+      partner_id: own.id,
+      tenant_id: own.partner_tenant_id,
+      customs_code: own.customs_code,
+      name: own.name,
+    }))[0];
+    const { loginId, loginName } = this.props;
+    this.props.beginBatchDecl(detailIds, relCounts, owner, loginId, loginName).then((result) => {
       if (!result.error) {
         this.handleCancel();
+        this.props.reload();
+      } else {
+        message.error(result.error.message);
       }
     });
   }

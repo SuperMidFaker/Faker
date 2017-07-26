@@ -157,6 +157,17 @@ exports.CWM_SO_BONDED_REGTYPES = [{
   tagcolor: 'yellow',
 }];
 
+exports.CWM_BATCH_APPLYTYPES = [{
+  value: 0,
+  text: '普通报关申请单',
+}, {
+  value: 1,
+  text: '跨关区报关申请单',
+}, {
+  value: 2,
+  text: '保展报关申请单',
+}];
+
 exports.CWM_DOCU_TYPE = {
   receiveTaskList: 0, // 入库任务清单
   putawayTaskList: 1, // 上架任务清单
