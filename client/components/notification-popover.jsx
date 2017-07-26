@@ -103,11 +103,18 @@ export default class NotificationPopover extends React.Component {
     const promises = this.state.messages.map(item => this.props.markMessage({id: item.id, status: MESSAGE_STATUS.read.key}));
     Promise.all(promises).then(this.handleLoad);
   }
+  handleCloseMessage = (record) => {
+    this.props.markMessage({
+      id: record.id,
+      status: MESSAGE_STATUS.read.key,
+    }).then(this.handleLoad);
+  }
   handleReadMessage = (record) => {
     this.props.markMessage({
       id: record.id,
       status: MESSAGE_STATUS.read.key,
     }).then(this.handleLoad);
+    this.context.router.push(record.url);
   }
   // handleSendMessage(data) {
 
@@ -174,11 +181,11 @@ export default class NotificationPopover extends React.Component {
       <div className="popover-body">
       {this.state.messages.map(item => (
         <Alert
-          message={<a onClick={() => this.context.router.push(item.url)} >{item.content}</a>}
+          message={<a onClick={() => this.handleReadMessage(item)} >{item.content}</a>}
           type="info"
           showIcon
           closable
-          onClose={() => this.handleReadMessage(item)}
+          onClose={() => this.handleCloseMessage(item)}
           key={item.id}
         />
       ))}
