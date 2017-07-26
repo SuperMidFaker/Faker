@@ -8,10 +8,14 @@ const messages = defineMessages({
   },
   query: {
     id: 'cwm.stock.query',
+    defaultMessage: '库存查询',
+  },
+  inquiry: {
+    id: 'cwm.stock.action.inquiry',
     defaultMessage: '查询',
   },
   export: {
-    id: 'cwm.stock.export',
+    id: 'cwm.stock.action.export',
     defaultMessage: '导出',
   },
   owner: {

@@ -4,7 +4,7 @@ import { formati18n } from 'client/common/i18n/helpers';
 const messages = defineMessages({
   dashboard: {
     id: 'cwm.dashboard',
-    defaultMessage: '看板',
+    defaultMessage: '工作台',
   },
   stats: {
     id: 'cwm.dashboard.stats',

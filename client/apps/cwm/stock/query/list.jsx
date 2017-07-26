@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Select, Layout, message } from 'antd';
+import { Breadcrumb, Button, Select, Layout, Tooltip, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
-import StockSearchForm from './searchForm';
+import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content, Sider } = Layout;
@@ -55,6 +55,7 @@ export default class StockQueryList extends React.Component {
   }
   state = {
     collapsed: false,
+    selectedRowKeys: [],
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -66,24 +67,25 @@ export default class StockQueryList extends React.Component {
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
-    width: 150,
+    width: 180,
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('SKU'),
     dataIndex: 'product_sku',
-    width: 150,
+    width: 180,
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('descCN'),
     dataIndex: 'desc_cn',
     width: 150,
-    sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('location'),
     width: 120,
     dataIndex: 'location',
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('unit'),
@@ -178,6 +180,12 @@ export default class StockQueryList extends React.Component {
   render() {
     const { defaultWhse, whses, loading, displayedColumns } = this.props;
     const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const dataSource = new Table.DataSource({
       fetcher: () => this.handleStockQuery(this.props.listFilter),
       resolve: result => result.data,
@@ -222,7 +230,7 @@ export default class StockQueryList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <StockSearchForm onSearch={this.handleSearch} />
+          <QueryForm onSearch={this.handleSearch} />
         </Sider>
         <Layout>
           <Header className="page-header">
@@ -239,8 +247,18 @@ export default class StockQueryList extends React.Component {
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
+              <div className="toolbar">
+                <div className="toolbar-right">
+                  <Tooltip title="显示字段设置">
+                    <Button size="large" icon="setting" />
+                  </Tooltip>
+                </div>
+                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                </div>
+              </div>
               <div className="panel-body table-panel">
-                <Table columns={columns} dataSource={dataSource} loading={loading} rowKey="id" bordered
+                <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
                   scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>

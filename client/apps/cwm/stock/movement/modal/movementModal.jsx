@@ -235,19 +235,19 @@ export default class MovementModal extends Component {
         <Card>
           <Form layout="inline" style={{ display: 'inline-block' }}>
             <FormItem label="货主">
-              <Select onChange={this.handleOwnerChange} style={{ width: 160 }} dropdownMatchSelectWidth={false}>
+              <Select onChange={this.handleOwnerChange} style={{ width: 320 }} dropdownMatchSelectWidth={false}>
                 {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
               </Select>
             </FormItem>
             <FormItem label="移库类型">
-              <Select style={{ width: 160 }} />
+              <Select style={{ width: 320 }} />
             </FormItem>
             <FormItem label="原因">
               <Input />
             </FormItem>
           </Form>
         </Card>
-        <Collapse bordered={false} defaultActiveKey={['query', 'detail']}>
+        <Collapse defaultActiveKey={['query', 'detail']} style={{ marginTop: 16 }}>
           <Panel header="库存查询" key="query">
             <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 8 }}>
               <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id" scroll={{ y: 220 }} />

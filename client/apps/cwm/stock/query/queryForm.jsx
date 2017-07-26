@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Select, Radio, Row } from 'antd';
+import { Button, Form, Input, Select, Radio, Col } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
 import { formatMsg } from '../message.i18n';
 
@@ -21,7 +21,7 @@ const RadioGroup = Radio.Group;
   { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList }
 )
 @Form.create()
-export default class StockQueryForm extends React.Component {
+export default class QueryForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -65,11 +65,8 @@ export default class StockQueryForm extends React.Component {
           {getFieldDecorator('owner', {
             initialValue: filter.owner,
           })(
-            <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange}
-              dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-            >
-              <Option key="all" value="">全部货主</Option>
-              {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
+            <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange} allowClear >
+              {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
             </Select>
           )}
         </FormItem>
@@ -88,19 +85,19 @@ export default class StockQueryForm extends React.Component {
             initialValue: filter.search_type,
           })(
             <RadioGroup onChange={this.onChange}>
-              <Row>
+              <Col span={12}>
                 <Radio value={1} onClick={this.checkOwners}>按货主查询</Radio>
                 <Radio value={2} onClick={this.checkProduct}>按货品查询</Radio>
-              </Row>
-              <Row>
+              </Col>
+              <Col span={12}>
                 <Radio value={3} onClick={this.checkLocation}>按库位查询</Radio>
                 <Radio value={4} onClick={this.checkProAndLocation}>按货品/库位查询</Radio>
-              </Row>
+              </Col>
             </RadioGroup>
           )}
         </FormItem>
         <FormItem>
-          <Button type="primary" size="large" onClick={this.handleStockSearch} style={{ width: '100%' }}>{this.msg('query')}</Button>
+          <Button type="primary" size="large" onClick={this.handleStockSearch} style={{ width: '100%' }}>{this.msg('inquiry')}</Button>
         </FormItem>
       </Form>
     );

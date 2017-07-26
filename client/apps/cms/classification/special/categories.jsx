@@ -218,16 +218,14 @@ export default class SpecialCategories extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel" >
-            <div className="toolbar">
-              <Tabs onChange={this.handleTabChange} type="card">
-                <TabPane tab={this.msg('specialSplit')} key="split">
-                  {tabTable}
-                </TabPane>
-                <TabPane tab={this.msg('specialMerge')} key="merge">
-                  {tabTable}
-                </TabPane>
-              </Tabs>
-            </div>
+            <Tabs onChange={this.handleTabChange} type="card">
+              <TabPane tab={this.msg('specialSplit')} key="split">
+                {tabTable}
+              </TabPane>
+              <TabPane tab={this.msg('specialMerge')} key="merge">
+                {tabTable}
+              </TabPane>
+            </Tabs>
           </div>
         </Sider>
         <Layout>
@@ -237,8 +235,8 @@ export default class SpecialCategories extends React.Component {
                 {hscodeCategory.name}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="top-bar-tools">
-              <Button type="primary" size="large">
+            <div className="page-header-tools">
+              <Button type="primary" size="large" ghost>
                 <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
                   formData={{
                     data: JSON.stringify({
