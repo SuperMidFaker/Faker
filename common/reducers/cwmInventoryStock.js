@@ -7,6 +7,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
   'LOAD_STOCKSEARCHOPT', 'LOAD_STOCKSEARCHOPT_SUCCEED', 'LOAD_STOCKSEARCHOPT_FAIL',
   'CHECK_OWNER_COLUMN', 'CHECK_PRODUCT_COLUMN', 'CHECK_LOCATION_COLUMN',
   'CHECK_PRODUCT_LOCATION', 'CHANGE_SEARCH_TYPE', 'CLEAR_LIST',
+  'INVENTORY_SEARCH', 'INVENTORY_SEARCH_SUCCESS', 'INVENTORY_SEARCH_FAIL',
+  'CREATE_MOVEMENT', 'CREATE_MOVEMENT_SUCCESS', 'CREATE_MOVEMENT_FAIL',
 ]);
 
 const initialState = {
@@ -47,7 +49,7 @@ const initialState = {
     visible: false,
     filter: {
       owner: '',
-      product_no: '',
+      productNo: '',
       location: '',
       startTime: '',
       endTime: '',
@@ -235,6 +237,21 @@ export function inventorySearch(filter, tenantId) {
       endpoint: 'v1/cwm/inventory/search',
       method: 'get',
       params: { filter, tenantId },
+    },
+  };
+}
+
+export function createMovement(owner, moveType, reason, details) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CREATE_MOVEMENT,
+        actionTypes.CREATE_MOVEMENT_SUCCESS,
+        actionTypes.CREATE_MOVEMENT_FAIL,
+      ],
+      endpoint: 'v1/cwm/create/movement',
+      method: 'post',
+      data: { owner, moveType, reason, details },
     },
   };
 }
