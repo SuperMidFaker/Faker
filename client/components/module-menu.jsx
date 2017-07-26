@@ -28,6 +28,7 @@ export default class ModuleMenu extends React.Component {
   }
   static contextTypes = {
     location: locationShape,
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedKeys: [],
@@ -37,6 +38,19 @@ export default class ModuleMenu extends React.Component {
       const pathname = this.context.location.pathname;
       for (let i = 0; i < this.props.enabledmods.length; i++) {
         const mod = this.props.enabledmods[i];
+        const emod = DEFAULT_MODULES[mod.id];
+        if (pathname.indexOf(emod.url) === 0) {
+          this.setState({ selectedKeys: [mod.id] });
+          break;
+        }
+      }
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.context.router.location) {
+      const pathname = this.context.router.location.pathname;
+      for (let i = 0; i < nextProps.enabledmods.length; i++) {
+        const mod = nextProps.enabledmods[i];
         const emod = DEFAULT_MODULES[mod.id];
         if (pathname.indexOf(emod.url) === 0) {
           this.setState({ selectedKeys: [mod.id] });
