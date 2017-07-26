@@ -205,7 +205,7 @@ export default class ManifestTemplate extends Component {
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('billTemplates')}
@@ -214,7 +214,7 @@ export default class ManifestTemplate extends Component {
                 {`${templateName}`}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               {operation === 'edit' &&
               <Button size="large" type="ghost" onClick={this.handleCancel}>
                 {this.msg('cancel')}

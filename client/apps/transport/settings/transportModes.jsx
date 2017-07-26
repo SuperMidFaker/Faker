@@ -173,7 +173,7 @@ export default class TransportModes extends Component {
     ];
     return (
       <Layout>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('appSettings')}

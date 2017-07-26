@@ -292,7 +292,7 @@ export default class InventoryStockList extends React.Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('inventory')}
@@ -305,7 +305,7 @@ export default class InventoryStockList extends React.Component {
           <StockSearchForm onSearch={this.handleSearch} />
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('inventory')}
@@ -331,7 +331,7 @@ export default class InventoryStockList extends React.Component {
               listFilter.wh_no === '_all_' &&
               <Checkbox onChange={this.handleSkuGroupCheck}>{this.msg('groupBySku')}</Checkbox>
             }
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button type="primary" size="large" icon="export" ghost>
                 {this.msg('exportInventory')}
               </Button>

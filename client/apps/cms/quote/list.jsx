@@ -387,7 +387,7 @@ export default class QuoteList extends Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('billing')}
@@ -405,7 +405,7 @@ export default class QuoteList extends Component {
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
             <RadioButton value="draft">{msg('filterDraft')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNew}>
               新建报价
             </Button>

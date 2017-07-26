@@ -103,7 +103,7 @@ export default class ReceiveInbound extends Component {
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {defaultWhse.name}
@@ -115,7 +115,7 @@ export default class ReceiveInbound extends Component {
               {this.props.params.inboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Tooltip title="打印入库单" placement="bottom">
               <Button size="large" icon="printer" onClick={this.handlePrint} />

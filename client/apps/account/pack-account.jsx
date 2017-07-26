@@ -25,7 +25,7 @@ export default class AccountPack extends React.Component {
         <Header>
           <HeaderNavBar title="帐号设置" compact />
         </Header>
-        <Content className="main-content main-content-no-top-bar layout-fixed-width">
+        <Content className="main-content main-content-no-page-header layout-fixed-width">
           <Row gutter={16}>
             <Col span={6}>
               <Menu defaultSelectedKeys={['profile']} mode="inline">

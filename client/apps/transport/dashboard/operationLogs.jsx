@@ -224,10 +224,10 @@ export default class Dashboard extends React.Component {
     }
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <span>{this.msg(type)}</span>
           {radio}
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" ghost icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
           </div>
         </Header>

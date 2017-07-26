@@ -74,13 +74,13 @@ export default class ApiAuthList extends React.Component {
   render() {
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Icon type="api" /> API接口授权
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content">
           <QueueAnim type="right">

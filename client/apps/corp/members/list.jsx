@@ -334,7 +334,7 @@ export default class MemberDepartmentView extends React.Component {
       </div>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('members')}

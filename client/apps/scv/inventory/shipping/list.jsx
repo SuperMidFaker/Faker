@@ -107,7 +107,7 @@ export default class ShippingOrderList extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('inventory')}
@@ -120,7 +120,7 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="pending">{this.msg('pending')}</RadioButton>
             <RadioButton value="shipped">{this.msg('shipped')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
               {this.msg('createShippingOrder')}
             </Button>

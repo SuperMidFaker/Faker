@@ -541,7 +541,7 @@ export default class TradeItemList extends Component {
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -560,7 +560,7 @@ export default class TradeItemList extends Component {
             <RadioGroup value={listFilter.status} onChange={this.handleConflictRadio} size="large">
               <RadioButton value="conflicted"><Icon type="exclamation-circle-o" /> {this.msg('filterConflict')}</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Dropdown.Button size="large" onClick={this.handleDropdownButtonClick} overlay={importMenu}>
                 <Icon type="upload" /> {this.msg('importItems')}
               </Dropdown.Button>

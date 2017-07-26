@@ -115,7 +115,7 @@ export default class ManifestHeadPanel extends React.Component {
             <Button icon="reload" style={{ marginLeft: 8 }}>重置</Button>
           </Popconfirm>}
         </div>
-        <div className="pane-content">
+        <div className="pane-content form-layout-compact">
           <Form layout="horizontal">
             <Card>
               <Row>

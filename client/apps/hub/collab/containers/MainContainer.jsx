@@ -42,7 +42,7 @@ export default class MainContainer extends Component {
     const content = components[invitationType];
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Icon type="team" /> 协作邀请

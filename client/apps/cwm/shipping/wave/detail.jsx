@@ -119,7 +119,7 @@ export default class WaveDetail extends Component {
     const { waveHead } = this.state;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {defaultWhse.name}
@@ -131,7 +131,7 @@ export default class WaveDetail extends Component {
               {this.props.params.waveNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             {this.state.allocated && !this.state.picked &&
             <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
             }

@@ -615,7 +615,7 @@ export default class DelegationList extends Component {
     return (
       <Layout>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('delegationManagement')}
@@ -634,7 +634,7 @@ export default class DelegationList extends Component {
               <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
               <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
                 {this.msg('createDelegation')}
               </Button>

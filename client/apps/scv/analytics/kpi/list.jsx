@@ -204,7 +204,7 @@ export default class AnalyticsKpiList extends React.Component {
     }];
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <header className="top-bar">
+        <header className="page-header">
           <div className="toolbar-right" />
           <span>{this.msg('analyticsKpi')}</span>
         </header>

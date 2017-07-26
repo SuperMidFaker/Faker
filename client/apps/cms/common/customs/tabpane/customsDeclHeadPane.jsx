@@ -81,7 +81,7 @@ export default class CustomsDeclHeadPanel extends React.Component {
               </Col>
             </Row>
           </div>
-          <div className="pane-content">
+          <div className="pane-content form-layout-compact">
             <Card>
               <Row>
                 <Col span="8">

@@ -92,7 +92,7 @@ export default class ResourcesList extends Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 设置
@@ -115,7 +115,7 @@ export default class ResourcesList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {customer.name}

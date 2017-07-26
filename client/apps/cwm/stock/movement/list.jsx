@@ -11,7 +11,7 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
-import { openMovementModal } from 'common/reducers/cwmStock';
+import { openMovementModal } from 'common/reducers/cwmInventoryStock';
 import { loadOutbounds } from 'common/reducers/cwmOutbound';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
@@ -229,7 +229,7 @@ export default class MovementList extends React.Component {
     };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
@@ -242,7 +242,7 @@ export default class MovementList extends React.Component {
               {this.msg('movement')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateMovement}>
               {this.msg('createMovement')}
             </Button>

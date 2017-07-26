@@ -297,7 +297,7 @@ export default class ManifestList extends Component {
     return (
       <Layout>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
@@ -311,7 +311,7 @@ export default class ManifestList extends Component {
               <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
               <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <ButtonToggle size="large" iconOff="book" iconOn="book" onClick={this.toggleRightSider} >模板</ButtonToggle>
             </div>
           </Header>

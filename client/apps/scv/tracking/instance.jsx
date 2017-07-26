@@ -216,7 +216,7 @@ export default class Instance extends Component {
     const tableWidth = trackingItems.map(item => item.width).reduce((a, b) => a + b, 0);
     return (
       <Layout>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('shipmentsTracking')}
@@ -225,7 +225,7 @@ export default class Instance extends Component {
               {tracking.name}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" ghost icon="export" onClick={this.handleExport}>导出</Button>
           </div>
         </Header>

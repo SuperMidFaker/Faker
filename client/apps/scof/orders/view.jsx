@@ -46,7 +46,7 @@ export default class View extends Component {
   render() {
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('shipmentOrders')}
@@ -55,7 +55,7 @@ export default class View extends Component {
               {this.msg('viewOrder')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>

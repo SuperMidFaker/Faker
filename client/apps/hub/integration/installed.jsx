@@ -163,13 +163,13 @@ export default class InstalledAppsList extends React.Component {
     this.dataSource.remotes = applist;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Icon type="appstore-o" /> {this.msg('integration')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content">
           <QueueAnim type="right">

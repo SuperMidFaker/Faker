@@ -185,7 +185,7 @@ export default class StockQueryList extends React.Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
@@ -202,8 +202,8 @@ export default class StockQueryList extends React.Component {
           <StockSearchForm onSearch={this.handleSearch} />
         </Sider>
         <Layout>
-          <Header className="top-bar">
-            <div className="top-bar-tools">
+          <Header className="page-header">
+            <div className="page-header-tools">
               <Button type="primary" size="large" icon="export" ghost>
                 {this.msg('exportInventory')}
               </Button>

@@ -36,7 +36,7 @@ export default class SCOFDashboard extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <div className="toolbar-right" />
           <span>{this.msg('dashboardTitle')}</span>
         </Header>

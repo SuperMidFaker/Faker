@@ -63,7 +63,7 @@ export default class EditProductSku extends Component {
     const { form, submitting } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('products')}
@@ -75,7 +75,7 @@ export default class EditProductSku extends Component {
               SKU
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" onClick={this.handleCancelBtnClick}>
               {this.msg('duplicate')}
             </Button>

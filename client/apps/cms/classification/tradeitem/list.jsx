@@ -701,7 +701,7 @@ export default class TradeItemList extends Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -729,7 +729,7 @@ export default class TradeItemList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -760,7 +760,7 @@ export default class TradeItemList extends Component {
               </RadioGroup>
             }
             {repoId &&
-              <div className="top-bar-tools">
+              <div className="page-header-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
                     <Dropdown.Button size="large" overlay={importMenu}>

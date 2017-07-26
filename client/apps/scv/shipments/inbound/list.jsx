@@ -356,7 +356,7 @@ export default class InboundShipmentsList extends React.Component {
     );
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('shipmentsTracking')}
@@ -377,7 +377,7 @@ export default class InboundShipmentsList extends React.Component {
             <RadioButton value="air"><i className="zmdi zmdi-airplane" /></RadioButton>
             <RadioButton value="inland"><i className="zmdi zmdi-truck" /></RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Upload accept=".xls,.xlsx" action={`${API_ROOTS.scv}v1/scv/inbound/import/shipments`}
               data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
               showUploadList={false} withCredentials

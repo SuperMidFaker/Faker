@@ -94,7 +94,7 @@ export default class RulesList extends Component {
     return (
       <Layout>
         <Sider width={280} className="menu-sider" key="sider">
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('settings')}
@@ -119,13 +119,13 @@ export default class RulesList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.state.currentKey}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
             </div>
           </Header>

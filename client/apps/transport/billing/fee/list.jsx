@@ -491,7 +491,7 @@ export default class FeesList extends React.Component {
     const { startDate, endDate, filters } = this.props.fees;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('billingCenter')}
@@ -506,7 +506,7 @@ export default class FeesList extends React.Component {
             <RadioButton value="intransit">在途</RadioButton>
             <RadioButton value="delivered">已送货</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
           </div>
         </Header>

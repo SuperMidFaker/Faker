@@ -168,7 +168,7 @@ export default class CustomizeTracking extends React.Component {
           collapsedWidth={0}
         >
 
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('shipmentsTrackingCustomize')}
@@ -197,7 +197,7 @@ export default class CustomizeTracking extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('shipmentsTrackingCustomize')}
@@ -211,7 +211,7 @@ export default class CustomizeTracking extends React.Component {
               onClick={this.toggle}
               toggle
             />
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button type="primary" size="large" ghost disabled={this.state.trackings.length === 0} onClick={this.handleEdit}>跟踪表设置</Button>
             </div>
           </Header>

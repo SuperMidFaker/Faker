@@ -49,10 +49,7 @@ img {
     border-color: #f04134;
 }
 .ant-card{
-  margin-bottom: 16px;
-  .ant-form-item {
-    margin-bottom: 16px;
-  }
+
   .ant-collapse {
     border: none;
   }
@@ -472,15 +469,18 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     min-width: 1200px;
   }
 }
-.top-bar {
+.page-header {
   position: fixed;
   width: 100%;
-  height: @top-bar-height;
+  height: @page-header-height;
   z-index: 30;
   background: rgba(252,252,252,0.95);
   padding: 0 16px;
   line-height: 48px;
   box-shadow: 0 0 1px 0 rgba(0,0,0,0.14);
+  label {
+    font-size: 14px;
+  }
   >span {
     font-size: 14px;
     font-weight: bold;
@@ -505,7 +505,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
       display: none;
     }
   }
-  .top-bar-tools {
+  .page-header-tools {
     position: fixed;
     right: 16px;
     background: rgba(252,252,252,0.95);
@@ -594,10 +594,10 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   padding: 64px 16px 0;
   min-height:100%;
   overflow-x: hidden;
-  &-no-top-bar {
+  &-no-page-header {
     padding: 24px 16px 0;
   }
-  &.no-top-bar {
+  &.no-page-header {
     padding: 24px 16px 0;
   }
   &.readonly {

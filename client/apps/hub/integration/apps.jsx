@@ -21,13 +21,13 @@ export default class IntegrationAppsList extends React.Component {
   render() {
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Icon type="shop" /> 应用商店
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content">
           <QueueAnim type="right">

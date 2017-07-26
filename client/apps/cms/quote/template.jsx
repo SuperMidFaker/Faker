@@ -50,7 +50,7 @@ export default class QuoteTemplate extends Component {
   render() {
     return (
       <Layout>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('billing')}

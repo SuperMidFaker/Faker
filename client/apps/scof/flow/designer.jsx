@@ -506,7 +506,7 @@ export default class FlowDesigner extends React.Component {
     return (
       <Layout>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             {listCollapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('flowName')}
@@ -520,7 +520,7 @@ export default class FlowDesigner extends React.Component {
               onClick={this.toggle}
               toggle
             />
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
                 {this.msg('saveFlow')}
               </Button>

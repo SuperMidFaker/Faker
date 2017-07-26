@@ -113,7 +113,7 @@ export default class EditToolbar extends Component {
       </Menu>
     );
     return (
-      <div className="top-bar-tools">
+      <div className="page-header-tools">
         <Dropdown overlay={menu}>
           <Button size="large">{this.msg('more')} <Icon type="down" /></Button>
         </Dropdown>

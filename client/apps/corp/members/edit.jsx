@@ -142,7 +142,7 @@ export default class CorpEdit extends React.Component {
     return (
       <Form layout="horizontal" onSubmit={this.handleSubmit} >
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {msg('members')}
@@ -151,7 +151,7 @@ export default class CorpEdit extends React.Component {
                 {msg('addMember')}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button size="large" onClick={this.handleCancel} disabled={submitting}>
                 {formatGlobalMsg(intl, 'cancel')}
               </Button>

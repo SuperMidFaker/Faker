@@ -289,7 +289,7 @@ export default class OrderList extends React.Component {
     });
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('shipmentOrders')}
@@ -307,7 +307,7 @@ export default class OrderList extends React.Component {
             <RadioButton value={SCOF_ORDER_TRANSFER[1].value}><Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}</RadioButton>
             <RadioButton value={SCOF_ORDER_TRANSFER[2].value}><Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}
             </Button>

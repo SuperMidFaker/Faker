@@ -37,7 +37,7 @@ export default class QuotingCreate extends Component {
     const { form } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <span>{this.msg('newQuote')}</span>
         </Header>
         <EditToolbar form={form} action="create" />

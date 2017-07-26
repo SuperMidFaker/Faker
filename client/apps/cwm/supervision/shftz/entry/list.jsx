@@ -204,7 +204,7 @@ export default class SHFTZEntryList extends React.Component {
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
@@ -240,7 +240,7 @@ export default class SHFTZEntryList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
@@ -256,7 +256,7 @@ export default class SHFTZEntryList extends React.Component {
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools" />
+            <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">

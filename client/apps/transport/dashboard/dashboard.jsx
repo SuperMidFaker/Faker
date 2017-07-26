@@ -55,13 +55,13 @@ export default class Dashboard extends React.Component {
       <QueueAnim type={['bottom', 'up']}>
         <Layout>
           <Layout>
-            <Header className="top-bar">
+            <Header className="page-header">
               <Breadcrumb>
                 <Breadcrumb.Item>
                   {this.msg('dashboard')}
                 </Breadcrumb.Item>
               </Breadcrumb>
-              <div className="top-bar-tools" style={{ marginRight: collapsed ? 0 : 330 }}>
+              <div className="page-header-tools" style={{ marginRight: collapsed ? 0 : 330 }}>
                 <ButtonToggle size="large"
                   iconOn="menu-unfold" iconOff="menu-fold"
                   onClick={this.toggle}

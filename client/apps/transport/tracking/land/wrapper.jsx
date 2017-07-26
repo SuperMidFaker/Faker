@@ -112,7 +112,7 @@ export default class TrackingLandWrapper extends React.Component {
       <QueueAnim animConfig={[{ opacity: [1, 0], translateY: [0, 50] },
             { opacity: [1, 0], translateY: [0, -50] }]}
       >
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('transportTracking')}
@@ -136,7 +136,7 @@ export default class TrackingLandWrapper extends React.Component {
           <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <PrivilegeCover module="transport" feature="tracking" action="create">
               <ExportExcel />
             </PrivilegeCover>

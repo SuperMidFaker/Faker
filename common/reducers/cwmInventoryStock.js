@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
+  'OPEN_MOVEMENT_MODAL', 'CLOSE_MOVEMENT_MODAL',
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
   'LOAD_STOCKSEARCHOPT', 'LOAD_STOCKSEARCHOPT_SUCCEED', 'LOAD_STOCKSEARCHOPT_FAIL',
   'CHECK_OWNER_COLUMN', 'CHECK_PRODUCT_COLUMN', 'CHECK_LOCATION_COLUMN',
@@ -40,10 +41,17 @@ const initialState = {
     warehouses: [],
     categories: [],
   },
+  movementModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.OPEN_MOVEMENT_MODAL:
+      return { ...state, movementModal: { ...state.movementModal, visible: true, ...action.data } };
+    case actionTypes.CLOSE_MOVEMENT_MODAL:
+      return { ...state, movementModal: { ...state.movementModal, visible: false } };
     case actionTypes.LOAD_STOCKS:
       return { ...state,
         loading: true,
@@ -108,6 +116,18 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function openMovementModal() {
+  return {
+    type: actionTypes.OPEN_MOVEMENT_MODAL,
+  };
+}
+
+export function closeMovementModal() {
+  return {
+    type: actionTypes.CLOSE_MOVEMENT_MODAL,
+  };
 }
 
 export function loadStocks(params) {

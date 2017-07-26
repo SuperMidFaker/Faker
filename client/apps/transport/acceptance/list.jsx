@@ -489,13 +489,13 @@ export default class AcceptList extends React.Component {
     );
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('transportShipment')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick} disabled>
               {this.msg('shipmtCreate')}
             </Button>

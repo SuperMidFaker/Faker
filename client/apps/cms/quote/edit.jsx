@@ -49,7 +49,7 @@ export default class QuotingEdit extends Component {
     const { form } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <QuoteTitle />
           <EditToolbar form={form} onFormError={this.handleFormError} />
         </Header>

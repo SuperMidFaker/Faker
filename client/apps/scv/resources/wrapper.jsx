@@ -20,7 +20,7 @@ export default class ScvResourceWrapper extends React.Component {
     const { children, menuKey } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {menuKey === 'warehouse' && '仓库'}

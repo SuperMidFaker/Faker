@@ -258,13 +258,13 @@ export default class CorpInfo extends React.Component {
     const msg = descriptor => formatMsg(this.props.intl, descriptor);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <i className="icon-fontello-building" /> {msg('corpInfo')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg" key="main">
           <Row gutter={16}>

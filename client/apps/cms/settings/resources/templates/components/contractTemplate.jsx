@@ -75,7 +75,7 @@ export default class ContractTemplate extends React.Component {
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider">
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Icon type="left" /> <NavLink to="/clearance/settings/doctemplates">{this.msg('contract')}</NavLink>

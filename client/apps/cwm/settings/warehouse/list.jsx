@@ -112,7 +112,7 @@ export default class WarehouseList extends Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 设置
@@ -142,7 +142,7 @@ export default class WarehouseList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {warehouse.name} ({warehouse.code}) {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}

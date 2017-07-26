@@ -122,7 +122,7 @@ export default class BrokerList extends Component {
     ];
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               设置
@@ -131,7 +131,7 @@ export default class BrokerList extends Component {
               报关报检代理
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <PrivilegeCover module="clearance" feature="resources" action="create">
               <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus">新增</Button>
             </PrivilegeCover>

@@ -504,7 +504,7 @@ export default class CustomsList extends Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
@@ -523,7 +523,7 @@ export default class CustomsList extends Component {
           <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
             <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">

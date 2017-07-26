@@ -145,17 +145,17 @@ export default class Main extends Component {
     }
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <span>{`${formData.quoteNo} - ${formData.partnerName ? formData.partnerName : ''} - ${kindText}`}</span>
           { type === 'edit' && (
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button type="default" size="large" onClick={this.handleSubmit} loading={saving}>保存</Button>
               <Button type="primary" size="large" onClick={() => this.props.showPublishTariffModal(true)}>发布</Button>
               <PublishTariffModal tariffForm={this.props.form} />
             </div>
             )}
           { (type === 'create') && (
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button type="default" size="large" onClick={this.handleSubmit} loading={saving}>保存</Button>
             </div>
           )}

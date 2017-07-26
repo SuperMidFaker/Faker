@@ -43,7 +43,7 @@ export default class QuotingView extends Component {
     const { form } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <QuoteTitle />
         </Header>
         <Content className="main-content">

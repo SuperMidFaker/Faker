@@ -259,9 +259,9 @@ export default class FeesList extends React.Component {
     const { startDate, endDate } = this.props.fees;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <span>{this.msg('fee')}</span>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <SearchBar placeholder="输入订单号搜索" onInputSearch={this.handleSearchInput}
               value={this.props.fees.searchValue} size="large"
             />
