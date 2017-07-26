@@ -476,7 +476,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
             <Alert message={stats} type="info" />
           </div>
         </div>
-        <div className="panel-body">
+        <div className="panel-body table-panel">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
             scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination}
           />

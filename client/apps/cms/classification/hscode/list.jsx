@@ -169,7 +169,7 @@ export default class HsCodeList extends Component {
               <div className="toolbar">
                 <Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} size="large" style={{ width: 400 }} />
               </div>
-              <div className="panel-body">
+              <div className="panel-body table-panel">
                 <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" bordered
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
                 />
