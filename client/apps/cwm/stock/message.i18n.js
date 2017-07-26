@@ -46,6 +46,14 @@ const messages = defineMessages({
     id: 'cwm.stock.frozen.qty',
     defaultMessage: '冻结数量',
   },
+  bondedQty: {
+    id: 'cwm.stock.bonded.qty',
+    defaultMessage: '保税数量',
+  },
+  nonbondedQty: {
+    id: 'cwm.stock.nonbonded.qty',
+    defaultMessage: '非保税数量',
+  },
   grossWeight: {
     id: 'cwm.stock.gross.weight',
     defaultMessage: '毛重',

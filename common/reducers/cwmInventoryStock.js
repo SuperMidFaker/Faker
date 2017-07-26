@@ -22,6 +22,8 @@ const initialState = {
     avail_qty: false,
     alloc_qty: false,
     frozen_qty: false,
+    bonded_qty: false,
+    nonbonded_qty: false,
     location: false,
     owner_name: false,
     unit: false,
@@ -73,54 +75,62 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHECK_OWNER_COLUMN:
       return { ...state,
         displayedColumns: {
+          owner_name: true,
           product_no: false,
           product_sku: false,
           desc_cn: false,
           avail_qty: false,
           alloc_qty: false,
           frozen_qty: false,
+          bonded_qty: false,
+          nonbonded_qty: false,
           location: false,
           unit: false,
-          owner_name: true,
         } };
     case actionTypes.CHECK_PRODUCT_COLUMN:
       return { ...state,
         displayedColumns: {
-          avail_qty: true,
-          alloc_qty: true,
-          frozen_qty: true,
+          owner_name: true,
           product_no: true,
           product_sku: true,
           desc_cn: true,
+          avail_qty: true,
+          alloc_qty: true,
+          frozen_qty: true,
+          bonded_qty: true,
+          nonbonded_qty: true,
           location: false,
           unit: false,
-          owner_name: true,
         } };
     case actionTypes.CHECK_LOCATION_COLUMN:
       return { ...state,
         displayedColumns: {
+          owner_name: false,
           product_no: false,
           product_sku: false,
           desc_cn: false,
           avail_qty: false,
           alloc_qty: false,
           frozen_qty: false,
+          bonded_qty: false,
+          nonbonded_qty: false,
           location: true,
-          owner_name: false,
           unit: false,
         } };
     case actionTypes.CHECK_PRODUCT_LOCATION:
       return {
         ...state,
         displayedColumns: {
+          owner_name: true,
           product_no: true,
           product_sku: true,
           desc_cn: true,
           avail_qty: true,
           alloc_qty: true,
           frozen_qty: true,
+          bonded_qty: true,
+          nonbonded_qty: true,
           location: true,
-          owner_name: true,
           unit: false,
         },
       };

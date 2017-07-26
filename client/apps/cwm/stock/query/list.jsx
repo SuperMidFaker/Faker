@@ -116,16 +116,28 @@ export default class StockQueryList extends React.Component {
     className: 'cell-align-right text-error',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
+    title: this.msg('bondedQty'),
+    width: 100,
+    dataIndex: 'bonded_qty',
+    className: 'cell-align-right',
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
+    title: this.msg('nonbondedQty'),
+    width: 100,
+    dataIndex: 'nonbonded_qty',
+    className: 'cell-align-right',
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
     title: this.msg('grossWeight'),
     dataIndex: 'gross_weight',
     className: 'cell-align-right',
-    width: 150,
+    width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('cbm'),
     dataIndex: 'cbm',
     className: 'cell-align-right',
-    width: 150,
+    width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     dataIndex: 'spacer',
@@ -228,7 +240,9 @@ export default class StockQueryList extends React.Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="panel-body table-panel">
-                <Table columns={columns} dataSource={dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} bordered />
+                <Table columns={columns} dataSource={dataSource} loading={loading} rowKey="id" bordered
+                  scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+                />
               </div>
             </div>
           </Content>
