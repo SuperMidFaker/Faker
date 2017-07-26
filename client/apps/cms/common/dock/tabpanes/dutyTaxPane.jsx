@@ -73,6 +73,7 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'duty_paid',
     key: 'duty_paid',
     width: 110,
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -91,6 +92,7 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'duty_tax',
     key: 'duty_tax',
     width: 110,
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -99,6 +101,7 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'vat_tax',
     key: 'vat_tax',
     width: 110,
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -106,6 +109,7 @@ export default class DutyTaxPane extends React.Component {
     title: '消费税',
     dataIndex: 'excise_tax',
     key: 'excise_tax',
+    className: 'cell-align-right',
     width: 110,
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
@@ -115,6 +119,7 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'total_tax',
     key: 'total_tax',
     width: 110,
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -127,6 +132,7 @@ export default class DutyTaxPane extends React.Component {
     title: '运费/率',
     dataIndex: 'ship_fee',
     key: 'ship_fee',
+    className: 'cell-align-right',
     render(o, record) {
       if (record.ship_mark === CMS_FEE_UNIT[1].value) {
         const val = o ? o * 100 : 0;
@@ -139,6 +145,7 @@ export default class DutyTaxPane extends React.Component {
     title: '保费/率',
     dataIndex: 'insur_fee',
     key: 'insur_fee',
+    className: 'cell-align-right',
     render(o, record) {
       if (record.insur_mark === CMS_FEE_UNIT[1].value) {
         const val = o ? o * 100 : 0;
@@ -151,6 +158,7 @@ export default class DutyTaxPane extends React.Component {
     title: '杂费/率',
     dataIndex: 'other_fee',
     key: 'other_fee',
+    className: 'cell-align-right',
     render(o, record) {
       if (record.other_mark === CMS_FEE_UNIT[1].value) {
         const val = o ? o * 100 : 0;
@@ -163,6 +171,7 @@ export default class DutyTaxPane extends React.Component {
     title: '完税价格',
     dataIndex: 'duty_paid',
     key: 'duty_paid',
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -170,10 +179,12 @@ export default class DutyTaxPane extends React.Component {
     title: '关税率',
     dataIndex: 'duty_rate',
     key: 'duty_rate',
+    className: 'cell-align-right',
   }, {
     title: '关税',
     dataIndex: 'duty_tax',
     key: 'duty_tax',
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -181,10 +192,12 @@ export default class DutyTaxPane extends React.Component {
     title: '增值税率',
     dataIndex: 'vat_rates',
     key: 'vat_rates',
+    className: 'cell-align-right',
   }, {
     title: '增值税',
     dataIndex: 'vat_tax',
     key: 'vat_tax',
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -192,10 +205,12 @@ export default class DutyTaxPane extends React.Component {
     title: '消费税率',
     dataIndex: 'gst_rates',
     key: 'gst_rates',
+    className: 'cell-align-right',
   }, {
     title: '消费税',
     dataIndex: 'excise_tax',
     key: 'excise_tax',
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -203,6 +218,7 @@ export default class DutyTaxPane extends React.Component {
     title: '缴税金额',
     dataIndex: 'total_tax',
     key: 'total_tax',
+    className: 'cell-align-right',
     render(o) {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
@@ -233,27 +249,23 @@ export default class DutyTaxPane extends React.Component {
   render() {
     return (
       <div className="pane-content tab-pane">
-        <div className="pane-header">
-          <Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
-            <Button icon="reload" loading={this.state.recalLoading}>预估税金</Button>
-          </Popconfirm>
-          <div style={{ float: 'right' }}>
-            <span style={{ color: '#FF9933' }}>单位：CNY</span>
-          </div>
-        </div>
-        <Card bodyStyle={{ padding: 0 }}>
+        <Table size="middle" showHeader={false} pagination={false} dataSource={this.state.sumval}>
+          <Column dataIndex="total" width={230} className="sub-total" />
+          <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} className="sub-total" />
+          <Column dataIndex="trxn_mode" width={110} />
+          <Column dataIndex="duty_tax" width={110} render={this.renderValFixed} className="sub-total" />
+          <Column dataIndex="vat_tax" width={110} render={this.renderValFixed} className="sub-total" />
+          <Column dataIndex="excise_tax" width={110} render={this.renderValFixed} className="sub-total" />
+          <Column dataIndex="total_tax" width={110} render={this.renderValFixed} className="sub-total" />
+        </Table>
+        <Card title="缴税明细" bodyStyle={{ padding: 0 }}
+          extra={<Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
+            <Button icon="calculator" loading={this.state.recalLoading}>估算</Button>
+          </Popconfirm>}
+        >
           <Table size="middle" columns={this.columns} pagination={false} dataSource={this.props.taxTots}
             rowKey="pre_entry_seq_no" expandedRowRender={this.handleExpandDetail}
           />
-          <Table size="middle" showHeader={false} pagination={false} dataSource={this.state.sumval}>
-            <Column dataIndex="total" width={230} className="sub-total" />
-            <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} className="sub-total" />
-            <Column dataIndex="trxn_mode" width={110} />
-            <Column dataIndex="duty_tax" width={110} render={this.renderValFixed} className="sub-total" />
-            <Column dataIndex="vat_tax" width={110} render={this.renderValFixed} className="sub-total" />
-            <Column dataIndex="excise_tax" width={110} render={this.renderValFixed} className="sub-total" />
-            <Column dataIndex="total_tax" width={110} render={this.renderValFixed} className="sub-total" />
-          </Table>
         </Card>
       </div>
     );

@@ -25,8 +25,7 @@ const TabPane = Tabs.TabPane;
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
-    formData: state.cmsDelegation.formData,
-    submitting: state.cmsDelegation.submitting,
+    submitting: state.cwmShippingOrder.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
     temporaryDetails: state.cwmReceive.temporaryDetails,
     owners: state.cwmContext.whseAttrs.owners,
@@ -43,7 +42,6 @@ export default class CreateShippingOrder extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
@@ -135,7 +133,7 @@ export default class CreateShippingOrder extends Component {
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
             <HeadForm form={form} handleOwnerChange={this.handleOwnerChange} />
-            <Card bodyStyle={{ padding: 0 }}>
+            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
                   <DetailForm editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />

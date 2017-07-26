@@ -6,6 +6,14 @@ const messages = defineMessages({
     id: 'cwm.receiving',
     defaultMessage: '入库',
   },
+  save: {
+    id: 'cwm.receiving.save',
+    defaultMessage: '保存',
+  },
+  cancel: {
+    id: 'cwm.receiving.cancel',
+    defaultMessage: '取消',
+  },
   receivingASN: {
     id: 'cwm.receiving.asn',
     defaultMessage: '收货通知ASN',

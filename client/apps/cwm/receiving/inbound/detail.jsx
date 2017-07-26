@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Dropdown, Form, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip } from 'antd';
+import { Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -26,7 +26,6 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    tenantName: state.account.tenantName,
     defaultWhse: state.cwmContext.defaultWhse,
     inboundHead: state.cwmReceive.inboundFormHead,
     reload: state.cwmReceive.inboundReload,
@@ -40,7 +39,6 @@ const TabPane = Tabs.TabPane;
 export default class ReceiveInbound extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantName: PropTypes.string.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -137,48 +135,46 @@ export default class ReceiveInbound extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }}>
-              <Row>
-                <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="货主" field={inboundHead.owner_name} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="ASN编号" field={inboundHead.asn_no} />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem addonBefore="总预期数量" field={inboundHead.total_expect_qty} />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem addonBefore="总实收数量" field={inboundHead.total_received_qty} />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem addonBefore="装箱数量" field={inboundHead.convey_box_qty} editable />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem addonBefore="码盘数量" field={inboundHead.convey_pallet_qty} editable />
-                </Col>
-              </Row>
-              <div className="card-footer">
-                <Steps progressDot current={currentStatus}>
-                  <Step description="待入库" />
-                  <Step description="收货" />
-                  <Step description="上架" />
-                  <Step description="已入库" />
-                </Steps>
-              </div>
-            </Card>
-            <Card bodyStyle={{ padding: 0 }}>
-              <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
-                <TabPane tab="收货明细" key="receiveDetails">
-                  <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
-                </TabPane>
-                <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
-                  <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
-                </TabPane>
-              </Tabs>
-            </Card>
-          </Form>
+          <Card bodyStyle={{ paddingBottom: 56 }}>
+            <Row>
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="货主" field={inboundHead.owner_name} />
+              </Col>
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="ASN编号" field={inboundHead.asn_no} />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem addonBefore="总预期数量" field={inboundHead.total_expect_qty} />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem addonBefore="总实收数量" field={inboundHead.total_received_qty} />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem addonBefore="装箱数量" field={inboundHead.convey_box_qty} editable />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem addonBefore="码盘数量" field={inboundHead.convey_pallet_qty} editable />
+              </Col>
+            </Row>
+            <div className="card-footer">
+              <Steps progressDot current={currentStatus}>
+                <Step description="待入库" />
+                <Step description="收货" />
+                <Step description="上架" />
+                <Step description="已入库" />
+              </Steps>
+            </div>
+          </Card>
+          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+            <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
+              <TabPane tab="收货明细" key="receiveDetails">
+                <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
+              </TabPane>
+              <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
+                <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
+              </TabPane>
+            </Tabs>
+          </Card>
         </Content>
       </div>
     );

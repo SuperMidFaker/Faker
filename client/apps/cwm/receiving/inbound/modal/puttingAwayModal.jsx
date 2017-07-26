@@ -101,7 +101,7 @@ export default class PuttingAwayModal extends Component {
           <Input onChange={this.handleAllocaterChange} value={this.state.allocater} />
         </FormItem>
         <FormItem {...formItemLayout} label="上架时间" >
-          <DatePicker onChange={this.handleAllocateDateChange} value={this.state.date} />
+          <DatePicker onChange={this.handleAllocateDateChange} value={this.state.date} showTime format="YYYY-MM-DD HH:mm" />
         </FormItem>
       </Modal>
     );

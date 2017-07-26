@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Row, Col, Button, Select, message } from 'antd';
+import { Breadcrumb, Form, Layout, Card, Tabs, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadForm from './forms/headForm';
 import DetailForm from './forms/detailForm';
-import SiderForm from './forms/siderForm';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { addASN, clearTemporary } from 'common/reducers/cwmReceive';
@@ -14,6 +13,7 @@ import { addASN, clearTemporary } from 'common/reducers/cwmReceive';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -22,8 +22,7 @@ const Option = Select.Option;
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
-    formData: state.cmsDelegation.formData,
-    submitting: state.cmsDelegation.submitting,
+    submitting: state.cwmReceive.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
     temporaryDetails: state.cwmReceive.temporaryDetails,
     owners: state.cwmContext.whseAttrs.owners,
@@ -40,7 +39,6 @@ export default class CreateReceivingASN extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
     submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
@@ -133,14 +131,13 @@ export default class CreateReceivingASN extends Component {
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
             <HeadForm form={form} handleOwnerChange={this.handleOwnerChange} />
-            <Row gutter={16}>
-              <Col span={18}>
-                <DetailForm editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
-              </Col>
-              <Col span={6}>
-                <SiderForm form={form} />
-              </Col>
-            </Row>
+            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+              <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
+                <TabPane tab="收货明细" key="orderDetails">
+                  <DetailForm editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
+                </TabPane>
+              </Tabs>
+            </Card>
           </Form>
         </Content>
       </div>

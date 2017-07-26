@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Tabs, Button, Card, Col, Row } from 'antd';
+import { Breadcrumb, Layout, Tabs, Button, Card, Col, Row } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -22,9 +22,6 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    tenantName: state.account.tenantName,
-    formData: state.cmsDelegation.formData,
-    submitting: state.cmsDelegation.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   { loadReceiveModal, loadWaveHead, releaseWave }
@@ -33,14 +30,9 @@ const TabPane = Tabs.TabPane;
   depth: 3,
   moduleName: 'cwm',
 })
-@Form.create()
 export default class WaveDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
-    submitting: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -139,34 +131,32 @@ export default class WaveDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Form layout="vertical">
-            <Card>
-              <Row>
-                <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="波次号" field={this.props.params.waveNo} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="说明" field="米思米华东DC" />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="总订单数" field={waveHead.orderCount} />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="总订单明细数" field={waveHead.detailCount} />
-                </Col>
-              </Row>
-            </Card>
-            <Card bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="orderList" onChange={this.handleTabChange}>
-                <TabPane tab="订单列表" key="orderList">
-                  <OrderListPane waveNo={this.props.params.waveNo} />
-                </TabPane>
-                <TabPane tab="订单明细" key="orderDetails">
-                  <OrderDetailsPane waveNo={this.props.params.waveNo} />
-                </TabPane>
-              </Tabs>
-            </Card>
-          </Form>
+          <Card>
+            <Row>
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="波次号" field={this.props.params.waveNo} />
+              </Col>
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="说明" field="米思米华东DC" />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="总订单数" field={waveHead.orderCount} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="总订单明细数" field={waveHead.detailCount} />
+              </Col>
+            </Row>
+          </Card>
+          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+            <Tabs defaultActiveKey="orderList" onChange={this.handleTabChange}>
+              <TabPane tab="订单列表" key="orderList">
+                <OrderListPane waveNo={this.props.params.waveNo} />
+              </TabPane>
+              <TabPane tab="订单明细" key="orderDetails">
+                <OrderDetailsPane waveNo={this.props.params.waveNo} />
+              </TabPane>
+            </Tabs>
+          </Card>
         </Content>
       </div>
     );

@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
 ]);
 
 const initialState = {
+  submitting: false,
   dock: {
     visible: false,
     tabKey: null,
@@ -87,6 +88,14 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.ADD_ASN:
+    case actionTypes.UPDATE_ASN:
+      return { ...state, submitting: true };
+    case actionTypes.ADD_ASN_SUCCEED:
+    case actionTypes.ADD_ASN_FAIL:
+    case actionTypes.UPDATE_ASN_SUCCEED:
+    case actionTypes.UPDATE_ASN_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:

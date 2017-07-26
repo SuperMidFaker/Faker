@@ -78,7 +78,7 @@ export default class EditProductSku extends Component {
               {this.msg('productsSku')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              SKU
+              {this.props.params.sku}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">

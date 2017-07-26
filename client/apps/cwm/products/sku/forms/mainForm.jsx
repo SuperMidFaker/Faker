@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Dropdown, Menu, Form, Select, Card, Col, Icon, Input, Row, Tooltip, Checkbox } from 'antd';
+import { Button, Dropdown, Menu, Form, Select, Card, Col, Icon, Input, Row, Tooltip, Checkbox } from 'antd';
 import { setSkuForm } from 'common/reducers/cwmSku';
 import { CWM_SKU_PACK_UNITS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
@@ -184,7 +184,7 @@ export default class MainForm extends Component {
             </Col>
           </Row>
         </Card>
-        <Card title="SKU属性" extra={<span>
+        <Card title="SKU属性" style={{ marginTop: 16 }} extra={<span>
           <Checkbox checked={skuForm.product_default} onChange={ev => this.handleFormChange('product_default', ev.target.checked)}>
               设置当前为默认
             </Checkbox>
@@ -282,7 +282,7 @@ export default class MainForm extends Component {
             </Col>
           </Row>
         </Card>
-        <Card title="海关归类属性" extra={<a href="#">同步归类</a>}>
+        <Card title="海关归类属性" style={{ marginTop: 16 }} extra={<Button icon="sync">同步归类</Button>}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('HSCode')}>

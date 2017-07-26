@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -27,9 +27,6 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    tenantName: state.account.tenantName,
-    formData: state.cmsDelegation.formData,
-    submitting: state.cmsDelegation.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
     outboundHead: state.cwmOutbound.outboundFormHead,
     reload: state.cwmOutbound.outboundReload,
@@ -40,14 +37,9 @@ const TabPane = Tabs.TabPane;
   depth: 3,
   moduleName: 'cwm',
 })
-@Form.create()
 export default class OutboundDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    form: PropTypes.object.isRequired,
-    tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
-    submitting: PropTypes.bool.isRequired,
     updateOutboundMode: PropTypes.func.isRequired,
   }
   static contextTypes = {
@@ -155,63 +147,61 @@ export default class OutboundDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }}>
-              <Row>
-                <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="货主" field={outboundHead.owner_name} />
-                </Col>
-                { outboundHead.wave_no &&
-                  <Col sm={24} lg={6}>
-                    <InfoItem addonBefore="波次号" field={outboundHead.wave_no} />
-                  </Col>
+          <Card bodyStyle={{ paddingBottom: 56 }}>
+            <Row>
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="货主" field={outboundHead.owner_name} />
+              </Col>
+              { outboundHead.wave_no &&
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="波次号" field={outboundHead.wave_no} />
+              </Col>
                 }
-                { outboundHead.so_no &&
-                  <Col sm={24} lg={6}>
-                    <InfoItem addonBefore="订单号" field={outboundHead.so_no} />
-                  </Col>
+              { outboundHead.so_no &&
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="订单号" field={outboundHead.so_no} />
+              </Col>
                 }
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="订货总数" field={outboundHead.total_qty} />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="分配总数" field={outboundHead.total_alloc_qty} />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="拣货总数" field={outboundHead.total_picked_qty} />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="发货总数" field={outboundHead.total_shipped_qty} />
-                </Col>
-              </Row>
-              <div className="card-footer">
-                <Steps progressDot current={outboundStep}>
-                  <Step description="待出库" />
-                  <Step description="分配" />
-                  <Step description="拣货" />
-                  <Step description="装箱" />
-                  <Step description="发货" />
-                  <Step description="已出库" />
-                </Steps>
-              </div>
-            </Card>
-            <Card bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
-                <TabPane tab="订单明细" key="orderDetails">
-                  <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-                <TabPane tab="拣货明细" key="pickingDetails">
-                  <PickingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-                <TabPane tab="装箱明细" key="packingDetails">
-                  <PackingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-                <TabPane tab="发货明细" key="shippingDetails">
-                  <ShippingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-              </Tabs>
-            </Card>
-          </Form>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="订货总数" field={outboundHead.total_qty} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="分配总数" field={outboundHead.total_alloc_qty} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="拣货总数" field={outboundHead.total_picked_qty} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="发货总数" field={outboundHead.total_shipped_qty} />
+              </Col>
+            </Row>
+            <div className="card-footer">
+              <Steps progressDot current={outboundStep}>
+                <Step description="待出库" />
+                <Step description="分配" />
+                <Step description="拣货" />
+                <Step description="装箱" />
+                <Step description="发货" />
+                <Step description="已出库" />
+              </Steps>
+            </div>
+          </Card>
+          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+            <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
+              <TabPane tab="订单明细" key="orderDetails">
+                <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
+              </TabPane>
+              <TabPane tab="拣货明细" key="pickingDetails">
+                <PickingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+              </TabPane>
+              <TabPane tab="装箱明细" key="packingDetails">
+                <PackingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+              </TabPane>
+              <TabPane tab="发货明细" key="shippingDetails">
+                <ShippingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+              </TabPane>
+            </Tabs>
+          </Card>
         </Content>
       </div>
     );

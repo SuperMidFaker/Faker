@@ -69,7 +69,7 @@ export default class HeadForm extends Component {
     return (
       <Card>
         <Row gutter={16}>
-          <Col sm={24} lg={8}>
+          <Col span={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
@@ -83,7 +83,7 @@ export default class HeadForm extends Component {
                 )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={8}>
+          <Col span={6} offset={2}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
                 initialValue: soHead ? soHead.bonded : bonded,
@@ -96,7 +96,7 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           {bonded &&
-          <Col sm={24} lg={8}>
+          <Col span={8} offset={2}>
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
                 rules: [{ required: true, message: 'Please select reg_type!' }],
@@ -110,16 +110,15 @@ export default class HeadForm extends Component {
           </Col>
           }
         </Row>
-
         <Row gutter={16}>
-          <Col sm={24} lg={8}>
+          <Col span={6}>
             <FormItem label="要求交货日期" >
               {getFieldDecorator('expect_ship_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
                 initialValue: soHead && moment(new Date(soHead.expect_shipping_date)),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
-          <Col sm={24} lg={8}>
+          <Col span={6} offset={2}>
             <FormItem label="客户订单号">
               {getFieldDecorator('cust_order_no', {
               })(
@@ -127,7 +126,7 @@ export default class HeadForm extends Component {
                     )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={8}>
+          <Col span={6} offset={2}>
             <FormItem label="SO类型">
               {getFieldDecorator('so_type', {
                 initialValue: soHead ? soHead.so_type : CWM_SO_TYPES[0].value,

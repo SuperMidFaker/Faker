@@ -5,6 +5,14 @@ const messages = defineMessages({
     id: 'cwm.shipping',
     defaultMessage: '出库',
   },
+  save: {
+    id: 'cwm.shipping.save',
+    defaultMessage: '保存',
+  },
+  cancel: {
+    id: 'cwm.shipping.cancel',
+    defaultMessage: '取消',
+  },
   shippingOrder: {
     id: 'cwm.shipping.order',
     defaultMessage: '发货订单SO',

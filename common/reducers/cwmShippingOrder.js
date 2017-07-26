@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
 ]);
 
 const initialState = {
+  submitting: false,
   dock: {
     visible: false,
     tabKey: null,
@@ -58,6 +59,14 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.ADD_SO:
+    case actionTypes.UPDATE_SO:
+      return { ...state, submitting: true };
+    case actionTypes.ADD_SO_SUCCEED:
+    case actionTypes.ADD_SO_FAIL:
+    case actionTypes.UPDATE_SO_SUCCEED:
+    case actionTypes.UPDATE_SO_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:

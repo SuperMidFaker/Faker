@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Icon, Layout, Collapse, Checkbox, Form, Input } from 'antd';
+import { Breadcrumb, Layout, Collapse, Checkbox, Form, Input } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PackinglistContent from './packlistContent';
 import { formatMsg } from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInvTemplateData, loadTempParams, saveTempChange } from 'common/reducers/cmsInvoice';
-import NavLink from 'client/components/nav-link';
 
 const Sider = Layout.Sider;
 const Panel = Collapse.Panel;
@@ -77,9 +76,6 @@ export default class PackinglistTemplate extends React.Component {
         <Sider width={320} className="menu-sider" key="sider">
           <div className="page-header">
             <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="left" /> <NavLink to="/clearance/settings/doctemplates">{this.msg('packingList')}</NavLink>
-              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {`${this.props.template.template_name}`}
               </Breadcrumb.Item>
