@@ -192,6 +192,7 @@ export default class ReceivingASNList extends React.Component {
     const filters = this.props.filters;
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
+      tenantId: this.props.tenantId,
       whseCode,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
