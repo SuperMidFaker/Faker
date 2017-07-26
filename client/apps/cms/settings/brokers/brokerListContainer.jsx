@@ -14,6 +14,7 @@ function fetchData({ dispatch, state }) {
     tenantId: state.account.tenantId,
     role,
     businessType,
+    unSetStatus: true,
   }));
 }
 
@@ -46,6 +47,7 @@ export default class BrokerListContainer extends Component {
         tenantId: nextProps.tenantId,
         role,
         businessType,
+        unSetStatus: true,
       });
     }
   }
