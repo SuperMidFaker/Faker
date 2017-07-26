@@ -27,7 +27,7 @@ export default class MoreApplications extends React.Component {
   render() {
     return (
       <div className="right-sider-panel">
-        <div className="top-bar">
+        <div className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               更多应用

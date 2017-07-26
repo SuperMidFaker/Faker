@@ -132,7 +132,7 @@ export default class OutboundDetail extends Component {
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {defaultWhse.name}
@@ -144,7 +144,7 @@ export default class OutboundDetail extends Component {
               {this.props.params.outboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             {this.state.allocated && !this.state.picked &&
             <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
             }

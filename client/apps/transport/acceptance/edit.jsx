@@ -155,7 +155,7 @@ export default class ShipmentEdit extends React.Component {
     const { intl, submitting, form } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('transportShipment')}
@@ -164,7 +164,7 @@ export default class ShipmentEdit extends React.Component {
               {this.msg('shipmtEdit')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" type="primary" loading={submitting} onClick={this.handleEdit}>
               {this.msg('save')}
             </Button>

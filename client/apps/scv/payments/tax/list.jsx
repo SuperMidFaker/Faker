@@ -37,7 +37,7 @@ export default class PaymentsTaxList extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>

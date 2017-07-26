@@ -276,10 +276,10 @@ export default class BillingFeeList extends React.Component {
     }];
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <span>{this.msg(`${operation}Billing`)}</span>
         </Header>
-        <div className="top-bar-tools">
+        <div className="page-header-tools">
           {this.renderOperation()}
         </div>
         <Content className="main-content">

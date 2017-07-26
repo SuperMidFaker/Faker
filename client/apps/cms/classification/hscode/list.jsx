@@ -147,7 +147,7 @@ export default class HsCodeList extends Component {
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -156,7 +156,7 @@ export default class HsCodeList extends Component {
                 {this.msg('hscodeInquiry')}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Dropdown overlay={menu} type="primary">
                 <Button size="large">
                   {this.msg('importItems')} <Icon type="down" />

@@ -308,7 +308,7 @@ export default class SHFTZCargoList extends React.Component {
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <NavLink to="/cwm/supervision/shftz">
@@ -333,7 +333,7 @@ export default class SHFTZCargoList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
@@ -352,7 +352,7 @@ export default class SHFTZCargoList extends React.Component {
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs} disabled={!owner.portion_enabled}>
                 同步货品SKU
               </Button>

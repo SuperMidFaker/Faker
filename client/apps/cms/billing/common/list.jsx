@@ -254,7 +254,7 @@ export default class BillingList extends React.Component {
 
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('billing')}
@@ -263,7 +263,7 @@ export default class BillingList extends React.Component {
               {this.msg(this.props.type)}{this.msg('bills')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="ghost" size="large" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
             <Button type="primary" size="large" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
           </div>

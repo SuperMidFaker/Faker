@@ -381,7 +381,7 @@ export default class ManifestEditor extends React.Component {
     return (
       <Layout>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Icon type="file-text" /> <NavLink to={path}>{this.msg('declManifest')}</NavLink>
@@ -390,7 +390,7 @@ export default class ManifestEditor extends React.Component {
                 <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               {locked &&
                 <Tooltip title={`清单已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">
                   <Switch className="switch-lock" checked={locked}

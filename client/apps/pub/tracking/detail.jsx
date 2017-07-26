@@ -323,7 +323,7 @@ export default class TrackingDetail extends React.Component {
     const deliverDelayException = this.state.exceptions.find(item => item.type === 11013);
     return (
       <div className="panel-body">
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               运单追踪

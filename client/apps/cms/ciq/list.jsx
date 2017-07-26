@@ -247,7 +247,7 @@ export default class CiqDeclList extends Component {
     };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('ciqDecl')}

@@ -80,13 +80,13 @@ export default class WebhookList extends React.Component {
   render() {
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               提醒目标Webhook
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content">
           <QueueAnim type="right">

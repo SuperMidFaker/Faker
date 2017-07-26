@@ -6,7 +6,7 @@ import { Card, Collapse, DatePicker, Table, Select, Form, Modal, Input, Tag, But
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
-import { closeMovementModal } from 'common/reducers/cwmStock';
+import { closeMovementModal } from 'common/reducers/cwmInventoryStock';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -16,7 +16,7 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(
   state => ({
-    visible: state.cwmStock.movementModal.visible,
+    visible: state.cwmInventoryStock.movementModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -169,7 +169,7 @@ export default class MovementModal extends Component {
       <Modal title="创建库存移动单" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
         onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
       >
-        <Card style={{ marginBottom: 8 }}>
+        <Card>
           <Form layout="inline" style={{ display: 'inline-block' }}>
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 160 }} />

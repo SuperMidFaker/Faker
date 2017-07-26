@@ -137,13 +137,13 @@ export default class BillingFeeList extends React.Component {
     const { operation, saving } = this.props;
     if (operation === 'check') {
       return (
-        <div className="top-bar-tools">
+        <div className="page-header-tools">
           <Button type="primary" size="large" onClick={this.handleAccept} loading={saving}>{this.msg('accept')}</Button>
         </div>
       );
     } else if (operation === 'edit') {
       return (
-        <div className="top-bar-tools">
+        <div className="page-header-tools">
           <Button type="primary" size="large" onClick={this.handleEdit} loading={saving}>{this.msg('save')}</Button>
         </div>
       );
@@ -243,9 +243,9 @@ export default class BillingFeeList extends React.Component {
     }];
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <span>{this.msg(`${operation}Billing`)}</span>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             {this.renderOperation()}
           </div>
         </Header>

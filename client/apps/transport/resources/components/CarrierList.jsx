@@ -89,7 +89,7 @@ export default class DriverList extends Component {
     ];
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               资源设置
@@ -98,7 +98,7 @@ export default class DriverList extends Component {
               承运商
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <SearchBar placeholder="承运商/承运商代码/统一社会信用代码" onInputSearch={this.props.onSearch}
               value={this.props.searchText} size="large"
             />

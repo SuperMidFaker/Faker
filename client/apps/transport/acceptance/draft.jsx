@@ -136,7 +136,7 @@ export default class ShipmentDraftEdit extends React.Component {
     const { intl, submitting, form } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('transportShipment')}
@@ -145,7 +145,7 @@ export default class ShipmentDraftEdit extends React.Component {
               {this.msg('shipmtDraft')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" type="primary" loading={submitting} onClick={this.handleDraftAccept}>
               {this.msg('saveAndAccept')}
             </Button>

@@ -199,7 +199,7 @@ export default class SpecialCategories extends React.Component {
           collapsed={this.state.collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('classification')}
@@ -226,7 +226,7 @@ export default class SpecialCategories extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {hscodeCategory.name}

@@ -60,7 +60,7 @@ export default class ConfigSHFTZ extends React.Component {
     const { form, shftz } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Icon type="appstore-o" /> {this.msg('integration')}
@@ -72,7 +72,7 @@ export default class ConfigSHFTZ extends React.Component {
               {shftz.name}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>

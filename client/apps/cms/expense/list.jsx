@@ -485,7 +485,7 @@ export default class ExpenseList extends Component {
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('billing')}
@@ -500,7 +500,7 @@ export default class ExpenseList extends Component {
             <RadioButton value="estimated">{this.msg('statusEstimated')}</RadioButton>
             <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="default" size="large" icon="upload" onClick={this.handleAdvFeesImport}>
               {this.msg('incExp')}
             </Button>

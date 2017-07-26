@@ -286,7 +286,7 @@ export default class ScvCustomsDeclList extends Component {
     };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('clearance')}
@@ -307,7 +307,7 @@ export default class ScvCustomsDeclList extends Component {
               <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
             )}
           </RadioGroup>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">

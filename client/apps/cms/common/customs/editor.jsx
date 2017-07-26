@@ -194,7 +194,7 @@ export default class CustomsDeclEditor extends React.Component {
     return (
       <Layout>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Icon type="file" /> <NavLink to={`/clearance/${ietype}/customs/`}>{this.msg('customsDeclaration')}</NavLink>
@@ -207,7 +207,7 @@ export default class CustomsDeclEditor extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               { head.status === CMS_DECL_STATUS.proposed.value && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
                 <Tooltip title={this.msg('delete')} placement="bottom">
                   <Button size="large" icon="delete" />

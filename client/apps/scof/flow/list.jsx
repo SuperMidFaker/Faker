@@ -151,7 +151,7 @@ export default class FlowList extends React.Component {
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
           collapsible collapsed={listCollapsed} collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('flowName')}

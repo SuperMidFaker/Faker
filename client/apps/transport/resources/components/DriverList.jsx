@@ -117,7 +117,7 @@ function DriverList(props) {
   ];
   return (
     <QueueAnim type={['bottom', 'up']}>
-      <Header className="top-bar">
+      <Header className="page-header">
         <Breadcrumb>
           <Breadcrumb.Item>
             资源设置
@@ -126,7 +126,7 @@ function DriverList(props) {
             司机
           </Breadcrumb.Item>
         </Breadcrumb>
-        <div className="top-bar-tools">
+        <div className="page-header-tools">
           <SearchBar placeholder="司机/手机" onInputSearch={props.onSearch}
             value={props.searchText} size="large"
           />

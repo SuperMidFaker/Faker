@@ -258,7 +258,7 @@ export default class CWMSkuList extends React.Component {
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider">
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
@@ -282,7 +282,7 @@ export default class CWMSkuList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             {owner.id &&
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -293,7 +293,7 @@ export default class CWMSkuList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>}
             {owner.id &&
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button size="large" icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>
                 {this.msg('syncTradeItems')}
               </Button>

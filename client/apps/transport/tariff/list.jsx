@@ -465,7 +465,7 @@ export default class TariffList extends React.Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('billingCenter')}
@@ -483,7 +483,7 @@ export default class TariffList extends React.Component {
           <RadioGroup onChange={this.handleStatusChange} value={this.state.status} size="large">
             <RadioButton value="draft">草稿箱</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <PrivilegeCover module="transport" feature="tariff" action="create">
               <Button type="primary" size="large" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
                 {this.msg('tariffCreate')}

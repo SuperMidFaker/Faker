@@ -308,7 +308,7 @@ export default class ReceivingASNList extends React.Component {
     }
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
@@ -327,7 +327,7 @@ export default class ReceivingASNList extends React.Component {
             <RadioButton value="partial">部分收货</RadioButton>
             <RadioButton value="completed">收货完成</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>

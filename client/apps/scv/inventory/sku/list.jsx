@@ -130,7 +130,7 @@ export default class SCVSkuList extends React.Component {
     this.dataSource.remotes = skulist;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('products')}
@@ -139,7 +139,7 @@ export default class SCVSkuList extends React.Component {
               {this.msg('productsSku')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" icon="cloud-upload">
               {this.msg('productImport')}
             </Button>

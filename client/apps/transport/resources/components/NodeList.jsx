@@ -106,7 +106,7 @@ export default function NodeList(props) {
   ];
   return (
     <QueueAnim type={['bottom', 'up']}>
-      <Header className="top-bar">
+      <Header className="page-header">
         <Breadcrumb>
           <Breadcrumb.Item>
             资源设置
@@ -120,7 +120,7 @@ export default function NodeList(props) {
           <RadioButton value={1}>收货地</RadioButton>
           <RadioButton value={2}>中转地</RadioButton>
         </RadioGroup>
-        <div className="top-bar-tools">
+        <div className="page-header-tools">
           <SearchBar placeholder="名称/地址/联系人/电话/邮箱" onInputSearch={props.onSearch}
             value={props.searchText} size="large"
           />

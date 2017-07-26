@@ -19,7 +19,7 @@ export default class ScvClassificationWrapper extends React.Component {
     const { children, menuKey } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {menuKey === 'master' && this.msg('masterConfig')}

@@ -63,7 +63,7 @@ export default class CreateProductSku extends Component {
     const { form, submitting } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('products')}
@@ -75,7 +75,7 @@ export default class CreateProductSku extends Component {
               {this.msg('createProductSku')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" ghost onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>

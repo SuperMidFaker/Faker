@@ -124,7 +124,7 @@ export default class CustomerList extends React.Component {
           collapsedWidth={0}
         >
 
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('customer')}
@@ -153,7 +153,7 @@ export default class CustomerList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('customer')}
@@ -167,7 +167,7 @@ export default class CustomerList extends React.Component {
               onClick={this.toggle}
               toggle
             />
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Button.Group size="large">
                 <Button icon="left" />
                 <Button icon="right" />

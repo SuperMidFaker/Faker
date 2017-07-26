@@ -252,7 +252,7 @@ export default class Kpi extends React.Component {
           collapsed={collapsed}
           collapsedWidth={0}
         >
-          <div className="top-bar">
+          <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
                 {clientStr}
@@ -276,7 +276,7 @@ export default class Kpi extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="top-bar">
+          <Header className="page-header">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
                 报表中心
@@ -290,7 +290,7 @@ export default class Kpi extends React.Component {
               onClick={this.toggle}
               toggle
             />
-            <div className="top-bar-tools">
+            <div className="page-header-tools">
               <Dropdown overlay={menu}>
                 <Button style={{ marginLeft: 8 }}>
                   导出 <Icon type="down" />

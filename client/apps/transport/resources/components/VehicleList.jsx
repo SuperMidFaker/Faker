@@ -111,7 +111,7 @@ export default function VehicleList(props) {
   ];
   return (
     <QueueAnim type={['bottom', 'up']}>
-      <Header className="top-bar">
+      <Header className="page-header">
         <Breadcrumb>
           <Breadcrumb.Item>
             资源设置
@@ -120,7 +120,7 @@ export default function VehicleList(props) {
             车辆
           </Breadcrumb.Item>
         </Breadcrumb>
-        <div className="top-bar-tools">
+        <div className="page-header-tools">
           <SearchBar placeholder="车牌号/司机" onInputSearch={props.onSearch}
             value={props.searchText} size="large"
           />

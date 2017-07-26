@@ -33,13 +33,13 @@ export default class CMSDashboard extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('dashboard')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools" />
+          <div className="page-header-tools" />
         </Header>
         <Content className="main-content" key="main">
           <Row gutter={16}>

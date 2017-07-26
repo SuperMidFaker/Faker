@@ -94,7 +94,7 @@ export default class EditDelegation extends Component {
     const { form, type, submitting } = this.props;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.props.ietype === 'import' ? this.msg('importClearance') : this.msg('exportClearance')}
@@ -106,7 +106,7 @@ export default class EditDelegation extends Component {
               {this.msg('modifyDelegation')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>

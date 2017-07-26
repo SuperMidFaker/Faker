@@ -31,7 +31,7 @@ export default class CorpOverview extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('overviewTitle')}

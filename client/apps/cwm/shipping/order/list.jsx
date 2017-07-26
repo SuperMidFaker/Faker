@@ -317,7 +317,7 @@ export default class ShippingOrderList extends React.Component {
     };
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
@@ -340,7 +340,7 @@ export default class ShippingOrderList extends React.Component {
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="inWave">已加入波次计划</RadioButton>
           </RadioGroup>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>

@@ -158,7 +158,7 @@ export default class AnalyticsCostList extends React.Component {
     }];
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <div className="toolbar-right">
             <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
           </div>

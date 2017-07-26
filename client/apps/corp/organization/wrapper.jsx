@@ -12,7 +12,7 @@ export default class OrganizationWrapper extends React.Component {
   render() {
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               组织机构

@@ -112,7 +112,7 @@ export default class CreateShippingOrder extends Component {
     const { soHead, soBody } = this.state;
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               <Select
@@ -131,7 +131,7 @@ export default class CreateShippingOrder extends Component {
               {this.msg('createSO')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>

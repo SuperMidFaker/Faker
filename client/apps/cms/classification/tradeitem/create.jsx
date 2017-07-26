@@ -68,7 +68,7 @@ export default class CreateTradeItem extends Component {
     const { form } = this.props;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('classification')}
@@ -80,7 +80,7 @@ export default class CreateTradeItem extends Component {
               {this.msg('newItem')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button size="large" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>

@@ -303,7 +303,7 @@ export default class BillingList extends React.Component {
     };
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               {this.msg('billingCenter')}
@@ -312,7 +312,7 @@ export default class BillingList extends React.Component {
               {this.msg(type)}{this.msg('billing')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             <Button type="primary" size="large" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
             <ExportBillingExcel type={type} />
           </div>

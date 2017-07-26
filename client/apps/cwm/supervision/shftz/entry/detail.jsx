@@ -249,7 +249,7 @@ export default class SHFTZEntryDetail extends Component {
     const sendText = sent ? '重新发送' : '发送备案';
     return (
       <div>
-        <Header className="top-bar">
+        <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
               上海自贸区监管
@@ -264,7 +264,7 @@ export default class SHFTZEntryDetail extends Component {
               {this.props.params.asnNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <div className="top-bar-tools">
+          <div className="page-header-tools">
             {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
