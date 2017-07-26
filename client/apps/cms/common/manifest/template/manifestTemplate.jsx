@@ -116,15 +116,15 @@ export default class ManifestTemplate extends Component {
     rightSidercollapsed: true,
     changed: false,
   }
+  componentWillMount() {
+    this.props.loadCmsParams({
+      ieType: this.props.ietype,
+      tenantId: this.props.tenantId,
+    });
+  }
   componentWillReceiveProps(nextProps) {
     if (this.props.changeTimes !== nextProps.changeTimes) {
       this.setState({ changed: true });
-    }
-    if (this.props.ietype !== nextProps.ietype) {
-      this.props.loadCmsParams({
-        ieType: nextProps.ietype,
-        tenantId: this.props.tenantId,
-      });
     }
   }
   msg = key => formatMsg(this.props.intl, key);

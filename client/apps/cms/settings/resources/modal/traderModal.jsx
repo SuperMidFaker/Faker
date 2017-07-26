@@ -47,7 +47,7 @@ export default class TraderModal extends React.Component {
       code: nextProps.businessUnit.comp_code || '',
       customsCode: nextProps.businessUnit.customs_code || '',
       type: nextProps.businessUnit.relation_type || '',
-      ieType: nextProps.businessUnit.i_e_type || '',
+      ieType: nextProps.businessUnit.i_e_type || 'A',
     });
   }
   handleOk = () => {
