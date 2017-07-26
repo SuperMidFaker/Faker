@@ -160,7 +160,7 @@ export default class MovementModal extends Component {
     this.handleSearch(newFilter);
   }
   handleProductChange = (e) => {
-    const newFilter = { ...this.props.filter, product_no: e.target.value };
+    const newFilter = { ...this.props.filter, productNo: e.target.value };
     this.handleSearch(newFilter);
   }
   handleLocationChange = (e) => {

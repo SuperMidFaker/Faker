@@ -49,7 +49,7 @@ const initialState = {
     visible: false,
     filter: {
       owner: '',
-      product_no: '',
+      productNo: '',
       location: '',
       startTime: '',
       endTime: '',
