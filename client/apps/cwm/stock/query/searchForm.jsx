@@ -64,10 +64,6 @@ export default class StockQueryForm extends React.Component {
         <FormItem label="货主">
           {getFieldDecorator('owner', {
             initialValue: filter.owner,
-            rules: [{
-              required: filter.search_type === 1,
-              message: 'Please select your owner',
-            }],
           })(
             <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange}
               dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
@@ -80,19 +76,11 @@ export default class StockQueryForm extends React.Component {
         <FormItem label="货品">
           {getFieldDecorator('product_no', {
             initialValue: filter.product_no,
-            rules: [{
-              required: filter.search_type === 2 || filter.search_type === 4,
-              message: 'Please input your product_no',
-            }],
           })(<Input placeholder="货号" />)}
         </FormItem>
         <FormItem label="库位">
           {getFieldDecorator('whse_location', {
             initialValue: filter.whse_location,
-            rules: [{
-              required: filter.search_type === 3 || filter.search_type === 4,
-              message: 'Please input your whse_location',
-            }],
           })(<Input placeholder="库位号" />)}
         </FormItem>
         <FormItem>

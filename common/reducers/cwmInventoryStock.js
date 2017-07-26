@@ -43,6 +43,13 @@ const initialState = {
   },
   movementModal: {
     visible: false,
+    filter: {
+      owner: '',
+      product_no: '',
+      location: '',
+      startTime: '',
+      endTime: '',
+    },
   },
 };
 
@@ -83,7 +90,7 @@ export default function reducer(state = initialState, action) {
           product_no: true,
           location: false,
           unit: false,
-          owner_name: false,
+          owner_name: true,
         } };
     case actionTypes.CHECK_LOCATION_COLUMN:
       return { ...state,
@@ -93,7 +100,7 @@ export default function reducer(state = initialState, action) {
           alloc_qty: false,
           frozen_qty: false,
           location: true,
-          owner_name: false,
+          owner_name: true,
           unit: false,
         } };
     case actionTypes.CHECK_PRODUCT_LOCATION:
@@ -113,6 +120,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, listFilter: { ...state.listFilter, search_type: action.value } };
     case actionTypes.CLEAR_LIST:
       return { ...state, list: { ...state.list, data: [] } };
+    case actionTypes.INVENTORY_SEARCH:
+      return { ...state, movementModal: { ...state.movementModal, filter: JSON.parse(action.params.filter) } };
     default:
       return state;
   }
@@ -194,5 +203,20 @@ export function changeSearchType(value) {
 export function clearList() {
   return {
     type: actionTypes.CLEAR_LIST,
+  };
+}
+
+export function inventorySearch(filter, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INVENTORY_SEARCH,
+        actionTypes.INVENTORY_SEARCH_SUCCESS,
+        actionTypes.INVENTORY_SEARCH_FAIL,
+      ],
+      endpoint: 'v1/cwm/inventory/search',
+      method: 'get',
+      params: { filter, tenantId },
+    },
   };
 }
