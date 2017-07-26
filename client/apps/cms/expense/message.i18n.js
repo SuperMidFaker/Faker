@@ -30,9 +30,17 @@ const messages = defineMessages({
     id: 'cms.expense.status.closed',
     defaultMessage: '已结单',
   },
+  advModel: {
+    id: 'cms.expense.advance.model',
+    defaultMessage: '代垫费用模板',
+  },
+  eptAdvModel: {
+    id: 'cms.expense.export.advance.model',
+    defaultMessage: '下载代垫费用模板',
+  },
   incExp: {
     id: 'cms.expense.inc.expense',
-    defaultMessage: '上传费用记录',
+    defaultMessage: '上传代垫费用记录',
   },
   eptExp: {
     id: 'cms.expense.export.expense',
@@ -189,6 +197,14 @@ const messages = defineMessages({
   advanceTaxTypeRequired: {
     id: 'cms.modals.expense.advance.taxtype.required',
     defaultMessage: '开票类型必选',
+  },
+  feeCode: {
+    id: 'cms.modals.expense.fee.code',
+    defaultMessage: '费用代码',
+  },
+  invoiceEn: {
+    id: 'cms.modals.expense.invoiceEn',
+    defaultMessage: '是否计税',
   },
 });
 export default messages;

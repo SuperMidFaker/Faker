@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Radio } from 'antd';
+import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Tabs } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -11,12 +11,12 @@ import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHs
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
 import SearchBar from 'client/components/search-bar';
+import ExcelUpload from 'client/components/excelUploader';
 import '../index.less';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ state, dispatch }) {
   return dispatch(loadHsCodeCategories(state.account.tenantId));
@@ -123,6 +123,10 @@ export default class SpecialCategories extends React.Component {
     const hscodeCategories = this.props.hscodeCategories.filter(ct => ct.type === type);
     this.setState({ type, hscodeCategories, hscodeCategory: hscodeCategories[0] || {} });
   }
+  handleTabChange = (type) => {
+    const hscodeCategories = this.props.hscodeCategories.filter(ct => ct.type === type);
+    this.setState({ type, hscodeCategories, hscodeCategory: hscodeCategories[0] || {} });
+  }
   handleSearch = (value) => {
     const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
     this.props.loadCategoryHsCode({ categoryId, current, pageSize, searchText: value });
@@ -140,16 +144,13 @@ export default class SpecialCategories extends React.Component {
     }
     this.setState({ hscodeCategories, currentPage: 1 });
   }
+  handleUploaded = () => {
+    const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
+    this.props.loadCategoryHsCode({ categoryId, current, pageSize });
+  }
   render() {
     const { hscodeCategory } = this.state;
     const columns = [{
-      dataIndex: 'index',
-      key: 'index',
-      title: '序号',
-      className: 'hscode-list-left',
-      width: 50,
-      render: (col, row, index) => index + 1,
-    }, {
       dataIndex: 'name',
       key: 'name',
       title: '分类名称',
@@ -192,6 +193,13 @@ export default class SpecialCategories extends React.Component {
         }
       },
     }];
+    const tabTable = (
+      <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
+        pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+        rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
+        footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} style={{ width: '100%' }}>添加分类</Button>}
+      />
+    );
     return (
       <Layout className="ant-layout-wrapper">
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
@@ -211,17 +219,14 @@ export default class SpecialCategories extends React.Component {
           </div>
           <div className="left-sider-panel" >
             <div className="toolbar">
-              <RadioGroup value={this.state.type} onChange={this.handleRadioChange} size="large">
-                <RadioButton value="split">{this.msg('specialSplit')}</RadioButton>
-                <RadioButton value="merge">{this.msg('specialMerge')}</RadioButton>
-              </RadioGroup>
-            </div>
-            <div className="list-body">
-              <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
-                rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
-                footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} style={{ width: '100%' }}>添加分类</Button>}
-              />
+              <Tabs onChange={this.handleTabChange} type="card">
+                <TabPane tab={this.msg('specialSplit')} key="split">
+                  {tabTable}
+                </TabPane>
+                <TabPane tab={this.msg('specialMerge')} key="merge">
+                  {tabTable}
+                </TabPane>
+              </Tabs>
             </div>
           </div>
         </Sider>
@@ -232,6 +237,20 @@ export default class SpecialCategories extends React.Component {
                 {hscodeCategory.name}
               </Breadcrumb.Item>
             </Breadcrumb>
+            <div className="top-bar-tools">
+              <Button type="primary" size="large">
+                <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
+                  formData={{
+                    data: JSON.stringify({
+                      categoryId: hscodeCategory.id,
+                      tenantId: this.props.tenantId,
+                    }),
+                  }} onUploaded={this.handleUploaded}
+                >
+                  <Icon type="upload" /> 导入
+                </ExcelUpload>
+              </Button>
+            </div>
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">

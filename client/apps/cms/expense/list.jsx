@@ -8,8 +8,8 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import { loadExpense, loadCurrencies,
-  loadAdvanceParties, loadPartnersForFilter } from 'common/reducers/cmsExpense';
+import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
+import { loadQuoteModel } from 'common/reducers/cmsQuote';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -20,6 +20,7 @@ import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from 'client/components/rowUpdater';
 import ExpEptModal from './modals/expEptModal';
+import AdvModelModal from './modals/advModelModal';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -61,7 +62,7 @@ function fetchData({ state, dispatch }) {
     saved: state.cmsExpense.saved,
     partners: state.cmsExpense.partners,
   }),
-  { loadCurrencies, loadExpense, showPreviewer, loadAdvanceParties }
+  { loadCurrencies, loadExpense, showPreviewer, loadAdvanceParties, showAdvModelModal, loadQuoteModel }
 )
 @connectNav({
   depth: 2,
@@ -254,6 +255,10 @@ export default class ExpenseList extends Component {
   handleViewChange = (value) => {
     const filter = { ...this.props.listFilter, viewStatus: value };
     this.handleExpListLoad(1, filter);
+  }
+  handleAdvModelEpt = () => {
+    this.props.showAdvModelModal(true);
+    this.props.loadQuoteModel(this.props.tenantId);
   }
   render() {
     const { expslist, listFilter } = this.props;
@@ -501,6 +506,9 @@ export default class ExpenseList extends Component {
             <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
+            <Button type="default" size="large" icon="upload" onClick={this.handleAdvModelEpt}>
+              {this.msg('eptAdvModel')}
+            </Button>
             <Button type="default" size="large" icon="upload" onClick={this.handleAdvFeesImport}>
               {this.msg('incExp')}
             </Button>
@@ -543,6 +551,7 @@ export default class ExpenseList extends Component {
         </Content>
         <DelegationDockPanel />
         <DelgAdvanceExpenseModal />
+        <AdvModelModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </QueueAnim>
     );

@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'COMPUTE_DECLADVFEES', 'COMPUTE_DECLADVFEES_SUCCEED', 'COMPUTE_DECLADVFEES_FAIL',
   'CERT_PANEL_LOAD', 'CERT_PANEL_LOAD_SUCCEED', 'CERT_PANEL_LOAD_FAIL',
   'LOAD_FILTER_PARTNERS', 'LOAD_FILTER_PARTNERS_SUCCEED', 'LOAD_FILTER_PARTNERS_FAIL',
+  'SET_ADV_MODAL_VISIBLE',
 ]);
 
 const initialState = {
@@ -92,6 +93,7 @@ const initialState = {
     customer: [],
     supplier: [],
   },
+  visibleAdvModal: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -197,6 +199,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, certPanel: action.result.data };
     case actionTypes.LOAD_FILTER_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
+    case actionTypes.SET_ADV_MODAL_VISIBLE:
+      return { ...state, visibleAdvModal: action.data };
     default:
       return state;
   }
@@ -487,6 +491,13 @@ export function computeDelgAdvanceFees(feeItems) {
       data: feeItems,
       origin: 'mongo',
     },
+  };
+}
+
+export function showAdvModelModal(value) {
+  return {
+    type: actionTypes.SET_ADV_MODAL_VISIBLE,
+    data: value,
   };
 }
 
