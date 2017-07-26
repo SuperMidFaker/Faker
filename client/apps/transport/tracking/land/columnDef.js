@@ -282,7 +282,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('packageNum'),
     dataIndex: 'total_count',
-    width: 40,
+    width: 60,
   }, {
     title: msg('shipWeight'),
     dataIndex: 'total_weight',

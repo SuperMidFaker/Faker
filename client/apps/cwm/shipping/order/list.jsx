@@ -86,9 +86,11 @@ export default class ShippingOrderList extends React.Component {
   }, {
     title: '客户订单号',
     dataIndex: 'cust_order_no',
+    width: 150,
   }, {
     title: '收货人',
     dataIndex: 'receiver',
+    width: 180,
   }, {
     title: '承运人',
     dataIndex: 'carrier',
@@ -149,6 +151,7 @@ export default class ShippingOrderList extends React.Component {
   }, {
     title: '操作',
     width: 150,
+    fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
@@ -388,7 +391,9 @@ export default class ShippingOrderList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no" scroll={{ x: 1400 }} loading={loading} />
+              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no"
+                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
+              />
             </div>
           </div>
         </Content>

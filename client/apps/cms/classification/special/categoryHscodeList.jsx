@@ -125,7 +125,9 @@ export default class SpecialCategoryHsCodeList extends React.Component {
       return col;
     };
     return (
-      <Table size="middle" dataSource={categoryHscodesDataSource} columns={columns} scroll={{ x: 2200 }} rowKey="id" />
+      <Table size="middle" dataSource={categoryHscodesDataSource} columns={columns} rowKey="id" bordered
+        scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+      />
     );
   }
 }

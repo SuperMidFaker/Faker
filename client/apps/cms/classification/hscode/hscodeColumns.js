@@ -4,8 +4,6 @@ export const hscodeColumns = () => [{
   title: '商品编码',
   dataIndex: 'hscode',
   width: 120,
-  fixed: 'left',
-  className: 'hscode-list-left',
 }, {
   title: '商品名称',
   dataIndex: 'product_name',
@@ -13,11 +11,11 @@ export const hscodeColumns = () => [{
 }, {
   title: '商品描述',
   dataIndex: 'product_remark',
-  width: 100,
+  width: 400,
 }, {
   title: '申报要素',
   dataIndex: 'declared_elements',
-  width: 300,
+  width: 400,
 }, {
   title: '法定第一单位',
   dataIndex: 'first_unit',
@@ -29,39 +27,39 @@ export const hscodeColumns = () => [{
 }, {
   title: '最惠国进口税率',
   dataIndex: 'mfn_rates',
-  width: 120,
+  width: 130,
 }, {
   title: '普通进口税率',
   dataIndex: 'general_rates',
-  width: 100,
+  width: 120,
 }, {
   title: '暂定进口税率',
   dataIndex: 'provisional_rates',
-  width: 100,
+  width: 120,
 }, {
   title: '消费税率',
   dataIndex: 'gst_rates',
-  width: 80,
+  width: 100,
 }, {
   title: '出口关税率',
   dataIndex: 'export_rates',
-  width: 80,
+  width: 120,
 }, {
   title: '出口退税率',
   dataIndex: 'export_rebate_rates',
-  width: 80,
+  width: 120,
 }, {
   title: '增值税率',
   dataIndex: 'vat_rates',
-  width: 80,
+  width: 100,
 }, {
   title: '海关监管条件',
   dataIndex: 'customs',
-  width: 180,
+  width: 250,
   render: col => buildTipItems(col),
 }, {
   title: '检验检疫类别',
   dataIndex: 'inspection',
-  width: 180,
+  width: 250,
   render: col => buildTipItems(col, true),
 }];

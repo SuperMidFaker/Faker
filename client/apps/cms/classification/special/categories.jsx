@@ -258,7 +258,7 @@ export default class SpecialCategories extends React.Component {
                 />
                 <span />
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body">
                 <CategoryHscodeList hscodeCategory={hscodeCategory} />
               </div>
             </div>

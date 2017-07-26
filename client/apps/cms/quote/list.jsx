@@ -181,7 +181,7 @@ export default class QuoteList extends Component {
       {
         title: msg('quoteNo'),
         dataIndex: 'quote_no',
-        width: 120,
+        width: 140,
         render: (o, record) => {
           if (record.valid) {
             return o;
@@ -191,7 +191,7 @@ export default class QuoteList extends Component {
         },
       }, {
         title: msg('partnerLabel'),
-        width: 240,
+        width: 280,
         render: (text, record) => {
           let partnerName = '';
           if (record.recv_tenant_id === tenantId) {
@@ -263,7 +263,7 @@ export default class QuoteList extends Component {
         render: o => o && moment(o).format('MM.DD HH:mm'),
       }, {
         title: msg('operation'),
-        width: 120,
+        width: 150,
         fixed: 'right',
         render: (o, record) => {
           let auth = '';
@@ -328,7 +328,7 @@ export default class QuoteList extends Component {
         render: o => o && moment(o).format('MM.DD HH:mm'),
       }, {
         title: msg('operation'),
-        width: 120,
+        width: 150,
         fixed: 'right',
         render: (o, record) => {
           let auth = '';

@@ -197,7 +197,7 @@ export default class OrderList extends React.Component {
 
     const columns = [{
       title: '订单',
-      width: 200,
+      width: 240,
       fixed: 'left',
       render: (o, record) => <OrderNoColumn order={record} />,
     }, {

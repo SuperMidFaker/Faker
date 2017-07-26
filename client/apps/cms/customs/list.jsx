@@ -96,7 +96,7 @@ export default class CustomsList extends Component {
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 110,
+    width: 120,
     fixed: 'left',
     render: (o, record) => (
       <a onClick={() => this.handlePreview(o, record)}>
@@ -110,7 +110,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 160,
+    width: 180,
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
       const preEntryLink = (
@@ -219,12 +219,12 @@ export default class CustomsList extends Component {
   }, {
     title: '收发货人',
     dataIndex: 'trade_name',
-    width: 160,
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '申报单位',
     dataIndex: 'agent_name',
-    width: 160,
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '进/出口口岸',

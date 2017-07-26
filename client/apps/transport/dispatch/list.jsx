@@ -156,7 +156,7 @@ export default class DispatchList extends React.Component {
   commonCols = [{
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 40,
+    width: 60,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
@@ -264,7 +264,7 @@ export default class DispatchList extends React.Component {
       }, {
         title: this.msg('spDispLoginName'),
         dataIndex: 'sp_disp_login_name',
-        width: 60,
+        width: 80,
       }, {
         title: this.msg('shipmtOP'),
         width: 100,
@@ -374,7 +374,7 @@ export default class DispatchList extends React.Component {
         }, {
           title: this.msg('spDispLoginName'),
           dataIndex: 'sp_disp_login_name',
-          width: 60,
+          width: 80,
         }, {
           title: this.msg('shipmtOP'),
           width: 100,
@@ -996,17 +996,17 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-      dataSource={this.dataSource} scroll={{ x: 2260 }}
+      dataSource={this.dataSource} scroll={{ x: 2300 }}
     />);
     if (origin) {
       tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2260 }}
+        dataSource={this.dataSource} scroll={{ x: 2300 }}
       />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
       tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2260 }}
+        dataSource={this.dataSource} scroll={{ x: 2300 }}
       />);
     }
     let bulkBtns = '';

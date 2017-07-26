@@ -131,7 +131,6 @@ export default class TradeItemList extends Component {
   columns = [{
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
-    fixed: 'left',
     width: 150,
     render: (o, record) => {
       if (record.master_rejected) {
@@ -147,7 +146,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
-    width: 120,
+    width: 150,
     render: (o, record) => {
       switch (record.status) {
         case TRADE_ITEM_STATUS.pending:
@@ -177,7 +176,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('gModel'),
     dataIndex: 'g_model',
-    width: 300,
+    width: 400,
   }, {
     title: this.msg('element'),
     dataIndex: 'element',
@@ -303,6 +302,7 @@ export default class TradeItemList extends Component {
   }, {
     title: this.msg('remark'),
     dataIndex: 'remark',
+    width: 180,
   }]
   dataSource = new RemoteTable.DataSource({
     fetcher: params => this.props.loadTradeItems(params),
@@ -800,8 +800,10 @@ export default class TradeItemList extends Component {
                   {batchOperation}
                 </div>
               </div>
-              <div className="panel-body table-panel">
-                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} scroll={{ x: 3800 }} />
+              <div className="panel-body">
+                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} bordered
+                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+                />
               </div>
               <AddTradeRepoModal />
               <ImportComparisonModal data={this.state.compareduuid} />

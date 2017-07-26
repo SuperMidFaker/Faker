@@ -141,7 +141,7 @@ export default class DelegationList extends Component {
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 110,
+    width: 120,
     fixed: 'left',
     render: (o, record) => (
       <a onClick={() => this.handlePreview(o, record)}>
@@ -149,9 +149,9 @@ export default class DelegationList extends Component {
       </a>),
   }, {
     title: this.msg('customer'),
-    width: 220,
+    width: 180,
     dataIndex: 'send_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('waybillLadingNo'),
     width: 200,

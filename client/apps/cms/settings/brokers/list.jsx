@@ -97,7 +97,7 @@ export default class BrokerList extends Component {
         title: '创建日期',
         dataIndex: 'created_date',
         key: 'created_date',
-        width: 120,
+        width: 140,
         render(o) {
           return moment(o).format('YYYY/MM/DD HH:mm');
         },
@@ -110,7 +110,7 @@ export default class BrokerList extends Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        width: 80,
+        width: 100,
         render: (_, record, index) => {
           if (record.status === 1) {
             return this.renderEditAndStopOperations(record, index);

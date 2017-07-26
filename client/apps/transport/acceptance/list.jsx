@@ -187,7 +187,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('shipTransitTime'),
     dataIndex: 'transit_time',
-    width: 70,
+    width: 80,
     render: (o, record) => <TransitTimeLabel time={record.transit_time} tformat={this.msg} />,
   }, {
     title: this.msg('shipDeliveryDate'),
@@ -225,7 +225,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('packageNum'),
     dataIndex: 'total_count',
-    width: 40,
+    width: 60,
   }, {
     title: this.msg('shipWeight'),
     dataIndex: 'total_weight',
@@ -516,7 +516,7 @@ export default class AcceptList extends React.Component {
             </div>
             <div className="panel-body table-panel">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
-                dataSource={this.dataSource} scroll={{ x: 2560 }}
+                dataSource={this.dataSource} scroll={{ x: 2660 }}
               />
             </div>
           </div>

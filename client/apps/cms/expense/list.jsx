@@ -275,7 +275,7 @@ export default class ExpenseList extends Component {
       {
         title: this.msg('delgNo'),
         dataIndex: 'delg_no',
-        width: 110,
+        width: 120,
         fixed: 'left',
         render: o => (
           <a onClick={() => this.handlePreview(o)}>
@@ -284,13 +284,13 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('custName'),
         dataIndex: 'send_name',
-        width: 180,
+        width: 200,
         filters: this.state.custFilter,
         render: o => <TrimSpan text={o} maxLen={12} />,
       }, {
         title: this.msg('agentName'),
         dataIndex: 'agent_name',
-        width: 180,
+        width: 200,
         filters: this.state.supeFilter,
         render: o => <TrimSpan text={o} maxLen={12} />,
       }, {
@@ -338,7 +338,7 @@ export default class ExpenseList extends Component {
             },
           }, {
             title: this.msg('status'),
-            width: 44,
+            width: 60,
             dataIndex: 'bill_status',
             key: 'revenue_status',
             className: 'status-indicator',
@@ -397,7 +397,7 @@ export default class ExpenseList extends Component {
             },
           }, {
             title: this.msg('status'),
-            width: 44,
+            width: 60,
             dataIndex: 'cost_status',
             key: 'cost_status',
             className: 'status-indicator',
@@ -438,7 +438,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('acptTime'),
         dataIndex: 'acpt_time',
-        width: 100,
+        width: 120,
         sorter: (a, b) => a.acpt_time - b.acpt_time,
         sortOrder: sorted.columnKey === 'acpt_time' && sorted.order,
         filterDropdown: (
@@ -450,7 +450,7 @@ export default class ExpenseList extends Component {
       }, {
         title: this.msg('cleanDate'),
         dataIndex: 'clean_time',
-        width: 100,
+        width: 120,
         sorter: (a, b) => a.clean_time - b.clean_time,
         sortOrder: sorted.columnKey === 'clean_time' && sorted.order,
         filterDropdown: (
@@ -479,13 +479,13 @@ export default class ExpenseList extends Component {
       },
     ];
     let curColumns = columns;
-    let tableWidth = 1880;
+    let tableWidth = 2020;
     if (listFilter.viewStatus === 'revenueOnly') {
       curColumns = columns.filter(colm => colm.dataIndex !== 'cost' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'agent_name');
-      tableWidth = 1300;
+      tableWidth = 1400;
     } else if (listFilter.viewStatus === 'costOnly') {
       curColumns = columns.filter(colm => colm.dataIndex !== 'revenue' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'send_name');
-      tableWidth = 1300;
+      tableWidth = 1400;
     }
     this.dataSource.remotes = expslist;
     return (
@@ -542,7 +542,7 @@ export default class ExpenseList extends Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
-            <div className="panel-body table-panel group-header">
+            <div className="panel-body group-header">
               <Table rowSelection={rowSelection} columns={curColumns} dataSource={this.dataSource} loading={expslist.loading}
                 bordered scroll={{ x: tableWidth }} rowKey="delg_no"
               />
