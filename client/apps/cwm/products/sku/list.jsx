@@ -247,7 +247,7 @@ export default class CWMSkuList extends React.Component {
     this.props.openApplyPackingRuleModal();
   }
   render() {
-    const { skulist, owner, whse, whses, loading, syncing } = this.props;
+    const { skulist, owner, whse, whses, loading, syncing, listFilter } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -309,7 +309,7 @@ export default class CWMSkuList extends React.Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
+                <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.sku} />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                   <Button onClick={this.handleApplyPackingRule}>采用包装规则</Button>
