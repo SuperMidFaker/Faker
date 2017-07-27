@@ -85,6 +85,9 @@ export default class SiderForm extends Component {
     const packing = packings.find(item => item.code === value);
     this.props.setSkuForm(packing);
   }
+  handleTraceCheck = (ev) => {
+    this.props.setSkuForm({ trace_convey: ev.target.checked ? 'PCS' : null });
+  }
   render() {
     const { form: { getFieldDecorator }, packings, skuForm } = this.props;
     return (
@@ -122,7 +125,7 @@ export default class SiderForm extends Component {
               <Input style={{ width: '33%' }} placeholder="计量单位数量" value={skuForm.convey_pallet_qty} disabled />
             </InputGroup>
           </FormItem>
-          <FormItem label={<Checkbox>{this.msg('库内追踪')}</Checkbox>}>
+          <FormItem label={<Checkbox checked={skuForm.trace_convey} onChange={this.handleTraceCheck}>{this.msg('库内追踪')}</Checkbox>}>
             {getFieldDecorator('trace_convey', {
               initialValue: skuForm.trace_convey,
             })(<RadioGroup size="large">
