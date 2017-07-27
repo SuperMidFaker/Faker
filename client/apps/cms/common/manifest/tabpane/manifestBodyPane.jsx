@@ -261,14 +261,14 @@ export default class ManifestBodyPanel extends React.Component {
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
-      fixed: 'left',
       className: 'cell-align-center',
       width: 45,
+      fixed: 'left',
     }, {
       title: this.msg('copGNo'),
-      fixed: 'left',
       width: 150,
       dataIndex: 'cop_g_no',
+      fixed: 'left',
       render: (o, record, index) => {
         if (readonly) {
           return <span>{o}</span>;
@@ -435,12 +435,12 @@ export default class ManifestBodyPanel extends React.Component {
         (<ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
         />),
-    }, {
+/*    }, {
       title: this.msg('element'),
       render: (o, record, index) =>
         (<ColumnInput field="element" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
-        />),
+        />),*/
     }, {
       title: this.msg('versionNo'),
       width: 80,
@@ -450,14 +450,13 @@ export default class ManifestBodyPanel extends React.Component {
         />),
     }, {
       title: <div className="cell-align-right">{this.msg('processingFees')}</div>,
-      width: 80,
-      className: 'cell-align-right',
       render: (o, record, index) =>
         (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody} decimal={3}
         />),
     }, {
       width: 40,
+      className: 'cell-align-center',
       fixed: 'right',
       render: (o, record, index) => {
         if (readonly) {
@@ -874,7 +873,7 @@ export default class ManifestBodyPanel extends React.Component {
         </div>
         <div className="panel-body table-panel table-fixed-layout">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
-            scroll={{ x: 3200, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
+            scroll={{ x: 2900, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
           <RelateImportRuleModal />

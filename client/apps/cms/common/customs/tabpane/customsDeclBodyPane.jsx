@@ -418,17 +418,17 @@ export default class CustomsDeclBodyPanel extends React.Component {
       render: col => buildTipItems(col),
     }, {
       title: this.msg('inspection'),
-      width: 150,
       dataIndex: 'inspection',
       render: col => buildTipItems(col, true),
-    }, {
+    }];
+    /* , {
       title: this.msg('element'),
       render: (o, record, index) =>
         (<ColumnInput field="element" inEdit={index === editIndex} record={record}
           edit={editBody}
         />),
-    }];
-    /* , {
+    }
+    , {
       title: this.msg('versionNo'),
       width: 80,
       render: (o, record, index) =>
@@ -478,7 +478,7 @@ export default class CustomsDeclBodyPanel extends React.Component {
         </div>
         <div className="panel-body table-panel table-fixed-layout">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
-            scroll={{ x: 2800, y: this.state.wlScrollY }} pagination={this.state.pagination}
+            scroll={{ x: 2000, y: this.state.wlScrollY }} pagination={this.state.pagination}
           />
         </div>
       </div>);

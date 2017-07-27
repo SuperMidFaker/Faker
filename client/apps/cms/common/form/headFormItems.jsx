@@ -145,7 +145,7 @@ export class RelationAutoCompSelect extends React.Component {
     return (
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 19 }} label={label} required>
         <Row gutter={4}>
-          <Col span="6">
+          <Col span="7">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
                 <Input disabled value={initialCustCodeValue} />
@@ -169,7 +169,7 @@ export class RelationAutoCompSelect extends React.Component {
                   </Select>)}
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
                 <Input disabled value={initialCodeValue} />
