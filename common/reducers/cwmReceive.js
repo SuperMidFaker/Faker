@@ -64,7 +64,7 @@ const initialState = {
     data: [],
     loading: true,
   },
-  asnFilters: { status: 'pending', ownerCode: 'all' },
+  asnFilters: { status: 'all', ownerCode: 'all' },
   inbound: {
     totalCount: 0,
     pageSize: 20,

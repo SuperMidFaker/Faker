@@ -323,6 +323,7 @@ export default class ReceivingASNList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioButton value="all">全部</RadioButton>
             <RadioButton value="pending">通知接收</RadioButton>
             <RadioButton value="inbound">已释放</RadioButton>
             <RadioButton value="partial">部分收货</RadioButton>

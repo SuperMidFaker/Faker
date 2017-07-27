@@ -42,7 +42,7 @@ const initialState = {
     data: [],
     loading: true,
   },
-  soFilters: { status: 'pending', ownerCode: 'all' },
+  soFilters: { status: 'all', ownerCode: 'all' },
   wave: {
     totalCount: 0,
     pageSize: 20,
@@ -50,7 +50,7 @@ const initialState = {
     data: [],
     loading: true,
   },
-  waveFilters: { status: 'pending', ownerCode: 'all' },
+  waveFilters: { status: 'all', ownerCode: 'all' },
   addToMoveModal: {
     visible: false,
     ownerId: '',
