@@ -11,7 +11,7 @@ function calFeeRate(curr, rate, mark) {
       feeRate.mark = mark;
       feeRate.curr = curr;
     }
-    rateStr = `${feeRate.curr}/${feeRate.rate}/${feeRate.mark}`;
+    rateStr = `\n${feeRate.curr}/${feeRate.rate}/${feeRate.mark}`;
   }
   return rateStr;
 }
