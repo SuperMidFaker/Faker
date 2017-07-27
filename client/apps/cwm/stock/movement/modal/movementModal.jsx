@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Card, Collapse, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeMovementModal, inventorySearch, createMovement } from 'common/reducers/cwmInventoryStock';
+import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 
 const formatMsg = format(messages);
@@ -25,8 +25,9 @@ const Option = Select.Option;
     filter: state.cwmInventoryStock.movementModal.filter,
     tenantId: state.account.tenantId,
     locations: state.cwmWarehouse.locations,
+    movements: state.cwmInventoryStock.movements,
   }),
-  { closeMovementModal, inventorySearch, loadLocations, createMovement }
+  { closeMovementModal, inventorySearch, loadLocations, createMovement, loadMovements, setMovementsFilter }
 )
 export default class MovementModal extends Component {
   static propTypes = {
@@ -79,7 +80,7 @@ export default class MovementModal extends Component {
     title: '目标库位',
     width: 100,
     dataIndex: 'target_location',
-    render: (o, record, index) => (<Select style={{ width: 100 }} onSelect={value => this.handleSelect(value, index)}>
+    render: (o, record, index) => (<Select style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)}>
       {this.props.locations.map(loc => <Option value={loc.location} key={loc.location}>{loc.location}</Option>)}
     </Select>),
   }, {
@@ -146,8 +147,16 @@ export default class MovementModal extends Component {
     this.setState({
     });
   }
-  handleSearch = (filter) => {
-    this.props.inventorySearch(JSON.stringify(filter), this.props.tenantId).then((result) => {
+  handleSearch = () => {
+    const { filter } = this.props;
+    if (!filter.ownerCode) {
+      message.info('请选择货主');
+      return;
+    }
+    if (!filter.productNo && !filter.location) {
+      return;
+    }
+    this.props.inventorySearch(JSON.stringify(filter), this.props.tenantId, this.props.defaultWhse.code).then((result) => {
       if (!result.err) {
         this.setState({
           stocks: result.data,
@@ -156,20 +165,21 @@ export default class MovementModal extends Component {
     });
   }
   handleOwnerChange = (value) => {
-    const newFilter = { ...this.props.filter, owner: value };
-    this.handleSearch(newFilter);
+    const owner = this.props.owners.find(item => item.id === value);
+    const newFilter = { ...this.props.filter, ownerCode: value, ownerName: owner.name };
+    this.props.setMovementsFilter(newFilter);
   }
   handleProductChange = (e) => {
     const newFilter = { ...this.props.filter, productNo: e.target.value };
-    this.handleSearch(newFilter);
+    this.props.setMovementsFilter(newFilter);
   }
   handleLocationChange = (e) => {
     const newFilter = { ...this.props.filter, location: e.target.value };
-    this.handleSearch(newFilter);
+    this.props.setMovementsFilter(newFilter);
   }
   handleDateChange = (dates, dateString) => {
     const newFilter = { ...this.props.filters, startTime: dateString[0], endTime: dateString[1] };
-    this.handleSearch(newFilter);
+    this.props.setMovementsFilter(newFilter);
   }
   handleMovementChange = (value, index) => {
     const stocks = [...this.state.stocks];
@@ -184,6 +194,7 @@ export default class MovementModal extends Component {
     const movementOne = stocks[index];
     if (!movementOne.target_location) {
       message.info('请选择目标库位');
+      return;
     }
     stocks.splice(index, 1);
     movements.push(movementOne);
@@ -211,7 +222,18 @@ export default class MovementModal extends Component {
     });
   }
   handleCreateMovement = () => {
-    this.props.createMovement(this.props.filter.owner, '', '', this.state.movements);
+    this.props.createMovement(this.props.filter.ownerCode, this.props.filter.ownerName, '', '', this.props.defaultWhse.code, this.props.tenantId,
+      this.props.loginId, this.state.movements).then((result) => {
+        if (!result.err) {
+          this.props.closeMovementModal();
+          this.props.loadMovements({
+            whseCode: this.props.defaultWhse.code,
+            tenantId: this.props.tenantId,
+            pageSize: this.props.movements.pageSize,
+            current: this.props.movements.current,
+          });
+        }
+      });
   }
   render() {
     const { owners } = this.props;
@@ -225,6 +247,9 @@ export default class MovementModal extends Component {
       </FormItem>
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
+      </FormItem>
+      <FormItem>
+        <Button type="primary" onClick={this.handleSearch}>search</Button>
       </FormItem>
     </Form>);
 
