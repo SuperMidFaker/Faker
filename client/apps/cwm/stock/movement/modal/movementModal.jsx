@@ -26,6 +26,7 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     locations: state.cwmWarehouse.locations,
     movements: state.cwmInventoryStock.movements,
+    movementFilter: state.cwmInventoryStock.movementFilter,
   }),
   { closeMovementModal, inventorySearch, loadLocations, createMovement, loadMovements, setMovementsFilter }
 )
@@ -231,6 +232,7 @@ export default class MovementModal extends Component {
             tenantId: this.props.tenantId,
             pageSize: this.props.movements.pageSize,
             current: this.props.movements.current,
+            filter: this.props.movementFilter,
           });
         }
       });
