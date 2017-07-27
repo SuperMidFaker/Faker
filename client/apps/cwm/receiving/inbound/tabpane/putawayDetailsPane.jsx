@@ -85,7 +85,7 @@ export default class PutawayDetailsPane extends React.Component {
     title: '上架时间',
     width: 100,
     dataIndex: 'allocate_date',
-    render: allocateDt => allocateDt && moment(allocateDt).format('YYYY.MM.DD'),
+    render: allocateDt => allocateDt && moment(allocateDt).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 150,

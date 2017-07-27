@@ -119,7 +119,7 @@ export default class PickingModal extends Component {
             {
               getFieldDecorator('pickedDate', {
                 initialValue: moment(new Date()),
-              })(<DatePicker format={'YYYY/MM/DD'} />)
+              })(<DatePicker showTime format="YYYY/MM/DD HH:mm" />)
             }
           </FormItem>
         </Form>

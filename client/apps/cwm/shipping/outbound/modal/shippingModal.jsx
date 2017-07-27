@@ -122,7 +122,7 @@ export default class ShippingModal extends Component {
             {
               getFieldDecorator('shippedDate', {
                 initialValue: moment(new Date()),
-              })(<DatePicker format={'YYYY/MM/DD hh:mm'} />)
+              })(<DatePicker showTime format="YYYY/MM/DD HH:mm" />)
             }
           </FormItem>
         </Form>
