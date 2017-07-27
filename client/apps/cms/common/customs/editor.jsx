@@ -156,7 +156,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handlePDF = () => {
     const { head, bodies, billMeta, formRequire } = this.props;
-    const docDefinition = DocDef(head, bodies, billMeta.declWayCode, formRequire);
+    const docDefinition = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
     window.pdfMake.fonts = {
       yahei: {
         normal: 'msyh.ttf',
@@ -167,7 +167,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handlePrinter = () => {
     const { head, bodies, billMeta, formRequire } = this.props;
-    const docDefinition = DocDef(head, bodies, billMeta.declWayCode, formRequire);
+    const docDefinition = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
     window.pdfMake.fonts = {
       yahei: {
         normal: 'msyh.ttf',
