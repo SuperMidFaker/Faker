@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Card, Col, Row, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import MovementDetailsPane from './tabpane/movementDetailsPane';
-import { loadReceiveModal } from 'common/reducers/cwmReceive';
-import { loadOutboundHead, updateOutboundMode } from 'common/reducers/cwmOutbound';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmInventoryStock';
+import { CWM_MOVEMENT_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -26,13 +25,11 @@ const TabPane = Tabs.TabPane;
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
-    formData: state.cmsDelegation.formData,
-    submitting: state.cmsDelegation.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
-    outboundHead: state.cwmOutbound.outboundFormHead,
-    reload: state.cwmOutbound.outboundReload,
+    movementHead: state.cwmInventoryStock.movementHead,
+    reload: state.cwmInventoryStock.movementReload,
   }),
-  { loadReceiveModal, loadOutboundHead, updateOutboundMode }
+  { loadMovementHead, updateMovingMode }
 )
 @connectNav({
   depth: 3,
@@ -44,90 +41,32 @@ export default class MovementDetail extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     tenantName: PropTypes.string.isRequired,
-    formData: PropTypes.object.isRequired,
-    submitting: PropTypes.bool.isRequired,
-    updateOutboundMode: PropTypes.func.isRequired,
+    updateMovingMode: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    allocated: false,
-    pushedTask: false,
-    printedPickingList: false,
-    picking: false,
-    picked: false,
+    completed: false,
   }
   componentWillMount() {
-    this.props.loadOutboundHead(this.props.params.outboundNo);
+    this.props.loadMovementHead(this.props.params.movementNo);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      this.props.loadOutboundHead(this.props.params.outboundNo);
+      this.props.loadMovementHead(this.props.params.movementNo);
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleSave = () => {
-    this.props.form.validateFields((errors) => {
-      if (!errors) {
-
-      }
-    });
+  handleMovingModeChange = (ev) => {
+    this.props.updateMovingMode(this.props.params.movementNo, ev.target.value);
   }
-  handleSaveBtnClick = () => {
-    this.handleSave({ accepted: false });
-  }
-  handleCancelBtnClick = () => {
-    this.context.router.goBack();
-  }
-  handleAutoAllocate = () => {
-    this.setState({
-      allocated: true,
-      currentStep: 1,
-    });
-  }
-  handleUndoAllocate = () => {
-    this.setState({
-      allocated: false,
-      currentStep: 0,
-      printedPickingList: false,
-    });
-  }
-  handleShippingModeChange = (ev) => {
-    this.props.updateOutboundMode(this.props.params.outboundNo, ev.target.value);
-  }
-  handlePushTask = () => {
-    this.setState({
-      pushedTask: true,
-      currentStep: 2,
-      picking: true,
-    });
-  }
-  handleWithdrawTask = () => {
-    this.setState({
-      pushedTask: false,
-      currentStep: 1,
-      picking: false,
-    });
-  }
-  handlePrint = () => {
-    this.setState({
-      printedPickingList: true,
-    });
-  }
-  handleConfirmPicked = () => {
-    this.setState({
-      picked: true,
-      currentStep: 2,
-    });
-  }
-
   render() {
-    const { defaultWhse, outboundHead } = this.props;
-    const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
-      cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
+    const { defaultWhse, movementHead } = this.props;
+    const movingStatus = Object.keys(CWM_MOVEMENT_STATUS).filter(
+      cis => CWM_MOVEMENT_STATUS[cis].value === movementHead.status
     )[0];
-    const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
+    const movingStep = movingStatus ? CWM_MOVEMENT_STATUS[movingStatus].step : 0;
     return (
       <div>
         <Header className="page-header">
@@ -136,71 +75,52 @@ export default class MovementDetail extends Component {
               {defaultWhse.name}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('shippingOutbound')}
+              {this.msg('movement')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.props.params.outboundNo}
+              {this.props.params.movementNo}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {this.state.allocated && !this.state.picked &&
-            <Button type={!this.state.printedPickingList && 'primary'} size="large" icon="printer" onClick={this.handlePrint} />
-            }
-            <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
+            <RadioGroup value={movementHead.moving_mode} onChange={this.handleMovingModeChange} size="large" disabled={movingStep === 5}>
               <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
           </div>
         </Header>
         <Content className="main-content">
-          <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }}>
-              <Row>
-                <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="货主" field={outboundHead.owner_name} />
-                </Col>
-                { outboundHead.wave_no &&
-                  <Col sm={24} lg={6}>
-                    <InfoItem addonBefore="波次号" field={outboundHead.wave_no} />
-                  </Col>
-                }
-                { outboundHead.so_no &&
-                  <Col sm={24} lg={6}>
-                    <InfoItem addonBefore="订单号" field={outboundHead.so_no} />
-                  </Col>
-                }
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="订货总数" field={outboundHead.total_qty} />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="分配总数" field={outboundHead.total_alloc_qty} />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="拣货总数" field={outboundHead.total_picked_qty} />
-                </Col>
-                <Col sm={12} lg={2}>
-                  <InfoItem addonBefore="发货总数" field={outboundHead.total_shipped_qty} />
-                </Col>
-              </Row>
-              <div className="card-footer">
-                <Steps progressDot current={outboundStep}>
-                  <Step description="待出库" />
-                  <Step description="分配" />
-                  <Step description="拣货" />
-                  <Step description="装箱" />
-                  <Step description="发货" />
-                  <Step description="已出库" />
-                </Steps>
-              </div>
-            </Card>
-            <Card bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
-                <TabPane tab="移动明细" key="orderDetails">
-                  <MovementDetailsPane outboundNo={this.props.params.outboundNo} />
-                </TabPane>
-              </Tabs>
-            </Card>
-          </Form>
+          <Card bodyStyle={{ paddingBottom: 56 }}>
+            <Row>
+              <Col sm={24} lg={6}>
+                <InfoItem addonBefore="货主" field={movementHead.owner_name} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="移库类型" field={movementHead.total_qty} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="原因" field={movementHead.total_alloc_qty} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="创建时间" field={movementHead.total_picked_qty} />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem addonBefore="移库时间" field={movementHead.total_shipped_qty} />
+              </Col>
+            </Row>
+            <div className="card-footer">
+              <Steps progressDot current={movingStep}>
+                <Step description="未完成" />
+                <Step description="已完成" />
+              </Steps>
+            </div>
+          </Card>
+          <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }}>
+            <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
+              <TabPane tab="移动明细" key="movementDetails">
+                <MovementDetailsPane movementNo={this.props.params.movementNo} />
+              </TabPane>
+            </Tabs>
+          </Card>
         </Content>
       </div>
     );

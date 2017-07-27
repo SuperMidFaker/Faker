@@ -24,7 +24,7 @@ const formatMsg = format(messages);
   }),
   { fillEntryId, updateMark }
 )
-export default class CustomsDeclHeadPanel extends React.Component {
+export default class CustomsDeclHeadPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,

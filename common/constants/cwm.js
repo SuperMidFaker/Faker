@@ -258,3 +258,14 @@ exports.CWM_LOCATION_STATUS = [{
   value: -1,
   text: '禁用',
 }];
+
+exports.CWM_MOVEMENT_STATUS = {
+  CREATED: {
+    value: 0,
+    step: 0,
+  },
+  COMPLETED: {
+    value: 1,
+    step: 1,
+  },
+};

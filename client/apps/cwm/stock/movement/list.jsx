@@ -14,7 +14,6 @@ import { Fontello } from 'client/components/FontIcon';
 import { openMovementModal, loadMovements } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import MovementModal from './modal/movementModal';
 import messages from '../message.i18n';
@@ -80,10 +79,6 @@ export default class MovementList extends React.Component {
     title: '移库单号',
     dataIndex: 'movement_no',
     width: 180,
-    render: (o, record) => (
-      <a onClick={() => this.handlePreview(o, record.outbound_no)}>
-        {o}
-      </a>),
   }, {
     title: '货主',
     width: 200,
@@ -95,9 +90,7 @@ export default class MovementList extends React.Component {
     title: '状态',
     className: 'cell-align-center',
     render: (o, record) => {
-      if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value) {
-        return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_PICKED.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
+      if (record.isdone === 1) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;
@@ -117,21 +110,10 @@ export default class MovementList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
-      } else if (record.status === 0 && record.receiving_mode === 2) {
-        return (<span><RowUpdater label="撤回" row={record} /></span>);
-      } else {
-        return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
-      }
-    },
+    render: (o, record) => <RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />,
   }]
   handleCreateMovement = () => {
     this.props.openMovementModal();
-  }
-  handlePreview = (soNo, outboundNo) => {
-    this.props.showDock(soNo, outboundNo);
   }
   handleStatusChange = () => {
     const whseCode = this.props.defaultWhse.code;
@@ -142,8 +124,8 @@ export default class MovementList extends React.Component {
       current: this.props.movements.current,
     });
   }
-  handleReceive = (row) => {
-    const link = `/cwm/shipping/outbound/${row.outbound_no}`;
+  handleMovementDetail = (row) => {
+    const link = `/cwm/stock/movement/${row.movement_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
