@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Badge, Input, Layout, Tooltip } from 'antd';
+import { Breadcrumb, Button, Badge, Input, Layout, Tooltip, Table } from 'antd';
 import { loadFlowList, loadFlowTrackingFields, openCreateFlowModal, openFlow, reloadFlowList, editFlow } from 'common/reducers/scofFlow';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import Table from 'client/components/remoteAntTable';
 import EditableCell from 'client/components/EditableCell';
 import CreateFlowModal from './modal/createFlowModal';
 import FlowDesigner from './designer';
@@ -84,35 +83,22 @@ export default class FlowList extends React.Component {
       </div>
     </div>),
   }]
-  dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadFlowList({
+  handleTableChange = (pagination, filters, sorter) => {
+    const params = {
+      pageSize: pagination.pageSize,
+      current: pagination.current,
+      sorter: {
+        field: sorter.field,
+        order: sorter.order === 'descend' ? 'DESC' : 'ASC',
+      },
+    };
+    this.props.loadFlowList({
       tenantId: this.props.tenantId,
       filter: JSON.stringify(this.props.listFilter),
       pageSize: params.pageSize,
       current: params.current,
-    }),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: false,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-      showTotal: total => `共 ${total} 条`,
-    }),
-    getParams: (pagination, filters, sorter) => {
-      const params = {
-        pageSize: pagination.pageSize,
-        current: pagination.current,
-        sorter: {
-          field: sorter.field,
-          order: sorter.order === 'descend' ? 'DESC' : 'ASC',
-        },
-      };
-      return params;
-    },
-    remotes: this.props.flowList,
-  })
+    });
+  }
   handleSearch = (value) => {
     const filter = { ...this.props.listFilter, name: value };
     this.props.loadFlowList({
@@ -145,7 +131,6 @@ export default class FlowList extends React.Component {
   }
   render() {
     const { thisFlow, flowList, loading, listCollapsed } = this.props;
-    this.dataSource.remotes = flowList;
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
@@ -168,9 +153,10 @@ export default class FlowList extends React.Component {
               <Search onSearch={this.handleSearch} size="large" />
             </div>
             <div className="list-body">
-              <Table showHeader={false} size="middle" dataSource={this.dataSource} columns={this.columns} onRowClick={this.handleRowClick}
+              <Table showHeader={false} size="middle" dataSource={flowList.data} columns={this.columns} onRowClick={this.handleRowClick}
                 rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
-                rowKey="id" scroll={{ y: 640 }}
+                rowKey="id" scroll={{ y: 640 }} onChange={this.handleTableChange}
+                pagination={{ current: flowList.current, pageSize: flowList.pageSize, total: flowList.totalCount }}
               />
             </div>
           </div>
