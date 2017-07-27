@@ -7,14 +7,16 @@ import { loadPartners, changePartnerStatus, deletePartner } from 'common/reducer
 import connectNav from 'client/common/decorators/connect-nav';
 import { toggleCarrierModal } from 'common/reducers/transportResources';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
+
 function fetchData({ dispatch, state }) {
   return dispatch(loadPartners({
     tenantId: state.account.tenantId,
     role,
     businessType,
-    unSetStatus: true,
+    from: 'table',
   }));
 }
 
@@ -47,7 +49,7 @@ export default class BrokerListContainer extends Component {
         tenantId: nextProps.tenantId,
         role,
         businessType,
-        unSetStatus: true,
+        from: 'table',
       });
     }
   }

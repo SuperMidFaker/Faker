@@ -63,7 +63,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadPartners(params) { // tenantId role businessType
+export function loadPartners(params) { // tenantId role businessType from
   return {
     [CLIENT_API]: {
       types: [
