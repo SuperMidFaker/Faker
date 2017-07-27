@@ -48,7 +48,7 @@ export default class ReceivingModal extends Component {
                 inbound_qty: 0,
                 inbound_pack_qty: 0,
                 location: '',
-                damage_level: '',
+                damage_level: 0,
               }];
             } else {
               dataSource = result.data.map(data => ({
@@ -126,7 +126,7 @@ export default class ReceivingModal extends Component {
       inbound_qty: 0,
       inbound_pack_qty: 0,
       location: '',
-      damage_level: '',
+      damage_level: 0,
     };
     dataSource.push(newDetail);
     this.setState({ dataSource });

@@ -6,6 +6,7 @@ import { DatePicker, Input, Modal, Select, Form } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { hidePuttingAwayModal, batchPutaways } from 'common/reducers/cwmReceive';
+import moment from 'moment';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -16,6 +17,7 @@ const FormItem = Form.Item;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     locations: state.cwmWarehouse.locations,
     visible: state.cwmReceive.puttingAwayModal.visible,
     details: state.cwmReceive.puttingAwayModal.details,
@@ -30,7 +32,15 @@ export default class PuttingAwayModal extends Component {
   state = {
     location: '',
     allocater: '',
-    allocate_date: null,
+    date: null,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.visible && nextProps.visible) {
+      this.setState({
+        allocater: nextProps.loginName,
+        date: new Date(),
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
@@ -101,7 +111,7 @@ export default class PuttingAwayModal extends Component {
           <Input onChange={this.handleAllocaterChange} value={this.state.allocater} />
         </FormItem>
         <FormItem {...formItemLayout} label="上架时间" >
-          <DatePicker onChange={this.handleAllocateDateChange} value={this.state.date} showTime format="YYYY-MM-DD HH:mm" />
+          <DatePicker onChange={this.handleAllocateDateChange} value={moment(this.state.date)} showTime format="YYYY-MM-DD HH:mm" />
         </FormItem>
       </Modal>
     );

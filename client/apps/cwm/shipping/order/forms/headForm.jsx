@@ -113,8 +113,8 @@ export default class HeadForm extends Component {
         <Row gutter={16}>
           <Col span={6}>
             <FormItem label="要求交货日期" >
-              {getFieldDecorator('expect_ship_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-                initialValue: soHead && moment(new Date(soHead.expect_shipping_date)),
+              {getFieldDecorator('expect_shipping_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+                initialValue: soHead ? moment(new Date(soHead.expect_shipping_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
