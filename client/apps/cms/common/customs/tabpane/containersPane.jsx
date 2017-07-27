@@ -128,7 +128,7 @@ export default class ContainersPane extends React.Component {
     }];
     return (
       <div className="pane">
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table pagination={false} columns={columns} dataSource={this.state.datas} />
         </div>
       </div>

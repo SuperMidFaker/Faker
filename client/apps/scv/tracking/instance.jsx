@@ -238,7 +238,7 @@ export default class Instance extends Component {
                 onSearch={this.handleSearch} size="large"
               />
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table columns={this.makeColumns()} scroll={{ x: tableWidth }} dataSource={this.dataSource} rowKey="shipmt_order_no" />
             </div>
           </div>

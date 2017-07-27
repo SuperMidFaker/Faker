@@ -257,7 +257,7 @@ export default class StockQueryList extends React.Component {
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 </div>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
                   scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />

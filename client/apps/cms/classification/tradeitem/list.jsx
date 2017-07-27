@@ -800,7 +800,7 @@ export default class TradeItemList extends Component {
                   {batchOperation}
                 </div>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} bordered
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
                 />

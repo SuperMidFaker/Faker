@@ -288,7 +288,7 @@ export default class BillingFeeList extends React.Component {
               <span style={handleLableStyle}>客户: <strong>{billing.customerName}</strong></span>
               <span style={handleLableStyle}>{this.msg('range')}: <strong>{moment(billing.beginDate).format('YYYY-MM-DD')} ~ {moment(billing.endDate).format('YYYY-MM-DD')}</strong></span>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} scroll={{ x: 2000 }} loading={loading} />
             </div>
           </div>

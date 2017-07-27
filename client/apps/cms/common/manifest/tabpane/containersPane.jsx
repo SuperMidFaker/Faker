@@ -146,7 +146,7 @@ export default class ContainersPane extends React.Component {
         <div className="panel-header">
           <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
         </div>
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table pagination={false} columns={columns} dataSource={this.state.datas} />
         </div>
       </div>

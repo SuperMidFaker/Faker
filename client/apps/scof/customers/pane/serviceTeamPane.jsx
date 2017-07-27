@@ -74,7 +74,7 @@ export default class ServiceTeam extends React.Component {
         <div className="panel-header">
           <Button onClick={() => this.props.showServiceTeamModal()}>添加成员</Button>
         </div>
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table size="middle" columns={column} dataSource={serviceTeamMembers} pagination={false} rowKey="id" />
         </div>
         <ServiceTeamModal customer={customer} selectedUserIds={this.state.selectedRowKeys} />

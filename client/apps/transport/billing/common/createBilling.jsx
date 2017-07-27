@@ -272,7 +272,7 @@ export default class CreateBilling extends React.Component {
               <span style={handleLableStyle}>{this.msg('chooseModel')}: <strong>{this.msg(chooseModel)}</strong></span>
               <Button type="default" className="pull-right" onClick={this.toggleBeforeFeesModal}>未入账运单</Button>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} />
             </div>
             <BeforeFeesModal type={type} visible={this.state.beforeFeesModalVisible} toggle={this.toggleBeforeFeesModal} />

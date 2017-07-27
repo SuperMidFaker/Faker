@@ -136,7 +136,7 @@ export default class TraderList extends Component {
             <Button type="primary" onClick={() => this.handleAddBtnClick(type)} icon="plus-circle-o">新增</Button>
           </PrivilegeCover>
         </div>
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table dataSource={data} columns={columns} rowKey="id" />
         </div>
         <TraderModal />

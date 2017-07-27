@@ -124,7 +124,7 @@ export default class DriverList extends Component {
                     <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
                   </PrivilegeCover>
                 </div>
-                <div className="panel-body table-panel">
+                <div className="panel-body table-panel table-fixed-layout">
                   <Table dataSource={dataSource} columns={columns} rowSelection={rowSelection} />
                 </div>
               </Content>

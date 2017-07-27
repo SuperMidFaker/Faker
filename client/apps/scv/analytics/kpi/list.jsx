@@ -230,7 +230,7 @@ export default class AnalyticsKpiList extends React.Component {
             </Card>
           </div>
           <div className="page-body">
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table dataSource={dataSource} columns={columns} pagination={false} size="middle" />
             </div>
           </div>

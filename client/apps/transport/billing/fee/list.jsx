@@ -530,7 +530,7 @@ export default class FeesList extends React.Component {
                 />
               </div>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: tableWidth }} loading={loading} />
             </div>
           </div>

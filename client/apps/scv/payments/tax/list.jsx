@@ -50,7 +50,7 @@ export default class PaymentsTaxList extends React.Component {
                 {this.msg('importShipments')}
               </Button>
             </div>
-            <div className="panel-body table-panel expandable" />
+            <div className="panel-body table-panel table-fixed-layout expandable" />
           </div>
         </Content>
       </QueueAnim>

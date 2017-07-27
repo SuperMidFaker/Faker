@@ -180,7 +180,7 @@ export default class RoleList extends React.Component {
             </Button>
           </PrivilegeCover>
         </div>
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table rowSelection={rowSelection} columns={columns} loading={loading}
             dataSource={dataSource} useFixedHeader
           />

@@ -370,7 +370,7 @@ export default class MemberDepartmentView extends React.Component {
                 <div className="nav-content-head">
                   {contentHeadAction}
                 </div>
-                <div className="panel-body table-panel">
+                <div className="panel-body table-panel table-fixed-layout">
                   <Table rowSelection={this.rowSelection} columns={this.columns} loading={loading} dataSource={this.dataSource} useFixedHeader />
                 </div>
               </Content>

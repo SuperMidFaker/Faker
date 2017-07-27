@@ -49,7 +49,7 @@ export default class SubCustomerList extends React.Component {
         <div className="pull-right">
           <Button onClick={() => this.props.showSubCustomerModal('add', customer)}>添加</Button>
         </div>
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table size="small" dataSource={customer.subCustomers} columns={columns} showHeader={false}
             pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="id"
           />

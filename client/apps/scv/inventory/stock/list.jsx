@@ -339,7 +339,7 @@ export default class InventoryStockList extends React.Component {
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table columns={columns} dataSource={this.dataSource} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
               </div>
             </div>

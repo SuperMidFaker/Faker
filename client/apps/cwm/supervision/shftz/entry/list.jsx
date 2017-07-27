@@ -280,7 +280,7 @@ export default class SHFTZEntryList extends React.Component {
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 </div>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />

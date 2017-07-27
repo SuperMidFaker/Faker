@@ -146,7 +146,7 @@ export default function NodeList(props) {
                   <Button type="primary" size="large" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
                 </PrivilegeCover>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} onChange={props.handleTableChange} />
                 <NodeModal />
               </div>

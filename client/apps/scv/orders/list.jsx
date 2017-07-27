@@ -50,7 +50,7 @@ export default class OrdersList extends React.Component {
                 {this.msg('importShipments')}
               </Button>
             </div>
-            <div className="panel-body table-panel" />
+            <div className="panel-body table-panel table-fixed-layout" />
           </div>
         </Content>
       </QueueAnim>

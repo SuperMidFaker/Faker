@@ -142,7 +142,7 @@ export default class TrackingItems extends React.Component {
     const { trackingItems, newItem } = this.state;
     return (
       <div className="page-body">
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <div className="ant-table-wrapper">
             <div className="ant-table">
               <table className="ant-table" style={{ width: '100%', fontSize: 14 }}>

@@ -542,7 +542,7 @@ export default class ExpenseList extends Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
-            <div className="panel-body group-header">
+            <div className="panel-body table-panel table-fixed-layout group-header">
               <Table rowSelection={rowSelection} columns={curColumns} dataSource={this.dataSource} loading={expslist.loading}
                 bordered scroll={{ x: tableWidth }} rowKey="delg_no"
               />

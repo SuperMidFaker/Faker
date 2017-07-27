@@ -90,7 +90,7 @@ export default class ScvClassificationSlaveConfig extends React.Component {
               {this.msg('addSlave')}
             </Button>
           </div>
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel table-fixed-layout">
             <Table columns={this.columns} dataSource={synclist} loading={loading} rowKey="id" scroll={{ x: 1200 }} />
           </div>
           <AddSlaveModal reload={this.handleSlavesReload} />

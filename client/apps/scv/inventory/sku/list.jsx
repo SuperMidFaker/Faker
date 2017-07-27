@@ -153,7 +153,7 @@ export default class SCVSkuList extends React.Component {
             <div className="toolbar">
               <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table columns={this.columns} dataSource={this.dataSource} rowKey="id"
                 scroll={{ x: 1400 }} loading={loading}
               />

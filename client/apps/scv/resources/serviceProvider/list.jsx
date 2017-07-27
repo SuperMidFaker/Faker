@@ -147,7 +147,7 @@ export default class ScvServiceProviderList extends React.Component {
               添加服务商
             </Button>
           </div>
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel table-fixed-layout">
             <Table columns={this.columns} dataSource={partners} loading={loading} scroll={{ x: 1200 }} />
           </div>
         </Content>

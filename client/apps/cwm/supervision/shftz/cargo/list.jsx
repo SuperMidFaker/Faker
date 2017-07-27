@@ -380,7 +380,7 @@ export default class SHFTZCargoList extends React.Component {
                 </Button>
                 }
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <RemoteTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
                   scroll={{ x: 1400 }} loading={loading}
                 />

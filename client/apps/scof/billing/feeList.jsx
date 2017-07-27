@@ -280,7 +280,7 @@ export default class FeesList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" scroll={{ x: 1600 }} loading={loading} />
             </div>
           </div>

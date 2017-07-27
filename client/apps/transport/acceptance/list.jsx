@@ -514,7 +514,7 @@ export default class AcceptList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
               </div>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table rowSelection={rowSelection} columns={columns} loading={loading}
                 dataSource={this.dataSource} scroll={{ x: 2660 }}
               />

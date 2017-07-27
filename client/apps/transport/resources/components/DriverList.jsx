@@ -152,7 +152,7 @@ function DriverList(props) {
                   <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
                 </PrivilegeCover>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
                 <DriverModal />
               </div>

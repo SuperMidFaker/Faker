@@ -120,7 +120,7 @@ export default class ScvWarehouseList extends React.Component {
               {this.msg('addWarehouse')}
             </Button>
           </div>
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel table-fixed-layout">
             <Table columns={this.columns} dataSource={this.dataSource} loading={loading} rowKey="wh_no" scroll={{ x: 1200 }} />
           </div>
         </Content>
