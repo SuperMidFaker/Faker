@@ -146,7 +146,7 @@ export default function VehicleList(props) {
                   <Button type="primary" size="large" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
                 </PrivilegeCover>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
               </div>
               <VehicleModal />

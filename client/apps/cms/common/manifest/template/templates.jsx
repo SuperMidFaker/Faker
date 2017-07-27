@@ -104,7 +104,7 @@ export default class ManifestTemplateList extends React.Component {
         <div className="toolbar">
           <Button type="primary" onClick={this.handleAddBtnClicked} icon="plus-circle-o">新增</Button>
         </div>
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table size="middle" columns={columns} dataSource={this.props.billtemplates} rowKey="id" />
         </div>
         <AddTemplateModal ietype={this.props.ietype} />

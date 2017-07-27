@@ -115,9 +115,9 @@ export default class ManifestHeadPanel extends React.Component {
             <Button icon="reload" style={{ marginLeft: 8 }}>重置</Button>
           </Popconfirm>}
         </div>
-        <div className="pane-content form-layout-compact">
+        <div className="pane-content form-layout-multi-col">
           <Form layout="horizontal">
-            <Card>
+            <Card bodyStyle={{ padding: 16 }}>
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
@@ -186,7 +186,7 @@ export default class ManifestHeadPanel extends React.Component {
                   <ContainerNo {...formProps} intl={intl} formRequire={formRequire} />
                 </Col>
                 <Col span={16}>
-                  <FormInput field="cert_mark" outercol={24} col={4}
+                  <FormInput field="cert_mark" outercol={24} col={3}
                     label={this.msg('certMark')} {...entryFormProps}
                   />
                 </Col>
@@ -196,7 +196,7 @@ export default class ManifestHeadPanel extends React.Component {
                   <DeclCustoms {...formProps} intl={intl} formRequire={formRequire} />
                 </Col>
                 <Col span={16}>
-                  <FormInput field="note" outercol={24} col={4}
+                  <FormInput field="note" outercol={24} col={3}
                     label={this.msg('markNotes')} {...entryFormProps}
                   />
                 </Col>

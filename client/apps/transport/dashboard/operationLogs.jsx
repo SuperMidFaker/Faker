@@ -233,7 +233,7 @@ export default class Dashboard extends React.Component {
         </Header>
         <Content className="main-content">
           <div className="page-body">
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1700 }} />
             </div>
           </div>

@@ -161,7 +161,7 @@ export default class ManifestDetailsPane extends React.Component {
       },
     }];
     return (
-      <div className="panel-body table-panel">
+      <div className="panel-body table-panel table-fixed-layout">
         <Table columns={columns} dataSource={billDetails} bordered
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />

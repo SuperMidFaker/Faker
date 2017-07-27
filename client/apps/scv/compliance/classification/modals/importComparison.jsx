@@ -332,7 +332,7 @@ export default class ImportComparisonModal extends React.Component {
           <div className="panel-header">
             <Button onClick={this.handleExportUnclassified}>{this.msg('exportUnclassified')}</Button>
           </div>
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel table-fixed-layout">
             <Table size="middle" rowKey={record => record.cop_product_no} columns={columns} dataSource={this.state.dataSource} pagination={this.state.pagination} scroll={{ x: 1500 }} />
           </div>
         </div>

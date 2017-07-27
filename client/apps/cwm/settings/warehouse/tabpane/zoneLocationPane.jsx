@@ -354,7 +354,7 @@ export default class ZoneLocationPane extends Component {
             </div>
             <ZoneEditModal zone={zone} whseCode={warehouse.code} stateChange={this.handleStateChange} />
           </div>
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel table-fixed-layout">
             <Table columns={this.locationColumns} dataSource={locations} rowKey="id" loading={locationLoading} rowSelection={rowSelection} />
           </div>
           <LocationModal whseCode={warehouse.code} zoneCode={zone.zone_code} />

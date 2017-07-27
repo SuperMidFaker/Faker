@@ -144,7 +144,7 @@ export default class BrokerList extends Component {
                 value={this.state.searchText} size="large"
               />
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
             </div>
             <BrokerModal />

@@ -97,7 +97,7 @@ export default class ApiAuthList extends React.Component {
                   {this.msg('generateAPICredential')}
                 </Button>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table columns={this.columns} dataSource={this.mockDataSource} />
               </div>
             </div>

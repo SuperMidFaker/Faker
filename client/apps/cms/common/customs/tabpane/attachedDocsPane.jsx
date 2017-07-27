@@ -164,7 +164,7 @@ export default class AttachedDocsPane extends React.Component {
           {head.status < CMS_DECL_STATUS.sent.value &&
           <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>}
         </div>
-        <div className="panel-body table-panel">
+        <div className="panel-body table-panel table-fixed-layout">
           <Table pagination={false} columns={columns} dataSource={this.state.datas} />
         </div>
       </div>

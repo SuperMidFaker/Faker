@@ -143,9 +143,9 @@ export class RelationAutoCompSelect extends React.Component {
     const custOpt = options.filter(op => op.custcode !== null && op.custcode.length > 0);
     const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
-      <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label} required>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 19 }} label={label} required>
         <Row gutter={4}>
-          <Col span="6">
+          <Col span="7">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
                 <Input disabled value={initialCustCodeValue} />
@@ -169,7 +169,7 @@ export class RelationAutoCompSelect extends React.Component {
                   </Select>)}
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="7">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
                 <Input disabled value={initialCodeValue} />
@@ -214,7 +214,7 @@ export function DeclCustoms(props) {
   const { getFieldDecorator, disabled, formData, formRequire, required } = props;
   const declPortProps = {
     outercol: 24,
-    col: 4,
+    col: 5,
     field: 'decl_port',
     label: msg('declPort'),
     rules: [{ required }],
@@ -497,7 +497,7 @@ export function CountryAttr(props) {
   const { getFieldDecorator, disabled, formData, formRequire, onSearch, ietype, required } = props;
   const tradeCountryProps = {
     outercol: 24,
-    col: 4,
+    col: 5,
     field: 'trade_country',
     options: formRequire.tradeCountries.map(tc => ({
       value: tc.cntry_co,
@@ -594,7 +594,7 @@ export function TradeMode(props) {
   const { getFieldDecorator, disabled, formData, formRequire, required } = props;
   const trxModeProps = {
     outercol: 24,
-    col: 8,
+    col: 10,
     field: 'trxn_mode',
     options: formRequire.trxModes.map(tm => ({
       value: tm.trx_mode,
@@ -740,7 +740,7 @@ export function ContainerNo(props) {
   const { getFieldDecorator, disabled, formData } = props;
   const containerNoProps = {
     outercol: 24,
-    col: 4,
+    col: 5,
     field: 'container_no',
     label: msg('containerNo'),
     disabled,
@@ -766,7 +766,7 @@ export function Pieces(props) {
   const { disabled, formData, getFieldDecorator, required } = props;
   const packCountProps = {
     outercol: 24,
-    col: 8,
+    col: 10,
     field: 'pack_count',
     label: msg('packCount'),
     disabled,

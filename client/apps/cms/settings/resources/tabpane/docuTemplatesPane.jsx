@@ -225,7 +225,7 @@ export default class InvoiceTemplate extends Component {
               <Button icon="file-excel">Excel数据模板 {this.state.excelTemplCount}</Button>
             </Popover>
           </div>
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel table-fixed-layout">
             <Table columns={columns} dataSource={this.props.invTemplates} rowKey="id" />
             <InvTemplateModal customer={this.props.customer} />
           </div>

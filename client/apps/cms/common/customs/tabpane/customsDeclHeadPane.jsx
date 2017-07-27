@@ -81,8 +81,8 @@ export default class CustomsDeclHeadPanel extends React.Component {
               </Col>
             </Row>
           </div>
-          <div className="pane-content form-layout-compact">
-            <Card>
+          <div className="pane-content form-layout-multi-col">
+            <Card bodyStyle={{ padding: 16 }}>
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}

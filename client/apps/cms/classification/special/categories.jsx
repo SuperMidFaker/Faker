@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Tabs } from 'antd';
+import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Tabs, Popover } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -200,6 +200,9 @@ export default class SpecialCategories extends React.Component {
         footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} style={{ width: '100%' }}>添加分类</Button>}
       />
     );
+    const content = (
+      <Table size="small" pagination={false} columns={[{ title: '商品编码', dataIndex: 'hscode' }]} dataSource={[{ hscode: '7318151001' }, { hscode: '7318159090' }, { hscode: '……' }]} />
+    );
     return (
       <Layout className="ant-layout-wrapper">
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
@@ -236,18 +239,20 @@ export default class SpecialCategories extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-header-tools">
-              <Button type="primary" size="large" ghost>
-                <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
-                  formData={{
-                    data: JSON.stringify({
-                      categoryId: hscodeCategory.id,
-                      tenantId: this.props.tenantId,
-                    }),
-                  }} onUploaded={this.handleUploaded}
-                >
-                  <Icon type="upload" /> 导入
-                </ExcelUpload>
-              </Button>
+              <Popover title="导入数据表格式如下" content={content}>
+                <Button type="primary" size="large" ghost>
+                  <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
+                    formData={{
+                      data: JSON.stringify({
+                        categoryId: hscodeCategory.id,
+                        tenantId: this.props.tenantId,
+                      }),
+                    }} onUploaded={this.handleUploaded}
+                  >
+                    <Icon type="upload" /> 导入
+                  </ExcelUpload>
+                </Button>
+              </Popover>
             </div>
           </Header>
           <Content className="main-content" key="main">
@@ -258,7 +263,7 @@ export default class SpecialCategories extends React.Component {
                 />
                 <span />
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <CategoryHscodeList hscodeCategory={hscodeCategory} />
               </div>
             </div>

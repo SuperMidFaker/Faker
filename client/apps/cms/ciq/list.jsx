@@ -268,7 +268,7 @@ export default class CiqDeclList extends Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
-            <div className="panel-body table-panel expandable">
+            <div className="panel-body table-panel table-fixed-layout expandable">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1700 }} />
             </div>
             <CiqnoFillModal reload={this.handleTableLoad} />

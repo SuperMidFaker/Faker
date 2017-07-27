@@ -279,7 +279,7 @@ export default class SHFTZReleaseList extends React.Component {
                   <Button size="large">发送报关申请</Button>
                 </div>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
                   indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />

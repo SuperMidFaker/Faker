@@ -171,7 +171,7 @@ export default class ManifestLegalInspection extends React.Component {
       },
     }];
     return (
-      <div className="panel-body table-panel">
+      <div className="panel-body table-panel table-fixed-layout">
         <Table columns={columns} dataSource={filterProducts} bordered
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />

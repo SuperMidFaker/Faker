@@ -113,7 +113,7 @@ export default class ContractContent extends React.Component {
     return (
       <Content className="main-content layout-fixed-width layout-fixed-width-lg">
         <Card style={{ margin: 16 }}>
-          <div className="page-header">
+          <div className="doc-header">
             <h3>合同 CONTRACT</h3>
             <span />
             <Row gutter={16}>

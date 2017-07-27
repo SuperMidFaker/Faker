@@ -306,7 +306,7 @@ export default class SurchargeForm extends React.Component {
       },
     ];
     return (
-      <div className="panel-body table-panel">
+      <div className="panel-body table-panel table-fixed-layout">
         <Table columns={columns} dataSource={dataSource} rowKey="_id" pagination={false}
           title={this.renderTableFooter}
         />

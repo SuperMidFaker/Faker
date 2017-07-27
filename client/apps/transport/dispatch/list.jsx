@@ -1058,7 +1058,7 @@ export default class DispatchList extends React.Component {
               </div>
             </div>
             <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <div className="dispatch-table">
                 {tb}
               </div>

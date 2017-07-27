@@ -398,7 +398,7 @@ export default class InboundShipmentsList extends React.Component {
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
             </div>
-            <div className="panel-body table-panel expandable">
+            <div className="panel-body table-panel table-fixed-layout expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}
                 expandedRowKeys={this.state.expandedKeys} rowKey="id"
                 expandedRowRender={this.handleExpandDetail}

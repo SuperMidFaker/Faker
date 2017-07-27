@@ -545,7 +545,7 @@ export default class CustomsList extends Component {
                 {bulkBtns}
               </div>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
                 loading={customslist.loading} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
               />

@@ -583,7 +583,7 @@ export default class TradeItemList extends Component {
                   {batchOperation}
                 </div>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 {this.state.listView === 'noConflict' && <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection}
                   rowKey={record => record.id} columns={columns} dataSource={this.dataSource} scroll={{ x: 3850 }}
                 />}

@@ -680,7 +680,7 @@ export default class DelegationList extends Component {
                   <a role="presentation" onClick={this.handleDeselectRows}>不选</a>
                 </div>
               </div>
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout table-fixed-layout">
                 <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
                   rowKey="delg_no" scroll={{ x: 1900 }}
                 />

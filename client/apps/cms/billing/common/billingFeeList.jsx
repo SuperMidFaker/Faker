@@ -258,7 +258,7 @@ export default class BillingFeeList extends React.Component {
               <span style={handleStateStyle}>{this.msg('lastUpdateTime')}: <strong>{moment(billing.modifyTime).format('YYYY-MM-DD')}</strong></span>
               <span style={handleStateStyle}>{this.msg('lastUpdate')}: <strong>{updataName}</strong></span>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table dataSource={dataSource} columns={columns} rowKey="id" footer={this.handleTableFooter} />
             </div>
           </div>

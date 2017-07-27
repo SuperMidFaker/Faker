@@ -64,7 +64,7 @@ export default class ScvClassificationMasterConfig extends React.Component {
     return (
       <ScvClassificationWrapper menuKey="master">
         <Content className="nav-content">
-          <div className="panel-body table-panel">
+          <div className="panel-body table-panel table-fixed-layout">
             <Form>
               <FormItem label={this.msg('classifyShareScope')} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                 <Select mode="tags" value={this.state.value} style={{ width: '90%' }} onChange={this.handleSharesChange}>

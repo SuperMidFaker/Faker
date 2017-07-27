@@ -390,7 +390,7 @@ export default class ShippingOrderList extends React.Component {
                 <Button size="large">触发补货任务</Button>
               </div>
             </div>
-            <div className="panel-body table-panel">
+            <div className="panel-body table-panel table-fixed-layout">
               <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no"
                 scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
               />

@@ -58,7 +58,7 @@ export default class MainContainer extends Component {
         <Content className="main-content">
           <QueueAnim type="right">
             <div className="page-body" key="body">
-              <div className="panel-body table-panel">
+              <div className="panel-body table-panel table-fixed-layout">
                 {content}
               </div>
             </div>
