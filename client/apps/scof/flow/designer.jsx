@@ -532,7 +532,7 @@ export default class FlowDesigner extends React.Component {
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large">
             <Spin spinning={this.props.graphLoading}>
-              <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }}
+              <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }} style={{ marginBottom: 16 }}
                 extra={<div className="toolbar-right">
                   {this.renderGraphToolbar()}
                   <Button icon="swap-right" onClick={this.handleAddEdge}>

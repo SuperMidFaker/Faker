@@ -27,7 +27,7 @@ export default class ResourcesCard extends React.Component {
   render() {
     const { customer } = this.props;
     return (
-      <Card bodyStyle={{ padding: 0 }}>
+      <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }}>
         <Tabs defaultActiveKey="team">
           <TabPane tab={<span>服务团队</span>} key="team" >
             <ServiceTeamPane customer={customer} />

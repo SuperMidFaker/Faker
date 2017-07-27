@@ -155,7 +155,7 @@ export default class FlowList extends React.Component {
             <div className="list-body">
               <Table showHeader={false} size="middle" dataSource={flowList.data} columns={this.columns} onRowClick={this.handleRowClick}
                 rowClassName={record => thisFlow && record.id === thisFlow.id ? 'table-row-selected' : ''} loading={loading}
-                rowKey="id" scroll={{ y: 640 }} onChange={this.handleTableChange}
+                rowKey="id" onChange={this.handleTableChange}
                 pagination={{ current: flowList.current, pageSize: flowList.pageSize, total: flowList.totalCount }}
               />
             </div>
