@@ -157,7 +157,7 @@ export default class InvoiceDetails extends React.Component {
     }
     return (
       <Card style={{ margin: 16 }}>
-        <div className="page-header">
+        <div className="doc-header">
           <h3>发票 INVOICE</h3>
           <span />
           <Row gutter={16}>
