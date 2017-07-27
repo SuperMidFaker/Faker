@@ -2,13 +2,14 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
-  'OPEN_MOVEMENT_MODAL', 'CLOSE_MOVEMENT_MODAL',
+  'OPEN_MOVEMENT_MODAL', 'CLOSE_MOVEMENT_MODAL', 'SET_FILTER',
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
   'LOAD_STOCKSEARCHOPT', 'LOAD_STOCKSEARCHOPT_SUCCEED', 'LOAD_STOCKSEARCHOPT_FAIL',
   'CHECK_OWNER_COLUMN', 'CHECK_PRODUCT_COLUMN', 'CHECK_LOCATION_COLUMN',
   'CHECK_PRODUCT_LOCATION', 'CHANGE_SEARCH_TYPE', 'CLEAR_LIST',
   'INVENTORY_SEARCH', 'INVENTORY_SEARCH_SUCCESS', 'INVENTORY_SEARCH_FAIL',
   'CREATE_MOVEMENT', 'CREATE_MOVEMENT_SUCCESS', 'CREATE_MOVEMENT_FAIL',
+  'LOAD_MOVEMENTS', 'LOAD_MOVEMENTS_SUCCESS', 'LOAD_MOVEMENTS_FAIL',
 ]);
 
 const initialState = {
@@ -48,13 +49,22 @@ const initialState = {
   movementModal: {
     visible: false,
     filter: {
-      owner: '',
+      ownerCode: '',
+      ownerName: '',
       productNo: '',
       location: '',
       startTime: '',
       endTime: '',
     },
   },
+  movements: {
+    totalCount: 0,
+    pageSize: 20,
+    current: 1,
+    data: [],
+    loading: true,
+  },
+  movementFilter: { owner: 'all' },
 };
 
 export default function reducer(state = initialState, action) {
@@ -142,6 +152,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, list: { ...state.list, data: [] } };
     case actionTypes.INVENTORY_SEARCH:
       return { ...state, movementModal: { ...state.movementModal, filter: JSON.parse(action.params.filter) } };
+    case actionTypes.LOAD_MOVEMENTS:
+      return { ...state, movements: { ...state.movements, loading: true } };
+    case actionTypes.LOAD_MOVEMENTS_SUCCESS:
+      return { ...state, movements: { ...action.result.data, loading: false } };
+    case actionTypes.SET_FILTER:
+      return { ...state, movementModal: { ...state.movementModal, filter: action.filter } };
     default:
       return state;
   }
@@ -226,7 +242,7 @@ export function clearList() {
   };
 }
 
-export function inventorySearch(filter, tenantId) {
+export function inventorySearch(filter, tenantId, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -236,12 +252,12 @@ export function inventorySearch(filter, tenantId) {
       ],
       endpoint: 'v1/cwm/inventory/search',
       method: 'get',
-      params: { filter, tenantId },
+      params: { filter, tenantId, whseCode },
     },
   };
 }
 
-export function createMovement(owner, moveType, reason, details) {
+export function createMovement(ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginId, details) {
   return {
     [CLIENT_API]: {
       types: [
@@ -251,7 +267,29 @@ export function createMovement(owner, moveType, reason, details) {
       ],
       endpoint: 'v1/cwm/create/movement',
       method: 'post',
-      data: { owner, moveType, reason, details },
+      data: { ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginId, details },
     },
+  };
+}
+
+export function loadMovements({ whseCode, tenantId, pageSize, current, filter }) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MOVEMENTS,
+        actionTypes.LOAD_MOVEMENTS_SUCCESS,
+        actionTypes.LOAD_MOVEMENTS_FAIL,
+      ],
+      endpoint: 'v1/cwm/load/movements',
+      method: 'get',
+      params: { whseCode, tenantId, pageSize, current, filter: JSON.stringify(filter) },
+    },
+  };
+}
+
+export function setMovementsFilter(filter) {
+  return {
+    type: actionTypes.SET_FILTER,
+    filter,
   };
 }
