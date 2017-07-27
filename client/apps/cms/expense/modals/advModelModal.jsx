@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { CSVLink } from 'react-csv';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Switch, Button } from 'antd';
@@ -29,8 +28,27 @@ export default class AdvModelModal extends Component {
   state = {
     datas: [],
     selectedRowKeys: [],
-    csvData: [],
   };
+  componentDidMount() {
+    // <script src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+    // <script src="http://sheetjs.com/demos/Blob.js"></script>
+    // <script src="http://sheetjs.com/demos/FileSaver.js"></script>
+    let script;
+    if (!document.getElementById('xlsx')) {
+      script = document.createElement('script');
+      script.id = 'xlsx';
+      script.src = 'http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    if (!document.getElementById('FileSaver')) {
+      script = document.createElement('script');
+      script.id = 'FileSaver';
+      script.src = 'http://sheetjs.com/demos/FileSaver.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.quoteData !== this.props.quoteData) {
       const datas = nextProps.quoteData.fees.filter(qd => qd.fee_style === 'advance' && qd.enabled);
@@ -58,6 +76,18 @@ export default class AdvModelModal extends Component {
   handleCancel = () => {
     this.props.showAdvModelModal(false);
   }
+  s2ab = (s) => {
+    if (typeof ArrayBuffer !== 'undefined') {
+      const buf = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    } else {
+      const buf = new Array(s.length);
+      for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
+  }
   handleSave = () => {
     const { datas, selectedRowKeys } = this.state;
     const csvData = [
@@ -77,8 +107,14 @@ export default class AdvModelModal extends Component {
         }
       }
     }
-    this.setState({ csvData });
+    // ref: http://www.jianshu.com/p/044c183edf42
+    // https://github.com/SheetJS/js-xlsx
+    const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+    const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+    wb.Sheets.Sheet1 = window.XLSX.utils.aoa_to_sheet(csvData);
+    window.saveAs(new window.Blob([this.s2ab(window.XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'advanceModel.xlsx');
   }
+
   render() {
     const { visibleAdvModal } = this.props;
     const rowSelection = {
@@ -89,9 +125,9 @@ export default class AdvModelModal extends Component {
     };
     const footer = [
       <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel} style={{ marginRight: 20 }}>取消</Button>,
-      <CSVLink filename={'advanceModel.csv'} data={this.state.csvData}>
-        <Button key="next" type="primary" size="large" onClick={this.handleSave} disabled={this.state.selectedRowKeys.length === 0}>下载</Button>
-      </CSVLink>,
+
+      <Button key="next" type="primary" size="large" onClick={this.handleSave} disabled={this.state.selectedRowKeys.length === 0}>下载</Button>,
+
     ];
     return (
       <Modal visible={visibleAdvModal} title={this.msg('advModel')} footer={footer} width={600}>
