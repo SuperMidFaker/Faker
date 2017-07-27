@@ -28,6 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'BEGIN_BD', 'BEGIN_BD_SUCCEED', 'BEGIN_BD_FAIL',
   'APPLY_DETAILS_LOAD', 'APPLY_DETAILS_LOAD_SUCCEED', 'APPLY_DETAILS_LOAD_FAIL',
   'FILE_BA', 'FILE_BA_SUCCEED', 'FILE_BA_FAIL',
+  'MAKE_BAL', 'MAKE_BAL_SUCCEED', 'MAKE_BAL_FAIL',
 ]);
 
 const initialState = {
@@ -137,6 +138,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, portionout_regs: action.result.data };
     case actionTypes.APPLY_DETAILS_LOAD_SUCCEED:
       return { ...state, ...action.result.data };
+    case actionTypes.FILE_BA_SUCCEED:
+      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status } };
+    case actionTypes.MAKE_BAL_SUCCEED:
+      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status } };
     default:
       return state;
   }
@@ -522,9 +527,24 @@ export function fileBatchApply(batchNo, whseCode, loginId) {
         actionTypes.FILE_BA_SUCCEED,
         actionTypes.FILE_BA_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/batch/apply/file',
+      endpoint: 'v1/cwm/shftz/batch/decl/file',
       method: 'post',
       data: { batchNo, whseCode, loginId },
+    },
+  };
+}
+
+export function makeBatchApplied(batchNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MAKE_BAL,
+        actionTypes.MAKE_BAL_SUCCEED,
+        actionTypes.MAKE_BAL_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/decl/applied',
+      method: 'post',
+      data: { batchNo, whseCode },
     },
   };
 }
