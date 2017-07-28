@@ -44,7 +44,6 @@ export default class DutyTaxPane extends React.Component {
     }
     if (nextProps.taxTots !== this.props.taxTots && nextProps.taxTots.length > 0) {
       const sumval = nextProps.taxTots.reduce((a, b) => ({
-        total: '合计',
         trxn_mode: '',
         duty_paid: a.duty_paid + b.duty_paid,
         duty_tax: a.duty_tax + b.duty_tax,
@@ -52,7 +51,6 @@ export default class DutyTaxPane extends React.Component {
         vat_tax: a.vat_tax + b.vat_tax,
         total_tax: a.total_tax + b.total_tax,
       }), {
-        total: '合计',
         trxn_mode: '',
         duty_paid: 0,
         duty_tax: 0,
@@ -180,6 +178,10 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'duty_rate',
     key: 'duty_rate',
     className: 'cell-align-right',
+    render(o) {
+      const val = o ? o * 100 : 0;
+      return val ? `${val}%` : '';
+    },
   }, {
     title: '关税',
     dataIndex: 'duty_tax',
@@ -193,6 +195,10 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'vat_rates',
     key: 'vat_rates',
     className: 'cell-align-right',
+    render(o) {
+      const val = o ? o * 100 : 0;
+      return val ? `${val}%` : '';
+    },
   }, {
     title: '增值税',
     dataIndex: 'vat_tax',
@@ -206,6 +212,10 @@ export default class DutyTaxPane extends React.Component {
     dataIndex: 'gst_rates',
     key: 'gst_rates',
     className: 'cell-align-right',
+    render(o) {
+      const val = o ? o * 100 : 0;
+      return val ? `${val}%` : '';
+    },
   }, {
     title: '消费税',
     dataIndex: 'excise_tax',
@@ -247,8 +257,46 @@ export default class DutyTaxPane extends React.Component {
   }
   renderValFixed = o => o ? currencyFormatter.format(o, { code: 'CNY' }) : ''
   render() {
+    const gridStyle = { width: `${1 / 6 * 100}%`, textAlign: 'center' };
+    const tax = this.state.sumval[0] || {};
     return (
       <div className="pane-content tab-pane">
+        <Card noHovering bodyStyle={{ padding: 0 }}>
+          <Card.Grid style={gridStyle}>
+            <div className="statistics-cell">
+              <h3>完税价格</h3>
+              <h2 className="data-num text-emphasis">{this.renderValFixed(tax.duty_paid)}</h2>
+            </div>
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <h3>成交方式</h3>
+            <h2 className="data-num text-emphasis" style={{ minHeight: 27 }}>{tax.trxn_mode || ' '}</h2>
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <div className="statistics-cell">
+              <h3>关税</h3>
+              <h2 className="data-num text-emphasis">{this.renderValFixed(tax.duty_tax)}</h2>
+            </div>
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <div className="statistics-cell">
+              <h3>增值税</h3>
+              <h2 className="data-num text-emphasis">{this.renderValFixed(tax.vat_tax)}</h2>
+            </div>
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <div className="statistics-cell">
+              <h3>消费税</h3>
+              <h2 className="data-num text-emphasis" style={{ minHeight: 27 }}>{this.renderValFixed(tax.excise_tax)}</h2>
+            </div>
+          </Card.Grid>
+          <Card.Grid style={gridStyle}>
+            <div className="statistics-cell">
+              <h3>总税费</h3>
+              <h2 className="data-num text-error">{this.renderValFixed(tax.total_tax)}</h2>
+            </div>
+          </Card.Grid>
+        </Card>
         <Table size="middle" showHeader={false} pagination={false} dataSource={this.state.sumval}>
           <Column dataIndex="total" width={230} className="sub-total" />
           <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} className="sub-total" />
