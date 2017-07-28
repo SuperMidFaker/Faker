@@ -5,7 +5,6 @@ import { Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { openAddTriggerModal } from 'common/reducers/scofFlow';
 import { NODE_TRIGGERS, NODE_BIZ_OBJECTS } from 'common/constants';
-import AddTriggerModal from './addTriggerModal';
 import { formatMsg } from '../../message.i18n';
 
 @injectIntl
@@ -38,16 +37,6 @@ export default class FlowTriggerTable extends React.Component {
   handleTriggerActions = (key, name, actions, bizObj) => {
     this.props.openAddTriggerModal({ key, name, actions, node_biz_object: bizObj });
   }
-  handleTriggerModalChange = (nodeBizObject, triggerName, newActions) => {
-    // console.log(this.props);
-    // todo this.props will be LAST table, Modal handler is last component handler
-    const { nodeActions } = this.props;
-    const actions = nodeActions.filter(na => !(nodeBizObject ?
-      (na.node_biz_object === nodeBizObject && na.trigger_name === triggerName) : (na.trigger_name === triggerName))).concat(newActions.map(na => ({
-        ...na, node_biz_object: nodeBizObject, trigger_name: triggerName,
-      })));
-    this.props.onNodeActionsChange(actions);
-  }
   render() {
     const { kind, bizObj } = this.props;
     let events = [];
@@ -59,9 +48,8 @@ export default class FlowTriggerTable extends React.Component {
     } else {
       events = NODE_TRIGGERS.map(nt => ({ key: nt.key, name: this.msg(nt.text) }));
     }
-    return (<div>
+    return (
       <Table size="middle" columns={this.eventColumns} dataSource={events} pagination={false} showHeader={false} />
-      <AddTriggerModal onModalOK={this.handleTriggerModalChange} kind={kind} />
-    </div>);
+    );
   }
 }

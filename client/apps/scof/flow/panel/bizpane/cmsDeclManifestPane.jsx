@@ -23,7 +23,7 @@ export default class CMSDeclManifestPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, model, onNodeActionsChange, bizManifest: { templates } } = this.props;
+    const { form: { getFieldDecorator }, model, bizManifest: { templates } } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -50,7 +50,7 @@ export default class CMSDeclManifestPane extends Component {
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable kind={model.kind} bizObj="cmsManifest" onNodeActionsChange={onNodeActionsChange} />
+          <FlowTriggerTable kind={model.kind} bizObj="cmsManifest" />
         </Panel>
       </Collapse>
     );

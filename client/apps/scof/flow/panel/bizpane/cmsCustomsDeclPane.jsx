@@ -24,7 +24,7 @@ export default class CMSCustomsDeclPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, model, eplist, onNodeActionsChange } = this.props;
+    const { form: { getFieldDecorator }, model, eplist } = this.props;
     let cmsDeclTypes = [];
     if (model.kind === 'import') {
       cmsDeclTypes = CMS_IMPORT_DECL_TYPE;
@@ -60,7 +60,7 @@ export default class CMSCustomsDeclPane extends Component {
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable kind={model.kind} bizObj="cmsCustomsDecl" onNodeActionsChange={onNodeActionsChange} />
+          <FlowTriggerTable kind={model.kind} bizObj="cmsCustomsDecl" />
         </Panel>
       </Collapse>
     );

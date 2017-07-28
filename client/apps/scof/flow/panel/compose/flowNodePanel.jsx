@@ -39,7 +39,7 @@ export default class FlowNodePanel extends Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, node, serviceTeam, onNodeActionsChange } = this.props;
+    const { form: { getFieldDecorator }, node, serviceTeam } = this.props;
     const model = node.get('model');
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
@@ -60,7 +60,7 @@ export default class FlowNodePanel extends Component {
           </FormItem>
         </Panel>
         <Panel header={this.msg('nodeEvents')} key="events">
-          <FlowTriggerTable kind={model.kind} onNodeActionsChange={onNodeActionsChange} />
+          <FlowTriggerTable kind={model.kind} />
         </Panel>
       </Collapse>
     );

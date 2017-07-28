@@ -10,6 +10,7 @@ import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGrap
   loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
+import AddTriggerModal from './panel/compose/addTriggerModal';
 import { MdIcon, Ikons, Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
@@ -43,8 +44,6 @@ function fetchData({ state, dispatch }) {
   ];
   return Promise.all(promises);
 }
-
-// in_degree wrong count
 
 @connectFetch()(fetchData)
 @injectIntl
@@ -181,10 +180,11 @@ export default class FlowDesigner extends React.Component {
       const item = ev.item;
       this.graph.update(item, { loaded: true });
       if (item.get('type') === 'edge') {
+          /*
         const source = item.get('source');
         const target = item.get('target');
         this.graph.update(source, { out_degree: source.get('model').out_degree + 1 });
-        this.graph.update(target, { in_degree: target.get('model').in_degree + 1 });
+        this.graph.update(target, { in_degree: target.get('model').in_degree + 1 }); */
       } else if (item.get('type') === 'node') {
         this.props.setNodeActions([]);
         // 类型节点只有一个时候,该类型追踪点对应该节点
@@ -341,13 +341,13 @@ export default class FlowDesigner extends React.Component {
     }
   }
   handleRemoveItem = () => {
-    const item = this.state.activeItem;
+    /* const item = this.state.activeItem;
     if (item && item.get('type') === 'edge') {
       const source = item.get('source');
       const target = item.get('target');
       this.graph.update(source, { out_degree: source.get('model').out_degree - 1 });
       this.graph.update(target, { in_degree: target.get('model').in_degree - 1 });
-    }
+    } */
     this.graph.del();
     this.graph.refresh();
     this.setState({ activeItem: null });
@@ -448,9 +448,14 @@ export default class FlowDesigner extends React.Component {
       this.graph.update(this.state.activeItem, { delConds, conditions: afterConds });
     }
   }
-  handleNodeActionsChange = (actions) => {
+  handleTriggerModalChange = (nodeBizObject, triggerName, newActions) => {
+    const nodeActions = this.state.activeItem.get('model').actions;
+    const actions = nodeActions.filter(na => !(nodeBizObject ?
+      (na.node_biz_object === nodeBizObject && na.trigger_name === triggerName) : (na.trigger_name === triggerName))).concat(newActions.map(na => ({
+        ...na, node_biz_object: nodeBizObject, trigger_name: triggerName,
+      })));
     this.graph.update(this.state.activeItem, { actions });
-    this.props.setNodeActions(actions);
+    this.props.setNodeActions(actions);  // connect nodeActions rerender FlowTriggerTable, model passed no effect
   }
   handleTrackingChange = (trackingId) => {
     this.setState({ trackingId });
@@ -471,8 +476,23 @@ export default class FlowDesigner extends React.Component {
     }
     const trackingId = this.state.trackingId !== this.props.currentFlow.tracking_id ? this.state.trackingId : null;
     const graphItems = this.graph.get('items');
-    const nodes = graphItems.filter(item => item.get('type') === 'node').map(item => item.get('model'));
+    const nodeMap = {};
+    graphItems.filter(item => item.get('type') === 'node').forEach((item) => {
+      const model = item.get('model');
+      model.in_degree = 0;
+      model.out_degree = 0;
+      nodeMap[model.id] = model;
+    });
     const edges = graphItems.filter(item => item.get('type') === 'edge').map(item => item.get('model'));
+    edges.forEach((edge) => { // edge move cannot edit in/out degree on the fly
+      if (nodeMap[edge.target]) {
+        nodeMap[edge.target].in_degree += 1;
+      }
+      if (nodeMap[edge.source]) {
+        nodeMap[edge.source].out_degree += 1;
+      }
+    });
+    const nodes = Object.keys(nodeMap).map(nodeid => nodeMap[nodeid]);
     console.log(nodes, edges);
     // todo graph node edge disconnected
     this.props.saveFlowGraph(this.props.currentFlow.id, nodes, edges, trackingId, this.state.trackDataSource.map(tds => ({
@@ -551,7 +571,7 @@ export default class FlowDesigner extends React.Component {
                 >
                   {NodePanel && activeItem.get('type') === 'node' &&
                   <NodePanel onFormInit={this.handlePanelForm} node={activeItem} graph={this.graph}
-                    onNodeActionsChange={this.handleNodeActionsChange} key={activeItem.get('model').kind}
+                    key={activeItem.get('model').kind}
                   />
                 }
                   {activeItem.get('type') === 'edge' &&
@@ -562,6 +582,7 @@ export default class FlowDesigner extends React.Component {
                 }
                 </QueueAnim>
               }
+              <AddTriggerModal onModalOK={this.handleTriggerModalChange} kind={activeItem && activeItem.get('model').kind} />
             </Spin>
           </Content>
         </Layout>

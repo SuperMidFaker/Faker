@@ -21,28 +21,27 @@ export default class FlowTmsNodePanel extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     onFormInit: PropTypes.func.isRequired,
-    onNodeActionsChange: PropTypes.func.isRequired,
   }
   componentDidMount() {
     this.props.onFormInit(this.props.form);
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form, node, graph, onNodeActionsChange } = this.props;
+    const { form, node, graph } = this.props;
     const model = node.get('model');
     return (
       <Form layout="vertical">
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={this.msg('flowNodeTMS')} bodyStyle={{ padding: 0 }}>
-              <FlowNodePanel form={form} node={node} onNodeActionsChange={onNodeActionsChange} graph={graph} />
+              <FlowNodePanel form={form} node={node} graph={graph} />
             </Card>
           </Col>
           <Col sm={24} md={16}>
             <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="tmsShipment">
                 <TabPane tab={this.msg('tmsShipment')} key="tmsShipment">
-                  <ShipmentPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
+                  <ShipmentPane form={form} model={model} />
                 </TabPane>
               </Tabs>
             </Card>
