@@ -45,6 +45,14 @@ export default class AddDetailModal extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.props.hideDetailModal();
+    this.setState({
+      product: {},
+    });
+    this.props.form.setFieldsValue({
+      product_no: '',
+      order_qty: '',
+      unit_price: '',
+    });
   }
   handleSearch = (value) => {
     const { selectedOwner } = this.props;
