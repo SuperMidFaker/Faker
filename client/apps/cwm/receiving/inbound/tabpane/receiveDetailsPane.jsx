@@ -45,6 +45,7 @@ export default class ReceiveDetailsPane extends React.Component {
     selectedRowKeys: [],
     selectedRows: [],
     confirmDisabled: true,
+    searchValue: '',
   }
   componentWillMount() {
     this.handleReload();
@@ -172,7 +173,9 @@ export default class ReceiveDetailsPane extends React.Component {
       return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
     },
   }]
-
+  handleSearch = (value) => {
+    this.setState({ searchValue: value });
+  }
   render() {
     const { inboundHead, inboundProducts } = this.props;
     const rowSelection = {
@@ -193,6 +196,14 @@ export default class ReceiveDetailsPane extends React.Component {
         disabled: record.trace_id.length >= 1,
       }),
     };
+    const dataSource = inboundProducts.filter((item) => {
+      if (this.state.searchValue) {
+        const reg = new RegExp(this.state.searchValue);
+        return reg.test(item.product_no) || reg.test(item.product_sku);
+      } else {
+        return true;
+      }
+    });
     return (
       <div className="table-fixed-layout">
         <div className="toolbar">
@@ -213,7 +224,7 @@ export default class ReceiveDetailsPane extends React.Component {
             }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} dataSource={inboundProducts} rowKey="asn_seq_no"
+        <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="asn_seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <ReceivingModal />

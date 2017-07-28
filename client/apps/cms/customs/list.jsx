@@ -90,7 +90,7 @@ export default class CustomsList extends Component {
         filters = { ...filters, filterDate: listFilters.acptDate };
       }
     }
-    this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters });
+    this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{

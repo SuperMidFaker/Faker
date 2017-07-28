@@ -34,6 +34,7 @@ export default class PutawayDetailsPane extends React.Component {
   state = {
     selectedRowKeys: [],
     selectedRows: [],
+    searchValue: '',
   }
   componentWillMount() {
     this.props.loadInboundPutaways(this.props.inboundNo);
@@ -75,7 +76,7 @@ export default class PutawayDetailsPane extends React.Component {
 /*  }, {
     title: '目标库位',
     dataIndex: 'target_location',
-    width: 120,*/
+    width: 120, */
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -130,6 +131,9 @@ export default class PutawayDetailsPane extends React.Component {
   handleBatchUndoReceives = () => {
     this.props.undoReceives(this.props.inboundNo, this.props.loginId, this.state.selectedRowKeys);
   }
+  handleSearch = (value) => {
+    this.setState({ searchValue: value });
+  }
   render() {
     const { inboundHead, inboundPutaways } = this.props;
     const rowSelection = {
@@ -146,6 +150,14 @@ export default class PutawayDetailsPane extends React.Component {
       columns = [...columns];
       columns.splice(9, 10);
     }
+    const dataSource = inboundPutaways.filter((item) => {
+      if (this.state.searchValue) {
+        const reg = new RegExp(this.state.searchValue);
+        return reg.test(item.product_no) || reg.test(item.product_sku);
+      } else {
+        return true;
+      }
+    });
     return (
       <div className="table-fixed-layout">
         <div className="toolbar">
@@ -167,7 +179,8 @@ export default class PutawayDetailsPane extends React.Component {
             }
           </div>
         </div>
-        <Table columns={columns} rowSelection={rowSelection} indentSize={0} dataSource={inboundPutaways} rowKey="trace_id"
+        <Table columns={columns} rowSelection={rowSelection} indentSize={0}
+          dataSource={dataSource} rowKey="trace_id"
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
         />
         <PuttingAwayModal inboundNo={this.props.inboundNo} />
