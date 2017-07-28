@@ -26,6 +26,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'CERT_PANEL_LOAD', 'CERT_PANEL_LOAD_SUCCEED', 'CERT_PANEL_LOAD_FAIL',
   'LOAD_FILTER_PARTNERS', 'LOAD_FILTER_PARTNERS_SUCCEED', 'LOAD_FILTER_PARTNERS_FAIL',
   'SET_ADV_MODAL_VISIBLE',
+  'ADV_EXP_IMPORT', 'ADV_EXP_IMPORT_SUCCEED', 'ADV_EXP_IMPORT_FAIL',
 ]);
 
 const initialState = {
@@ -501,6 +502,21 @@ export function showAdvModelModal(value) {
   };
 }
 
+export function advExpImport(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADV_EXP_IMPORT,
+        actionTypes.ADV_EXP_IMPORT_SUCCEED,
+        actionTypes.ADV_EXP_IMPORT_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/advance/import',
+      method: 'post',
+      data,
+      origin: 'mongo',
+    },
+  };
+}
 /* export function loadDeclAdvanceParties(isCiq, delgNo) {
   return {
     [CLIENT_API]: {
