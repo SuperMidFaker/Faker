@@ -106,7 +106,7 @@ export default class AddDetailModal extends Component {
         <Form>
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {
-              rules: [{ required: true, message: 'Please input product_no!' }],
+              rules: [{ required: true, message: '请输入货号' }],
             })(
               <Select mode="combobox" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
                 {
@@ -118,14 +118,14 @@ export default class AddDetailModal extends Component {
             )}
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
-            <Input disabled value={product.desc_cn} />
+            <Input value={product.desc_cn} />
           </FormItem>
-          <FormItem label="sku" {...formItemLayout}>
-            <Input disabled value={product.product_sku} />
+          <FormItem label="SKU" {...formItemLayout}>
+            <Input value={product.product_sku} />
           </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
             {getFieldDecorator('order_qty', {
-              rules: [{ required: true, message: 'Please input order_number!' }],
+              rules: [{ required: true, message: '请输入订单数量' }],
             })(
               <Input />
             )}

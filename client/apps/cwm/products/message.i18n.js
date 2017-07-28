@@ -54,6 +54,14 @@ const messages = defineMessages({
     id: 'cwm.products.product.type',
     defaultMessage: '商品类型',
   },
+  lastModifiedDate: {
+    id: 'cwm.products.last.modified',
+    defaultMessage: '最后更新时间',
+  },
+  createdDate: {
+    id: 'cwm.products.created.date',
+    defaultMessage: '创建时间',
+  },
   opColumn: {
     id: 'cwm.products.product.opColumn',
     defaultMessage: '操作',
