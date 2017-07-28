@@ -89,8 +89,8 @@ export default class MovementModal extends Component {
     width: 200,
     dataIndex: 'movement_qty',
     render: (o, record, index) => {
-      if (record.trace_id) {
-        return <Input disabled value={o} style={{ width: 80 }} />;
+      if (record.trace_pack_qty) {
+        return <Input value={o} onChange={e => this.handleMoveQtyChange(e.target.value, index)} style={{ width: 80 }} />;
       } else {
         return <Input onChange={e => this.handleMovementChange(e.target.value, index)} style={{ width: 80 }} />;
       }
@@ -234,8 +234,23 @@ export default class MovementModal extends Component {
             current: this.props.movements.current,
             filter: this.props.movementFilter,
           });
+          this.setState({
+            stocks: [],
+            movements: [],
+          });
         }
       });
+  }
+  handleMoveQtyChange = (value, index) => {
+    const stocks = [...this.state.stocks];
+    if (value > stocks[index].avail_qty || value < 0) {
+      message.info('请输入正确的数量');
+      return;
+    }
+    stocks[index].movement_qty = value;
+    this.setState({
+      stocks,
+    });
   }
   render() {
     const { owners } = this.props;
