@@ -81,7 +81,7 @@ export default class MovementList extends React.Component {
     width: 180,
   }, {
     title: '货主',
-    width: 200,
+    width: 300,
     dataIndex: 'owner_name',
   }, {
     title: '类型',
@@ -89,6 +89,7 @@ export default class MovementList extends React.Component {
   }, {
     title: '状态',
     className: 'cell-align-center',
+    width: 200,
     render: (o, record) => {
       if (record.isdone === 1) {
         return <Fontello type="circle" color="green" />;

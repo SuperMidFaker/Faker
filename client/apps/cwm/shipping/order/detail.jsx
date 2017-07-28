@@ -126,7 +126,7 @@ export default class CreateShippingOrder extends Component {
               {this.msg('shippingOrder')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('createSO')}
+              {this.props.params.soNo}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">

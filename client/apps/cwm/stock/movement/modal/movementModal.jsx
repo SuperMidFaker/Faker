@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, Collapse, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, message } from 'antd';
+import { Card, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmInventoryStock';
@@ -11,7 +11,6 @@ import { loadLocations } from 'common/reducers/cwmWarehouse';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
-const Panel = Collapse.Panel;
 const Option = Select.Option;
 
 @injectIntl
@@ -71,7 +70,6 @@ export default class MovementModal extends Component {
   }, {
     title: '入库日期',
     dataIndex: 'created_date',
-    width: 180,
     render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '可用数量',
@@ -81,7 +79,7 @@ export default class MovementModal extends Component {
     title: '目标库位',
     width: 100,
     dataIndex: 'target_location',
-    render: (o, record, index) => (<Select style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)}>
+    render: (o, record, index) => (<Select style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)} showSearch>
       {this.props.locations.map(loc => <Option value={loc.location} key={loc.location}>{loc.location}</Option>)}
     </Select>),
   }, {
@@ -123,6 +121,8 @@ export default class MovementModal extends Component {
     dataIndex: 'location',
     width: 100,
     render: o => <Tag>{o}</Tag>,
+  }, {
+    dataIndex: 'spacer',
   }, {
     title: '目标库位',
     dataIndex: 'target_location',
@@ -274,8 +274,8 @@ export default class MovementModal extends Component {
       <Modal title="创建库存移动单" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
         onOk={this.handleCreateMovement} onCancel={this.handleCancel} visible={this.props.visible}
       >
-        <Card>
-          <Form layout="inline" style={{ display: 'inline-block' }}>
+        <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
+          <Form layout="inline">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 320 }} dropdownMatchSelectWidth={false}>
                 {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
@@ -289,18 +289,16 @@ export default class MovementModal extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Collapse defaultActiveKey={['query', 'detail']} style={{ marginTop: 16 }}>
-          <Panel header="库存查询" key="query">
-            <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 8 }}>
-              <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id" scroll={{ y: 220 }} />
-            </Card>
-          </Panel>
-          <Panel header="库存移动明细" key="detail">
-            <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 8 }}>
-              <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id" scroll={{ y: 220 }} />
-            </Card>
-          </Panel>
-        </Collapse>
+        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
+          <div className="table-fixed-layout">
+            <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id" scroll={{ y: 220 }} />
+          </div>
+        </Card>
+        <Card bodyStyle={{ padding: 0 }}>
+          <div className="table-fixed-layout">
+            <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id" scroll={{ y: 220 }} />
+          </div>
+        </Card>
       </Modal>
     );
   }

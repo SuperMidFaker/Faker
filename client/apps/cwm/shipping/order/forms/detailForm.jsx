@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Table } from 'antd';
+import { Button, Icon, Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -74,6 +74,8 @@ export default class DetailForm extends Component {
       title: '行号',
       dataIndex: 'so_seq_no',
       width: 50,
+      className: 'cell-align-center',
+      render: (col, row, index) => col || pagination.pageSize * (pagination.current - 1) + index + 1,
     }, {
       title: '商品货号',
       dataIndex: 'product_no',
@@ -94,15 +96,20 @@ export default class DetailForm extends Component {
       dataIndex: 'unit_price',
     }, {
       title: '操作',
+      width: 80,
       render: (o, record, index) => (
-        <span><RowUpdater onHit={this.handleEdit} label="修改" row={record} /><span className="ant-divider" /><RowUpdater onHit={() => this.handleDelete(index)} label="删除" row={record} /></span>
+        <span>
+          <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />} row={record} />
+          <span className="ant-divider" />
+          <RowUpdater onHit={() => this.handleDelete(index)} label={<Icon type="delete" />} row={record} />
+        </span>
       ),
     }];
     return (
       <div>
         <div className="toolbar">
-          {editable && <Button type="primary" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加明细</Button>}
-          {editable && <Button disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
+          {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
+          {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
         </div>
         <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination} />
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />

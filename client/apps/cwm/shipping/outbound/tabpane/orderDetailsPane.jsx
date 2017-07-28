@@ -2,7 +2,7 @@ import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button, notification } from 'antd';
+import { Table, Input, Button, notification } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
@@ -10,6 +10,8 @@ import QuantityInput from '../../../common/quantityInput';
 import PackagePopover from '../../../common/popover/packagePopover';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
+
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -31,6 +33,7 @@ export default class OrderDetailsPane extends React.Component {
   state = {
     selectedRowKeys: [],
     ButtonStatus: null,
+    detailEditable: false,
   }
   componentWillMount() {
     this.handleReload();
@@ -53,7 +56,8 @@ export default class OrderDetailsPane extends React.Component {
   columns = [{
     title: '行号',
     dataIndex: 'seq_no',
-    width: 40,
+    width: 50,
+    className: 'cell-align-center',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -97,7 +101,7 @@ export default class OrderDetailsPane extends React.Component {
         </span>);
       } else {
         return (<span>
-          <RowUpdater onHit={this.handleManualAlloc} label="分配明细" row={record} />
+          <RowUpdater onHit={this.handleAllocDetails} label="分配明细" row={record} />
           {record.picked_qty < record.alloc_qty && <span className="ant-divider" />}
           {record.picked_qty < record.alloc_qty &&
             <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} />}
@@ -127,6 +131,11 @@ export default class OrderDetailsPane extends React.Component {
     });
   }
   handleManualAlloc = (row) => {
+    this.setState({ detailEditable: true });
+    this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
+  }
+  handleAllocDetails = (row) => {
+    this.setState({ detailEditable: false });
     this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
   }
   handleSKUCancelAllocate = (row) => {
@@ -156,8 +165,9 @@ export default class OrderDetailsPane extends React.Component {
       },
     };
     return (
-      <div>
+      <div className="table-fixed-layout">
         <div className="toolbar">
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             {ButtonStatus === 'alloc' && (<Button size="large" onClick={this.handleBatchAutoAlloc}>
@@ -175,7 +185,7 @@ export default class OrderDetailsPane extends React.Component {
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={outboundProducts} rowKey="seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
-        <AllocatingModal shippingMode={this.state.shippingMode} />
+        <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />
       </div>
     );
   }

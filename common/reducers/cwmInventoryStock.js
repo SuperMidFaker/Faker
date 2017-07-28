@@ -43,7 +43,7 @@ const initialState = {
     whse_code: '',
     owner: '',
     whse_location: '',
-    search_type: 1,
+    search_type: 2,
   },
   searchOption: {
     warehouses: [],

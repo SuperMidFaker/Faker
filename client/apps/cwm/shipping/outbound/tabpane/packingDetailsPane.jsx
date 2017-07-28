@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Tag, Icon } from 'antd';
+import { Table, Tag, Icon, Input } from 'antd';
 import { loadPackDetails } from 'common/reducers/cwmOutbound';
 import PackagePopover from '../../../common/popover/packagePopover';
+
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -92,7 +94,10 @@ export default class PackingDetailsPane extends React.Component {
   render() {
     const { packDetails } = this.props;
     return (
-      <div>
+      <div className="table-fixed-layout">
+        <div className="toolbar">
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+        </div>
         <Table columns={this.columns} indentSize={0} dataSource={packDetails} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
