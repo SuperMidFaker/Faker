@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal, Input } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import QuantityInput from '../../../common/quantityInput';
 import PackagePopover from '../../../common/popover/packagePopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
 import { CWM_INBOUND_STATUS } from 'common/constants';
+
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -51,29 +53,29 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 150,
+    width: 160,
     fixed: 'left',
-  }, {
-    title: '上架库位',
-    dataIndex: 'putaway_location',
-    width: 120,
-  }, {
-    title: '目标库位',
-    dataIndex: 'target_location',
-    width: 120,
-  }, {
-    title: '收货库位',
-    dataIndex: 'receive_location',
-    width: 120,
-  }, {
-    title: '收货数量',
-    width: 180,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} disabled />),
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 150,
     render: o => (<PackagePopover sku={o} />),
+  }, {
+    title: '收货数量',
+    width: 180,
+    render: (o, record) => (<QuantityInput size="small" packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} disabled />),
+  }, {
+    title: '收货库位',
+    dataIndex: 'receive_location',
+    width: 120,
+  }, {
+    title: '上架库位',
+    dataIndex: 'putaway_location',
+    width: 120,
+/*  }, {
+    title: '目标库位',
+    dataIndex: 'target_location',
+    width: 120,*/
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -145,8 +147,9 @@ export default class PutawayDetailsPane extends React.Component {
       columns.splice(9, 10);
     }
     return (
-      <div>
+      <div className="table-fixed-layout">
         <div className="toolbar">
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             <Button size="large" onClick={this.handleBatchPutAways} icon="check">
