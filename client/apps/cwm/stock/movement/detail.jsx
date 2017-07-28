@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Card, Col, Row, Tooltip, Radio } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import MovementDetailsPane from './tabpane/movementDetailsPane';
 import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmInventoryStock';
-import { CWM_MOVEMENT_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -47,7 +47,7 @@ export default class MovementDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    completed: false,
+    mode: 'scan',
   }
   componentWillMount() {
     this.props.loadMovementHead(this.props.params.movementNo);
@@ -59,14 +59,13 @@ export default class MovementDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleMovingModeChange = (ev) => {
-    this.props.updateMovingMode(this.props.params.movementNo, ev.target.value);
+    this.setState({
+      mode: ev.target.value,
+    });
   }
   render() {
     const { defaultWhse, movementHead } = this.props;
-    const movingStatus = Object.keys(CWM_MOVEMENT_STATUS).filter(
-      cis => CWM_MOVEMENT_STATUS[cis].value === movementHead.status
-    )[0];
-    const movingStep = movingStatus ? CWM_MOVEMENT_STATUS[movingStatus].step : 0;
+    const movingStep = movementHead.isdone ? 1 : 0;
     return (
       <div>
         <Header className="page-header">
@@ -82,7 +81,7 @@ export default class MovementDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <RadioGroup value={movementHead.moving_mode} onChange={this.handleMovingModeChange} size="large" disabled={movingStep === 5}>
+            <RadioGroup value={this.state.mode} onChange={this.handleMovingModeChange} size="large" disabled={movingStep === 1}>
               <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
@@ -95,16 +94,16 @@ export default class MovementDetail extends Component {
                 <InfoItem addonBefore="货主" field={movementHead.owner_name} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="移库类型" field={movementHead.total_qty} />
+                <InfoItem addonBefore="移库类型" field={movementHead.move_type} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="原因" field={movementHead.total_alloc_qty} />
+                <InfoItem addonBefore="原因" field={movementHead.reason} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="创建时间" field={movementHead.total_picked_qty} />
+                <InfoItem addonBefore="创建时间" field={moment(movementHead.created_date).format('YYYY-MM-DD')} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="移库时间" field={movementHead.total_shipped_qty} />
+                <InfoItem addonBefore="移库时间" field={movementHead.completed_date && moment(movementHead.completed_date).format('YYYY-MM-DD')} />
               </Col>
             </Row>
             <div className="card-footer">
@@ -117,7 +116,7 @@ export default class MovementDetail extends Component {
           <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }}>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
-                <MovementDetailsPane movementNo={this.props.params.movementNo} />
+                <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} />
               </TabPane>
             </Tabs>
           </Card>

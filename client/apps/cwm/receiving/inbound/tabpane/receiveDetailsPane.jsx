@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Select, Button, Table } from 'antd';
+import { Modal, Select, Button, Table, Input } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
@@ -13,6 +13,7 @@ import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, e
 import { CWM_INBOUND_STATUS } from 'common/constants';
 
 const Option = Select.Option;
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -97,11 +98,12 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '行号',
     dataIndex: 'asn_seq_no',
     width: 50,
+    className: 'cell-align-center',
     fixed: 'left',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 150,
+    width: 160,
     fixed: 'left',
   }, {
     title: 'SKU',
@@ -192,8 +194,9 @@ export default class ReceiveDetailsPane extends React.Component {
       }),
     };
     return (
-      <div>
+      <div className="table-fixed-layout">
         <div className="toolbar">
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             {inboundHead.rec_mode === 'manual' &&

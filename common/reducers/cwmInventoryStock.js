@@ -10,6 +10,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
   'INVENTORY_SEARCH', 'INVENTORY_SEARCH_SUCCESS', 'INVENTORY_SEARCH_FAIL',
   'CREATE_MOVEMENT', 'CREATE_MOVEMENT_SUCCESS', 'CREATE_MOVEMENT_FAIL',
   'LOAD_MOVEMENTS', 'LOAD_MOVEMENTS_SUCCESS', 'LOAD_MOVEMENTS_FAIL',
+  'LOAD_MOVEMENT_HEAD', 'LOAD_MOVEMENT_HEAD_SUCCESS', 'LOAD_MOVEMENT_HEAD_FAIL',
+  'LOAD_MOVEMENT_DETAILS', 'LOAD_MOVEMENT_DETAILS_SUCCESS', 'LOAD_MOVEMENT_DETAILS_FAIL',
+  'EXECUTE_MOVE', 'EXECUTE_MOVE_SUCCESS', 'EXECUTE_MOVE_FAIL',
 ]);
 
 const initialState = {
@@ -65,6 +68,8 @@ const initialState = {
     loading: true,
   },
   movementFilter: { owner: 'all' },
+  movementHead: {},
+  movementDetails: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -158,6 +163,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, movements: { ...action.result.data, loading: false } };
     case actionTypes.SET_FILTER:
       return { ...state, movementModal: { ...state.movementModal, filter: action.filter } };
+    case actionTypes.LOAD_MOVEMENT_HEAD_SUCCESS:
+      return { ...state, movementHead: action.result.data };
+    case actionTypes.LOAD_MOVEMENT_DETAILS_SUCCESS:
+      return { ...state, movementDetails: action.result.data };
     default:
       return state;
   }
@@ -291,5 +300,50 @@ export function setMovementsFilter(filter) {
   return {
     type: actionTypes.SET_FILTER,
     filter,
+  };
+}
+
+export function loadMovementHead(movementNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MOVEMENT_HEAD,
+        actionTypes.LOAD_MOVEMENT_HEAD_SUCCESS,
+        actionTypes.LOAD_MOVEMENT_HEAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/load/movement/head',
+      method: 'get',
+      params: { movementNo },
+    },
+  };
+}
+
+export function loadMovementDetails(movementNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MOVEMENT_DETAILS,
+        actionTypes.LOAD_MOVEMENT_DETAILS_SUCCESS,
+        actionTypes.LOAD_MOVEMENT_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/load/movement/details',
+      method: 'get',
+      params: { movementNo },
+    },
+  };
+}
+
+export function executeMovement(movementNo, movementDetails, loginId, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXECUTE_MOVE,
+        actionTypes.EXECUTE_MOVE_SUCCESS,
+        actionTypes.EXECUTE_MOVE_FAIL,
+      ],
+      endpoint: 'v1/cwm/execute/move',
+      method: 'post',
+      data: { movementNo, movementDetails, loginId, whseCode },
+    },
   };
 }
