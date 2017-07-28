@@ -29,14 +29,13 @@ export default class BatchReceivingModal extends Component {
   }
   state = {
     location: '',
-    damageLevel: '',
+    damageLevel: 0,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
     this.props.hideBatchReceivingModal();
     this.setState({
       location: '',
-      damageLevel: '',
     });
   }
   handleLocationChange = (value) => {
@@ -70,7 +69,7 @@ export default class BatchReceivingModal extends Component {
           <Checkbox checked>实际收货数量与预期一致</Checkbox>
         </FormItem>
         <FormItem {...formItemLayout} label="破损级别" >
-          <Select style={{ width: 160 }} onSelect={this.handleDamageLevelChange}>
+          <Select style={{ width: 160 }} onSelect={this.handleDamageLevelChange} value={this.state.damageLevel}>
             <Option value={0}>完好</Option>
             <Option value={1}>轻微擦痕</Option>
             <Option value={2}>中度</Option>
@@ -79,7 +78,7 @@ export default class BatchReceivingModal extends Component {
           </Select>
         </FormItem>
         <FormItem {...formItemLayout} label="收货库位">
-          <Select style={{ width: 160 }} onSelect={this.handleLocationChange}>
+          <Select style={{ width: 160 }} onSelect={this.handleLocationChange} value={this.state.location}>
             {this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
           </Select>
         </FormItem>
