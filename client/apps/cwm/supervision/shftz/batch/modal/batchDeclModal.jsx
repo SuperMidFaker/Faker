@@ -66,7 +66,7 @@ export default class BatchDeclModal extends Component {
     if (nextProps.portionRegs !== this.props.portionRegs) {
       this.setState({ portionRegs: nextProps.portionRegs });
     }
-    if (nextProps.visible && nextProps.ownerCusCode) {
+    if (nextProps.visible && nextProps.ownerCusCode && nextProps.ownerCusCode !== this.props.ownerCusCode) {
       this.props.loadPortionOutRegs({
         owner_cus_code: nextProps.ownerCusCode,
         whse_code: nextProps.defaultWhse.code,
