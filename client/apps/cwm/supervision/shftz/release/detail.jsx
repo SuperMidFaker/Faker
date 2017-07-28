@@ -135,15 +135,15 @@ export default class SHFTZRelDetail extends Component {
   columns = [{
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
-    width: 80,
+    width: 100,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 150,
+    width: 160,
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 90,
+    width: 100,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -283,7 +283,7 @@ export default class SHFTZRelDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }}>
+            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map(reg => (
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>

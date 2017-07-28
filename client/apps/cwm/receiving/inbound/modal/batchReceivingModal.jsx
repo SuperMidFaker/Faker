@@ -79,7 +79,7 @@ export default class BatchReceivingModal extends Component {
           </Select>
         </FormItem>
         <FormItem {...formItemLayout} label="收货库位">
-          <Select style={{ width: 160 }} onSelect={this.handleLocationChange}>
+          <Select style={{ width: 160 }} onSelect={this.handleLocationChange} showSearch>
             {this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
           </Select>
         </FormItem>

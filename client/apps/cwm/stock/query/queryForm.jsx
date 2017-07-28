@@ -86,12 +86,12 @@ export default class QueryForm extends React.Component {
           })(
             <RadioGroup onChange={this.onChange}>
               <Col span={12}>
-                <Radio value={1} onClick={this.checkOwners}>按货主查询</Radio>
                 <Radio value={2} onClick={this.checkProduct}>按货品查询</Radio>
+                <Radio value={1} onClick={this.checkOwners}>按货主查询</Radio>
               </Col>
               <Col span={12}>
-                <Radio value={3} onClick={this.checkLocation}>按库位查询</Radio>
                 <Radio value={4} onClick={this.checkProAndLocation}>按货品/库位查询</Radio>
+                <Radio value={3} onClick={this.checkLocation}>按库位查询</Radio>
               </Col>
             </RadioGroup>
           )}

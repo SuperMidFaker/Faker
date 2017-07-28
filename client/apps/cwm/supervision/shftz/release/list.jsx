@@ -64,7 +64,7 @@ export default class SHFTZReleaseList extends React.Component {
     fixed: 'left',
   }, {
     title: '监管出库单号',
-    width: 150,
+    width: 180,
     dataIndex: 'ftz_rel_no',
   }, {
     title: '备案类型',
