@@ -206,6 +206,18 @@ const messages = defineMessages({
     id: 'cms.modals.expense.invoiceEn',
     defaultMessage: '是否计税',
   },
+  recipient: {
+    id: 'cms.modals.expense.recipient',
+    defaultMessage: '收款方',
+  },
+  payer: {
+    id: 'cms.modals.expense.payer',
+    defaultMessage: '付款方',
+  },
+  importMode: {
+    id: 'cms.modals.expense.import.mode',
+    defaultMessage: '导入方式',
+  },
 });
 export default messages;
 export const formatMsg = formati18n(messages);

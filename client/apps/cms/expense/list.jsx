@@ -21,6 +21,7 @@ import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
 import RowUpdater from 'client/components/rowUpdater';
 import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
+import AdvUploadModal from './modals/advUploadModal';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -93,6 +94,7 @@ export default class ExpenseList extends Component {
     filterAcptVisible: false,
     filterCleanVisible: false,
     sortedInfo: { field: '', order: '' },
+    advUploadVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.saved !== this.props.saved) {
@@ -216,7 +218,7 @@ export default class ExpenseList extends Component {
     return newFilters;
   }
   handleAdvFeesImport = () => {
-
+    this.toggleAdvUploadModal();
   }
   handleExpExport = () => {
     this.setState({
@@ -225,6 +227,9 @@ export default class ExpenseList extends Component {
   }
   toggleEptModal = () => {
     this.setState({ expEptVisible: !this.state.expEptVisible });
+  }
+  toggleAdvUploadModal = () => {
+    this.setState({ advUploadVisible: !this.state.advUploadVisible });
   }
   handleAcptDateChange = (dates) => {
     const acptDate = {
@@ -552,6 +557,7 @@ export default class ExpenseList extends Component {
         <DelegationDockPanel />
         <DelgAdvanceExpenseModal />
         <AdvModelModal />
+        <AdvUploadModal visible={this.state.advUploadVisible} toggle={this.toggleAdvUploadModal} />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </QueueAnim>
     );
