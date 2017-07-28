@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Table, Tag } from 'antd';
+import { Modal, Button, Table, Tag, Input } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PackagePopover from '../../../common/popover/packagePopover';
 import { loadMovementDetails, executeMovement, loadMovementHead } from 'common/reducers/cwmInventoryStock';
 
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -112,6 +113,7 @@ export default class MovementDetailsPane extends React.Component {
     return (
       <div>
         <div className="toolbar">
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
           </div>

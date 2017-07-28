@@ -74,7 +74,7 @@ export default class TaxStatsCard extends Component {
           >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
           )}
         </Select>
-        <RangePicker style={{ width: 200, marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
+        <RangePicker style={{ marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
           onChange={this.onDateChange} allowClear={false}
         />

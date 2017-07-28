@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, Collapse, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -12,7 +12,6 @@ import { closeBatchDeclModal, loadParams, loadPortionOutRegs, loadPortionDetails
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
-const Panel = Collapse.Panel;
 const Option = Select.Option;
 
 @injectIntl
@@ -243,10 +242,10 @@ export default class BatchDeclModal extends Component {
     });
   }
   render() {
-    const { ownerCusCode, relNo, relDateRange } = this.state;
-    const portionForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
-      <FormItem label="货主">
-        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} value={ownerCusCode}>
+    const { relNo, relDateRange } = this.state;
+    const portionForm = (<Form layout="inline">
+      <FormItem>
+        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
           {this.props.owners.map(data => (
             <Option key={data.customs_code} value={data.customs_code}>
               {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
@@ -259,25 +258,19 @@ export default class BatchDeclModal extends Component {
       <FormItem label="出库日期">
         <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
       </FormItem>
-      <Button onClick={this.handlePortionOutsQuery}>查询</Button>
+      <Button type="primary" ghost onClick={this.handlePortionOutsQuery}>查询分拨出库单</Button>
     </Form>);
 
     return (
       <Modal title="集中报关" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
         onOk={this.handleBatchDecl} onCancel={this.handleCancel} visible={this.props.visible}
       >
-        <Collapse bordered={false} defaultActiveKey={['1', '2']}>
-          <Panel header="分拨出库单" key="1">
-            <Card title={portionForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" scroll={{ y: 220 }} />
-            </Card>
-          </Panel>
-          <Panel header="报关申请明细" key="2">
-            <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id" scroll={{ y: 220 }} />
-            </Card>
-          </Panel>
-        </Collapse>
+        <Card title={portionForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
+          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" scroll={{ y: 220 }} />
+        </Card>
+        <Card title="报关申请明细" bodyStyle={{ padding: 0 }}>
+          <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id" scroll={{ y: 220 }} />
+        </Card>
       </Modal>
     );
   }

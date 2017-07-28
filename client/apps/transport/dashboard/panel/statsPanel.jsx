@@ -52,7 +52,7 @@ export default class StatsPanel extends Component {
     const datePicker = (
       <div>
         <CustomerSelect onChange={this.handleCustomerChange} />
-        <RangePicker style={{ width: 200, marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
+        <RangePicker style={{ marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
           onChange={this.onDateChange} allowClear={false}
         />

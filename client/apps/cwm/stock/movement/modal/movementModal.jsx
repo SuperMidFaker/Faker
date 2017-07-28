@@ -44,7 +44,7 @@ export default class MovementModal extends Component {
   stocksColumns = [{
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 120,
+    width: 160,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
@@ -53,7 +53,7 @@ export default class MovementModal extends Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 160,
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -102,7 +102,7 @@ export default class MovementModal extends Component {
   movementColumns = [{
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 120,
+    width: 160,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
@@ -111,7 +111,7 @@ export default class MovementModal extends Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 160,
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -255,9 +255,9 @@ export default class MovementModal extends Component {
   render() {
     const { owners } = this.props;
     const { stocks, movements } = this.state;
-    const inventoryQueryForm = (<Form layout="inline" style={{ display: 'inline-block' }}>
+    const inventoryQueryForm = (<Form layout="inline">
       <FormItem label="货品">
-        <Input onChange={this.handleProductChange} />
+        <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" />
       </FormItem>
       <FormItem label="库位">
         <Input onChange={this.handleLocationChange} />
@@ -266,7 +266,7 @@ export default class MovementModal extends Component {
         <RangePicker onChange={this.handleDateChange} />
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={this.handleSearch}>search</Button>
+        <Button type="primary" ghost onClick={this.handleSearch}>库存查询</Button>
       </FormItem>
     </Form>);
 
@@ -274,15 +274,15 @@ export default class MovementModal extends Component {
       <Modal title="创建库存移动单" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
         onOk={this.handleCreateMovement} onCancel={this.handleCancel} visible={this.props.visible}
       >
-        <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
+        <Card title="库存移动单" bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
           <Form layout="inline">
             <FormItem label="货主">
-              <Select onChange={this.handleOwnerChange} style={{ width: 320 }} dropdownMatchSelectWidth={false}>
+              <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
                 {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
               </Select>
             </FormItem>
             <FormItem label="移库类型">
-              <Select style={{ width: 320 }} />
+              <Select style={{ width: 200 }} />
             </FormItem>
             <FormItem label="原因">
               <Input />
@@ -294,7 +294,7 @@ export default class MovementModal extends Component {
             <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id" scroll={{ y: 220 }} />
           </div>
         </Card>
-        <Card bodyStyle={{ padding: 0 }}>
+        <Card title="移库明细" bodyStyle={{ padding: 0 }}>
           <div className="table-fixed-layout">
             <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id" scroll={{ y: 220 }} />
           </div>

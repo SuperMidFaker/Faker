@@ -79,7 +79,7 @@ const messages = defineMessages({
   },
   createBatchDecl: {
     id: 'cwm.supervision.shftz.filter.batchdecl',
-    defaultMessage: '筛选待报关',
+    defaultMessage: '新建集中报关',
   },
 });
 

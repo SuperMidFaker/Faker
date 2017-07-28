@@ -5,9 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import currencyFormatter from 'currency-formatter';
 import { Card, Table, Tag, Popconfirm, message, Button } from 'antd';
 import { loadPaneTax, taxRecalculate } from 'common/reducers/cmsDelgInfoHub';
-import { CMS_FEE_UNIT } from 'common/constants';
-
-const Column = Table.Column;
 
 @injectIntl
 @connect(
@@ -67,15 +64,6 @@ export default class DutyTaxPane extends React.Component {
     width: 190,
     key: 'pre_entry_seq_no',
   }, {
-    title: '完税价格',
-    dataIndex: 'duty_paid',
-    key: 'duty_paid',
-    width: 110,
-    className: 'cell-align-right',
-    render(o) {
-      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
-    },
-  }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
     key: 'trxn_mode',
@@ -84,6 +72,15 @@ export default class DutyTaxPane extends React.Component {
       const trxMd = this.props.trxModes.filter(tm => tm.value === o)[0];
       const trx = trxMd ? trxMd.text : '';
       return <Tag color="blue">{trx}</Tag>;
+    },
+  }, {
+    title: '完税价格',
+    dataIndex: 'duty_paid',
+    key: 'duty_paid',
+    width: 110,
+    className: 'cell-align-right',
+    render(o) {
+      return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
     title: '关税',
@@ -113,7 +110,7 @@ export default class DutyTaxPane extends React.Component {
       return o ? currencyFormatter.format(o, { code: 'CNY' }) : '';
     },
   }, {
-    title: '税费总金额',
+    title: '税金合计',
     dataIndex: 'total_tax',
     key: 'total_tax',
     width: 110,
@@ -126,6 +123,7 @@ export default class DutyTaxPane extends React.Component {
     title: '商品编码',
     dataIndex: 'hscode',
     key: 'hscode',
+/*
   }, {
     title: '运费/率',
     dataIndex: 'ship_fee',
@@ -164,7 +162,7 @@ export default class DutyTaxPane extends React.Component {
       } else {
         return o ? o.toFixed(3) : '';
       }
-    },
+    }, */
   }, {
     title: '完税价格',
     dataIndex: 'duty_paid',
@@ -257,11 +255,11 @@ export default class DutyTaxPane extends React.Component {
   }
   renderValFixed = o => o ? currencyFormatter.format(o, { code: 'CNY' }) : ''
   render() {
-    const gridStyle = { width: `${1 / 6 * 100}%`, textAlign: 'center' };
+    const gridStyle = { width: `${1 / 5 * 100}%`, textAlign: 'center' };
     const tax = this.state.sumval[0] || {};
     return (
       <div className="pane-content tab-pane">
-        <Card noHovering bodyStyle={{ padding: 0 }}>
+        <Card noHovering bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>完税价格</h3>
@@ -269,43 +267,30 @@ export default class DutyTaxPane extends React.Component {
             </div>
           </Card.Grid>
           <Card.Grid style={gridStyle}>
-            <h3>成交方式</h3>
-            <h2 className="data-num text-emphasis" style={{ minHeight: 27 }}>{tax.trxn_mode || ' '}</h2>
-          </Card.Grid>
-          <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>关税</h3>
-              <h2 className="data-num text-emphasis">{this.renderValFixed(tax.duty_tax)}</h2>
+              <h2 className="data-num">{this.renderValFixed(tax.duty_tax)}</h2>
             </div>
           </Card.Grid>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>增值税</h3>
-              <h2 className="data-num text-emphasis">{this.renderValFixed(tax.vat_tax)}</h2>
+              <h2 className="data-num">{this.renderValFixed(tax.vat_tax)}</h2>
             </div>
           </Card.Grid>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>消费税</h3>
-              <h2 className="data-num text-emphasis" style={{ minHeight: 27 }}>{this.renderValFixed(tax.excise_tax)}</h2>
+              <h2 className="data-num" style={{ minHeight: 27 }}>{this.renderValFixed(tax.excise_tax)}</h2>
             </div>
           </Card.Grid>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
-              <h3>总税费</h3>
+              <h3>税金总额</h3>
               <h2 className="data-num text-error">{this.renderValFixed(tax.total_tax)}</h2>
             </div>
           </Card.Grid>
         </Card>
-        <Table size="middle" showHeader={false} pagination={false} dataSource={this.state.sumval}>
-          <Column dataIndex="total" width={230} className="sub-total" />
-          <Column dataIndex="duty_paid" width={110} render={this.renderValFixed} className="sub-total" />
-          <Column dataIndex="trxn_mode" width={110} />
-          <Column dataIndex="duty_tax" width={110} render={this.renderValFixed} className="sub-total" />
-          <Column dataIndex="vat_tax" width={110} render={this.renderValFixed} className="sub-total" />
-          <Column dataIndex="excise_tax" width={110} render={this.renderValFixed} className="sub-total" />
-          <Column dataIndex="total_tax" width={110} render={this.renderValFixed} className="sub-total" />
-        </Table>
         <Card title="缴税明细" bodyStyle={{ padding: 0 }}
           extra={<Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
             <Button icon="calculator" loading={this.state.recalLoading}>估算</Button>
