@@ -34,7 +34,7 @@ export default class CWMReceivingPane extends Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, onNodeActionsChange, model, recParams } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, model, recParams } = this.props;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -99,7 +99,7 @@ export default class CWMReceivingPane extends Component {
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable kind={model.kind} bizObj="cwmReceiving" onNodeActionsChange={onNodeActionsChange} />
+          <FlowTriggerTable kind={model.kind} bizObj="cwmReceiving" />
         </Panel>
       </Collapse>
     );

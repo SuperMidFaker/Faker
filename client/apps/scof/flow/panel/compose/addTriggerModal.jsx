@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Button, Card, Popconfirm, Col, Modal, Form, Checkbox, Icon, InputNumber, Radio, Row, Select, Mention } from 'antd';
 import { closeAddTriggerModal } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
-import { loadServiceTeamMembers } from 'common/reducers/crmCustomers';
 import { NODE_BIZ_OBJECTS_EXECUTABLES, NODE_CREATABLE_BIZ_OBJECTS, NODE_NOTIFY_CONTENTS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
@@ -280,10 +279,10 @@ NotifyActionForm.propTypes = {
   nodeBizObject: state.scofFlow.triggerModal.node_biz_object,
   trigger: state.scofFlow.triggerModal.key,
   actions: state.scofFlow.triggerModal.actions,
-  serviceTeamMembers: state.crmCustomers.serviceTeamMembers,
+  serviceTeamMembers: state.crmCustomers.operators,
   partnerId: state.scofFlow.currentFlow.partner_id,
 }),
-  { closeAddTriggerModal, loadServiceTeamMembers }
+  { closeAddTriggerModal }
 )
 export default class AddTriggerModal extends React.Component {
   static propTypes = {
@@ -291,7 +290,6 @@ export default class AddTriggerModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     closeAddTriggerModal: PropTypes.func.isRequired,
     onModalOK: PropTypes.func.isRequired,
-    loadServiceTeamMembers: PropTypes.func.isRequired,
     serviceTeamMembers: PropTypes.array,
     partnerId: PropTypes.number.isRequired,
   }
@@ -301,10 +299,13 @@ export default class AddTriggerModal extends React.Component {
     creatableBizObjects: [],
   }
   componentWillMount() {
-    const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[this.props.kind];
-    const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[this.props.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
-    this.setState({ bizobjExecutes, creatableBizObjects });
-    this.props.loadServiceTeamMembers(this.props.partnerId);
+    if (this.props.kind) {
+      const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[this.props.kind];
+      if (bizobjExecutes) {
+        const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[this.props.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
+        this.setState({ bizobjExecutes, creatableBizObjects });
+      }
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.actions !== this.props.actions) {
@@ -315,13 +316,12 @@ export default class AddTriggerModal extends React.Component {
         recv_tels_enabled: !!item.recv_tels,
       })) });
     }
-    if (nextProps.partnerId !== this.props.partnerId) {
-      this.props.loadServiceTeamMembers(nextProps.partnerId);
-    }
-    if (nextProps.kind !== this.props.kind) {
+    if (nextProps.kind && nextProps.kind !== this.props.kind) {
       const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[nextProps.kind];
-      const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[nextProps.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
-      this.setState({ bizobjExecutes, creatableBizObjects });
+      if (bizobjExecutes) {
+        const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[nextProps.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
+        this.setState({ bizobjExecutes, creatableBizObjects });
+      }
     }
   }
   handleActionAdd = () => {

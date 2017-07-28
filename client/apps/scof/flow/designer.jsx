@@ -10,6 +10,7 @@ import { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGrap
   loadScvTrackings, loadTmsBizParams } from 'common/reducers/scofFlow';
 import { uuidWithoutDash } from 'client/common/uuid';
 import ButtonToggle from 'client/components/ButtonToggle';
+import AddTriggerModal from './panel/compose/addTriggerModal';
 import { MdIcon, Ikons, Logixon } from 'client/components/FontIcon';
 import EditableCell from 'client/components/EditableCell';
 import FlowEdgePanel from './panel/flowEdgePanel';
@@ -448,9 +449,14 @@ export default class FlowDesigner extends React.Component {
       this.graph.update(this.state.activeItem, { delConds, conditions: afterConds });
     }
   }
-  handleNodeActionsChange = (actions) => {
+  handleTriggerModalChange = (nodeBizObject, triggerName, newActions) => {
+    const nodeActions = this.state.activeItem.get('model').actions;
+    const actions = nodeActions.filter(na => !(nodeBizObject ?
+      (na.node_biz_object === nodeBizObject && na.trigger_name === triggerName) : (na.trigger_name === triggerName))).concat(newActions.map(na => ({
+        ...na, node_biz_object: nodeBizObject, trigger_name: triggerName,
+      })));
     this.graph.update(this.state.activeItem, { actions });
-    this.props.setNodeActions(actions);
+    this.props.setNodeActions(actions);  // connect nodeActions rerender FlowTriggerTable, model passed no effect
   }
   handleTrackingChange = (trackingId) => {
     this.setState({ trackingId });
@@ -551,7 +557,7 @@ export default class FlowDesigner extends React.Component {
                 >
                   {NodePanel && activeItem.get('type') === 'node' &&
                   <NodePanel onFormInit={this.handlePanelForm} node={activeItem} graph={this.graph}
-                    onNodeActionsChange={this.handleNodeActionsChange} key={activeItem.get('model').kind}
+                    key={activeItem.get('model').kind}
                   />
                 }
                   {activeItem.get('type') === 'edge' &&
@@ -562,6 +568,7 @@ export default class FlowDesigner extends React.Component {
                 }
                 </QueueAnim>
               }
+              <AddTriggerModal onModalOK={this.handleTriggerModalChange} kind={activeItem && activeItem.get('model').kind} />
             </Spin>
           </Content>
         </Layout>

@@ -30,21 +30,21 @@ export default class FlowCwmRecPanel extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form, node, graph, onNodeActionsChange } = this.props;
+    const { form, node, graph } = this.props;
     const model = node.get('model');
     return (
       <Form layout="vertical">
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={this.msg('flowNodeCWMRec')} bodyStyle={{ padding: 0 }}>
-              <FlowNodePanel form={form} node={node} onNodeActionsChange={onNodeActionsChange} graph={graph} />
+              <FlowNodePanel form={form} node={node} graph={graph} />
             </Card>
           </Col>
           <Col sm={24} md={16}>
             <Card title={this.msg('bizObject')} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="cwmReceiving">
                 <TabPane tab={this.msg('cwmRecAsn')} key="cwmReceiving">
-                  <ReceivingPane form={form} model={model} onNodeActionsChange={onNodeActionsChange} />
+                  <ReceivingPane form={form} model={model} />
                 </TabPane>
               </Tabs>
             </Card>

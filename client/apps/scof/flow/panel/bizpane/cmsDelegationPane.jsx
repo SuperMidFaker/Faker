@@ -43,7 +43,7 @@ export default class CMSDelegationPane extends Component {
     this.props.loadEpList(tenantId, customs && customs.customs_code);
   }
   render() {
-    const { form: { getFieldDecorator }, onNodeActionsChange, model,
+    const { form: { getFieldDecorator }, model,
       bizDelegation: { declPorts, customsBrokers, ciqBrokers }, cmsQuotes } = this.props;
     const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
@@ -128,7 +128,7 @@ export default class CMSDelegationPane extends Component {
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable kind={model.kind} bizObj="cmsDelegation" onNodeActionsChange={onNodeActionsChange} />
+          <FlowTriggerTable kind={model.kind} bizObj="cmsDelegation" />
         </Panel>
       </Collapse>
     );

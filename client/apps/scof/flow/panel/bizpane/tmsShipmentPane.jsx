@@ -242,7 +242,7 @@ export default class TMSShipmentPane extends Component {
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
-    const { form: { getFieldDecorator }, onNodeActionsChange, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
+    const { form: { getFieldDecorator }, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
     const { quoteNoField } = this.state;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
@@ -337,7 +337,7 @@ export default class TMSShipmentPane extends Component {
           <AddLocationModal onOk={this.handleAddedLocation} />
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">
-          <FlowTriggerTable kind={model.kind} bizObj="tmsShipment" onNodeActionsChange={onNodeActionsChange} />
+          <FlowTriggerTable kind={model.kind} bizObj="tmsShipment" />
         </Panel>
       </Collapse>
     );
