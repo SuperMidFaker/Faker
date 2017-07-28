@@ -15,7 +15,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.customs.decl.search.placeholder',
-    defaultMessage: '海关编号/内部编号/委托编号',
+    defaultMessage: '海关编号/内部编号/委托编号/订单号',
   },
   importOperation: {
     id: 'cms.customs.decl.import.operation',

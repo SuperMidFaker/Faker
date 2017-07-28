@@ -136,11 +136,30 @@ export default class PutawayDetailsPane extends React.Component {
   }
   render() {
     const { inboundHead, inboundPutaways } = this.props;
+    const dataSource = inboundPutaways.filter((item) => {
+      if (this.state.searchValue) {
+        const reg = new RegExp(this.state.searchValue);
+        return reg.test(item.product_no) || reg.test(item.product_sku);
+      } else {
+        return true;
+      }
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys, selectedRows });
       },
+      selections: [{
+        key: 'all-data',
+        text: '选择全部项',
+        onSelect: () => {
+          const selectedRowKeys = dataSource.map(item => item.trace_id);
+          this.setState({
+            selectedRowKeys,  // TODO
+            selectedRows: dataSource,
+          });
+        },
+      }],
       getCheckboxProps: record => ({
         disabled: record.result === 1,
       }),
@@ -150,14 +169,7 @@ export default class PutawayDetailsPane extends React.Component {
       columns = [...columns];
       columns.splice(9, 10);
     }
-    const dataSource = inboundPutaways.filter((item) => {
-      if (this.state.searchValue) {
-        const reg = new RegExp(this.state.searchValue);
-        return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
-      }
-    });
+
     return (
       <div className="table-fixed-layout">
         <div className="toolbar">

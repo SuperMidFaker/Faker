@@ -178,6 +178,14 @@ export default class ReceiveDetailsPane extends React.Component {
   }
   render() {
     const { inboundHead, inboundProducts } = this.props;
+    const dataSource = inboundProducts.filter((item) => {
+      if (this.state.searchValue) {
+        const reg = new RegExp(this.state.searchValue);
+        return reg.test(item.product_no) || reg.test(item.product_sku);
+      } else {
+        return true;
+      }
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -187,8 +195,10 @@ export default class ReceiveDetailsPane extends React.Component {
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
+          const selectedRowKeys = dataSource.map(item => item.asn_seq_no);
           this.setState({
-            selectedRowKeys: [...Array(6).keys()],  // TODO
+            selectedRowKeys,  // TODO
+            selectedRows: dataSource,
           });
         },
       }],
@@ -196,14 +206,6 @@ export default class ReceiveDetailsPane extends React.Component {
         disabled: record.trace_id.length >= 1,
       }),
     };
-    const dataSource = inboundProducts.filter((item) => {
-      if (this.state.searchValue) {
-        const reg = new RegExp(this.state.searchValue);
-        return reg.test(item.product_no) || reg.test(item.product_sku);
-      } else {
-        return true;
-      }
-    });
     return (
       <div className="table-fixed-layout">
         <div className="toolbar">

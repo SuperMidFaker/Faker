@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Form, Layout, Row, Col, Button } from 'antd';
+import { Breadcrumb, Form, Layout, Row, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadSkuParams, cleanSkuForm, createSku } from 'common/reducers/cwmSku';
 import MainForm from './forms/mainForm';
@@ -64,6 +64,8 @@ export default class CreateProductSku extends Component {
         this.props.createSku(formData).then((result) => {
           if (!result.error) {
             this.context.router.push('/cwm/products/sku');
+          } else {
+            message.error(result.error.message);
           }
         });
       }
