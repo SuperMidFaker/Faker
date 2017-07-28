@@ -13,6 +13,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
   'LOAD_MOVEMENT_HEAD', 'LOAD_MOVEMENT_HEAD_SUCCESS', 'LOAD_MOVEMENT_HEAD_FAIL',
   'LOAD_MOVEMENT_DETAILS', 'LOAD_MOVEMENT_DETAILS_SUCCESS', 'LOAD_MOVEMENT_DETAILS_FAIL',
   'EXECUTE_MOVE', 'EXECUTE_MOVE_SUCCESS', 'EXECUTE_MOVE_FAIL',
+  'CANCEL_MOVEMENT', 'CANCEL_MOVEMENT_SUCCESS', 'CANCEL_MOVEMENT_FAIL',
+  'REMOVE_MOVEMENT_DETAIL', 'REMOVE_MOVEMENT_DETAIL_SUCCESS', 'REMOVE_MOVEMENT_DETAIL_FAIL',
 ]);
 
 const initialState = {
@@ -344,6 +346,36 @@ export function executeMovement(movementNo, movementDetails, loginId, whseCode) 
       endpoint: 'v1/cwm/execute/move',
       method: 'post',
       data: { movementNo, movementDetails, loginId, whseCode },
+    },
+  };
+}
+
+export function cancelMovement(movementNo, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_MOVEMENT,
+        actionTypes.CANCEL_MOVEMENT_SUCCESS,
+        actionTypes.CANCEL_MOVEMENT_FAIL,
+      ],
+      endpoint: 'v1/cwm/cancel/movement',
+      method: 'post',
+      data: { movementNo, loginId },
+    },
+  };
+}
+
+export function removeMoveDetail(ids, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REMOVE_MOVEMENT_DETAIL,
+        actionTypes.REMOVE_MOVEMENT_DETAIL_SUCCESS,
+        actionTypes.REMOVE_MOVEMENT_DETAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/remove/movement/detail',
+      method: 'post',
+      data: { ids, loginId },
     },
   };
 }
