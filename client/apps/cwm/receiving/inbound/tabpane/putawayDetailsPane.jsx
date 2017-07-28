@@ -50,16 +50,14 @@ export default class PutawayDetailsPane extends React.Component {
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 150,
-    fixed: 'left',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
-    fixed: 'left',
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 150,
+    width: 160,
     render: o => (<PackagePopover sku={o} />),
   }, {
     title: '收货数量',

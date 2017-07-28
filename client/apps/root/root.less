@@ -795,16 +795,6 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   &.padding {
     padding: 0 16px 16px;
   }
-  &.table-fixed-layout {
-    table {
-      table-layout: fixed;
-    }
-    .ant-table-row > td {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
   &.table-panel {
     .ant-table-placeholder {
       border-bottom: none;
@@ -884,6 +874,16 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
   .ant-table-small {
     border: none;
+  }
+}
+.table-fixed-layout {
+  table {
+    table-layout: fixed;
+  }
+  .ant-table-row > td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 .popover-header{

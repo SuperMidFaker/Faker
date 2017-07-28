@@ -100,16 +100,14 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'asn_seq_no',
     width: 50,
     className: 'cell-align-center',
-    fixed: 'left',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
-    fixed: 'left',
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 150,
+    width: 160,
     render: o => (<PackagePopover sku={o} />),
   }, {
     title: '预期数量',

@@ -161,6 +161,16 @@ export default class ReceivingASNList extends React.Component {
           { record.asn_no && <span className="ant-divider" />}
           { record.asn_no && <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />}
         </span>);
+      } else if (record.status === CWM_ASN_STATUS.COMPLETED.value) {
+        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
+          return (<span>
+            <RowUpdater onHit={this.handleReceive} label="入库详情" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleEntryReg} label="备案详情" row={record} />
+          </span>);
+        } else {
+          return (<span><RowUpdater onHit={this.handleReceive} label="入库详情" row={record} /></span>);
+        }
       }
     },
   }]
@@ -300,10 +310,6 @@ export default class ReceivingASNList extends React.Component {
       remotes: this.props.asnlist,
     });
     let columns = this.columns;
-    if (filters.status === 'completed') {
-      columns = [...columns];
-      columns.splice(10, 10);
-    }
     if (!defaultWhse.bonded) {
       columns = [...columns];
       columns.splice(9, 1);

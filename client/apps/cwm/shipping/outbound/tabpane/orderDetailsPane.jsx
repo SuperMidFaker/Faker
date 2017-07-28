@@ -61,7 +61,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 150,
+    width: 160,
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -77,7 +77,7 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 150,
+    width: 160,
     render: (o) => {
       if (o) {
         return <PackagePopover sku={o} />;
