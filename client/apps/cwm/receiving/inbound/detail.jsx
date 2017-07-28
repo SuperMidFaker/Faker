@@ -62,7 +62,7 @@ export default class ReceiveInbound extends Component {
     if (nextProps.reload) {
       this.props.loadInboundHead(nextProps.params.inboundNo).then((result) => {
         if (!result.error) {
-          const activeTab = result.data.status === CWM_INBOUND_STATUS.COMPLETED.value ? 'putawayDetails' : 'receiveDetails';
+          const activeTab = result.data.status === CWM_INBOUND_STATUS.COMPLETED.value || result.data.status === CWM_INBOUND_STATUS.PARTIAL_PUTAWAY.value ? 'putawayDetails' : 'receiveDetails';
           this.setState({
             activeTab,
           });
