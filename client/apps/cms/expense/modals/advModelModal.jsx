@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Table, Switch, Button } from 'antd';
@@ -29,26 +31,26 @@ export default class AdvModelModal extends Component {
     datas: [],
     selectedRowKeys: [],
   };
-  componentDidMount() {
-    // <script src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
-    // <script src="http://sheetjs.com/demos/Blob.js"></script>
-    // <script src="http://sheetjs.com/demos/FileSaver.js"></script>
-    let script;
-    if (!document.getElementById('xlsx')) {
-      script = document.createElement('script');
-      script.id = 'xlsx';
-      script.src = 'http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-    if (!document.getElementById('FileSaver')) {
-      script = document.createElement('script');
-      script.id = 'FileSaver';
-      script.src = 'http://sheetjs.com/demos/FileSaver.js';
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }
+  // componentDidMount() {
+  //   // <script src="http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+  //   // <script src="http://sheetjs.com/demos/Blob.js"></script>
+  //   // <script src="http://sheetjs.com/demos/FileSaver.js"></script>
+  //   let script;
+  //   if (!document.getElementById('xlsx')) {
+  //     script = document.createElement('script');
+  //     script.id = 'xlsx';
+  //     script.src = 'http://oss.sheetjs.com/js-xlsx/xlsx.full.min.js';
+  //     script.async = true;
+  //     document.body.appendChild(script);
+  //   }
+  //   if (!document.getElementById('FileSaver')) {
+  //     script = document.createElement('script');
+  //     script.id = 'FileSaver';
+  //     script.src = 'http://sheetjs.com/demos/FileSaver.js';
+  //     script.async = true;
+  //     document.body.appendChild(script);
+  //   }
+  // }
   componentWillReceiveProps(nextProps) {
     if (nextProps.quoteData !== this.props.quoteData) {
       const datas = nextProps.quoteData.fees.filter(qd => qd.fee_style === 'advance' && qd.enabled);
@@ -111,8 +113,8 @@ export default class AdvModelModal extends Component {
     // https://github.com/SheetJS/js-xlsx
     const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
     const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-    wb.Sheets.Sheet1 = window.XLSX.utils.aoa_to_sheet(csvData);
-    window.saveAs(new window.Blob([this.s2ab(window.XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'advanceModel.xlsx');
+    wb.Sheets.Sheet1 = XLSX.utils.aoa_to_sheet(csvData);
+    FileSaver.saveAs(new window.Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'advanceModel.xlsx');
   }
 
   render() {
@@ -124,13 +126,11 @@ export default class AdvModelModal extends Component {
       },
     };
     const footer = [
-      <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel} style={{ marginRight: 20 }}>取消</Button>,
-
+      <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>,
       <Button key="next" type="primary" size="large" onClick={this.handleSave} disabled={this.state.selectedRowKeys.length === 0}>下载</Button>,
-
     ];
     return (
-      <Modal visible={visibleAdvModal} title={this.msg('advModel')} footer={footer} width={600}>
+      <Modal visible={visibleAdvModal} title={this.msg('advModel')} onCancel={this.handleCancel} footer={footer} width={600}>
         <Table rowSelection={rowSelection} pagination={false} rowKey="_id" columns={this.columns} dataSource={this.state.datas} scroll={{ y: 450 }} />
       </Modal>
     );
