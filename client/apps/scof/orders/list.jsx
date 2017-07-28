@@ -316,7 +316,7 @@ export default class OrderList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" value={filters.order_no} />
               <span />
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleClientSelectChange} value={filters.partnerId ? filters.partnerId : 'all'}

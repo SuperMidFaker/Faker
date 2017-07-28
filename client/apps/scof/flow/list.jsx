@@ -17,7 +17,7 @@ const Search = Input.Search;
 function fetchData({ state, dispatch }) {
   return dispatch(loadFlowList({
     tenantId: state.account.tenantId,
-    filter: JSON.stringify(state.scofFlow.listFilter),
+    filter: JSON.stringify({ ...state.scofFlow.listFilter, name: '' }),
     pageSize: state.scofFlow.flowList.pageSize,
     current: state.scofFlow.flowList.current,
   }));
@@ -52,7 +52,6 @@ export default class FlowList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentWillMount() {
     this.props.loadFlowTrackingFields();
