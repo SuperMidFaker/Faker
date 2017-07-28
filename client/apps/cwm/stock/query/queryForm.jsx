@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Col } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
+import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -17,8 +18,11 @@ const RadioGroup = Radio.Group;
     displayedColumns: state.cwmInventoryStock.displayedColumns,
     filter: state.cwmInventoryStock.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
+    locations: state.cwmWarehouse.locations,
+    defaultWhse: state.cwmContext.defaultWhse,
+    tenantId: state.account.tenantId,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList }
+  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList, loadLocations }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -30,6 +34,14 @@ export default class QueryForm extends React.Component {
     }),
     displayedColumns: PropTypes.shape({ product_no: PropTypes.bool }),
     onSearch: PropTypes.func.isRequired,
+  }
+  componentWillMount() {
+    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+      this.props.loadLocations(nextProps.defaultWhse.code, '', nextProps.tenantId);
+    }
   }
   onChange = (e) => {
     this.props.changeSearchType(e.target.value);
@@ -58,7 +70,7 @@ export default class QueryForm extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   render() {
-    const { form: { getFieldDecorator }, owners, filter } = this.props;
+    const { form: { getFieldDecorator }, owners, filter, locations } = this.props;
     return (
       <Form layout="vertical" className="left-sider-panel">
         <FormItem label="货主">
@@ -78,7 +90,11 @@ export default class QueryForm extends React.Component {
         <FormItem label="库位">
           {getFieldDecorator('whse_location', {
             initialValue: filter.whse_location,
-          })(<Input placeholder="库位号" />)}
+          })(
+            <Select>
+              {locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
+            </Select>
+          )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('search_type', {
