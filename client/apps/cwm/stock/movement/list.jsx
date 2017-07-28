@@ -159,6 +159,7 @@ export default class MovementList extends React.Component {
       fetcher: params => this.props.loadMovements(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
+        total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,

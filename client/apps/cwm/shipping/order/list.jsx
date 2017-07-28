@@ -277,6 +277,7 @@ export default class ShippingOrderList extends React.Component {
       fetcher: params => this.props.loadSos(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
+        total: result.totalCount,
         current: resolve(result.totalCount, result.current, result.pageSize),
         showSizeChanger: true,
         showQuickJumper: false,
