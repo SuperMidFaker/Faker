@@ -1,5 +1,22 @@
 
-function pdfHeader(head, declWayCode, params) {
+function calFeeRate(curr, rate, mark) {
+  const feeRate = { curr: '', rate: '', mark: '' };
+  let rateStr = '';
+  if (rate && rate > 0) {
+    feeRate.rate = rate;
+    if (mark === '1') {
+      feeRate.mark = mark;
+      feeRate.curr = '000';
+    } else if (Number(mark) > 1) {
+      feeRate.mark = mark;
+      feeRate.curr = curr;
+    }
+    rateStr = `\n${feeRate.curr}/${feeRate.rate}/${feeRate.mark}`;
+  }
+  return rateStr;
+}
+
+function pdfHeader(head, declWayCode, orderNo, params) {
   let headContent = [];
   const countries = params.tradeCountries.map(tc => ({
     value: tc.cntry_co,
@@ -25,9 +42,15 @@ function pdfHeader(head, declWayCode, params) {
   const deptPort = port || { port_code: '', port_c_cod: '' };
   const remissionMode = params.remissionModes.filter(rm => rm.rm_mode === head.cut_mode)[0];
   const cutMode = remissionMode || { rm_mode: '', rm_spec: '' };
+  const feeRateStr = calFeeRate(head.fee_curr, head.fee_rate, head.fee_mark);
+  const insurRateStr = calFeeRate(head.insur_curr, head.insur_rate, head.insur_mark);
+  const otherRateStr = calFeeRate(head.other_curr, head.other_rate, head.other_mark);
 
   if (declWayCode === 'IBND') {
     headContent = [
+      { columns: [
+        { text: `${head.delg_no}/${orderNo}`, style: 'header' },
+      ] },
       { columns: [
         { text: '中华人民共和国海关进境货物备案清单', style: 'title' },
       ] },
@@ -63,9 +86,9 @@ function pdfHeader(head, declWayCode, params) {
             { text: `提运单号\n${head.bl_wb_no || ''}` }],
             [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
-            { text: `运费   ${head.fee_rate || ''}` },
-            { text: `保费   ${head.insur_rate || ''}` },
-            { text: `杂费   ${head.other_rate || ''}` }],
+            { text: `运费   ${feeRateStr}` },
+            { text: `保费   ${insurRateStr}` },
+            { text: `杂费   ${otherRateStr}` }],
             [{ text: `件数\n   ${head.pack_count || ''}` },
             { text: `毛重(千克)\n   ${head.gross_wt || ''}` },
             { text: `净重(千克)\n   ${head.net_wt || ''}` },
@@ -79,11 +102,14 @@ function pdfHeader(head, declWayCode, params) {
           widths: ['100%'],
           body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
         },
-        layout: { paddingBottom() { return 35; } },
+        layout: { paddingBottom() { return 25; } },
       },
     ];
   } else if (declWayCode === 'EBND') {
     headContent = [
+      { columns: [
+        { text: `${head.delg_no}/${orderNo}`, style: 'header' },
+      ] },
       { columns: [
         { text: '中华人民共和国海关出境货物备案清单', style: 'title' },
       ] },
@@ -119,9 +145,9 @@ function pdfHeader(head, declWayCode, params) {
             { text: `提运单号\n${head.bl_wb_no || ''}` }],
             [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
-            { text: `运费   ${head.fee_rate || ''}` },
-            { text: `保费   ${head.insur_rate || ''}` },
-            { text: `杂费   ${head.other_rate || ''}` }],
+            { text: `运费   ${feeRateStr}` },
+            { text: `保费   ${insurRateStr}` },
+            { text: `杂费   ${otherRateStr}` }],
             [{ text: `件数\n   ${head.pack_count || ''}` },
             { text: `毛重(千克)\n   ${head.gross_wt || ''}` },
             { text: `净重(千克)\n   ${head.net_wt || ''}` },
@@ -135,11 +161,14 @@ function pdfHeader(head, declWayCode, params) {
           widths: ['100%'],
           body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
         },
-        layout: { paddingBottom() { return 35; } },
+        layout: { paddingBottom() { return 25; } },
       },
     ];
   } else if (declWayCode === 'IMPT') {
     headContent = [
+      { columns: [
+        { text: `${head.delg_no}/${orderNo}`, style: 'header' },
+      ] },
       { columns: [
         { text: '中华人民共和国海关进口货物报关单', style: 'title' },
       ] },
@@ -176,9 +205,9 @@ function pdfHeader(head, declWayCode, params) {
           body: [
             [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
-            { text: `运费   ${head.fee_rate || ''}` },
-            { text: `保费   ${head.insur_rate || ''}` },
-            { text: `杂费   ${head.other_rate || ''}` }],
+            { text: `运费   ${feeRateStr}` },
+            { text: `保费   ${insurRateStr}` },
+            { text: `杂费   ${otherRateStr}` }],
             [{ text: `合同协议号\n${head.contr_no || ''}` },
             { text: `件数\n      ${head.pack_count || ''}` },
             { text: `包装种类 (${wrapType.value})\n${wrapType.text}` },
@@ -195,11 +224,14 @@ function pdfHeader(head, declWayCode, params) {
           widths: ['100%'],
           body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
         },
-        layout: { paddingBottom() { return 35; } },
+        layout: { paddingBottom() { return 25; } },
       },
     ];
   } else if (declWayCode === 'EXPT') {
     headContent = [
+      { columns: [
+        { text: `${head.delg_no}/${orderNo}`, style: 'header' },
+      ] },
       { columns: [
         { text: '中华人民共和国海关出口货物报关单', style: 'title' },
       ] },
@@ -236,9 +268,9 @@ function pdfHeader(head, declWayCode, params) {
           body: [
             [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
-            { text: `运费   ${head.fee_rate || ''}` },
-            { text: `保费   ${head.insur_rate || ''}` },
-            { text: `杂费   ${head.other_rate || ''}` }],
+            { text: `运费   ${feeRateStr}` },
+            { text: `保费   ${insurRateStr}` },
+            { text: `杂费   ${otherRateStr}` }],
             [{ text: `合同协议号\n${head.contr_no || ''}` },
             { text: `件数\n   ${head.pack_count || ''}` },
             { text: `包装种类 (${wrapType.value})\n${wrapType.text}` },
@@ -255,7 +287,7 @@ function pdfHeader(head, declWayCode, params) {
           widths: ['100%'],
           body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
         },
-        layout: { paddingBottom() { return 35; } },
+        layout: { paddingBottom() { return 25; } },
       },
     ];
   }
@@ -286,18 +318,19 @@ function pdfBody(bodydatas, declWayCode, params) {
       { text: '单价', style: 'tableHeader' },
       { text: '总价', style: 'tableHeader' },
       { text: '币制', style: 'tableHeader' },
+      { text: '征免', style: 'tableHeader' }
     );
-  let widths = ['5%', '15%', '20%', '15%', '15%', '10%', '10%', '10%'];
-  if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
-    header.push({ text: '征免', style: 'tableHeader' });
-    widths = ['5%', '10%', '25%', '10%', '10%', '10%', '10%', '10%', '10%'];
-  }
+  const widths = ['4%', '10%', '38%', '8%', '10%', '6%', '9%', '7%', '8%'];
   pdfbody.push(header);
   for (let i = 0; i < bodydatas.length; i++) {
     const dbody = bodydatas[i];
     const body = [];
     const gunitFl = units.filter(ut => ut.value === dbody.g_unit)[0];
     const gunit = gunitFl ? gunitFl.text : '';
+    const unit1Fl = units.filter(ut => ut.value === dbody.unit_1)[0];
+    const unit1 = unit1Fl ? unit1Fl.text : '';
+    const unit2Fl = units.filter(ut => ut.value === dbody.unit_2)[0];
+    const unit2 = unit2Fl ? unit2Fl.text : '';
     const country = countries.filter(ct => ct.value === dbody.orig_country)[0];
     const origCountry = country ? `${country.text}\n(${country.value})` : '';
     const currency = currrencies.filter(cr => cr.value === dbody.trade_curr)[0];
@@ -307,33 +340,36 @@ function pdfBody(bodydatas, declWayCode, params) {
     body.push(`${dbody.g_no || ''}`,
         `${dbody.code_t || ''}${dbody.code_s || ''}`,
         `${dbody.g_name || ''}\n${dbody.g_model || ''}`,
-        { text: `${dbody.g_qty || ''}${gunit}`, alignment: 'right' },
+        { text: `${dbody.qty_1 || ''}${unit1}\n${dbody.qty_2 || ''}${unit2}\n${dbody.g_qty || ''}${gunit}`, alignment: 'right' },
         `${origCountry}`,
         { text: `${dbody.dec_price || ''}`, alignment: 'right' },
         { text: `${dbody.trade_total || ''}`, alignment: 'right' },
         `${tradeCurr}`,
       );
-    if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
-      body.push(`${dutyMode.text}\n${dutyMode.value}`);
-    }
+    body.push(`${dutyMode.text}\n${dutyMode.value}`);
     pdfbody.push(body);
   }
   const bodytable = { widths, body: pdfbody };
   return bodytable;
 }
 
-export function DocDef(head, bodies, declWayCode, params) {
+export function DocDef(head, bodies, declWayCode, orderNo, params) {
   const docDefinition = {
     pageSize: 'A4',
-    pageMargins: [20, 30],
+    pageMargins: [15, 15],
     content: [],
     styles: {
+      header: {
+        fontSize: 8,
+        alignment: 'right',
+        margin: [0, 2, 0, 5],
+      },
       title: {
         fontSize: 15,
         bold: true,
         alignment: 'center',
         width: '100%',
-        margin: [0, 50, 0, 15],
+        margin: [0, 8, 0, 10],
       },
       table: {
         fontSize: 8,
@@ -362,12 +398,12 @@ export function DocDef(head, bodies, declWayCode, params) {
         end = true;
       }
     }
-    content = pdfHeader(head, declWayCode, params);
+    content = pdfHeader(head, declWayCode, orderNo, params);
     content.push(
       { style: 'table',
         table: pdfBody(datas, declWayCode, params),
         layout: {
-          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 18 : 1; },
+          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 15 : 1; },
           vLineWidth(i, node) {
             return (i !== 0 && i !== node.table.widths.length) ? 0 : 1;
           },

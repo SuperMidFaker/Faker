@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
+import NavLink from 'client/components/nav-link';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -194,7 +195,7 @@ export default class SHFTZBatchDeclDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {sent && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
+            {sent && <Button size="large" icon="sync" onClick={this.handleQuery}>申请完成</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!relEditable}>{sendText}</Button>}
           </div>
@@ -204,7 +205,10 @@ export default class SHFTZBatchDeclDetail extends Component {
             <Card bodyStyle={{ paddingBottom: 56 }}>
               <Row>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="备案类型" field={<Tag color="green">集中报关申请</Tag>} />
+                  <InfoItem addonBefore="清单委托" field={
+                    <NavLink to={`/clearance/${batchDecl.i_e_type === 0 ? 'import' : 'export'}/manifest/${batchDecl.delg_no}`}>{batchDecl.delg_no}</NavLink>
+                  }
+                  />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem addonBefore="提货单位" field={batchDecl.owner_name} />

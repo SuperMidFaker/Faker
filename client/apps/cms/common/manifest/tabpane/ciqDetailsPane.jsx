@@ -29,7 +29,7 @@ import { buildTipItems } from 'client/common/customs';
     })),
   })
 )
-export default class ManifestLegalInspection extends React.Component {
+export default class CiqDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     filterProducts: PropTypes.array.isRequired,

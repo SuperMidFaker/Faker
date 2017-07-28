@@ -1,35 +1,45 @@
 import React from 'react';
-import PropType from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Modal, Button, Table } from 'antd';
+import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button, notification } from 'antd';
-import RowUpdater from 'client/components/rowUpdater';
-import { MdIcon } from 'client/components/FontIcon';
-import QuantityInput from '../../../common/quantityInput';
 import PackagePopover from '../../../common/popover/packagePopover';
-import { openMovingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import QuantityInput from '../../../common/quantityInput';
+import { loadMovementDetails, executeMovement } from 'common/reducers/cwmInventoryStock';
+import { CWM_MOVEMENT_STATUS } from 'common/constants';
+
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    loginName: state.account.username,
-    outboundHead: state.cwmOutbound.outboundFormHead,
-    outboundProducts: state.cwmOutbound.outboundProducts,
-    reload: state.cwmOutbound.outboundReload,
+    username: state.account.username,
+    locations: state.cwmWarehouse.locations,
+    movementHead: state.cwmInventoryStock.movementHead,
+    movementDetails: state.cwmInventoryStock.movementDetails,
+    reload: state.cwmInventoryStock.movementReload,
   }),
-  { openMovingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc }
+  { loadMovementDetails, executeMovement }
 )
-export default class OrderDetailsPane extends React.Component {
+@connectNav({
+  depth: 3,
+  moduleName: 'cwm',
+})
+export default class MovementDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    outboundProducts: PropType.arrayOf(PropType.shape({ seq_no: PropType.string.isRequired })),
+    movementNo: PropTypes.string.isRequired,
+    movementHead: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    ButtonStatus: null,
+    selectedRows: [],
+    confirmDisabled: true,
   }
   componentWillMount() {
     this.handleReload();
@@ -41,117 +51,61 @@ export default class OrderDetailsPane extends React.Component {
     }
   }
   handleReload = () => {
-    this.props.loadOutboundProductDetails(this.props.outboundNo).then((result) => {
-      if (!result.error) {
-        this.setState({
-          selectedRowKeys: [],
-        });
-      }
+    this.props.loadMovementDetails(this.props.movementNo);
+    this.setState({
+      selectedRowKeys: [],
+    });
+  }
+  handleBatchProductReceive = () => {
+    this.props.showBatchReceivingModal();
+  }
+  handleExecuteMovement = () => {
+    const self = this;
+    Modal.confirm({
+      title: '是否确认移库已完成?',
+      onOk() {
+        return self.props.executeMovement(self.props.movementNo, self.props.loginId);
+      },
+      onCancel() {},
+      okText: '执行移库',
     });
   }
   columns = [{
     title: '行号',
     dataIndex: 'seq_no',
-    width: 40,
+    width: 50,
+    fixed: 'left',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
-  }, {
-    title: '中文品名',
-    dataIndex: 'name',
-  }, {
-    title: '订货数量',
-    dataIndex: 'order_qty',
-    width: 120,
-    render: o => (<b>{o}</b>),
-  }, {
-    title: '计量单位',
-    dataIndex: 'unit_name',
-    width: 100,
+    fixed: 'left',
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <PackagePopover sku={o} />;
-      }
-    },
+    render: o => (<PackagePopover sku={o} />),
   }, {
-    title: '分配数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.alloc_pack_qty} pcsQty={record.alloc_qty} />),
+    title: '移库数量',
+    width: 180,
+    render: (o, record) => (<QuantityInput size="small" packQty={record.received_pack_qty} pcsQty={record.received_qty}
+      alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
+    />),
   }, {
-    title: '操作',
-    width: 150,
-    fixed: 'right',
-    render: (o, record) => {
-      if (record.alloc_qty < record.order_qty) {
-        // 订单明细的状态 0 未分配 1 部分分配 2 完全分配
-        return (<span>
-          <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} />
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.handleManualAlloc} label="手动分配" row={record} />
-        </span>);
-      } else {
-        return (<span>
-          <RowUpdater onHit={this.handleManualAlloc} label="分配明细" row={record} />
-          {record.picked_qty < record.alloc_qty && <span className="ant-divider" />}
-          {record.picked_qty < record.alloc_qty &&
-            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} />}
-        </span>);
-      }
-    },
+    title: '来源库位',
+    dataIndex: 'from_location',
+    width: 180,
+  }, {
+    title: '目的库位',
+    dataIndex: 'to_location',
+    width: 180,
   }]
-  handleSKUAutoAllocate = (row) => {
-    this.props.batchAutoAlloc(row.outbound_no, [row.seq_no], this.props.loginId, this.props.loginName);
-  }
-  handleBatchAutoAlloc = () => {
-    this.props.batchAutoAlloc(this.props.outboundNo, this.state.selectedRowKeys,
-      this.props.loginId, this.props.loginName);
-  }
-  handleOutboundAutoAlloc = () => {
-    this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName).then((result) => {
-      if (!result.error) {
-        if (result.data.length > 0) {
-          const seqNos = result.data.join(',');
-          const args = {
-            message: `第${seqNos}行货品数量不足`,
-            duration: 0,
-          };
-          notification.open(args);
-        }
-      }
-    });
-  }
-  handleManualAlloc = (row) => {
-    this.props.openMovingModal({ outboundNo: row.outbound_no, outboundProduct: row });
-  }
-  handleSKUCancelAllocate = (row) => {
-    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId);
-  }
-  handleAllocBatchCancel = () => {
-    this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId);
-  }
   render() {
-    const { outboundHead, outboundProducts } = this.props;
-    const { ButtonStatus } = this.state;
+    const { movementHead, movementDetails } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
-        let status = null;
-        const unallocated = selectedRows.find(item => item.alloc_qty < item.order_qty);
-        const allocated = selectedRows.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
-        if (unallocated && !allocated) {
-          status = 'alloc';
-        } else if (!unallocated && allocated) {
-          status = 'unalloc';
-        }
-        this.setState({
-          selectedRowKeys,
-          ButtonStatus: status,
-        });
+        this.setState({ selectedRowKeys, selectedRows });
       },
     };
     return (
@@ -159,19 +113,16 @@ export default class OrderDetailsPane extends React.Component {
         <div className="toolbar">
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            {ButtonStatus === 'alloc' && (<Button size="large" onClick={this.handleBatchAutoAlloc}>
-              <MdIcon type="check-all" />批量自动分配
-            </Button>)}
-            {ButtonStatus === 'unalloc' && (<Button size="large" onClick={this.handleAllocBatchCancel} icon="close">
-              批量取消分配
-            </Button>)}
           </div>
           <div className="toolbar-right">
-            { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
-              <Button type="primary" size="large" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
+            {movementHead.moving_mode === 'manual' && movementHead.status === CWM_MOVEMENT_STATUS.CREATED.value &&
+            <Button size="large" icon="check" onClick={this.handleExecuteMovement}>
+              执行移库
+            </Button>
+            }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={outboundProducts} rowKey="seq_no"
+        <Table columns={this.columns} rowSelection={rowSelection} dataSource={movementDetails} rowKey="asn_seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>

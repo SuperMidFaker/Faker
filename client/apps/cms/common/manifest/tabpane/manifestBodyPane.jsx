@@ -184,7 +184,7 @@ function calculateTotal(bodies, currencies) {
     openRuleModel,
     loadHscodes }
 )
-export default class ManifestBodyPanel extends React.Component {
+export default class ManifestBodyPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -203,7 +203,7 @@ export default class ManifestBodyPanel extends React.Component {
     billMeta: PropTypes.shape({
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
-      repoId: PropTypes.number.isRequired,
+      repoId: PropTypes.number,
     }),
   }
   constructor(props) {
@@ -269,7 +269,6 @@ export default class ManifestBodyPanel extends React.Component {
       title: this.msg('copGNo'),
       width: 150,
       dataIndex: 'cop_g_no',
-      fixed: 'left',
       render: (o, record, index) => {
         if (readonly) {
           return <span>{o}</span>;
@@ -450,7 +449,7 @@ export default class ManifestBodyPanel extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />),
     }, {
-      title: <div className="cell-align-right">{this.msg('processingFees')}</div>,
+      title: this.msg('processingFees'),
       render: (o, record, index) =>
         (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody} decimal={3}
@@ -874,7 +873,7 @@ export default class ManifestBodyPanel extends React.Component {
         </div>
         <div className="panel-body table-panel table-fixed-layout">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
-            scroll={{ x: 2900, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
+            scroll={{ x: 2600, y: this.state.wlScrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
           <RelateImportRuleModal />

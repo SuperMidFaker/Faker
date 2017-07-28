@@ -19,6 +19,7 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
+
 @injectIntl
 @connect(
   state => ({

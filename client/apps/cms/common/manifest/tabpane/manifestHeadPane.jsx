@@ -35,7 +35,7 @@ const CODE_AS_STATE = {
   }),
   { loadSearchedParam, saveBillHead, resetBillHead }
 )
-export default class ManifestHeadPanel extends React.Component {
+export default class ManifestHeadPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,

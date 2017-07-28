@@ -4,18 +4,16 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Icon, Breadcrumb, Layout, Select, Tooltip, message } from 'antd';
+import { Button, Breadcrumb, Layout, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
-import { openMovementModal } from 'common/reducers/cwmInventoryStock';
-import { loadOutbounds } from 'common/reducers/cwmOutbound';
+import { openMovementModal, loadMovements } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import MovementModal from './modal/movementModal';
 import messages from '../message.i18n';
@@ -25,12 +23,12 @@ const { Header, Content } = Layout;
 const Option = Select.Option;
 
 function fetchData({ state, dispatch }) {
-  dispatch(loadOutbounds({
+  dispatch(loadMovements({
     whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
-    pageSize: state.cwmOutbound.outbound.pageSize,
-    current: state.cwmOutbound.outbound.current,
-    filters: state.cwmOutbound.outboundFilters,
+    pageSize: state.cwmInventoryStock.movements.pageSize,
+    current: state.cwmInventoryStock.movements.current,
+    filter: state.cwmInventoryStock.movementFilter,
   }));
 }
 @connectFetch()(fetchData)
@@ -40,13 +38,13 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    filters: state.cwmOutbound.outboundFilters,
-    outbound: state.cwmOutbound.outbound,
-    loading: state.cwmOutbound.outbound.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
+    movements: state.cwmInventoryStock.movements,
+    loading: state.cwmInventoryStock.movements.loading,
+    filter: state.cwmInventoryStock.movementFilter,
   }),
-  { openMovementModal, switchDefaultWhse, showDock, loadOutbounds }
+  { openMovementModal, switchDefaultWhse, showDock, loadMovements }
 )
 @connectNav({
   depth: 2,
@@ -66,14 +64,13 @@ export default class MovementList extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const filters = { ...this.props.filters };
       const whseCode = nextProps.defaultWhse.code;
-      this.props.loadOutbounds({
+      this.props.loadMovements({
         whseCode,
         tenantId: this.props.tenantId,
         pageSize: this.props.outbound.pageSize,
         current: this.props.outbound.current,
-        filters,
+        filter: this.props.filter,
       });
     }
   }
@@ -82,47 +79,21 @@ export default class MovementList extends React.Component {
     title: '移库单号',
     dataIndex: 'movement_no',
     width: 180,
-    render: (o, record) => (
-      <a onClick={() => this.handlePreview(o, record.outbound_no)}>
-        {o}
-      </a>),
-  }, {
-    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
-    dataIndex: 'total_qty',
-    width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
   }, {
     title: '货主',
     width: 200,
     dataIndex: 'owner_name',
   }, {
     title: '类型',
-    className: 'cell-align-center',
-
+    dataIndex: 'move_type',
   }, {
     title: '状态',
     className: 'cell-align-center',
     render: (o, record) => {
-      if (record.status === CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value) {
-        return <Fontello type="circle" color="blue" />;
-      } else if (record.status >= CWM_OUTBOUND_STATUS.ALL_PICKED.value && record.status <= CWM_OUTBOUND_STATUS.COMPLETED.value) {
+      if (record.isdone === 1) {
         return <Fontello type="circle" color="green" />;
       } else {
         return <Fontello type="circle" color="gray" />;
-      }
-    },
-  }, {
-    title: '操作模式',
-    dataIndex: 'shipping_mode',
-    width: 80,
-    className: 'cell-align-center',
-    render: (o) => {
-      if (o === 'scan') {
-        return (<Tooltip title="扫码移库"><Icon type="scan" /></Tooltip>);
-      } else if (o === 'manual') {
-        return (<Tooltip title="人工移库"><Icon type="solution" /></Tooltip>);
-      } else {
-        return <span />;
       }
     },
   }, {
@@ -139,67 +110,53 @@ export default class MovementList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
-      } else if (record.status === 0 && record.receiving_mode === 2) {
-        return (<span><RowUpdater label="撤回" row={record} /></span>);
-      } else {
-        return (<span><RowUpdater onHit={this.handleReceive} label="出库操作" row={record} /> </span>);
-      }
-    },
+    render: (o, record) => <RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />,
   }]
   handleCreateMovement = () => {
     this.props.openMovementModal();
   }
-  handlePreview = (soNo, outboundNo) => {
-    this.props.showDock(soNo, outboundNo);
-  }
-  handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
+  handleStatusChange = () => {
     const whseCode = this.props.defaultWhse.code;
-    this.props.loadOutbounds({
+    this.props.loadMovements({
       whseCode,
       tenantId: this.props.tenantId,
-      pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
-      filters,
+      pageSize: this.props.movements.pageSize,
+      current: this.props.movements.current,
     });
   }
-  handleReceive = (row) => {
-    const link = `/cwm/shipping/outbound/${row.outbound_no}`;
+  handleMovementDetail = (row) => {
+    const link = `/cwm/stock/movement/${row.movement_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
   }
-  handleSearch = (value) => {
-    const filters = { ...this.props.filters, name: value };
+  handleSearch = () => {
     const whseCode = this.props.defaultWhse.code;
-    this.props.loadOutbounds({
+    this.props.loadMovements({
       whseCode,
       tenantId: this.props.tenantId,
-      pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
-      filters,
+      pageSize: this.props.movements.pageSize,
+      current: this.props.movements.current,
+      filter: this.props.filter,
     });
   }
   handleOwnerChange = (value) => {
-    const filters = { ...this.props.filters, ownerCode: value };
+    const filter = { ...this.props.filter, owner: value };
     const whseCode = this.props.defaultWhse.code;
-    this.props.loadOutbounds({
+    this.props.loadMovements({
       whseCode,
       tenantId: this.props.tenantId,
-      pageSize: this.props.outbound.pageSize,
-      current: this.props.outbound.current,
-      filters,
+      pageSize: this.props.movements.pageSize,
+      current: this.props.movements.current,
+      filter,
     });
   }
   render() {
     const { defaultWhse, whses, owners, loading } = this.props;
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadOutbounds(params),
+      fetcher: params => this.props.loadMovements(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         current: resolve(result.totalCount, result.current, result.pageSize),
@@ -219,7 +176,7 @@ export default class MovementList extends React.Component {
         };
         return params;
       },
-      remotes: this.props.outbound,
+      remotes: this.props.movements,
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
