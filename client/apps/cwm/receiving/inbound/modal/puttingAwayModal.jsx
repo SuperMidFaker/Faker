@@ -36,7 +36,12 @@ export default class PuttingAwayModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible) {
+      let location = '';
+      if (nextProps.details.length === 1) {
+        location = nextProps.details[0].receive_location;
+      }
       this.setState({
+        location,
         allocater: nextProps.loginName,
         date: new Date(),
       });
