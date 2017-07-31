@@ -11,12 +11,13 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
-import { openMovementModal, loadMovements } from 'common/reducers/cwmInventoryStock';
+import { openMovementModal, loadMovements, cancelMovement } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import MovementModal from './modal/movementModal';
 import messages from '../message.i18n';
+import { CWM_MOVE_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -44,7 +45,7 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmInventoryStock.movements.loading,
     filter: state.cwmInventoryStock.movementFilter,
   }),
-  { openMovementModal, switchDefaultWhse, showDock, loadMovements }
+  { openMovementModal, switchDefaultWhse, showDock, loadMovements, cancelMovement }
 )
 @connectNav({
   depth: 2,
@@ -68,8 +69,8 @@ export default class MovementList extends React.Component {
       this.props.loadMovements({
         whseCode,
         tenantId: this.props.tenantId,
-        pageSize: this.props.outbound.pageSize,
-        current: this.props.outbound.current,
+        pageSize: this.props.movements.pageSize,
+        current: this.props.movements.current,
         filter: this.props.filter,
       });
     }
@@ -86,6 +87,7 @@ export default class MovementList extends React.Component {
   }, {
     title: '类型',
     dataIndex: 'move_type',
+    render: o => o && CWM_MOVE_TYPE[o - 1].text,
   }, {
     title: '状态',
     className: 'cell-align-center',
@@ -109,9 +111,19 @@ export default class MovementList extends React.Component {
     render: completeddate => completeddate && moment(completeddate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
-    width: 100,
+    width: 200,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />,
+    render: (o, record) => {
+      if (record.isdone) {
+        return (<RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />);
+      } else {
+        return (<span>
+          <RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />
+          <span className="ant-divider" />
+          <RowUpdater onHit={this.cancelMovement} label="取消移库" row={record} />
+        </span>);
+      }
+    },
   }]
   handleCreateMovement = () => {
     this.props.openMovementModal();
@@ -152,6 +164,20 @@ export default class MovementList extends React.Component {
       pageSize: this.props.movements.pageSize,
       current: this.props.movements.current,
       filter,
+    });
+  }
+  cancelMovement = (row) => {
+    this.props.cancelMovement(row.movement_no, this.props.loginId).then((result) => {
+      if (!result.err) {
+        const whseCode = this.props.defaultWhse.code;
+        this.props.loadMovements({
+          whseCode,
+          tenantId: this.props.tenantId,
+          pageSize: this.props.movements.pageSize,
+          current: this.props.movements.current,
+          filter: this.props.filter,
+        });
+      }
     });
   }
   render() {

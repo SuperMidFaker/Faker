@@ -7,6 +7,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
+import { CWM_MOVE_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -36,6 +37,7 @@ export default class MovementModal extends Component {
   state = {
     stocks: [],
     movements: [],
+    moveType: 1,
   }
   componentWillMount() {
     this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
@@ -155,6 +157,7 @@ export default class MovementModal extends Component {
       return;
     }
     if (!filter.productNo && !filter.location) {
+      message.info('请填写货品或库位');
       return;
     }
     this.props.inventorySearch(JSON.stringify(filter), this.props.tenantId, this.props.defaultWhse.code).then((result) => {
@@ -174,12 +177,12 @@ export default class MovementModal extends Component {
     const newFilter = { ...this.props.filter, productNo: e.target.value };
     this.props.setMovementsFilter(newFilter);
   }
-  handleLocationChange = (e) => {
-    const newFilter = { ...this.props.filter, location: e.target.value };
+  handleLocationChange = (value) => {
+    const newFilter = { ...this.props.filter, location: value };
     this.props.setMovementsFilter(newFilter);
   }
   handleDateChange = (dates, dateString) => {
-    const newFilter = { ...this.props.filters, startTime: dateString[0], endTime: dateString[1] };
+    const newFilter = { ...this.props.filter, startTime: dateString[0], endTime: dateString[1] };
     this.props.setMovementsFilter(newFilter);
   }
   handleMovementChange = (value, index) => {
@@ -223,7 +226,7 @@ export default class MovementModal extends Component {
     });
   }
   handleCreateMovement = () => {
-    this.props.createMovement(this.props.filter.ownerCode, this.props.filter.ownerName, '', '', this.props.defaultWhse.code, this.props.tenantId,
+    this.props.createMovement(this.props.filter.ownerCode, this.props.filter.ownerName, this.state.moveType, '', this.props.defaultWhse.code, this.props.tenantId,
       this.props.loginId, this.state.movements).then((result) => {
         if (!result.err) {
           this.props.closeMovementModal();
@@ -252,21 +255,28 @@ export default class MovementModal extends Component {
       stocks,
     });
   }
+  handleSelectMoveType = (value) => {
+    this.setState({
+      moveType: value,
+    });
+  }
   render() {
-    const { owners } = this.props;
+    const { owners, filter, locations } = this.props;
     const { stocks, movements } = this.state;
     const inventoryQueryForm = (<Form layout="inline">
       <FormItem label="货品">
-        <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" />
+        <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!filter.ownerCode}/>
       </FormItem>
       <FormItem label="库位">
-        <Input onChange={this.handleLocationChange} />
+        <Select style={{ width: 160 }} onSelect={this.handleLocationChange} disabled={!filter.ownerCode}>
+          {locations.map(loc => <Option value={loc.location} key={loc.location}>{loc.location}</Option>)}
+        </Select>
       </FormItem>
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
       </FormItem>
       <FormItem>
-        <Button type="primary" ghost onClick={this.handleSearch}>库存查询</Button>
+        <Button type="primary" ghost onClick={this.handleSearch} disabled={!filter.ownerCode}>库存查询</Button>
       </FormItem>
     </Form>);
 
@@ -282,7 +292,9 @@ export default class MovementModal extends Component {
               </Select>
             </FormItem>
             <FormItem label="移库类型">
-              <Select style={{ width: 200 }} />
+              <Select style={{ width: 320 }} onSelect={this.handleSelectMoveType} value={this.state.moveType}>
+                {CWM_MOVE_TYPE.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+              </Select>
             </FormItem>
             <FormItem label="原因">
               <Input />
