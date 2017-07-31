@@ -6,7 +6,6 @@ import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { MdIcon, Ikons } from 'client/components/FontIcon';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
-import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/nav-link';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
@@ -24,10 +23,6 @@ const MenuItemGroup = Menu.ItemGroup;
     privileges: state.account.privileges,
   })
 )
-@connectNav({
-  text: '管理面板',
-  moduleName: 'corp',
-})
 export default class CorpPack extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
