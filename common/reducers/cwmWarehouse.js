@@ -416,7 +416,7 @@ export function hideEditWhseModal() {
   };
 }
 
-export function updateWhOwnerControl(whauth, control) {
+export function updateWhOwnerControl(whauth, control, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -426,7 +426,7 @@ export function updateWhOwnerControl(whauth, control) {
       ],
       endpoint: 'v1/cwm/warehouse/owner/control',
       method: 'post',
-      data: { whauth, control },
+      data: { whauth, control, loginId },
     },
   };
 }

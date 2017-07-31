@@ -26,7 +26,7 @@ export default class OwnerControlModal extends Component {
     intl: intlShape.isRequired,
     ownerAuth: PropTypes.shape({
       id: PropTypes.number.isRequired,
-      portion_enabled: PropTypes.bool.isRequired,
+      portion_enabled: PropTypes.number.isRequired,
     }),
     reload: PropTypes.func.isRequired,
   }
@@ -38,23 +38,27 @@ export default class OwnerControlModal extends Component {
     this.setState({ ownerAuth: this.props.ownerAuth });
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.ownerAuth !== this.props.ownerAuth) {
+    if (nextProps.visible) {
+      console.log('receive', nextProps.ownerAuth);
       this.setState({ ownerAuth: nextProps.ownerAuth });
     }
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.hideOwnerControlModal();
-    this.setState({ ownerAuth: {} });
+    this.setState({ ownerAuth: {}, control: {} });
   }
-  handleRecModeChange = (/* ev */) => {
-      /*
+  handleRecModeChange = (ev) => {
     this.setState({
-      ownerAuth: { ...this.state.ownerAuth, rec_mode: ev.target.value },
-      control: { ...this.state.control, portion_enabled: checked },
-    }); */
+      ownerAuth: { ...this.state.ownerAuth, receiving_mode: ev.target.value },
+      control: { ...this.state.control, receiving_mode: ev.target.value },
+    });
   }
-  handleShipModeChange = (/* ev */) => {
+  handleShipModeChange = (ev) => {
+    this.setState({
+      ownerAuth: { ...this.state.ownerAuth, shipping_mode: ev.target.value },
+      control: { ...this.state.control, shipping_mode: ev.target.value },
+    });
   }
 
   handlePortionEnable = (checked) => {
@@ -62,7 +66,7 @@ export default class OwnerControlModal extends Component {
       control: { ...this.state.control, portion_enabled: checked } });
   }
   handleSubmit = () => {
-    this.props.updateWhOwnerControl(this.props.ownerAuth.id, this.state.control).then((result) => {
+    this.props.updateWhOwnerControl(this.props.ownerAuth.id, this.state.control, this.props.loginId).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
       } else {
@@ -77,6 +81,7 @@ export default class OwnerControlModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
+    console.log('render', ownerAuth);
     return (
       <Modal title="控制属性" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Form>

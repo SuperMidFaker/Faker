@@ -101,7 +101,7 @@ export default class SHFTZRelDetail extends Component {
           } else {
             notification.success({
               message: '操作成功',
-              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
+              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType.text}`,
               placement: 'topLeft',
             });
           }
