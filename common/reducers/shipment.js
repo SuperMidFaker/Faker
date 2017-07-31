@@ -698,7 +698,7 @@ export function computeSaleCharge(data) {
   };
 }
 
-export function computeCostCharge(data) {
+export function computeCostCharges(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -706,7 +706,7 @@ export function computeCostCharge(data) {
         actionTypes.COMPUTE_COSTCHARGE_SUCCEED,
         actionTypes.COMPUTE_COSTCHARGE_FAIL,
       ],
-      endpoint: 'v1/transport/tariff/cost/compute',
+      endpoint: 'v1/transport/tariff/costs/compute',
       method: 'post',
       data,
       origin: 'mongo',

@@ -11,8 +11,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConfirmModal, changeDockStatus } from 'common/reducers/transportDispatch';
 import { addPartner } from 'common/reducers/partner';
-import { computeCostCharge } from 'common/reducers/shipment';
-import { getChargeAmountExpression } from '../common/charge';
+import { computeCostCharges } from 'common/reducers/shipment';
 import ChargeSpecForm from '../shipment/forms/chargeSpec';
 import SearchBar from 'client/components/search-bar';
 import DispatchConfirmModal from './DispatchConfirmModal';
@@ -70,7 +69,7 @@ function fetch({ state, dispatch, cookie }) {
     doDispatch,
     doDispatchAndSend,
     addPartner,
-    computeCostCharge,
+    computeCostCharges,
     toggleCarrierModal,
     showDispatchConfirmModal,
     changeDockStatus }
@@ -94,7 +93,7 @@ export default class DispatchDock extends Component {
     dispatched: PropTypes.bool.isRequired,
     vehicleTypes: PropTypes.array.isRequired,
     vehicleLengths: PropTypes.array.isRequired,
-    computeCostCharge: PropTypes.func.isRequired,
+    computeCostCharges: PropTypes.func.isRequired,
     doDispatchAndSend: PropTypes.func.isRequired,
     toggleCarrierModal: PropTypes.func.isRequired,
     showDispatchConfirmModal: PropTypes.func.isRequired,
@@ -222,120 +221,67 @@ export default class DispatchDock extends Component {
     lspLoading: true,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.shipmts.length > 0 && nextProps.shipmts !== this.props.shipmts || (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
+    if (nextProps.shipmts.length > 0 && nextProps.lsps.data.length > 0 && (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
       || nextProps.lsps.current !== this.state.lspsVar.current
       || nextProps.lsps.data.length !== this.state.lspsVar.data.length)) {
       this.setState({ lspLoading: true });
-      let lspsVar = { ...nextProps.lsps };
-      const charges = [];
-      const shipmts = nextProps.shipmts;
-      shipmts.forEach(() => {
-        charges.push({
-          freight_charge: 0,
-          pickup_charge: 0,
-          deliver_charge: 0,
-          surcharge: 0,
-          total_charge: 0,
-          charge_gradient: 0,
-          charge_amount: '',
-        });
-      });
+      const lspsVar = { ...nextProps.lsps };
 
-      let flag = 0;
-      for (let index = 0; index < lspsVar.data.length; index++) {
-        lspsVar = update(lspsVar, { data: {
-          [index]: { charge: { $set: charges } } } });
-        const row = lspsVar.data[index];
-        for (let j = 0; j < shipmts.length; j++) {
-          ((ci, cj) => {
-            const {
-              consigner_region_code,
-              consigner_byname,
-              consigner_province,
-              consigner_city,
-              consigner_district,
-              consigner_street,
-              consignee_region_code,
-              consignee_byname,
-              consignee_province,
-              consignee_city,
-              consignee_district,
-              consignee_street,
-              transport_mode_code, container: ctn, created_date: created, goods_type,
-              vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-              pickup_est_date, deliver_est_date,
-            } = shipmts[cj];
-            this.props.computeCostCharge({
-              tenant_id: this.props.tenantId,
-              created_date: created,
-              partner_id: row.partner_id,
-              consigner_region_code,
-              consigner_byname,
-              consigner_province,
-              consigner_city,
-              consigner_district,
-              consigner_street,
-              consignee_region_code,
-              consignee_byname,
-              consignee_province,
-              consignee_city,
-              consignee_district,
-              consignee_street,
-              goods_type,
-              transport_mode_code,
-              ctn,
-              vehicle_type_id,
-              vehicle_length_id,
-              total_weight,
-              total_volume,
-              pickup_est_date,
-              deliver_est_date,
-              tariffType: 'all',
-            }).then((result) => {
-              if (result.error || result.data.freight < 0) {
-                const charge = {
-                  shipmt_no: shipmts[cj].shipmt_no,
-                  freight_charge: 0,
-                  pickup_charge: 0,
-                  deliver_charge: 0,
-                  surcharge: 0,
-                  total_charge: 0,
-                  charge_gradient: 0,
-                  charge_amount: '',
-                };
-                lspsVar = update(lspsVar, { data: {
-                  [ci]: { charge: { [cj]: { $set: charge } } } } });
-              } else {
-                const { quoteNo, freight, pickup, deliver, meter, quantity,
-                  unitRatio, gradient, miles, coefficient } = result.data;
-                const charge = {
-                  shipmt_no: shipmts[cj].shipmt_no,
-                  freight_charge: freight,
-                  pickup_charge: pickup,
-                  deliver_charge: deliver,
-                  surcharge: 0,
-                  total_charge: Number(freight) + Number(pickup) + Number(deliver),
-                  quote_no: quoteNo,
-                  charge_gradient: gradient,
-                  quantity,
-                  unit_ratio: unitRatio,
-                  miles,
-                  adjust_coefficient: coefficient,
-                  meter,
-                  charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
-                    unitRatio, coefficient),
-                };
-                lspsVar = update(lspsVar, { data: {
-                  [ci]: { charge: { [cj]: { $set: charge } } } } });
-              }
-              flag++;
-              if (flag === lspsVar.data.length * shipmts.length) {
-                this.setState({ lspsVar, lspLoading: false });
-              }
-            });
-          })(index, j);
+      const shs = nextProps.shipmts.map((item) => {
+        const {
+          shipmt_no,
+          consigner_region_code,
+          consigner_byname,
+          consigner_province,
+          consigner_city,
+          consigner_district,
+          consigner_street,
+          consignee_region_code,
+          consignee_byname,
+          consignee_province,
+          consignee_city,
+          consignee_district,
+          consignee_street,
+          transport_mode_code, container: ctn, created_date: created, goods_type,
+          vehicle_type_id, vehicle_length_id, total_weight, total_volume,
+          pickup_est_date, deliver_est_date,
+        } = item;
+        return {
+          shipmt_no,
+          tenant_id: this.props.tenantId,
+          created_date: created,
+          // partner_id: row.partner_id,
+          consigner_region_code,
+          consigner_byname,
+          consigner_province,
+          consigner_city,
+          consigner_district,
+          consigner_street,
+          consignee_region_code,
+          consignee_byname,
+          consignee_province,
+          consignee_city,
+          consignee_district,
+          consignee_street,
+          goods_type,
+          transport_mode_code,
+          ctn,
+          vehicle_type_id,
+          vehicle_length_id,
+          total_weight,
+          total_volume,
+          pickup_est_date,
+          deliver_est_date,
+          tariffType: 'all',
+        };
+      });
+      const lsps = lspsVar.data.map(item => item.partner_id);
+      this.props.computeCostCharges({ shipmts: shs, lsps }).then((result) => {
+        for (let i = 0; i < lspsVar.data.length; i++) {
+          lspsVar.data[i].charge = result.data[i].charge;
         }
-      }
+        this.setState({ lspsVar, lspLoading: false });
+      });
       if (lspsVar.data.length === 0) {
         this.setState({ lspsVar, lspLoading: false });
       }
@@ -582,73 +528,6 @@ export default class DispatchDock extends Component {
     const state = update(this.state, { lspsVar: { data:
       { [index]: { charge: { $set: charges } } } } });
     this.setState(state);
-  }
-  handleCostCompute = (ev, row, index) => {
-    const {
-      consigner_region_code,
-      consigner_province,
-      consigner_city,
-      consigner_district,
-      consigner_street,
-      consignee_region_code,
-      consignee_province,
-      consignee_city,
-      consignee_district,
-      consignee_street,
-      transport_mode_code, container: ctn, created_date: created, goods_type,
-      vehicle_type_id, vehicle_length_id, total_weight, total_volume,
-    } = this.props.shipmts[0];
-    this.props.computeCostCharge({
-      tenant_id: this.props.tenantId,
-      created_date: created,
-      partner_id: row.partner_id,
-      consigner_region_code,
-      consigner_province,
-      consigner_city,
-      consigner_district,
-      consigner_street,
-      consignee_region_code,
-      consignee_province,
-      consignee_city,
-      consignee_district,
-      consignee_street,
-      goods_type,
-      transport_mode_code,
-      ctn,
-      vehicle_type_id,
-      vehicle_length_id,
-      total_weight,
-      total_volume,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else if (result.data.freight === -1) {
-        message.error('未找到适合计算的价格协议');
-      } else if (result.data.freight === -2) {
-        message.error('未找到对应路线的价格表');
-      } else {
-        const { quoteNo, freight, pickup, deliver, meter, quantity,
-          unitRatio, gradient, miles, coefficient } = result.data;
-        const charge = {
-          freight_charge: freight,
-          pickup_charge: pickup,
-          deliver_charge: deliver,
-          total_charge: Number(freight) + Number(pickup) + Number(deliver),
-          quote_no: quoteNo,
-          charge_gradient: gradient,
-          quantity,
-          unit_ratio: unitRatio,
-          miles,
-          adjust_coefficient: coefficient,
-          meter,
-          charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
-              unitRatio, coefficient),
-        };
-        const state = update(this.state, { lspsVar: { data: {
-          [index]: { charge: { $set: charge } } } } });
-        this.setState(state);
-      }
-    });
   }
   showConfirm(type, target) {
     this.props.showDispatchConfirmModal(true, type, target);
