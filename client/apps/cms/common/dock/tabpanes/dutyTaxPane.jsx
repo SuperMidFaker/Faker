@@ -178,7 +178,7 @@ export default class DutyTaxPane extends React.Component {
     className: 'cell-align-right',
     render(o) {
       const val = o ? o * 100 : 0;
-      return val ? `${val}%` : '';
+      return val ? `${val.toFixed(2)}%` : '';
     },
   }, {
     title: '关税',
@@ -195,7 +195,7 @@ export default class DutyTaxPane extends React.Component {
     className: 'cell-align-right',
     render(o) {
       const val = o ? o * 100 : 0;
-      return val ? `${val}%` : '';
+      return val ? `${val.toFixed(2)}%` : '';
     },
   }, {
     title: '增值税',
@@ -212,7 +212,7 @@ export default class DutyTaxPane extends React.Component {
     className: 'cell-align-right',
     render(o) {
       const val = o ? o * 100 : 0;
-      return val ? `${val}%` : '';
+      return val ? `${val.toFixed(2)}%` : '';
     },
   }, {
     title: '消费税',
@@ -263,19 +263,19 @@ export default class DutyTaxPane extends React.Component {
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>完税价格</h3>
-              <h2 className="data-num text-emphasis">{this.renderValFixed(tax.duty_paid)}</h2>
+              <h2 className="data-num text-emphasis" style={{ minHeight: 27 }}>{this.renderValFixed(tax.duty_paid)}</h2>
             </div>
           </Card.Grid>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>关税</h3>
-              <h2 className="data-num">{this.renderValFixed(tax.duty_tax)}</h2>
+              <h2 className="data-num" style={{ minHeight: 27 }}>{this.renderValFixed(tax.duty_tax)}</h2>
             </div>
           </Card.Grid>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>增值税</h3>
-              <h2 className="data-num">{this.renderValFixed(tax.vat_tax)}</h2>
+              <h2 className="data-num" style={{ minHeight: 27 }}>{this.renderValFixed(tax.vat_tax)}</h2>
             </div>
           </Card.Grid>
           <Card.Grid style={gridStyle}>
@@ -287,7 +287,7 @@ export default class DutyTaxPane extends React.Component {
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>税金总额</h3>
-              <h2 className="data-num text-error">{this.renderValFixed(tax.total_tax)}</h2>
+              <h2 className="data-num text-error" style={{ minHeight: 27 }}>{this.renderValFixed(tax.total_tax)}</h2>
             </div>
           </Card.Grid>
         </Card>
