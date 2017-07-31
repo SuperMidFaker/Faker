@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Button, Table, Tag, Input } from 'antd';
+import { MdIcon } from 'client/components/FontIcon';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PackagePopover from '../../../common/popover/packagePopover';
-import { loadMovementDetails, executeMovement, loadMovementHead } from 'common/reducers/cwmInventoryStock';
+import RowUpdater from 'client/components/rowUpdater';
+import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement } from 'common/reducers/cwmInventoryStock';
 
 const Search = Input.Search;
 
@@ -21,7 +23,7 @@ const Search = Input.Search;
     reload: state.cwmInventoryStock.movementReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadMovementDetails, executeMovement, loadMovementHead }
+  { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement }
 )
 @connectNav({
   depth: 3,
@@ -56,8 +58,35 @@ export default class MovementDetailsPane extends React.Component {
       selectedRowKeys: [],
     });
   }
-  handleBatchProductReceive = () => {
-    this.props.showBatchReceivingModal();
+  handleBatchDetailRemove = () => {
+    if (this.props.movementDetails.length === this.state.selectedRowKeys.length) {
+      this.props.cancelMovement(this.props.movementNo, this.props.loginId).then((result) => {
+        if (!result.err) {
+          this.context.router.push('/cwm/stock/movement');
+        }
+      });
+    } else {
+      this.props.removeMoveDetail(this.state.selectedRowKeys, this.props.loginId).then((result) => {
+        if (!result.err) {
+          this.props.loadMovementDetails(this.props.movementNo);
+        }
+      });
+    }
+  }
+  removeMoveDetail = (row) => {
+    if (this.props.movementDetails.length === 1) {
+      this.props.cancelMovement(this.props.movementNo, this.props.loginId).then((result) => {
+        if (!result.err) {
+          this.context.router.push('/cwm/stock/movement');
+        }
+      });
+    } else {
+      this.props.removeMoveDetail([row.in_detail_id], this.props.loginId).then((result) => {
+        if (!result.err) {
+          this.props.loadMovementDetails(this.props.movementNo);
+        }
+      });
+    }
   }
   handleExecuteMovement = () => {
     const self = this;
@@ -101,9 +130,13 @@ export default class MovementDetailsPane extends React.Component {
     title: '目的库位',
     dataIndex: 'to_location',
     width: 180,
+  }, {
+    title: '操作',
+    width: 200,
+    render: (o, record) => <RowUpdater onHit={this.removeMoveDetail} label="取消明细" row={record} />,
   }]
   render() {
-    const { movementDetails, mode } = this.props;
+    const { movementDetails, mode, movementHead } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -116,16 +149,19 @@ export default class MovementDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+            {this.state.selectedRowKeys.length > 0 && (<Button size="large" onClick={this.handleBatchDetailRemove}>
+              <MdIcon type="check-all" />批量移除明细
+            </Button>)}
           </div>
           <div className="toolbar-right">
-            {mode === 'manual' &&
+            {mode === 'manual' && movementHead.isdone === 0 &&
             <Button size="large" icon="check" onClick={this.handleExecuteMovement}>
               执行移库
             </Button>
             }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} dataSource={movementDetails} rowKey="asn_seq_no"
+        <Table columns={this.columns} rowSelection={rowSelection} dataSource={movementDetails} rowKey="in_detail_id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>

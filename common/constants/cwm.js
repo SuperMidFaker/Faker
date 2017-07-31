@@ -269,3 +269,8 @@ exports.CWM_MOVEMENT_STATUS = {
     step: 1,
   },
 };
+
+exports.CWM_MOVE_TYPE = [{
+  value: 1,
+  text: '普通移库',
+}];
