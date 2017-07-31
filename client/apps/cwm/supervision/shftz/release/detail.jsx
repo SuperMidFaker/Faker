@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
@@ -101,7 +101,7 @@ export default class SHFTZRelDetail extends Component {
           } else {
             notification.success({
               message: '操作成功',
-              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
+              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType.text}`,
               placement: 'topLeft',
             });
           }
@@ -196,21 +196,8 @@ export default class SHFTZRelDetail extends Component {
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
     const sendText = sent ? '重新发送' : '发送备案';
     let queryable = false;
-    let sendable = true;
-    let unsentReason = '';
+    const sendable = true;
     const columns = [...this.columns];
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
-      sendable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-      if (sendable) {
-        const nonCusDeclRegs = relRegs.filter(er => !(er.cus_decl_date && er.ie_date));
-        if (nonCusDeclRegs.length === 0) {
-          sendable = true;
-        } else {
-          unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}未申报`;
-          sendable = false;
-        }
-      }
-    }
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
       queryable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         relRegs.filter(er => !er.ftz_rel_no).length === 0;
@@ -255,7 +242,6 @@ export default class SHFTZRelDetail extends Component {
             {queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
-            {!sendable && <Tooltip title={unsentReason} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>
         <Content className="main-content">
@@ -290,18 +276,11 @@ export default class SHFTZRelDetail extends Component {
                     <div className="panel-header">
                       {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
                       <Row>
+                        {relSo.ftz_rel_no &&
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />报关日期</span>}
-                            type="date" field={reg.cus_decl_date} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_date', new Date(value))}
-                          />
+                          <InfoItem size="small" addonBefore="出库单号" field={relSo.ftz_rel_no} />
                         </Col>
-                        <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />出口日期</span>}
-                            type="date" field={reg.ie_date} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
-                          />
-                        </Col>
+                        }
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
                             type="date" field={reg.ftz_rel_date} editable={relEditable}
@@ -320,7 +299,7 @@ export default class SHFTZRelDetail extends Component {
                       {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value &&
                       <Row>
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="收货仓库编号" field={reg.ftz_rel_no} editable={relEditable}
+                          <InfoItem size="small" addonBefore="分拨出库单号" field={reg.ftz_rel_no} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>

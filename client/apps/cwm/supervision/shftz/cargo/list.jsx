@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table, Tag } from 'antd';
+import { Breadcrumb, Menu, Button, Form, Icon, Dropdown, Layout, Radio, Select, message, Table, Tag } from 'antd';
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn,
   fileCargos, confirmCargos } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
@@ -11,6 +11,7 @@ import SearchBar from 'client/components/search-bar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
+import ExcelUpload from 'client/components/excelUploader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -32,6 +33,7 @@ function fetchData({ dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     loading: state.cwmShFtz.loading,
     cargolist: state.cwmShFtz.cargolist,
     cargoRule: state.cwmShFtz.cargoRule,
@@ -79,17 +81,16 @@ export default class SHFTZCargoList extends React.Component {
     rightSiderCollapsed: true,
     selectedRowKeys: [],
     currentPage: 1,
-    owners: this.props.owners,
-    owner: this.props.owners.length === 0 ? {} : this.props.owners[0],
+    owners: this.props.owners.filter(owner => owner.portion_enabled),
+    owner: this.props.owners.filter(owner => owner.portion_enabled).length === 0 ? {} : this.props.owners.filter(owner => owner.portion_enabled)[0],
     rule: null,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.owners !== this.props.owners) {
-      this.setState({
-        owners: nextProps.owners,
-        owner: nextProps.owners.length === 0 ? {} : nextProps.owners[0],
-      });
-      this.handleCargoLoad(1, this.props.listFilter, nextProps.owners[0]);
+      const owners = nextProps.owners.filter(owner => owner.portion_enabled);
+      const owner = owners.length === 0 ? {} : owners[0];
+      this.setState({ owners, owner });
+      this.handleCargoLoad(1, this.props.listFilter, owner);
     }
     if (nextProps.cargoRule !== this.props.cargoRule) {
       this.setState({ rule: nextProps.cargoRule.type });
@@ -98,12 +99,8 @@ export default class SHFTZCargoList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('productNo'),
-    width: 120,
+    width: 150,
     dataIndex: 'product_no',
-  }, {
-    title: this.msg('productSku'),
-    dataIndex: 'product_sku',
-    width: 100,
   }, {
     title: this.msg('ftzCargoNo'),
     dataIndex: 'ftz_cargo_no',
@@ -117,8 +114,12 @@ export default class SHFTZCargoList extends React.Component {
     width: 120,
     dataIndex: 'name',
   }, {
+    title: '英文品名',
+    dataIndex: 'en_name',
+    width: 120,
+  }, {
     title: this.msg('unit'),
-    width: 200,
+    width: 120,
     dataIndex: 'unit',
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
@@ -127,7 +128,7 @@ export default class SHFTZCargoList extends React.Component {
     },
   }, {
     title: this.msg('country'),
-    width: 100,
+    width: 140,
     dataIndex: 'country',
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
@@ -136,7 +137,7 @@ export default class SHFTZCargoList extends React.Component {
     },
   }, {
     title: this.msg('currency'),
-    width: 100,
+    width: 140,
     dataIndex: 'currency',
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
@@ -232,7 +233,7 @@ export default class SHFTZCargoList extends React.Component {
     });
   }
   handleOwnerSearch = (value) => {
-    let owners = this.props.owners;
+    let owners = this.props.owners.filter(owner => owner.portion_enabled);
     if (value) {
       owners = this.props.owners.filter((item) => {
         const reg = new RegExp(value);
@@ -246,15 +247,6 @@ export default class SHFTZCargoList extends React.Component {
   }
   handleRuleSave = () => {
     this.props.updateCargoRule({ type: this.state.rule, id: this.props.cargoRule.id });
-  }
-  handlePortionEnable = (owner) => {
-    this.props.updatePortionEn(owner.whauth).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 5);
-      } else {
-        this.props.loadWhse(this.props.whse.code, this.props.tenantId);
-      }
-    });
   }
   handleCargoSend = () => {
     this.props.fileCargos(this.state.owner.customs_code, this.props.whse.code).then((result) => {
@@ -272,8 +264,12 @@ export default class SHFTZCargoList extends React.Component {
       }
     });
   }
+  handleFiledCargoImport = () => {
+    const filter = { ...this.props.listFilter, status: 'completed' };
+    this.handleCargoLoad(1, filter);
+  }
   render() {
-    const { cargolist, listFilter, loading, whses, whse } = this.props;
+    const { cargolist, listFilter, loading, whses, whse, tenantId, loginId } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
     const filterOwners = owners.filter(item => item.portion_enabled);
@@ -336,20 +332,30 @@ export default class SHFTZCargoList extends React.Component {
                 {owner.name}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large" disabled={!owner.portion_enabled}>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
-              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs} disabled={!owner.portion_enabled}>
+              <Dropdown.Button size="large" overlay={<Menu />}>
+                <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
+                  formData={{
+                    data: JSON.stringify({
+                      tenantId,
+                      loginId,
+                      whseCode: whse.code,
+                      ownerCusCode: owner.customs_code,
+                    }),
+                  }} onUploaded={this.handleFiledCargoImport}
+                >
+                  <Icon type="upload" />导入已备案料号
+                </ExcelUpload>
+              </Dropdown.Button>
+              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs}>
                 同步货品SKU
               </Button>
-              <ButtonToggle size="large"
-                iconOn="fork" iconOff="fork"
-                onClick={this.toggleRightSider}
-                disabled={!owner.portion_enabled}
-              >
+              <ButtonToggle size="large" iconOn="fork" iconOff="fork" onClick={this.toggleRightSider}>
                 映射规则
               </ButtonToggle>
             </div>
@@ -358,12 +364,12 @@ export default class SHFTZCargoList extends React.Component {
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
-                {listFilter.status === 'pending' && !!owner.portion_enabled && cargolist.totalCount > 0 &&
+                {listFilter.status === 'pending' &&
                 <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoSend} style={{ marginLeft: 20 }}>
                   发送备案
                 </Button>
                 }
-                {listFilter.status === 'sent' && !!owner.portion_enabled && cargolist.totalCount > 0 &&
+                {listFilter.status === 'sent' &&
                 <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoConfirm} style={{ marginLeft: 20 }}>
                   确认备案
                 </Button>

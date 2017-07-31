@@ -10,7 +10,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
-  'ENABLE_PORTION', 'ENABLE_PORTION_SUCCEED', 'ENABLE_PORTION_FAIL',
   'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
   'FILE_ERS', 'FILE_ERS_SUCCEED', 'FILE_ERS_FAIL',
   'QUERY_ERI', 'QUERY_ERI_SUCCEED', 'QUERY_ERI_FAIL',
@@ -122,7 +121,6 @@ export default function reducer(state = initialState, action) {
         }) };
     case actionTypes.FILE_RSO_SUCCEED:
     case actionTypes.FILE_RTS_SUCCEED:
-      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status } };
     case actionTypes.FILE_RPO_SUCCEED:
       return { ...state,
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
@@ -260,21 +258,6 @@ export function syncProdSKUS(data) {
       endpoint: 'v1/cwm/shftz/product/cargo/skus/sync',
       method: 'post',
       data,
-    },
-  };
-}
-
-export function updatePortionEn(whauth) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.ENABLE_PORTION,
-        actionTypes.ENABLE_PORTION_SUCCEED,
-        actionTypes.ENABLE_PORTION_FAIL,
-      ],
-      endpoint: 'v1/cwm/warehouse/owner/portion',
-      method: 'post',
-      data: { whauth, enable: true },
     },
   };
 }
