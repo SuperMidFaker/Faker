@@ -221,7 +221,8 @@ export default class DispatchDock extends Component {
     lspLoading: true,
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.shipmts.length > 0 && nextProps.lsps.data.length > 0 && (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
+    if (nextProps.shipmts.length > 0 && nextProps.shipmts !== this.props.shipmts &&
+      nextProps.lsps.data.length > 0 && (nextProps.lsps.pageSize !== this.state.lspsVar.pageSize
       || nextProps.lsps.current !== this.state.lspsVar.current
       || nextProps.lsps.data.length !== this.state.lspsVar.data.length)) {
       this.setState({ lspLoading: true });
