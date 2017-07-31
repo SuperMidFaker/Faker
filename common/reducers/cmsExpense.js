@@ -513,7 +513,6 @@ export function advExpImport(data) {
       endpoint: 'v1/cms/expense/advance/import',
       method: 'post',
       data,
-      origin: 'mongo',
     },
   };
 }
