@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'CHNAGE_OWNER_STATUS', 'CHNAGE_OWNER_STATUS_SUCCEED', 'CHNAGE_OWNER_STATUS_FAIL',
   'DELETE_LOCATIONS', 'DELETE_LOCATIONS_SUCCEED', 'DELETE_LOCATIONS_FAIL',
   'SHOW_EDIT_WHSE', 'HIDE_EDIT_WHSE',
+  'UPDATE_OWNER_ATTR', 'UPDATE_OWNER_ATTR_SUCCEED', 'UPDATE_OWNER_ATTR_FAIL',
 ]);
 
 const initialState = {
@@ -38,6 +39,7 @@ const initialState = {
   },
   ownerControlModal: {
     visible: false,
+    id: '',
   },
   warehouseList: [],
   zoneList: [],
@@ -74,7 +76,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_WHSE_OWNERS_MODAL:
       return { ...state, whseOwnersModal: { ...state.whseOwnersModal, visible: false } };
     case actionTypes.SHOW_OWNER_CONTROL_MODAL:
-      return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: true } };
+      return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: true, id: action.id } };
     case actionTypes.HIDE_OWNER_CONTROL_MODAL:
       return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: false } };
     case actionTypes.LOAD_WHSE_OWNERS_SUCCEED:
@@ -296,9 +298,10 @@ export function hideWhseOwnersModal() {
   };
 }
 
-export function showOwnerControlModal() {
+export function showOwnerControlModal(id) {
   return {
     type: actionTypes.SHOW_OWNER_CONTROL_MODAL,
+    id,
   };
 }
 
@@ -410,5 +413,20 @@ export function showEditWhseModal() {
 export function hideEditWhseModal() {
   return {
     type: actionTypes.HIDE_EDIT_WHSE,
+  };
+}
+
+export function updateOwnerAttr(id, defaultReceiveMode, defaultShippingMode, portion, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_OWNER_ATTR,
+        actionTypes.UPDATE_OWNER_ATTR_SUCCEED,
+        actionTypes.UPDATE_OWNER_ATTR_FAIL,
+      ],
+      endpoint: 'v1/cwm/update/owner/attr',
+      method: 'post',
+      data: { id, defaultReceiveMode, defaultShippingMode, portion, loginId },
+    },
   };
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Switch, Radio } from 'antd';
-import { hideOwnerControlModal } from 'common/reducers/cwmWarehouse';
+import { hideOwnerControlModal, updateOwnerAttr } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -15,10 +15,11 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     visible: state.cwmWarehouse.ownerControlModal.visible,
-    record: state.cwmWarehouse.record,
+    id: state.cwmWarehouse.ownerControlModal.id,
   }),
-  { hideOwnerControlModal }
+  { hideOwnerControlModal, updateOwnerAttr }
 )
 @Form.create()
 export default class OwnerControlModal extends Component {
@@ -27,14 +28,39 @@ export default class OwnerControlModal extends Component {
     whseCode: PropTypes.string.isRequired,
   }
   state = {
+    defaultReceivingMode: 'scan',
+    defaultShippingMode: 'scan',
+    portionEnable: false,
   }
 
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.hideOwnerControlModal();
   }
-
-
+  receivingModeChange = (e) => {
+    this.setState({
+      defaultReceivingMode: e.target.value,
+    });
+  }
+  shippingModeChange = (e) => {
+    this.setState({
+      defaultShippingMode: e.target.value,
+    });
+  }
+  chkPckChange = () => {
+    this.setState({
+      portionEnable: !this.state.portionEnable,
+    });
+  }
+  handleSubmit = () => {
+    const { id, loginId } = this.props;
+    const { defaultReceivingMode, defaultShippingMode, portionEnable } = this.state;
+    this.props.updateOwnerAttr(id, defaultReceivingMode, defaultShippingMode, portionEnable, loginId).then((result) => {
+      if (!result.err) {
+        this.props.hideOwnerControlModal();
+      }
+    });
+  }
   render() {
     const { defaultReceivingMode, defaultShippingMode } = this.state;
     const formItemLayout = {
