@@ -276,6 +276,7 @@ export default class SHFTZCargoList extends React.Component {
     const { cargolist, listFilter, loading, whses, whse } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
+    const filterOwners = owners.filter(item => item.portion_enabled);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -313,7 +314,7 @@ export default class SHFTZCargoList extends React.Component {
               <SearchBar size="large" placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
-              <Table columns={ownerColumns} dataSource={owners} showHeader={false} onRowClick={this.handleRowClick}
+              <Table columns={ownerColumns} dataSource={filterOwners} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''} rowKey="id"
               />

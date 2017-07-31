@@ -47,7 +47,7 @@ export default class AllocatingModal extends Component {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
       const { outboundHead } = nextProps;
       this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters,
-        outboundHead.bonded, outboundHead.bonded_outtype);
+        outboundHead.bonded, outboundHead.bonded_outtype, nextProps.outboundHead.owner_partner_id);
       this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
       this.setState({
         outboundProduct: nextProps.outboundProduct,
@@ -339,7 +339,7 @@ export default class AllocatingModal extends Component {
               <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
             </Card>
           </Panel>
-        </Collapse>*/}
+        </Collapse> */}
       </Modal>
     );
   }

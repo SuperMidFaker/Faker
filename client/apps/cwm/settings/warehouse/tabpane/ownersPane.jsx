@@ -84,8 +84,8 @@ export default class OwnersPane extends Component {
     ),
   }]
   msg = formatMsg(this.props.intl)
-  handleOwnerControl = () => {
-    this.props.showOwnerControlModal();
+  handleOwnerControl = (row) => {
+    this.props.showOwnerControlModal(row.id);
   }
   changeOwnerStatus = (id, status) => {
     this.props.changeOwnerStatus(id, status).then((result) => {
