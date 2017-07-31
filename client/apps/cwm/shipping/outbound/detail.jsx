@@ -154,12 +154,12 @@ export default class OutboundDetail extends Component {
               </Col>
               { outboundHead.wave_no &&
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="波次号" field={outboundHead.wave_no} />
+                <InfoItem addonBefore="波次编号" field={outboundHead.wave_no} />
               </Col>
                 }
               { outboundHead.so_no &&
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="订单号" field={outboundHead.so_no} />
+                <InfoItem addonBefore="SO编号" field={outboundHead.so_no} />
               </Col>
                 }
               <Col sm={12} lg={2}>

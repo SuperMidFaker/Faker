@@ -185,7 +185,7 @@ export default class ModuleCWM extends React.Component {
       nextProps.loadWhse(nextProps.whse.code, nextProps.tenantId);
       const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'cwm-ftz');
       if (nextProps.whse.bonded) {
-        linkMenus.splice(4, 0, {
+        linkMenus.splice(1, 0, {
           single: false,
           key: 'cwm-ftz',
           icon: 'logixon icon-customs',
