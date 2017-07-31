@@ -11,6 +11,7 @@ import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
+import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 
 const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
@@ -178,7 +179,7 @@ export default class StockQueryList extends React.Component {
     return colObj;
   }
   render() {
-    const { defaultWhse, whses, loading, displayedColumns } = this.props;
+    const { defaultWhse, whses, loading, displayedColumns, listFilter } = this.props;
     const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -187,7 +188,7 @@ export default class StockQueryList extends React.Component {
       },
     };
     const dataSource = new Table.DataSource({
-      fetcher: () => this.handleStockQuery(this.props.listFilter),
+      fetcher: () => this.handleStockQuery(listFilter),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -237,6 +238,9 @@ export default class StockQueryList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg('查询类型')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-header-tools">
