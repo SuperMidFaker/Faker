@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table, Tag, Tooltip } from 'antd';
+import { Breadcrumb, Button, Form, Icon, Layout, Radio, Select, message, Table, Tag } from 'antd';
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn,
   fileCargos, confirmCargos } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
@@ -287,18 +287,6 @@ export default class SHFTZCargoList extends React.Component {
       dataIndex: 'name',
       key: 'code',
       render: (o, record) => <span className="menu-sider-item"><TrimSpan text={record.customs_code ? `${record.customs_code} | ${record.name}` : record.name} maxLen={24} /></span>,
-    }, {
-      width: 40,
-      fixed: 'right',
-      render: (o, record) => {
-        if (!record.portion_enabled) {
-          return (
-            <Tooltip placement="bottom" title="启用分拨">
-              <Button shape="circle" icon="arrows-alt" onClick={() => this.handlePortionEnable(record)} />
-            </Tooltip>
-          );
-        }
-      },
     }];
     const radioStyle = {
       display: 'block',

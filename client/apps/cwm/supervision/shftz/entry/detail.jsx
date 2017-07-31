@@ -302,27 +302,36 @@ export default class SHFTZEntryDetail extends Component {
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
                       <Row>
-                        <Col sm={24} lg={6}>
+                        <Col sm={12} lg={4}>
                           <InfoItem size="small" addonBefore="监管入库单号" field={reg.ftz_ent_no} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
                           />
                         </Col>
-                        <Col sm={24} lg={6}>
+                        <Col sm={12} lg={4}>
                           <InfoItem size="small" addonBefore="报关单号" field={reg.cus_decl_no} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
                           />
                         </Col>
-                        <Col sm={24} lg={6}>
+                        <Col sm={12} lg={4}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
                             type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY.MM.DD')} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
                           />
                         </Col>
-                        <Col sm={24} lg={6}>
+                        <Col sm={12} lg={4}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
                             type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY.MM.DD')} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                           />
+                        </Col>
+                        <Col sm={8} lg={2}>
+                          <InfoItem size="small" addonBefore="总数量" field={''} />
+                        </Col>
+                        <Col sm={8} lg={3}>
+                          <InfoItem size="small" addonBefore="总净重" field={''} addonAfter="KG" />
+                        </Col>
+                        <Col sm={8} lg={3}>
+                          <InfoItem size="small" addonBefore="总金额" field={''} addonAfter="美元" />
                         </Col>
                       </Row>
                     </div>

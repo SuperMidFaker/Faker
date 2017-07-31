@@ -56,7 +56,7 @@ export default class OwnerControlModal extends Component {
               <RadioButton value="manual">手动</RadioButton>
             </RadioGroup>
           </FormItem>
-          <FormItem {...formItemLayout} label="复核装箱">
+          <FormItem {...formItemLayout} label="出库启用分拨">
             <Switch defaultChecked={false} onChange={this.chkPckChange} />
           </FormItem>
         </Form>
