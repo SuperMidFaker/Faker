@@ -27,7 +27,11 @@ export default class OwnersPane extends Component {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
     whseTenantId: PropTypes.number.isRequired,
-    whseOwners: PropTypes.array,
+    whseOwners: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      owner_code: PropTypes.string,
+      owner_name: PropTypes.string.isRequired,
+    })),
   }
   state = {
     selectedRowKeys: [],
@@ -84,18 +88,21 @@ export default class OwnersPane extends Component {
     ),
   }]
   msg = formatMsg(this.props.intl)
-  handleOwnerControl = (row) => {
-    this.props.showOwnerControlModal(row.id);
+  handleOwnerControl = (ownerAuth) => {
+    this.props.showOwnerControlModal(ownerAuth);
   }
   changeOwnerStatus = (id, status) => {
     this.props.changeOwnerStatus(id, status).then((result) => {
       if (!result.error) {
-        this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
-        if (this.props.whseCode === this.props.defaultWhse.code) {
-          this.props.loadWhse(this.props.whseCode, this.props.tenantId);
-        }
+        this.handleOwnerLoad();
       }
     });
+  }
+  handleOwnerLoad = () => {
+    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
+    if (this.props.whseCode === this.props.defaultWhse.code) {
+      this.props.loadWhse(this.props.whseCode, this.props.tenantId);
+    }
   }
   render() {
     const { whseCode, whseTenantId, whseOwners } = this.props;
@@ -106,7 +113,7 @@ export default class OwnersPane extends Component {
         </div>
         <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
-        <OwnerControlModal whseCode={whseCode} />
+        <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
       </Content>
     );
   }

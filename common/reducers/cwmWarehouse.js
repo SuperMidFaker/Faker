@@ -24,7 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'CHNAGE_OWNER_STATUS', 'CHNAGE_OWNER_STATUS_SUCCEED', 'CHNAGE_OWNER_STATUS_FAIL',
   'DELETE_LOCATIONS', 'DELETE_LOCATIONS_SUCCEED', 'DELETE_LOCATIONS_FAIL',
   'SHOW_EDIT_WHSE', 'HIDE_EDIT_WHSE',
-  'UPDATE_OWNER_ATTR', 'UPDATE_OWNER_ATTR_SUCCEED', 'UPDATE_OWNER_ATTR_FAIL',
+  'UPDATE_WHOWNCONTROL', 'UPDATE_WHOWNCONTROL_SUCCEED', 'UPDATE_WHOWNCONTROL_FAIL',
 ]);
 
 const initialState = {
@@ -39,7 +39,7 @@ const initialState = {
   },
   ownerControlModal: {
     visible: false,
-    id: '',
+    whOwnerAuth: {},
   },
   warehouseList: [],
   zoneList: [],
@@ -76,7 +76,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_WHSE_OWNERS_MODAL:
       return { ...state, whseOwnersModal: { ...state.whseOwnersModal, visible: false } };
     case actionTypes.SHOW_OWNER_CONTROL_MODAL:
-      return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: true, id: action.id } };
+      return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: true, whOwnerAuth: action.data } };
     case actionTypes.HIDE_OWNER_CONTROL_MODAL:
       return { ...state, ownerControlModal: { ...state.ownerControlModal, visible: false } };
     case actionTypes.LOAD_WHSE_OWNERS_SUCCEED:
@@ -298,10 +298,10 @@ export function hideWhseOwnersModal() {
   };
 }
 
-export function showOwnerControlModal(id) {
+export function showOwnerControlModal(owner) {
   return {
     type: actionTypes.SHOW_OWNER_CONTROL_MODAL,
-    id,
+    data: owner,
   };
 }
 
@@ -416,17 +416,17 @@ export function hideEditWhseModal() {
   };
 }
 
-export function updateOwnerAttr(id, defaultReceiveMode, defaultShippingMode, portion, loginId) {
+export function updateWhOwnerControl(whauth, control) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_OWNER_ATTR,
-        actionTypes.UPDATE_OWNER_ATTR_SUCCEED,
-        actionTypes.UPDATE_OWNER_ATTR_FAIL,
+        actionTypes.UPDATE_WHOWNCONTROL,
+        actionTypes.UPDATE_WHOWNCONTROL_SUCCEED,
+        actionTypes.UPDATE_WHOWNCONTROL_FAIL,
       ],
-      endpoint: 'v1/cwm/update/owner/attr',
+      endpoint: 'v1/cwm/warehouse/owner/control',
       method: 'post',
-      data: { id, defaultReceiveMode, defaultShippingMode, portion, loginId },
+      data: { whauth, control },
     },
   };
 }
