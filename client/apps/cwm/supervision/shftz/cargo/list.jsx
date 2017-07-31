@@ -283,7 +283,7 @@ export default class SHFTZCargoList extends React.Component {
     const ownerColumns = [{
       dataIndex: 'name',
       key: 'code',
-      render: (o, record) => <span className="menu-sider-item"><TrimSpan text={record.customs_code ? `${record.customs_code} | ${record.name}` : record.name} maxLen={24} /></span>,
+      render: (o, record) => <span className="menu-sider-item"><TrimSpan text={record.customs_code ? `${record.customs_code} | ${record.name}` : record.name} maxLen={30} /></span>,
     }];
     const radioStyle = {
       display: 'block',
@@ -310,8 +310,8 @@ export default class SHFTZCargoList extends React.Component {
               <SearchBar size="large" placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
-              <Table columns={ownerColumns} dataSource={filterOwners} showHeader={false} onRowClick={this.handleRowClick}
-                pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
+              <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false} onRowClick={this.handleRowClick}
+                pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''} rowKey="id"
               />
             </div>
@@ -338,42 +338,44 @@ export default class SHFTZCargoList extends React.Component {
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
-              <Dropdown.Button size="large" overlay={<Menu />}>
-                <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
-                  formData={{
-                    data: JSON.stringify({
-                      tenantId,
-                      loginId,
-                      whseCode: whse.code,
-                      ownerCusCode: owner.customs_code,
-                    }),
-                  }} onUploaded={this.handleFiledCargoImport}
-                >
-                  <Icon type="upload" />导入已备案料号
-                </ExcelUpload>
-              </Dropdown.Button>
-              <Button type="primary" ghost size="large" icon="sync" onClick={this.handleSyncProductSKUs}>
-                同步货品SKU
+              {listFilter.status === 'pending' &&
+              <Button size="large" icon="sync" onClick={this.handleSyncProductSKUs} >
+                同步SKU
               </Button>
-              <ButtonToggle size="large" iconOn="fork" iconOff="fork" onClick={this.toggleRightSider}>
-                映射规则
-              </ButtonToggle>
+              }
+              {listFilter.status === 'pending' &&
+                <Button type="primary" size="large" icon="cloud-upload-o" onClick={this.handleCargoSend}>
+                  发送备案
+                </Button>
+                }
+              {listFilter.status === 'sent' &&
+                <Button type="primary" ghost size="large" icon="check" onClick={this.handleCargoConfirm}>
+                  确认备案
+                </Button>
+                }
+              {listFilter.status === 'completed' &&
+                <Dropdown.Button size="large" overlay={<Menu />}>
+                  <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
+                    formData={{
+                      data: JSON.stringify({
+                        tenantId,
+                        loginId,
+                        whseCode: whse.code,
+                        ownerCusCode: owner.customs_code,
+                      }),
+                    }} onUploaded={this.handleFiledCargoImport}
+                  >
+                    <Icon type="upload" /> 导入已备案料号
+                </ExcelUpload>
+                </Dropdown.Button>
+                }
+              <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
             </div>
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
-                {listFilter.status === 'pending' &&
-                <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoSend} style={{ marginLeft: 20 }}>
-                  发送备案
-                </Button>
-                }
-                {listFilter.status === 'sent' &&
-                <Button type="primary" ghost size="large" icon="sync" onClick={this.handleCargoConfirm} style={{ marginLeft: 20 }}>
-                  确认备案
-                </Button>
-                }
               </div>
               <div className="panel-body table-panel table-fixed-layout">
                 <RemoteTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"

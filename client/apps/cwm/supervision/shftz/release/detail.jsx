@@ -241,7 +241,7 @@ export default class SHFTZRelDetail extends Component {
           <div className="page-header-tools">
             {queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {relEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
           </div>
         </Header>
         <Content className="main-content">

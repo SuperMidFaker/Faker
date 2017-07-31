@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, message, Checkbox } from 'antd';
+import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
@@ -14,6 +14,7 @@ import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -71,15 +72,15 @@ export default class AllocatingModal extends Component {
   inventoryColumns = [{
     title: '添加',
     width: 60,
-    render: (o, record, index) => (this.props.editable && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} />),
+    render: (o, record, index) => (<Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled={!this.props.editable} />),
   }, {
-    title: '分配数量',
+    title: '现分配数量',
     width: 200,
     render: (o, record, index) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-  }, {
+/* }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 160,
+    width: 160,*/
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -90,15 +91,26 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
+    title: '货物属性',
+    dataIndex: 'bonded',
+    width: 80,
+    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+  }, {
     title: '库存数量',
     dataIndex: 'total_qty',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.total_pack_qty} pcsQty={record.total_qty} />),
+    width: 100,
   }, {
     title: '可用数量',
     dataIndex: 'avail_qty',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.avail_pack_qty} pcsQty={record.avail_qty} />),
+    width: 100,
+  }, {
+    title: '已分配数量',
+    dataIndex: 'alloc_qty',
+    width: 100,
+  }, {
+    title: '冻结数量',
+    dataIndex: 'frozen_qty',
+    width: 100,
   }, {
     title: '库位',
     dataIndex: 'location',
@@ -117,11 +129,6 @@ export default class AllocatingModal extends Component {
     dataIndex: 'serial_no',
     width: 100,
   }, {
-    title: '货物属性',
-    dataIndex: 'bonded',
-    width: 100,
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
-  }, {
     title: '入库日期',
     dataIndex: 'created_date',
     render: o => moment(o).format('YYYY.MM.DD'),
@@ -130,15 +137,15 @@ export default class AllocatingModal extends Component {
   allocatedColumns = [{
     title: '删除',
     width: 60,
-    render: (o, record, index) => (this.props.editable && <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} />),
+    render: (o, record, index) => (<Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} disabled={!this.props.editable} />),
   }, {
-    title: '已分配数量',
+    title: '分配数量',
     width: 200,
     render: (o, record) => (<QuantityInput size="small" packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-  }, {
+/*  }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 160,
+    width: 160,*/
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -148,6 +155,11 @@ export default class AllocatingModal extends Component {
         return <Button size="small">{o}</Button>;
       }
     },
+  }, {
+    title: '货物属性',
+    dataIndex: 'bonded',
+    width: 80,
+    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
   }, {
     title: '库位',
     dataIndex: 'location',
@@ -256,16 +268,23 @@ export default class AllocatingModal extends Component {
   render() {
     const { filters, outboundHead } = this.props;
     const { outboundProduct } = this.state;
+    const searchOptions = (
+      <Select defaultValue="lot_no" style={{ width: 120 }}>
+        <Option value="lot_no">批次号</Option>
+        <Option value="sn_no">序列号</Option>
+        <Option value="po_no">采购订单号</Option>
+        <Option value="asn_no">ASN编号</Option>
+        <Option value="ftz_ent_no">监管入库单号</Option>
+        <Option value="decl_no">报关单号</Option>
+      </Select>
+    );
     const inventoryQueryForm = (
       <Form layout="inline">
+        <FormItem>
+          <Input.Search addonBefore={searchOptions} placeholder="查询条件" style={{ width: 380 }} />
+        </FormItem>
         <FormItem label="库位">
-          <Input onChange={this.handleLocationChange} value={filters.location} />
-        </FormItem>
-        <FormItem label="批次号">
-          <Input onChange={this.handleLotnoChange} value={filters.external_lot_no} />
-        </FormItem>
-        <FormItem label="序列号">
-          <Input onChange={this.handleSonoChange} value={filters.serial_no} />
+          <Select showSearch onChange={this.handleLocationChange} value={filters.location} style={{ width: 160 }} />
         </FormItem>
         <FormItem label="入库日期">
           <RangePicker onChange={this.handleDateChange} />
@@ -283,7 +302,7 @@ export default class AllocatingModal extends Component {
       </Form>);
 
     return (
-      <Modal title="分配" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
+      <Modal title="出库分配" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
         onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
       >
         <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
@@ -309,12 +328,12 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
+            <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: 220 }} />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
+            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: 220 }} />
           </div>
         </Card>
         {/*
