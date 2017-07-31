@@ -46,6 +46,7 @@ export default class Instance extends Component {
     tracking: {},
     sorter: { field: '', order: 'descend' },
     filters: {},
+    exportLoading: false,
   }
   componentWillMount() {
     this.props.loadTrackingItems(Number(this.props.params.trackingId));
@@ -171,6 +172,7 @@ export default class Instance extends Component {
     remotes: this.props.orders,
   })
   handleExport = () => {
+    this.setState({ exportLoading: true });
     this.props.loadTrackingOrders({
       searchValue: '',
       tracking_id: this.props.params.trackingId,
@@ -194,6 +196,7 @@ export default class Instance extends Component {
       const sheets = [{ name: 'sheet1', data: table }];
       this.props.makeExcel(sheets, `${createFilename('scvTracking')}.xlsx`).then((result1) => {
         window.open(`${API_ROOTS.default}v1/common/excel/${result1.data.filename}`);
+        this.setState({ exportLoading: false });
       });
     });
   }
@@ -226,7 +229,7 @@ export default class Instance extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="primary" size="large" ghost icon="export" onClick={this.handleExport}>导出</Button>
+            <Button type="primary" size="large" ghost icon="export" onClick={this.handleExport} loading={this.state.exportLoading}>导出</Button>
           </div>
         </Header>
         <Content className="main-content" key="main">
