@@ -69,6 +69,14 @@ export default class AllocatingModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   inventoryColumns = [{
+    title: '添加',
+    width: 60,
+    render: (o, record, index) => (this.props.editable && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} />),
+  }, {
+    title: '分配数量',
+    width: 200,
+    render: (o, record, index) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
@@ -81,36 +89,6 @@ export default class AllocatingModal extends Component {
         return <Button size="small">{o}</Button>;
       }
     },
-  }, {
-    title: '中文品名',
-    dataIndex: 'name',
-    width: 150,
-  }, {
-    title: '批次号',
-    dataIndex: 'external_lot_no',
-    width: 100,
-  }, {
-    title: '序列号',
-    dataIndex: 'serial_no',
-    width: 100,
-  }, {
-    title: '库位',
-    dataIndex: 'location',
-    width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
-  }, {
-    title: '入库日期',
-    dataIndex: 'created_date',
-    render: o => moment(o).format('YYYY.MM.DD'),
-  }, {
-    title: '货物属性',
-    dataIndex: 'bonded',
-    width: 100,
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
   }, {
     title: '库存数量',
     dataIndex: 'total_qty',
@@ -122,17 +100,42 @@ export default class AllocatingModal extends Component {
     width: 200,
     render: (o, record) => (<QuantityInput size="small" packQty={record.avail_pack_qty} pcsQty={record.avail_qty} />),
   }, {
-    title: '待分配数量',
-    width: 200,
-    render: (o, record, index) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+    title: '库位',
+    dataIndex: 'location',
+    width: 100,
+    render: (o) => {
+      if (o) {
+        return <Tag>{o}</Tag>;
+      }
+    },
   }, {
-    title: '添加',
-    width: 80,
-    fixed: 'right',
-    render: (o, record, index) => (this.props.editable && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} />),
+    title: '批次号',
+    dataIndex: 'external_lot_no',
+    width: 100,
+  }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+    width: 100,
+  }, {
+    title: '货物属性',
+    dataIndex: 'bonded',
+    width: 100,
+    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+  }, {
+    title: '入库日期',
+    dataIndex: 'created_date',
+    render: o => moment(o).format('YYYY.MM.DD'),
   }]
 
   allocatedColumns = [{
+    title: '删除',
+    width: 60,
+    render: (o, record, index) => (this.props.editable && <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} />),
+  }, {
+    title: '已分配数量',
+    width: 200,
+    render: (o, record) => (<QuantityInput size="small" packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
@@ -146,18 +149,6 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
-    title: '中文品名',
-    dataIndex: 'name',
-    width: 150,
-  }, {
-    title: '批次号',
-    dataIndex: 'external_lot_no',
-    width: 100,
-  }, {
-    title: '序列号',
-    dataIndex: 'serial_no',
-    width: 100,
-  }, {
     title: '库位',
     dataIndex: 'location',
     width: 100,
@@ -167,16 +158,15 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
+    title: '批次号',
+    dataIndex: 'external_lot_no',
+    width: 100,
+  }, {
+    title: '序列号',
+    dataIndex: 'serial_no',
+    width: 100,
+  }, {
     dataIndex: 'spacer',
-  }, {
-    title: '已分配数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-  }, {
-    title: '删除',
-    width: 80,
-    fixed: 'right',
-    render: (o, record, index) => (this.props.editable && <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} />),
   }]
   handleAllocChange = (value, index) => {
     const inventoryData = [...this.state.inventoryData];

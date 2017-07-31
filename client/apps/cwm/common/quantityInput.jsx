@@ -33,8 +33,8 @@ export default class QuantityInput extends React.Component {
     }
     return (
       <span className={alert && 'mdc-text-red'}>
-        <Tooltip title="SKU包装件数" mouseEnterDelay={3}>
-          <Input size={sizeStr} className="readonly" placeholder="件数" value={packQty} style={{ textAlign: 'right', width: 80, marginRight: 2 }} disabled={disabled} onChange={onChange} />
+        <Tooltip title="SKU件数" mouseEnterDelay={3}>
+          <Input size={sizeStr} className="readonly" placeholder="SKU件数" value={packQty} style={{ textAlign: 'right', width: 80, marginRight: 2 }} disabled={disabled} onChange={onChange} />
         </Tooltip>
         <Tooltip title="货品计量单位数量" mouseEnterDelay={3}>
           <Input size={sizeStr} className="readonly" placeholder="计量单位数量" value={pcsQty} style={{ textAlign: 'right', width: 80 }} disabled />

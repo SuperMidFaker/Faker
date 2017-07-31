@@ -17,7 +17,15 @@ hr, img {
 img {
   vertical-align: middle;
 }
-// Override antd styles
+/* Override antd styles */
+// Override default font-size
+.ant-btn,       
+.ant-input,
+.ant-select,
+.ant-table,
+.ant-upload {
+  font-size: 14px;
+}
 .ant-advanced-search-form {
   padding: 16px;
   transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -158,12 +166,6 @@ img {
     background-color: #ffbf00;
     transition: all ease 0.8s;
   }
-}
-.ant-btn,
-.ant-input,
-.ant-select,
-.ant-table {
-  font-size: 14px;
 }
 .ant-table .ant-tag {
   margin: 0;

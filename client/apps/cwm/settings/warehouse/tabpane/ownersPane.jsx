@@ -59,8 +59,8 @@ export default class OwnersPane extends Component {
       }
     },
   }, {
-    title: '结算方',
-    dataIndex: 'billing_party',
+    title: '启用分拨',
+    dataIndex: 'portion_enabled',
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',

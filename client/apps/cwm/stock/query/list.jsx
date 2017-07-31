@@ -237,9 +237,6 @@ export default class StockQueryList extends React.Component {
           <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('查询类型')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
                 {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
               </Breadcrumb.Item>
             </Breadcrumb>
