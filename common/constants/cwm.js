@@ -274,3 +274,17 @@ exports.CWM_MOVE_TYPE = [{
   value: 1,
   text: '普通移库',
 }];
+
+exports.CWM_STOCK_SEARCH_TYPE = [{
+  value: 1,
+  text: '按货主查询',
+}, {
+  value: 2,
+  text: '按货品查询',
+}, {
+  value: 3,
+  text: '按库位查询',
+}, {
+  value: 4,
+  text: '按货品/库位查询',
+}];

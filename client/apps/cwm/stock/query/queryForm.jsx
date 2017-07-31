@@ -6,6 +6,7 @@ import { Button, Form, Input, Select, Radio, Col } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
+import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -102,12 +103,12 @@ export default class QueryForm extends React.Component {
           })(
             <RadioGroup onChange={this.onChange}>
               <Col span={12}>
-                <Radio value={2} onClick={this.checkProduct}>按货品查询</Radio>
-                <Radio value={1} onClick={this.checkOwners}>按货主查询</Radio>
+                <Radio value={CWM_STOCK_SEARCH_TYPE[1].value} onClick={this.checkProduct}>{CWM_STOCK_SEARCH_TYPE[1].text}</Radio>
+                <Radio value={CWM_STOCK_SEARCH_TYPE[0].value} onClick={this.checkOwners}>{CWM_STOCK_SEARCH_TYPE[0].text}</Radio>
               </Col>
               <Col span={12}>
-                <Radio value={4} onClick={this.checkProAndLocation}>按货品/库位查询</Radio>
-                <Radio value={3} onClick={this.checkLocation}>按库位查询</Radio>
+                <Radio value={CWM_STOCK_SEARCH_TYPE[3].value} onClick={this.checkProAndLocation}>{CWM_STOCK_SEARCH_TYPE[3].text}</Radio>
+                <Radio value={CWM_STOCK_SEARCH_TYPE[2].value} onClick={this.checkLocation}>{CWM_STOCK_SEARCH_TYPE[2].text}</Radio>
               </Col>
             </RadioGroup>
           )}
