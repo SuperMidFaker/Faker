@@ -34,6 +34,8 @@ export default class OrderDetailsPane extends React.Component {
     selectedRowKeys: [],
     ButtonStatus: null,
     detailEditable: false,
+    cancelAllocDisabled: false,
+    autoAllocDisabled: false,
   }
   componentWillMount() {
     this.handleReload();
@@ -93,9 +95,8 @@ export default class OrderDetailsPane extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.alloc_qty < record.order_qty) {
-        // 订单明细的状态 0 未分配 1 部分分配 2 完全分配
         return (<span>
-          <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} />
+          <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} disabled={this.state.autoAllocDisabled} />
           <span className="ant-divider" />
           <RowUpdater onHit={this.handleManualAlloc} label="手动分配" row={record} />
         </span>);
@@ -104,13 +105,21 @@ export default class OrderDetailsPane extends React.Component {
           <RowUpdater onHit={this.handleAllocDetails} label="分配明细" row={record} />
           {record.picked_qty < record.alloc_qty && <span className="ant-divider" />}
           {record.picked_qty < record.alloc_qty &&
-            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} />}
+            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} disabled={this.state.cancelAllocDisabled} />}
         </span>);
       }
     },
   }]
   handleSKUAutoAllocate = (row) => {
-    this.props.batchAutoAlloc(row.outbound_no, [row.seq_no], this.props.loginId, this.props.loginName);
+    this.setState({ autoAllocDisabled: true });
+    this.props.batchAutoAlloc(row.outbound_no, [row.seq_no], this.props.loginId, this.props.loginName).then((result) => {
+      this.setState({ autoAllocDisabled: false });
+      if (result.error) {
+        notification.error({
+          message: result.error.message,
+        });
+      }
+    });
   }
   handleBatchAutoAlloc = () => {
     this.props.batchAutoAlloc(this.props.outboundNo, this.state.selectedRowKeys,
@@ -139,7 +148,15 @@ export default class OrderDetailsPane extends React.Component {
     this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
   }
   handleSKUCancelAllocate = (row) => {
-    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId);
+    this.setState({ cancelAllocDisabled: true });
+    this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId).then((result) => {
+      this.setState({ cancelAllocDisabled: false });
+      if (result.error) {
+        notification.error({
+          message: result.error.message,
+        });
+      }
+    });
   }
   handleAllocBatchCancel = () => {
     this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId);
