@@ -165,6 +165,7 @@ export default class SaveAsTemplateModal extends React.Component {
         mergeObj.merge_byengno = 1;
       }
     }
+    mergeObj.merge_checked = this.props.form.getFieldValue('merge_checked') || formData.merge_checked;
     let specialHsSorts = '';
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');
