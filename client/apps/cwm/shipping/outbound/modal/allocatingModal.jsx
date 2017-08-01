@@ -64,6 +64,7 @@ export default class AllocatingModal extends Component {
         allocatedData: nextProps.allocatedData.map(ad => ({ ...ad,
           allocated_qty: ad.alloc_qty,
           allocated_pack_qty: ad.sku_pack_qty ? ad.alloc_qty / ad.sku_pack_qty : ad.alloc_qty,
+          deleteDisabled: true,
         })),
       });
     }
@@ -80,7 +81,7 @@ export default class AllocatingModal extends Component {
 /* }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 160,*/
+    width: 160, */
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -137,7 +138,7 @@ export default class AllocatingModal extends Component {
   allocatedColumns = [{
     title: '删除',
     width: 60,
-    render: (o, record, index) => (<Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} disabled={!this.props.editable} />),
+    render: (o, record, index) => (record.deleteDisabled === true ? '' : <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} disabled={!this.props.editable} />),
   }, {
     title: '分配数量',
     width: 200,
@@ -145,7 +146,7 @@ export default class AllocatingModal extends Component {
 /*  }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 160,*/
+    width: 160, */
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
