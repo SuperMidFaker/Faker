@@ -92,8 +92,11 @@ export default class DetailForm extends Component {
       title: '计量单位',
       dataIndex: 'unit_name',
     }, {
-      title: '单价',
-      dataIndex: 'unit_price',
+      title: '总价',
+      dataIndex: 'amount',
+    }, {
+      title: '币制',
+      dataIndex: 'currency',
     }, {
       title: '操作',
       width: 80,

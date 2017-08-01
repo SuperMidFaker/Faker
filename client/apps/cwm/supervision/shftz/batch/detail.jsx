@@ -118,7 +118,7 @@ export default class SHFTZBatchDeclDetail extends Component {
   columns = [{
     title: '出库明细ID',
     dataIndex: 'ftz_rel_detail_id',
-    /*}, {
+    /* }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
@@ -149,7 +149,7 @@ export default class SHFTZBatchDeclDetail extends Component {
     title: '金额',
     dataIndex: 'amount',
     width: 200,
-    /*}, {
+    /* }, {
     title: '币制',
     dataIndex: 'currency',
     render: (o) => {
@@ -245,7 +245,9 @@ export default class SHFTZBatchDeclDetail extends Component {
                         </Col>
                       </Row>
                     </div>
-                    <Table columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id" />
+                    <div className="table-fixed-layout">
+                      <Table columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id" />
+                    </div>
                   </TabPane>)
                 )}
               </Tabs>

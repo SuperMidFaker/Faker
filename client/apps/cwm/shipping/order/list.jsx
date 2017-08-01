@@ -75,6 +75,7 @@ export default class ShippingOrderList extends React.Component {
     title: 'SO编号',
     width: 180,
     dataIndex: 'so_no',
+    fixed: 'left',
     render: (o, record) => (
       <a onClick={() => this.handlePreview(o, record.outbound_no)}>
         {o}

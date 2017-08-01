@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form, Input, Select, Col } from 'antd';
+import { Modal, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -107,7 +107,7 @@ export default class AddDetailModal extends Component {
     };
     return (
       <Modal onCancel={this.handleCancel} visible={visible} title="货品明细" onOk={this.submit}>
-        <Form>
+        <Form layout="horizontal">
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
@@ -128,30 +128,24 @@ export default class AddDetailModal extends Component {
             <Input value={product.desc_cn} />
           </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
-            {getFieldDecorator('order_qty', {
-              rules: [{ required: true, message: '请输入订单数量' }],
-            })(
-              <Input />
+            <InputGroup compact>
+              {getFieldDecorator('order_qty', {
+                rules: [{ required: true, message: '请输入订单数量' }],
+              })(
+                <Input style={{ width: '70%' }} />
             )}
-          </FormItem>
-          <FormItem label="计量单位" {...formItemLayout}>
-            <Input disabled value={product.unit_name} />
+              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit_name} style={{ width: '30%' }} />
+            </InputGroup>
           </FormItem>
           <FormItem label="金额" {...formItemLayout}>
             <InputGroup compact>
-              <Col span={8}>
-                {getFieldDecorator('unit_price', {
-                  initialValue: product.unit_price,
-                })(
-                  <Input placeholder="单价" />
+              {getFieldDecorator('unit_price', {
+                initialValue: product.unit_price,
+              })(
+                <Input placeholder="单价" style={{ width: '30%' }} />
                 )}
-              </Col>
-              <Col span={8}>
-                <Input placeholder="总价" />
-              </Col>
-              <Col span={8}>
-                <Input value={product.currency && `${product.currency}|${product.currency_name}`} />
-              </Col>
+              <Input placeholder="总价" style={{ width: '40%' }} />
+              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency && `${product.currency}|${product.currency_name}`} style={{ width: '30%' }} />
             </InputGroup>
           </FormItem>
         </Form>

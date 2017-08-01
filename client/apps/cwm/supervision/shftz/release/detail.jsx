@@ -305,7 +305,9 @@ export default class SHFTZRelDetail extends Component {
                         </Col>
                       </Row>}
                     </div>
-                    <Table columns={columns} dataSource={reg.details} indentSize={8} rowKey="id" />
+                    <div className="table-fixed-layout">
+                      <Table columns={columns} dataSource={reg.details} indentSize={8} rowKey="id" />
+                    </div>
                   </TabPane>)
                 )}
               </Tabs>
