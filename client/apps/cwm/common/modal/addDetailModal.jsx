@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form, Input, Select, Row, Col } from 'antd';
+import { Modal, Form, Input, Select, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -9,6 +9,8 @@ import { hideDetailModal, addTemporary, loadProducts, editTemporary } from 'comm
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
+const InputGroup = Input.Group;
+
 @injectIntl
 @connect(
   state => ({
@@ -117,11 +119,11 @@ export default class AddDetailModal extends Component {
               </Select>
             )}
           </FormItem>
+          <FormItem label="SKU" {...formItemLayout}>
+            <Select mode="combobox" style={{ width: '100%' }} value={product.product_sku} />
+          </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
             <Input value={product.desc_cn} />
-          </FormItem>
-          <FormItem label="SKU" {...formItemLayout}>
-            <Input value={product.product_sku} />
           </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
             {getFieldDecorator('order_qty', {
@@ -133,19 +135,22 @@ export default class AddDetailModal extends Component {
           <FormItem label="计量单位" {...formItemLayout}>
             <Input disabled value={product.unit_name} />
           </FormItem>
-          <FormItem label="单价" {...formItemLayout}>
-            <Row gutter={8}>
-              <Col span={12}>
+          <FormItem label="金额" {...formItemLayout}>
+            <InputGroup compact>
+              <Col span={8}>
                 {getFieldDecorator('unit_price', {
                   initialValue: product.unit_price,
                 })(
-                  <Input />
+                  <Input placeholder="单价" />
                 )}
               </Col>
-              <Col span={12}>
-                <Input disabled value={product.currency && `${product.currency}|${product.currency_name}`} />
+              <Col span={8}>
+                <Input placeholder="总价" />
               </Col>
-            </Row>
+              <Col span={8}>
+                <Input value={product.currency && `${product.currency}|${product.currency_name}`} />
+              </Col>
+            </InputGroup>
           </FormItem>
         </Form>
       </Modal>
