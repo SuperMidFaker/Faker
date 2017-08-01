@@ -13,6 +13,8 @@ const Search = Input.Search;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    waveOrders: state.cwmShippingOrder.waveOrders,
+    reload: state.cwmShippingOrder.waveReload,
   }),
   { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails }
 )
@@ -22,25 +24,14 @@ export default class OrderDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    orders: [],
   }
   componentWillMount() {
-    this.props.loadWaveOrders(this.props.waveNo).then((result) => {
-      if (!result.error) {
-        this.setState({
-          orders: result.data,
-        });
-      }
-    });
+    this.props.loadWaveOrders(this.props.waveNo);
   }
-  handleReload = () => {
-    this.props.loadWaveOrders(this.props.waveNo).then((result) => {
-      if (!result.error) {
-        this.setState({
-          orders: result.data,
-        });
-      }
-    });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.props.loadWaveOrders(nextProps.waveNo);
+    }
   }
   columns = [{
     title: '行号',
@@ -83,9 +74,7 @@ export default class OrderDetailsPane extends React.Component {
   handleRemoveOrders = () => {
     this.props.removeWaveOrders(this.state.selectedRowKeys, this.props.waveNo).then((result) => {
       if (!result.error) {
-        this.handleReload();
-        this.props.loadWaveHead(this.props.waveNo);
-        this.props.loadWaveDetails(this.props.waveNo);
+        this.setState({ selectedRowKeys: [] });
       }
     });
   }
@@ -108,7 +97,7 @@ export default class OrderDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right" />
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.state.orders} rowKey="so_no"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveOrders} rowKey="so_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>

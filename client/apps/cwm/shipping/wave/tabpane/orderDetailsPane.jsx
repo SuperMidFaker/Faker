@@ -13,6 +13,8 @@ const Search = Input.Search;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    waveDetails: state.cwmShippingOrder.waveDetails,
+    reload: state.cwmShippingOrder.waveReload,
   }),
   { openAllocatingModal, loadWaveDetails }
 )
@@ -23,14 +25,14 @@ export default class OrderDetailsPane extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    details: [],
   }
   componentWillMount() {
-    this.props.loadWaveDetails(this.props.waveNo).then((result) => {
-      this.setState({
-        details: result.data,
-      });
-    });
+    this.props.loadWaveDetails(this.props.waveNo);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.props.loadWaveDetails(nextProps.waveNo);
+    }
   }
   columns = [{
     title: '行号',
@@ -77,7 +79,7 @@ export default class OrderDetailsPane extends React.Component {
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.state.details} rowKey="wave_seq_no"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveDetails} rowKey="wave_seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>
