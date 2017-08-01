@@ -83,17 +83,15 @@ export default class OutboundList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'SO编号',
+    title: '出库单号',
+    dataIndex: 'outbound_no',
+    width: 180,
+  }, {
+    title: 'SO/波次编号',
     dataIndex: 'so_no',
     width: 180,
-    render: (o, record) => (
-      <a onClick={() => this.handlePreview(o, record.outbound_no)}>
-        {o}
-      </a>),
-  }, {
-    title: '波次号',
-    width: 180,
-    dataIndex: 'wave_no',
+    render: (soNo, record) => soNo ? <a onClick={() => this.handlePreview(soNo, record.outbound_no)}>{soNo}</a> :
+    <span>{record.wave_no}</span>,
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'total_qty',

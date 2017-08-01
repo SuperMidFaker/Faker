@@ -389,7 +389,6 @@ export default class ShippingOrderList extends React.Component {
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                 {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
                 {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
-                <Button size="large">触发补货任务</Button>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">

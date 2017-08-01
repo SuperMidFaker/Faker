@@ -55,6 +55,10 @@ const initialState = {
     visible: false,
     ownerId: '',
   },
+  waveHead: {},
+  waveOrders: [],
+  waveDetails: [],
+  waveReload: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -85,6 +89,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: true, ownerCode: action.ownerCode } };
     case actionTypes.HIDE_ADD_TO_WAVE:
       return { ...state, addToMoveModal: { ...state.addToMoveModal, visible: false } };
+    case actionTypes.LOAD_WAVE_HEAD_SUCCEED:
+      return { ...state, waveHead: action.result.data, waveReload: false };
+    case actionTypes.LOAD_WAVE_ORDERS_SUCCEED:
+      return { ...state, waveOrders: action.result.data, waveReload: false };
+    case actionTypes.LOAD_WAVE_DETAILS_SUCCEED:
+      return { ...state, waveDetails: action.result.data, waveReload: false };
+    case actionTypes.LOAD_WAVE_HEAD_FAIL:
+    case actionTypes.LOAD_WAVE_ORDERS_FAIL:
+    case actionTypes.LOAD_WAVE_DETAILS_FAIL:
+      return { ...state, waveReload: false };
+    case actionTypes.REMOVE_WAVE_ORDERS_SUCCEED:
+      return { ...state, waveReload: true };
     case actionTypes.GET_SO_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, order: { ...state.dock.order, uuid: action.result.data.flow_instance_uuid } } };
     default:

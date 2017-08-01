@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Modal, Table } from 'antd';
+import { Modal } from 'antd';
+import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
 import { loadWaves, addToWave, hideAddToWave } from 'common/reducers/cwmShippingOrder';
 import messages from '../../message.i18n';
@@ -38,6 +39,7 @@ export default class AddToWaveModal extends Component {
       const { defaultWhse, ownerCode, wave } = nextProps;
       this.props.loadWaves({
         whseCode: defaultWhse.code,
+        tenantId: nextProps.tenantId,
         pageSize: wave.pageSize,
         current: wave.current,
         filters: { status: 'pending', ownerCode },
@@ -54,6 +56,30 @@ export default class AddToWaveModal extends Component {
     dataIndex: 'created_date',
     render: o => moment(o).format('MM.DD HH:mm'),
   }]
+  dataSource = new Table.DataSource({
+    fetcher: params => this.props.loadWaves(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination, tblfilters) => {
+      const newfilters = { ...this.props.filters, ...tblfilters[0] };
+      const params = {
+        whseCode: this.props.defaultWhse.code,
+        tenantId: this.props.tenantId,
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        filters: newfilters,
+      };
+      return params;
+    },
+    remotes: this.props.wave,
+  });
   handleSubmit = () => {
     this.props.addToWave(this.props.selectedRowKeys, this.state.selectedRowKeys[0]).then((result) => {
       if (!result.error) {
@@ -74,9 +100,10 @@ export default class AddToWaveModal extends Component {
       },
     };
     const { wave, loading } = this.props;
+    this.dataSource.remotes = wave;
     return (
       <Modal title="添加到波次计划" visible={this.props.visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
-        <Table columns={this.columns} dataSource={wave.data} rowSelection={rowSelection} loading={loading} rowKey="wave_no" />
+        <Table size="middle" columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} loading={loading} rowKey="wave_no" />
       </Modal>
     );
   }
