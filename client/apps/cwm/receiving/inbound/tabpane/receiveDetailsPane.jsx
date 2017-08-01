@@ -216,13 +216,13 @@ export default class ReceiveDetailsPane extends React.Component {
             </Button>
             }
           </div>
-          <div className="toolbar-right">
+          {/* <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Button size="large" icon="check" onClick={this.handleExpressReceived}>
               快捷收货
             </Button>
             }
-          </div>
+          </div> */}
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="asn_seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}

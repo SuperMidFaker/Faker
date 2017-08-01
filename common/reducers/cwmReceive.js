@@ -34,6 +34,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_SHFTZ_ENTRY', 'LOAD_SHFTZ_ENTRY_SUCCEED', 'LOAD_SHFTZ_ENTRY_FAIL',
   'GET_ASN_UUID', 'GET_ASN_UUID_SUCCEED', 'GET_ASN_UUID_FAIL',
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
+  'CLEAR_PRODUCT_NOS',
 ]);
 
 const initialState = {
@@ -159,6 +160,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, inboundReload: true };
     case actionTypes.GET_ASN_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
+    case actionTypes.CLEAR_PRODUCT_NOS:
+      return { ...state, productNos: [] };
     default:
       return state;
   }
@@ -634,5 +637,11 @@ export function getShipmtOrderNo(uuid) {
       method: 'get',
       params: { uuid, type: 'inbound' },
     },
+  };
+}
+
+export function clearProductNos() {
+  return {
+    type: actionTypes.CLEAR_PRODUCT_NOS,
   };
 }

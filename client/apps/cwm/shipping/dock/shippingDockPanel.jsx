@@ -118,6 +118,7 @@ export default class ShippingDockPanel extends React.Component {
   renderExtra() {
     const { defaultWhse } = this.props;
     const { soHead } = this.state;
+    console.log(soHead);
     return (
       <Row>
         <Col span="6">
@@ -127,7 +128,7 @@ export default class ShippingDockPanel extends React.Component {
           <InfoItem label="货主" field={soHead.owner_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="采购订单号/海关备案号" addonBefore={<Icon type="tag-o" />} field={''} />
+          <InfoItem label="客户订单号/海关备案号" addonBefore={<Icon type="tag-o" />} field={soHead.cust_order_no} />
         </Col>
         <Col span="4">
           <InfoItem label="预计到货日期" addonBefore={<Icon type="calendar" />} field={moment(soHead.expect_shipping_date).format('YYYY/MM/DD')} />

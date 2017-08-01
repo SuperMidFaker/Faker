@@ -38,6 +38,7 @@ export default class PickingDetailsPane extends React.Component {
     selectedRows: [],
     ButtonStatus: null,
     operationMode: null,
+    searchValue: '',
   }
   componentWillMount() {
     this.props.loadPickDetails(this.props.outboundNo);
@@ -46,6 +47,9 @@ export default class PickingDetailsPane extends React.Component {
     if (nextProps.reload) {
       this.props.loadPickDetails(this.props.outboundNo);
     }
+  }
+  handleSearch = (value) => {
+    this.setState({ searchValue: value });
   }
   columns = [{
     title: 'SKU',
@@ -255,6 +259,14 @@ export default class PickingDetailsPane extends React.Component {
   render() {
     const { pickDetails } = this.props;
     const { ButtonStatus } = this.state;
+    const dataSource = pickDetails.filter((item) => {
+      if (this.state.searchValue) {
+        const reg = new RegExp(this.state.searchValue);
+        return reg.test(item.product_no) || reg.test(item.product_sku);
+      } else {
+        return true;
+      }
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -290,7 +302,7 @@ export default class PickingDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right" />
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={pickDetails} rowKey="id"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <PickingModal resetState={this.resetState} pickMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />

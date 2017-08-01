@@ -34,6 +34,7 @@ export default class OrderDetailsPane extends React.Component {
     selectedRowKeys: [],
     ButtonStatus: null,
     detailEditable: false,
+    searchValue: '',
     cancelAllocDisabled: false,
     autoAllocDisabled: false,
   }
@@ -161,9 +162,20 @@ export default class OrderDetailsPane extends React.Component {
   handleAllocBatchCancel = () => {
     this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId);
   }
+  handleSearch = (value) => {
+    this.setState({ searchValue: value });
+  }
   render() {
     const { outboundHead, outboundProducts } = this.props;
     const { ButtonStatus } = this.state;
+    const dataSource = outboundProducts.filter((item) => {
+      if (this.state.searchValue) {
+        const reg = new RegExp(this.state.searchValue);
+        return reg.test(item.product_no) || reg.test(item.product_sku);
+      } else {
+        return true;
+      }
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -199,7 +211,7 @@ export default class OrderDetailsPane extends React.Component {
               <Button type="primary" size="large" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={outboundProducts} rowKey="seq_no"
+        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
         <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />

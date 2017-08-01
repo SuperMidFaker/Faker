@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Table, Icon, Modal, Input, Row, Col, Select, Button } from 'antd';
+import { Table, Icon, Modal, Input, Row, Col, Select, Button, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
@@ -138,18 +138,23 @@ export default class ReceivingModal extends Component {
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
-    const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
-    this.props.receiveProduct(dataSource.filter(data => !data.trace_id).map(data => ({
-      location: data.location,
-      damage_level: data.damage_level,
-      inbound_qty: data.inbound_qty,
-      inbound_pack_qty: data.inbound_pack_qty,
-      convey_no: data.convey_no,
-    })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
-      if (!result.error) {
-        this.props.hideReceiveModal();
-      }
-    });
+    const validate = dataSource.find(data => data.inbound_pack_qty === 0);
+    if (validate) {
+      message.info('收获数量不能为空');
+    } else {
+      const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
+      this.props.receiveProduct(dataSource.filter(data => !data.trace_id).map(data => ({
+        location: data.location,
+        damage_level: data.damage_level,
+        inbound_qty: data.inbound_qty,
+        inbound_pack_qty: data.inbound_pack_qty,
+        convey_no: data.convey_no,
+      })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
+        if (!result.error) {
+          this.props.hideReceiveModal();
+        }
+      });
+    }
   }
   scanColumns = [{
     title: '商品条码',

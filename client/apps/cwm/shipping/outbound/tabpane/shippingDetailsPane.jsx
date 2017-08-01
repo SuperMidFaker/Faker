@@ -24,6 +24,9 @@ export default class ShippingDetailsPane extends React.Component {
     outboundHead: PropTypes.object.isRequired,
     shippingMode: PropTypes.string.isRequired,
   }
+  state = {
+    searchValue: '',
+  }
   componentWillMount() {
     this.props.loadShipDetails(this.props.outboundNo);
   }
@@ -31,6 +34,9 @@ export default class ShippingDetailsPane extends React.Component {
     if (nextProps.reload) {
       this.props.loadShipDetails(this.props.outboundNo);
     }
+  }
+  handleSearch = (value) => {
+    this.setState({ searchValue: value });
   }
   columns = [{
     title: '装车/配送单号',
@@ -99,12 +105,20 @@ export default class ShippingDetailsPane extends React.Component {
   }]
   render() {
     const { shipDetails } = this.props;
+    const dataSource = shipDetails.filter((item) => {
+      if (this.state.searchValue) {
+        const reg = new RegExp(this.state.searchValue);
+        return reg.test(item.product_no) || reg.test(item.product_sku);
+      } else {
+        return true;
+      }
+    });
     return (
       <div className="table-fixed-layout">
         <div className="toolbar">
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
         </div>
-        <Table columns={this.columns} indentSize={0} dataSource={shipDetails} rowKey="id"
+        <Table columns={this.columns} indentSize={0} dataSource={dataSource} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
         />
       </div>
