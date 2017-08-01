@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button } from 'antd';
+import { Table, Button, Input } from 'antd';
 import { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 import { CWM_SO_TYPES } from 'common/constants';
+
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -42,12 +44,12 @@ export default class OrderDetailsPane extends React.Component {
   }
   columns = [{
     title: '行号',
-    width: 40,
+    width: 50,
     render: (o, record, index) => index + 1,
   }, {
     title: 'SO编号',
     dataIndex: 'so_no',
-    width: 160,
+    width: 180,
   }, {
     title: '订单类型',
     dataIndex: 'so_type',
@@ -97,6 +99,7 @@ export default class OrderDetailsPane extends React.Component {
     return (
       <div>
         <div className="toolbar">
+          <Search placeholder="SO编号" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             <Button size="large" onClick={this.handleRemoveOrders} icon="close">

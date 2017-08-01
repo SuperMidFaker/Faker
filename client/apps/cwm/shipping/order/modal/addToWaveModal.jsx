@@ -76,7 +76,7 @@ export default class AddToWaveModal extends Component {
     const { wave, loading } = this.props;
     return (
       <Modal title="添加到波次计划" visible={this.props.visible} onOk={this.handleSubmit} onCancel={this.handleCancel}>
-        <Table columns={this.columns} dataSource={wave.data} rowSelection={rowSelection} loading={loading} rowKey="wave_no" />
+        <Table size="middle" columns={this.columns} dataSource={wave.data} rowSelection={rowSelection} loading={loading} rowKey="wave_no" />
       </Modal>
     );
   }

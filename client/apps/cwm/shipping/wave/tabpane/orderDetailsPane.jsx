@@ -2,10 +2,11 @@ import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button } from 'antd';
+import { Table, Button, Input } from 'antd';
 import { openAllocatingModal } from 'common/reducers/cwmOutbound';
 import { loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -34,11 +35,11 @@ export default class OrderDetailsPane extends React.Component {
   columns = [{
     title: '行号',
     dataIndex: 'wave_seq_no',
-    width: 40,
+    width: 50,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 120,
+    width: 160,
   }, {
     title: '中文品名',
     dataIndex: 'name',
@@ -50,11 +51,11 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '计量单位',
     dataIndex: 'unit_name',
-    width: 60,
+    width: 80,
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 120,
+    width: 160,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
@@ -71,11 +72,9 @@ export default class OrderDetailsPane extends React.Component {
     return (
       <div>
         <div className="toolbar">
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-          </div>
-          <div className="toolbar-right">
-            {!this.state.allocated && <Button size="large" onClick={this.handleAutoAllocate} >合并</Button>}
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.state.details} rowKey="wave_seq_no"

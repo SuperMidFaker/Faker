@@ -102,7 +102,7 @@ export default class WaveList extends React.Component {
     render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '操作',
-    width: 120,
+    width: 150,
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseWave} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditWave} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} onHit={this.cancelWave} /></span>);
