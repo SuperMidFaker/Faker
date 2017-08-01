@@ -538,7 +538,12 @@ export default class DispatchDock extends Component {
   handleNewVehicleClick = () => {
     this.setState({ newVehicleVisible: true });
   }
-
+  handleTagClose = (shipmtNo) => {
+    const shipmts = [...this.props.shipmts];
+    const index = shipmts.findIndex(item => item.shipmt_no === shipmtNo);
+    shipmts.splice(index, 1);
+    this.props.changeDockStatus({ shipmts });
+  }
   renderTabs() {
     const { vehicles } = this.props;
     this.lspsds.remotes = this.state.lspsVar;
@@ -582,7 +587,7 @@ export default class DispatchDock extends Component {
         close = false;
       }
       shipmts.forEach((v) => {
-        arr.push((<Tag closable={close} color="blue">{v.shipmt_no}</Tag>));
+        arr.push((<Tag closable={close} color="blue" onClose={() => this.handleTagClose(v.shipmt_no)}>{v.shipmt_no}</Tag>));
         if (!isNaN(v.total_count)) {
           totalCount += v.total_count;
         }
