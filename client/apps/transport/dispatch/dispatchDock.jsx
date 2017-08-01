@@ -130,7 +130,12 @@ export default class DispatchDock extends Component {
             pickup_charge: a.pickup_charge + b.pickup_charge,
             deliver_charge: a.deliver_charge + b.deliver_charge,
             total_charge: a.total_charge + b.total_charge,
-          }));
+          }), {
+            freight_charge: 0,
+            pickup_charge: 0,
+            deliver_charge: 0,
+            total_charge: 0,
+          });
           return (
             <Popover placement="rightBottom" title={`${record.partner_name} 价格明细`} content={
               <ChargeSpecForm charges={o} onChange={this.handleChargeChange} index={index} />
