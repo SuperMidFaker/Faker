@@ -79,6 +79,8 @@ export default class AddLocationModal extends Component {
             message.info('保存成功');
             this.props.hideLocationModal();
             this.props.loadLocations(whseCode, zoneCode, tenantId);
+          } else {
+            message.error(result.error.message);
           }
         }
       );
@@ -89,6 +91,8 @@ export default class AddLocationModal extends Component {
             message.info('创建成功');
             this.props.hideLocationModal();
             this.props.loadLocations(whseCode, zoneCode, tenantId);
+          } else {
+            message.error(result.error.message);
           }
         }
       );
