@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Col, Row, Icon, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { loadOrderNodesTriggers, hideDock, getAsnByUuid } from 'common/reducers/crmOrders';
+import { loadOrderNodesTriggers, hideDock, getAsnFromFlow } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmReceive';
 import { NODE_BIZ_OBJECTS } from 'common/constants';
 // import { Logixon } from 'client/components/FontIcon';
@@ -11,11 +11,11 @@ import { NODE_BIZ_OBJECTS } from 'common/constants';
 const Step = Steps.Step;
 
 @connect(
-  state => ({
+  (state, props) => ({
     tenantId: state.account.tenantId,
-    dock: state.crmOrders.dock,
+    asn: state.crmOrders.dockInstMap[props.uuid],
   }),
-  { hideDock, showDock, loadOrderNodesTriggers, getAsnByUuid }
+  { hideDock, showDock, loadOrderNodesTriggers, getAsnFromFlow }
 )
 export default class CWMInboundNodeCard extends React.Component {
   static propTypes = {
@@ -28,28 +28,32 @@ export default class CWMInboundNodeCard extends React.Component {
   }
   componentDidMount() {
     const { uuid, kind, tenantId } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then(
-      (result) => {
-        if (!result.data) return;
+    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else if (result.data) {
         this.setState({
           trigger: this.triggerStepMap[result.data.trigger_name],
         });
       }
-    );
-    this.props.getAsnByUuid(uuid, tenantId);
+    });
+    this.props.getAsnFromFlow(uuid, tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    const { uuid, kind, tenantId } = nextProps;
-    if (uuid !== this.props.uuid) {
+    if (nextProps.uuid !== this.props.uuid) {
+      const { uuid, kind, tenantId } = nextProps;
       this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then(
         (result) => {
-          if (!result.data) return;
-          this.setState({
-            trigger: this.triggerStepMap[result.data.trigger_name],
-          });
+          if (result.error) {
+            message.error(result.error.message);
+          } else if (result.data) {
+            this.setState({
+              trigger: this.triggerStepMap[result.data.trigger_name],
+            });
+          }
         }
       );
-      this.props.getAsnByUuid(uuid, tenantId);
+      this.props.getAsnFromFlow(uuid, tenantId);
     }
   }
   triggerStepMap = {
@@ -59,40 +63,41 @@ export default class CWMInboundNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS[this.props.kind][0].triggers[3].key]: 3,
   }
   handlePreview = () => {
-    const { dock } = this.props;
-    if (this.state.trigger === -1) {
+    const { asn } = this.props;
+    if (!asn.asn_no) {
       message.info('订单尚未创建');
     } else {
       this.props.hideDock();
-      this.props.showDock(dock.asn_no);
+      this.props.showDock(asn.asn_no);
     }
   }
   handleInbound = () => {
-    this.context.router.push(`/cwm/receiving/inbound/${this.props.uuid}`); // TODO
+    this.context.router.push(`/cwm/receiving/inbound/${this.props.asn.inbound_no}`);
   }
   render() {
-    const { title, children, dock } = this.props;
+    const { title, children, asn = {} } = this.props;
+    console.log(asn);
     return (
-      <Card title={<span>{title}</span>} extra={
+      <Card title={<span>{title}</span>} extra={asn.inbound_no &&
         <Tooltip title="进入详情">
-          <Button size="small" shape="circle" icon="right" onClick={() => this.handleInbound()} />
+          <Button size="small" shape="circle" icon="right" onClick={this.handleInbound} />
         </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
-        onClick={() => this.handlePreview(this.props.uuid)}
+        onClick={this.handlePreview} disabled
       >
         <Row>
           <Col span="8">
             <InfoItem label="ASN编号" addonBefore={<Icon type="tag-o" />}
-              field={dock.asn_no}
+              field={asn.asn_no}
             />
           </Col>
           <Col span="8">
             <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />}
-              field={dock.whse_name}
+              field={asn.whse_name}
             />
           </Col>
           <Col span="8">
             <InfoItem label="货物属性" addonBefore={<Icon type="tag-o" />}
-              field={dock.bonded ? '保税' : '非保税'}
+              field={asn.bonded ? '保税' : '非保税'}
             />
           </Col>
         </Row>

@@ -625,7 +625,7 @@ export function getAsnUuid(asnNo) {
   };
 }
 
-export function getShipmtOrderNo(uuid) {
+export function getShipmtOrderNo(uuid) { // todo dont repeat
   return {
     [CLIENT_API]: {
       types: [

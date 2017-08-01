@@ -18,7 +18,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'LOAD_ORDER_NODES_TRIGGERS', 'LOAD_ORDER_NODES_TRIGGERS_SUCCEED', 'LOAD_ORDER_NODES_TRIGGERS_FAIL',
   'CANCEL_ORDER', 'CANCEL_ORDER_SUCCEED', 'CANCEL_ORDER_FAIL',
   'CLOSE_ORDER', 'CLOSE_ORDER_SUCCEED', 'CLOSE_ORDER_FAIL',
-  'GET_ASNNO', 'GET_ASNNO_SUCCEED', 'GET_ASNNO_FAIL',
+  'LOAD_FLOWASN', 'LOAD_FLOWASN_SUCCEED', 'LOAD_FLOWASN_FAIL',
   'GET_SONO', 'GET_SONO_SUCCEED', 'GET_SONO_FAIL',
 ]);
 
@@ -43,6 +43,7 @@ const initialState = {
     whse_name: '',
     bonded: '',
   },
+  dockInstMap: {},
   formData: {
     shipmt_order_no: '',
     shipmt_order_mode: '',
@@ -145,8 +146,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, kinds: action.result.data };
     case actionTypes.GET_SONO_SUCCEED:
       return { ...state, dock: { ...state.dock, ...action.result.data } };
-    case actionTypes.GET_ASNNO_SUCCEED:
-      return { ...state, dock: { ...state.dock, ...action.result.data } };
+    case actionTypes.LOAD_FLOWASN_SUCCEED:
+      return { ...state, dockInstMap: { ...state.dockInstMap, [action.params.uuid]: action.result.data } };
     default:
       return state;
   }
@@ -420,15 +421,15 @@ export function closeOrder(orderNo) {
   };
 }
 
-export function getAsnByUuid(uuid, tenantId) {
+export function getAsnFromFlow(uuid, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_ASNNO,
-        actionTypes.GET_ASNNO_SUCCEED,
-        actionTypes.GET_ASNNO_FAIL,
+        actionTypes.LOAD_FLOWASN,
+        actionTypes.LOAD_FLOWASN_SUCCEED,
+        actionTypes.LOAD_FLOWASN_FAIL,
       ],
-      endpoint: 'v1/cwm/get/asnno',
+      endpoint: 'v1/cwm/get/flow/asn',
       method: 'get',
       params: { uuid, tenantId },
     },

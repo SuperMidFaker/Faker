@@ -12,7 +12,6 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 @injectIntl
-
 @connect(
   state => ({
     tenantId: state.account.tenantId,
@@ -27,7 +26,7 @@ export default class AddLocationModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
-    zoneCode: PropTypes.string.isRequired,
+    zoneCode: PropTypes.string,
   }
   state = {
     type: 1,

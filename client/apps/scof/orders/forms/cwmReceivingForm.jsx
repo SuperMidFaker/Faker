@@ -68,6 +68,7 @@ export default class CwmReceivingForm extends Component {
   render() {
     const { recParams, formData } = this.props;
     const node = formData.node;
+    // todo required
     return (
       <Card>
         <Row gutter={20}>

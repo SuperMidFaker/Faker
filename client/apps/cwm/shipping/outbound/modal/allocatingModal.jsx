@@ -87,7 +87,19 @@ export default class AllocatingModal extends Component {
   inventoryColumns = [{
     title: '添加',
     width: 60,
-    render: (o, record, index) => (<Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled={!this.props.editable} />),
+    render: (o, record, index) => {
+      let disabled = !this.props.editable;
+      if (!disabled) {
+        const outboundHead = this.props.outboundHead;
+        if (outboundHead.bonded && outboundHead.bonded_outtype === 'normal') {
+          disabled = !!record.ftz_ent_filed_id;
+        }
+        if (outboundHead.bonded && outboundHead.bonded_outtype === 'portion') {
+          disabled = !!record.ftz_ent_filed_id && record.portion;
+        }
+      }
+      return <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled={disabled} />;
+    },
   }, {
     title: '现分配数量',
     width: 200,
@@ -110,6 +122,15 @@ export default class AllocatingModal extends Component {
     dataIndex: 'bonded',
     width: 80,
     render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+  }, {
+    title: '入库明细ID',
+    dataIndex: 'ftz_ent_filed_id',
+    width: 120,
+  }, {
+    title: '分拨货物',
+    dataIndex: 'portion',
+    width: 80,
+    render: portion => portion ? '是' : '否',
   }, {
     title: '库存数量',
     dataIndex: 'total_qty',

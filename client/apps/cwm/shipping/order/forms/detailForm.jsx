@@ -25,6 +25,7 @@ export default class DetailForm extends Component {
     form: PropTypes.object.isRequired,
     editable: PropTypes.bool,
     detailEnable: PropTypes.bool.isRequired,
+    selectedOwner: PropTypes.number.isRequired,
   }
   state = {
     pagination: {

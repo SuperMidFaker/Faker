@@ -147,7 +147,7 @@ export default class OrderDockPanel extends React.Component {
         extra={this.renderExtra()}
         // alert={this.renderAlert()}
       >
-        {this.renderTabs()}
+        {visible && this.renderTabs()}
       </DockPanel>
     );
   }

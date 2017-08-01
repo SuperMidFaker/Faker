@@ -25,7 +25,7 @@ const InputGroup = Input.Group;
 export default class AddDetailModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    selectedOwner: PropTypes.string,
+    selectedOwner: PropTypes.number,
   }
   state = {
     product: {},

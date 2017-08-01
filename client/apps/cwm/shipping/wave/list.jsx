@@ -52,14 +52,7 @@ export default class WaveList extends React.Component {
   }
   componentWillMount() {
     const filters = { ...this.props.filters, ownerCode: 'all' };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadWaves({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.wave.pageSize,
-      current: this.props.wave.current,
-      filters,
-    });
+    this.handleReload(null, 1, filters);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -140,12 +133,13 @@ export default class WaveList extends React.Component {
       }
     });
   }
-  handleReload = () => {
+  handleReload = (whseCode, current, filters) => {
     this.props.loadWaves({
-      whseCode: this.props.defaultWhse.code,
+      whseCode: whseCode || this.props.defaultWhse.code,
+      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
-      current: this.props.wave.current,
-      filters: this.props.filters,
+      current: current || this.props.wave.current,
+      filters: filters || this.props.filters,
     });
   }
   handleEditWave = (row) => {
@@ -158,48 +152,20 @@ export default class WaveList extends React.Component {
   }
   handleStatusChange = (ev) => {
     const filters = { ...this.props.filters, status: ev.target.value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadWaves({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.wave.pageSize,
-      current: this.props.wave.current,
-      filters,
-    });
+    this.handleReload(null, 1, filters);
   }
   handleOwnerChange = (value) => {
     const filters = { ...this.props.filters, ownerCode: value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadWaves({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.wave.pageSize,
-      current: this.props.wave.current,
-      filters,
-    });
+    this.handleReload(null, 1, filters);
   }
   handleSearch = (value) => {
     const filters = { ...this.props.filters, name: value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadWaves({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.wave.pageSize,
-      current: this.props.wave.current,
-      filters,
-    });
+    this.handleReload(null, 1, filters);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    const filters = this.props.filters;
-    this.props.loadWaves({
-      whseCode: value,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.wave.pageSize,
-      current: this.props.wave.current,
-      filters,
-    });
+    this.handleReload(value, 1);
   }
   render() {
     const { whses, defaultWhse, filters, loading, owners } = this.props;
