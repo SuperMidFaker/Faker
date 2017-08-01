@@ -200,6 +200,10 @@ export default class MovementModal extends Component {
       message.info('请选择目标库位');
       return;
     }
+    if (!movementOne.movement_qty) {
+      message.info('请输入移动数量');
+      return;
+    }
     stocks.splice(index, 1);
     movements.push(movementOne);
     this.setState({
@@ -265,7 +269,7 @@ export default class MovementModal extends Component {
     const { stocks, movements } = this.state;
     const inventoryQueryForm = (<Form layout="inline">
       <FormItem label="货品">
-        <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!filter.ownerCode}/>
+        <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!filter.ownerCode} />
       </FormItem>
       <FormItem label="库位">
         <Select style={{ width: 160 }} onSelect={this.handleLocationChange} disabled={!filter.ownerCode}>

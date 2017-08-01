@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
   'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
+  'SET_INVENTORY_FILTER', 'CHANGE_COLUMNS',
 ]);
 const initialState = {
   listFilter: {
@@ -35,7 +36,15 @@ const initialState = {
     outboundProduct: {},
   },
   inventoryData: [],
-  inventoryFilter: { location: '', external_lot_no: '', serial_no: '' },
+  inventoryFilter: { location: '', startTime: '', endTime: '', searchType: 'external_lot_no' },
+  inventoryColumns: {
+    external_lot_no: true,
+    serial_no: false,
+    po_no: false,
+    asn_no: false,
+    ftz_ent_no: false,
+    cus_decl_no: false,
+  },
   allocatedData: [],
   pickingModal: {
     visible: false,
@@ -116,6 +125,19 @@ export default function reducer(state = initialState, action) {
       return { ...state, packDetails: action.result.data };
     case actionTypes.LOAD_SHIP_DETAILS_SUCCEED:
       return { ...state, shipDetails: action.result.data };
+    case actionTypes.SET_INVENTORY_FILTER:
+      return { ...state, inventoryFilter: { ...action.filters } };
+    case actionTypes.CHANGE_COLUMNS:
+      return { ...state,
+        inventoryColumns: {
+          external_lot_no: false,
+          serial_no: false,
+          po_no: false,
+          asn_no: false,
+          ftz_ent_no: false,
+          cus_decl_no: false,
+          [action.column]: true,
+        } };
     default:
       return state;
   }
@@ -416,5 +438,19 @@ export function loadShipDetails(outboundNo) {
       method: 'get',
       params: { outboundNo },
     },
+  };
+}
+
+export function setInventoryFilter(filters) {
+  return {
+    type: actionTypes.SET_INVENTORY_FILTER,
+    filters,
+  };
+}
+
+export function changeColumns(column) {
+  return {
+    type: actionTypes.CHANGE_COLUMNS,
+    column,
   };
 }

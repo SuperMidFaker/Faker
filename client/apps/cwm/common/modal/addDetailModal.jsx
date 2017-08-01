@@ -4,7 +4,7 @@ import { Modal, Form, Input, Select, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideDetailModal, addTemporary, loadProducts, editTemporary } from 'common/reducers/cwmReceive';
+import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -17,7 +17,7 @@ const Option = Select.Option;
     temporaryDetails: state.cwmReceive.temporaryDetails,
     productNos: state.cwmReceive.productNos,
   }),
-  { hideDetailModal, addTemporary, loadProducts, editTemporary }
+  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
@@ -53,6 +53,7 @@ export default class AddDetailModal extends Component {
       order_qty: '',
       unit_price: '',
     });
+    this.props.clearProductNos();
   }
   handleSearch = (value) => {
     const { selectedOwner } = this.props;
@@ -87,6 +88,7 @@ export default class AddDetailModal extends Component {
           unit_price: '',
         });
       }
+      this.props.clearProductNos();
     });
   }
   handleSelect = (value) => {

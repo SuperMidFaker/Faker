@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Checkbox, Modal, Select, Form } from 'antd';
+import { Checkbox, Modal, Select, Form, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { hideBatchReceivingModal, batchReceive } from 'common/reducers/cwmReceive';
@@ -50,6 +50,10 @@ export default class BatchReceivingModal extends Component {
   }
   handleSubmit = () => {
     const { location, damageLevel } = this.state;
+    if (!location) {
+      message.info('请选择库位');
+      return;
+    }
     const { data, loginId, inboundNo, inboundHead } = this.props;
     const seqNos = data.map(dt => dt.asn_seq_no);
     this.props.batchReceive(seqNos, location, damageLevel, loginId, inboundHead.asn_no, inboundNo).then((result) => {

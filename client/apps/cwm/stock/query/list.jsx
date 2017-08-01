@@ -104,14 +104,24 @@ export default class StockQueryList extends React.Component {
     title: this.msg('availQty'),
     width: 100,
     dataIndex: 'avail_qty',
-    className: 'cell-align-right text-success',
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text) => {
+      if (text === 0) {
+        return <span className="cell-align-right text-normal">{text}</span>;
+      } else {
+        return <span className="cell-align-right text-success">{text}</span>;
+      }
+    },
   }, {
     title: this.msg('allocQty'),
     width: 100,
     dataIndex: 'alloc_qty',
-    className: 'cell-align-right text-warning',
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (text) => {
+      if (text === 0) {
+        return <span className="cell-align-right text-normal">{text}</span>;
+      } else {
+        return <span className="cell-align-right text-warning">{text}</span>;
+      }
+    },
   }, {
     title: this.msg('frozenQty'),
     width: 100,
