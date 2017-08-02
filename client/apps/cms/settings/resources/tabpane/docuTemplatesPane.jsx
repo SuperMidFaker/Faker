@@ -219,7 +219,7 @@ export default class InvoiceTemplate extends Component {
           </Menu>
         </Sider>
         <Content className="nav-content">
-          <div className="nav-content-head">
+          <div className="toolbar">
             <Button type="primary" onClick={this.handleCreateNew} icon="plus-circle-o">新增</Button>
             <Popover placement="bottom" content={excelTemplPopover} trigger="click">
               <Button icon="file-excel">Excel数据模板 {this.state.excelTemplCount}</Button>

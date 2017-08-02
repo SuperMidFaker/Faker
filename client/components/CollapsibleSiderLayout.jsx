@@ -191,7 +191,7 @@ export default class CollapsibleSiderLayout extends React.Component {
             }
           </Menu>
         </Sider>
-        <Layout>
+        <Layout style={{ width: 0 }}>
           {childContent}
         </Layout>
       </Layout>

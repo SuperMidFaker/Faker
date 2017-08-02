@@ -141,7 +141,7 @@ export default class WarehouseList extends Component {
             <EditWhseModal warehouse={warehouse} />
           </div>
         </Sider>
-        <Layout>
+        <Layout style={{ width: 0 }}>
           <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>

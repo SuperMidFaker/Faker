@@ -114,7 +114,7 @@ export default class ResourcesList extends Component {
             </div>
           </div>
         </Sider>
-        <Layout>
+        <Layout style={{ width: 0 }}>
           <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>

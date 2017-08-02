@@ -524,7 +524,7 @@ export default class FlowDesigner extends React.Component {
     const { activeItem } = this.state;
     const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
     return (
-      <Layout>
+      <Layout style={{ width: 0 }}>
         <Layout>
           <Header className="page-header">
             {listCollapsed && <Breadcrumb>
@@ -550,7 +550,7 @@ export default class FlowDesigner extends React.Component {
               />
             </div>
           </Header>
-          <Content className="main-content layout-min-width layout-min-width-large">
+          <Content className="main-content">
             <Spin spinning={this.props.graphLoading}>
               <Card title={this.msg('flowRelationGraph')} bodyStyle={{ padding: 0, height: 240 }} style={{ marginBottom: 16 }}
                 extra={<div className="toolbar-right">
