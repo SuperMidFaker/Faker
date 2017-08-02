@@ -333,6 +333,7 @@ export default class SHFTZCargoList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
@@ -375,7 +376,7 @@ export default class SHFTZCargoList extends React.Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
+                <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
               </div>
               <div className="panel-body table-panel table-fixed-layout">
                 <RemoteTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
