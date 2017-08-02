@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, Tooltip, message, Menu, Dropdown } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';
-import ButtonToggle from 'client/components/ButtonToggle';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE,
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -21,7 +20,6 @@ import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, d
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import ManifestTemplates from '../common/manifest/template/templates';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
@@ -31,7 +29,7 @@ import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -614,101 +612,78 @@ export default class DelegationList extends Component {
     }].concat(this.props.clients);
     return (
       <Layout>
-        <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('delegationManagement')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
-              <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="import">{this.msg('import')}</RadioButton>
-              <RadioButton value="export">{this.msg('export')}</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
-              <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
-              <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
-              <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
-              <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
-            </RadioGroup>
-            <div className="page-header-tools">
-              <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
-                {this.msg('createDelegation')}
-              </Button>
-            </div>
-          </Header>
-          <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
-                  onInputSearch={this.handleSearch} value={listFilter.filterNo}
-                />
-                <span />
-                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                  onChange={this.handleClientSelectChange} value={clientPid}
-                  dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-                >
-                  {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-                    search={`${data.partner_code}${data.name}`}
-                  >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                  )}
-                </Select>
-                <span />
-                <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
-                  onChange={this.handleViewChange}
-                >
-                  <OptGroup label="常用视图">
-                    <Option value="all">全部委托</Option>
-                    <Option value="my">我负责的委托</Option>
-                  </OptGroup>
-                </Select>
-                <span />
-                <RangePicker size="large" value={dateVal}
-                  ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-                  onChange={this.handleDateRangeChange}
-                />
-                <div className="toolbar-right">
-                  <Tooltip title="制单规则">
-                    <ButtonToggle size="large" iconOff="book" iconOn="book" onClick={this.toggleRightSider} />
-                  </Tooltip>
-                </div>
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  <a role="presentation" onClick={this.handleDeselectRows}>不选</a>
-                </div>
-              </div>
-              <div className="panel-body table-panel table-fixed-layout table-fixed-layout">
-                <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                  rowKey="delg_no" scroll={{ x: 1900 }}
-                />
-              </div>
-            </div>
-          </Content>
-          <DelegationDockPanel />
-          <OrderDockPanel />
-          <ShipmentDockPanel />
-          <ReceiveDockPanel />
-          <ShippingDockPanel />
-        </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSiderCollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="panel-header">
-              <h3>制单规则</h3>
-            </div>
-            <ManifestTemplates ietype={this.props.ietype} />
+        <Header className="page-header">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              {this.msg('delegationManagement')}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="import">{this.msg('import')}</RadioButton>
+            <RadioButton value="export">{this.msg('export')}</RadioButton>
+          </RadioGroup>
+          <span />
+          <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
+            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
+            <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
+            <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
+            <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
+          </RadioGroup>
+          <div className="page-header-tools">
+            <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
+              {this.msg('createDelegation')}
+            </Button>
           </div>
-        </Sider>
+        </Header>
+        <Content className="main-content" key="main">
+          <div className="page-body">
+            <div className="toolbar">
+              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
+                onInputSearch={this.handleSearch} value={listFilter.filterNo}
+              />
+              <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleClientSelectChange} value={clientPid}
+                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+              >
+                {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+                  search={`${data.partner_code}${data.name}`}
+                >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+                  )}
+              </Select>
+              <span />
+              <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+                onChange={this.handleViewChange}
+              >
+                <OptGroup label="常用视图">
+                  <Option value="all">全部委托</Option>
+                  <Option value="my">我负责的委托</Option>
+                </OptGroup>
+              </Select>
+              <span />
+              <RangePicker size="large" value={dateVal}
+                ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+                onChange={this.handleDateRangeChange}
+              />
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                <a role="presentation" onClick={this.handleDeselectRows}>不选</a>
+              </div>
+            </div>
+            <div className="panel-body table-panel table-fixed-layout table-fixed-layout">
+              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
+                rowKey="delg_no" scroll={{ x: 1900 }}
+              />
+            </div>
+          </div>
+        </Content>
+        <DelegationDockPanel />
+        <OrderDockPanel />
+        <ShipmentDockPanel />
+        <ReceiveDockPanel />
+        <ShippingDockPanel />
       </Layout>
     );
   }
