@@ -19,7 +19,7 @@ const actionTypes = createActionTypes('@@welogix/crm/orders/', [
   'CANCEL_ORDER', 'CANCEL_ORDER_SUCCEED', 'CANCEL_ORDER_FAIL',
   'CLOSE_ORDER', 'CLOSE_ORDER_SUCCEED', 'CLOSE_ORDER_FAIL',
   'LOAD_FLOWASN', 'LOAD_FLOWASN_SUCCEED', 'LOAD_FLOWASN_FAIL',
-  'GET_SONO', 'GET_SONO_SUCCEED', 'GET_SONO_FAIL',
+  'LOAD_FLOWSO', 'LOAD_FLOWSO_SUCCEED', 'LOAD_FLOWSO_FAIL',
 ]);
 
 const initialState = {
@@ -30,18 +30,6 @@ const initialState = {
     visible: false,
     tabKey: null,
     order: {},
-    clearances: [],
-    transports: [],
-    clearanceFees: [
-      // server_charges: [],
-      // cush_charges: [],
-      // tot_sercharges: {},
-    ],
-    asn_no: '',
-    so_no: '',
-    whse_code: '',
-    whse_name: '',
-    bonded: '',
   },
   dockInstMap: {},
   formData: {
@@ -136,16 +124,16 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DOCK: {
       return { ...state, dock: { ...state.dock, visible: false } };
     }
-    case actionTypes.SHOW_DOCK: {
+    case actionTypes.SHOW_DOCK:
       return { ...state, dock: { ...state.dock, visible: true } };
-    }
-    case actionTypes.CHANGE_DOCK_TAB: {
+    case actionTypes.CHANGE_DOCK_TAB:
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
+    case actionTypes.LOAD_ORDER_NODES_SUCCEED: {
+      const dockInstMap = {};
+      action.result.data.forEach((inst) => { dockInstMap[inst.uuid] = {}; });
+      return { ...state, kinds: action.result.data, dockInstMap };
     }
-    case actionTypes.LOAD_ORDER_NODES_SUCCEED:
-      return { ...state, kinds: action.result.data };
-    case actionTypes.GET_SONO_SUCCEED:
-      return { ...state, dock: { ...state.dock, ...action.result.data } };
+    case actionTypes.LOAD_FLOWSO_SUCCEED:
     case actionTypes.LOAD_FLOWASN_SUCCEED:
       return { ...state, dockInstMap: { ...state.dockInstMap, [action.params.uuid]: action.result.data } };
     default:
@@ -436,15 +424,15 @@ export function getAsnFromFlow(uuid, tenantId) {
   };
 }
 
-export function getSoByUuid(uuid, tenantId) {
+export function getSoFromFlow(uuid, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_SONO,
-        actionTypes.GET_SONO_SUCCEED,
-        actionTypes.GET_SONO_FAIL,
+        actionTypes.LOAD_FLOWSO,
+        actionTypes.LOAD_FLOWSO_SUCCEED,
+        actionTypes.LOAD_FLOWSO_FAIL,
       ],
-      endpoint: 'v1/cwm/get/sono',
+      endpoint: 'v1/cwm/get/flow/so',
       method: 'get',
       params: { uuid, tenantId },
     },

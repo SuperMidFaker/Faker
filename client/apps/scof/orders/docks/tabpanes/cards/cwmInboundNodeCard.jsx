@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { routerShape } from 'react-router';
 import { connect } from 'react-redux';
 import { Button, Tooltip, Card, Col, Row, Icon, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
@@ -21,6 +22,9 @@ export default class CWMInboundNodeCard extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     children: PropTypes.any,
+  }
+  static contextTypes = {
+    router: routerShape.isRequired,
   }
   state = {
     is_editing: false,
@@ -75,12 +79,14 @@ export default class CWMInboundNodeCard extends React.Component {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.asn.inbound_no}`);
   }
   render() {
-    const { title, children, asn = {} } = this.props;
-    console.log(asn);
+    const { title, children, asn } = this.props;
+    if (!asn) {
+      return;
+    }
     return (
       <Card title={<span>{title}</span>} extra={asn.inbound_no &&
         <Tooltip title="进入详情">
-          <Button size="small" shape="circle" icon="right" onClick={this.handleInbound} />
+          <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleInbound} />
         </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
         onClick={this.handlePreview} disabled
       >
