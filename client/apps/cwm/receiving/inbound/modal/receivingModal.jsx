@@ -138,9 +138,9 @@ export default class ReceivingModal extends Component {
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
-    const validate = dataSource.find(data => data.inbound_pack_qty === 0);
+    const validate = dataSource.find(data => data.inbound_pack_qty === 0 || data.location === '');
     if (validate) {
-      message.info('收获数量不能为空');
+      message.info('收获数量及库位不能为空');
     } else {
       const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
       this.props.receiveProduct(dataSource.filter(data => !data.trace_id).map(data => ({

@@ -58,6 +58,7 @@ const initialState = {
   },
   temporaryDetails: [],
   productNos: [],
+  products: [],
   asnlist: {
     totalCount: 0,
     pageSize: 20,
@@ -126,7 +127,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, temporaryDetails };
     }
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
-      return { ...state, productNos: action.result.data };
+      return { ...state, productNos: action.result.data.productNos, products: action.result.data.products };
     case actionTypes.LOAD_ASN_LISTS:
       return { ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true } };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
