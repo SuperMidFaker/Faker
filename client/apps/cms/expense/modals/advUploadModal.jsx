@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Select, Modal, Radio, Checkbox, Upload, Button, Icon, Row, Col, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { advExpImport } from 'common/reducers/cmsExpense';
+import { advExpImport, showAdvImpTempModal } from 'common/reducers/cmsExpense';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -24,7 +24,7 @@ const formItemLayout = {
     tenantCode: state.account.code,
     partners: state.cmsExpense.partners,
   }),
-  { advExpImport }
+  { advExpImport, showAdvImpTempModal }
 )
 @Form.create()
 export default class AdvUploadModal extends React.Component {
@@ -67,6 +67,7 @@ export default class AdvUploadModal extends React.Component {
         message.error(result.error.message, 10);
       } else {
         this.props.toggle();
+        this.props.showAdvImpTempModal(true);
       }
     });
   }
