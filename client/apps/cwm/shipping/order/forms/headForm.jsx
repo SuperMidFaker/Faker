@@ -8,6 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { loadSkuParams } from 'common/reducers/cwmSku';
 
 const dateFormat = 'YYYY/MM/DD';
 const formatMsg = format(messages);
@@ -21,7 +22,8 @@ const RadioGroup = Radio.Group;
   state => ({
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
-  })
+  }),
+  { loadSkuParams }
 )
 export default class HeadForm extends Component {
   static propTypes = {
@@ -31,6 +33,17 @@ export default class HeadForm extends Component {
   }
   state = {
     bonded: 0,
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.soHead !== this.props.soHead) {
+      const { soHead } = nextProps;
+      if (soHead) {
+        this.setState({
+          bonded: soHead.bonded,
+        });
+        this.props.loadSkuParams(soHead.owner_partner_id);
+      }
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -62,6 +75,7 @@ export default class HeadForm extends Component {
   }
   handleSelect = (value) => {
     this.props.handleOwnerChange(true, value);
+    this.props.loadSkuParams(value);
   }
   render() {
     const { form: { getFieldDecorator }, owners, soHead, defaultWhse } = this.props;
