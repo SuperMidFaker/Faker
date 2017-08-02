@@ -25,12 +25,13 @@ export function IEPort(props) {
     options: formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_code} | ${cus.customs_name}`,
+      search: `${cus.customs_code}${cus.customs_name}`,
     })),
     label: ietype === 'import' ? msg('iport') : msg('eport'),
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
 
   return (
@@ -114,12 +115,13 @@ export function PortDate(props) {
     options: formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_code} | ${cus.customs_name}`,
+      search: `${cus.customs_code}${cus.customs_name}`,
     })),
     label: ietype === 'import' ? msg('iport') : msg('eport'),
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   const ieDateProps = {
     outercol: 24,
@@ -287,8 +289,9 @@ export function DeclCustoms(props) {
     options: formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_code} | ${cus.customs_name}`,
+      search: `${cus.customs_code}${cus.customs_name}`,
     })),
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
 
   return (
@@ -387,13 +390,14 @@ export function Transport(props) {
     options: formRequire.transModes.map(tm => ({
       value: tm.trans_code,
       text: `${tm.trans_code} | ${tm.trans_spec}`,
+      search: `${tm.trans_code}${tm.trans_spec}`,
     })),
     label: msg('transMode'),
     disabled,
     formData,
     rules: [{ required }],
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   const modeNameProps = {
     outercol: 24,
@@ -490,13 +494,14 @@ export function TradeRemission(props) {
     options: formRequire.tradeModes.map(tm => ({
       value: tm.trade_mode,
       text: `${tm.trade_mode} | ${tm.trade_abbr}`,
+      search: `${tm.trade_mode}${tm.trade_abbr}`,
     })),
     label: msg('tradeMode'),
     rules: [{ required }],
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   const declWay = formData.decl_way_code !== '0102' && formData.decl_way_code !== '0103';
   const remissionProps = {
@@ -506,13 +511,14 @@ export function TradeRemission(props) {
     options: formRequire.remissionModes.map(rm => ({
       value: rm.rm_mode,
       text: `${rm.rm_mode} | ${rm.rm_spec}`,
+      search: `${rm.rm_mode}${rm.rm_spec}`,
     })),
     rules: declWay ? [{ required }] : [{ required: false }],
     label: msg('rmModeName'),
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <Col span={16}>
@@ -595,13 +601,14 @@ export function CountryAttr(props) {
     options: formRequire.districts.map(dist => ({
       value: dist.district_code,
       text: `${dist.district_code} | ${dist.district_name}`,
+      search: `${dist.district_code}${dist.district_name}`,
     })),
     label: ietype === 'import' ? msg('iDistrict') : msg('eDistrict'),
     rules: [{ required }],
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <Row>
@@ -650,7 +657,7 @@ export function TradeMode(props) {
     formData,
     rules: [{ required }],
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <FormLocalSearchSelect {...trxModeProps} />
@@ -693,7 +700,7 @@ export function UsageTrade(props) {
     formData,
     rules: [{ required }],
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <Col span={9}>

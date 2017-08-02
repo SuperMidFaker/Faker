@@ -154,6 +154,7 @@ export default class ManifestTemplate extends Component {
         mergeObj.merge_byengno = 1;
       }
     }
+    mergeObj.merge_checked = this.props.form.getFieldValue('merge_checked') || fieldInits.merge_checked;
     let specialHsSorts = '';
     if (specialHsSortArr) {
       specialHsSorts = specialHsSortArr.join(',');

@@ -21,6 +21,7 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
+    tenantCode: state.account.code,
     partners: state.cmsExpense.partners,
   }),
   { advExpImport }
@@ -47,10 +48,18 @@ export default class AdvUploadModal extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleOk = () => {
     const fieldsValue = this.props.form.getFieldsValue();
+    let partner = {};
+    if (this.state.importMode === 'recpt') {
+      partner = this.props.partners.customer.filter(pt => pt.partner_id === fieldsValue.partnerIdPay)[0];
+    } else {
+      partner = this.props.partners.supplier.filter(pt => pt.partner_id === fieldsValue.partnerIdRec)[0];
+    }
     const params = {
       ...fieldsValue,
+      partner,
       importMode: this.state.importMode,
       tenantId: this.props.tenantId,
+      tenantCode: this.props.tenantCode,
       file: this.state.attachments[0],
     };
     this.props.advExpImport(params).then((result) => {
@@ -106,7 +115,7 @@ export default class AdvUploadModal extends React.Component {
             </Select>
           </FormItem>
           <FormItem label={this.msg('payer')} {...formItemLayout} >
-            {getFieldDecorator('partnerId')(
+            {getFieldDecorator('partnerIdPay', { rules: [{ required: true }] })(
               <Select
                 showSearch
                 showArrow
@@ -136,7 +145,7 @@ export default class AdvUploadModal extends React.Component {
       return (
         <div>
           <FormItem label={this.msg('recipient')} {...formItemLayout} >
-            {getFieldDecorator('partnerId')(
+            {getFieldDecorator('partnerIdRec', { rules: [{ required: true }] })(
               <Select
                 showSearch
                 showArrow
@@ -160,7 +169,7 @@ export default class AdvUploadModal extends React.Component {
             <Col offset={6}>
               <FormItem>
                 {getFieldDecorator('calculateAll', { initialValue: false })(
-                  <Checkbox>同时计算收款方应收代垫费用</Checkbox>
+                  <Checkbox>同时计算付款方应收代垫费用</Checkbox>
                 )}
               </FormItem>
             </Col>
