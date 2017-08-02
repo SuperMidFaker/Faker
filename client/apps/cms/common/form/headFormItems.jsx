@@ -26,12 +26,13 @@ export function IEPort(props) {
     options: formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_code} | ${cus.customs_name}`,
+      search: `${cus.customs_code}${cus.customs_name}`,
     })),
     label: ietype === 'import' ? msg('iport') : msg('eport'),
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
 
   return (
@@ -224,8 +225,9 @@ export function DeclCustoms(props) {
     options: formRequire.customs.map(cus => ({
       value: cus.customs_code,
       text: `${cus.customs_code} | ${cus.customs_name}`,
+      search: `${cus.customs_code}${cus.customs_name}`,
     })),
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
 
   return (
@@ -443,13 +445,14 @@ export function TradeRemission(props) {
     options: formRequire.tradeModes.map(tm => ({
       value: tm.trade_mode,
       text: `${tm.trade_mode} | ${tm.trade_abbr}`,
+      search: `${tm.trade_mode}${tm.trade_abbr}`,
     })),
     label: msg('tradeMode'),
     rules: [{ required }],
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   // const declWay = formData.decl_way_code !== '0102' && formData.decl_way_code !== '0103';
   const remissionProps = {
@@ -459,6 +462,7 @@ export function TradeRemission(props) {
     options: formRequire.remissionModes.map(rm => ({
       value: rm.rm_mode,
       text: `${rm.rm_mode} | ${rm.rm_spec}`,
+      search: `${rm.rm_mode}${rm.rm_spec}`,
     })),
     // rules: declWay ? [{ required }] : [{ required: false }],
     required: false,
@@ -466,7 +470,7 @@ export function TradeRemission(props) {
     disabled,
     formData,
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <Col span={16}>
@@ -606,7 +610,7 @@ export function TradeMode(props) {
     formData,
     rules: [{ required }],
     getFieldDecorator,
-    searchKeyFn: opt => opt.value,
+    searchKeyFn: opt => opt.search,
   };
   return (
     <FormLocalSearchSelect {...trxModeProps} />

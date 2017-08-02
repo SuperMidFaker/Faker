@@ -170,6 +170,10 @@ const messages = defineMessages({
     id: 'cms.expense.delg.entryId',
     defaultMessage: '报关单号',
   },
+  billSeqNo: {
+    id: 'cms.expense.delg.billSeq.no',
+    defaultMessage: '清单编号',
+  },
   preEntryNo: {
     id: 'cms.expense.delg.preEntry.no',
     defaultMessage: '内部编号',

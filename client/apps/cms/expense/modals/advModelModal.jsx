@@ -102,7 +102,7 @@ export default class AdvModelModal extends Component {
       if (selData) {
         if (selData.invoice_en) {
           csvData[0] = csvData[0].concat([selData.fee_name, '发票抬头', '发票类型']);
-          csvData[1] = csvData[1].concat([selData.fee_code, `TD_${selData.fee_code}`, `LX_${selData.fee_code}`]);
+          csvData[1] = csvData[1].concat([selData.fee_code, `FP#TD_${selData.fee_code}`, `FP#LX_${selData.fee_code}`]);
         } else {
           csvData[0].push(selData.fee_name);
           csvData[1].push(selData.fee_code);

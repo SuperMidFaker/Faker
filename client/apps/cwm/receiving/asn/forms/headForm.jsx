@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, DatePicker, Card, Col, Radio, Row } from 'antd';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import moment from 'moment';
+import { loadSkuParams } from 'common/reducers/cwmSku';
 import { formatMsg } from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -19,7 +20,8 @@ const RadioGroup = Radio.Group;
   state => ({
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
-  })
+  }),
+  { loadSkuParams }
 )
 export default class HeadForm extends Component {
   static propTypes = {
@@ -30,12 +32,15 @@ export default class HeadForm extends Component {
   state = {
     bonded: 0,
   }
-  componentWillMount() {
-    const { asnHead } = this.props;
-    if (asnHead) {
-      this.setState({
-        bonded: asnHead.bonded,
-      });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.asnHead !== this.props.asnHead) {
+      const { asnHead } = nextProps;
+      if (asnHead) {
+        this.setState({
+          bonded: asnHead.bonded,
+        });
+        this.props.loadSkuParams(asnHead.owner_partner_id);
+      }
     }
   }
   msg = formatMsg(this.props.intl)
@@ -68,6 +73,7 @@ export default class HeadForm extends Component {
   }
   handleSelect = (value) => {
     this.props.handleOwnerChange(true, value);
+    this.props.loadSkuParams(value);
   }
   render() {
     const { form: { getFieldDecorator }, owners, asnHead, defaultWhse } = this.props;

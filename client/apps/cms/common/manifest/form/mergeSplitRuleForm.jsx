@@ -86,7 +86,7 @@ export default class MergeSplitForm extends React.Component {
     this.setState({
       mergeOpt: { checked: !this.state.mergeOpt.checked },
     });
-    this.props.form.setFieldsValue({ merge_checked: !this.state.mergeOpt.checked });
+    return !this.state.mergeOpt.checked;
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, formData } = this.props;
@@ -97,9 +97,10 @@ export default class MergeSplitForm extends React.Component {
           <Panel key="merge" header={this.msg('mergePrinciple')} >
             <FormItem>
               <Col span="3">
-                <Radio checked={mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                  {this.msg('conditionalMerge')}
-                </Radio>
+                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(
+                  <Radio checked={mergeOpt.checked}>
+                    {this.msg('conditionalMerge')}
+                  </Radio>)}
               </Col>
               <Col offset="2" span="19">
                 {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr,
@@ -143,9 +144,10 @@ export default class MergeSplitForm extends React.Component {
             </Col> : null}
             <FormItem>
               <Col span="3">
-                <Radio checked={!this.state.mergeOpt.checked} onChange={this.handleMergeRadioChange}>
-                  {this.msg('nonMerge')}
-                </Radio>
+                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(
+                  <Radio checked={!mergeOpt.checked}>
+                    {this.msg('conditionalMerge')}
+                  </Radio>)}
               </Col>
               <Col offset="2" span="19">
                 按清单数据直接生成报关建议书

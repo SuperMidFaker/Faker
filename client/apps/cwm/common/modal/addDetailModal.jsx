@@ -18,6 +18,9 @@ const InputGroup = Input.Group;
     visible: state.cwmReceive.detailModal.visible,
     temporaryDetails: state.cwmReceive.temporaryDetails,
     productNos: state.cwmReceive.productNos,
+    products: state.cwmReceive.products,
+    units: state.cwmSku.params.units,
+    currencies: state.cwmSku.params.currencies,
   }),
   { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos }
 )
@@ -26,9 +29,15 @@ export default class AddDetailModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     selectedOwner: PropTypes.number,
+    units: PropTypes.arrayOf(PropTypes.shape({
+      code: PropTypes.string,
+      name: PropTypes.string,
+    })),
   }
   state = {
     product: {},
+    amount: 0,
+    skus: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.product !== this.props.product) {
@@ -49,6 +58,7 @@ export default class AddDetailModal extends Component {
     this.props.hideDetailModal();
     this.setState({
       product: {},
+      amount: 0,
     });
     this.props.form.setFieldsValue({
       product_no: '',
@@ -75,6 +85,7 @@ export default class AddDetailModal extends Component {
             product_sku: product.product_sku,
             currency: product.currency,
             currency_name: product.currency_name,
+            amount: this.state.amount,
             ...values,
           });
         } else {
@@ -83,6 +94,7 @@ export default class AddDetailModal extends Component {
         this.handleCancel();
         this.setState({
           product: {},
+          amount: 0,
         });
         this.props.form.setFieldsValue({
           product_no: '',
@@ -93,13 +105,65 @@ export default class AddDetailModal extends Component {
       this.props.clearProductNos();
     });
   }
+  handleQtyChange = (e) => {
+    const unitPrice = this.props.form.getFieldValue('unit_price');
+    const amount = this.state.amount;
+    if (!unitPrice && !amount) { return; }
+    if (unitPrice) {
+      this.setState({ amount: unitPrice * e.target.value });
+    }
+    if (!unitPrice && amount) {
+      this.props.form.setFieldsValue({ unit_price: (amount / e.target.value).toFixed(2) });
+    }
+  }
+  handlePriceChange = (e) => {
+    const orderQty = this.props.form.getFieldValue('order_qty');
+    if (orderQty) {
+      this.setState({ amount: orderQty * e.target.value });
+    }
+  }
+  handleamountChange = (e) => {
+    const orderQty = this.props.form.getFieldValue('order_qty');
+    this.setState({
+      amount: e.target.value,
+    });
+    if (orderQty) {
+      this.props.form.setFieldsValue({ unit_price: (e.target.value / orderQty).toFixed(2) });
+    }
+  }
   handleSelect = (value) => {
-    const { productNos } = this.props;
-    const product = productNos.find(item => item.product_no === value);
-    this.setState({ product });
+    const { products } = this.props;
+    const filterProducts = products.filter(item => item.product_no === value);
+    const skus = filterProducts.map(fp => fp.product_sku);
+    this.setState({
+      product: filterProducts[0],
+      skus,
+    });
+  }
+  handleUnitChange = (value) => {
+    const unit = this.props.units.filter(un => un.code === value)[0];
+    const product = { ...this.state.product, unit_name: unit.name };
+    if (unit) {
+      this.setState({ product });
+    }
+  }
+  handleCurrChange = (value) => {
+    const curr = this.props.currencies.filter(cu => cu.code === value)[0];
+    const product = { ...this.state.product, currency: curr.code, currency_name: curr.name };
+    if (curr) {
+      this.setState({ product });
+    }
+  }
+  handleSelectSku = (value) => {
+    const { products } = this.props;
+    const product = products.find(p => p.product_sku === value);
+    this.setState({
+      product,
+    });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, productNos } = this.props;
+    const { form: { getFieldDecorator }, visible, productNos, units, currencies } = this.props;
+    const { skus } = this.state;
     const product = this.state.product;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -113,16 +177,14 @@ export default class AddDetailModal extends Component {
               rules: [{ required: true, message: '请输入货号' }],
             })(
               <Select mode="combobox" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
-                {
-                  productNos.map(data => (<Option value={data.product_no} key={data.product_no}
-                    search={data.product_no}
-                  >{data.product_no}</Option>)
-                  )}
+                {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
               </Select>
             )}
           </FormItem>
           <FormItem label="SKU" {...formItemLayout}>
-            <Select mode="combobox" style={{ width: '100%' }} value={product.product_sku} />
+            <Select style={{ width: '100%' }} value={product.product_sku} onSelect={this.handleSelectSku}>
+              {skus.map(sku => (<Option value={sku} key={sku}>{sku}</Option>))}
+            </Select>
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
             <Input value={product.desc_cn} />
@@ -132,9 +194,13 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('order_qty', {
                 rules: [{ required: true, message: '请输入订单数量' }],
               })(
-                <Input style={{ width: '70%' }} />
+                <Input style={{ width: '70%' }} onChange={this.handleQtyChange} />
             )}
-              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit_name} style={{ width: '30%' }} />
+              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit_name}
+                style={{ width: '30%' }} onChange={this.handleUnitChange}
+              >
+                {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
+              </Select>
             </InputGroup>
           </FormItem>
           <FormItem label="金额" {...formItemLayout}>
@@ -142,10 +208,14 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('unit_price', {
                 initialValue: product.unit_price,
               })(
-                <Input placeholder="单价" style={{ width: '30%' }} />
+                <Input placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
                 )}
-              <Input placeholder="总价" style={{ width: '40%' }} />
-              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency && `${product.currency}|${product.currency_name}`} style={{ width: '30%' }} />
+              <Input placeholder="总价" value={this.state.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
+              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
+                style={{ width: '30%' }} onChange={this.handleCurrChange}
+              >
+                {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}
+              </Select>
             </InputGroup>
           </FormItem>
         </Form>

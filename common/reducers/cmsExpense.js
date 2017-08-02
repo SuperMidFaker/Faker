@@ -25,7 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'COMPUTE_DECLADVFEES', 'COMPUTE_DECLADVFEES_SUCCEED', 'COMPUTE_DECLADVFEES_FAIL',
   'CERT_PANEL_LOAD', 'CERT_PANEL_LOAD_SUCCEED', 'CERT_PANEL_LOAD_FAIL',
   'LOAD_FILTER_PARTNERS', 'LOAD_FILTER_PARTNERS_SUCCEED', 'LOAD_FILTER_PARTNERS_FAIL',
-  'SET_ADV_MODAL_VISIBLE',
+  'SET_ADV_MODAL_VISIBLE', 'SET_ADV_TEMP_MODAL_VISIBLE',
   'ADV_EXP_IMPORT', 'ADV_EXP_IMPORT_SUCCEED', 'ADV_EXP_IMPORT_FAIL',
 ]);
 
@@ -95,6 +95,17 @@ const initialState = {
     supplier: [],
   },
   visibleAdvModal: false,
+  advImport: {
+    tableTitle: {},
+    statistics: {},
+    advbodies: [],
+    quoteInv: null,
+  },
+  advImportParams: {
+    importMode: 'pay',
+    partner: {},
+  },
+  advImpTempVisible: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -202,6 +213,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, partners: action.result.data };
     case actionTypes.SET_ADV_MODAL_VISIBLE:
       return { ...state, visibleAdvModal: action.data };
+    case actionTypes.ADV_EXP_IMPORT:
+      return { ...state, advImportParams: action.payload };
+    case actionTypes.ADV_EXP_IMPORT_SUCCEED:
+      return { ...state, advImport: action.result.data };
+    case actionTypes.SET_ADV_TEMP_MODAL_VISIBLE:
+      return { ...state, advImpTempVisible: action.data };
     default:
       return state;
   }
@@ -513,8 +530,15 @@ export function advExpImport(data) {
       endpoint: 'v1/cms/expense/advance/import',
       method: 'post',
       data,
-      origin: 'mongo',
+      payload: { importMode: data.importMode, partner: data.partner },
     },
+  };
+}
+
+export function showAdvImpTempModal(value) {
+  return {
+    type: actionTypes.SET_ADV_TEMP_MODAL_VISIBLE,
+    data: value,
   };
 }
 /* export function loadDeclAdvanceParties(isCiq, delgNo) {
