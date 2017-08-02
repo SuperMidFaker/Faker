@@ -22,6 +22,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
 import AdvUploadModal from './modals/advUploadModal';
+import AdvExpsImpTempModal from './modals/advExpImpTempModal';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -558,6 +559,7 @@ export default class ExpenseList extends Component {
         <DelgAdvanceExpenseModal />
         <AdvModelModal />
         <AdvUploadModal visible={this.state.advUploadVisible} toggle={this.toggleAdvUploadModal} />
+        <AdvExpsImpTempModal />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </QueueAnim>
     );
