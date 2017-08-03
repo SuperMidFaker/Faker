@@ -57,6 +57,11 @@ export default class AllocatingModal extends Component {
   }
   componentWillMount() {
     this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: (window.innerHeight - 460) / 2,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
@@ -159,7 +164,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 100,
+    width: 150,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',
@@ -224,11 +229,28 @@ export default class AllocatingModal extends Component {
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 100,
+    width: 150,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',
     width: 100,
+  }, {
+    title: '入库日期',
+    dataIndex: 'inbound_timestamp',
+    width: 100,
+    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
+  }, {
+    title: '采购订单号',
+    dataIndex: 'po_no',
+    width: 150,
+  }, {
+    title: '监管入库单号',
+    dataIndex: 'ftz_ent_no',
+    width: 150,
+  }, {
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
+    width: 150,
   }, {
     dataIndex: 'spacer',
   }]
@@ -409,12 +431,12 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: 220 }} />
+            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }} />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: 220 }} />
+            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }} />
           </div>
         </Card>
         {/*
