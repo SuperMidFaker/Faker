@@ -198,7 +198,7 @@ export default class StockQueryList extends React.Component {
       },
     };
     const dataSource = new Table.DataSource({
-      fetcher: () => this.handleStockQuery(listFilter),
+      fetcher: params => this.props.loadStocks(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -210,7 +210,10 @@ export default class StockQueryList extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
+          tenantId: this.props.tenantId,
           current: pagination.current,
+          pageSize: pagination.pageSize,
+          filter: JSON.stringify(listFilter),
           sorter: {
             field: sorter.field,
             order: sorter.order === 'descend' ? 'DESC' : 'ASC',
