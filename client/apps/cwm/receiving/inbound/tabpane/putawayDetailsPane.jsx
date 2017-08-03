@@ -38,6 +38,11 @@ export default class PutawayDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.props.loadInboundPutaways(this.props.inboundNo);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -191,7 +196,7 @@ export default class PutawayDetailsPane extends React.Component {
         </div>
         <Table columns={columns} rowSelection={rowSelection} indentSize={0}
           dataSource={dataSource} rowKey="trace_id"
-          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
+          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
         />
         <PuttingAwayModal inboundNo={this.props.inboundNo} />
       </div>

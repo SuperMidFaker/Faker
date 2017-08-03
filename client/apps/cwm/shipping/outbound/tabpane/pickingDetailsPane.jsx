@@ -42,6 +42,11 @@ export default class PickingDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.props.loadPickDetails(this.props.outboundNo);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -303,7 +308,7 @@ export default class PickingDetailsPane extends React.Component {
           <div className="toolbar-right" />
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="id"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
         <PickingModal resetState={this.resetState} pickMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
         <ShippingModal resetState={this.resetState} shipMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />

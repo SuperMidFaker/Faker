@@ -57,6 +57,11 @@ export default class AllocatingModal extends Component {
   }
   componentWillMount() {
     this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: (window.innerHeight - 460) / 2,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
@@ -104,7 +109,7 @@ export default class AllocatingModal extends Component {
     title: '现分配数量',
     width: 200,
     render: (o, record, index) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-/* }, {
+    /* }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160, */
@@ -159,7 +164,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 100,
+    width: 150,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',
@@ -182,8 +187,8 @@ export default class AllocatingModal extends Component {
     width: 100,
   }, {
     title: '入库日期',
-    dataIndex: 'created_date',
-    render: o => moment(o).format('YYYY.MM.DD'),
+    dataIndex: 'inbound_timestamp',
+    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
   }]
 
   allocatedColumns = [{
@@ -194,7 +199,7 @@ export default class AllocatingModal extends Component {
     title: '分配数量',
     width: 200,
     render: (o, record) => (<QuantityInput size="small" packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-/*  }, {
+    /*  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160, */
@@ -224,11 +229,28 @@ export default class AllocatingModal extends Component {
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 100,
+    width: 150,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',
     width: 100,
+  }, {
+    title: '入库日期',
+    dataIndex: 'inbound_timestamp',
+    width: 100,
+    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
+  }, {
+    title: '采购订单号',
+    dataIndex: 'po_no',
+    width: 150,
+  }, {
+    title: '监管入库单号',
+    dataIndex: 'ftz_ent_no',
+    width: 150,
+  }, {
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
+    width: 150,
   }, {
     dataIndex: 'spacer',
   }]
@@ -334,7 +356,7 @@ export default class AllocatingModal extends Component {
       outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
   }
   render() {
-    const { filters, outboundHead, inventoryColumns } = this.props;
+    const { filters, outboundHead, inventoryColumns, editable } = this.props;
     const { outboundProduct } = this.state;
     const filterColumns = this.inventoryColumns.filter(col => inventoryColumns[col.dataIndex] !== false);
     const searchOptions = (
@@ -366,15 +388,23 @@ export default class AllocatingModal extends Component {
           </FormItem>
         }
         { outboundHead.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
-        <FormItem label="已分拨">
-          <Checkbox defaultChecked disabled />
-        </FormItem>
+          <FormItem label="已分拨">
+            <Checkbox defaultChecked disabled />
+          </FormItem>
         }
       </Form>);
 
+    const title = (<div>
+      <span>出库分配</span>
+      <div className="toolbar-right">
+        {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
+        {editable && <Button onClick={this.handleCancel}>取消</Button>}
+        {editable && <Button type="primary" onClick={this.handleManualAllocSave}>保存</Button>}
+      </div>
+    </div>);
     return (
-      <Modal title="出库分配" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
-        onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
+      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+        visible={this.props.visible} footer={null}
       >
         <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
           <Row className="info-group-inline">
@@ -399,12 +429,12 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: 220 }} />
+            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }} />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: 220 }} />
+            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }} />
           </div>
         </Card>
         {/*

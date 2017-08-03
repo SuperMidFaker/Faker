@@ -65,6 +65,13 @@ export default class SHFTZRelDetail extends Component {
   state = {
     tabKey: '',
   }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       if (this.state.tabKey === '') {
@@ -306,7 +313,9 @@ export default class SHFTZRelDetail extends Component {
                       </Row>}
                     </div>
                     <div className="table-fixed-layout">
-                      <Table columns={columns} dataSource={reg.details} indentSize={8} rowKey="id" />
+                      <Table columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
+                        scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                      />
                     </div>
                   </TabPane>)
                 )}

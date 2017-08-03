@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, message } from 'antd';
+import { Badge, Button, Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Select, Tag, notification, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
+import ExcelUpload from 'client/components/excelUploader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
@@ -39,6 +40,7 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.asnFilters,
@@ -46,6 +48,7 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmReceive.asnlist.loading,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
+    loginName: state.account.username,
   }),
   { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn }
 )
@@ -148,28 +151,28 @@ export default class ReceivingASNList extends React.Component {
       } else if (record.status === CWM_ASN_STATUS.INBOUND.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span>
-            <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
+            <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} />
           </span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleInbound} label="入库操作" row={record} /></span>);
         }
       } else if (record.status === CWM_ASN_STATUS.PARTIAL.value) {
         return (<span>
-          <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
+          <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
           { record.asn_no && <span className="ant-divider" />}
           { record.asn_no && <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />}
         </span>);
       } else if (record.status === CWM_ASN_STATUS.COMPLETED.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span>
-            <RowUpdater onHit={this.handleReceive} label="入库详情" row={record} />
+            <RowUpdater onHit={this.handleInbound} label="入库详情" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleEntryReg} label="备案详情" row={record} />
           </span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库详情" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleInbound} label="入库详情" row={record} /></span>);
         }
       }
     },
@@ -224,7 +227,7 @@ export default class ReceivingASNList extends React.Component {
       }
     );
   }
-  handleReceive = (row) => {
+  handleInbound = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
   }
@@ -274,6 +277,16 @@ export default class ReceivingASNList extends React.Component {
       tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
+      filters,
+    });
+  }
+  handleAsnStockImport = () => {
+    const filters = { ...this.props.filters, status: 'completed' };
+    this.props.loadAsnLists({
+      whseCode: this.props.defaultWhse.code,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.asnlist.pageSize,
+      current: 1,
       filters,
     });
   }
@@ -337,6 +350,25 @@ export default class ReceivingASNList extends React.Component {
             <RadioButton value="completed">收货完成</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
+            {filters.status === 'completed' && filters.ownerCode !== 'all' &&
+            <Dropdown.Button size="large" overlay={<Menu />}>
+              <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
+                formData={{
+                  data: JSON.stringify({
+                    tenantId: this.props.tenantId,
+                    tenantName: this.props.tenantName,
+                    loginId: this.props.loginId,
+                    loginName: this.props.loginName,
+                    whseCode: defaultWhse.code,
+                    whseName: defaultWhse.name,
+                    owner: owners.filter(owner => owner.id === filters.ownerCode)[0],
+                  }),
+                }} onUploaded={this.handleAsnStockImport}
+              >
+                <Icon type="upload" /> 导入库存ASN
+                </ExcelUpload>
+            </Dropdown.Button>
+              }
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>

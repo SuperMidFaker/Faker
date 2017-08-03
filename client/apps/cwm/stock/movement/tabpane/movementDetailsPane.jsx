@@ -44,6 +44,11 @@ export default class MovementDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleReload();
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -136,12 +141,6 @@ export default class MovementDetailsPane extends React.Component {
   }]
   render() {
     const { movementDetails, mode, movementHead } = this.props;
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys, selectedRows) => {
-        this.setState({ selectedRowKeys, selectedRows });
-      },
-    };
     return (
       <div>
         <div className="toolbar">
@@ -160,8 +159,8 @@ export default class MovementDetailsPane extends React.Component {
             }
           </div>
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} dataSource={movementDetails} rowKey="in_detail_id"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+        <Table columns={this.columns} dataSource={movementDetails} rowKey="in_detail_id"
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
       </div>
     );

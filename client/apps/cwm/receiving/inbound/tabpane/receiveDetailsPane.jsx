@@ -49,8 +49,12 @@ export default class ReceiveDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleReload();
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
   }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.handleReload();
@@ -225,7 +229,7 @@ export default class ReceiveDetailsPane extends React.Component {
           </div> */}
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="asn_seq_no"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
         <ReceivingModal />
         <BatchReceivingModal inboundNo={this.props.inboundNo} data={this.state.selectedRows} />

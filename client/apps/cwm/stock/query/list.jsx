@@ -9,6 +9,7 @@ import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventory
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
+import ButtonToggle from 'client/components/ButtonToggle';
 import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
@@ -64,12 +65,14 @@ export default class StockQueryList extends React.Component {
     dataIndex: 'owner_name',
     width: 150,
     sorter: true,
+    fixed: 'left',
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
     width: 180,
     sorter: true,
+    fixed: 'left',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('SKU'),
@@ -104,30 +107,38 @@ export default class StockQueryList extends React.Component {
     title: this.msg('availQty'),
     width: 100,
     dataIndex: 'avail_qty',
+    className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="cell-align-right text-normal">{text}</span>;
+        return <span className="text-normal">{text}</span>;
       } else {
-        return <span className="cell-align-right text-success">{text}</span>;
+        return <span className="text-success">{text}</span>;
       }
     },
   }, {
     title: this.msg('allocQty'),
     width: 100,
     dataIndex: 'alloc_qty',
+    className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="cell-align-right text-normal">{text}</span>;
+        return <span className="text-normal">{text}</span>;
       } else {
-        return <span className="cell-align-right text-warning">{text}</span>;
+        return <span className="text-warning">{text}</span>;
       }
     },
   }, {
     title: this.msg('frozenQty'),
     width: 100,
     dataIndex: 'frozen_qty',
-    className: 'cell-align-right text-error',
-    render: (text, row) => this.renderNormalCol(text, row),
+    className: 'cell-align-right',
+    render: (text) => {
+      if (text === 0) {
+        return <span className="text-normal">{text}</span>;
+      } else {
+        return <span className="text-error">{text}</span>;
+      }
+    },
   }, {
     title: this.msg('bondedQty'),
     width: 100,
@@ -198,7 +209,7 @@ export default class StockQueryList extends React.Component {
       },
     };
     const dataSource = new Table.DataSource({
-      fetcher: () => this.handleStockQuery(listFilter),
+      fetcher: params => this.props.loadStocks(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -210,7 +221,10 @@ export default class StockQueryList extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
+          tenantId: this.props.tenantId,
           current: pagination.current,
+          pageSize: pagination.pageSize,
+          filter: JSON.stringify(listFilter),
           sorter: {
             field: sorter.field,
             order: sorter.order === 'descend' ? 'DESC' : 'ASC',
@@ -243,8 +257,13 @@ export default class StockQueryList extends React.Component {
           </div>
           <QueryForm onSearch={this.handleSearch} />
         </Sider>
-        <Layout>
+        <Layout style={{ width: 0 }}>
           <Header className="page-header">
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
+              onClick={this.toggle}
+              toggle
+            />
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}

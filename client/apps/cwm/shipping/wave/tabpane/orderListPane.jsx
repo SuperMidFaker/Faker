@@ -27,6 +27,11 @@ export default class OrderDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.props.loadWaveOrders(this.props.waveNo);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -98,7 +103,7 @@ export default class OrderDetailsPane extends React.Component {
           <div className="toolbar-right" />
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveOrders} rowKey="so_no"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
       </div>
     );
