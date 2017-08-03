@@ -6,6 +6,7 @@ import { Checkbox, Modal, Select, Form, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { hideBatchReceivingModal, batchReceive } from 'common/reducers/cwmReceive';
+import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -16,7 +17,6 @@ const FormItem = Form.Item;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    locations: state.cwmWarehouse.locations,
     visible: state.cwmReceive.batchReceivingModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,
   }),
@@ -82,9 +82,7 @@ export default class BatchReceivingModal extends Component {
           </Select>
         </FormItem>
         <FormItem {...formItemLayout} label="收货库位">
-          <Select style={{ width: 160 }} onSelect={this.handleLocationChange} value={this.state.location} showSearch>
-            {this.props.locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
-          </Select>
+          <LocationSelect style={{ width: 160 }} onSelect={this.handleLocationChange} value={this.state.location} showSearch />
         </FormItem>
       </Modal>
     );

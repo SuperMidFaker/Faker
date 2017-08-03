@@ -7,6 +7,7 @@ import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndL
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
+import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -19,7 +20,6 @@ const RadioGroup = Radio.Group;
     displayedColumns: state.cwmInventoryStock.displayedColumns,
     filter: state.cwmInventoryStock.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
-    locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
   }),
@@ -71,7 +71,7 @@ export default class QueryForm extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   render() {
-    const { form: { getFieldDecorator }, owners, filter, locations } = this.props;
+    const { form: { getFieldDecorator }, owners, filter } = this.props;
     return (
       <Form layout="vertical" className="left-sider-panel">
         <FormItem label="货主">
@@ -92,9 +92,7 @@ export default class QueryForm extends React.Component {
           {getFieldDecorator('whse_location', {
             initialValue: filter.whse_location,
           })(
-            <Select>
-              {locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
-            </Select>
+            <LocationSelect />
           )}
         </FormItem>
         <FormItem>

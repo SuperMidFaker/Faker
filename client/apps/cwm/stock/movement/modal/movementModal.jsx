@@ -8,6 +8,7 @@ import messages from '../../message.i18n';
 import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_MOVE_TYPE } from 'common/constants';
+import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -24,7 +25,6 @@ const Option = Select.Option;
     owners: state.cwmContext.whseAttrs.owners,
     filter: state.cwmInventoryStock.movementModal.filter,
     tenantId: state.account.tenantId,
-    locations: state.cwmWarehouse.locations,
     movements: state.cwmInventoryStock.movements,
     movementFilter: state.cwmInventoryStock.movementFilter,
   }),
@@ -81,9 +81,7 @@ export default class MovementModal extends Component {
     title: '目标库位',
     width: 100,
     dataIndex: 'target_location',
-    render: (o, record, index) => (<Select style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)} showSearch>
-      {this.props.locations.map(loc => <Option value={loc.location} key={loc.location}>{loc.location}</Option>)}
-    </Select>),
+    render: (o, record, index) => (<LocationSelect style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)} showSearch />),
   }, {
     title: '移动数量',
     width: 200,
@@ -265,16 +263,14 @@ export default class MovementModal extends Component {
     });
   }
   render() {
-    const { owners, filter, locations } = this.props;
+    const { owners, filter } = this.props;
     const { stocks, movements } = this.state;
     const inventoryQueryForm = (<Form layout="inline">
       <FormItem label="货品">
         <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!filter.ownerCode} />
       </FormItem>
       <FormItem label="库位">
-        <Select style={{ width: 160 }} onSelect={this.handleLocationChange} disabled={!filter.ownerCode}>
-          {locations.map(loc => <Option value={loc.location} key={loc.location}>{loc.location}</Option>)}
-        </Select>
+        <LocationSelect style={{ width: 160 }} onSelect={this.handleLocationChange} disabled={!filter.ownerCode} />
       </FormItem>
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
