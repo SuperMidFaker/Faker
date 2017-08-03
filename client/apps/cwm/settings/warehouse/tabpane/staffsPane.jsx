@@ -45,13 +45,9 @@ export default class StaffsPane extends Component {
     }
   }
   columns = [{
-    title: '货主代码',
-    dataIndex: 'owner_code',
+    title: '姓名',
+    dataIndex: 'staff_name',
     width: 150,
-  }, {
-    title: '货主名称',
-    dataIndex: 'owner_name',
-    width: 250,
   }, {
     title: '状态',
     dataIndex: 'active',
@@ -62,9 +58,6 @@ export default class StaffsPane extends Component {
         return <Tag>停用</Tag>;
       }
     },
-  }, {
-    title: '启用分拨',
-    dataIndex: 'portion_enabled',
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
@@ -77,11 +70,9 @@ export default class StaffsPane extends Component {
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '操作',
-    width: 150,
+    width: 100,
     render: record => (
       <span>
-        <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
-        <span className="ant-divider" />
         {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
       </span>
