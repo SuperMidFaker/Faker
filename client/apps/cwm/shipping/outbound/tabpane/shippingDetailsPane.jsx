@@ -29,6 +29,11 @@ export default class ShippingDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.props.loadShipDetails(this.props.outboundNo);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -119,7 +124,7 @@ export default class ShippingDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
         </div>
         <Table columns={this.columns} indentSize={0} dataSource={dataSource} rowKey="id"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
       </div>
     );

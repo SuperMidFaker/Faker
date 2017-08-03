@@ -14,6 +14,7 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave } from 'common/reducers/cwmShippingOrder';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -154,18 +155,31 @@ export default class ShippingOrderList extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (record.status === 0) {
+      if (record.status === CWM_SO_STATUS.PENDING.value) {
         return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
-      } else if (record.status === 1) {
-        if (record.bonded && record.reg_status === 0) {
-          return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /><span className="ant-divider" /><RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} /></span>);
+      } else if (record.status === CWM_SO_STATUS.OUTBOUND.value) {
+        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
+          return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleReleaseReg} label="出库备案" row={record} /></span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} /></span>);
+        }
+      } else if (record.status === CWM_SO_STATUS.PARTIAL.value) {
+      } else if (record.status === CWM_SO_STATUS.COMPLETED.value) {
+        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
+          return (<span>
+            <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleReleaseReg} label="备案详情" row={record} />
+          </span>);
+        } else {
+          return (<span><RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} /></span>);
         }
       }
     },
   }]
-  handleEntryReg = (row) => {
+  handleReleaseReg = (row) => {
     this.context.router.push(`/cwm/supervision/shftz/release/${row.so_no}`);
   }
   handlePreview = (soNo, outboundNo) => {
@@ -201,7 +215,7 @@ export default class ShippingOrderList extends React.Component {
     const link = `/cwm/shipping/order/${row.so_no}`;
     this.context.router.push(link);
   }
-  handleAllocate = (row) => {
+  handleOutbound = (row) => {
     const link = `/cwm/shipping/outbound/${row.outbound_no}`;
     this.context.router.push(link);
   }

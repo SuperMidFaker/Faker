@@ -40,6 +40,11 @@ export default class OrderDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleReload();
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -212,7 +217,7 @@ export default class OrderDetailsPane extends React.Component {
           </div>
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="seq_no"
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
         <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />
       </div>

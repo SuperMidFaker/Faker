@@ -166,7 +166,7 @@ export default class CustomsDeclBodyPane extends React.Component {
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ wlScrollY: window.innerHeight - 320 });
+      this.setState({ scrollY: window.innerHeight - 320 });
     }
   }
   componentWillReceiveProps(nextProps) {
@@ -478,7 +478,7 @@ export default class CustomsDeclBodyPane extends React.Component {
         </div>
         <div className="panel-body table-panel table-fixed-layout">
           <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
-            scroll={{ x: 2600, y: this.state.wlScrollY }} pagination={this.state.pagination}
+            scroll={{ x: 2600, y: this.state.scrollY }} pagination={this.state.pagination}
           />
         </div>
       </div>);

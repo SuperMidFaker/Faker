@@ -151,28 +151,28 @@ export default class ReceivingASNList extends React.Component {
       } else if (record.status === CWM_ASN_STATUS.INBOUND.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span>
-            <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
+            <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} />
           </span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleInbound} label="入库操作" row={record} /></span>);
         }
       } else if (record.status === CWM_ASN_STATUS.PARTIAL.value) {
         return (<span>
-          <RowUpdater onHit={this.handleReceive} label="入库操作" row={record} />
+          <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
           { record.asn_no && <span className="ant-divider" />}
           { record.asn_no && <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />}
         </span>);
       } else if (record.status === CWM_ASN_STATUS.COMPLETED.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span>
-            <RowUpdater onHit={this.handleReceive} label="入库详情" row={record} />
+            <RowUpdater onHit={this.handleInbound} label="入库详情" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleEntryReg} label="备案详情" row={record} />
           </span>);
         } else {
-          return (<span><RowUpdater onHit={this.handleReceive} label="入库详情" row={record} /></span>);
+          return (<span><RowUpdater onHit={this.handleInbound} label="入库详情" row={record} /></span>);
         }
       }
     },
@@ -227,7 +227,7 @@ export default class ReceivingASNList extends React.Component {
       }
     );
   }
-  handleReceive = (row) => {
+  handleInbound = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
   }
