@@ -270,7 +270,7 @@ export default class MovementModal extends Component {
         <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!filter.ownerCode} />
       </FormItem>
       <FormItem label="库位">
-        <LocationSelect style={{ width: 160 }} onSelect={this.handleLocationChange} disabled={!filter.ownerCode} />
+        <LocationSelect style={{ width: 160 }} value={this.props.filter.location} onSelect={this.handleLocationChange} disabled={!filter.ownerCode} />
       </FormItem>
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
