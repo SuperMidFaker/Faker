@@ -5,6 +5,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Form, Tag, Icon } from 'antd';
 import WarehouseModal from './modal/warehouseModal';
 import OwnersPane from './tabpane/ownersPane';
+import StaffsPane from './tabpane/staffsPane';
 import ZoneLocationPane from './tabpane/zoneLocationPane';
 import SupervisionPane from './tabpane/supervisionPane';
 import EditWhseModal from './modal/editWarehouseModal';
@@ -159,7 +160,9 @@ export default class WarehouseList extends Component {
                 <TabPane tab="库区/库位" key="location">
                   <ZoneLocationPane warehouse={warehouse} />
                 </TabPane>
-                <TabPane tab="月台" key="dock" disabled />
+                <TabPane tab="员工" key="staffs">
+                  <StaffsPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+                </TabPane>
                 {warehouse.bonded && <TabPane tab="保税监管" key="supervision">
                   <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} />
                 </TabPane>}

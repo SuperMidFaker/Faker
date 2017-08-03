@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Select, Radio, Col } from 'antd';
+import { Button, Form, Input, Select, Radio, Col, DatePicker } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
@@ -11,6 +11,7 @@ import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -96,6 +97,9 @@ export default class QueryForm extends React.Component {
               {locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
             </Select>
           )}
+        </FormItem>
+        <FormItem label="入库日期" >
+          <RangePicker />
         </FormItem>
         <FormItem>
           {getFieldDecorator('search_type', {

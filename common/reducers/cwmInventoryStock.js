@@ -33,6 +33,7 @@ const initialState = {
     bonded_qty: true,
     nonbonded_qty: true,
     location: false,
+    inbound_date: false,
     owner_name: true,
     unit: false,
   },
@@ -104,6 +105,7 @@ export default function reducer(state = initialState, action) {
           bonded_qty: false,
           nonbonded_qty: false,
           location: false,
+          inbound_date: false,
           unit: false,
         } };
     case actionTypes.CHECK_PRODUCT_COLUMN:
@@ -119,6 +121,7 @@ export default function reducer(state = initialState, action) {
           bonded_qty: true,
           nonbonded_qty: true,
           location: false,
+          inbound_date: false,
           unit: false,
         } };
     case actionTypes.CHECK_LOCATION_COLUMN:
@@ -134,6 +137,7 @@ export default function reducer(state = initialState, action) {
           bonded_qty: false,
           nonbonded_qty: false,
           location: true,
+          inbound_date: false,
           unit: false,
         } };
     case actionTypes.CHECK_PRODUCT_LOCATION:
@@ -150,6 +154,7 @@ export default function reducer(state = initialState, action) {
           bonded_qty: true,
           nonbonded_qty: true,
           location: true,
+          inbound_date: true,
           unit: false,
         },
       };

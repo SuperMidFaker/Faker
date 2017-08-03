@@ -92,6 +92,11 @@ export default class StockQueryList extends React.Component {
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
+    title: this.msg('inboundDate'),
+    width: 120,
+    dataIndex: 'inbound_date',
+    sorter: true,
+  }, {
     title: this.msg('unit'),
     width: 120,
     dataIndex: 'unit',
