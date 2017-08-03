@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
   'LOAD_FILTER_PARTNERS', 'LOAD_FILTER_PARTNERS_SUCCEED', 'LOAD_FILTER_PARTNERS_FAIL',
   'SET_ADV_MODAL_VISIBLE', 'SET_ADV_TEMP_MODAL_VISIBLE',
   'ADV_EXP_IMPORT', 'ADV_EXP_IMPORT_SUCCEED', 'ADV_EXP_IMPORT_FAIL',
+  'SAVE_IMPT_ADVFEES', 'SAVE_IMPT_ADVFEES_SUCCEED', 'SAVE_IMPT_ADVFEES_FAIL',
 ]);
 
 const initialState = {
@@ -96,9 +97,10 @@ const initialState = {
   },
   visibleAdvModal: false,
   advImport: {
-    tableTitle: {},
+    tableTitle: { title: [], dataIndex: [] },
     statistics: {},
     advbodies: [],
+    ptAdvbodies: [],
     quoteInv: null,
   },
   advImportParams: {
@@ -541,6 +543,23 @@ export function showAdvImpTempModal(value) {
     data: value,
   };
 }
+
+export function saveImptAdvFees(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_IMPT_ADVFEES,
+        actionTypes.SAVE_IMPT_ADVFEES_SUCCEED,
+        actionTypes.SAVE_IMPT_ADVFEES_FAIL,
+      ],
+      endpoint: 'v1/cms/expense/imported/advancefees/save',
+      method: 'post',
+      data,
+      origin: 'mongo',
+    },
+  };
+}
+
 /* export function loadDeclAdvanceParties(isCiq, delgNo) {
   return {
     [CLIENT_API]: {
