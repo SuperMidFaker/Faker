@@ -16,6 +16,7 @@ export default class LocationSelect extends React.Component {
     value: PropTypes.string,
     style: PropTypes.object,
     onChange: PropTypes.func,
+    onSelect: PropTypes.func,
     disabled: PropTypes.bool,
   }
   state = {
@@ -40,7 +41,7 @@ export default class LocationSelect extends React.Component {
   render() {
     return (
       <Select showSearch allowClear onSearch={this.handleSearch} value={this.props.value} disabled={this.props.disabled}
-        onChange={this.props.onChange} optionFilterProp="children" style={this.props.style || {}}
+        onChange={this.props.onChange} onSelect={this.props.onSelect} optionFilterProp="children" style={this.props.style || {}}
       >
         {
       this.state.options.map(opt => <Option value={opt.location} key={opt.location}>{opt.location}</Option>)
