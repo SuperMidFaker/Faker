@@ -272,7 +272,7 @@ export default class MovementModal extends Component {
         <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!filter.ownerCode} />
       </FormItem>
       <FormItem label="库位">
-        <Select style={{ width: 160 }} onSelect={this.handleLocationChange} disabled={!filter.ownerCode}>
+        <Select showSearch style={{ width: 160 }} onSelect={this.handleLocationChange} disabled={!filter.ownerCode}>
           {locations.map(loc => <Option value={loc.location} key={loc.location}>{loc.location}</Option>)}
         </Select>
       </FormItem>

@@ -92,7 +92,7 @@ export default class QueryForm extends React.Component {
           {getFieldDecorator('whse_location', {
             initialValue: filter.whse_location,
           })(
-            <Select>
+            <Select mode="combobox" allowClear>
               {locations.map(loc => (<Option value={loc.location} key={loc.location}>{loc.location}</Option>))}
             </Select>
           )}
