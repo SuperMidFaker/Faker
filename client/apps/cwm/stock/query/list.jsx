@@ -9,6 +9,7 @@ import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventory
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
+import ButtonToggle from 'client/components/ButtonToggle';
 import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
@@ -256,6 +257,11 @@ export default class StockQueryList extends React.Component {
         </Sider>
         <Layout style={{ width: 0 }}>
           <Header className="page-header">
+            <ButtonToggle size="large"
+              iconOn="menu-fold" iconOff="menu-unfold"
+              onClick={this.toggle}
+              toggle
+            />
             <Breadcrumb>
               <Breadcrumb.Item>
                 {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
