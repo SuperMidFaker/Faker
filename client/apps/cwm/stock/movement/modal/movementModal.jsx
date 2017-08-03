@@ -71,7 +71,7 @@ export default class MovementModal extends Component {
     },
   }, {
     title: '入库日期',
-    dataIndex: 'created_date',
+    dataIndex: 'inbound_timestamp',
     render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '可用数量',
