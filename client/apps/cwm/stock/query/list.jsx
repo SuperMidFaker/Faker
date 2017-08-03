@@ -104,30 +104,38 @@ export default class StockQueryList extends React.Component {
     title: this.msg('availQty'),
     width: 100,
     dataIndex: 'avail_qty',
+    className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="cell-align-right text-normal">{text}</span>;
+        return <span className="text-normal">{text}</span>;
       } else {
-        return <span className="cell-align-right text-success">{text}</span>;
+        return <span className="text-success">{text}</span>;
       }
     },
   }, {
     title: this.msg('allocQty'),
     width: 100,
     dataIndex: 'alloc_qty',
+    className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="cell-align-right text-normal">{text}</span>;
+        return <span className="text-normal">{text}</span>;
       } else {
-        return <span className="cell-align-right text-warning">{text}</span>;
+        return <span className="text-warning">{text}</span>;
       }
     },
   }, {
     title: this.msg('frozenQty'),
     width: 100,
     dataIndex: 'frozen_qty',
-    className: 'cell-align-right text-error',
-    render: (text, row) => this.renderNormalCol(text, row),
+    className: 'cell-align-right',
+    render: (text) => {
+      if (text === 0) {
+        return <span className="text-normal">{text}</span>;
+      } else {
+        return <span className="text-error">{text}</span>;
+      }
+    },
   }, {
     title: this.msg('bondedQty'),
     width: 100,
@@ -243,7 +251,7 @@ export default class StockQueryList extends React.Component {
           </div>
           <QueryForm onSearch={this.handleSearch} />
         </Sider>
-        <Layout>
+        <Layout style={{ width: 0 }}>
           <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
