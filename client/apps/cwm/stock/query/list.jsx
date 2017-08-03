@@ -65,12 +65,14 @@ export default class StockQueryList extends React.Component {
     dataIndex: 'owner_name',
     width: 150,
     sorter: true,
+    fixed: 'left',
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
     width: 180,
     sorter: true,
+    fixed: 'left',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('SKU'),

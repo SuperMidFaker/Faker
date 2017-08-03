@@ -334,7 +334,7 @@ export default class AllocatingModal extends Component {
       outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
   }
   render() {
-    const { filters, outboundHead, locations, inventoryColumns } = this.props;
+    const { filters, outboundHead, locations, inventoryColumns, editable } = this.props;
     const { outboundProduct } = this.state;
     const filterColumns = this.inventoryColumns.filter(col => inventoryColumns[col.dataIndex] !== false);
     const searchOptions = (
@@ -374,9 +374,17 @@ export default class AllocatingModal extends Component {
         }
       </Form>);
 
+    const title = (<div>
+      <span>出库分配</span>
+      <div className="toolbar-right">
+        {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
+        {editable && <Button onClick={this.handleCancel}>取消</Button>}
+        {editable && <Button type="primary" onClick={this.handleManualAllocSave}>保存</Button>}
+      </div>
+    </div>);
     return (
-      <Modal title="出库分配" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
-        onOk={this.handleManualAllocSave} onCancel={this.handleCancel} visible={this.props.visible}
+      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+        visible={this.props.visible} footer={null}
       >
         <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
           <Row className="info-group-inline">
