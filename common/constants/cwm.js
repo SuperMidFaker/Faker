@@ -54,9 +54,9 @@ exports.CWM_ASN_STATUS = {
     text: '已释放',
     badge: 'processing',
   },
-  PARTIAL: {
+  EXCEPTION: {
     value: 2,
-    text: '部分收货',
+    text: '收货异常',
     badge: 'warning',
   },
   COMPLETED: {
@@ -108,7 +108,7 @@ exports.CWM_SO_STATUS = {
   },
   PARTIAL: {
     value: 2,
-    text: '部分发货',
+    text: '部分出库',
     badge: 'warning',
   },
   COMPLETED: {

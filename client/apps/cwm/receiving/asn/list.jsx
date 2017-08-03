@@ -158,7 +158,7 @@ export default class ReceivingASNList extends React.Component {
         } else {
           return (<span><RowUpdater onHit={this.handleInbound} label="入库操作" row={record} /></span>);
         }
-      } else if (record.status === CWM_ASN_STATUS.PARTIAL.value) {
+      } else if (record.status === CWM_ASN_STATUS.EXCEPTION.value) {
         return (<span>
           <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
           { record.asn_no && <span className="ant-divider" />}
@@ -344,10 +344,10 @@ export default class ReceivingASNList extends React.Component {
           </Breadcrumb>
           <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="pending">通知接收</RadioButton>
-            <RadioButton value="inbound">已释放</RadioButton>
-            <RadioButton value="partial">部分收货</RadioButton>
-            <RadioButton value="completed">收货完成</RadioButton>
+            <RadioButton value="pending">{CWM_ASN_STATUS.PENDING.text}</RadioButton>
+            <RadioButton value="inbound">{CWM_ASN_STATUS.INBOUND.text}</RadioButton>
+            <RadioButton value="partial">{CWM_ASN_STATUS.EXCEPTION.text}</RadioButton>
+            <RadioButton value="completed">{CWM_ASN_STATUS.COMPLETED.text}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
             {filters.status === 'completed' && filters.ownerCode !== 'all' &&

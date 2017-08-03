@@ -82,8 +82,27 @@ export default class ReceiveDetailsPane extends React.Component {
       okText: '确认收货',
     });
   }
-  handleReceive = (record) => {
+  handleManualReceive = (record) => {
     this.props.openReceiveModal({
+      editable: true,
+      inboundNo: this.props.inboundNo,
+      inboundProduct: record,
+      /*
+      seqNo: record.asn_seq_no,
+      expectQty: record.expect_qty,
+      expectPackQty: record.expect_pack_qty,
+      receivedQty: record.received_qty,
+      receivedPackQty: record.received_pack_qty,
+      skuPackQty: record.sku_pack_qty,
+      asnNo: this.props.inboundHead.asn_no,
+      productNo: record.product_no,
+      name: record.name,
+      */
+    });
+  }
+  handleReceiveDetails = (record) => {
+    this.props.openReceiveModal({
+      editable: false,
       inboundNo: this.props.inboundNo,
       inboundProduct: record,
       /*
@@ -169,10 +188,13 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      const label = this.props.inboundHead.rec_mode === 'scan' ||
+      if (this.props.inboundHead.rec_mode === 'scan' ||
         this.props.inboundHead.status === CWM_INBOUND_STATUS.COMPLETED.value ||
-        record.expect_qty === record.received_qty ? '收货记录' : '收货确认';
-      return (<RowUpdater onHit={this.handleReceive} label={label} row={record} />);
+        record.expect_qty === record.received_qty) {
+        return (<RowUpdater onHit={this.handleReceiveDetails} label="收货记录" row={record} />);
+      } else {
+        return (<RowUpdater onHit={this.handleManualReceive} label="收货确认" row={record} />);
+      }
     },
   }]
   handleSearch = (value) => {

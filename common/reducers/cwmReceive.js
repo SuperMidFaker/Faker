@@ -50,6 +50,7 @@ const initialState = {
   },
   receiveModal: {
     visible: false,
+    editable: false,
     inboundNo: '',
     inboundProduct: {},
   },

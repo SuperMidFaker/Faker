@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Select, Layout, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Select, Layout, Tooltip, Tabs, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
@@ -11,11 +11,13 @@ import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import ButtonToggle from 'client/components/ButtonToggle';
 import QueryForm from './queryForm';
+import TransactionForm from './transactionForm';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 
 const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ state, dispatch }) {
   const proms = [];
@@ -260,7 +262,10 @@ export default class StockQueryList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
-          <QueryForm onSearch={this.handleSearch} />
+          <Tabs type="card">
+            <TabPane tab="库存余量" key="query"><QueryForm onSearch={this.handleSearch} /></TabPane>
+            <TabPane tab="库存事务" key="transaction"><TransactionForm onSearch={this.handleTransactionSearch} /></TabPane>
+          </Tabs>
         </Sider>
         <Layout style={{ width: 0 }}>
           <Header className="page-header">

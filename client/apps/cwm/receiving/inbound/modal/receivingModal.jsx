@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Table, Icon, Modal, Input, Row, Col, Select, Button, message } from 'antd';
+import { Card, Table, Icon, Modal, Input, Row, Col, Select, Button, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
@@ -20,6 +20,7 @@ const Option = Select.Option;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     visible: state.cwmReceive.receiveModal.visible,
+    editable: state.cwmReceive.receiveModal.editable,
     inboundHead: state.cwmReceive.inboundFormHead,
     inboundNo: state.cwmReceive.receiveModal.inboundNo,
     inboundProduct: state.cwmReceive.receiveModal.inboundProduct,
@@ -30,6 +31,7 @@ export default class ReceivingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     inboundNo: PropTypes.string.isRequired,
+    editable: PropTypes.bool.isRequired,
   }
   state = {
     dataSource: [],
@@ -138,23 +140,26 @@ export default class ReceivingModal extends Component {
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
-    const validate = dataSource.find(data => data.inbound_pack_qty === 0 || data.location === '');
-    if (validate) {
-      message.info('收获数量及库位不能为空');
-    } else {
-      const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
-      this.props.receiveProduct(dataSource.filter(data => !data.trace_id).map(data => ({
-        location: data.location,
-        damage_level: data.damage_level,
-        inbound_qty: data.inbound_qty,
-        inbound_pack_qty: data.inbound_pack_qty,
-        convey_no: data.convey_no,
-      })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
-        if (!result.error) {
-          this.props.hideReceiveModal();
-        }
-      });
+    if (dataSource.find(data => data.inbound_pack_qty === 0)) {
+      message.error('收货数量不能等于零');
+      return;
     }
+    if (dataSource.find(data => data.inbound_pack_qty === 0 || data.location === '')) {
+      message.error('收货库位不能为空');
+      return;
+    }
+    const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
+    this.props.receiveProduct(dataSource.filter(data => !data.trace_id).map(data => ({
+      location: data.location,
+      damage_level: data.damage_level,
+      inbound_qty: data.inbound_qty,
+      inbound_pack_qty: data.inbound_pack_qty,
+      convey_no: data.convey_no,
+    })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
+      if (!result.error) {
+        this.props.hideReceiveModal();
+      }
+    });
   }
   scanColumns = [{
     title: '商品条码',
@@ -237,32 +242,45 @@ export default class ReceivingModal extends Component {
     render: (o, record, index) => !record.trace_id && (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
-    const { inboundProduct, inboundHead } = this.props;
+    const { inboundProduct, inboundHead, editable } = this.props;
     const { receivedQty, receivedPackQty } = this.state;
-    const title = inboundHead.rec_mode === 'scan' ? '收货记录' : '收货确认';
     let footer;
     if (inboundHead.rec_mode === 'manual' && receivedQty < inboundProduct.expect_qty) {
       footer = () => <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />;
     }
+    const title = (<div>
+      <span>{editable ? '收货确认' : '收货记录'}</span>
+      <div className="toolbar-right">
+        {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
+        {editable && <Button onClick={this.handleCancel}>取消</Button>}
+        {editable && <Button type="primary" onClick={this.handleSubmit}>保存</Button>}
+      </div>
+    </div>);
     return (
-      <Modal title={title} width={960} maskClosable={false} onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
-        <Row>
-          <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="商品货号" field={inboundProduct.product_no} style={{ marginBottom: 0 }} />
-          </Col>
-          <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="中文品名" field={inboundProduct.name} style={{ marginBottom: 0 }} />
-          </Col>
-          <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
-          </Col>
-          <Col sm={12} md={8} lg={6}>
-            <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} disabled />} />
-          </Col>
-        </Row>
-        <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
-          dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
-        />
+      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+        visible={this.props.visible} footer={null}
+      >
+        <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
+          <Row className="info-group-inline">
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem addonBefore="商品货号" field={inboundProduct.product_no} style={{ marginBottom: 0 }} />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem addonBefore="中文品名" field={inboundProduct.name} style={{ marginBottom: 0 }} />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} disabled />} />
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 0 }}>
+          <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
+            dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
+          />
+        </Card>
       </Modal>
     );
   }
