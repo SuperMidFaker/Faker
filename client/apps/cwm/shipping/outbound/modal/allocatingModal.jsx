@@ -104,7 +104,7 @@ export default class AllocatingModal extends Component {
     title: '现分配数量',
     width: 200,
     render: (o, record, index) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-/* }, {
+    /* }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160, */
@@ -182,8 +182,8 @@ export default class AllocatingModal extends Component {
     width: 100,
   }, {
     title: '入库日期',
-    dataIndex: 'created_date',
-    render: o => moment(o).format('YYYY.MM.DD'),
+    dataIndex: 'inbound_timestamp',
+    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
   }]
 
   allocatedColumns = [{
@@ -194,7 +194,7 @@ export default class AllocatingModal extends Component {
     title: '分配数量',
     width: 200,
     render: (o, record) => (<QuantityInput size="small" packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-/*  }, {
+    /*  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160, */
@@ -368,9 +368,9 @@ export default class AllocatingModal extends Component {
           </FormItem>
         }
         { outboundHead.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
-        <FormItem label="已分拨">
-          <Checkbox defaultChecked disabled />
-        </FormItem>
+          <FormItem label="已分拨">
+            <Checkbox defaultChecked disabled />
+          </FormItem>
         }
       </Form>);
 
