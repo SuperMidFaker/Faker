@@ -13,7 +13,6 @@ import InboundCard from '../card/inboundCard';
   state => ({
     tenantId: state.account.tenantId,
     order: state.crmOrders.dock.order,
-    locations: state.cwmWarehouse.locations,
   }),
   { loadAsnInbounds }
 )

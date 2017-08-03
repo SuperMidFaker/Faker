@@ -290,7 +290,7 @@ export default class ManifestBodyPane extends React.Component {
       render: (o, record, index) =>
         (<ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
-        />),*/
+        />), */
     }, {
       title: this.msg('codeT'),
       width: 110,
@@ -440,7 +440,7 @@ export default class ManifestBodyPane extends React.Component {
       render: (o, record, index) =>
         (<ColumnInput field="element" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
-        />),*/
+        />), */
     }, {
       title: this.msg('versionNo'),
       width: 80,

@@ -263,7 +263,7 @@ export default class CustomsDeclBodyPane extends React.Component {
       title: this.msg('copGNo'),
       fixed: 'left',
       width: 150,
-      dataIndex: 'cop_g_no',*/
+      dataIndex: 'cop_g_no', */
     }, {
       title: this.msg('codeT'),
       width: 110,
@@ -443,7 +443,7 @@ export default class CustomsDeclBodyPane extends React.Component {
         (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           edit={editBody} decimal={3}
         />),
-    }];*/
+    }]; */
     return columns;
   }
 

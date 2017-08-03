@@ -17,7 +17,6 @@ const Search = Input.Search;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    locations: state.cwmWarehouse.locations,
     movementHead: state.cwmInventoryStock.movementHead,
     movementDetails: state.cwmInventoryStock.movementDetails,
     reload: state.cwmInventoryStock.movementReload,

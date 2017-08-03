@@ -28,7 +28,6 @@ const TabPane = Tabs.TabPane;
     loginId: state.account.loginId,
     whses: state.cwmContext.whses,
     zoneList: state.cwmWarehouse.zoneList,
-    locations: state.cwmWarehouse.locations,
     locationLoading: state.cwmWarehouse.locationLoading,
   }),
   { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, searchWhse, loadWhseContext, clearLocations }

@@ -11,6 +11,7 @@ import messages from '../../message.i18n';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter, changeColumns } from 'common/reducers/cwmOutbound';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -30,7 +31,6 @@ const Option = Select.Option;
     loginId: state.account.loginId,
     loginName: state.account.username,
     outboundHead: state.cwmOutbound.outboundFormHead,
-    locations: state.cwmWarehouse.locations,
     tenantId: state.account.tenantId,
     inventoryColumns: state.cwmOutbound.inventoryColumns,
   }),
@@ -356,7 +356,7 @@ export default class AllocatingModal extends Component {
       outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
   }
   render() {
-    const { filters, outboundHead, locations, inventoryColumns, editable } = this.props;
+    const { filters, outboundHead, inventoryColumns, editable } = this.props;
     const { outboundProduct } = this.state;
     const filterColumns = this.inventoryColumns.filter(col => inventoryColumns[col.dataIndex] !== false);
     const searchOptions = (
@@ -377,9 +377,7 @@ export default class AllocatingModal extends Component {
           />
         </FormItem>
         <FormItem label="库位">
-          <Select showSearch onChange={this.handleLocationChange} value={filters.location} style={{ width: 160 }} >
-            {locations.map(loc => <Option value={loc.location} key={loc.location}>{loc.location}</Option>)}
-          </Select>
+          <LocationSelect showSearch onChange={this.handleLocationChange} value={filters.location} style={{ width: 160 }} />
         </FormItem>
         <FormItem label="入库日期">
           <RangePicker onChange={this.handleDateChange} />

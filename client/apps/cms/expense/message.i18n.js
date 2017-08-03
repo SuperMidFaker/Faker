@@ -222,6 +222,10 @@ const messages = defineMessages({
     id: 'cms.modals.expense.import.mode',
     defaultMessage: '导入方式',
   },
+  opColumn: {
+    id: 'cms.modals.expense.operation',
+    defaultMessage: '操作',
+  },
 });
 export default messages;
 export const formatMsg = formati18n(messages);
