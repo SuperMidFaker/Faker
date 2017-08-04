@@ -285,10 +285,10 @@ export function clearClearanceResults() {
   return { type: actionTypes.CLEAN_CUSTOMSRES };
 }
 
-export function openDeclReleasedModal(entryNo, preEntrySeqNo, delgNo) {
+export function openDeclReleasedModal(entryNo, preEntrySeqNo, delgNo, ietype, mark) {
   return {
     type: actionTypes.OPEN_DECL_RELEASED_MODAL,
-    data: { preEntrySeqNo, entryNo, delgNo },
+    data: { preEntrySeqNo, entryNo, delgNo, ietype, mark },
   };
 }
 
