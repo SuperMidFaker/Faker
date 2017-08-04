@@ -143,7 +143,7 @@ export default class AllocatingModal extends Component {
     render: portion => portion ? '是' : '否',
   }, {
     title: '库存数量',
-    dataIndex: 'total_qty',
+    dataIndex: 'stock_qty',
     width: 100,
   }, {
     title: '可用数量',

@@ -142,15 +142,15 @@ export default class AddDetailModal extends Component {
   }
   handleUnitChange = (value) => {
     const unit = this.props.units.filter(un => un.code === value)[0];
-    const product = { ...this.state.product, unit_name: unit.name };
     if (unit) {
+      const product = { ...this.state.product, unit_name: unit.name };
       this.setState({ product });
     }
   }
   handleCurrChange = (value) => {
     const curr = this.props.currencies.filter(cu => cu.code === value)[0];
-    const product = { ...this.state.product, currency: curr.code, currency_name: curr.name };
     if (curr) {
+      const product = { ...this.state.product, currency: curr.code, currency_name: curr.name };
       this.setState({ product });
     }
   }

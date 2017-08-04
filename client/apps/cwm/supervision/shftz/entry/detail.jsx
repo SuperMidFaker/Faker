@@ -78,7 +78,9 @@ export default class SHFTZEntryDetail extends Component {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
       const queryable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      let sendable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+      let regDetailExist = true;
+      nextProps.entryRegs.forEach((entReg) => { regDetailExist = regDetailExist && entReg.details.length > 0; });
+      let sendable = regDetailExist && nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
       let unsentReason = '';
       if (sendable) {
         const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
@@ -157,11 +159,18 @@ export default class SHFTZEntryDetail extends Component {
     const asnNo = this.props.params.asnNo;
     this.props.queryEntryRegInfos(asnNo, this.props.entryAsn.whse_code).then((result) => {
       if (!result.error) {
-        this.props.loadEntryDetails({ asnNo });
-        notification.success({
-          message: '操作成功',
-          description: '备案明细ID已获取',
-        });
+        if (result.data.errorMsg) {
+          notification.warn({
+            message: '结果异常',
+            description: result.data.errorMsg,
+          });
+        } else {
+          this.props.loadEntryDetails({ asnNo });
+          notification.success({
+            message: '操作成功',
+            description: '备案明细ID已获取',
+          });
+        }
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
@@ -305,50 +314,60 @@ export default class SHFTZEntryDetail extends Component {
             </Card>
             <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                {entryRegs.map(reg => (
-                  <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
-                    <div className="panel-header">
-                      <Row>
-                        <Col sm={12} lg={5}>
-                          <InfoItem size="small" addonBefore="监管入库单号" field={reg.ftz_ent_no} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
-                          />
-                        </Col>
-                        <Col sm={12} lg={5}>
-                          <InfoItem size="small" addonBefore="报关单号" field={reg.cus_decl_no} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
-                          />
-                        </Col>
-                        <Col sm={12} lg={3}>
-                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
-                            type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY.MM.DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
-                          />
-                        </Col>
-                        <Col sm={12} lg={3}>
-                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                            type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY.MM.DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
-                          />
-                        </Col>
-                        <Col sm={8} lg={2}>
-                          <InfoItem size="small" addonBefore="总数量" field={''} />
-                        </Col>
-                        <Col sm={8} lg={3}>
-                          <InfoItem size="small" addonBefore="总净重" field={''} addonAfter="KG" />
-                        </Col>
-                        <Col sm={8} lg={3}>
-                          <InfoItem size="small" addonBefore="总金额" field={''} addonAfter="美元" />
-                        </Col>
-                      </Row>
-                    </div>
-                    <div className="table-fixed-layout">
-                      <Table columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                        scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                      />
-                    </div>
-                  </TabPane>)
-                )}
+                {entryRegs.map((reg) => {
+                  const stat = reg.details.reduce((acc, regd) => ({
+                    total_qty: acc.total_qty + regd.qty,
+                    total_amount: acc.total_amount + regd.amount_usd,
+                    total_net_wt: acc.total_net_wt + regd.net_wt,
+                  }), {
+                    total_qty: 0,
+                    total_amount: 0,
+                    total_net_wt: 0,
+                  });
+                  return (
+                    <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                      <div className="panel-header">
+                        <Row>
+                          <Col sm={12} lg={5}>
+                            <InfoItem size="small" addonBefore="监管入库单号" field={reg.ftz_ent_no} editable={entryEditable}
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                            />
+                          </Col>
+                          <Col sm={12} lg={5}>
+                            <InfoItem size="small" addonBefore="报关单号" field={reg.cus_decl_no} editable={entryEditable}
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
+                            />
+                          </Col>
+                          <Col sm={12} lg={3}>
+                            <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
+                              type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY.MM.DD')} editable={entryEditable}
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
+                            />
+                          </Col>
+                          <Col sm={12} lg={3}>
+                            <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
+                              type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY.MM.DD')} editable={entryEditable}
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
+                            />
+                          </Col>
+                          <Col sm={8} lg={2}>
+                            <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
+                          </Col>
+                          <Col sm={8} lg={3}>
+                            <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt} addonAfter="KG" />
+                          </Col>
+                          <Col sm={8} lg={3}>
+                            <InfoItem size="small" addonBefore="总金额" field={stat.total_amount} addonAfter="美元" />
+                          </Col>
+                        </Row>
+                      </div>
+                      <div className="table-fixed-layout">
+                        <Table columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
+                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                        />
+                      </div>
+                    </TabPane>);
+                })}
               </Tabs>
             </Card>
           </Form>

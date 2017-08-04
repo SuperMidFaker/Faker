@@ -130,7 +130,14 @@ export default class SHFTZRelDetail extends Component {
     const soNo = this.props.params.soNo;
     this.props.queryPortionoutInfos(soNo, this.props.relSo.whse_code).then((result) => {
       if (!result.error) {
-        this.props.loadRelDetails(soNo);
+        if (result.data.errorMsg) {
+          notification.warn({
+            message: '结果异常',
+            description: result.data.errorMsg,
+          });
+        } else {
+          this.props.loadRelDetails(soNo);
+        }
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
@@ -203,7 +210,8 @@ export default class SHFTZRelDetail extends Component {
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
     const sendText = sent ? '重新发送' : '发送备案';
     let queryable = false;
-    const sendable = true;
+    let sendable = true;
+    relRegs.forEach((relReg) => { sendable = sendable && relReg.details.length > 0; });
     const columns = [...this.columns];
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
       queryable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
