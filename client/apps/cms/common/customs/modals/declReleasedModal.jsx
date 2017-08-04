@@ -29,6 +29,7 @@ export default class DeclReleasedModal extends React.Component {
   state = {
     entryNo: '',
     clearTime: null,
+    ieTime: null,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entry !== this.props.entry) {
@@ -45,6 +46,9 @@ export default class DeclReleasedModal extends React.Component {
   }
   handleClearDateChange = (clearDt) => {
     this.setState({ clearTime: clearDt.valueOf() });
+  }
+  handleIEDateChange = (ieDate) => {
+    this.setState({ ieTime: ieDate.valueOf() });
   }
   handleCancel = () => {
     this.props.closeDeclReleasedModal();
@@ -64,6 +68,7 @@ export default class DeclReleasedModal extends React.Component {
       preEntrySeqNo: entry.preEntrySeqNo,
       entryNo: this.state.entryNo === entry.entryNo ? null : this.state.entryNo,
       clearTime: this.state.clearTime,
+      ieTime: this.state.ieTime,
     }).then(
       (result) => {
         if (result.error) {
@@ -77,8 +82,9 @@ export default class DeclReleasedModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible } = this.props;
+    const { visible, entry } = this.props;
     const entryNo = this.state.entryNo;
+    const ieLabel = entry.ietype === 0 ? '进口日期' : '出口日期';
     return (
       <Modal title={this.msg('customsClearModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
@@ -92,6 +98,11 @@ export default class DeclReleasedModal extends React.Component {
               style={{ width: '100%' }} format="YYYY-MM-DD HH:mm" showTime
             />
           </FormItem>
+          {entry.mark === 'mark' && <FormItem label={ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+            <DatePicker onChange={this.handleIEDateChange} value={this.state.ieTime && moment(this.state.ieTime)}
+              style={{ width: '100%' }} format="YYYY-MM-DD HH:mm" showTime
+            />
+          </FormItem>}
         </Form>
       </Modal>
     );

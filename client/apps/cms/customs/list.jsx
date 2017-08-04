@@ -288,6 +288,10 @@ export default class CustomsList extends Component {
             </PrivilegeCover>
             <span className="ant-divider" />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
+              <RowUpdater onHit={this.handleSetDeclReleased} label={<span><Icon type="flag" />标记放行</span>} row={record} />
+            </PrivilegeCover>
+            <span className="ant-divider" />
+            <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
             </PrivilegeCover>
           </span>
@@ -484,7 +488,10 @@ export default class CustomsList extends Component {
     window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
   }
   handleShowDeclReleasedModal = (row) => {
-    this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no);
+    this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no, row.i_e_type);
+  }
+  handleSetDeclReleased = (row) => {
+    this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no, row.i_e_type, 'mark');
   }
   handleTradesSelectChange = (value) => {
     let tradesView = {};
