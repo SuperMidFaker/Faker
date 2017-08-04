@@ -160,9 +160,11 @@ export default class AdvExpsImpTempModal extends Component {
     });
     const invoiceType = INVOICE_TYPE.filter(tp => tp.value === quoteInv)[0];
     const invType = invoiceType ? invoiceType.text : '';
+    let tabMsg = '代垫应付';
     let str = `收款方：${advImportParams.partner.name}`;
     let payerStr = `收款方：${this.props.tenantName}`;
     if (advImportParams.importMode === 'recpt') {
+      tabMsg = '代垫应收';
       str = `付款方：${advImportParams.partner.name}`;
       payerStr = `收款方：${advImportParams.partner.name}`;
     }
@@ -170,11 +172,11 @@ export default class AdvExpsImpTempModal extends Component {
     return (
       <Modal visible={advImpTempVisible} title={this.msg('advanceFee')} onCancel={this.handleCancel} onOk={this.handleSave} width={1000} okText="保存">
         <Tabs activeKey={this.state.tabkey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('cushCost')} key="pay">
+          <TabPane tab={tabMsg} key="pay">
             <Alert message={alertMessage} type="info" showIcon />
             <Table columns={columns} dataSource={this.state.datas} pagination={false} scroll={{ x: '130%', y: 200 }} />
           </TabPane>
-          {advImportParams.calculateAll && <TabPane tab={this.msg('cushBill')} key="recpt">
+          {advImportParams.calculateAll && <TabPane tab="付款方应收" key="recpt">
             <Alert message={payerStr} type="info" showIcon />
             <Table columns={columns} dataSource={this.state.ptDatas} pagination={false} scroll={{ x: '130%', y: 200 }} />
           </TabPane>}
