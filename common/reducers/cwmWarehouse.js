@@ -25,6 +25,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'DELETE_LOCATIONS', 'DELETE_LOCATIONS_SUCCEED', 'DELETE_LOCATIONS_FAIL',
   'SHOW_EDIT_WHSE', 'HIDE_EDIT_WHSE',
   'UPDATE_WHOWNCONTROL', 'UPDATE_WHOWNCONTROL_SUCCEED', 'UPDATE_WHOWNCONTROL_FAIL',
+  'SHOW_STAFF_MODAL', 'HIDE_STAFF_MODAL',
+  'ADD_STAFF', 'ADD_STAFF_SUCCEED', 'ADD_STAFF_FAIL',
+  'LOAD_STAFFS', 'LOAD_STAFFS_SUCCEED', 'LOAD_STAFFS_FAIL',
 ]);
 
 const initialState = {
@@ -53,6 +56,10 @@ const initialState = {
   editWarehouseModal: {
     visible: false,
   },
+  staffModal: {
+    visible: false,
+  },
+  staffs: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -91,6 +98,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: true } };
     case actionTypes.HIDE_EDIT_WHSE:
       return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: false } };
+    case actionTypes.SHOW_STAFF_MODAL:
+      return { ...state, staffModal: { visible: true } };
+    case actionTypes.HIDE_STAFF_MODAL:
+      return { ...state, staffModal: { visible: false } };
+    case actionTypes.LOAD_STAFFS_SUCCEED:
+      return { ...state, staffs: action.result.data };
     default:
       return state;
   }
@@ -427,6 +440,48 @@ export function updateWhOwnerControl(whauth, control, loginId) {
       endpoint: 'v1/cwm/warehouse/owner/control',
       method: 'post',
       data: { whauth, control, loginId },
+    },
+  };
+}
+
+export function showStaffModal() {
+  return {
+    type: actionTypes.SHOW_STAFF_MODAL,
+  };
+}
+
+export function hideStaffModal() {
+  return {
+    type: actionTypes.HIDE_STAFF_MODAL,
+  };
+}
+
+export function addStaff(whseCode, tenantId, staffs, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_STAFF,
+        actionTypes.ADD_STAFF_SUCCEED,
+        actionTypes.ADD_STAFF_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/add/staffs',
+      method: 'post',
+      data: { whseCode, tenantId, staffs, loginId },
+    },
+  };
+}
+
+export function loadStaffs(whseCode, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_STAFFS,
+        actionTypes.LOAD_STAFFS_SUCCEED,
+        actionTypes.LOAD_STAFFS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/load/staffs',
+      method: 'get',
+      params: { whseCode, tenantId },
     },
   };
 }
