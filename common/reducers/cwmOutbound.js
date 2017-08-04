@@ -74,6 +74,8 @@ const initialState = {
   pickDetails: [],
   packDetails: [],
   shipDetails: [],
+  inventoryDataLoading: false,
+  allocatedDataLoading: false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -105,9 +107,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_OUTBOUND_PRODUCTS_SUCCEED:
       return { ...state, outboundProducts: action.result.data };
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS:
-      return { ...state, inventoryFilter: JSON.parse(action.params.filters) };
+      return { ...state, inventoryDataLoading: true, inventoryFilter: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED:
-      return { ...state, inventoryData: action.result.data };
+      return { ...state, inventoryData: action.result.data, inventoryDataLoading: false };
     case actionTypes.AUTO_ALLOC_SUCCEED:
     case actionTypes.MANUAL_ALLOC_SUCCEED:
     case actionTypes.CANCEL_PRDALLOC_SUCCEED:
@@ -117,8 +119,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, outboundReload: true };
     case actionTypes.LOAD_PICK_DETAILS_SUCCEED:
       return { ...state, pickDetails: action.result.data };
+    case actionTypes.LOAD_ALLOCATED_DETAILS:
+      return { ...state, allocatedDataLoading: true };
     case actionTypes.LOAD_ALLOCATED_DETAILS_SUCCEED:
-      return { ...state, allocatedData: action.result.data };
+      return { ...state, allocatedData: action.result.data, allocatedDataLoading: false };
     case actionTypes.UPDATE_OUTBMODE_SUCCEED:
       return { ...state, outboundFormHead: { ...state.outboundFormHead, shipping_mode: action.data.shippingMode } };
     case actionTypes.LOAD_PACK_DETAILS_SUCCEED:

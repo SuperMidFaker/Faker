@@ -46,6 +46,7 @@ export default class ReceiveDetailsPane extends React.Component {
     selectedRows: [],
     confirmDisabled: true,
     searchValue: '',
+    loading: false,
   }
   componentWillMount() {
     this.handleReload();
@@ -61,7 +62,10 @@ export default class ReceiveDetailsPane extends React.Component {
     }
   }
   handleReload = () => {
-    this.props.loadInboundProductDetails(this.props.inboundNo);
+    this.setState({ loading: true });
+    this.props.loadInboundProductDetails(this.props.inboundNo).then(() => {
+      this.setState({ loading: false });
+    });
     this.setState({
       selectedRowKeys: [],
     });
@@ -252,6 +256,7 @@ export default class ReceiveDetailsPane extends React.Component {
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="asn_seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+          loading={this.state.loading}
         />
         <ReceivingModal />
         <BatchReceivingModal inboundNo={this.props.inboundNo} data={this.state.selectedRows} />

@@ -37,6 +37,7 @@ export default class OrderDetailsPane extends React.Component {
     searchValue: '',
     cancelAllocDisabled: false,
     autoAllocDisabled: false,
+    loading: false,
   }
   componentWillMount() {
     this.handleReload();
@@ -53,10 +54,12 @@ export default class OrderDetailsPane extends React.Component {
     }
   }
   handleReload = () => {
+    this.setState({ loading: true });
     this.props.loadOutboundProductDetails(this.props.outboundNo).then((result) => {
       if (!result.error) {
         this.setState({
           selectedRowKeys: [],
+          loading: false,
         });
       }
     });
@@ -228,6 +231,7 @@ export default class OrderDetailsPane extends React.Component {
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="seq_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+          loading={this.state.loading}
         />
         <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />
       </div>

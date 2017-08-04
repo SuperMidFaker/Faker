@@ -26,9 +26,10 @@ export default class PackingDetailsPane extends React.Component {
   }
   state = {
     searchValue: '',
+    loading: false,
   }
   componentWillMount() {
-    this.props.loadPackDetails(this.props.outboundNo);
+    this.handleLoad();
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: window.innerHeight - 460,
@@ -37,8 +38,14 @@ export default class PackingDetailsPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      this.props.loadPackDetails(this.props.outboundNo);
+      this.handleLoad();
     }
+  }
+  handleLoad = () => {
+    this.setState({ loading: true });
+    this.props.loadPackDetails(this.props.outboundNo).then(() => {
+      this.setState({ loading: false });
+    });
   }
   handleSearch = (value) => {
     this.setState({ searchValue: value });
@@ -118,6 +125,7 @@ export default class PackingDetailsPane extends React.Component {
         </div>
         <Table columns={this.columns} indentSize={0} dataSource={dataSource} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+          loading={this.state.loading}
         />
       </div>
     );

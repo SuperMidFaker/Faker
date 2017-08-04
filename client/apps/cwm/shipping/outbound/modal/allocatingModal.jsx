@@ -33,6 +33,8 @@ const Option = Select.Option;
     outboundHead: state.cwmOutbound.outboundFormHead,
     tenantId: state.account.tenantId,
     inventoryColumns: state.cwmOutbound.inventoryColumns,
+    inventoryDataLoading: state.cwmOutbound.inventoryDataLoading,
+    allocatedDataLoading: state.cwmOutbound.allocatedDataLoading,
   }),
   { closeAllocatingModal,
     loadProductInboundDetail,
@@ -48,12 +50,15 @@ export default class AllocatingModal extends Component {
     outboundNo: PropTypes.string.isRequired,
     seqNo: PropTypes.string.isRequired,
     editable: PropTypes.bool.isRequired,
+    inventoryDataLoading: PropTypes.bool.isRequired,
+    allocatedDataLoading: PropTypes.bool.isRequired,
   }
   state = {
     inventoryData: [],
     allocatedData: [],
     outboundProduct: {},
     searchContent: '',
+
   }
   componentWillMount() {
     this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
@@ -429,12 +434,16 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }} />
+            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }}
+              loading={this.props.inventoryDataLoading}
+            />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }}>
           <div className="table-fixed-layout">
-            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }} />
+            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }}
+              loading={this.props.allocatedDataLoading}
+            />
           </div>
         </Card>
         {/*

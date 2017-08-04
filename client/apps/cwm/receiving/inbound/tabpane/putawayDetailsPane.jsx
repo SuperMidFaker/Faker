@@ -35,9 +35,10 @@ export default class PutawayDetailsPane extends React.Component {
     selectedRowKeys: [],
     selectedRows: [],
     searchValue: '',
+    loading: false,
   }
   componentWillMount() {
-    this.props.loadInboundPutaways(this.props.inboundNo);
+    this.handleLoad();
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: window.innerHeight - 460,
@@ -46,11 +47,16 @@ export default class PutawayDetailsPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      this.props.loadInboundPutaways(this.props.inboundNo);
+      this.handleLoad();
       this.setState({ selectedRowKeys: [], selectedRows: [] });
     }
   }
-
+  handleLoad = () => {
+    this.setState({ loading: true });
+    this.props.loadInboundPutaways(this.props.inboundNo).then(() => {
+      this.setState({ loading: false });
+    });
+  }
   columns = [{
     title: '容器编号',
     dataIndex: 'convey_no',
@@ -197,6 +203,7 @@ export default class PutawayDetailsPane extends React.Component {
         <Table columns={columns} rowSelection={rowSelection} indentSize={0}
           dataSource={dataSource} rowKey="trace_id"
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+          loading={this.state.loading}
         />
         <PuttingAwayModal inboundNo={this.props.inboundNo} />
       </div>

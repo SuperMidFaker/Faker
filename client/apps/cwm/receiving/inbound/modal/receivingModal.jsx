@@ -37,9 +37,11 @@ export default class ReceivingModal extends Component {
     dataSource: [],
     receivedQty: 0,
     receivedPackQty: 0,
+    loading: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
+      this.setState({ loading: true });
       this.props.loadProductDetails(nextProps.inboundNo, nextProps.inboundProduct.asn_seq_no).then(
         (result) => {
           if (!result.error) {
@@ -67,6 +69,7 @@ export default class ReceivingModal extends Component {
               dataSource,
               receivedQty: nextProps.inboundProduct.received_qty,
               receivedPackQty: nextProps.inboundProduct.received_pack_qty,
+              loading: false,
             });
           }
         });
@@ -279,6 +282,7 @@ export default class ReceivingModal extends Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
             dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
+            loading={this.state.loading}
           />
         </Card>
       </Modal>

@@ -39,9 +39,10 @@ export default class PickingDetailsPane extends React.Component {
     ButtonStatus: null,
     operationMode: null,
     searchValue: '',
+    loading: false,
   }
   componentWillMount() {
-    this.props.loadPickDetails(this.props.outboundNo);
+    this.handleLoad();
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: window.innerHeight - 460,
@@ -50,8 +51,14 @@ export default class PickingDetailsPane extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
-      this.props.loadPickDetails(this.props.outboundNo);
+      this.handleLoad();
     }
+  }
+  handleLoad = () => {
+    this.setState({ loading: true });
+    this.props.loadPickDetails(this.props.outboundNo).then(() => {
+      this.setState({ loading: false });
+    });
   }
   handleSearch = (value) => {
     this.setState({ searchValue: value });
@@ -319,6 +326,7 @@ export default class PickingDetailsPane extends React.Component {
         </div>
         <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+          loading={this.state.loading}
         />
         <PickingModal resetState={this.resetState} pickMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
         <ShippingModal resetState={this.resetState} shipMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
