@@ -288,7 +288,7 @@ export default class CustomsList extends Component {
             </PrivilegeCover>
             <span className="ant-divider" />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onHit={this.handleSetDeclReleased} label={<span><Icon type="flag" />标记放行</span>} row={record} />
+              <RowUpdater onHit={this.handleShowDeclReleasedModal} label={<span><Icon type="flag" />标记放行</span>} row={record} />
             </PrivilegeCover>
             <span className="ant-divider" />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
@@ -489,9 +489,6 @@ export default class CustomsList extends Component {
   }
   handleShowDeclReleasedModal = (row) => {
     this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no, row.i_e_type);
-  }
-  handleSetDeclReleased = (row) => {
-    this.props.openDeclReleasedModal(row.entry_id, row.pre_entry_seq_no, row.delg_no, row.i_e_type, 'mark');
   }
   handleTradesSelectChange = (value) => {
     let tradesView = {};
