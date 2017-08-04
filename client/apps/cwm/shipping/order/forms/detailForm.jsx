@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { showDetailModal, addTemporary, deleteTemporary } from 'common/reducers/cwmReceive';
-import AddDetailModal from '../../../common/modal/addDetailModal';
+import AddDetailModal from '../modal/addDetailModal';
 
 const formatMsg = format(messages);
 
