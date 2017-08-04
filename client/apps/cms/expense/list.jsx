@@ -559,7 +559,7 @@ export default class ExpenseList extends Component {
         <DelgAdvanceExpenseModal />
         <AdvModelModal />
         <AdvUploadModal visible={this.state.advUploadVisible} toggle={this.toggleAdvUploadModal} />
-        <AdvExpsImpTempModal />
+        <AdvExpsImpTempModal onload={() => this.handleExpListLoad()} />
         <ExpEptModal visible={this.state.expEptVisible} toggle={this.toggleEptModal} />
       </QueueAnim>
     );

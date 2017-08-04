@@ -28,6 +28,7 @@ export default class AdvExpsImpTempModal extends Component {
     advImpTempVisible: PropTypes.bool.isRequired,
     showAdvImpTempModal: PropTypes.func.isRequired,
     advImport: PropTypes.object.isRequired,
+    onload: PropTypes.func.isRequired,
   }
   state = {
     tabkey: this.props.advImportParams.importMode,
@@ -126,6 +127,7 @@ export default class AdvExpsImpTempModal extends Component {
         message.error(result.error.message, 10);
       } else {
         this.props.showAdvImpTempModal(false);
+        this.props.onload();
       }
     });
   }
