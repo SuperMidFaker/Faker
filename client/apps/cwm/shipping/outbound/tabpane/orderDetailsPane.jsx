@@ -197,6 +197,16 @@ export default class OrderDetailsPane extends React.Component {
           ButtonStatus: status,
         });
       },
+      selections: [{
+        key: 'all-data',
+        text: '选择全部项',
+        onSelect: () => {
+          const selectedRowKeys = dataSource.map(item => item.seq_no);
+          this.setState({
+            selectedRowKeys,  // TODO
+          });
+        },
+      }],
     };
     return (
       <div className="table-fixed-layout">

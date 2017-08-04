@@ -285,6 +285,16 @@ export default class PickingDetailsPane extends React.Component {
         }
         this.setState({ selectedRowKeys, selectedRows, ButtonStatus: status });
       },
+      selections: [{
+        key: 'all-data',
+        text: '选择全部项',
+        onSelect: () => {
+          const selectedRowKeys = dataSource.map(item => item.id);
+          this.setState({
+            selectedRowKeys,  // TODO
+          });
+        },
+      }],
     };
     return (
       <div className="table-fixed-layout">
