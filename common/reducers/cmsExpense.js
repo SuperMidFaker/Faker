@@ -106,6 +106,7 @@ const initialState = {
   advImportParams: {
     importMode: 'pay',
     partner: {},
+    calculateAll: false,
   },
   advImpTempVisible: false,
 };
@@ -532,7 +533,7 @@ export function advExpImport(data) {
       endpoint: 'v1/cms/expense/advance/import',
       method: 'post',
       data,
-      payload: { importMode: data.importMode, partner: data.partner },
+      payload: { importMode: data.importMode, partner: data.partner, calculateAll: data.calculateAll },
     },
   };
 }

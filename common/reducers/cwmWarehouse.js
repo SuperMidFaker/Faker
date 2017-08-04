@@ -28,6 +28,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'SHOW_STAFF_MODAL', 'HIDE_STAFF_MODAL',
   'ADD_STAFF', 'ADD_STAFF_SUCCEED', 'ADD_STAFF_FAIL',
   'LOAD_STAFFS', 'LOAD_STAFFS_SUCCEED', 'LOAD_STAFFS_FAIL',
+  'CHNAGE_STAFF_STATUS', 'CHNAGE_STAFF_STATUS_SUCCEED', 'CHNAGE_STAFF_STATUS_FAIL',
+  'DELETE_STAFF', 'DELETE_STAFF_SUCCEED', 'DELETE_STAFF_FAIL',
 ]);
 
 const initialState = {
@@ -482,6 +484,36 @@ export function loadStaffs(whseCode, tenantId) {
       endpoint: 'v1/cwm/warehouse/load/staffs',
       method: 'get',
       params: { whseCode, tenantId },
+    },
+  };
+}
+
+export function changeStaffStatus(status, id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CHNAGE_STAFF_STATUS,
+        actionTypes.CHNAGE_STAFF_STATUS_SUCCEED,
+        actionTypes.CHNAGE_STAFF_STATUS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/change/staff/status',
+      method: 'post',
+      data: { status, id },
+    },
+  };
+}
+
+export function deleteStaff(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_STAFF,
+        actionTypes.DELETE_STAFF_SUCCEED,
+        actionTypes.DELETE_STAFF_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/delete/staff',
+      method: 'post',
+      data: { id },
     },
   };
 }
