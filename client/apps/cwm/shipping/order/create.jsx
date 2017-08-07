@@ -130,7 +130,7 @@ export default class CreateShippingOrder extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+        <Content className="main-content">
           <Form layout="vertical">
             <HeadForm form={form} handleOwnerChange={this.handleOwnerChange} />
             <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>

@@ -72,7 +72,7 @@ export default class BatchReceivingModal extends Component {
         <FormItem {...formItemLayout} label="收货数量">
           <Checkbox checked>实际收货数量与预期一致</Checkbox>
         </FormItem>
-        <FormItem {...formItemLayout} label="破损级别" >
+        <FormItem {...formItemLayout} label="包装情况" >
           <Select style={{ width: 160 }} onSelect={this.handleDamageLevelChange} value={this.state.damageLevel}>
             <Option value={0}>完好</Option>
             <Option value={1}>轻微擦痕</Option>

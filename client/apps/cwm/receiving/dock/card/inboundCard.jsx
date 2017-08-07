@@ -103,7 +103,7 @@ export default class InboundCard extends Component {
       }
     },
   }, {
-    title: '破损级别',
+    title: '包装情况',
     dataIndex: 'damage_level',
     width: 120,
     render: damage => (

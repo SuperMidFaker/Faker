@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Collapse, Select, Layout, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
@@ -15,7 +15,6 @@ import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
-const Panel = Collapse.Panel;
 
 function fetchData({ state, dispatch }) {
   const proms = [];
@@ -256,11 +255,9 @@ export default class StockQueryList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <Collapse defaultActiveKey={['1']} style={{ marginBottom: 16 }}>
-            <Panel header="查询条件" key="1">
-              <QueryForm onSearch={this.handleSearch} />
-            </Panel>
-          </Collapse>
+          <Card noHovering style={{ marginBottom: 16 }}>
+            <QueryForm onSearch={this.handleSearch} />
+          </Card>
           <div className="page-body">
             <div className="toolbar">
               <div className="toolbar-right">

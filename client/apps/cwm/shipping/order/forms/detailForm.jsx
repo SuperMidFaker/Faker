@@ -84,7 +84,7 @@ export default class DetailForm extends Component {
     }, {
       title: '中文品名',
       dataIndex: 'name',
-      width: 200,
+      width: 250,
     }, {
       title: '订单数量',
       width: 100,
@@ -92,6 +92,22 @@ export default class DetailForm extends Component {
     }, {
       title: '计量单位',
       dataIndex: 'unit_name',
+    }, {
+      title: '库别',
+      dataIndex: 'virtual_whse',
+      width: 150,
+    }, {
+      title: '采购订单号',
+      dataIndex: 'po_no',
+      width: 150,
+    }, {
+      title: '批次号',
+      dataIndex: 'external_lot_no',
+      width: 150,
+    }, {
+      title: '序列号',
+      dataIndex: 'sn_no',
+      width: 150,
     }, {
       title: '单价',
       dataIndex: 'unit_price',

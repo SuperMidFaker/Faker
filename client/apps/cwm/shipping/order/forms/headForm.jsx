@@ -133,7 +133,7 @@ export default class HeadForm extends Component {
             </FormItem>
           </Col>
           <Col span={6} offset={2}>
-            <FormItem label="客户订单号">
+            <FormItem label="销售订单号">
               {getFieldDecorator('cust_order_no', {
               })(
                 <Input />

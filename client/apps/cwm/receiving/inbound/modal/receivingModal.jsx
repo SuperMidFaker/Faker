@@ -185,7 +185,7 @@ export default class ReceivingModal extends Component {
     dataIndex: 'inbound_qty',
     render: (o, record) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} />),
   }, {
-    title: '破损级别',
+    title: '包装情况',
     dataIndex: 'damage_level',
     render: o => (<Select value={o} style={{ width: 60 }} disabled>
       <Option value={0}>完好</Option>
@@ -218,7 +218,7 @@ export default class ReceivingModal extends Component {
         onChange={e => this.handleProductReceive(index, e.target.value)} disabled={!!record.trace_id}
       />),
   }, {
-    title: '破损级别',
+    title: '包装情况',
     dataIndex: 'damage_level',
     width: 180,
     render: (o, record, index) => (
