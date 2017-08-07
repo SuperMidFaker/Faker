@@ -279,12 +279,18 @@ export default class MovementModal extends Component {
         <Button type="primary" ghost onClick={this.handleSearch} disabled={!filter.ownerCode}>库存查询</Button>
       </FormItem>
     </Form>);
-
+    const title = (<div>
+      <span>库存移动单</span>
+      <div className="toolbar-right">
+        <Button onClick={this.handleCancel}>取消</Button>
+        <Button type="primary" onClick={this.handleCreateMovement}>保存</Button>
+      </div>
+    </div>);
     return (
-      <Modal title="创建库存移动单" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
-        onOk={this.handleCreateMovement} onCancel={this.handleCancel} visible={this.props.visible}
+      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+        footer={null} visible={this.props.visible}
       >
-        <Card title="库存移动单" bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
+        <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
           <Form layout="inline">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">

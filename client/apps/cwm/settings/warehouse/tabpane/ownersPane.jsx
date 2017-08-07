@@ -65,6 +65,13 @@ export default class OwnersPane extends Component {
   }, {
     title: '启用分拨',
     dataIndex: 'portion_enabled',
+    render: (o) => {
+      if (o) {
+        return <Tag color="blue">已启用</Tag>;
+      } else {
+        return <Tag>未启用</Tag>;
+      }
+    },
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',

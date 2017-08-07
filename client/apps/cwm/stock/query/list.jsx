@@ -2,22 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Select, Layout, Tooltip, Tabs, message } from 'antd';
+import { Breadcrumb, Button, Collapse, Select, Layout, Tooltip, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
-import ButtonToggle from 'client/components/ButtonToggle';
 import QueryForm from './queryForm';
-import TransactionForm from './transactionForm';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 const Option = Select.Option;
-const TabPane = Tabs.TabPane;
+const Panel = Collapse.Panel;
 
 function fetchData({ state, dispatch }) {
   const proms = [];
@@ -173,11 +171,6 @@ export default class StockQueryList extends React.Component {
   }, {
     dataIndex: 'spacer',
   }]
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
@@ -243,68 +236,49 @@ export default class StockQueryList extends React.Component {
     });
     return (
       <Layout>
-        <Sider width={320} className="menu-sider" key="sider" trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-          collapsedWidth={0}
-        >
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                  {
+        <Header className="page-header">
+          <Breadcrumb>
+            <Breadcrumb.Item>
+              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                {
                     whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
                   }
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('query')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
+              </Select>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
+              {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+          <div className="page-header-tools">
+            <Button size="large" icon="export">
+              {this.msg('export')}
+            </Button>
           </div>
-          <Tabs type="card">
-            <TabPane tab="库存余量" key="query"><QueryForm onSearch={this.handleSearch} /></TabPane>
-            <TabPane tab="库存事务" key="transaction"><TransactionForm onSearch={this.handleTransactionSearch} /></TabPane>
-          </Tabs>
-        </Sider>
-        <Layout style={{ width: 0 }}>
-          <Header className="page-header">
-            <ButtonToggle size="large"
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="page-header-tools">
-              <Button size="large" icon="export">
-                {this.msg('export')}
-              </Button>
-            </div>
-          </Header>
-          <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <div className="toolbar-right">
-                  <Tooltip title="显示字段设置">
-                    <Button size="large" icon="setting" />
-                  </Tooltip>
-                </div>
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                </div>
+        </Header>
+        <Content className="main-content" key="main">
+          <Collapse defaultActiveKey={['1']} style={{ marginBottom: 16 }}>
+            <Panel header="查询条件" key="1">
+              <QueryForm onSearch={this.handleSearch} />
+            </Panel>
+          </Collapse>
+          <div className="page-body">
+            <div className="toolbar">
+              <div className="toolbar-right">
+                <Tooltip title="显示字段设置">
+                  <Button size="large" icon="setting" />
+                </Tooltip>
               </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
-                  scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-                />
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
-          </Content>
-        </Layout>
+            <div className="panel-body table-panel table-fixed-layout">
+              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
+                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+              />
+            </div>
+          </div>
+        </Content>
       </Layout>
     );
   }

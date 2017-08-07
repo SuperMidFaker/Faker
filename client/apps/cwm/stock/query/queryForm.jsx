@@ -74,12 +74,12 @@ export default class QueryForm extends React.Component {
   render() {
     const { form: { getFieldDecorator }, owners, filter } = this.props;
     return (
-      <Form layout="vertical" className="left-sider-panel">
+      <Form layout="inline">
         <FormItem label="货主">
           {getFieldDecorator('owner', {
             initialValue: filter.owner,
           })(
-            <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange} allowClear >
+            <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange} allowClear style={{ width: 160 }}>
               {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
             </Select>
           )}
@@ -93,7 +93,7 @@ export default class QueryForm extends React.Component {
           {getFieldDecorator('whse_location', {
             initialValue: filter.whse_location,
           })(
-            <LocationSelect />
+            <LocationSelect style={{ width: 160 }} />
           )}
         </FormItem>
         <FormItem label="入库日期" >

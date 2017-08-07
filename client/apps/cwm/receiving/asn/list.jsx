@@ -147,7 +147,7 @@ export default class ReceivingASNList extends React.Component {
       if (record.status === CWM_ASN_STATUS.PENDING.value) {
         return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} />
           <span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} />
-          <span className="ant-divider" /><RowUpdater onHit={this.handleCancelASN} label="取消" row={record} /></span>);
+          <span className="ant-divider" /><RowUpdater onHit={this.handleDeleteASN} label="删除" row={record} /></span>);
       } else if (record.status === CWM_ASN_STATUS.INBOUND.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span>
@@ -194,7 +194,7 @@ export default class ReceivingASNList extends React.Component {
     const link = `/cwm/receiving/asn/${row.asn_no}`;
     this.context.router.push(link);
   }
-  handleCancelASN = (row) => {
+  handleDeleteASN = (row) => {
     this.props.cancelAsn(row.asn_no).then((result) => {
       if (!result.error) {
         this.handleListReload();
