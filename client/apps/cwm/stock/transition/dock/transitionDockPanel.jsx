@@ -8,8 +8,11 @@ import { hideTransitionDock } from 'common/reducers/cwmInventoryStock';
 // import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import { format } from 'client/common/i18n/helpers';
-import TransitPane from './tabpane/transitPane';
-import LogPane from './tabpane/logPane';
+import TransferPane from './tabpane/transferPane';
+import MovePane from './tabpane/movePane';
+import AdjustPane from './tabpane/adjustPane';
+import FreezePane from './tabpane/freezePane';
+import LogsPane from './tabpane/logsPane';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
@@ -50,12 +53,21 @@ export default class TransitionDockPanel extends React.Component {
 
   renderTabs() {
     return (
-      <Tabs defaultActiveKey="transit" onChange={this.handleTabChange}>
-        <TabPane tab={this.msg('库存变更')} key="transit">
-          <TransitPane />
+      <Tabs defaultActiveKey="transfer" onChange={this.handleTabChange}>
+        <TabPane tab={this.msg('库存转移')} key="transfer">
+          <TransferPane />
         </TabPane>
-        <TabPane tab={this.msg('变更记录')} key="log">
-          <LogPane />
+        <TabPane tab={this.msg('货物移动')} key="move">
+          <MovePane />
+        </TabPane>
+        <TabPane tab={this.msg('数量调整')} key="adjust">
+          <AdjustPane />
+        </TabPane>
+        <TabPane tab={this.msg('库存冻结')} key="freeze">
+          <FreezePane />
+        </TabPane>
+        <TabPane tab={this.msg('变更记录')} key="logs">
+          <LogsPane />
         </TabPane>
       </Tabs>
     );

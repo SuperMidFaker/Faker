@@ -13,7 +13,7 @@ import { intlShape, injectIntl } from 'react-intl';
   }),
   { }
 )
-export default class LogPane extends React.Component {
+export default class LogsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

@@ -8,6 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { showTransitionDock, loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
+import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import TransitionDockPanel from './dock/transitionDockPanel';
@@ -64,14 +65,12 @@ export default class StockTransitionList extends React.Component {
     dataIndex: 'owner_name',
     width: 150,
     sorter: true,
-    fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
     width: 180,
     sorter: true,
-    fixed: 'left',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('SKU'),
@@ -156,7 +155,14 @@ export default class StockTransitionList extends React.Component {
     width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    dataIndex: 'spacer',
+    title: '操作',
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => (<span>
+      <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />
+      <span className="ant-divider" />
+      <RowUpdater onHit={this.handleSplit} label="拆分" row={record} />
+    </span>),
   }]
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
@@ -251,14 +257,16 @@ export default class StockTransitionList extends React.Component {
                   <Button size="large" icon="setting" />
                 </Tooltip>
               </div>
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+              <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                <Button>批量转移</Button>
+                <Button>批量移库</Button>
+                <Button>批量冻结</Button>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
                 scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-                onRowClick={this.handleShowDock}
               />
             </div>
           </div>
