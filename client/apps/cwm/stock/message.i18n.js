@@ -72,11 +72,11 @@ const messages = defineMessages({
   },
   movement: {
     id: 'cwm.stock.movement',
-    defaultMessage: '库存移动',
+    defaultMessage: '移库单',
   },
   createMovement: {
     id: 'cwm.stock.movement.create',
-    defaultMessage: '创建库存移动单',
+    defaultMessage: '创建移库单',
   },
 });
 

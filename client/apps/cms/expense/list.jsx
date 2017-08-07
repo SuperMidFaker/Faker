@@ -512,13 +512,13 @@ export default class ExpenseList extends Component {
             <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
-            <Button type="default" size="large" icon="upload" onClick={this.handleAdvModelEpt}>
+            <Button size="large" icon="download" onClick={this.handleAdvModelEpt}>
               {this.msg('eptAdvModel')}
             </Button>
-            <Button type="default" size="large" icon="upload" onClick={this.handleAdvFeesImport}>
+            <Button size="large" icon="upload" onClick={this.handleAdvFeesImport}>
               {this.msg('incExp')}
             </Button>
-            <Button type="ghost" size="large" icon="file-excel" onClick={this.handleExpExport}>
+            <Button size="large" icon="file-excel" onClick={this.handleExpExport}>
               {this.msg('eptExp')}
             </Button>
           </div>

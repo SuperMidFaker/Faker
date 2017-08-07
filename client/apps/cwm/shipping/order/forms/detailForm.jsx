@@ -97,8 +97,8 @@ export default class DetailForm extends Component {
       dataIndex: 'virtual_whse',
       width: 150,
     }, {
-      title: '采购订单号',
-      dataIndex: 'po_no',
+      title: '入库单号',
+      dataIndex: 'inbound_no',
       width: 150,
     }, {
       title: '批次号',

@@ -97,7 +97,7 @@ export default class ShippingOrderList extends React.Component {
     title: '承运人',
     dataIndex: 'carrier',
   }, {
-    title: '要求交货日期',
+    title: '要求出货日期',
     dataIndex: 'expect_shipping_date',
     width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD'),

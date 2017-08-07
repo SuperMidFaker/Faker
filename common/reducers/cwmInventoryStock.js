@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
+  'SHOW_TRANSITION_DOCK', 'HIDE_TRANSITION_DOCK',
   'OPEN_MOVEMENT_MODAL', 'CLOSE_MOVEMENT_MODAL', 'SET_FILTER',
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
   'LOAD_STOCKSEARCHOPT', 'LOAD_STOCKSEARCHOPT_SUCCEED', 'LOAD_STOCKSEARCHOPT_FAIL',
@@ -73,10 +74,17 @@ const initialState = {
   movementFilter: { owner: 'all' },
   movementHead: {},
   movementDetails: [],
+  transitionDock: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.HIDE_TRANSITION_DOCK:
+      return { ...state, transitionDock: { ...state.transitionDock, visible: false } };
+    case actionTypes.SHOW_TRANSITION_DOCK:
+      return { ...state, transitionDock: { ...state.transitionDock, visible: true } };
     case actionTypes.OPEN_MOVEMENT_MODAL:
       return { ...state, movementModal: { ...state.movementModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_MOVEMENT_MODAL:
@@ -177,6 +185,19 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
+}
+
+export function hideTransitionDock() {
+  return {
+    type: actionTypes.HIDE_TRANSITION_DOCK,
+  };
+}
+
+export function showTransitionDock(detailId) {
+  return {
+    type: actionTypes.SHOW_TRANSITION_DOCK,
+    detailId,
+  };
 }
 
 export function openMovementModal() {

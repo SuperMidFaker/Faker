@@ -220,7 +220,7 @@ const messages = defineMessages({
   },
   importMode: {
     id: 'cms.modals.expense.import.mode',
-    defaultMessage: '导入方式',
+    defaultMessage: '导入类型',
   },
   opColumn: {
     id: 'cms.modals.expense.operation',

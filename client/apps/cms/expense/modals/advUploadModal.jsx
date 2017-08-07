@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, Select, Modal, Radio, Checkbox, Upload, Button, Icon, Row, Col, message } from 'antd';
+import { Form, Select, Modal, Radio, Checkbox, Upload, Button, Col, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { advExpImport, showAdvImpTempModal } from 'common/reducers/cmsExpense';
@@ -131,15 +131,13 @@ export default class AdvUploadModal extends React.Component {
               </Select>
             )}
           </FormItem>
-          <Row>
-            <Col offset={6}>
-              <FormItem>
-                {getFieldDecorator('calculateAll', { initialValue: false })(
-                  <Checkbox>同时计算付款方应收代垫费用</Checkbox>
+          <Col offset={6}>
+            <FormItem>
+              {getFieldDecorator('calculateAll', { initialValue: false })(
+                <Checkbox>同时计算付款方应收代垫费用</Checkbox>
                 )}
-              </FormItem>
-            </Col>
-          </Row>
+            </FormItem>
+          </Col>
         </div>
       );
     } else {
@@ -166,15 +164,13 @@ export default class AdvUploadModal extends React.Component {
               <Option value={tenantId}>{tenantName}</Option>
             </Select>
           </FormItem>
-          <Row>
-            <Col offset={6}>
-              <FormItem>
-                {getFieldDecorator('calculateAll', { initialValue: false })(
-                  <Checkbox>同时计算付款方应收代垫费用</Checkbox>
+          <Col offset={6}>
+            <FormItem>
+              {getFieldDecorator('calculateAll', { initialValue: false })(
+                <Checkbox>同时计算付款方应收代垫费用</Checkbox>
                 )}
-              </FormItem>
-            </Col>
-          </Row>
+            </FormItem>
+          </Col>
         </div>
       );
     }
@@ -186,23 +182,27 @@ export default class AdvUploadModal extends React.Component {
       <Button key="next" type="primary" size="large" onClick={this.handleOk} disabled={this.state.attachments.length === 0}>确定</Button>,
     ];
     return (
-      <Modal visible={visible} title="上传代垫" footer={footer} onCancel={this.handleCancel} >
+      <Modal visible={visible} title="导入代垫费用" footer={footer} onCancel={this.handleCancel} >
         <Form>
-          <FormItem label={this.msg('importMode')} {...formItemLayout} >
-            <RadioGroup onChange={this.handleRadioChange} value={this.state.importMode}>
-              <Radio value="recpt">按应收</Radio>
-              <Radio value="pay">按应付</Radio>
-            </RadioGroup>
-          </FormItem>
+          <Col offset={6}>
+            <FormItem {...formItemLayout} >
+              <RadioGroup onChange={this.handleRadioChange} value={this.state.importMode}>
+                <Radio value="recpt">应收代垫费用</Radio>
+                <Radio value="pay">应付代垫费用</Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
           {this.renderForm()}
+          <Col offset={6}>
+            <FormItem {...formItemLayout} >
+              <Upload accept=".xls,.xlsx" onChange={this.handleImport} onRemove={this.handleRemove}
+                fileList={this.state.attachments} action={`${API_ROOTS.default}v1/upload/excel/`} withCredentials
+              >
+                <Button icon="upload">上传</Button>
+              </Upload>
+            </FormItem>
+          </Col>
         </Form>
-        <Upload accept=".xls,.xlsx" onChange={this.handleImport} onRemove={this.handleRemove}
-          fileList={this.state.attachments} action={`${API_ROOTS.default}v1/upload/excel/`} withCredentials
-        >
-          <Button type="ghost">
-            <Icon type="upload" /> 导入数据
-          </Button>
-        </Upload>
       </Modal>
     );
   }

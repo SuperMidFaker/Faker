@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'cwm',
 })
-export default class StockQueryList extends React.Component {
+export default class StockTransactionsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

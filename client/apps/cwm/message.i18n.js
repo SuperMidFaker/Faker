@@ -38,21 +38,21 @@ const messages = defineMessages({
     id: 'cwm.module.stock',
     defaultMessage: '在库',
   },
-  query: {
-    id: 'cwm.module.stock.query',
-    defaultMessage: '库存查询',
+  inventory: {
+    id: 'cwm.module.stock.inventory',
+    defaultMessage: '库存余量',
+  },
+  transactions: {
+    id: 'cwm.module.stock.transactions',
+    defaultMessage: '库存流水',
   },
   movement: {
     id: 'cwm.module.stock.movement',
-    defaultMessage: '库存移动',
+    defaultMessage: '移库单',
   },
-  adjust: {
-    id: 'cwm.module.stock.adjust',
-    defaultMessage: '库存调整',
-  },
-  transfer: {
-    id: 'cwm.module.stock.transfer',
-    defaultMessage: '库存转移',
+  transition: {
+    id: 'cwm.module.stock.transition',
+    defaultMessage: '库存变更',
   },
   counting: {
     id: 'cwm.module.stock.counting',

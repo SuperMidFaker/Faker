@@ -82,7 +82,7 @@ export default class HeadForm extends Component {
     const { bonded } = this.state;
     return (
       <Card>
-        <Row gutter={16}>
+        <Row>
           <Col span={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
@@ -126,14 +126,14 @@ export default class HeadForm extends Component {
         </Row>
         <Row gutter={16}>
           <Col span={6}>
-            <FormItem label="要求交货日期" >
+            <FormItem label="要求出货日期" >
               {getFieldDecorator('expect_shipping_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
                 initialValue: soHead ? moment(new Date(soHead.expect_shipping_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
           <Col span={6} offset={2}>
-            <FormItem label="销售订单号">
+            <FormItem label="客户订单号">
               {getFieldDecorator('cust_order_no', {
               })(
                 <Input />

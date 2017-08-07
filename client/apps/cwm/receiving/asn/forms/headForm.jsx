@@ -80,7 +80,7 @@ export default class HeadForm extends Component {
     const { bonded } = this.state;
     return (
       <Card>
-        <Row gutter={16}>
+        <Row>
           <Col span={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
@@ -122,7 +122,7 @@ export default class HeadForm extends Component {
             </Col>
           }
         </Row>
-        <Row gutter={16}>
+        <Row>
           <Col span={6}>
             <FormItem label="预期到货日期" >
               {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],

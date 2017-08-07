@@ -19,15 +19,9 @@ export default class CarrierForm extends Component {
   render() {
     const { form: { getFieldDecorator } } = this.props;
     return (
-      <div>
-        <Row gutter={16}>
-          <Col sm={24}>
-            <FormItem label="收货人" >
-              {getFieldDecorator('receiver_code', {
-              })(<Select />)}
-            </FormItem>
-          </Col>
-          <Col sm={24}>
+      <div style={{ padding: 24 }}>
+        <Row>
+          <Col span={6}>
             <FormItem label="承运人" >
               {getFieldDecorator('carrier_code', {
               })(<Select />)}
