@@ -89,7 +89,7 @@ export default class AddDetailModal extends Component {
             ...values,
           });
         } else {
-          this.props.editTemporary(product.index, { ...product, ...values });
+          this.props.editTemporary(product.index, { ...product, ...values, amount: this.state.amount });
         }
         this.handleCancel();
         this.setState({
@@ -189,6 +189,34 @@ export default class AddDetailModal extends Component {
           <FormItem label="中文品名" {...formItemLayout}>
             <Input value={product.desc_cn} />
           </FormItem>
+          <FormItem label="库别" {...formItemLayout}>
+            {getFieldDecorator('virtual_whse', {
+              initialValue: product.virtual_whse,
+            })(
+              <Input />
+            )}
+          </FormItem>
+          <FormItem label="入库单号" {...formItemLayout}>
+            {getFieldDecorator('asn_no', {
+              initialValue: product.asn_no,
+            })(
+              <Input />
+            )}
+          </FormItem>
+          <FormItem label="批次号" {...formItemLayout}>
+            {getFieldDecorator('external_lot_no', {
+              initialValue: product.external_lot_no,
+            })(
+              <Input />
+            )}
+          </FormItem>
+          <FormItem label="序列号" {...formItemLayout}>
+            {getFieldDecorator('serial_no', {
+              initialValue: product.serial_no,
+            })(
+              <Input />
+            )}
+          </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
             <InputGroup compact>
               {getFieldDecorator('order_qty', {
@@ -210,7 +238,7 @@ export default class AddDetailModal extends Component {
               })(
                 <Input placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
               )}
-              <Input placeholder="总价" value={this.state.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
+              <Input placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
               <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
                 style={{ width: '30%' }} onChange={this.handleCurrChange}
               >

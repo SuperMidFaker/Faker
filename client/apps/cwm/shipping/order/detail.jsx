@@ -138,7 +138,7 @@ export default class CreateShippingOrder extends Component {
             </Button>
           </div>
         </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+        <Content className="main-content">
           <Form layout="vertical">
             <HeadForm soHead={soHead} form={form} editable={this.state.editable} />
             <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>

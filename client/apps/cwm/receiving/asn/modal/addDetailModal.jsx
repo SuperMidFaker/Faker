@@ -33,6 +33,7 @@ export default class AddDetailModal extends Component {
       code: PropTypes.string,
       name: PropTypes.string,
     })),
+    poNo: PropTypes.string,
   }
   state = {
     product: {},
@@ -89,7 +90,7 @@ export default class AddDetailModal extends Component {
             ...values,
           });
         } else {
-          this.props.editTemporary(product.index, { ...product, ...values });
+          this.props.editTemporary(product.index, { ...product, ...values, amount: this.state.amount });
         }
         this.handleCancel();
         this.setState({
@@ -162,7 +163,7 @@ export default class AddDetailModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, productNos, units, currencies } = this.props;
+    const { form: { getFieldDecorator }, visible, productNos, units, currencies, poNo } = this.props;
     const { skus } = this.state;
     const product = this.state.product;
     const formItemLayout = {
@@ -189,6 +190,27 @@ export default class AddDetailModal extends Component {
           <FormItem label="中文品名" {...formItemLayout}>
             <Input value={product.desc_cn} />
           </FormItem>
+          <FormItem label="库别" {...formItemLayout}>
+            {getFieldDecorator('virtual_whse', {
+              initialValue: product.virtual_whse,
+            })(
+              <Input />
+            )}
+          </FormItem>
+          <FormItem label="采购订单号" {...formItemLayout}>
+            {getFieldDecorator('po_no', {
+              initialValue: poNo || product.po_no,
+            })(
+              <Input disabled={!!poNo} />
+            )}
+          </FormItem>
+          <FormItem label="集装箱号" {...formItemLayout}>
+            {getFieldDecorator('container_no', {
+              initialValue: product.container_no,
+            })(
+              <Input />
+            )}
+          </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
             <InputGroup compact>
               {getFieldDecorator('order_qty', {
@@ -210,7 +232,7 @@ export default class AddDetailModal extends Component {
               })(
                 <Input placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
                 )}
-              <Input placeholder="总价" value={this.state.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
+              <Input placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
               <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
                 style={{ width: '30%' }} onChange={this.handleCurrChange}
               >
