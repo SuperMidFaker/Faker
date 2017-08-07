@@ -68,7 +68,8 @@ export default class DetailForm extends Component {
     this.props.showDetailModal();
   }
   render() {
-    const { editable, temporaryDetails, detailEnable } = this.props;
+    const { editable, temporaryDetails, detailEnable, form } = this.props;
+    const poNo = form.getFieldValue('po_no');
     const { pagination } = this.state;
     const columns = [{
       title: '行号',
@@ -126,7 +127,7 @@ export default class DetailForm extends Component {
           {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
         </div>
         <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination} />
-        <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
+        <AddDetailModal poNo={poNo} product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
       </div>
     );
   }

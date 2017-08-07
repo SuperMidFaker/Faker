@@ -28,6 +28,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'APPLY_DETAILS_LOAD', 'APPLY_DETAILS_LOAD_SUCCEED', 'APPLY_DETAILS_LOAD_FAIL',
   'FILE_BA', 'FILE_BA_SUCCEED', 'FILE_BA_FAIL',
   'MAKE_BAL', 'MAKE_BAL_SUCCEED', 'MAKE_BAL_FAIL',
+  'CANCEL_ENR', 'CANCEL_ENR_SUCCEED', 'CANCEL_ENR_FAIL',
+  'CANCEL_RER', 'CANCEL_RER_SUCCEED', 'CANCEL_RER_FAIL',
 ]);
 
 const initialState = {
@@ -140,6 +142,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status } };
     case actionTypes.MAKE_BAL_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status } };
+    case actionTypes.CANCEL_ENR_SUCCEED:
+      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status } };
+    case actionTypes.CANCEL_RER_SUCCEED:
+      return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status } };
     default:
       return state;
   }
@@ -528,6 +534,36 @@ export function makeBatchApplied(batchNo, whseCode) {
       endpoint: 'v1/cwm/shftz/batch/decl/applied',
       method: 'post',
       data: { batchNo, whseCode },
+    },
+  };
+}
+
+export function cancelEntryReg(asnNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_ENR,
+        actionTypes.CANCEL_ENR_SUCCEED,
+        actionTypes.CANCEL_ENR_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/reg/cancel',
+      method: 'post',
+      data: { asnNo, whseCode },
+    },
+  };
+}
+
+export function cancelRelReg(soNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_RER,
+        actionTypes.CANCEL_RER_SUCCEED,
+        actionTypes.CANCEL_RER_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/rel/reg/cancel',
+      method: 'post',
+      data: { soNo, whseCode },
     },
   };
 }
