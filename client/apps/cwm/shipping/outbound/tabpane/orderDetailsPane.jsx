@@ -140,7 +140,7 @@ export default class OrderDetailsPane extends React.Component {
         if (result.data.length > 0) {
           const seqNos = result.data.join(',');
           const args = {
-            message: `第${seqNos}行货品数量不足`,
+            message: `行号${seqNos}货品数量不足`,
             duration: 0,
           };
           notification.open(args);
