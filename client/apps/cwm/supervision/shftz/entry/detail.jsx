@@ -8,7 +8,7 @@ import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Ta
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -48,7 +48,7 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos }
+  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg }
 )
 @connectNav({
   depth: 3,
@@ -184,6 +184,17 @@ export default class SHFTZEntryDetail extends Component {
       }
     });
   }
+  handleCancelReg = () => {
+    const asnNo = this.props.params.asnNo;
+    this.props.cancelEntryReg(asnNo, this.props.entryAsn.whse_code).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+        });
+      }
+    });
+  }
   handleCargoAdd = () => {
     notification.close('confirm-cargono');
     this.context.router.push('/cwm/supervision/shftz/cargo');
@@ -281,6 +292,7 @@ export default class SHFTZEntryDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}

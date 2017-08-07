@@ -9,7 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, fileRelTransfers,
-  fileRelPortionouts, queryPortionoutInfos } from 'common/reducers/cwmShFtz';
+  fileRelPortionouts, queryPortionoutInfos, cancelRelReg } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -49,7 +49,13 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadRelDetails, updateRelReg, fileRelStockouts, fileRelTransfers, fileRelPortionouts, queryPortionoutInfos }
+  { loadRelDetails,
+    updateRelReg,
+    fileRelStockouts,
+    fileRelTransfers,
+    fileRelPortionouts,
+    queryPortionoutInfos,
+    cancelRelReg }
 )
 @connectNav({
   depth: 3,
@@ -142,6 +148,17 @@ export default class SHFTZRelDetail extends Component {
         notification.error({
           message: '操作失败',
           description: '仓库监管系统未配置',
+        });
+      }
+    });
+  }
+  handleCancelReg = () => {
+    const soNo = this.props.params.soNo;
+    this.props.cancelEntryReg(soNo, this.props.relSo.whse_code).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
         });
       }
     });
@@ -254,6 +271,7 @@ export default class SHFTZRelDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
