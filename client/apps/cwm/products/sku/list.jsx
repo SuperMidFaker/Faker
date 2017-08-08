@@ -131,9 +131,9 @@ export default class CWMSkuList extends React.Component {
     fixed: 'right',
     render: (_, row) => (
       <div>
-        <Link to={`/cwm/products/sku/edit/${row.sku}`}><Icon type="edit" /></Link>
+        <Link to={`/cwm/products/sku/edit/${row.id}`}><Icon type="edit" /></Link>
         <span className="ant-divider" />
-        <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(row.sku)}>
+        <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(row.id)}>
           <a><Icon type="delete" /></a>
         </Popconfirm>
       </div>),
