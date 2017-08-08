@@ -669,7 +669,9 @@ export default class DelegationList extends Component {
               />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <a role="presentation" onClick={this.handleDeselectRows}>不选</a>
+                <div className="pull-right">
+                  <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+                </div>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout table-fixed-layout">

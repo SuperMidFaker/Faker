@@ -184,7 +184,7 @@ export function checkLocationColumn() {
   };
 }
 
-export function checkProAndLocation() {
+export function checkProductLocation() {
   return {
     type: actionTypes.CHECK_PRODUCT_LOCATION,
   };

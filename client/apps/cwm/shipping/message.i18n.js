@@ -21,6 +21,10 @@ const messages = defineMessages({
     id: 'cwm.shipping.order.create',
     defaultMessage: '创建发货订单',
   },
+  batchImport: {
+    id: 'cwm.shipping.order.batch.import',
+    defaultMessage: '批量导入',
+  },
   shippingWave: {
     id: 'cwm.shipping.wave',
     defaultMessage: '波次',

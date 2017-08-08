@@ -1,7 +1,7 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Col, Row, Select, Input } from 'antd';
+import { Form, Col, Row, Select, Input, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -38,8 +38,8 @@ export default class ReceiverForm extends Component {
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="联系方式">
-              <Col span={12}><Input placeholder="电话" /></Col>
-              <Col span={12}><Input placeholder="手机" /></Col>
+              <Col span={12}><Input prefix={<Icon type="phone" />} placeholder="电话" /></Col>
+              <Col span={12}><Input prefix={<Icon type="mobile" />} placeholder="手机" /></Col>
             </FormItem>
           </Col>
         </Row>

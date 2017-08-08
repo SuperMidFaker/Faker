@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, DatePicker, Layout, Radio, Select, Button, Badge, Tag, message } from 'antd';
+import { Breadcrumb, DatePicker, Dropdown, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/search-bar';
 import connectNav from 'client/common/decorators/connect-nav';
+import ExcelUpload from 'client/components/excelUploader';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
@@ -361,6 +362,23 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="inWave">已加入波次计划</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
+            <Dropdown.Button size="large" overlay={<Menu />}>
+              <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
+                formData={{
+                  data: JSON.stringify({
+                    tenantId: this.props.tenantId,
+                    tenantName: this.props.tenantName,
+                    loginId: this.props.loginId,
+                    loginName: this.props.loginName,
+                    whseCode: defaultWhse.code,
+                    whseName: defaultWhse.name,
+                    owner: owners.filter(owner => owner.id === filters.ownerCode)[0],
+                  }),
+                }} onUploaded={this.handleAsnStockImport}
+              >
+                <Icon type="upload" /> {this.msg('batchImport')}
+              </ExcelUpload>
+            </Dropdown.Button>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>

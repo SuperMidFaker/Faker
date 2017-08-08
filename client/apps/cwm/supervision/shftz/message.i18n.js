@@ -15,7 +15,7 @@ const messages = defineMessages({
   },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',
-    defaultMessage: '货物备案',
+    defaultMessage: '分拨货物备案',
   },
   entrySearchPlaceholder: {
     id: 'cms.supervision.shftz.entry.search.placeholder',

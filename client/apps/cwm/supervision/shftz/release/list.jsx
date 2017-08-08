@@ -256,6 +256,12 @@ export default class SHFTZReleaseList extends React.Component {
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.type} onChange={this.handleTypeChange} size="large">
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="normal">普通出库</RadioButton>
+              <RadioButton value="portion">分拨出库</RadioButton>
+            </RadioGroup>
             <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">

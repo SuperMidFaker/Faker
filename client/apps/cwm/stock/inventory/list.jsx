@@ -245,6 +245,9 @@ export default class StockInventoryList extends React.Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
+              库存余量
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>
               {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
             </Breadcrumb.Item>
           </Breadcrumb>

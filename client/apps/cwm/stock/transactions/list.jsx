@@ -11,7 +11,6 @@ import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
-import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -245,7 +244,7 @@ export default class StockTransactionsList extends React.Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
+              库存流水
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">

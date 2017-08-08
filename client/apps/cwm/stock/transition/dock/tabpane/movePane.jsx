@@ -50,7 +50,7 @@ export default class MovePane extends React.Component {
               </Col>
             </Row>
           </Card>
-          <Button type="primary">执行移动</Button>
+          <Button type="primary">加入移库单</Button>
         </Form>
       </div>
     );

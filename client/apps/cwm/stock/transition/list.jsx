@@ -57,6 +57,7 @@ export default class StockTransitionList extends React.Component {
   }
   state = {
     collapsed: false,
+    showTableSetting: false,
     selectedRowKeys: [],
   }
   msg = formatMsg(this.props.intl);
@@ -118,42 +119,6 @@ export default class StockTransitionList extends React.Component {
     width: 120,
     dataIndex: 'damage_level',
   }, {
-    title: this.msg('attrib1'),
-    width: 120,
-    dataIndex: 'attrib_1_string',
-  }, {
-    title: this.msg('attrib2'),
-    width: 120,
-    dataIndex: 'attrib_2_string',
-  }, {
-    title: this.msg('attrib3'),
-    width: 120,
-    dataIndex: 'attrib_3_string',
-  }, {
-    title: this.msg('attrib4'),
-    width: 120,
-    dataIndex: 'attrib_4_string',
-  }, {
-    title: this.msg('attrib5'),
-    width: 120,
-    dataIndex: 'attrib_5_string',
-  }, {
-    title: this.msg('attrib6'),
-    width: 120,
-    dataIndex: 'attrib_6_string',
-  }, {
-    title: this.msg('attrib7'),
-    width: 120,
-    dataIndex: 'attrib_7_date',
-  }, {
-    title: this.msg('attrib8'),
-    width: 120,
-    dataIndex: 'attrib_8_date',
-  }, {
-    title: this.msg('traceId'),
-    width: 120,
-    dataIndex: 'trace_id',
-  }, {
     title: this.msg('totalQty'),
     width: 100,
     dataIndex: 'total_qty',
@@ -195,6 +160,42 @@ export default class StockTransitionList extends React.Component {
         return <span className="text-error">{text}</span>;
       }
     },
+  }, {
+    title: this.msg('attrib1'),
+    width: 120,
+    dataIndex: 'attrib_1_string',
+  }, {
+    title: this.msg('attrib2'),
+    width: 120,
+    dataIndex: 'attrib_2_string',
+  }, {
+    title: this.msg('attrib3'),
+    width: 120,
+    dataIndex: 'attrib_3_string',
+  }, {
+    title: this.msg('attrib4'),
+    width: 120,
+    dataIndex: 'attrib_4_string',
+  }, {
+    title: this.msg('attrib5'),
+    width: 120,
+    dataIndex: 'attrib_5_string',
+  }, {
+    title: this.msg('attrib6'),
+    width: 120,
+    dataIndex: 'attrib_6_string',
+  }, {
+    title: this.msg('attrib7'),
+    width: 120,
+    dataIndex: 'attrib_7_date',
+  }, {
+    title: this.msg('attrib8'),
+    width: 120,
+    dataIndex: 'attrib_8_date',
+  }, {
+    title: this.msg('traceId'),
+    width: 120,
+    dataIndex: 'trace_id',
   }, {
     title: this.msg('bonded'),
     width: 120,
@@ -252,6 +253,12 @@ export default class StockTransitionList extends React.Component {
   }
   handleShowDock = () => {
     this.props.showTransitionDock();
+  }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
+  toggleTableSetting = () => {
+    this.setState({ showTableSetting: !this.state.showTableSetting });
   }
   renderNormalCol(text, row) {
     const colObj = { children: text, props: {} };
@@ -312,14 +319,14 @@ export default class StockTransitionList extends React.Component {
           </Breadcrumb>
         </Header>
         <Content className="main-content" key="main">
-          <Card noHovering style={{ marginBottom: 16 }}>
+          <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <div className="page-body">
             <div className="toolbar">
               <div className="toolbar-right">
                 <Tooltip title="显示字段设置">
-                  <Button size="large" icon="setting" />
+                  <Button shape="circle" icon="setting" onClick={this.toggleTableSetting} />
                 </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
@@ -327,6 +334,14 @@ export default class StockTransitionList extends React.Component {
                 <Button>批量转移</Button>
                 <Button>批量移库</Button>
                 <Button>批量冻结</Button>
+                <div className="pull-right">
+                  <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+                </div>
+              </div>
+              <div className={`table-setting ${this.state.showTableSetting ? '' : 'hide'}`}>
+                <div className="pull-right">
+                  <Button type="primary" shape="circle" icon="check" onClick={this.toggleTableSetting} />
+                </div>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">

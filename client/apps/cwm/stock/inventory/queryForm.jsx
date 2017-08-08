@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Row, Col, Icon, DatePicker } from 'antd';
-import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
+import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
@@ -25,7 +25,7 @@ const { RangePicker } = DatePicker;
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList, loadLocations }
+  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList, loadLocations }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -79,8 +79,8 @@ export default class QueryForm extends React.Component {
   checkLocation = () => {
     this.props.checkLocationColumn();
   }
-  checkProAndLocation = () => {
-    this.props.checkProAndLocation();
+  checkProductLocation = () => {
+    this.props.checkProductLocation();
   }
   msg = formatMsg(this.props.intl);
   render() {
@@ -117,8 +117,8 @@ export default class QueryForm extends React.Component {
               })(
                 <RadioGroup onChange={this.onChange}>
                   <RadioButton value={CWM_STOCK_SEARCH_TYPE[1].value} onClick={this.checkProduct}>{CWM_STOCK_SEARCH_TYPE[1].text}</RadioButton>
+                  <RadioButton value={CWM_STOCK_SEARCH_TYPE[3].value} onClick={this.checkProductLocation}>{CWM_STOCK_SEARCH_TYPE[3].text}</RadioButton>
                   <RadioButton value={CWM_STOCK_SEARCH_TYPE[0].value} onClick={this.checkOwners}>{CWM_STOCK_SEARCH_TYPE[0].text}</RadioButton>
-                  <RadioButton value={CWM_STOCK_SEARCH_TYPE[3].value} onClick={this.checkProAndLocation}>{CWM_STOCK_SEARCH_TYPE[3].text}</RadioButton>
                   <RadioButton value={CWM_STOCK_SEARCH_TYPE[2].value} onClick={this.checkLocation}>{CWM_STOCK_SEARCH_TYPE[2].text}</RadioButton>
                 </RadioGroup>
           )}

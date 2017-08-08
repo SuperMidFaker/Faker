@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Row, Col, Icon, DatePicker } from 'antd';
-import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
+import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
@@ -22,7 +22,7 @@ const { RangePicker } = DatePicker;
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType, clearList, loadLocations }
+  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList, loadLocations }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -76,20 +76,20 @@ export default class QueryForm extends React.Component {
   checkLocation = () => {
     this.props.checkLocationColumn();
   }
-  checkProAndLocation = () => {
-    this.props.checkProAndLocation();
+  checkProductLocation = () => {
+    this.props.checkProductLocation();
   }
   msg = formatMsg(this.props.intl);
   render() {
     const { form: { getFieldDecorator }, owners, filter } = this.props;
     const formItemLayout = {
-      labelCol: { span: 8 },
-      wrapperCol: { span: 16 },
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
     };
     return (
       <Form className="form-layout-compact">
         <Row gutter={16}>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="货主">
               {getFieldDecorator('owner', {
                 initialValue: filter.owner,
@@ -100,26 +100,21 @@ export default class QueryForm extends React.Component {
           )}
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="货品">
               {getFieldDecorator('product_no', {
                 initialValue: filter.product_no,
               })(<Input placeholder="商品货号/SKU" />)}
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="入库单号">
               <Input placeholder="ASN/监管入库单号" />
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="批次号">
               <Input placeholder="批次号" />
-            </FormItem>
-          </Col>
-          <Col span={4}>
-            <FormItem {...formItemLayout} label="序列号">
-              <Input placeholder="序列号" />
             </FormItem>
           </Col>
           <Col span={4}>
@@ -133,7 +128,17 @@ export default class QueryForm extends React.Component {
           </Col>
         </Row>
         {this.state.expandForm && <Row gutter={16}>
-          <Col span={4}>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="序列号">
+              <Input placeholder="序列号" />
+            </FormItem>
+          </Col>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="追踪ID">
+              <Input placeholder="" />
+            </FormItem>
+          </Col>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="库位">
               {getFieldDecorator('whse_location', {
                 initialValue: filter.whse_location,
@@ -142,60 +147,69 @@ export default class QueryForm extends React.Component {
           )}
             </FormItem>
           </Col>
-          <Col span={4}>
-            <FormItem {...formItemLayout} label="追踪ID">
-              <Input placeholder="" />
-            </FormItem>
-          </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="库别">
               <Input placeholder="库别" />
             </FormItem>
           </Col>
-          <Col span={4}>
+        </Row>}
+        {this.state.expandForm && <Row gutter={16}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="包装情况">
-              <Input placeholder="序列号" />
+              <Input placeholder="" />
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="入库日期" >
               <RangePicker />
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="失效日期" >
               <RangePicker />
             </FormItem>
           </Col>
         </Row>}
         {this.state.expandForm && <Row gutter={16}>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性1">
               <Input />
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性2">
               <Input />
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性3">
               <Input />
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性4">
               <Input />
             </FormItem>
           </Col>
-          <Col span={4}>
+        </Row>}
+        {this.state.expandForm && <Row gutter={16}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性5">
               <Input />
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性6">
+              <Input />
+            </FormItem>
+          </Col>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="扩展属性7">
+              <Input />
+            </FormItem>
+          </Col>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="扩展属性8">
               <Input />
             </FormItem>
           </Col>

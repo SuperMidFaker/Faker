@@ -29,7 +29,7 @@ exports.CWM_ASN_TYPES = [{
 exports.CWM_ASN_BONDED_REGTYPES = [{
   value: '1',
   text: '先报关后入库',
-  ftztext: '一二线先报后入',
+  ftztext: '先报关后入库',
   tagcolor: 'blue',
 }, {
   value: '2',
@@ -277,14 +277,14 @@ exports.CWM_MOVE_TYPE = [{
 
 exports.CWM_STOCK_SEARCH_TYPE = [{
   value: 1,
-  text: '按货主查询',
+  text: '按货主汇总',
 }, {
   value: 2,
-  text: '按货品查询',
+  text: '按货品汇总',
 }, {
   value: 3,
-  text: '按库位查询',
+  text: '按库位汇总',
 }, {
   value: 4,
-  text: '按货品/库位查询',
+  text: '按货品/库位汇总',
 }];
