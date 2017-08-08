@@ -65,12 +65,14 @@ export default class StockTransitionList extends React.Component {
     dataIndex: 'owner_name',
     width: 150,
     sorter: true,
+    fixed: 'left',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
     width: 180,
     sorter: true,
+    fixed: 'left',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('SKU'),
@@ -95,11 +97,62 @@ export default class StockTransitionList extends React.Component {
     dataIndex: 'inbound_date',
     sorter: true,
   }, {
-    title: this.msg('unit'),
+    title: this.msg('expiryDate'),
     width: 120,
-    dataIndex: 'unit',
+    dataIndex: 'expiry_date',
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
+    title: this.msg('lotNo'),
+    width: 120,
+    dataIndex: 'external_lot_no',
+  }, {
+    title: this.msg('serialNo'),
+    width: 120,
+    dataIndex: 'serial_no',
+  }, {
+    title: this.msg('virtualWhse'),
+    width: 120,
+    dataIndex: 'virtual_whse',
+  }, {
+    title: this.msg('damageLevel'),
+    width: 120,
+    dataIndex: 'damage_level',
+  }, {
+    title: this.msg('attrib1'),
+    width: 120,
+    dataIndex: 'attrib_1_string',
+  }, {
+    title: this.msg('attrib2'),
+    width: 120,
+    dataIndex: 'attrib_2_string',
+  }, {
+    title: this.msg('attrib3'),
+    width: 120,
+    dataIndex: 'attrib_3_string',
+  }, {
+    title: this.msg('attrib4'),
+    width: 120,
+    dataIndex: 'attrib_4_string',
+  }, {
+    title: this.msg('attrib5'),
+    width: 120,
+    dataIndex: 'attrib_5_string',
+  }, {
+    title: this.msg('attrib6'),
+    width: 120,
+    dataIndex: 'attrib_6_string',
+  }, {
+    title: this.msg('attrib7'),
+    width: 120,
+    dataIndex: 'attrib_7_date',
+  }, {
+    title: this.msg('attrib8'),
+    width: 120,
+    dataIndex: 'attrib_8_date',
+  }, {
+    title: this.msg('traceId'),
+    width: 120,
+    dataIndex: 'trace_id',
   }, {
     title: this.msg('totalQty'),
     width: 100,
@@ -142,6 +195,18 @@ export default class StockTransitionList extends React.Component {
         return <span className="text-error">{text}</span>;
       }
     },
+  }, {
+    title: this.msg('bonded'),
+    width: 120,
+    dataIndex: 'bonded',
+  }, {
+    title: this.msg('portion'),
+    width: 120,
+    dataIndex: 'portion',
+  }, {
+    title: this.msg('ftzEntryId'),
+    width: 120,
+    dataIndex: 'ftz_ent_filed_id',
   }, {
     title: this.msg('grossWeight'),
     dataIndex: 'gross_weight',
