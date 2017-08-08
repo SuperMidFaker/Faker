@@ -378,6 +378,31 @@ export default class ManifestEditor extends React.Component {
     } else {
       filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
+    const tabs = [];
+    tabs.push(
+      <TabPane tab="清单表头" key="header">
+        <Spin spinning={this.props.templateValLoading}>
+          <ManifestHeadPane ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
+        </Spin>
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="清单表体" key="body">
+        <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
+      </TabPane>);
+    if (filterProducts.length > 0) {
+      tabs.push(
+        <TabPane tab="法检物料" key="legalInspection">
+          <CiqDetailsPane filterProducts={filterProducts} />
+        </TabPane>);
+    }
+    tabs.push(
+      <TabPane tab="集装箱" key="containers">
+        <ContainersPane />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="随附单据" key="attachedDocs" >
+        <DocuPane billSeqNo={billHead.bill_seq_no} />
+      </TabPane>);
     return (
       <Layout>
         <Layout>
@@ -445,23 +470,7 @@ export default class ManifestEditor extends React.Component {
             <Spin spinning={this.props.manifestSpinning}>
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
-                  <TabPane tab="清单表头" key="header">
-                    <Spin spinning={this.props.templateValLoading}>
-                      <ManifestHeadPane ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
-                    </Spin>
-                  </TabPane>
-                  <TabPane tab="清单表体" key="body">
-                    <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
-                  </TabPane>
-                  {filterProducts.length > 0 && <TabPane tab="法检物料" key="legalInspection">
-                    <CiqDetailsPane filterProducts={filterProducts} />
-                  </TabPane>}
-                  <TabPane tab="集装箱" key="containers">
-                    <ContainersPane />
-                  </TabPane>
-                  <TabPane tab="随附单据" key="attachedDocs" >
-                    <DocuPane billSeqNo={billHead.bill_seq_no} />
-                  </TabPane>
+                  {tabs}
                 </Tabs>
               </div>
             </Spin>
