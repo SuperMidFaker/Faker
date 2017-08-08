@@ -169,17 +169,23 @@ export default class AdvExpsImpTempModal extends Component {
       payerStr = `收款方：${advImportParams.partner.name}`;
     }
     const alertMessage = `${str} 开票类型：${invType} \xa0\xa0\xa0\xa0\xa0 共导入 ${statistics.total} 项 正常 ${statistics.usual} 项 异常 ${statistics.unusual} 项`;
+    const tabs = [
+      <TabPane tab={tabMsg} key="pay">
+        <Alert message={alertMessage} type="info" showIcon />
+        <Table columns={columns} dataSource={this.state.datas} pagination={false} scroll={{ x: '130%', y: 200 }} />
+      </TabPane>,
+    ];
+    if (advImportParams.calculateAll) {
+      tabs.push(
+        <TabPane tab="付款方应收" key="recpt">
+          <Alert message={payerStr} type="info" showIcon />
+          <Table columns={columns} dataSource={this.state.ptDatas} pagination={false} scroll={{ x: '130%', y: 200 }} />
+        </TabPane>);
+    }
     return (
       <Modal visible={advImpTempVisible} title={this.msg('advanceFee')} onCancel={this.handleCancel} onOk={this.handleSave} width={1000} okText="保存">
         <Tabs activeKey={this.state.tabkey} onChange={this.handleTabChange}>
-          <TabPane tab={tabMsg} key="pay">
-            <Alert message={alertMessage} type="info" showIcon />
-            <Table columns={columns} dataSource={this.state.datas} pagination={false} scroll={{ x: '130%', y: 200 }} />
-          </TabPane>
-          {advImportParams.calculateAll && <TabPane tab="付款方应收" key="recpt">
-            <Alert message={payerStr} type="info" showIcon />
-            <Table columns={columns} dataSource={this.state.ptDatas} pagination={false} scroll={{ x: '130%', y: 200 }} />
-          </TabPane>}
+          {tabs}
         </Tabs>
       </Modal>
     );

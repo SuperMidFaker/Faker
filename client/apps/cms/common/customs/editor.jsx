@@ -191,6 +191,37 @@ export default class CustomsDeclEditor extends React.Component {
           <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
         )}
       </Menu>);
+    const tabs = [];
+    tabs.push(
+      <TabPane tab="报关单表头" key="header">
+        <CustomsDeclHeadPane ietype={ietype} form={form} formData={head} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="报关单表体" key="body">
+        <CustomsDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
+        <ContainersPane />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="随附单据" key="attachedDocs" head={head}>
+        <AttachedDocsPane />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="随附单证" key="attachedCerts" head={head}>
+        <AttachedCertsPane />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="清单明细" key="manifestDetails" head={head}>
+        <ManifestDetailsPane />
+      </TabPane>);
+    if (filterProducts.length > 0) {
+      tabs.push(
+        <TabPane tab="法检物料" key="ciqDetails">
+          <CiqDetailsPane filterProducts={filterProducts} />
+        </TabPane>);
+    }
     return (
       <Layout>
         <Layout>
@@ -239,27 +270,7 @@ export default class CustomsDeclEditor extends React.Component {
             <Spin spinning={this.props.declSpinning}>
               <div className="page-body tabbed">
                 <Tabs defaultActiveKey="header">
-                  <TabPane tab="报关单表头" key="header">
-                    <CustomsDeclHeadPane ietype={ietype} form={form} formData={head} />
-                  </TabPane>
-                  <TabPane tab="报关单表体" key="body">
-                    <CustomsDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} />
-                  </TabPane>
-                  <TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
-                    <ContainersPane />
-                  </TabPane>
-                  <TabPane tab="随附单据" key="attachedDocs" head={head}>
-                    <AttachedDocsPane />
-                  </TabPane>
-                  <TabPane tab="随附单证" key="attachedCerts" head={head}>
-                    <AttachedCertsPane />
-                  </TabPane>
-                  <TabPane tab="清单明细" key="manifestDetails" head={head}>
-                    <ManifestDetailsPane />
-                  </TabPane>
-                  {filterProducts.length > 0 && <TabPane tab="法检物料" key="ciqDetails">
-                    <CiqDetailsPane filterProducts={filterProducts} />
-                  </TabPane>}
+                  {tabs}
                 </Tabs>
               </div>
             </Spin>

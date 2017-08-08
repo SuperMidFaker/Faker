@@ -98,19 +98,24 @@ export default class ShippingDockPanel extends React.Component {
   renderTabs() {
     const { soHead, soBody } = this.state;
     const { order } = this.props;
+    const tabs = [];
+    tabs.push(
+      <TabPane tab={this.msg('shippingOrder')} key="order">
+        <OrderPane soHead={soHead} soBody={soBody} />
+      </TabPane>);
+    if (soHead.bonded) {
+      tabs.push(
+        <TabPane tab={this.msg('tabFTZ')} key="ftz">
+          <FTZPane soNo={order.so_no} />
+        </TabPane>);
+    }
+    tabs.push(
+      <TabPane tab={this.msg('shippingOutbound')} key="outbound">
+        <OutboundPane outboundNo={order.outboundNo} />
+      </TabPane>);
     return (
       <Tabs defaultActiveKey="order" onChange={this.handleTabChange}>
-        <TabPane tab={this.msg('shippingOrder')} key="order">
-          <OrderPane soHead={soHead} soBody={soBody} />
-        </TabPane>
-        {
-          soHead.bonded && <TabPane tab={this.msg('tabFTZ')} key="ftz">
-            <FTZPane soNo={order.so_no} />
-          </TabPane>
-        }
-        <TabPane tab={this.msg('shippingOutbound')} key="outbound">
-          <OutboundPane outboundNo={order.outboundNo} />
-        </TabPane>
+        {tabs}
       </Tabs>
     );
   }
