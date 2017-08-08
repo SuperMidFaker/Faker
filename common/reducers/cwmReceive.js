@@ -114,7 +114,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DETAIL_MODAL:
       return { ...state, detailModal: { ...state.detailModal, visible: false } };
     case actionTypes.ADD_TEMPORARY:
-      return { ...state, temporaryDetails: Array.isArray(action.data) ? action.data : [...state.temporaryDetails, action.data] };
+      return { ...state, temporaryDetails: Array.isArray(action.data) ? state.temporaryDetails.concat(action.data) : [...state.temporaryDetails, action.data] };
     case actionTypes.CLEAR_TEMPORARY:
       return { ...state, temporaryDetails: [] };
     case actionTypes.DELETE_TEMPORARY: {
