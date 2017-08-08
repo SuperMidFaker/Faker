@@ -283,7 +283,7 @@ export default class MovementModal extends Component {
       <span>库存移动单</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" onClick={this.handleCreateMovement}>保存</Button>
+        <Button type="primary" disabled={!movements.length > 0} onClick={this.handleCreateMovement}>保存</Button>
       </div>
     </div>);
     return (
