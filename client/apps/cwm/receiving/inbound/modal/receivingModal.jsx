@@ -102,6 +102,11 @@ export default class ReceivingModal extends Component {
       const changeQty = receivePack * inboundProduct.sku_pack_qty - dataSource[index].inbound_qty;
       const changePackQty = receivePack - dataSource[index].inbound_pack_qty;
       dataSource[index].avail = remainQty >= 0;
+      if (remainQty < 0 && changeQty < 0 && changeQty <= remainQty) {
+        for (let i = 0; i < dataSource.length; i++) {
+          dataSource[i].avail = true;
+        }
+      }
       if (changeQty > remainQty && remainQty >= 0) {
         dataSource[index].inbound_pack_qty += remainPackQty;
         dataSource[index].inbound_qty += remainQty;
