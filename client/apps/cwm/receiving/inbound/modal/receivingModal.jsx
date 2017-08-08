@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Card, Table, Icon, Modal, Input, Row, Col, Select, Button, message } from 'antd';
+import { notification, Card, Table, Icon, Modal, Input, Row, Col, Select, Button, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
@@ -53,6 +53,7 @@ export default class ReceivingModal extends Component {
                 inbound_pack_qty: 0,
                 location: '',
                 damage_level: 0,
+                avail: true,
               }];
             } else {
               dataSource = result.data.map(data => ({
@@ -60,9 +61,10 @@ export default class ReceivingModal extends Component {
                 trace_id: data.trace_id,
                 location: data.location,
                 damage_level: data.damage_level,
-                inbound_qty: data.inbound_qty,
-                inbound_pack_qty: data.inbound_pack_qty,
+                inbound_qty: Number(data.inbound_qty),
+                inbound_pack_qty: Number(data.inbound_pack_qty),
                 convey_no: data.convey_no,
+                avail: data.avail_qty > 0,
               }));
             }
             this.setState({
@@ -93,35 +95,42 @@ export default class ReceivingModal extends Component {
     const receivePack = Number(parseFloat(value));
     if (!isNaN(receivePack)) {
       const inboundProduct = this.props.inboundProduct;
-      const { receivedQty, receivedPackQty } = this.state;
+      let { receivedQty, receivedPackQty } = this.state;
       const dataSource = [...this.state.dataSource];
       const remainQty = inboundProduct.expect_qty - receivedQty;
       const remainPackQty = inboundProduct.expect_pack_qty - receivedPackQty;
       const changeQty = receivePack * inboundProduct.sku_pack_qty - dataSource[index].inbound_qty;
       const changePackQty = receivePack - dataSource[index].inbound_pack_qty;
-      let newRecQty;
-      let newRecPackQty;
-      if (changeQty > remainQty) {
-        dataSource[index].inbound_pack_qty = remainPackQty + Number(dataSource[index].inbound_pack_qty);
-        dataSource[index].inbound_qty = remainQty + dataSource[index].inbound_qty;
-        newRecQty = inboundProduct.expect_qty;
-        newRecPackQty = inboundProduct.expect_pack_qty;
+      dataSource[index].avail = remainQty >= 0;
+      if (changeQty > remainQty && remainQty >= 0) {
+        dataSource[index].inbound_pack_qty += remainPackQty;
+        dataSource[index].inbound_qty += remainQty;
+        dataSource.push(Object.assign({}, dataSource[index], {
+          inbound_qty: changeQty - remainQty,
+          inbound_pack_qty: changePackQty - remainPackQty,
+          avail: false,
+        }));
       } else {
         dataSource[index].inbound_pack_qty = receivePack;
         dataSource[index].inbound_qty = receivePack * inboundProduct.sku_pack_qty;
-        newRecQty = receivedQty + changeQty;
-        newRecPackQty = receivedPackQty + changePackQty;
       }
+      receivedQty += changeQty;
+      receivedPackQty += changePackQty;
       this.setState({
         dataSource,
-        receivedQty: newRecQty,
-        receivedPackQty: newRecPackQty,
+        receivedQty,
+        receivedPackQty,
       });
     }
   }
   handleDamageLevelChange = (index, value) => {
     const dataSource = [...this.state.dataSource];
     dataSource[index].damage_level = value;
+    this.setState({ dataSource });
+  }
+  handleAvailChange = (index, value) => {
+    const dataSource = [...this.state.dataSource];
+    dataSource[index].avail = value === 'avail';
     this.setState({ dataSource });
   }
   handleAdd = () => {
@@ -132,14 +141,18 @@ export default class ReceivingModal extends Component {
       inbound_pack_qty: 0,
       location: '',
       damage_level: 0,
+      avail: this.props.inboundProduct.expect_qty > this.state.receivedQty,
     };
     dataSource.push(newDetail);
     this.setState({ dataSource });
   }
   handleDeleteDetail = (index) => {
     const dataSource = [...this.state.dataSource];
+    let { receivedQty, receivedPackQty } = this.state;
+    receivedQty -= dataSource[index].inbound_qty;
+    receivedPackQty -= dataSource[index].inbound_pack_qty;
     dataSource.splice(index, 1);
-    this.setState({ dataSource });
+    this.setState({ dataSource, receivedQty, receivedPackQty });
   }
   handleSubmit = () => {
     const dataSource = [...this.state.dataSource];
@@ -147,17 +160,36 @@ export default class ReceivingModal extends Component {
       message.error('收货数量不能等于零');
       return;
     }
-    if (dataSource.find(data => data.inbound_pack_qty === 0 || data.location === '')) {
-      message.error('收货库位不能为空');
-      return;
+    const notificationkey = 'unexpect-receive';
+    const btn = (
+      <Button type="primary" size="small" onClick={() => {
+        notification.close(notificationkey);
+        this.handleConfirmReceive();
+      }}
+      >
+       确定
+      </Button>
+    );
+    if (this.state.receivedQty !== this.props.inboundProduct.expect_qty) {
+      notification.warning({
+        message: '实收数量与预期数量不一致',
+        description: '点击确定按不一致完成收货',
+        btn,
+        key: notificationkey,
+      });
+    } else {
+      this.handleConfirmReceive();
     }
+  }
+  handleConfirmReceive = () => {
     const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
-    this.props.receiveProduct(dataSource.filter(data => !data.trace_id).map(data => ({
+    this.props.receiveProduct(this.state.dataSource.filter(data => !data.trace_id).map(data => ({
       location: data.location,
       damage_level: data.damage_level,
       inbound_qty: data.inbound_qty,
       inbound_pack_qty: data.inbound_pack_qty,
       convey_no: data.convey_no,
+      avail: data.avail,
     })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
       if (!result.error) {
         this.props.hideReceiveModal();
@@ -199,6 +231,11 @@ export default class ReceivingModal extends Component {
     dataIndex: 'location',
     width: 100,
     render: o => (<Select value={o} showSearch style={{ width: 100 }} disabled />),
+  }, {
+    title: '库存状态',
+    dataIndex: 'avail',
+    width: 120,
+    render: avail => avail ? '可用' : '冻结',
   }]
 
   manualColumns = [{
@@ -240,6 +277,19 @@ export default class ReceivingModal extends Component {
         disabled={!!record.trace_id}
       />),
   }, {
+    title: '库存状态',
+    dataIndex: 'avail',
+    width: 120,
+    render: (avail, row, index) => {
+      const availStatus = avail ? 'avail' : 'frozen';
+      return (<Select value={availStatus} onChange={value => this.handleAvailChange(index, value)} style={{ width: 160 }}
+        disabled={!!row.trace_id}
+      >
+        <Option value="avail">可用</Option>
+        <Option value="frozen">冻结</Option>
+      </Select>);
+    },
+  }, {
     title: '操作',
     width: 50,
     render: (o, record, index) => !record.trace_id && (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
@@ -248,7 +298,7 @@ export default class ReceivingModal extends Component {
     const { inboundProduct, inboundHead, editable } = this.props;
     const { receivedQty, receivedPackQty } = this.state;
     let footer;
-    if (inboundHead.rec_mode === 'manual' && receivedQty < inboundProduct.expect_qty) {
+    if (inboundHead.rec_mode === 'manual') {
       footer = () => <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />;
     }
     const title = (<div>

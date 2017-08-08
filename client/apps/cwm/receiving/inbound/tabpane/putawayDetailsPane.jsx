@@ -194,7 +194,8 @@ export default class PutawayDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_PUTAWAY.value &&
-            <Button type="primary" ghost size="large" icon="check" onClick={this.handleExpressPutAway}>
+              dataSource.filter(ds => !ds.receive_location).length === 0 &&
+              <Button type="primary" ghost size="large" icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
             </Button>
             }
