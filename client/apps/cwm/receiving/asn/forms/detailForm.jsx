@@ -6,6 +6,7 @@ import { Button, Icon, Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
+import ExcelUpload from 'client/components/excelUploader';
 import messages from '../../message.i18n';
 import { showDetailModal, addTemporary, deleteTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
@@ -16,6 +17,8 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     temporaryDetails: state.cwmReceive.temporaryDetails,
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
   }),
   { showDetailModal, addTemporary, deleteTemporary }
 )
@@ -27,12 +30,6 @@ export default class DetailForm extends Component {
     detailEnable: PropTypes.bool.isRequired,
   }
   state = {
-    pagination: {
-      current: 1,
-      total: 0,
-      pageSize: 10,
-      onChange: this.handlePageChange,
-    },
     editRecord: {},
     edit: false,
   };
@@ -43,14 +40,6 @@ export default class DetailForm extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  handlePageChange = (current) => {
-    this.setState({
-      pagination: {
-        ...this.state.pagination,
-        current,
-      },
-    });
-  }
   showDetailModal = () => {
     this.setState({
       edit: false,
@@ -67,16 +56,19 @@ export default class DetailForm extends Component {
     });
     this.props.showDetailModal();
   }
+  asnDetailsUploaded = (data) => {
+    this.props.addTemporary(data);
+  }
   render() {
     const { editable, temporaryDetails, detailEnable, form } = this.props;
     const poNo = form.getFieldValue('po_no');
-    const { pagination } = this.state;
+    const ownerPartnerId = form.getFieldValue('owner_partner_id');
     const columns = [{
       title: '行号',
       dataIndex: 'seq_no',
       width: 50,
       className: 'cell-align-center',
-      render: (col, row, index) => col || pagination.pageSize * (pagination.current - 1) + index + 1,
+      render: (col, row, index) => index + 1,
     }, {
       title: '货号',
       dataIndex: 'product_no',
@@ -108,7 +100,7 @@ export default class DetailForm extends Component {
     }, {
       title: '币制',
       dataIndex: 'currency',
-      render: (o, record) => <span>{`${o}|${record.currency_name}`}</span>,
+      render: (o, record) => o && <span>{`${o}|${record.currency_name}`}</span>,
     }, {
       title: '操作',
       width: 80,
@@ -124,9 +116,19 @@ export default class DetailForm extends Component {
       <div>
         <div className="toolbar">
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
-          {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
+          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
+            formData={{
+              data: JSON.stringify({
+                tenantId: this.props.tenantId,
+                loginId: this.props.loginId,
+                ownerPartnerId,
+              }),
+            }} onUploaded={this.asnDetailsUploaded}
+          >
+            {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
+          </ExcelUpload>
         </div>
-        <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination} />
+        <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" />
         <AddDetailModal poNo={poNo} product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
       </div>
     );
