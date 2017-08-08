@@ -105,6 +105,25 @@ export default class WarehouseList extends Component {
       key: 'name',
       render: (o, record) => (<div className="menu-sider-item">{o} ({record.code}) <span className="pull-right">{record.bonded === 1 ? <Tag>保税仓</Tag> : <Tag>非保税仓</Tag>}</span></div>),
     }];
+    const tabs = [];
+    tabs.push(
+      <TabPane tab="货主" key="owners">
+        <OwnersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="库区/库位" key="location">
+        <ZoneLocationPane warehouse={warehouse} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="员工" key="staffs">
+        <StaffsPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+      </TabPane>);
+    if (warehouse.bonded) {
+      tabs.push(
+        <TabPane tab="保税监管" key="supervision">
+          <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} />
+        </TabPane>);
+    }
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}
@@ -153,18 +172,7 @@ export default class WarehouseList extends Component {
           <Content className="main-content">
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="owners">
-                <TabPane tab="货主" key="owners">
-                  <OwnersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-                </TabPane>
-                <TabPane tab="库区/库位" key="location">
-                  <ZoneLocationPane warehouse={warehouse} />
-                </TabPane>
-                <TabPane tab="员工" key="staffs">
-                  <StaffsPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-                </TabPane>
-                {warehouse.bonded && <TabPane tab="保税监管" key="supervision">
-                  <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} />
-                </TabPane>}
+                {tabs}
               </Tabs>
             </div>
           </Content>
