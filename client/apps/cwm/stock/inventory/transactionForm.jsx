@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Col, DatePicker } from 'antd';
-import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
+import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType } from 'common/reducers/cwmInventoryStock';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
@@ -23,7 +23,7 @@ const { RangePicker } = DatePicker;
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList }
+  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProAndLocation, changeSearchType }
 )
 @Form.create()
 export default class TransactionForm extends React.Component {
@@ -38,7 +38,6 @@ export default class TransactionForm extends React.Component {
   }
   onChange = (e) => {
     this.props.changeSearchType(e.target.value);
-    this.props.clearList();
   }
   handleStockSearch = (ev) => {
     ev.preventDefault();

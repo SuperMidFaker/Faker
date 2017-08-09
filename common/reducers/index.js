@@ -56,6 +56,7 @@ import crmBilling from './crmBilling';
 import cwmReceive from './cwmReceive';
 import cwmOutbound from './cwmOutbound';
 import cwmInventoryStock from './cwmInventoryStock';
+import cwmMovement from './cwmMovement';
 import cwmWarehouse from './cwmWarehouse';
 import cwmShFtz from './cwmShFtz';
 import cwmShippingOrder from './cwmShippingOrder';
@@ -123,4 +124,5 @@ export default combineReducers({
   cwmShippingOrder,
   cwmDashboard,
   cwmInventoryStock,
+  cwmMovement,
 });

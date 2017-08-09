@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PackagePopover from '../../../common/popover/packagePopover';
 import RowUpdater from 'client/components/rowUpdater';
-import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement } from 'common/reducers/cwmInventoryStock';
+import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement } from 'common/reducers/cwmMovement';
 
 const Search = Input.Search;
 
@@ -17,9 +17,9 @@ const Search = Input.Search;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    movementHead: state.cwmInventoryStock.movementHead,
-    movementDetails: state.cwmInventoryStock.movementDetails,
-    reload: state.cwmInventoryStock.movementReload,
+    movementHead: state.cwmMovement.movementHead,
+    movementDetails: state.cwmMovement.movementDetails,
+    reload: state.cwmMovement.movementReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
   { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement }

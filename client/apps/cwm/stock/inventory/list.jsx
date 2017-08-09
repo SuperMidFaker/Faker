@@ -34,7 +34,6 @@ function fetchData({ state, dispatch }) {
     displayedColumns: state.cwmInventoryStock.displayedColumns,
     listFilter: state.cwmInventoryStock.listFilter,
     sortFilter: state.cwmInventoryStock.sortFilter,
-    searchOption: state.cwmInventoryStock.searchOption,
   }),
   { loadStockSearchOptions, loadStocks, switchDefaultWhse }
 )
@@ -50,9 +49,6 @@ export default class StockInventoryList extends React.Component {
     stocklist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     sortFilter: PropTypes.object.isRequired,
-    searchOption: PropTypes.shape({
-      warehouses: PropTypes.arrayOf(PropTypes.shape({ whse_code: PropTypes.string })),
-    }),
   }
   state = {
     collapsed: false,

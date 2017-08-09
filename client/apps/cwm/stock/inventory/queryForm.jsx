@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Row, Col, Icon, DatePicker } from 'antd';
-import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
+import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType } from 'common/reducers/cwmInventoryStock';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
@@ -18,40 +17,27 @@ const { RangePicker } = DatePicker;
 @injectIntl
 @connect(
   state => ({
-    searchOption: state.cwmInventoryStock.searchOption,
     displayedColumns: state.cwmInventoryStock.displayedColumns,
     filter: state.cwmInventoryStock.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList, loadLocations }
+  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    searchOption: PropTypes.shape({
-      categories: PropTypes.arrayOf(PropTypes.shape({ category_no: PropTypes.string })),
-    }),
     displayedColumns: PropTypes.shape({ product_no: PropTypes.bool }),
     onSearch: PropTypes.func.isRequired,
   }
   state = {
     expandForm: false,
   };
-  componentWillMount() {
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      this.props.loadLocations(nextProps.defaultWhse.code, '', nextProps.tenantId);
-    }
-  }
-  onChange = (e) => {
-    this.props.changeSearchType(e.target.value);
-    this.props.clearList();
+  handleSearchTypeChange = (ev) => {
+    this.props.changeSearchType(ev.target.value);
   }
   handleFormReset = () => {
     this.props.form.resetFields();
@@ -115,7 +101,7 @@ export default class QueryForm extends React.Component {
               {getFieldDecorator('search_type', {
                 initialValue: filter.search_type,
               })(
-                <RadioGroup onChange={this.onChange}>
+                <RadioGroup onChange={this.handleSearchTypeChange}>
                   <RadioButton value={CWM_STOCK_SEARCH_TYPE[1].value} onClick={this.checkProduct}>{CWM_STOCK_SEARCH_TYPE[1].text}</RadioButton>
                   <RadioButton value={CWM_STOCK_SEARCH_TYPE[3].value} onClick={this.checkProductLocation}>{CWM_STOCK_SEARCH_TYPE[3].text}</RadioButton>
                   <RadioButton value={CWM_STOCK_SEARCH_TYPE[0].value} onClick={this.checkOwners}>{CWM_STOCK_SEARCH_TYPE[0].text}</RadioButton>
@@ -139,9 +125,7 @@ export default class QueryForm extends React.Component {
             <FormItem {...formItemLayout} label="库位">
               {getFieldDecorator('whse_location', {
                 initialValue: filter.whse_location,
-              })(
-                <LocationSelect size="large" />
-          )}
+              })(<LocationSelect size="large" />)}
             </FormItem>
           </Col>
           <Col span={6}>
@@ -149,8 +133,6 @@ export default class QueryForm extends React.Component {
               <RangePicker />
             </FormItem>
           </Col>
-
-
         </Row>}
       </Form>
     );

@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Card, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmInventoryStock';
+import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmMovement';
 import { CWM_MOVE_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
@@ -17,15 +17,15 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    visible: state.cwmInventoryStock.movementModal.visible,
+    visible: state.cwmMovement.movementModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     loginId: state.account.loginId,
     loginName: state.account.username,
     owners: state.cwmContext.whseAttrs.owners,
-    filter: state.cwmInventoryStock.movementModal.filter,
+    filter: state.cwmMovement.movementModal.filter,
     tenantId: state.account.tenantId,
-    movements: state.cwmInventoryStock.movements,
-    movementFilter: state.cwmInventoryStock.movementFilter,
+    movements: state.cwmMovement.movements,
+    movementFilter: state.cwmMovement.movementFilter,
   }),
   { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter }
 )
@@ -37,6 +37,7 @@ export default class MovementModal extends Component {
     stocks: [],
     movements: [],
     moveType: 1,
+    owner: {},
   }
   msg = key => formatMsg(this.props.intl, key);
   stocksColumns = [{
@@ -55,7 +56,6 @@ export default class MovementModal extends Component {
   }, {
     title: '中文品名',
     dataIndex: 'name',
-    width: 150,
   }, {
     title: '当前库位',
     dataIndex: 'location',
@@ -68,7 +68,8 @@ export default class MovementModal extends Component {
   }, {
     title: '入库日期',
     dataIndex: 'inbound_timestamp',
-    render: o => moment(o).format('YYYY.MM.DD'),
+    width: 100,
+    render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: '可用数量',
     dataIndex: 'avail_qty',
@@ -83,10 +84,10 @@ export default class MovementModal extends Component {
     width: 200,
     dataIndex: 'movement_qty',
     render: (o, record, index) => {
-      if (record.trace_pack_qty) {
-        return <Input value={o} onChange={e => this.handleMoveQtyChange(e.target.value, index)} style={{ width: 80 }} />;
+      if (record.trace_pack_qty === -1) {
+        return <Input value={o} onChange={ev => this.handleMoveQtyChange(ev.target.value, index)} style={{ width: 80 }} />;
       } else {
-        return <Input onChange={e => this.handleMovementChange(e.target.value, index)} style={{ width: 80 }} />;
+        return <span>{record.avail_qty}</span>;
       }
     },
   }, {
@@ -146,7 +147,7 @@ export default class MovementModal extends Component {
   }
   handleSearch = () => {
     const { filter } = this.props;
-    if (!filter.ownerCode) {
+    if (!this.state.owner.id) {
       message.info('请选择货主');
       return;
     }
@@ -154,18 +155,20 @@ export default class MovementModal extends Component {
       message.info('请填写货品或库位');
       return;
     }
-    this.props.inventorySearch(JSON.stringify(filter), this.props.tenantId, this.props.defaultWhse.code).then((result) => {
-      if (!result.err) {
-        this.setState({
-          stocks: result.data,
-        });
-      }
-    });
+    this.props.inventorySearch(JSON.stringify(filter), this.props.tenantId,
+      this.props.defaultWhse.code, this.state.owner.id).then((result) => {
+        if (!result.err) {
+          this.setState({
+            stocks: result.data,
+          });
+        }
+      });
   }
   handleOwnerChange = (value) => {
     const owner = this.props.owners.find(item => item.id === value);
-    const newFilter = { ...this.props.filter, ownerCode: value, ownerName: owner.name };
-    this.props.setMovementsFilter(newFilter);
+    if (owner) {
+      this.setState({ owner });
+    }
   }
   handleProductChange = (e) => {
     const newFilter = { ...this.props.filter, productNo: e.target.value };
@@ -179,13 +182,6 @@ export default class MovementModal extends Component {
     const newFilter = { ...this.props.filter, startTime: dateString[0], endTime: dateString[1] };
     this.props.setMovementsFilter(newFilter);
   }
-  handleMovementChange = (value, index) => {
-    const stocks = [...this.state.stocks];
-    stocks[index].movement_qty = value;
-    this.setState({
-      stocks,
-    });
-  }
   handleAddMovement = (index) => {
     const stocks = [...this.state.stocks];
     const movements = [...this.state.movements];
@@ -194,7 +190,9 @@ export default class MovementModal extends Component {
       message.info('请选择目标库位');
       return;
     }
-    if (!movementOne.movement_qty) {
+    if (movementOne.trace_pack_qty !== -1) {
+      movementOne.movement_qty = movementOne.avail_qty;
+    } else if (isNaN(parseFloat(movementOne.movement_qty))) {
       message.info('请输入移动数量');
       return;
     }
@@ -224,7 +222,7 @@ export default class MovementModal extends Component {
     });
   }
   handleCreateMovement = () => {
-    this.props.createMovement(this.props.filter.ownerCode, this.props.filter.ownerName, this.state.moveType, '', this.props.defaultWhse.code, this.props.tenantId,
+    this.props.createMovement(this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code, this.props.tenantId,
       this.props.loginId, this.state.movements).then((result) => {
         if (!result.err) {
           this.props.closeMovementModal();
@@ -244,11 +242,12 @@ export default class MovementModal extends Component {
   }
   handleMoveQtyChange = (value, index) => {
     const stocks = [...this.state.stocks];
-    if (value > stocks[index].avail_qty || value < 0) {
+    const qty = parseFloat(value);
+    if (isNaN(qty) || qty > stocks[index].avail_qty || qty < 0) {
       message.info('请输入正确的数量');
       return;
     }
-    stocks[index].movement_qty = value;
+    stocks[index].movement_qty = qty;
     this.setState({
       stocks,
     });
