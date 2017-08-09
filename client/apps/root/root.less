@@ -296,6 +296,10 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 .text-normal a {
   color: #919191;
 }
+.text-disabled,
+.text-disabled a {
+  color: rgba(0,0,0,.25);
+}
 .text-emphasis,
 .text-emphasis a {
   color: #404040;
@@ -827,9 +831,6 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
       border-bottom: none;
       border-radius: 2px;
     }
-    .ant-table-tbody > tr > td {
-      padding: 12px 8px;
-    }
     .ant-table, .ant-table-header, .ant-table table {
       border-radius: 2px;
     }
@@ -898,6 +899,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
   .ant-collapse-content > .ant-collapse-content-box {
     padding: 0;
+  }
+  .ant-table-tbody > tr > td {
+    padding: 8px;
   }
   .ant-table-small {
     border: none;

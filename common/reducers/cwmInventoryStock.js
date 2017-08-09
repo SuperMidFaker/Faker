@@ -46,6 +46,7 @@ const initialState = {
     order: '',
   },
   listFilter: {
+    stockStatus: 'normal',
     product_no: null,
     whse_code: '',
     owner: '',

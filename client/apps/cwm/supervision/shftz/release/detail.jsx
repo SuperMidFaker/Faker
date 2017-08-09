@@ -338,8 +338,8 @@ export default class SHFTZRelDetail extends Component {
                         </Col>
                       </Row>}
                     </div>
-                    <div className="table-fixed-layout">
-                      <Table columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
+                    <div className="table-panel table-fixed-layout">
+                      <Table size="middle" columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
                         scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                       />
                     </div>

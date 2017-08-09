@@ -183,7 +183,7 @@ export default class PutawayDetailsPane extends React.Component {
     }
 
     return (
-      <div className="table-fixed-layout">
+      <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -204,7 +204,7 @@ export default class PutawayDetailsPane extends React.Component {
             }
           </div>
         </div>
-        <Table columns={columns} rowSelection={rowSelection} indentSize={0}
+        <Table size="middle" columns={columns} rowSelection={rowSelection} indentSize={0}
           dataSource={dataSource} rowKey="trace_id"
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           loading={this.state.loading}
