@@ -9,7 +9,6 @@ import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import messages from '../../message.i18n';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter, changeColumns } from 'common/reducers/cwmOutbound';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
@@ -40,7 +39,6 @@ const Option = Select.Option;
     loadProductInboundDetail,
     loadAllocatedDetails,
     manualAlloc,
-    loadLocations,
     setInventoryFilter,
     changeColumns }
 )
@@ -61,7 +59,6 @@ export default class AllocatingModal extends Component {
 
   }
   componentWillMount() {
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: (window.innerHeight - 460) / 2,
