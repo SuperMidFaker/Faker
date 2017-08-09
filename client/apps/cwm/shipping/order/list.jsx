@@ -72,6 +72,11 @@ export default class ShippingOrderList extends React.Component {
     searchInput: '',
     createWaveEnable: true,
   }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.solist.loaded && !nextProps.solist.loading) {
+      this.handleReload();
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'SO编号',

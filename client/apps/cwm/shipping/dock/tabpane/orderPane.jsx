@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Row, Col, Card, Table } from 'antd';
+import { Collapse, Row, Col, Card, Table, Button, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CWM_SO_TYPES, CWM_SO_STATUS } from 'common/constants';
+import { cancelOutbound } from 'common/reducers/cwmShippingOrder';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -15,8 +16,9 @@ const Panel = Collapse.Panel;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
     order: state.crmOrders.dock.order,
-  }), { }
+  }), { cancelOutbound }
 )
 export default class SOPane extends React.Component {
   static propTypes = {
@@ -24,6 +26,7 @@ export default class SOPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     soHead: PropTypes.object.isRequired,
     soBody: PropTypes.array.isRequired,
+    cancelOutbound: PropTypes.func.isRequired,
   }
   state = {
     tabKey: '',
@@ -50,7 +53,17 @@ export default class SOPane extends React.Component {
   }, {
     title: '单价',
     dataIndex: 'unit_price',
-  }];
+  }]
+  cancelOutbound = (soNo) => {
+    this.props.cancelOutbound({
+      so_no: soNo,
+      login_id: this.props.loginId,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
   render() {
     const { soHead } = this.props;
     const keys = Object.keys(CWM_SO_STATUS);
@@ -94,6 +107,16 @@ export default class SOPane extends React.Component {
             </Panel>
           </Collapse>
         </Card>
+        <div>
+          {(soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) &&
+          (<Button type="danger" size="large" icon="delete" onClick={() => this.cancelOutbound(soHead.so_no)}>
+            取消订单
+          </Button>)}
+          {soHead.status === CWM_SO_STATUS.PARTIAL.value &&
+          (<Button type="danger" size="large" icon="delete">
+            关闭收货
+          </Button>)}
+        </div>
       </div>
     );
   }

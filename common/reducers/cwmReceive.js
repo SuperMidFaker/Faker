@@ -66,6 +66,7 @@ const initialState = {
     current: 1,
     data: [],
     loading: true,
+    loaded: true,
   },
   asnFilters: { status: 'all', ownerCode: 'all' },
   inbound: {
@@ -132,7 +133,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ASN_LISTS:
       return { ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true }, dock: { ...state.dock, visible: false } };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
-      return { ...state, asnlist: { ...action.result.data, loading: false } };
+      return { ...state, asnlist: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_INBOUNDS:
       return { ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true } };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
@@ -164,6 +165,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
     case actionTypes.CLEAR_PRODUCT_NOS:
       return { ...state, productNos: [] };
+    case actionTypes.CANCEL_ASN_SUCCEED:
+      return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false } };
     default:
       return state;
   }

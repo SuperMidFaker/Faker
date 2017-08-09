@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Row, Col, Card, Table, Button } from 'antd';
+import { Collapse, Row, Col, Card, Table, Button, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES, CWM_ASN_STATUS } from 'common/constants';
-import { cancelAsn, closeAsn, loadAsnLists } from 'common/reducers/cwmReceive';
+import { cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -16,11 +16,7 @@ const Panel = Collapse.Panel;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    order: state.crmOrders.dock.order,
-    defaultWhse: state.cwmContext.defaultWhse,
-    filters: state.cwmReceive.asnFilters,
-    asnlist: state.cwmReceive.asnlist,
-  }), { cancelAsn, closeAsn, loadAsnLists }
+  }), { cancelAsn, closeAsn }
 )
 export default class ASNPane extends React.Component {
   static propTypes = {
@@ -30,7 +26,6 @@ export default class ASNPane extends React.Component {
     asnBody: PropTypes.array.isRequired,
     cancelAsn: PropTypes.func.isRequired,
     closeAsn: PropTypes.func.isRequired,
-    loadAsnLists: PropTypes.func.isRequired,
   }
   state = {
     tabKey: '',
@@ -60,27 +55,16 @@ export default class ASNPane extends React.Component {
   }]
   handleComplete = (asnNo) => {
     this.props.closeAsn(asnNo).then((result) => {
-      if (!result.error) {
-        this.handleListReload();
+      if (result.error) {
+        message.error(result.error.message);
       }
     });
   }
   handleDeleteASN = (asnNo) => {
     this.props.cancelAsn(asnNo).then((result) => {
-      if (!result.error) {
-        this.handleListReload();
+      if (result.error) {
+        message.error(result.error.message);
       }
-    });
-  }
-  handleListReload = () => {
-    const filters = this.props.filters;
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      tenantId: this.props.tenantId,
-      whseCode,
-      pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
-      filters,
     });
   }
   render() {

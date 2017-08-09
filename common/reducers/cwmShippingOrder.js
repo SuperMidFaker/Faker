@@ -21,6 +21,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'LOAD_SHFTZ_RELEASE', 'LOAD_SHFTZ_RELEASE_SUCCEED', 'LOAD_SHFTZ_RELEASE_FAIL',
   'GET_SO_UUID', 'GET_SO_UUID_SUCCEED', 'GET_SO_UUID_FAIL',
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
+  'CANCEL_OUTBOUND', 'CANCEL_OUTBOUND_SUCCEED', 'CANCEL_OUTBOUND_FAIL',
 ]);
 
 const initialState = {
@@ -41,6 +42,7 @@ const initialState = {
     current: 1,
     data: [],
     loading: true,
+    loaded: true,
   },
   soFilters: { status: 'all', ownerCode: 'all' },
   wave: {
@@ -80,7 +82,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_SOS:
       return { ...state, soFilters: JSON.parse(action.params.filters), solist: { ...state.solist, loading: true } };
     case actionTypes.LOAD_SOS_SUCCEED:
-      return { ...state, solist: { ...action.result.data, loading: false } };
+      return { ...state, solist: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_WAVES:
       return { ...state, waveFilters: JSON.parse(action.params.filters), wave: { ...state.wave, loading: true } };
     case actionTypes.LOAD_WAVES_SUCCEED:
@@ -103,6 +105,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, waveReload: true };
     case actionTypes.GET_SO_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, order: { ...state.dock.order, uuid: action.result.data.flow_instance_uuid } } };
+    case actionTypes.CANCEL_OUTBOUND_SUCCEED:
+      return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
     default:
       return state;
   }
@@ -397,3 +401,17 @@ export function getShipmtOrderNo(uuid) {
   };
 }
 
+export function cancelOutbound(body) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_OUTBOUND,
+        actionTypes.CANCEL_OUTBOUND_SUCCEED,
+        actionTypes.CANCEL_OUTBOUND_FAIL,
+      ],
+      endpoint: 'v1/cwm/shipping/outbound/cancel',
+      method: 'post',
+      data: body,
+    },
+  };
+}
