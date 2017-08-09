@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Select, Row, Col, Icon, DatePicker } from 'antd';
+import { Button, Form, Input, Select, Row, Col, Icon, DatePicker, Switch } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
@@ -167,6 +167,11 @@ export default class QueryForm extends React.Component {
           <Col span={5}>
             <FormItem {...formItemLayout} label="失效日期" >
               <RangePicker />
+            </FormItem>
+          </Col>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="是否冻结" >
+              <Switch checkedChildren="已冻结" unCheckedChildren="未冻结" />
             </FormItem>
           </Col>
         </Row>}

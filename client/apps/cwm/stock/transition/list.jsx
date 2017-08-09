@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Card, Select, Layout, Tooltip, Popover, InputNumber, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showTransitionDock, loadStockSearchOptions, loadStocks, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmInventoryStock';
@@ -67,6 +67,7 @@ export default class StockTransitionList extends React.Component {
     selectedRowKeys: [],
   }
   msg = formatMsg(this.props.intl);
+
   columns = [{
     title: this.msg('owner'),
     dataIndex: 'owner_name',
@@ -234,7 +235,9 @@ export default class StockTransitionList extends React.Component {
     render: (o, record) => (<span>
       <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />
       <span className="ant-divider" />
-      <RowUpdater onHit={this.handleSplit} label="拆分" row={record} />
+      <Popover placement="left" title="拆分数量" content={<span><InputNumber min={1} max={record.avail_qty - 1} /><Button type="primary" icon="check" style={{ marginLeft: 8 }} /></span>} trigger="click">
+        <a onClick={this.handleSplit}>拆分</a>
+      </Popover>
     </span>),
   }]
   handleWhseChange = (value) => {
