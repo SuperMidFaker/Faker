@@ -130,7 +130,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
       return { ...state, productNos: action.result.data.productNos, products: action.result.data.products };
     case actionTypes.LOAD_ASN_LISTS:
-      return { ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true } };
+      return { ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true }, dock: { ...state.dock, visible: false } };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
       return { ...state, asnlist: { ...action.result.data, loading: false } };
     case actionTypes.LOAD_INBOUNDS:

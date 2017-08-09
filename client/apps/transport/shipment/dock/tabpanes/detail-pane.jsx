@@ -758,7 +758,6 @@ export default class DetailPane extends React.Component {
           (<Button type="danger" size="large" icon="delete" onClick={() => this.props.revokeOrReject('revoke', shipmt.shipmt_no, dispatch.id)}>
             终止运单
           </Button>)}
-
         </div>
         <PrivilegeCover module="transport" feature="shipment" action="edit">
           <ChangeShipment />

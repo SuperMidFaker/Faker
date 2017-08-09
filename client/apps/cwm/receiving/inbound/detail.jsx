@@ -6,7 +6,6 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_INBOUND_STATUS } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import ReceiveDetailsPane from './tabpane/receiveDetailsPane';
@@ -30,7 +29,7 @@ const TabPane = Tabs.TabPane;
     inboundHead: state.cwmReceive.inboundFormHead,
     reload: state.cwmReceive.inboundReload,
   }),
-  { loadInboundHead, loadLocations, updateInboundMode }
+  { loadInboundHead, updateInboundMode }
 )
 @connectNav({
   depth: 3,
@@ -56,7 +55,6 @@ export default class ReceiveInbound extends Component {
         });
       }
     });
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {

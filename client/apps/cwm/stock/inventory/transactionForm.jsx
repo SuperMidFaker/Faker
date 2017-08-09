@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Col, DatePicker } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
@@ -24,7 +23,7 @@ const { RangePicker } = DatePicker;
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList, loadLocations }
+  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList }
 )
 @Form.create()
 export default class TransactionForm extends React.Component {
@@ -36,14 +35,6 @@ export default class TransactionForm extends React.Component {
     }),
     displayedColumns: PropTypes.shape({ product_no: PropTypes.bool }),
     onSearch: PropTypes.func.isRequired,
-  }
-  componentWillMount() {
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      this.props.loadLocations(nextProps.defaultWhse.code, '', nextProps.tenantId);
-    }
   }
   onChange = (e) => {
     this.props.changeSearchType(e.target.value);

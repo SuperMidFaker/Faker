@@ -6,7 +6,6 @@ import { Card, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, messa
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmInventoryStock';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
 import { CWM_MOVE_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
@@ -28,7 +27,7 @@ const Option = Select.Option;
     movements: state.cwmInventoryStock.movements,
     movementFilter: state.cwmInventoryStock.movementFilter,
   }),
-  { closeMovementModal, inventorySearch, loadLocations, createMovement, loadMovements, setMovementsFilter }
+  { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter }
 )
 export default class MovementModal extends Component {
   static propTypes = {
@@ -38,9 +37,6 @@ export default class MovementModal extends Component {
     stocks: [],
     movements: [],
     moveType: 1,
-  }
-  componentWillMount() {
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
   }
   msg = key => formatMsg(this.props.intl, key);
   stocksColumns = [{
