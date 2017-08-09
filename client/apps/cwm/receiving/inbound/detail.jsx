@@ -134,24 +134,24 @@ export default class ReceiveInbound extends Component {
         </Header>
         <Content className="main-content">
           <Card bodyStyle={{ paddingBottom: 56 }}>
-            <Row>
+            <Row className="info-group-inline">
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="货主" field={inboundHead.owner_name} />
+                <InfoItem label="货主" field={inboundHead.owner_name} />
               </Col>
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="ASN编号" field={inboundHead.asn_no} />
+                <InfoItem label="ASN编号" field={inboundHead.asn_no} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem addonBefore="总预期数量" field={inboundHead.total_expect_qty} />
+                <InfoItem label="总预期数量" field={inboundHead.total_expect_qty} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem addonBefore="总实收数量" field={inboundHead.total_received_qty} />
+                <InfoItem label="总实收数量" field={inboundHead.total_received_qty} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem addonBefore="装箱数量" field={inboundHead.convey_box_qty} editable />
+                <InfoItem label="装箱数量" field={inboundHead.convey_box_qty} editable />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem addonBefore="码盘数量" field={inboundHead.convey_pallet_qty} editable />
+                <InfoItem label="码盘数量" field={inboundHead.convey_pallet_qty} editable />
               </Col>
             </Row>
             <div className="card-footer">

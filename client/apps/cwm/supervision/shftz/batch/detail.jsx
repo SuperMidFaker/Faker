@@ -210,21 +210,21 @@ export default class SHFTZBatchDeclDetail extends Component {
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 56 }}>
-              <Row>
+              <Row className="info-group-inline">
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="清单委托" field={
+                  <InfoItem label="清单委托" field={
                     <NavLink to={`/clearance/${batchDecl.i_e_type === 0 ? 'import' : 'export'}/manifest/${batchDecl.delg_no}`}>{batchDecl.delg_no}</NavLink>
                   }
                   />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="提货单位" field={batchDecl.owner_name} />
+                  <InfoItem label="提货单位" field={batchDecl.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="收货单位" field={batchDecl.receiver_name} />
+                  <InfoItem label="收货单位" field={batchDecl.receiver_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="备案时间" field={batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY-MM-DD HH:mm')} />
+                  <InfoItem label="备案时间" field={batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY-MM-DD HH:mm')} />
                 </Col>
               </Row>
               <div className="card-footer">

@@ -280,18 +280,18 @@ export default class SHFTZRelDetail extends Component {
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 56 }}>
-              <Row>
+              <Row className="info-group-inline">
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
+                  <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="提货单位" field={relSo.owner_name} />
+                  <InfoItem label="提货单位" field={relSo.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="收货单位" field={relSo.receiver_name} />
+                  <InfoItem label="收货单位" field={relSo.receiver_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem addonBefore="备案时间" field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')} />
+                  <InfoItem label="备案时间" field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')} />
                 </Col>
               </Row>
               <div className="card-footer">

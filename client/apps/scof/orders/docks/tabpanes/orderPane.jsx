@@ -36,7 +36,7 @@ export default class OrderPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
             <Panel header="贸易信息" key="trading">
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label="订单号" addonBefore={<Icon type="tag-o" />}
                     field={order.cust_order_no} placeholder="添加订单号" editable
@@ -55,7 +55,7 @@ export default class OrderPane extends React.Component {
               </Row>
             </Panel>
             <Panel header="货运信息" key="shipment">
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 {
                 (order.cust_shipmt_transfer !== 'DOM') &&
                 <Col span="8">
@@ -121,7 +121,7 @@ export default class OrderPane extends React.Component {
                 </Col>
                 }
               </Row>
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem type="dropdown" label="货物类型"
                     field={goods ? goods.text : ''} placeholder="选择货物类型" editable

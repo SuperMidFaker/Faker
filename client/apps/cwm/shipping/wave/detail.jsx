@@ -73,15 +73,15 @@ export default class WaveDetail extends Component {
         </Header>
         <Content className="main-content">
           <Card>
-            <Row>
+            <Row className="info-group-inline">
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="波次号" field={this.props.params.waveNo} />
+                <InfoItem label="波次号" field={this.props.params.waveNo} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="总订单数" field={waveHead.orderCount} />
+                <InfoItem label="总订单数" field={waveHead.orderCount} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="总订单明细数" field={waveHead.detailCount} />
+                <InfoItem label="总订单明细数" field={waveHead.detailCount} />
               </Col>
             </Row>
           </Card>

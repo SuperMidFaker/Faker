@@ -83,7 +83,7 @@ export default class MainInfoCard extends React.Component {
     }
     return (
       <Card bodyStyle={{ padding: 16 }}>
-        <Row>
+        <Row gutter={16} className="info-group-underline">
           <Col span="8">
             <InfoItem label="运输方式" addonBefore={transMode && <MdIcon type={transMode.icon} />}
               field={transMode ? transMode.text : ''}
@@ -100,7 +100,7 @@ export default class MainInfoCard extends React.Component {
         </Row>
         {
             delegation.trans_mode === '2' &&
-            <Row>
+            <Row gutter={16} className="info-group-underline">
               <Col span="8">
                 <InfoItem label="是否换单" field={doAwbText} />
               </Col>
@@ -109,7 +109,7 @@ export default class MainInfoCard extends React.Component {
               </Col>
             </Row>
             }
-        <Row>
+        <Row gutter={16} className="info-group-underline">
           <Col span="8">
             <InfoItem type="dropdown" label="货物类型"
               field={goods ? goods.text : ''} placeholder="选择货物类型" editable

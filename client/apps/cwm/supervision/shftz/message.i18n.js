@@ -3,11 +3,11 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   ftzEntryReg: {
     id: 'cwm.supervision.shftz.entry.reg',
-    defaultMessage: '进库备案',
+    defaultMessage: '进区备案',
   },
   ftzReleaseReg: {
     id: 'cwm.supervision.shftz.release.reg',
-    defaultMessage: '出库备案',
+    defaultMessage: '出区备案',
   },
   ftzBatchDecl: {
     id: 'cwm.supervision.shftz.batch.decl',

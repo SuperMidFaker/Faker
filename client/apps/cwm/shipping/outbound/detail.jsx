@@ -148,31 +148,31 @@ export default class OutboundDetail extends Component {
         </Header>
         <Content className="main-content">
           <Card bodyStyle={{ paddingBottom: 56 }}>
-            <Row>
+            <Row className="info-group-inline">
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="货主" field={outboundHead.owner_name} />
+                <InfoItem label="货主" field={outboundHead.owner_name} />
               </Col>
               { outboundHead.wave_no &&
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="波次编号" field={outboundHead.wave_no} />
+                <InfoItem label="波次编号" field={outboundHead.wave_no} />
               </Col>
                 }
               { outboundHead.so_no &&
               <Col sm={24} lg={6}>
-                <InfoItem addonBefore="SO编号" field={outboundHead.so_no} />
+                <InfoItem label="SO编号" field={outboundHead.so_no} />
               </Col>
                 }
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="订货总数" field={outboundHead.total_qty} />
+                <InfoItem label="订货总数" field={outboundHead.total_qty} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="分配总数" field={outboundHead.total_alloc_qty} />
+                <InfoItem label="分配总数" field={outboundHead.total_alloc_qty} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="拣货总数" field={outboundHead.total_picked_qty} />
+                <InfoItem label="拣货总数" field={outboundHead.total_picked_qty} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem addonBefore="发货总数" field={outboundHead.total_shipped_qty} />
+                <InfoItem label="发货总数" field={outboundHead.total_shipped_qty} />
               </Col>
             </Row>
             <div className="card-footer">

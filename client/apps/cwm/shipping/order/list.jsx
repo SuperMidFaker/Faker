@@ -162,7 +162,7 @@ export default class ShippingOrderList extends React.Component {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleReleaseReg} label="出库备案" row={record} /></span>);
+            <RowUpdater onHit={this.handleReleaseReg} label="出区备案" row={record} /></span>);
         } else {
           return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} /></span>);
         }

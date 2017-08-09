@@ -91,7 +91,7 @@ export default class ASNPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Collapse bordered={false} defaultActiveKey={['main', 'asnDetails']}>
             <Panel header="主信息" key="main">
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label="ASN编号" field={asnHead.asn_no} />
                 </Col>
@@ -110,16 +110,16 @@ export default class ASNPane extends React.Component {
                 <Col span="8">
                   <InfoItem label="保税监管方式" field={(asnHead.bonded_intype || asnHead.bonded_intype === 0) && CWM_ASN_BONDED_REGTYPES.find(item => item.value === asnHead.bonded_intype).text} />
                 </Col>
-                <Col span="6">
+                <Col span="8">
                   <InfoItem label="总预期数量" field={''} />
                 </Col>
-                <Col span="6">
+                <Col span="8">
                   <InfoItem label="总收货数量" field={''} />
                 </Col>
-                <Col span="6">
+                <Col span="8">
                   <InfoItem label="预期重量" field={''} />
                 </Col>
-                <Col span="6">
+                <Col span="8">
                   <InfoItem label="预期体积" field={''} />
                 </Col>
                 <Col span="8">

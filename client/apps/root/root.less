@@ -1150,8 +1150,28 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 }
 .info-group {
   &-inline {
+    line-height: 32px;
+    .ant-row:before, .ant-row:after {
+      display: inline-flex;
+    }
     .info-item {
-      margin-bottom: 0;
+      display: inline-flex;
+      margin-top: -16px;
+      margin-bottom: 8px;
+      &-label {
+        line-height: 32px;
+        :after {
+          content: ":";
+          margin: 0 8px 0 2px;
+          position: relative;
+          top: -.5px;
+        }
+      }
+    }
+  }
+  &-underline {
+    .info-item {
+      border-bottom: 1px solid #e9e9e9;
     }
   }
 }
@@ -1163,10 +1183,11 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   display: block;
   color: @text-color;
   margin-bottom: 8px;
+  /*
   &:before {
     content: " ";
     display: table;
-  }
+  }*/
   &-label {
     text-align: right;
     vertical-align: middle;
@@ -1175,11 +1196,12 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: rgba(0, 0, 0, 0.65);
+    color: rgba(0, 0, 0, 0.85);
   }
   &-field {
     min-height: 32px;
     font-size: 14px;
+    font-weight: 500;
     vertical-align: middle;
     overflow: hidden;
     white-space: nowrap;

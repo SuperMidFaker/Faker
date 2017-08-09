@@ -108,7 +108,7 @@ export default class InfoItem extends React.Component {
       [`${prefixCls}-${sizeCls}`]: sizeCls,
     });
     return (
-      <Row className={classes}>
+      <div className={classes}>
         {this.renderLabel()}
         <Row type="flex">
           <Col className={`col-flex-primary ${fieldCls}`}>{this.renderField()}</Col>
@@ -117,7 +117,7 @@ export default class InfoItem extends React.Component {
             {action}
           </Col>}
         </Row>
-      </Row>
+      </div>
     );
   }
 }

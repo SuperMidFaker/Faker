@@ -59,7 +59,7 @@ export default class SOPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Collapse bordered={false} defaultActiveKey={['main', 'asnDetails']}>
             <Panel header="主信息" key="main">
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label="SO编号" field={soHead.so_no} />
                 </Col>
@@ -75,10 +75,10 @@ export default class SOPane extends React.Component {
                 <Col span="8">
                   <InfoItem label="货物属性" field={soHead.bonded ? '保税' : '非保税'} />
                 </Col>
-                <Col span="6">
+                <Col span="8">
                   <InfoItem label="订单总数量" field={soHead.total_qty} />
                 </Col>
-                <Col span="6">
+                <Col span="8">
                   <InfoItem label="总发货数量" field={soHead.total_shipped_qty} />
                 </Col>
                 <Col span="8">

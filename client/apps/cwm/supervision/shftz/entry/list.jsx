@@ -218,12 +218,12 @@ export default class SHFTZEntryList extends React.Component {
             >
               <Menu.Item key="entry">
                 <NavLink to="/cwm/supervision/shftz/entry">
-                    进库备案
+                    进区备案
                   </NavLink>
               </Menu.Item>
               <Menu.Item key="release">
                 <NavLink to="/cwm/supervision/shftz/release">
-                    出库备案
+                    出区备案
                   </NavLink>
               </Menu.Item>
               <Menu.Item key="batch">

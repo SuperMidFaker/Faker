@@ -153,7 +153,7 @@ export default class ReceivingASNList extends React.Component {
           return (<span>
             <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleEntryReg} label="进库备案" row={record} />
+            <RowUpdater onHit={this.handleEntryReg} label="进区备案" row={record} />
           </span>);
         } else {
           return (<span><RowUpdater onHit={this.handleInbound} label="入库操作" row={record} /></span>);

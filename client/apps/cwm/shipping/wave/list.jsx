@@ -110,7 +110,7 @@ export default class WaveList extends React.Component {
           return (<span>
             <RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleEntryReg} label="出库备案" row={record} />
+            <RowUpdater onHit={this.handleEntryReg} label="出区备案" row={record} />
           </span>);
         } else {
           return (<RowUpdater onHit={this.handleAllocate} label="出库操作" row={record} />);
