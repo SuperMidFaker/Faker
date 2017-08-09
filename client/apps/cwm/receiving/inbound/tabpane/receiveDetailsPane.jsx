@@ -7,7 +7,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from '../../../common/popover/packagePopover';
 import ReceivingModal from '../modal/receivingModal';
-import QuantityInput from '../../../common/quantityInput';
 import BatchReceivingModal from '../modal/batchReceivingModal';
 import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS } from 'common/constants';
@@ -138,18 +137,28 @@ export default class ReceiveDetailsPane extends React.Component {
     render: o => (<PackagePopover sku={o} />),
   }, {
     title: '预期数量',
-    width: 180,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
+    width: 100,
+    dataIndex: 'expect_qty',
+    className: 'cell-align-right',
+    render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
-    width: 180,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.received_pack_qty} pcsQty={record.received_qty}
-      alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
-    />),
+    width: 100,
+    dataIndex: 'received_qty',
+    className: 'cell-align-right',
+    render: (o, record) => {
+      if (record.received_qty === record.expect_qty) {
+        return (<span className="text-success">{o}</span>);
+      } else if (record.received_qty < record.expect_qty) {
+        return (<span className="text-warning">{o}</span>);
+      } else if (record.received_qty > record.expect_qty) {
+        return (<span className="text-error">{o}</span>);
+      }
+    },
   }, {
     title: '收货库位',
     dataIndex: 'location',
-    width: 180,
+    width: 300,
     render: (o, record) => {
       const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
       if (record.location.length <= 1) {
@@ -194,7 +203,7 @@ export default class ReceiveDetailsPane extends React.Component {
     render: (o, record) => {
       if (this.props.inboundHead.rec_mode === 'scan' ||
         this.props.inboundHead.status === CWM_INBOUND_STATUS.COMPLETED.value ||
-        record.expect_qty === record.received_qty) {
+        record.received_qty >= record.expect_qty) {
         return (<RowUpdater onHit={this.handleReceiveDetails} label="收货记录" row={record} />);
       } else {
         return (<RowUpdater onHit={this.handleManualReceive} label="收货确认" row={record} />);

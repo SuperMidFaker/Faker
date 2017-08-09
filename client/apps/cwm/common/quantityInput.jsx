@@ -12,7 +12,7 @@ export default class QuantityInput extends React.Component {
     onChange: PropTypes.func,
     packQty: PropTypes.number,
     pcsQty: PropTypes.number,
-    alert: PropTypes.bool,
+    expectQty: PropTypes.number,
     disabled: PropTypes.bool,
     size: PropTypes.oneOf(['small', 'large']),
   };
@@ -25,19 +25,27 @@ export default class QuantityInput extends React.Component {
 
   render() {
     const {
-      packQty, pcsQty, alert, onChange, disabled, size,
+      packQty, pcsQty, onChange, disabled, size, expectQty,
     } = this.props;
     let sizeStr = 'default';
     if (size) {
       sizeStr = size;
     }
+    let alertCls = '';
+    if (pcsQty === expectQty) {
+      alertCls = 'success';
+    } else if (pcsQty > expectQty) {
+      alertCls = 'error';
+    } else if (pcsQty < expectQty) {
+      alertCls = 'warning';
+    }
     return (
-      <span className={alert && 'mdc-text-red'}>
+      <span>
         <Tooltip title="SKU件数" mouseEnterDelay={3}>
-          <Input size={sizeStr} className="readonly" placeholder="SKU件数" value={packQty} style={{ textAlign: 'right', width: 80, marginRight: 2 }} disabled={disabled} onChange={onChange} />
+          <Input size={sizeStr} className={`readonly ${alertCls}`} placeholder="SKU件数" value={packQty} style={{ textAlign: 'right', width: 80, marginRight: 2 }} disabled={disabled} onChange={onChange} />
         </Tooltip>
         <Tooltip title="货品计量单位数量" mouseEnterDelay={3}>
-          <Input size={sizeStr} className="readonly" placeholder="计量单位数量" value={pcsQty} style={{ textAlign: 'right', width: 80 }} disabled />
+          <Input size={sizeStr} className={`readonly ${alertCls}`} placeholder="计量单位数量" value={pcsQty} style={{ textAlign: 'right', width: 80 }} disabled />
         </Tooltip>
       </span>
     );

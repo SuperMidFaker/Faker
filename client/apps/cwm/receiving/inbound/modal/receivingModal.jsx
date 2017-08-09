@@ -175,10 +175,17 @@ export default class ReceivingModal extends Component {
        确定
       </Button>
     );
-    if (this.state.receivedQty !== this.props.inboundProduct.expect_qty) {
+    if (this.state.receivedQty > this.props.inboundProduct.expect_qty) {
       notification.warning({
-        message: '实收数量与预期数量不一致',
-        description: '点击确定按不一致完成收货',
+        message: '实收数量大于预期数量',
+        description: '确定按超量完成收货?',
+        btn,
+        key: notificationkey,
+      });
+    } else if (this.state.receivedQty < this.props.inboundProduct.expect_qty) {
+      notification.warning({
+        message: '实收数量少于预期数量',
+        description: '确定按缺量完成收货?',
         btn,
         key: notificationkey,
       });
@@ -303,7 +310,7 @@ export default class ReceivingModal extends Component {
     const { inboundProduct, inboundHead, editable } = this.props;
     const { receivedQty, receivedPackQty } = this.state;
     let footer;
-    if (inboundHead.rec_mode === 'manual') {
+    if (inboundHead.rec_mode === 'manual' && editable) {
       footer = () => <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />;
     }
     const title = (<div>
@@ -330,7 +337,7 @@ export default class ReceivingModal extends Component {
               <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} disabled />} />
+              <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
             </Col>
           </Row>
         </Card>

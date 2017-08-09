@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Table, Button, Modal, Input } from 'antd';
+import { Tag, Table, Button, Modal, Input } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
-import QuantityInput from '../../../common/quantityInput';
 import PackagePopover from '../../../common/popover/packagePopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
@@ -72,16 +71,20 @@ export default class PutawayDetailsPane extends React.Component {
     render: o => (<PackagePopover sku={o} />),
   }, {
     title: '收货数量',
-    width: 180,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} disabled />),
+    width: 100,
+    dataIndex: 'inbound_qty',
+    className: 'cell-align-right',
+    render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货库位',
     dataIndex: 'receive_location',
     width: 120,
+    render: o => (o && <Tag>{o}</Tag>),
   }, {
     title: '上架库位',
     dataIndex: 'putaway_location',
     width: 120,
+    render: o => (o && <Tag color="green">{o}</Tag>),
 /*  }, {
     title: '目标库位',
     dataIndex: 'target_location',
