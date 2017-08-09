@@ -68,6 +68,11 @@ export default class ReceivingASNList extends React.Component {
     selectedRowKeys: [],
     searchInput: '',
   }
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
+      this.handleListReload();
+    }
+  }
   msg = formatMsg(this.props.intl)
   columns = [{
     title: 'ANS编号',

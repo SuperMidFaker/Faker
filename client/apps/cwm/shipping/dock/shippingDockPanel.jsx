@@ -123,7 +123,6 @@ export default class ShippingDockPanel extends React.Component {
   renderExtra() {
     const { defaultWhse } = this.props;
     const { soHead } = this.state;
-    console.log(soHead);
     return (
       <Row>
         <Col span="6">
