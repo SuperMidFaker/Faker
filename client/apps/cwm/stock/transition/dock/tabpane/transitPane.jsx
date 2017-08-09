@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Card, Form, Row, Input, Col, DatePicker } from 'antd';
+import { Button, Card, Form, Row, Input, Col, DatePicker, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 
 const FormItem = Form.Item;
@@ -13,7 +13,7 @@ const FormItem = Form.Item;
   }),
   { }
 )
-export default class TransferPane extends React.Component {
+export default class TransitPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -30,25 +30,42 @@ export default class TransferPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Form>
-          <Card noHovering bodyStyle={{ padding: 16 }} >
-            <Row gutter={16}>
+          <Card noHovering bodyStyle={{ paddingBottom: 0 }} >
+            <Row gutter={16} className="form-row">
               <Col span={8}>
                 <FormItem {...formItemLayout} label="所属货主">
-                  <Input placeholder="" />
+                  <Select disabled />
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem {...formItemLayout} label="SKU">
+                  <Select disabled />
                 </FormItem>
               </Col>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="商品货号">
-                  <Input placeholder="" />
+                  <Input disabled />
                 </FormItem>
               </Col>
+            </Row>
+            <Row gutter={16} className="form-row">
+              <Col span={8}>
+                <FormItem {...formItemLayout} label="货物属性">
+                  <Select disabled />
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem {...formItemLayout} label="是否分拨">
+                  <Select disabled />
+                </FormItem>
+              </Col>
+            </Row>
+            <Row gutter={16} className="form-row">
               <Col span={8}>
                 <FormItem {...formItemLayout} label="品名">
                   <Input placeholder="" />
                 </FormItem>
               </Col>
-            </Row>
-            <Row gutter={16}>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="批次号">
                   <Input placeholder="" />
@@ -70,7 +87,7 @@ export default class TransferPane extends React.Component {
                 </FormItem>
               </Col>
             </Row>
-            <Row gutter={16}>
+            <Row gutter={16} className="form-row">
               <Col span={8}>
                 <FormItem {...formItemLayout} label="扩展属性1">
                   <Input placeholder="" />
@@ -86,8 +103,6 @@ export default class TransferPane extends React.Component {
                   <Input placeholder="" />
                 </FormItem>
               </Col>
-            </Row>
-            <Row gutter={16}>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="扩展属性4">
                   <Input placeholder="" />
@@ -103,8 +118,6 @@ export default class TransferPane extends React.Component {
                   <Input placeholder="" />
                 </FormItem>
               </Col>
-            </Row>
-            <Row gutter={16}>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="失效日期">
                   <DatePicker placeholder="" style={{ width: '100%' }} />
@@ -121,8 +134,6 @@ export default class TransferPane extends React.Component {
                 </FormItem>
               </Col>
             </Row>
-          </Card>
-          <Card noHovering bodyStyle={{ padding: 16 }}>
             <Row gutter={16}>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="转移数量">

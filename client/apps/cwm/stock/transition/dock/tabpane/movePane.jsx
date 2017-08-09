@@ -31,7 +31,7 @@ export default class MovePane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Form>
-          <Card noHovering bodyStyle={{ padding: 16 }}>
+          <Card noHovering bodyStyle={{ paddingBottom: 0 }} >
             <Row gutter={16}>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="移动数量">

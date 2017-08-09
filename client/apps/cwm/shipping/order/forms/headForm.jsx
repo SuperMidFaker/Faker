@@ -135,6 +135,7 @@ export default class HeadForm extends Component {
           <Col span={6} offset={2}>
             <FormItem label="客户订单号">
               {getFieldDecorator('cust_order_no', {
+                initialValue: soHead && soHead.cust_order_no,
               })(
                 <Input />
                     )}

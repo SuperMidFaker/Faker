@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Card, Form, Row, Input, Col } from 'antd';
+import { Button, Card, Form, Row, Input, Col, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 
 const FormItem = Form.Item;
@@ -30,16 +30,11 @@ export default class FreezePane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Form>
-          <Card noHovering bodyStyle={{ padding: 16 }}>
+          <Card noHovering bodyStyle={{ paddingBottom: 0 }} >
             <Row gutter={16}>
               <Col span={8}>
-                <FormItem {...formItemLayout} label="增减数量">
-                  <Input placeholder="" />
-                </FormItem>
-              </Col>
-              <Col span={8}>
-                <FormItem {...formItemLayout} label="目标数量">
-                  <Input />
+                <FormItem {...formItemLayout} label="是否冻结">
+                  <Switch checkedChildren="冻结" unCheckedChildren="解除" />
                 </FormItem>
               </Col>
               <Col span={8}>
@@ -49,7 +44,7 @@ export default class FreezePane extends React.Component {
               </Col>
             </Row>
           </Card>
-          <Button type="primary">执行冻结</Button>
+          <Button type="primary">确定</Button>
         </Form>
       </div>
     );

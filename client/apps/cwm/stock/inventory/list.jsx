@@ -58,6 +58,13 @@ export default class StockInventoryList extends React.Component {
     collapsed: false,
     selectedRowKeys: [],
   }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 400,
+      });
+    }
+  }
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('owner'),
@@ -274,7 +281,7 @@ export default class StockInventoryList extends React.Component {
             </div>
             <div className="panel-body table-panel table-fixed-layout">
               <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
-                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
               />
             </div>
           </div>
