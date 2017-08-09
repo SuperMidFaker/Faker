@@ -433,14 +433,14 @@ export default class AllocatingModal extends Component {
           </Row>
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
-          <div className="table-fixed-layout">
+          <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }}
               loading={this.props.inventoryDataLoading}
             />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }}>
-          <div className="table-fixed-layout">
+          <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }}
               loading={this.props.allocatedDataLoading}
             />

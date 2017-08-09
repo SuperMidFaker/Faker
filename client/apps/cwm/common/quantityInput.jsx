@@ -45,7 +45,7 @@ export default class QuantityInput extends React.Component {
           <Input size={sizeStr} className={`readonly ${alertCls}`} placeholder="SKU件数" value={packQty} style={{ textAlign: 'right', width: 80, marginRight: 2 }} disabled={disabled} onChange={onChange} />
         </Tooltip>
         <Tooltip title="货品计量单位数量" mouseEnterDelay={3}>
-          <Input size={sizeStr} className={`readonly ${alertCls}`} placeholder="计量单位数量" value={pcsQty} style={{ textAlign: 'right', width: 80 }} disabled />
+          <Input size={sizeStr} className={`readonly ${alertCls}`} placeholder="计量单位数量" value={pcsQty} style={{ textAlign: 'right', width: 100 }} disabled />
         </Tooltip>
       </span>
     );

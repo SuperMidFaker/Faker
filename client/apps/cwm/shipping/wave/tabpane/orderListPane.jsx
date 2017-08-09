@@ -91,7 +91,7 @@ export default class OrderDetailsPane extends React.Component {
       },
     };
     return (
-      <div>
+      <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           <Search placeholder="SO编号" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
@@ -102,7 +102,7 @@ export default class OrderDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right" />
         </div>
-        <Table columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveOrders} rowKey="so_no"
+        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveOrders} rowKey="so_no"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
       </div>

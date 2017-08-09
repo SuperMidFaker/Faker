@@ -308,12 +308,12 @@ export default class MovementModal extends Component {
           </Form>
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
-          <div className="table-fixed-layout">
+          <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id" scroll={{ y: 220 }} />
           </div>
         </Card>
         <Card title="移库明细" bodyStyle={{ padding: 0 }}>
-          <div className="table-fixed-layout">
+          <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id" scroll={{ y: 220 }} />
           </div>
         </Card>

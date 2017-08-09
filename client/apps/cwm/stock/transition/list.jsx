@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Select, Layout, Tooltip, Popover, InputNumber, message } from 'antd';
+import { Breadcrumb, Button, Card, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showTransitionDock, loadStockSearchOptions, loadStocks, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmInventoryStock';
@@ -18,7 +18,8 @@ import BatchMoveModal from './modal/batchMoveModal';
 import BatchFreezeModal from './modal/batchFreezeModal';
 import { formatMsg } from '../message.i18n';
 
-
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const TagOption = TagSelect.Option;
 const { Header, Content } = Layout;
 const Option = Select.Option;
@@ -107,7 +108,7 @@ export default class StockTransitionList extends React.Component {
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="text-normal">{text}</span>;
+        return <span className="text-disabled">{text}</span>;
       } else {
         return <span className="text-success">{text}</span>;
       }
@@ -119,7 +120,7 @@ export default class StockTransitionList extends React.Component {
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="text-normal">{text}</span>;
+        return <span className="text-disabled">{text}</span>;
       } else {
         return <span className="text-warning">{text}</span>;
       }
@@ -131,7 +132,7 @@ export default class StockTransitionList extends React.Component {
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="text-normal">{text}</span>;
+        return <span className="text-disabled">{text}</span>;
       } else {
         return <span className="text-error">{text}</span>;
       }
@@ -232,13 +233,19 @@ export default class StockTransitionList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => (<span>
-      <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />
-      <span className="ant-divider" />
-      <Popover placement="left" title="拆分数量" content={<span><InputNumber min={1} max={record.avail_qty - 1} /><Button type="primary" icon="check" style={{ marginLeft: 8 }} /></span>} trigger="click">
-        <a onClick={this.handleSplit}>拆分</a>
-      </Popover>
-    </span>),
+    render: (o, record) => {
+      if (record.avail_qty === 1) {
+        return <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />;
+      } else {
+        return (<span>
+          <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />
+          <span className="ant-divider" />
+          <Popover placement="left" title="拆分数量" content={<span><InputNumber min={1} max={record.avail_qty - 1} /><Button type="primary" icon="check" style={{ marginLeft: 8 }} /></span>} trigger="click">
+            <a onClick={this.handleSplit}>拆分</a>
+          </Popover>
+        </span>);
+      }
+    },
   }]
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
@@ -336,6 +343,10 @@ export default class StockTransitionList extends React.Component {
               库存变更
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup value={this.props.listFilter.stockStatus} onChange={this.handleStatusChange} size="large">
+            <RadioButton value="normal">正常库存</RadioButton>
+            <RadioButton value="frozen">冻结库存</RadioButton>
+          </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
           <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
