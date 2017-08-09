@@ -117,7 +117,7 @@ export default class DetailForm extends Component {
     }, {
       title: '币制',
       dataIndex: 'currency',
-      render: (o, record) => <span>{`${o}|${record.currency_name}`}</span>,
+      render: (o, record) => o && <span>{`${o}|${record.currency_name}`}</span>,
     }, {
       title: '操作',
       width: 80,
