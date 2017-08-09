@@ -92,11 +92,11 @@ export default class ShippingOrderList extends React.Component {
     width: 150,
   }, {
     title: '收货人',
-    dataIndex: 'receiver',
+    dataIndex: 'receiver_name',
     width: 180,
   }, {
     title: '承运人',
-    dataIndex: 'carrier',
+    dataIndex: 'carrier_name',
   }, {
     title: '要求出货日期',
     dataIndex: 'expect_shipping_date',
@@ -278,6 +278,9 @@ export default class ShippingOrderList extends React.Component {
     const { selectedRows } = this.state;
     this.props.showAddToWave(selectedRows[0].owner_partner_id);
   }
+  handleSoStockImport = () => {
+    this.handleReload();
+  }
   render() {
     const { whses, defaultWhse, owners, filters, loading } = this.props;
     let columns = this.columns;
@@ -369,12 +372,10 @@ export default class ShippingOrderList extends React.Component {
                     tenantId: this.props.tenantId,
                     tenantName: this.props.tenantName,
                     loginId: this.props.loginId,
-                    loginName: this.props.loginName,
                     whseCode: defaultWhse.code,
                     whseName: defaultWhse.name,
-                    owner: owners.filter(owner => owner.id === filters.ownerCode)[0],
                   }),
-                }} onUploaded={this.handleAsnStockImport}
+                }} onUploaded={this.handleSoStockImport}
               >
                 <Icon type="upload" /> {this.msg('batchImport')}
               </ExcelUpload>
