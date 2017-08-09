@@ -8,7 +8,7 @@ import { hideTransitionDock } from 'common/reducers/cwmInventoryStock';
 // import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import { format } from 'client/common/i18n/helpers';
-import TransferPane from './tabpane/transferPane';
+import TransitPane from './tabpane/transitPane';
 import MovePane from './tabpane/movePane';
 import AdjustPane from './tabpane/adjustPane';
 import FreezePane from './tabpane/freezePane';
@@ -55,7 +55,7 @@ export default class TransitionDockPanel extends React.Component {
     return (
       <Tabs defaultActiveKey="transfer" onChange={this.handleTabChange}>
         <TabPane tab={this.msg('库存转移')} key="transfer">
-          <TransferPane />
+          <TransitPane />
         </TabPane>
         <TabPane tab={this.msg('货物移动')} key="move">
           <MovePane />

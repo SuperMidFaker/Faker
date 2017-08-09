@@ -5,15 +5,21 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showTransitionDock, loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
+import { showTransitionDock, loadStockSearchOptions, loadStocks, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
+import TagSelect from 'client/components/TagSelect';
 import QueryForm from './queryForm';
 import TransitionDockPanel from './dock/transitionDockPanel';
+import BatchTransitModal from './modal/batchTransitModal';
+import BatchMoveModal from './modal/batchMoveModal';
+import BatchFreezeModal from './modal/batchFreezeModal';
 import { formatMsg } from '../message.i18n';
 
+
+const TagOption = TagSelect.Option;
 const { Header, Content } = Layout;
 const Option = Select.Option;
 
@@ -37,7 +43,7 @@ function fetchData({ state, dispatch }) {
     sortFilter: state.cwmInventoryStock.sortFilter,
     searchOption: state.cwmInventoryStock.searchOption,
   }),
-  { showTransitionDock, loadStockSearchOptions, loadStocks, switchDefaultWhse }
+  { showTransitionDock, loadStockSearchOptions, loadStocks, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
 )
 @connectNav({
   depth: 2,
@@ -75,12 +81,7 @@ export default class StockTransitionList extends React.Component {
     sorter: true,
     fixed: 'left',
     render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('SKU'),
-    dataIndex: 'product_sku',
-    width: 180,
-    sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
+
   }, {
     title: this.msg('descCN'),
     dataIndex: 'desc_cn',
@@ -92,32 +93,6 @@ export default class StockTransitionList extends React.Component {
     dataIndex: 'location',
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('inboundDate'),
-    width: 120,
-    dataIndex: 'inbound_date',
-    sorter: true,
-  }, {
-    title: this.msg('expiryDate'),
-    width: 120,
-    dataIndex: 'expiry_date',
-    sorter: true,
-  }, {
-    title: this.msg('lotNo'),
-    width: 120,
-    dataIndex: 'external_lot_no',
-  }, {
-    title: this.msg('serialNo'),
-    width: 120,
-    dataIndex: 'serial_no',
-  }, {
-    title: this.msg('virtualWhse'),
-    width: 120,
-    dataIndex: 'virtual_whse',
-  }, {
-    title: this.msg('damageLevel'),
-    width: 120,
-    dataIndex: 'damage_level',
   }, {
     title: this.msg('totalQty'),
     width: 100,
@@ -161,6 +136,42 @@ export default class StockTransitionList extends React.Component {
       }
     },
   }, {
+    title: this.msg('traceId'),
+    width: 120,
+    dataIndex: 'trace_id',
+  }, {
+    title: this.msg('SKU'),
+    dataIndex: 'product_sku',
+    width: 180,
+    sorter: true,
+    render: (text, row) => this.renderNormalCol(text, row),
+  }, {
+    title: this.msg('lotNo'),
+    width: 120,
+    dataIndex: 'external_lot_no',
+  }, {
+    title: this.msg('serialNo'),
+    width: 120,
+    dataIndex: 'serial_no',
+  }, {
+    title: this.msg('virtualWhse'),
+    width: 120,
+    dataIndex: 'virtual_whse',
+  }, {
+    title: this.msg('damageLevel'),
+    width: 120,
+    dataIndex: 'damage_level',
+  }, {
+    title: this.msg('inboundDate'),
+    width: 120,
+    dataIndex: 'inbound_date',
+    sorter: true,
+  }, {
+    title: this.msg('expiryDate'),
+    width: 120,
+    dataIndex: 'expiry_date',
+    sorter: true,
+  }, {
     title: this.msg('attrib1'),
     width: 120,
     dataIndex: 'attrib_1_string',
@@ -192,10 +203,6 @@ export default class StockTransitionList extends React.Component {
     title: this.msg('attrib8'),
     width: 120,
     dataIndex: 'attrib_8_date',
-  }, {
-    title: this.msg('traceId'),
-    width: 120,
-    dataIndex: 'trace_id',
   }, {
     title: this.msg('bonded'),
     width: 120,
@@ -242,6 +249,15 @@ export default class StockTransitionList extends React.Component {
       pageSize,
       current,
     });
+  }
+  handleBatchTransit = () => {
+    this.props.openBatchTransitModal();
+  }
+  handleBatchMove = () => {
+    this.props.openBatchMoveModal();
+  }
+  handleBatchFreeze = () => {
+    this.props.openBatchFreezeModal();
   }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
@@ -322,7 +338,7 @@ export default class StockTransitionList extends React.Component {
           <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <div className="page-body">
+          <div className="page-body data-table">
             <div className="toolbar">
               <div className="toolbar-right">
                 <Tooltip title="显示字段设置">
@@ -331,9 +347,9 @@ export default class StockTransitionList extends React.Component {
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <Button>批量转移</Button>
-                <Button>批量移库</Button>
-                <Button>批量冻结</Button>
+                <Button onClick={this.handleBatchTransit}>批量转移</Button>
+                <Button onClick={this.handleBatchMove}>批量移库</Button>
+                <Button onClick={this.handleBatchFreeze}>批量冻结</Button>
                 <div className="pull-right">
                   <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
                 </div>
@@ -342,6 +358,12 @@ export default class StockTransitionList extends React.Component {
                 <div className="pull-right">
                   <Button type="primary" shape="circle" icon="check" onClick={this.toggleTableSetting} />
                 </div>
+                <TagSelect>
+                  <TagOption value="cat1">货主</TagOption>
+                  <TagOption value="cat2">货号</TagOption>
+                  <TagOption value="cat3">SKU</TagOption>
+                  <TagOption value="cat4">中文品名</TagOption>
+                </TagSelect>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
@@ -351,6 +373,9 @@ export default class StockTransitionList extends React.Component {
             </div>
           </div>
           <TransitionDockPanel />
+          <BatchTransitModal />
+          <BatchMoveModal />
+          <BatchFreezeModal />
         </Content>
       </Layout>
     );
