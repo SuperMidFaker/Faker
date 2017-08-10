@@ -86,12 +86,12 @@ export default class SubCustomerModal extends React.Component {
     const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
-    // } else if (operation === 'add' && partnerUniqueCode === '') {
-    //   message.error('统一社会信用代码必填');
-    // } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
-    //   message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
-    // } else if (customsCode && customsCode.length !== 10) {
-    //   message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
+    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode === '') {
+      message.error('统一社会信用代码必填');
+    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode.length !== 18) {
+      message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
+    } else if (customsCode && customsCode.length !== 10) {
+      message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (businessType === '') {
       message.error('请选择客户业务类型');
     } else if (operation === 'edit') {

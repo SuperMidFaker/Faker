@@ -120,7 +120,7 @@ export default class CustomerModal extends React.Component {
           this.handleCancel();
         }
       });
-    } else {
+    } else if (partnerUniqueCode) {
       this.props.checkPartner({
         tenantId,
         partnerInfo: { name, partnerCode, partnerUniqueCode },
@@ -135,6 +135,8 @@ export default class CustomerModal extends React.Component {
           this.hancleAddCustomer();
         }
       });
+    } else {
+      this.hancleAddCustomer();
     }
   }
   hancleAddCustomer = () => {
