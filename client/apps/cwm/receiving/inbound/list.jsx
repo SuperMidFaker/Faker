@@ -66,7 +66,7 @@ export default class ReceivingInboundList extends React.Component {
     selectedRowKeys: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || !nextProps.inbound.loaded && !nextProps.inbound.loading) {
       const filters = { ...this.props.filters };
       nextProps.loadInbounds({
         whseCode: nextProps.defaultWhse.code,

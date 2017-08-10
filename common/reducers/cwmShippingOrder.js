@@ -63,6 +63,7 @@ const initialState = {
   waveReload: false,
 };
 
+export const { CANCEL_OUTBOUND_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.ADD_SO:

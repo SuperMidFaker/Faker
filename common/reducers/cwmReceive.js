@@ -75,6 +75,7 @@ const initialState = {
     current: 1,
     data: [],
     loading: true,
+    loaded: true,
   },
   inboundFilters: { status: 'all', ownerCode: 'all' },
   inboundFormHead: {},
@@ -135,9 +136,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
       return { ...state, asnlist: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_INBOUNDS:
-      return { ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true } };
+      return { ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true }, dock: { ...state.dock, visible: false } };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
-      return { ...state, inbound: { ...action.result.data, loading: false } };
+      return { ...state, inbound: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_INBOUNDHEAD_SUCCEED:
       return { ...state, inboundFormHead: action.result.data, inboundReload: false };
     case actionTypes.LOAD_INBPRDDETAILS_SUCCEED:
@@ -166,7 +167,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLEAR_PRODUCT_NOS:
       return { ...state, productNos: [] };
     case actionTypes.CANCEL_ASN_SUCCEED:
-      return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false } };
+      return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false } };
+    case actionTypes.CLOSE_ASN_SUCCEED:
+      return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false } };
     default:
       return state;
   }
