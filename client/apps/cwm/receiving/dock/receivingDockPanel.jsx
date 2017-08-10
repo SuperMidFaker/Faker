@@ -45,7 +45,7 @@ export default class ReceivingDockPanel extends React.Component {
     asnBody: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.asn.asn_no !== this.props.asn.asn_no || this.state.asnBody.length === 0) {
+    if (nextProps.asn.asn_no && (nextProps.asn.asn_no !== this.props.asn.asn_no || this.state.asnBody.length === 0)) {
       this.props.getAsnUuid(nextProps.asn.asn_no);
       this.props.loadAsn(nextProps.asn.asn_no).then(
         (result) => {
