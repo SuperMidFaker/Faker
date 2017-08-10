@@ -7,7 +7,7 @@ import { DatePicker, Form, Modal, Input, Radio } from 'antd';
 
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead } from 'common/reducers/cwmOutbound';
+import { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails } from 'common/reducers/cwmOutbound';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -23,7 +23,7 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     username: state.account.username,
   }),
-  { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead }
+  { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails }
 )
 @Form.create()
 export default class ShippingModal extends Component {
@@ -83,6 +83,7 @@ export default class ShippingModal extends Component {
             this.props.loadPickDetails(this.props.outboundNo);
             this.props.loadOutboundHead(this.props.outboundNo);
             this.props.resetState();
+            this.props.loadShipDetails(this.props.outboundNo);
           }
         });
       }
