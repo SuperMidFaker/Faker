@@ -98,7 +98,7 @@ export default class ReceiveInbound extends Component {
     const { inboundHead, defaultWhse } = this.props;
     const pdf = [];
     const header = [];
-    header.push({ text: 'asnNo', style: 'tableHeader', colSpan: 6, alignment: 'center' }, {}, {}, {}, {}, {});
+    header.push({ text: '入库单', style: 'tableHeader', colSpan: 6, alignment: 'center' }, {}, {}, {}, {}, {});
     pdf.push(header);
     pdf.push([{ text: '入库单号', style: 'table' }, { text: this.props.params.inboundNo, style: 'table' }, { text: '采购订单号', style: 'table' },
       { text: inboundHead.po_no, style: 'table' }, { text: '入库日期', style: 'table' }, { text: '', style: 'table' }]);

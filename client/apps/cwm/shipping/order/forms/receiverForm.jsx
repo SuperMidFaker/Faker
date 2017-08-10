@@ -14,10 +14,11 @@ export default class ReceiverForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
+    soHead: PropTypes.object,
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, soHead } = this.props;
     return (
       <div style={{ padding: 24 }}>
         <Row>
@@ -25,7 +26,7 @@ export default class ReceiverForm extends Component {
             <FormItem label="收货人名称">
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
-
+                initialValue: soHead.receiver_name,
               })(
                 <Select placeholder="选择收货人" onSelect={this.handleSelect} />
                 )}
@@ -33,13 +34,17 @@ export default class ReceiverForm extends Component {
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="联系人">
-              <Input />
+              {getFieldDecorator('receiver_contact', {
+                initialValue: soHead.receiver_contact,
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="联系方式">
-              <Col span={12}><Input prefix={<Icon type="phone" />} placeholder="电话" /></Col>
-              <Col span={12}><Input prefix={<Icon type="mobile" />} placeholder="手机" /></Col>
+              <Col span={12}><Input prefix={<Icon type="phone" />} placeholder="电话" value={soHead.receiver_phone} /></Col>
+              <Col span={12}><Input prefix={<Icon type="mobile" />} placeholder="手机" value={soHead.receiver_number} /></Col>
             </FormItem>
           </Col>
         </Row>
@@ -51,12 +56,20 @@ export default class ReceiverForm extends Component {
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="详细地址">
-              <Input />
+              {getFieldDecorator('receiver_address', {
+                initialValue: soHead.receiver_address,
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="邮政编码">
-              <Input />
+              {getFieldDecorator('receiver_post_code', {
+                initialValue: soHead.receiver_post_code,
+              })(
+                <Input />
+              )}
             </FormItem>
           </Col>
         </Row>
