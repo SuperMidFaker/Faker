@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Card, Tabs, Table, Select } from 'antd';
-import QuantityInput from '../../../common/quantityInput';
 import { getInboundDetail, loadInboundPutaways } from 'common/reducers/cwmReceive';
 
 const Panel = Collapse.Panel;
@@ -63,43 +62,31 @@ export default class InboundCard extends Component {
     }
   }
   inboundColumns = [{
-    title: '行号',
-    dataIndex: 'asn_seq_no',
-    width: 50,
-  }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 150,
+    width: 120,
   }, {
-    title: 'SKU',
-    dataIndex: 'product_sku',
+    title: '中文品名',
+    dataIndex: 'name',
     width: 150,
   }, {
     title: '预期数量',
-    width: 180,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.expect_pack_qty} pcsQty={record.expect_qty} disabled />),
+    dataIndex: 'expect_qty',
+    width: 100,
+    className: 'cell-align-right',
+    render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
-    width: 180,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.received_pack_qty} pcsQty={record.received_qty}
-      alert={record.expect_pack_qty !== record.receive_pack_qty} disabled
-    />),
-  }, {
-    title: '收货库位',
-    dataIndex: 'location',
-    width: 180,
+    dataIndex: 'received_qty',
+    width: 100,
+    className: 'cell-align-right',
     render: (o, record) => {
-      const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
-      if (record.location.length <= 1) {
-        return (
-          <Select size="small" className="readonly" value={o[0]} style={{ width: 160 }} disabled>
-            {Options}
-          </Select>);
-      } else {
-        return (
-          <Select size="small" className="readonly" mode="tags" value={o} style={{ width: 160 }} disabled>
-            {Options}
-          </Select>);
+      if (record.received_qty === record.expect_qty) {
+        return (<span className="text-success">{o}</span>);
+      } else if (record.received_qty < record.expect_qty) {
+        return (<span className="text-warning">{o}</span>);
+      } else if (record.received_qty > record.expect_qty) {
+        return (<span className="text-error">{o}</span>);
       }
     },
   }, {
@@ -114,36 +101,29 @@ export default class InboundCard extends Component {
         <Option value={3}>重度</Option>
         <Option value={4}>严重磨损</Option>
       </Select>),
-  }, {
-    title: '中文品名',
-    dataIndex: 'name',
-    width: 100,
   }]
 
   putawayColumns = [{
-    title: '移动单元编号',
-    dataIndex: 'convey_no',
-    width: 120,
-  }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 150,
+    width: 120,
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
+    width: 120,
+  }, {
+    title: '中文品名',
+    dataIndex: 'name',
     width: 150,
+  }, {
+    title: '收货数量',
+    dataIndex: 'inbound_qty',
+    width: 180,
+    className: 'cell-align-right',
   }, {
     title: '上架库位',
     dataIndex: 'putaway_location',
     width: 120,
-  }, {
-    title: '上架数量',
-    width: 180,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} disabled />),
-  }, {
-    title: '中文品名',
-    dataIndex: 'name',
-    width: 100,
   }]
   render() {
     const { inboundNo } = this.props;
@@ -155,12 +135,12 @@ export default class InboundCard extends Component {
             <Tabs defaultActiveKey="inbound">
               <TabPane tab="收货明细" key="inbound">
                 <div className="table-panel table-fixed-layout">
-                  <Table size="middle" columns={this.inboundColumns} dataSource={inbound} scroll={{ x: 1210 }} />
+                  <Table size="middle" columns={this.inboundColumns} dataSource={inbound} />
                 </div>
               </TabPane>
               <TabPane tab="上架明细" key="putaway" >
                 <div className="table-panel table-fixed-layout">
-                  <Table size="middle" columns={this.putawayColumns} dataSource={putaway} scroll={{ x: 1230 }} />
+                  <Table size="middle" columns={this.putawayColumns} dataSource={putaway} />
                 </div>
               </TabPane>
             </Tabs>

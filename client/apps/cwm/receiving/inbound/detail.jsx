@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip } from 'antd';
+import { Alert, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -248,6 +248,15 @@ export default class ReceiveInbound extends Component {
           </div>
         </Header>
         <Content className="main-content">
+          {currentStatus >= CWM_INBOUND_STATUS.ALL_RECEIVED.value &&
+            currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
+            inboundHead.total_received_qty < inboundHead.total_expect_qty &&
+            <Alert message="实收数量少于预期数量，全部上架确认后必须手动关闭" type="info" showIcon closable />
+          }
+          {inboundHead.total_received_qty > inboundHead.total_expect_qty &&
+            currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
+            <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
+          }
           <Card bodyStyle={{ paddingBottom: 56 }}>
             <Row className="info-group-inline">
               <Col sm={24} lg={6}>

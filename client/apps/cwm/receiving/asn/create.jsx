@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Form, Layout, Card, Tabs, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import HeadForm from './forms/headForm';
-import DetailForm from './forms/detailForm';
+import HeadCard from './card/headCard';
+import DetailsPane from './tabpane/detailsPane';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { addASN, clearTemporary } from 'common/reducers/cwmReceive';
@@ -130,11 +130,11 @@ export default class CreateReceivingASN extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <HeadForm form={form} handleOwnerChange={this.handleOwnerChange} />
+            <HeadCard form={form} handleOwnerChange={this.handleOwnerChange} />
             <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="收货明细" key="orderDetails">
-                  <DetailForm editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
+                  <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
                 </TabPane>
               </Tabs>
             </Card>

@@ -24,7 +24,7 @@ const formatMsg = format(messages);
   }),
   { showDetailModal, addTemporary, deleteTemporary }
 )
-export default class DetailForm extends Component {
+export default class DetailsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
@@ -96,6 +96,7 @@ export default class DetailForm extends Component {
     }, {
       title: '计量单位',
       dataIndex: 'unit',
+      className: 'cell-align-center',
       render: o => o && units.find(unit => unit.code === o).name,
     }, {
       title: '库别',
@@ -122,6 +123,7 @@ export default class DetailForm extends Component {
     }, {
       title: '币制',
       dataIndex: 'currency',
+      className: 'cell-align-center',
       render: o => o && <span>{`${o}|${currencies.find(currency => Number(currency.code) === o).name}`}</span>,
     }, {
       title: '操作',

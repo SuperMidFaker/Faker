@@ -17,6 +17,7 @@ const Option = Select.Option;
 export default class LocationSelect extends React.Component {
   static propTypes = {
     value: PropTypes.string,
+    size: PropTypes.string,
     style: PropTypes.object,
     onChange: PropTypes.func,
     onSelect: PropTypes.func,
@@ -45,7 +46,7 @@ export default class LocationSelect extends React.Component {
   }
   render() {
     return (
-      <Select showSearch allowClear onSearch={this.handleSearch} value={this.props.value} disabled={this.props.disabled}
+      <Select showSearch allowClear onSearch={this.handleSearch} value={this.props.value} disabled={this.props.disabled} size={this.props.size}
         onChange={this.props.onChange} onSelect={this.props.onSelect} optionFilterProp="children" style={this.props.style || {}}
       >
         {

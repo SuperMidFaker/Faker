@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Card, Form, Layout, Tabs, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import HeadForm from './forms/headForm';
-import DetailForm from './forms/detailForm';
-import ReceiverForm from './forms/receiverForm';
-import CarrierForm from './forms/carrierForm';
+import HeadCard from './card/headCard';
+import DetailsPane from './tabpane/detailsPane';
+import ReceiverPane from './tabpane/receiverPane';
+import CarrierPane from './tabpane/carrierPane';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { clearTemporary } from 'common/reducers/cwmReceive';
@@ -140,17 +140,17 @@ export default class CreateShippingOrder extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <HeadForm soHead={soHead} form={form} editable={this.state.editable} />
+            <HeadCard soHead={soHead} form={form} editable={this.state.editable} />
             <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
-                  <DetailForm soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} />
+                  <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">
-                  <ReceiverForm form={form} soHead={soHead} />
+                  <ReceiverPane form={form} soHead={soHead} />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
-                  <CarrierForm form={form} />
+                  <CarrierPane form={form} />
                 </TabPane>
               </Tabs>
             </Card>
