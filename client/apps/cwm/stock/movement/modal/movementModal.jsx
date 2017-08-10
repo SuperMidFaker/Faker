@@ -258,20 +258,20 @@ export default class MovementModal extends Component {
     });
   }
   render() {
-    const { owners, filter } = this.props;
-    const { stocks, movements } = this.state;
+    const { owners } = this.props;
+    const { stocks, movements, owner } = this.state;
     const inventoryQueryForm = (<Form layout="inline">
       <FormItem label="货品">
-        <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!filter.ownerCode} />
+        <Input onChange={this.handleProductChange} placeholder="按货号模糊匹配" disabled={!owner.id} />
       </FormItem>
       <FormItem label="库位">
-        <LocationSelect style={{ width: 160 }} value={this.props.filter.location} onSelect={this.handleLocationChange} disabled={!filter.ownerCode} />
+        <LocationSelect style={{ width: 160 }} value={this.props.filter.location} onSelect={this.handleLocationChange} disabled={!owner.id} />
       </FormItem>
       <FormItem label="入库日期">
         <RangePicker onChange={this.handleDateChange} />
       </FormItem>
       <FormItem>
-        <Button type="primary" ghost onClick={this.handleSearch} disabled={!filter.ownerCode}>库存查询</Button>
+        <Button type="primary" ghost onClick={this.handleSearch} disabled={!owner.id}>库存查询</Button>
       </FormItem>
     </Form>);
     const title = (<div>
@@ -289,7 +289,7 @@ export default class MovementModal extends Component {
           <Form layout="inline">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
-                {owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))}
+                {owners.map(own => (<Option value={own.id} key={own.name}>{own.name}</Option>))}
               </Select>
             </FormItem>
             <FormItem label="移库类型">

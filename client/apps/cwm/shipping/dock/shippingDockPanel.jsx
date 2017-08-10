@@ -46,7 +46,7 @@ export default class ShippingDockPanel extends React.Component {
     soBody: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.order.so_no !== this.props.order.so_no || this.state.soBody.length === 0) {
+    if (nextProps.order.so_no && !this.props.visible && nextProps.visible) {
       this.props.getSoUuid(nextProps.order.so_no);
       this.props.getSo(nextProps.order.so_no).then(
         (result) => {

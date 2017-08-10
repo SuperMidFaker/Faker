@@ -45,7 +45,7 @@ export default class ReceivingDockPanel extends React.Component {
     asnBody: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.asn.asn_no !== this.props.asn.asn_no || this.state.asnBody.length === 0) {
+    if (nextProps.asn.asn_no && !this.props.visible && nextProps.visible) {
       this.props.getAsnUuid(nextProps.asn.asn_no);
       this.props.loadAsn(nextProps.asn.asn_no).then(
         (result) => {
@@ -104,17 +104,24 @@ export default class ReceivingDockPanel extends React.Component {
   renderTabs() {
     const { asn } = this.props;
     const { asnHead, asnBody } = this.state;
+    const tabs = [
+      <TabPane tab={this.msg('tabASN')} key="asn">
+        <ASNPane asnHead={asnHead} asnBody={asnBody} />
+      </TabPane>,
+    ];
+    if (asnHead.bonded) {
+      tabs.push(
+        <TabPane tab={this.msg('tabFTZ')} key="ftz">
+          <FTZPane asnNo={asn.asn_no} />
+        </TabPane>);
+    }
+    tabs.push(
+      <TabPane tab={this.msg('tabInbound')} key="inbound">
+        <InboundPane asnNo={asn.asn_no} />
+      </TabPane>);
     return (
       <Tabs defaultActiveKey="asn" onChange={this.handleTabChange}>
-        <TabPane tab={this.msg('tabASN')} key="asn">
-          <ASNPane asnHead={asnHead} asnBody={asnBody} />
-        </TabPane>
-        { asnHead.bonded && <TabPane tab={this.msg('tabFTZ')} key="ftz">
-          <FTZPane asnNo={asn.asn_no} />
-        </TabPane>}
-        <TabPane tab={this.msg('tabInbound')} key="inbound">
-          <InboundPane asnNo={asn.asn_no} />
-        </TabPane>
+        { tabs }
       </Tabs>
     );
   }

@@ -69,7 +69,7 @@ export default class OutboundList extends React.Component {
     searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
+    if (nextProps.defaultWhse.code !== this.props.defaultWhse.code || !nextProps.outbound.loaded && !nextProps.outbound.loading) {
       const filters = { ...this.props.filters };
       const whseCode = nextProps.defaultWhse.code;
       this.props.loadOutbounds({

@@ -7,6 +7,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+import PackagePopover from '../../../common/popover/packagePopover';
 import { showDetailModal, addTemporary, deleteTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
 
@@ -108,6 +109,11 @@ export default class DetailForm extends Component {
       title: '库别',
       dataIndex: 'virtual_whse',
       width: 150,
+    }, {
+      title: 'sku',
+      dataIndex: 'product_sku',
+      width: 150,
+      render: o => o ? (<PackagePopover sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,
     }, {
       title: '入库单号',
       dataIndex: 'asn_no',

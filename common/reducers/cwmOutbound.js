@@ -1,5 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
+import { CANCEL_OUTBOUND_SUCCEED } from './cwmShippingOrder';
 
 const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'OPEN_ALLOCATING_MODAL', 'CLOSE_ALLOCATING_MODAL',
@@ -66,6 +67,7 @@ const initialState = {
     current: 1,
     data: [],
     loading: true,
+    loaded: true,
   },
   outboundFilters: { status: 'all', ownerCode: 'all' },
   outboundFormHead: {},
@@ -101,7 +103,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_OUTBOUNDS:
       return { ...state, outboundFilters: JSON.parse(action.params.filters), outbound: { ...state.outbound, loading: true } };
     case actionTypes.LOAD_OUTBOUNDS_SUCCEED:
-      return { ...state, outbound: { ...action.result.data, loading: false } };
+      return { ...state, outbound: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.LOAD_OUTBOUND_HEAD_SUCCEED:
       return { ...state, outboundFormHead: action.result.data, outboundReload: false };
     case actionTypes.LOAD_OUTBOUND_PRODUCTS_SUCCEED:
@@ -142,6 +144,8 @@ export default function reducer(state = initialState, action) {
           cus_decl_no: false,
           [action.column]: true,
         } };
+    case CANCEL_OUTBOUND_SUCCEED:
+      return { ...state, outbound: { ...state.outbound, loaded: false } };
     default:
       return state;
   }

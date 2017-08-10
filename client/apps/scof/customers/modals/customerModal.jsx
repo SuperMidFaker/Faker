@@ -98,9 +98,9 @@ export default class CustomerModal extends React.Component {
     const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
-    } else if (operation === 'add' && partnerUniqueCode === '') {
+    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode === '') {
       message.error('统一社会信用代码必填');
-    } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
+    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode.length !== 18) {
       message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
@@ -120,7 +120,7 @@ export default class CustomerModal extends React.Component {
           this.handleCancel();
         }
       });
-    } else {
+    } else if (partnerUniqueCode) {
       this.props.checkPartner({
         tenantId,
         partnerInfo: { name, partnerCode, partnerUniqueCode },
@@ -135,6 +135,8 @@ export default class CustomerModal extends React.Component {
           this.hancleAddCustomer();
         }
       });
+    } else {
+      this.hancleAddCustomer();
     }
   }
   hancleAddCustomer = () => {
