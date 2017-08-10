@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Row, Col, Card, Table, Button, message } from 'antd';
+import { Collapse, Row, Col, Card, Table, Button, Popconfirm, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CWM_SO_TYPES, CWM_SO_STATUS } from 'common/constants';
-import { cancelOutbound } from 'common/reducers/cwmShippingOrder';
+import { cancelOutbound, closeOutbound } from 'common/reducers/cwmShippingOrder';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -18,7 +18,7 @@ const Panel = Collapse.Panel;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     order: state.crmOrders.dock.order,
-  }), { cancelOutbound }
+  }), { cancelOutbound, closeOutbound }
 )
 export default class SOPane extends React.Component {
   static propTypes = {
@@ -27,6 +27,7 @@ export default class SOPane extends React.Component {
     soHead: PropTypes.object.isRequired,
     soBody: PropTypes.array.isRequired,
     cancelOutbound: PropTypes.func.isRequired,
+    closeOutbound: PropTypes.func.isRequired,
   }
   state = {
     tabKey: '',
@@ -58,6 +59,16 @@ export default class SOPane extends React.Component {
     this.props.cancelOutbound({
       so_no: soNo,
       login_id: this.props.loginId,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  closeOutbound = (soNo) => {
+    const { tenantId, loginId } = this.props;
+    this.props.closeOutbound({
+      so_no: soNo, tenantId, loginId,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
@@ -111,13 +122,17 @@ export default class SOPane extends React.Component {
         </Card>
         <div>
           {(soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) &&
-          (<Button type="danger" size="large" icon="delete" onClick={() => this.cancelOutbound(soHead.so_no)}>
-            取消订单
-          </Button>)}
+          (<Popconfirm title="确定取消订单?" onConfirm={() => this.cancelOutbound(soHead.so_no)} okText="是" cancelText="否">
+            <Button type="danger" size="large" icon="delete">
+              取消订单
+            </Button>
+          </Popconfirm>)}
           {soHead.status === CWM_SO_STATUS.PARTIAL.value &&
-          (<Button type="danger" size="large" icon="delete">
-            关闭收货
-          </Button>)}
+          (<Popconfirm title="确定关闭收货?" onConfirm={() => this.closeOutbound(soHead.so_no)} okText="是" cancelText="否">
+            <Button type="danger" size="large" icon="delete">
+              关闭收货
+            </Button>
+          </Popconfirm>)}
         </div>
       </div>
     );
