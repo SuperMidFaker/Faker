@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showTransitionDock, loadStockSearchOptions, loadStocks, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmInventoryStock';
+import { showTransitionDock, loadStocks, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
@@ -24,13 +23,6 @@ const TagOption = TagSelect.Option;
 const { Header, Content } = Layout;
 const Option = Select.Option;
 
-function fetchData({ state, dispatch }) {
-  const proms = [];
-  proms.push(dispatch(loadStockSearchOptions(state.account.tenantId)));
-  return Promise.all(proms);
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -44,7 +36,7 @@ function fetchData({ state, dispatch }) {
     sortFilter: state.cwmInventoryStock.sortFilter,
     searchOption: state.cwmInventoryStock.searchOption,
   }),
-  { showTransitionDock, loadStockSearchOptions, loadStocks, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
+  { showTransitionDock, loadStocks, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
 )
 @connectNav({
   depth: 2,

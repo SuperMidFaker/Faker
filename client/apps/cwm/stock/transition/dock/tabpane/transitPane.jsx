@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Card, Form, Row, Input, Col, DatePicker, Select } from 'antd';
+import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { intlShape, injectIntl } from 'react-intl';
 
 const FormItem = Form.Item;
@@ -143,6 +144,18 @@ export default class TransitPane extends React.Component {
               <Col span={8}>
                 <FormItem {...formItemLayout} label="转移原因">
                   <Input placeholder="" />
+                </FormItem>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={8}>
+                <FormItem {...formItemLayout} label="目标库位">
+                  <LocationSelect />
+                </FormItem>
+              </Col>
+              <Col span={8}>
+                <FormItem {...formItemLayout} label="移库单">
+                  <Select />
                 </FormItem>
               </Col>
             </Row>

@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadStockSearchOptions, loadStocks } from 'common/reducers/cwmInventoryStock';
+import { loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -15,13 +14,6 @@ import { formatMsg } from '../message.i18n';
 const { Header, Content } = Layout;
 const Option = Select.Option;
 
-function fetchData({ state, dispatch }) {
-  const proms = [];
-  proms.push(dispatch(loadStockSearchOptions(state.account.tenantId)));
-  return Promise.all(proms);
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -35,7 +27,7 @@ function fetchData({ state, dispatch }) {
     sortFilter: state.cwmInventoryStock.sortFilter,
     searchOption: state.cwmInventoryStock.searchOption,
   }),
-  { loadStockSearchOptions, loadStocks, switchDefaultWhse }
+  { loadStocks, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
