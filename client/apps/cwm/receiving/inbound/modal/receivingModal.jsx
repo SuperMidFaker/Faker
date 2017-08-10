@@ -209,29 +209,30 @@ export default class ReceivingModal extends Component {
     });
   }
   scanColumns = [{
-    title: '商品条码',
-    dataIndex: 'product_tag',
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 200,
+    render: o => (<Input className="readonly" prefix={<Icon type="qrcode" />} value={o} />),
+  }, {
+    title: '产品序列号',
+    dataIndex: 'serial_no',
     width: 180,
     render: o => (<Input className="readonly" prefix={<Icon type="barcode" />} value={o} />),
   }, {
-    title: '追踪号',
-    dataIndex: 'trace_id',
-    width: 180,
-    render: o => (<Input className="readonly" prefix={<Icon type="qrcode" />} value={o} />),
-  }, {
-    title: '容器编号',
+    title: '移动单元编号',
     dataIndex: 'convey_no',
     width: 180,
     render: o => (<Input className="readonly" value={o} />),
   }, {
     title: '收货数量',
-    width: 180,
+    width: 200,
     dataIndex: 'inbound_qty',
     render: (o, record) => (<QuantityInput packQty={record.inbound_pack_qty} pcsQty={record.inbound_qty} />),
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
-    render: o => (<Select value={o} style={{ width: 60 }} disabled>
+    width: 180,
+    render: o => (<Select value={o} style={{ width: 160 }} disabled>
       <Option value={0}>完好</Option>
       <Option value={1}>轻微擦痕</Option>
       <Option value={2}>中度</Option>
@@ -241,8 +242,8 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货库位',
     dataIndex: 'location',
-    width: 100,
-    render: o => (<Select value={o} showSearch style={{ width: 100 }} disabled />),
+    width: 180,
+    render: o => (<Select value={o} showSearch style={{ width: 160 }} disabled />),
   }, {
     title: '库存状态',
     dataIndex: 'avail',
@@ -251,7 +252,12 @@ export default class ReceivingModal extends Component {
   }]
 
   manualColumns = [{
-    title: '容器编号',
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 200,
+    render: o => (<Input className="readonly" prefix={<Icon type="qrcode" />} value={o} disabled />),
+  }, {
+    title: '移动单元编号',
     dataIndex: 'convey_no',
     width: 180,
     render: (convey, row, index) => (
@@ -261,7 +267,7 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货数量',
     dataIndex: 'inbound_qty',
-    width: 180,
+    width: 200,
     render: (o, record, index) => (
       <QuantityInput packQty={record.inbound_pack_qty} pcsQty={o}
         onChange={e => this.handleProductReceive(index, e.target.value)} disabled={!!record.trace_id}
@@ -325,19 +331,22 @@ export default class ReceivingModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }}>
           <Row className="info-group-inline">
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="商品货号" field={inboundProduct.product_no} style={{ marginBottom: 0 }} />
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="ASN编号" field={inboundHead.asn_no} />
             </Col>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="中文品名" field={inboundProduct.name} style={{ marginBottom: 0 }} />
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="商品货号" field={inboundProduct.product_no} />
             </Col>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="中文品名" field={inboundProduct.name} />
             </Col>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
+            </Col>
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
             </Col>
           </Row>
         </Card>

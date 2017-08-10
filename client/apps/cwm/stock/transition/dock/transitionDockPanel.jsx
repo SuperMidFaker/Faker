@@ -48,7 +48,7 @@ export default class TransitionDockPanel extends React.Component {
   }
 
   renderTitle = () => (
-    <span>追踪号</span>
+    <span>追踪ID</span>
     )
 
   renderTabs() {

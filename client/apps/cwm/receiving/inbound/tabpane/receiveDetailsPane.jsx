@@ -125,10 +125,16 @@ export default class ReceiveDetailsPane extends React.Component {
     title: '行号',
     dataIndex: 'asn_seq_no',
     width: 50,
+    fixed: 'left',
     className: 'cell-align-center',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
+    width: 160,
+    fixed: 'left',
+  }, {
+    title: '集装箱号',
+    dataIndex: 'container_no',
     width: 160,
   }, {
     title: 'SKU',
@@ -163,12 +169,12 @@ export default class ReceiveDetailsPane extends React.Component {
       const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
       if (record.location.length <= 1) {
         return (
-          <Select size="small" className="readonly" value={o[0]} style={{ width: 160 }} disabled>
+          <Select size="small" className="readonly" value={o[0]} style={{ width: 280 }} disabled>
             {Options}
           </Select>);
       } else {
         return (
-          <Select size="small" className="readonly" mode="tags" value={o} style={{ width: 160 }} disabled>
+          <Select size="small" className="readonly" mode="tags" value={o} style={{ width: 280 }} disabled>
             {Options}
           </Select>);
       }

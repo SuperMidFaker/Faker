@@ -121,7 +121,7 @@ export default class InboundCard extends Component {
   }]
 
   putawayColumns = [{
-    title: '容器编号',
+    title: '移动单元编号',
     dataIndex: 'convey_no',
     width: 120,
   }, {
