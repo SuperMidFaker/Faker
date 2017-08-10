@@ -147,7 +147,7 @@ export default class CreateShippingOrder extends Component {
                   <DetailForm soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">
-                  <ReceiverForm form={form} />
+                  <ReceiverForm form={form} soHead={soHead} />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
                   <CarrierForm form={form} />
