@@ -1,6 +1,6 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
-import { CANCEL_OUTBOUND_SUCCEED } from './cwmShippingOrder';
+import { CANCEL_OUTBOUND_SUCCEED, CLOSE_OUTBOUND_SUCCEED } from './cwmShippingOrder';
 
 const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'OPEN_ALLOCATING_MODAL', 'CLOSE_ALLOCATING_MODAL',
@@ -145,6 +145,8 @@ export default function reducer(state = initialState, action) {
           [action.column]: true,
         } };
     case CANCEL_OUTBOUND_SUCCEED:
+      return { ...state, outbound: { ...state.outbound, loaded: false } };
+    case CLOSE_OUTBOUND_SUCCEED:
       return { ...state, outbound: { ...state.outbound, loaded: false } };
     default:
       return state;

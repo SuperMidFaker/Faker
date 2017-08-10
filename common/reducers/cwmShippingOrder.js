@@ -22,6 +22,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'GET_SO_UUID', 'GET_SO_UUID_SUCCEED', 'GET_SO_UUID_FAIL',
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
   'CANCEL_OUTBOUND', 'CANCEL_OUTBOUND_SUCCEED', 'CANCEL_OUTBOUND_FAIL',
+  'CLOSE_OUTBOUND', 'CLOSE_OUTBOUND_SUCCEED', 'CLOSE_OUTBOUND_FAIL',
 ]);
 
 const initialState = {
@@ -63,7 +64,7 @@ const initialState = {
   waveReload: false,
 };
 
-export const { CANCEL_OUTBOUND_SUCCEED } = actionTypes;
+export const { CANCEL_OUTBOUND_SUCCEED, CLOSE_OUTBOUND_SUCCEED } = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.ADD_SO:
@@ -107,6 +108,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.GET_SO_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, order: { ...state.dock.order, uuid: action.result.data.flow_instance_uuid } } };
     case actionTypes.CANCEL_OUTBOUND_SUCCEED:
+      return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
+    case actionTypes.CLOSE_OUTBOUND_SUCCEED:
       return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
     default:
       return state;
@@ -411,6 +414,21 @@ export function cancelOutbound(body) {
         actionTypes.CANCEL_OUTBOUND_FAIL,
       ],
       endpoint: 'v1/cwm/shipping/outbound/cancel',
+      method: 'post',
+      data: body,
+    },
+  };
+}
+
+export function closeOutbound(body) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CLOSE_OUTBOUND,
+        actionTypes.CLOSE_OUTBOUND_SUCCEED,
+        actionTypes.CLOSE_OUTBOUND_FAIL,
+      ],
+      endpoint: 'v1/cwm/shipping/outbound/close',
       method: 'post',
       data: body,
     },

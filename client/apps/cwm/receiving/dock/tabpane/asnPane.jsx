@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Row, Col, Card, Table, Button, Icon, message } from 'antd';
+import { Collapse, Row, Col, Card, Table, Button, Popconfirm, Icon, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES, CWM_ASN_STATUS } from 'common/constants';
 import { cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
@@ -122,13 +122,17 @@ export default class ASNPane extends React.Component {
         </Card>
         <div>
           {(asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) &&
-          (<Button type="danger" size="large" icon="delete" onClick={() => this.handleDeleteASN(asnHead.asn_no)}>
-            取消订单
-          </Button>)}
+          (<Popconfirm title="确定取消订单?" onConfirm={() => this.handleDeleteASN(asnHead.asn_no)} okText="是" cancelText="否">
+            <Button type="danger" size="large" icon="delete">
+              取消订单
+            </Button>
+          </Popconfirm>)}
           {asnHead.status === CWM_ASN_STATUS.EXCEPTION.value &&
-          (<Button type="danger" size="large" icon="close-circle-o" onClick={() => this.handleComplete(asnHead.asn_no)}>
-            关闭收货
-          </Button>)}
+          (<Popconfirm title="确定关闭收货?" onConfirm={() => this.handleComplete(asnHead.asn_no)} okText="是" cancelText="否">
+            <Button type="danger" size="large" icon="close-circle-o">
+              关闭收货
+            </Button>
+          </Popconfirm>)}
         </div>
       </div>
     );
