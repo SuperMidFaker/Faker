@@ -14,6 +14,7 @@ import { loadOutboundHead, updateOutboundMode } from 'common/reducers/cwmOutboun
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import { WaybillDef } from './docDef';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -48,7 +49,7 @@ export default class OutboundDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    allocated: false,
+    allocated: true,
     pushedTask: false,
     printedPickingList: false,
     picking: false,
@@ -123,6 +124,19 @@ export default class OutboundDetail extends Component {
       currentStep: 1,
       picking: false,
     });
+  }
+  handlePrint = () => {
+    this.setState({
+      printedPickingList: true,
+    });
+    const docDefinition = WaybillDef();
+    window.pdfMake.fonts = {
+      yahei: {
+        normal: 'msyh.ttf',
+        bold: 'msyh.ttf',
+      },
+    };
+    window.pdfMake.createPdf(docDefinition).open();
   }
   handleConfirmPicked = () => {
     this.setState({
