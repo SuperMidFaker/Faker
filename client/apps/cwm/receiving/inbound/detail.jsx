@@ -232,7 +232,7 @@ export default class ReceiveInbound extends Component {
               <Button size="large" icon="printer" onClick={this.handlePrint} />
             </Tooltip>
             }
-            {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
+            {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step && false &&
             <Dropdown overlay={tagMenu}>
               <Button size="large" onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />

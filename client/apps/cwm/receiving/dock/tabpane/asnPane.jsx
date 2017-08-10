@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Row, Col, Card, Table, Button, message } from 'antd';
+import { Collapse, Row, Col, Card, Table, Button, Icon, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES, CWM_ASN_STATUS } from 'common/constants';
 import { cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
@@ -69,7 +69,6 @@ export default class ASNPane extends React.Component {
   }
   render() {
     const { asnHead } = this.props;
-    const keys = Object.keys(CWM_ASN_STATUS);
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }}>
@@ -77,16 +76,16 @@ export default class ASNPane extends React.Component {
             <Panel header="主信息" key="main">
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
+                  <InfoItem label="货主" field={asnHead.owner_name} />
+                </Col>
+                <Col span="8">
                   <InfoItem label="ASN编号" field={asnHead.asn_no} />
                 </Col>
                 <Col span="8">
                   <InfoItem label="ASN类型" field={asnHead.asn_type && CWM_ASN_TYPES.find(item => item.value === asnHead.asn_type).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="货主" field={asnHead.owner_name} />
-                </Col>
-                <Col span="8">
-                  <InfoItem label="状态" field={(asnHead.status || asnHead.status === 0) && CWM_ASN_STATUS[keys[asnHead.status]].text} />
+                  <InfoItem label="采购订单号" field={asnHead.po_no} />
                 </Col>
                 <Col span="8">
                   <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />
@@ -95,25 +94,22 @@ export default class ASNPane extends React.Component {
                   <InfoItem label="保税监管方式" field={(asnHead.bonded_intype || asnHead.bonded_intype === 0) && CWM_ASN_BONDED_REGTYPES.find(item => item.value === asnHead.bonded_intype).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="总预期数量" field={''} />
+                  <InfoItem label="预期总数量" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="总收货数量" field={''} />
+                  <InfoItem label="预期总体积" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="预期重量" field={''} />
+                  <InfoItem label="预计到货日期" addonBefore={<Icon type="calendar" />} field={asnHead.expect_receive_date && moment(asnHead.expect_receive_date).format('YYYY.MM.DD')} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="预期体积" field={''} />
+                  <InfoItem label="收货总数量" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="预期到货日期" field={moment(asnHead.expect_receive_date).format('YYYY.MM.DD')} />
+                  <InfoItem label="收货总体积" field={''} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="上次收货日期" field={moment(asnHead.last_updated_date).format('YYYY.MM.DD')} />
-                </Col>
-                <Col span="8">
-                  <InfoItem label="创建日期" field={moment(asnHead.created_date).format('YYYY.MM.DD')} />
+                  <InfoItem label="实际收货时间" addonBefore={<Icon type="clock-circle-o" />} field={asnHead.received_date && moment(asnHead.received_date).format('YYYY.MM.DD HH:mm')} />
                 </Col>
               </Row>
             </Panel>

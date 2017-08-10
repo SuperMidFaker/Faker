@@ -92,7 +92,7 @@ export default class AllocatingModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   inventoryColumns = [{
-    title: '添加',
+    title: '加入',
     width: 60,
     render: (o, record, index) => {
       let disabled = !this.props.editable && !record.location;
@@ -104,6 +104,9 @@ export default class AllocatingModal extends Component {
         if (outboundHead.bonded && outboundHead.bonded_outtype === 'portion') {
           disabled = !!record.ftz_ent_filed_id && record.portion;
         }
+        if (!record.avail_qty || record.avail_qty === 0) {
+          disabled = true;
+        }
       }
       return <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled={disabled} />;
     },
@@ -111,10 +114,6 @@ export default class AllocatingModal extends Component {
     title: '现分配数量',
     width: 200,
     render: (o, record, index) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-    /* }, {
-    title: '商品货号',
-    dataIndex: 'product_no',
-    width: 160, */
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -124,6 +123,64 @@ export default class AllocatingModal extends Component {
         return <Button size="small">{o}</Button>;
       }
     },
+  }, {
+    title: '库存数量',
+    dataIndex: 'stock_qty',
+    width: 100,
+    className: 'cell-align-right text-emphasis',
+  }, {
+    title: '可用数量',
+    dataIndex: 'avail_qty',
+    width: 100,
+    className: 'cell-align-right',
+    render: (text) => {
+      if (text === 0) {
+        return <span className="text-disabled">{text}</span>;
+      } else {
+        return <span className="text-success">{text}</span>;
+      }
+    },
+  }, {
+    title: '分配数量',
+    dataIndex: 'alloc_qty',
+    width: 100,
+    className: 'cell-align-right',
+    render: (text) => {
+      if (text === 0) {
+        return <span className="text-disabled">{text}</span>;
+      } else {
+        return <span className="text-warning">{text}</span>;
+      }
+    },
+  }, {
+    title: '冻结数量',
+    dataIndex: 'frozen_qty',
+    width: 100,
+    className: 'cell-align-right',
+    render: (text) => {
+      if (text === 0) {
+        return <span className="text-disabled">{text}</span>;
+      } else {
+        return <span className="text-error">{text}</span>;
+      }
+    },
+  }, {
+    title: '库位',
+    dataIndex: 'location',
+    width: 100,
+    render: (o) => {
+      if (o) {
+        return <Tag>{o}</Tag>;
+      }
+    },
+  }, {
+    title: '库别',
+    width: 120,
+    dataIndex: 'virtual_whse',
+  }, {
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 160,
   }, {
     title: '货物属性',
     dataIndex: 'bonded',
@@ -137,38 +194,14 @@ export default class AllocatingModal extends Component {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
+    className: 'cell-align-center',
     render: portion => portion ? '是' : '否',
-  }, {
-    title: '库存数量',
-    dataIndex: 'stock_qty',
-    width: 100,
-  }, {
-    title: '可用数量',
-    dataIndex: 'avail_qty',
-    width: 100,
-  }, {
-    title: '已分配数量',
-    dataIndex: 'alloc_qty',
-    width: 100,
-  }, {
-    title: '冻结数量',
-    dataIndex: 'frozen_qty',
-    width: 100,
-  }, {
-    title: '库位',
-    dataIndex: 'location',
-    width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
     width: 150,
   }, {
-    title: '序列号',
+    title: '产品序列号',
     dataIndex: 'serial_no',
     width: 100,
   }, {
@@ -194,17 +227,13 @@ export default class AllocatingModal extends Component {
   }]
 
   allocatedColumns = [{
-    title: '删除',
+    title: '移出',
     width: 60,
     render: (o, record, index) => (record.deleteDisabled === true ? '' : <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} disabled={!this.props.editable} />),
   }, {
-    title: '分配数量',
+    title: '已分配数量',
     width: 200,
     render: (o, record) => (<QuantityInput size="small" packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
-    /*  }, {
-    title: '商品货号',
-    dataIndex: 'product_no',
-    width: 160, */
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -215,11 +244,6 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
-    title: '货物属性',
-    dataIndex: 'bonded',
-    width: 80,
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
-  }, {
     title: '库位',
     dataIndex: 'location',
     width: 100,
@@ -229,6 +253,14 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
+    title: '库别',
+    width: 120,
+    dataIndex: 'virtual_whse',
+  }, {
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 160,
+  }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
     width: 150,
@@ -236,6 +268,11 @@ export default class AllocatingModal extends Component {
     title: '序列号',
     dataIndex: 'serial_no',
     width: 100,
+  }, {
+    title: '货物属性',
+    dataIndex: 'bonded',
+    width: 80,
+    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
   }, {
     title: '入库日期',
     dataIndex: 'inbound_timestamp',
@@ -408,21 +445,21 @@ export default class AllocatingModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }}>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="商品货号" field={outboundProduct.product_no} style={{ marginBottom: 0 }} />
+              <InfoItem label="商品货号" field={outboundProduct.product_no} style={{ marginBottom: 0 }} />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="中文品名" field={outboundProduct.name} style={{ marginBottom: 0 }} />
+              <InfoItem label="中文品名" field={outboundProduct.name} style={{ marginBottom: 0 }} />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="订货总数" field={<QuantityInput packQty={outboundProduct.order_pack_qty} pcsQty={outboundProduct.order_qty} />}
+              <InfoItem label="订货总数" field={<QuantityInput packQty={outboundProduct.order_pack_qty} pcsQty={outboundProduct.order_qty} />}
                 style={{ marginBottom: 0 }}
               />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem addonBefore="已分配总数" field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} />}
+              <InfoItem label="已分配总数" field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} expectQty={outboundProduct.order_qty} />}
                 style={{ marginBottom: 0 }}
               />
             </Col>
@@ -431,31 +468,20 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }}
+            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id"
+              scroll={{ x: filterColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
               loading={this.props.inventoryDataLoading}
             />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ x: 1500, y: this.state.scrollY }}
+            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id"
+              scroll={{ x: this.allocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
               loading={this.props.allocatedDataLoading}
             />
           </div>
         </Card>
-        {/*
-        <Collapse defaultActiveKey={['query', 'details']}>
-          <Panel header="库存查询" key="query">
-            <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.inventoryColumns} dataSource={this.state.inventoryData} rowKey="trace_id" scroll={{ y: 220 }} />
-            </Card>
-          </Panel>
-          <Panel header="分配明细" key="details">
-            <Card bodyStyle={{ padding: 0 }} style={{ marginBottom: 0 }}>
-              <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id" scroll={{ y: 220 }} />
-            </Card>
-          </Panel>
-        </Collapse> */}
       </Modal>
     );
   }

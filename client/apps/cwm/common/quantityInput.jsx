@@ -32,12 +32,14 @@ export default class QuantityInput extends React.Component {
       sizeStr = size;
     }
     let alertCls = '';
-    if (pcsQty === expectQty) {
-      alertCls = 'success';
-    } else if (pcsQty > expectQty) {
-      alertCls = 'error';
-    } else if (pcsQty < expectQty) {
-      alertCls = 'warning';
+    if (expectQty) {
+      if (pcsQty === expectQty) {
+        alertCls = 'success';
+      } else if (pcsQty > expectQty) {
+        alertCls = 'error';
+      } else if (pcsQty < expectQty) {
+        alertCls = 'warning';
+      }
     }
     return (
       <span>

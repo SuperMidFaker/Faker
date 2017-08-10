@@ -110,7 +110,7 @@ export default class DetailForm extends Component {
       dataIndex: 'virtual_whse',
       width: 150,
     }, {
-      title: 'sku',
+      title: 'SKU',
       dataIndex: 'product_sku',
       width: 150,
       render: o => o ? (<PackagePopover sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,

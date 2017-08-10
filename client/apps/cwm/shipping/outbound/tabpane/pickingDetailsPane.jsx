@@ -8,7 +8,6 @@ import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
-import QuantityInput from '../../../common/quantityInput';
 import PackagePopover from '../../../common/popover/packagePopover';
 import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
@@ -73,10 +72,6 @@ export default class PickingDetailsPane extends React.Component {
       }
     },
   }, {
-    title: '批次号',
-    dataIndex: 'external_lot_no',
-    width: 100,
-  }, {
     title: '库位',
     dataIndex: 'location',
     width: 100,
@@ -87,12 +82,22 @@ export default class PickingDetailsPane extends React.Component {
     },
   }, {
     title: '分配数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.alloc_qty / record.sku_pack_qty} pcsQty={record.alloc_qty} disabled />),
+    dataIndex: 'alloc_qty',
+    width: 100,
+    className: 'cell-align-right',
+    render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '拣货数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.picked_qty / record.sku_pack_qty} pcsQty={record.picked_qty} disabled />),
+    dataIndex: 'picked_qty',
+    width: 100,
+    className: 'cell-align-right',
+    render: (o, record) => {
+      if (record.picked_qty === record.alloc_qty) {
+        return (<span className="text-success">{o}</span>);
+      } else if (record.picked_qty < record.alloc_qty) {
+        return (<span className="text-warning">{o}</span>);
+      }
+    },
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -101,15 +106,21 @@ export default class PickingDetailsPane extends React.Component {
     title: '中文品名',
     dataIndex: 'name',
     width: 150,
-
+  }, {
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 160,
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
+  }, {
+    title: '批次号',
+    dataIndex: 'external_lot_no',
+    width: 100,
+  }, {
+    title: '产品序列号',
+    dataIndex: 'serial_no',
+    width: 100,
   }, {
     title: '分配人员',
     width: 100,

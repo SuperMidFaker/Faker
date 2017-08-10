@@ -80,17 +80,19 @@ export default class ReceivingDockPanel extends React.Component {
   }
   renderStatus(status) {
     switch (status) {
-      case CWM_ASN_STATUS.PENDING.value: return 'default';
-      case CWM_ASN_STATUS.processing: return 'processing';
-      case CWM_ASN_STATUS.finished: return 'success';
+      case CWM_ASN_STATUS.PENDING.value: return CWM_ASN_STATUS.PENDING.badge;
+      case CWM_ASN_STATUS.INBOUND.value: return CWM_ASN_STATUS.INBOUND.badge;
+      case CWM_ASN_STATUS.EXCEPTION.value: return CWM_ASN_STATUS.EXCEPTION.badge;
+      case CWM_ASN_STATUS.COMPLETED.value: return CWM_ASN_STATUS.COMPLETED.badge;
       default: return 'default';
     }
   }
   renderStatusMsg(status) {
     switch (status) {
-      case CWM_ASN_STATUS.created: return this.msg('created');
-      case CWM_ASN_STATUS.processing: return this.msg('processing');
-      case CWM_ASN_STATUS.finished: return this.msg('finished');
+      case CWM_ASN_STATUS.PENDING.value: return CWM_ASN_STATUS.PENDING.text;
+      case CWM_ASN_STATUS.INBOUND.value: return CWM_ASN_STATUS.INBOUND.text;
+      case CWM_ASN_STATUS.EXCEPTION.value: return CWM_ASN_STATUS.EXCEPTION.text;
+      case CWM_ASN_STATUS.COMPLETED.value: return CWM_ASN_STATUS.COMPLETED.text;
       default: return '';
     }
   }
@@ -115,10 +117,12 @@ export default class ReceivingDockPanel extends React.Component {
           <FTZPane asnNo={asn.asn_no} />
         </TabPane>);
     }
-    tabs.push(
-      <TabPane tab={this.msg('tabInbound')} key="inbound">
-        <InboundPane asnNo={asn.asn_no} />
-      </TabPane>);
+    if (asnHead.status > CWM_ASN_STATUS.PENDING.value) {
+      tabs.push(
+        <TabPane tab={this.msg('tabInbound')} key="inbound">
+          <InboundPane asnNo={asn.asn_no} />
+        </TabPane>);
+    }
     return (
       <Tabs defaultActiveKey="asn" onChange={this.handleTabChange}>
         { tabs }
@@ -139,21 +143,22 @@ export default class ReceivingDockPanel extends React.Component {
         <Col span="6">
           <InfoItem label="采购订单号/海关备案号" addonBefore={<Icon type="tag-o" />} field={asnHead.po_no} />
         </Col>
-        <Col span="4">
-          <InfoItem label="预计到货日期" addonBefore={<Icon type="calendar" />} field={moment(asnHead.expect_receive_date).format('YYYY.MM.DD')} />
-        </Col>
         <Col span="2">
           <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />
+        </Col>
+        <Col span="4">
+          <InfoItem label="创建时间" addonBefore={<Icon type="calendar" />} field={moment(asnHead.created_date).format('YYYY.MM.DD HH:mm')} />
         </Col>
       </Row>);
   }
 
   render() {
     const { visible } = this.props;
+    const { asnHead } = this.state;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={this.renderTitle()}
-        status={this.renderStatus(0)} statusText={this.renderStatusMsg(0)}
+        status={this.renderStatus(asnHead.status)} statusText={this.renderStatusMsg(asnHead.status)}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}
       >

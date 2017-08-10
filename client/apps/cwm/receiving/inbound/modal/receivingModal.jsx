@@ -334,19 +334,19 @@ export default class ReceivingModal extends Component {
         <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }}>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
-              <InfoItem label="ASN编号" field={inboundHead.asn_no} />
-            </Col>
-            <Col sm={12} md={8} lg={4}>
               <InfoItem label="商品货号" field={inboundProduct.product_no} />
             </Col>
             <Col sm={12} md={8} lg={4}>
               <InfoItem label="中文品名" field={inboundProduct.name} />
             </Col>
-            <Col sm={12} md={8} lg={4}>
+            <Col sm={12} md={8} lg={6}>
               <InfoItem label="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
             </Col>
-            <Col sm={12} md={8} lg={4}>
+            <Col sm={12} md={8} lg={6}>
               <InfoItem label="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
+            </Col>
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="收货人员" field={inboundProduct.created_by} />
             </Col>
           </Row>
         </Card>

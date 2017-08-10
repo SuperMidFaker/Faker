@@ -6,7 +6,6 @@ import { Table, Input, Button, notification } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
-import QuantityInput from '../../../common/quantityInput';
 import PackagePopover from '../../../common/popover/packagePopover';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
@@ -74,17 +73,47 @@ export default class OrderDetailsPane extends React.Component {
     dataIndex: 'product_no',
     width: 160,
   }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 120,
+  }, {
+    title: '入库单号',
+    dataIndex: 'inbound_no',
+    width: 120,
+  }, {
+    title: '批次号',
+    dataIndex: 'external_lot_no',
+    width: 120,
+  }, {
+    title: '产品序列号',
+    dataIndex: 'serial_no',
+    width: 120,
+  }, {
     title: '中文品名',
     dataIndex: 'name',
   }, {
     title: '订货数量',
     dataIndex: 'order_qty',
-    width: 120,
-    render: o => (<b>{o}</b>),
+    width: 100,
+    className: 'cell-align-right',
+    render: o => (<span className="text-emphasis">{o}</span>),
+  }, {
+    title: '分配数量',
+    dataIndex: 'alloc_qty',
+    width: 100,
+    className: 'cell-align-right',
+    render: (o, record) => {
+      if (record.alloc_qty === record.order_qty) {
+        return (<span className="text-success">{o}</span>);
+      } else if (record.alloc_qty < record.order_qty) {
+        return (<span className="text-warning">{o}</span>);
+      }
+    },
   }, {
     title: '计量单位',
     dataIndex: 'unit_name',
     width: 100,
+    className: 'cell-align-center',
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -94,10 +123,6 @@ export default class OrderDetailsPane extends React.Component {
         return <PackagePopover sku={o} />;
       }
     },
-  }, {
-    title: '分配数量',
-    width: 200,
-    render: (o, record) => (<QuantityInput size="small" packQty={record.alloc_pack_qty} pcsQty={record.alloc_qty} />),
   }, {
     title: '操作',
     width: 150,
