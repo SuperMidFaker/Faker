@@ -24,8 +24,6 @@ export default [
    ['get', '/scof*', renderWebPage],
    ['get', '/scv*', renderWebPage],
    ['get', '/my*', renderWebPage],
-   ['get', '/message*', renderWebPage],
    ['get', '/pub/*', renderWebPage],
-   ['get', '/network*', renderWebPage],
    ['get', '/hub*', renderWebPage],
 ];

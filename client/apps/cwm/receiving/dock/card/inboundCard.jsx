@@ -154,10 +154,14 @@ export default class InboundCard extends Component {
           <Panel header={inboundNo} key="receiveDetails" >
             <Tabs defaultActiveKey="inbound">
               <TabPane tab="收货明细" key="inbound">
-                <Table size="middle" columns={this.inboundColumns} dataSource={inbound} scroll={{ x: 1210 }} />
+                <div className="table-panel table-fixed-layout">
+                  <Table size="middle" columns={this.inboundColumns} dataSource={inbound} scroll={{ x: 1210 }} />
+                </div>
               </TabPane>
               <TabPane tab="上架明细" key="putaway" >
-                <Table size="middle" columns={this.putawayColumns} dataSource={putaway} scroll={{ x: 1230 }} />
+                <div className="table-panel table-fixed-layout">
+                  <Table size="middle" columns={this.putawayColumns} dataSource={putaway} scroll={{ x: 1230 }} />
+                </div>
               </TabPane>
             </Tabs>
           </Panel>

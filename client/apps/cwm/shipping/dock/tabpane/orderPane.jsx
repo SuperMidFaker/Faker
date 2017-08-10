@@ -103,7 +103,9 @@ export default class SOPane extends React.Component {
               </Row>
             </Panel>
             <Panel header="SO明细" key="asnDetails" >
-              <Table size="middle" columns={this.columns} dataSource={this.props.soBody} />
+              <div className="table-panel table-fixed-layout">
+                <Table size="middle" columns={this.columns} dataSource={this.props.soBody} />
+              </div>
             </Panel>
           </Collapse>
         </Card>

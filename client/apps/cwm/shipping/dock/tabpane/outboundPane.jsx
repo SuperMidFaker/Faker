@@ -257,13 +257,19 @@ export default class InboundPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }}>
           <Collapse bordered={false} defaultActiveKey={'pickDetails'}>
             <Panel header="拣货明细" key="pickDetails" >
-              <Table size="middle" columns={this.pickColumns} dataSource={pickDetails} scroll={{ x: 1400 }} />
+              <div className="table-panel table-fixed-layout">
+                <Table size="middle" columns={this.pickColumns} dataSource={pickDetails} scroll={{ x: 1400 }} />
+              </div>
             </Panel>
             <Panel header="装箱明细" key="packDetails" >
-              <Table size="middle" columns={this.packColumns} dataSource={packDetails} scroll={{ x: 1400 }} />
+              <div className="table-panel table-fixed-layout">
+                <Table size="middle" columns={this.packColumns} dataSource={packDetails} scroll={{ x: 1400 }} />
+              </div>
             </Panel>
             <Panel header="发货明细" key="shipDetails" >
-              <Table size="middle" columns={this.shipColumns} dataSource={shipDetails} scroll={{ x: 1400 }} />
+              <div className="table-panel table-fixed-layout">
+                <Table size="middle" columns={this.shipColumns} dataSource={shipDetails} scroll={{ x: 1400 }} />
+              </div>
             </Panel>
           </Collapse>
         </Card>

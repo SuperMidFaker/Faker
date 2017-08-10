@@ -72,7 +72,7 @@ export default class FTZPane extends React.Component {
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 90,
+    width: 120,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -132,7 +132,9 @@ export default class FTZPane extends React.Component {
         <Card bodyStyle={{ padding: 0 }} >
           <Collapse bordered={false} defaultActiveKey={['entryDetails']}>
             <Panel header="备案明细" key="entryDetails" >
-              <Table size="middle" columns={this.columns} dataSource={this.state.data} scroll={{ x: 1470 }} />
+              <div className="table-panel table-fixed-layout">
+                <Table size="middle" columns={this.columns} dataSource={this.state.data} scroll={{ x: 1470 }} />
+              </div>
             </Panel>
           </Collapse>
         </Card>

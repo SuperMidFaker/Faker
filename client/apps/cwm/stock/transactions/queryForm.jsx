@@ -92,20 +92,24 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="货品">
-              {getFieldDecorator('product_no', {
-                initialValue: filter.product_no,
-              })(<Input placeholder="商品货号/SKU" />)}
+            <FormItem {...formItemLayout} label="操作时间" >
+              <RangePicker />
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="入库单号">
-              <Input placeholder="ASN/监管入库单号" />
+            <FormItem {...formItemLayout} label="操作类型">
+              <Select>
+                <Option value="inbound" key="inbound">入库</Option>
+                <Option value="outbound" key="outbound">出库</Option>
+                <Option value="movement" key="movement">移库</Option>
+                <Option value="transit" key="transit">转移</Option>
+                <Option value="adjust" key="adjust">调整</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="批次号">
-              <Input placeholder="批次号" />
+            <FormItem {...formItemLayout} label="单证号">
+              <Input placeholder="入库/出库/移库单号" />
             </FormItem>
           </Col>
           <Col span={4}>
@@ -120,15 +124,18 @@ export default class QueryForm extends React.Component {
         </Row>
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
+            <FormItem {...formItemLayout} label="货品">
+              {getFieldDecorator('product_no', {
+                initialValue: filter.product_no,
+              })(<Input placeholder="商品货号/SKU" />)}
+            </FormItem>
+          </Col>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="序列号">
               <Input placeholder="序列号" />
             </FormItem>
           </Col>
-          <Col span={5}>
-            <FormItem {...formItemLayout} label="追踪ID">
-              <Input placeholder="" />
-            </FormItem>
-          </Col>
+
           <Col span={5}>
             <FormItem {...formItemLayout} label="库位">
               {getFieldDecorator('whse_location', {
@@ -150,11 +157,7 @@ export default class QueryForm extends React.Component {
               <Input placeholder="" />
             </FormItem>
           </Col>
-          <Col span={5}>
-            <FormItem {...formItemLayout} label="入库日期" >
-              <RangePicker />
-            </FormItem>
-          </Col>
+
           <Col span={5}>
             <FormItem {...formItemLayout} label="失效日期" >
               <RangePicker />

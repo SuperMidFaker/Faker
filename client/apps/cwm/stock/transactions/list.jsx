@@ -64,7 +64,7 @@ export default class StockTransactionsList extends React.Component {
     width: 150,
     sorter: true,
     fixed: 'left',
-    render: o => <TrimSpan text={o} maxLen={10} />,
+    render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
     title: this.msg('productNo'),
     dataIndex: 'product_no',
@@ -72,12 +72,7 @@ export default class StockTransactionsList extends React.Component {
     sorter: true,
     fixed: 'left',
     render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('SKU'),
-    dataIndex: 'product_sku',
-    width: 180,
-    sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
+
   }, {
     title: this.msg('descCN'),
     dataIndex: 'desc_cn',
@@ -87,17 +82,6 @@ export default class StockTransactionsList extends React.Component {
     title: this.msg('location'),
     width: 120,
     dataIndex: 'location',
-    sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    title: this.msg('inboundDate'),
-    width: 120,
-    dataIndex: 'inbound_date',
-    sorter: true,
-  }, {
-    title: this.msg('unit'),
-    width: 120,
-    dataIndex: 'unit',
     sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
@@ -113,7 +97,7 @@ export default class StockTransactionsList extends React.Component {
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="text-normal">{text}</span>;
+        return <span className="text-disabled">{text}</span>;
       } else {
         return <span className="text-success">{text}</span>;
       }
@@ -125,7 +109,7 @@ export default class StockTransactionsList extends React.Component {
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="text-normal">{text}</span>;
+        return <span className="text-disabled">{text}</span>;
       } else {
         return <span className="text-warning">{text}</span>;
       }
@@ -137,23 +121,91 @@ export default class StockTransactionsList extends React.Component {
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
-        return <span className="text-normal">{text}</span>;
+        return <span className="text-disabled">{text}</span>;
       } else {
         return <span className="text-error">{text}</span>;
       }
     },
   }, {
-    title: this.msg('bondedQty'),
-    width: 100,
-    dataIndex: 'bonded_qty',
-    className: 'cell-align-right',
+    title: this.msg('traceId'),
+    width: 120,
+    dataIndex: 'trace_id',
+  }, {
+    title: this.msg('SKU'),
+    dataIndex: 'product_sku',
+    width: 180,
+    sorter: true,
     render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('nonbondedQty'),
-    width: 100,
-    dataIndex: 'nonbonded_qty',
-    className: 'cell-align-right',
-    render: (text, row) => this.renderNormalCol(text, row),
+    title: this.msg('lotNo'),
+    width: 120,
+    dataIndex: 'external_lot_no',
+  }, {
+    title: this.msg('serialNo'),
+    width: 120,
+    dataIndex: 'serial_no',
+  }, {
+    title: this.msg('virtualWhse'),
+    width: 120,
+    dataIndex: 'virtual_whse',
+  }, {
+    title: this.msg('damageLevel'),
+    width: 120,
+    dataIndex: 'damage_level',
+  }, {
+    title: this.msg('inboundDate'),
+    width: 120,
+    dataIndex: 'inbound_date',
+    sorter: true,
+  }, {
+    title: this.msg('expiryDate'),
+    width: 120,
+    dataIndex: 'expiry_date',
+    sorter: true,
+  }, {
+    title: this.msg('attrib1'),
+    width: 120,
+    dataIndex: 'attrib_1_string',
+  }, {
+    title: this.msg('attrib2'),
+    width: 120,
+    dataIndex: 'attrib_2_string',
+  }, {
+    title: this.msg('attrib3'),
+    width: 120,
+    dataIndex: 'attrib_3_string',
+  }, {
+    title: this.msg('attrib4'),
+    width: 120,
+    dataIndex: 'attrib_4_string',
+  }, {
+    title: this.msg('attrib5'),
+    width: 120,
+    dataIndex: 'attrib_5_string',
+  }, {
+    title: this.msg('attrib6'),
+    width: 120,
+    dataIndex: 'attrib_6_string',
+  }, {
+    title: this.msg('attrib7'),
+    width: 120,
+    dataIndex: 'attrib_7_date',
+  }, {
+    title: this.msg('attrib8'),
+    width: 120,
+    dataIndex: 'attrib_8_date',
+  }, {
+    title: this.msg('bonded'),
+    width: 120,
+    dataIndex: 'bonded',
+  }, {
+    title: this.msg('portion'),
+    width: 120,
+    dataIndex: 'portion',
+  }, {
+    title: this.msg('ftzEntryId'),
+    width: 120,
+    dataIndex: 'ftz_ent_filed_id',
   }, {
     title: this.msg('grossWeight'),
     dataIndex: 'gross_weight',
@@ -166,8 +218,6 @@ export default class StockTransactionsList extends React.Component {
     className: 'cell-align-right',
     width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    dataIndex: 'spacer',
   }]
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
@@ -254,7 +304,7 @@ export default class StockTransactionsList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <Card noHovering style={{ marginBottom: 16 }}>
+          <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <div className="page-body">

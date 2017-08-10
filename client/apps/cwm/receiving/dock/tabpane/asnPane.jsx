@@ -118,7 +118,9 @@ export default class ASNPane extends React.Component {
               </Row>
             </Panel>
             <Panel header="ASN明细" key="asnDetails" >
-              <Table size="middle" columns={this.columns} dataSource={this.props.asnBody} />
+              <div className="table-panel table-fixed-layout">
+                <Table size="middle" columns={this.columns} dataSource={this.props.asnBody} />
+              </div>
             </Panel>
           </Collapse>
         </Card>
@@ -128,7 +130,7 @@ export default class ASNPane extends React.Component {
             取消订单
           </Button>)}
           {asnHead.status === CWM_ASN_STATUS.EXCEPTION.value &&
-          (<Button type="danger" size="large" icon="delete" onClick={() => this.handleComplete(asnHead.asn_no)}>
+          (<Button type="danger" size="large" icon="close-circle-o" onClick={() => this.handleComplete(asnHead.asn_no)}>
             关闭收货
           </Button>)}
         </div>
