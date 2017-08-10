@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Badge, Breadcrumb, Button, Spin } from 'antd';
+import { Alert, Badge, Breadcrumb, Button, Dropdown, Spin } from 'antd';
 import classNames from 'classnames';
 import './dock-panel.less';
 
@@ -20,6 +20,7 @@ export default class DockPanel extends React.Component {
     title: PropTypes.any,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,
+    overlay: PropTypes.node,
     extra: PropTypes.node,
     children: PropTypes.any,
     loading: PropTypes.bool,
@@ -57,7 +58,7 @@ export default class DockPanel extends React.Component {
   }
 
   render() {
-    const { prefixCls, size = '', className, visible, title, status, statusText, extra, loading, alert, alertType, children } = this.props;
+    const { prefixCls, size = '', className, visible, title, status, statusText, overlay, extra, loading, alert, alertType, children } = this.props;
     const sizeCls = ({
       large: 'lg',
       small: 'sm',
@@ -80,6 +81,13 @@ export default class DockPanel extends React.Component {
                   <Breadcrumb.Item>{title}</Breadcrumb.Item>
                 </Breadcrumb>
                 {status ? <Badge status={status} text={statusText} /> : null}
+                {overlay &&
+                <div className={`${prefixCls}-head-overlay`}>
+                  <Dropdown overlay={overlay}>
+                    <Button shape="circle" icon="ellipsis" />
+                  </Dropdown>
+                </div>
+                }
                 <div className={`${prefixCls}-head-close`}>
                   <Button shape="circle" icon="close" onClick={this.handleClose} />
                 </div>

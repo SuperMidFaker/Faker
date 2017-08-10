@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Icon, Col, Row, Tabs, Button } from 'antd';
+import { Icon, Col, Row, Tabs, Button, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
 import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid, getShipmtOrderNo } from 'common/reducers/cwmReceive';
@@ -155,10 +155,17 @@ export default class ReceivingDockPanel extends React.Component {
   render() {
     const { visible } = this.props;
     const { asnHead } = this.state;
+    const menu = (
+      <Menu>
+        <Menu.Item key="1">1st menu item</Menu.Item>
+        <Menu.Item key="2">2nd menu item</Menu.Item>
+      </Menu>
+    );
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={this.renderTitle()}
         status={this.renderStatus(asnHead.status)} statusText={this.renderStatusMsg(asnHead.status)}
+        overlay={menu}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}
       >
