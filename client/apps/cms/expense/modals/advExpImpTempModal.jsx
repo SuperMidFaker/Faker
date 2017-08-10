@@ -116,6 +116,9 @@ export default class AdvExpsImpTempModal extends Component {
     title: this.msg('totalValue'),
     dataIndex: 'total',
     width: 120,
+    render(o) {
+      return o ? o.toFixed(2) : '';
+    },
   }];
   handleCancel = () => {
     this.props.showAdvImpTempModal(false);
@@ -148,6 +151,9 @@ export default class AdvExpsImpTempModal extends Component {
         title: tableTitle.title[i],
         dataIndex: tableTitle.dataIndex[i],
         width: 120,
+        render(o) {
+          return o ? o.toFixed(2) : '';
+        },
       });
     }
     columns.push({
