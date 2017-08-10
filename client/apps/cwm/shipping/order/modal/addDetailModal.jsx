@@ -81,10 +81,8 @@ export default class AddDetailModal extends Component {
             name: product.desc_cn,
             unit: product.unit,
             unit_price: product.unit_price,
-            unit_name: product.unit_name,
             product_sku: product.product_sku,
-            currency: product.currency,
-            currency_name: product.currency_name,
+            currency: Number(product.currency),
             amount: this.state.amount,
             ...values,
           });

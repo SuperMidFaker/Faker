@@ -19,6 +19,8 @@ const formatMsg = format(messages);
     temporaryDetails: state.cwmReceive.temporaryDetails,
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    units: state.cwmSku.params.units,
+    currencies: state.cwmSku.params.currencies,
   }),
   { showDetailModal, addTemporary, deleteTemporary }
 )
@@ -60,7 +62,7 @@ export default class DetailForm extends Component {
     this.props.addTemporary(data);
   }
   render() {
-    const { editable, temporaryDetails, detailEnable, form } = this.props;
+    const { editable, temporaryDetails, detailEnable, form, units, currencies } = this.props;
     const poNo = form.getFieldValue('po_no');
     const ownerPartnerId = form.getFieldValue('owner_partner_id');
     const columns = [{
@@ -83,7 +85,8 @@ export default class DetailForm extends Component {
       dataIndex: 'order_qty',
     }, {
       title: '计量单位',
-      dataIndex: 'unit_name',
+      dataIndex: 'unit',
+      render: o => o && units.find(unit => unit.code === o).name,
     }, {
       title: '库别',
       dataIndex: 'virtual_whse',
@@ -100,7 +103,7 @@ export default class DetailForm extends Component {
     }, {
       title: '币制',
       dataIndex: 'currency',
-      render: (o, record) => o && <span>{`${o}|${record.currency_name}`}</span>,
+      render: o => o && <span>{`${o}|${currencies.find(currency => Number(currency.code) === o).name}`}</span>,
     }, {
       title: '操作',
       width: 80,
