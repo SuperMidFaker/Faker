@@ -7,6 +7,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
 import PackagePopover from '../../../common/popover/packagePopover';
+import { loadSkuParams } from 'common/reducers/cwmSku';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
@@ -21,8 +22,9 @@ const Search = Input.Search;
     outboundHead: state.cwmOutbound.outboundFormHead,
     outboundProducts: state.cwmOutbound.outboundProducts,
     reload: state.cwmOutbound.outboundReload,
+    units: state.cwmSku.params.units,
   }),
-  { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc }
+  { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc, loadSkuParams }
 )
 export default class OrderDetailsPane extends React.Component {
   static propTypes = {
@@ -50,6 +52,9 @@ export default class OrderDetailsPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.handleReload();
+    }
+    if (nextProps.outboundHead !== this.props.outboundHead) {
+      this.props.loadSkuParams(nextProps.outboundHead.owner_partner_id);
     }
   }
   handleReload = () => {
@@ -111,9 +116,9 @@ export default class OrderDetailsPane extends React.Component {
     },
   }, {
     title: '计量单位',
-    dataIndex: 'unit_name',
+    dataIndex: 'unit',
     width: 100,
-    className: 'cell-align-center',
+    render: o => this.props.units.length > 0 ? this.props.units.find(unit => unit.code === o).name : '',
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',

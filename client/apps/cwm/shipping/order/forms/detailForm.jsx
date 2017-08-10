@@ -17,6 +17,8 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     temporaryDetails: state.cwmReceive.temporaryDetails,
+    units: state.cwmSku.params.units,
+    currencies: state.cwmSku.params.currencies,
   }),
   { showDetailModal, addTemporary, deleteTemporary }
 )
@@ -77,7 +79,7 @@ export default class DetailForm extends Component {
     this.props.showDetailModal();
   }
   render() {
-    const { editable, temporaryDetails, detailEnable } = this.props;
+    const { editable, temporaryDetails, detailEnable, units, currencies } = this.props;
     const { pagination } = this.state;
     const columns = [{
       title: '行号',
@@ -102,9 +104,8 @@ export default class DetailForm extends Component {
       className: 'cell-align-right',
     }, {
       title: '计量单位',
-      dataIndex: 'unit_name',
-      width: 100,
-      className: 'cell-align-center',
+      dataIndex: 'unit',
+      render: o => o && units.find(unit => unit.code === o).name,
     }, {
       title: '库别',
       dataIndex: 'virtual_whse',
@@ -139,9 +140,7 @@ export default class DetailForm extends Component {
     }, {
       title: '币制',
       dataIndex: 'currency',
-      width: 100,
-      className: 'cell-align-center',
-      render: (o, record) => o && <span>{`${o}|${record.currency_name}`}</span>,
+      render: o => o && <span>{`${o}|${currencies.find(currency => Number(currency.code) === o).name}`}</span>,
     }, {
       title: '操作',
       width: 80,
