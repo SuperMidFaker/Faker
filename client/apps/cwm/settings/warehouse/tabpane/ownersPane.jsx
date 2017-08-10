@@ -3,15 +3,13 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Layout, Table, Tag } from 'antd';
+import { Button, Table, Tag } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
 import { formatMsg } from '../message.i18n';
-
-const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -114,14 +112,14 @@ export default class OwnersPane extends Component {
   render() {
     const { whseCode, whseTenantId, whseOwners } = this.props;
     return (
-      <Content>
+      <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加货主</Button>
         </div>
         <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
-      </Content>
+      </div>
     );
   }
 }

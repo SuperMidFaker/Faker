@@ -99,7 +99,7 @@ export default class PuttingAwayModal extends Component {
     }
     return (
       <Modal title="上架确认" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
-        <FormItem {...formItemLayout} label="实际库位">
+        <FormItem {...formItemLayout} label="上架库位">
           <Select showSearch style={{ width: 160 }} onSelect={this.handleLocationChange} value={this.state.location}>
             {this.props.locations.map((loc) => {
               let prefix;

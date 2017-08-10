@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Layout, Form, Select, message } from 'antd';
+import { Button, Form, Select, message } from 'antd';
 import { formatMsg } from '../message.i18n';
 import { updateWhse } from 'common/reducers/cwmWarehouse';
 import { loadWhseSupervisionApps } from 'common/reducers/openIntegration';
 
-const { Content } = Layout;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -57,7 +56,7 @@ export default class SupervisionPane extends Component {
   render() {
     const { whseSupervisonApps } = this.props;
     return (
-      <Content style={{ padding: 24 }}>
+      <div style={{ padding: 24 }}>
         <Form layout="inline">
           <FormItem label="保税监管系统">
             <Select placeholder="请选择保税监管系统" allowClear style={{ width: 300 }}
@@ -72,7 +71,7 @@ export default class SupervisionPane extends Component {
             <Button type="primary" size="large" onClick={this.handleSaveFtzApp}>保存</Button>
           </FormItem>
         </Form>
-      </Content>
+      </div>
     );
   }
 }

@@ -60,10 +60,12 @@ export default class PutawayDetailsPane extends React.Component {
     title: '移动单元编号',
     dataIndex: 'convey_no',
     width: 150,
+    fixed: 'left',
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
     width: 160,
+    fixed: 'left',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',

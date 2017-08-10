@@ -324,7 +324,7 @@ export default class SHFTZRelDetail extends Component {
                       {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
                       <Row>
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="监管出库单号" field={reg.ftz_rel_no} editable={relEditable}
+                          <InfoItem size="small" addonBefore="海关出库单号" field={reg.ftz_rel_no} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>

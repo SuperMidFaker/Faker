@@ -114,7 +114,7 @@ export default class CustomerList extends React.Component {
     const columns = [{
       dataIndex: 'name',
       key: 'name',
-      render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={16} /></span>),
+      render: o => (<span className="menu-sider-item"><TrimSpan text={o} maxLen={22} /></span>),
     }];
     return (
       <Layout>

@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Layout, Table, Tag } from 'antd';
+import { Button, Table, Tag } from 'antd';
 import { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import StaffModal from '../modal/staffModal';
 import { formatMsg } from '../message.i18n';
-
-const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -85,13 +83,13 @@ export default class StaffsPane extends Component {
   render() {
     const { whseCode, staffs } = this.props;
     return (
-      <Content>
+      <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showStaffModal()}>添加员工</Button>
         </div>
         <Table columns={this.columns} dataSource={staffs} rowKey="id" />
         <StaffModal whseCode={whseCode} selectedUserIds={this.state.selectedRowKeys} />
-      </Content>
+      </div>
     );
   }
 }

@@ -37,6 +37,13 @@ export default class DetailForm extends Component {
     editRecord: {},
     edit: false,
   };
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 460,
+      });
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const { soBody } = nextProps;
     if (soBody && (nextProps.soBody !== this.props.soBody)) {
@@ -75,12 +82,14 @@ export default class DetailForm extends Component {
       title: '行号',
       dataIndex: 'so_seq_no',
       width: 50,
+      fixed: 'left',
       className: 'cell-align-center',
       render: (col, row, index) => col || pagination.pageSize * (pagination.current - 1) + index + 1,
     }, {
       title: '商品货号',
       dataIndex: 'product_no',
       width: 200,
+      fixed: 'left',
     }, {
       title: '中文品名',
       dataIndex: 'name',
@@ -89,9 +98,12 @@ export default class DetailForm extends Component {
       title: '订单数量',
       width: 100,
       dataIndex: 'order_qty',
+      className: 'cell-align-right',
     }, {
       title: '计量单位',
       dataIndex: 'unit_name',
+      width: 100,
+      className: 'cell-align-center',
     }, {
       title: '库别',
       dataIndex: 'virtual_whse',
@@ -111,16 +123,23 @@ export default class DetailForm extends Component {
     }, {
       title: '单价',
       dataIndex: 'unit_price',
+      width: 100,
+      className: 'cell-align-right',
     }, {
       title: '总价',
       dataIndex: 'amount',
+      width: 100,
+      className: 'cell-align-right',
     }, {
       title: '币制',
       dataIndex: 'currency',
+      width: 100,
+      className: 'cell-align-center',
       render: (o, record) => o && <span>{`${o}|${record.currency_name}`}</span>,
     }, {
       title: '操作',
       width: 80,
+      fixed: 'right',
       render: (o, record, index) => (
         <span>
           <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />} row={record} />
@@ -130,12 +149,14 @@ export default class DetailForm extends Component {
       ),
     }];
     return (
-      <div>
+      <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
           {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
         </div>
-        <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination} />
+        <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination}
+          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+        />
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
       </div>
     );

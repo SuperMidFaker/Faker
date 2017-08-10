@@ -100,7 +100,7 @@ export default class QueryForm extends React.Component {
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="入库单号">
-              <Input placeholder="ASN/监管入库单号" />
+              <Input placeholder="ASN/海关入库单号" />
             </FormItem>
           </Col>
           <Col span={5}>
