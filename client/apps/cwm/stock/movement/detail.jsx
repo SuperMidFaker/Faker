@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import MovementDetailsPane from './tabpane/movementDetailsPane';
-import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmInventoryStock';
+import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmMovement';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -26,8 +26,8 @@ const TabPane = Tabs.TabPane;
     username: state.account.username,
     tenantName: state.account.tenantName,
     defaultWhse: state.cwmContext.defaultWhse,
-    movementHead: state.cwmInventoryStock.movementHead,
-    reload: state.cwmInventoryStock.movementReload,
+    movementHead: state.cwmMovement.movementHead,
+    reload: state.cwmMovement.movementReload,
   }),
   { loadMovementHead, updateMovingMode }
 )

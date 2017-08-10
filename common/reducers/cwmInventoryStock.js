@@ -3,22 +3,9 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
   'SHOW_TRANSITION_DOCK', 'HIDE_TRANSITION_DOCK',
-  'OPEN_MOVEMENT_MODAL', 'CLOSE_MOVEMENT_MODAL', 'SET_FILTER',
-  'OPEN_BATCH_TRANSIT_MODAL', 'CLOSE_BATCH_TRANSIT_MODAL',
-  'OPEN_BATCH_MOVE_MODAL', 'CLOSE_BATCH_MOVE_MODAL',
-  'OPEN_BATCH_FREEZE_MODAL', 'CLOSE_BATCH_FREEZE_MODAL',
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
-  'LOAD_STOCKSEARCHOPT', 'LOAD_STOCKSEARCHOPT_SUCCEED', 'LOAD_STOCKSEARCHOPT_FAIL',
   'CHECK_OWNER_COLUMN', 'CHECK_PRODUCT_COLUMN', 'CHECK_LOCATION_COLUMN',
-  'CHECK_PRODUCT_LOCATION', 'CHANGE_SEARCH_TYPE', 'CLEAR_LIST',
-  'INVENTORY_SEARCH', 'INVENTORY_SEARCH_SUCCESS', 'INVENTORY_SEARCH_FAIL',
-  'CREATE_MOVEMENT', 'CREATE_MOVEMENT_SUCCESS', 'CREATE_MOVEMENT_FAIL',
-  'LOAD_MOVEMENTS', 'LOAD_MOVEMENTS_SUCCESS', 'LOAD_MOVEMENTS_FAIL',
-  'LOAD_MOVEMENT_HEAD', 'LOAD_MOVEMENT_HEAD_SUCCESS', 'LOAD_MOVEMENT_HEAD_FAIL',
-  'LOAD_MOVEMENT_DETAILS', 'LOAD_MOVEMENT_DETAILS_SUCCESS', 'LOAD_MOVEMENT_DETAILS_FAIL',
-  'EXECUTE_MOVE', 'EXECUTE_MOVE_SUCCESS', 'EXECUTE_MOVE_FAIL',
-  'CANCEL_MOVEMENT', 'CANCEL_MOVEMENT_SUCCESS', 'CANCEL_MOVEMENT_FAIL',
-  'REMOVE_MOVEMENT_DETAIL', 'REMOVE_MOVEMENT_DETAIL_SUCCESS', 'REMOVE_MOVEMENT_DETAIL_FAIL',
+  'CHECK_PRODUCT_LOCATION', 'CHANGE_SEARCH_TYPE',
 ]);
 
 const initialState = {
@@ -53,21 +40,6 @@ const initialState = {
     whse_location: '',
     search_type: 2,
   },
-  searchOption: {
-    warehouses: [],
-    categories: [],
-  },
-  movementModal: {
-    visible: false,
-    filter: {
-      ownerCode: '',
-      ownerName: '',
-      productNo: '',
-      location: '',
-      startTime: '',
-      endTime: '',
-    },
-  },
   batchTransitModal: {
     visible: false,
   },
@@ -77,16 +49,6 @@ const initialState = {
   batchFreezeModal: {
     visible: false,
   },
-  movements: {
-    totalCount: 0,
-    pageSize: 20,
-    current: 1,
-    data: [],
-    loading: true,
-  },
-  movementFilter: { owner: 'all' },
-  movementHead: {},
-  movementDetails: [],
   transitionDock: {
     visible: false,
   },
@@ -110,10 +72,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: false } };
     case actionTypes.OPEN_BATCH_FREEZE_MODAL:
       return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true } };
-    case actionTypes.OPEN_MOVEMENT_MODAL:
-      return { ...state, movementModal: { ...state.movementModal, visible: true, ...action.data } };
-    case actionTypes.CLOSE_MOVEMENT_MODAL:
-      return { ...state, movementModal: { ...state.movementModal, visible: false } };
     case actionTypes.LOAD_STOCKS:
       return { ...state,
         loading: true,
@@ -123,8 +81,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false };
     case actionTypes.LOAD_STOCKS_SUCCEED:
       return { ...state, list: action.result.data, loading: false };
-    case actionTypes.LOAD_STOCKSEARCHOPT_SUCCEED:
-      return { ...state, searchOption: action.result.data };
     case actionTypes.CHECK_OWNER_COLUMN:
       return { ...state,
         displayedColumns: {
@@ -192,21 +148,7 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.CHANGE_SEARCH_TYPE:
-      return { ...state, listFilter: { ...state.listFilter, search_type: action.value } };
-    case actionTypes.CLEAR_LIST:
-      return { ...state, list: { ...state.list, data: [] } };
-    case actionTypes.INVENTORY_SEARCH:
-      return { ...state, movementModal: { ...state.movementModal, filter: JSON.parse(action.params.filter) } };
-    case actionTypes.LOAD_MOVEMENTS:
-      return { ...state, movements: { ...state.movements, loading: true } };
-    case actionTypes.LOAD_MOVEMENTS_SUCCESS:
-      return { ...state, movements: { ...action.result.data, loading: false } };
-    case actionTypes.SET_FILTER:
-      return { ...state, movementModal: { ...state.movementModal, filter: action.filter } };
-    case actionTypes.LOAD_MOVEMENT_HEAD_SUCCESS:
-      return { ...state, movementHead: action.result.data };
-    case actionTypes.LOAD_MOVEMENT_DETAILS_SUCCESS:
-      return { ...state, movementDetails: action.result.data };
+      return { ...state, list: initialState.list, listFilter: { ...state.listFilter, search_type: action.value } };
     default:
       return state;
   }
@@ -261,18 +203,6 @@ export function closeBatchFreezeModal() {
   };
 }
 
-export function openMovementModal() {
-  return {
-    type: actionTypes.OPEN_MOVEMENT_MODAL,
-  };
-}
-
-export function closeMovementModal() {
-  return {
-    type: actionTypes.CLOSE_MOVEMENT_MODAL,
-  };
-}
-
 export function loadStocks(params) {
   return {
     [CLIENT_API]: {
@@ -284,21 +214,6 @@ export function loadStocks(params) {
       endpoint: 'v1/cwm/inventory/stock',
       method: 'get',
       params,
-    },
-  };
-}
-
-export function loadStockSearchOptions(tenantId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_STOCKSEARCHOPT,
-        actionTypes.LOAD_STOCKSEARCHOPT_SUCCEED,
-        actionTypes.LOAD_STOCKSEARCHOPT_FAIL,
-      ],
-      endpoint: 'v1/cwm/inventory/stock/searchoptions',
-      method: 'get',
-      params: { tenantId },
     },
   };
 }
@@ -331,138 +246,5 @@ export function changeSearchType(value) {
   return {
     type: actionTypes.CHANGE_SEARCH_TYPE,
     value,
-  };
-}
-
-export function clearList() {
-  return {
-    type: actionTypes.CLEAR_LIST,
-  };
-}
-
-export function inventorySearch(filter, tenantId, whseCode) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.INVENTORY_SEARCH,
-        actionTypes.INVENTORY_SEARCH_SUCCESS,
-        actionTypes.INVENTORY_SEARCH_FAIL,
-      ],
-      endpoint: 'v1/cwm/inventory/search',
-      method: 'get',
-      params: { filter, tenantId, whseCode },
-    },
-  };
-}
-
-export function createMovement(ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginId, details) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CREATE_MOVEMENT,
-        actionTypes.CREATE_MOVEMENT_SUCCESS,
-        actionTypes.CREATE_MOVEMENT_FAIL,
-      ],
-      endpoint: 'v1/cwm/create/movement',
-      method: 'post',
-      data: { ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginId, details },
-    },
-  };
-}
-
-export function loadMovements({ whseCode, tenantId, pageSize, current, filter }) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_MOVEMENTS,
-        actionTypes.LOAD_MOVEMENTS_SUCCESS,
-        actionTypes.LOAD_MOVEMENTS_FAIL,
-      ],
-      endpoint: 'v1/cwm/load/movements',
-      method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filter: JSON.stringify(filter) },
-    },
-  };
-}
-
-export function setMovementsFilter(filter) {
-  return {
-    type: actionTypes.SET_FILTER,
-    filter,
-  };
-}
-
-export function loadMovementHead(movementNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_MOVEMENT_HEAD,
-        actionTypes.LOAD_MOVEMENT_HEAD_SUCCESS,
-        actionTypes.LOAD_MOVEMENT_HEAD_FAIL,
-      ],
-      endpoint: 'v1/cwm/load/movement/head',
-      method: 'get',
-      params: { movementNo },
-    },
-  };
-}
-
-export function loadMovementDetails(movementNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_MOVEMENT_DETAILS,
-        actionTypes.LOAD_MOVEMENT_DETAILS_SUCCESS,
-        actionTypes.LOAD_MOVEMENT_DETAILS_FAIL,
-      ],
-      endpoint: 'v1/cwm/load/movement/details',
-      method: 'get',
-      params: { movementNo },
-    },
-  };
-}
-
-export function executeMovement(movementNo, movementDetails, loginId, whseCode) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.EXECUTE_MOVE,
-        actionTypes.EXECUTE_MOVE_SUCCESS,
-        actionTypes.EXECUTE_MOVE_FAIL,
-      ],
-      endpoint: 'v1/cwm/execute/move',
-      method: 'post',
-      data: { movementNo, movementDetails, loginId, whseCode },
-    },
-  };
-}
-
-export function cancelMovement(movementNo, loginId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CANCEL_MOVEMENT,
-        actionTypes.CANCEL_MOVEMENT_SUCCESS,
-        actionTypes.CANCEL_MOVEMENT_FAIL,
-      ],
-      endpoint: 'v1/cwm/cancel/movement',
-      method: 'post',
-      data: { movementNo, loginId },
-    },
-  };
-}
-
-export function removeMoveDetail(ids, loginId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.REMOVE_MOVEMENT_DETAIL,
-        actionTypes.REMOVE_MOVEMENT_DETAIL_SUCCESS,
-        actionTypes.REMOVE_MOVEMENT_DETAIL_FAIL,
-      ],
-      endpoint: 'v1/cwm/remove/movement/detail',
-      method: 'post',
-      data: { ids, loginId },
-    },
   };
 }

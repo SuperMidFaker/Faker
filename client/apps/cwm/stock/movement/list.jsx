@@ -11,7 +11,7 @@ import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
-import { openMovementModal, loadMovements, cancelMovement } from 'common/reducers/cwmInventoryStock';
+import { openMovementModal, loadMovements, cancelMovement } from 'common/reducers/cwmMovement';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
@@ -27,9 +27,9 @@ function fetchData({ state, dispatch }) {
   dispatch(loadMovements({
     whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
-    pageSize: state.cwmInventoryStock.movements.pageSize,
-    current: state.cwmInventoryStock.movements.current,
-    filter: state.cwmInventoryStock.movementFilter,
+    pageSize: state.cwmMovement.movements.pageSize,
+    current: state.cwmMovement.movements.current,
+    filter: state.cwmMovement.movementFilter,
   }));
 }
 @connectFetch()(fetchData)
@@ -41,9 +41,9 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
-    movements: state.cwmInventoryStock.movements,
-    loading: state.cwmInventoryStock.movements.loading,
-    filter: state.cwmInventoryStock.movementFilter,
+    movements: state.cwmMovement.movements,
+    loading: state.cwmMovement.movements.loading,
+    filter: state.cwmMovement.movementFilter,
   }),
   { openMovementModal, switchDefaultWhse, showDock, loadMovements, cancelMovement }
 )
