@@ -90,17 +90,6 @@ export default class ReceiveDetailsPane extends React.Component {
       editable: true,
       inboundNo: this.props.inboundNo,
       inboundProduct: record,
-      /*
-      seqNo: record.asn_seq_no,
-      expectQty: record.expect_qty,
-      expectPackQty: record.expect_pack_qty,
-      receivedQty: record.received_qty,
-      receivedPackQty: record.received_pack_qty,
-      skuPackQty: record.sku_pack_qty,
-      asnNo: this.props.inboundHead.asn_no,
-      productNo: record.product_no,
-      name: record.name,
-      */
     });
   }
   handleReceiveDetails = (record) => {
@@ -108,17 +97,6 @@ export default class ReceiveDetailsPane extends React.Component {
       editable: false,
       inboundNo: this.props.inboundNo,
       inboundProduct: record,
-      /*
-      seqNo: record.asn_seq_no,
-      expectQty: record.expect_qty,
-      expectPackQty: record.expect_pack_qty,
-      receivedQty: record.received_qty,
-      receivedPackQty: record.received_pack_qty,
-      skuPackQty: record.sku_pack_qty,
-      asnNo: this.props.inboundHead.asn_no,
-      productNo: record.product_no,
-      name: record.name,
-      */
     });
   }
   columns = [{
@@ -197,18 +175,6 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 120,
     className: 'cell-align-center',
     render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
-  }, {
-    title: '采购订单号',
-    dataIndex: 'po_no',
-    width: 160,
-  }, {
-    title: '集装箱号',
-    dataIndex: 'container_no',
-    width: 160,
-  }, {
-    title: '库别',
-    dataIndex: 'virtual_whse',
-    width: 100,
   }, {
     title: '收货人员',
     width: 150,
