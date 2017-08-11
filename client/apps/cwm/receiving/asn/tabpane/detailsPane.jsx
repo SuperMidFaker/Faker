@@ -129,6 +129,7 @@ export default class DetailsPane extends Component {
     }, {
       title: '操作',
       width: 80,
+      fixed: 'right',
       render: (o, record) => (
         <span>
           <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />} row={record} />
