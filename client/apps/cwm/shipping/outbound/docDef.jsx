@@ -1,73 +1,31 @@
 import JsBarcode from 'jsbarcode';
 
-function textToBase64Barcode(text) {
+function textToBase64Barcode(text, mark) {
   const canvas = document.createElement('canvas');
-  JsBarcode(canvas, text, { format: 'CODE39', text: `子单号 ${text}` });
+  JsBarcode(canvas, text, { format: 'CODE39', text: mark, fontSize: 30 });
   return canvas.toDataURL('image/png');
 }
 
-// function encodeImageFileAsURL(image, callback) {
-//   const xhr = new XMLHttpRequest();
-//   const png = image;
-//   xhr.open('GET', png, true);
-//   xhr.responseType = 'blob';
-//   xhr.onload = function (e) {
-//     const reader = new FileReader();
-//     reader.onload = function (event) {
-//       console.log('onload');
-//       const imgcode = event.target.result;
-//       callback(imgcode);
-//     };
-//     const file = this.response;
-//     reader.readAsDataURL(file);
-//   };
-//   xhr.send();
-// }
-// function encodeImageFileAsURL(images) {
-//   var xhr = new XMLHttpRequest();
-//   let imagesOK = 0;
-//   const imgcodes = [];
-//   for (var i = 0; i < images.length; i++) {
-//     const png = images[i];
-//     xhr.open("GET", png, true);
-//     xhr.responseType = "blob";
-//     xhr.onload = function (e) {
-//       var reader = new FileReader();
-//       reader.onload = function(event) {
-//         imagesOK++;
-//         console.log('onload', imagesOK);
-//         var imgcode = event.target.result;
-//         imgcodes.push(imgcode);
-//         if (imagesOK >= images.length) {
-//           callback(imgcodes);
-//         }
-//       }
-//       var file = this.response;
-//       reader.readAsDataURL(file)
-//     };
-//     xhr.send();
-//   }
-// }
-
-function pdfBody() {
-  const barcode1 = textToBase64Barcode('123456789123');
+function pdfBody(data) {
+  const barcode0 = textToBase64Barcode('123456789123', '2/2  子单号 123 456 789 123');
+  const barcode1 = textToBase64Barcode('123456789123', '子单号 123 456 789 123');
   let pdfcontent = [];
   pdfcontent = [
     { style: 'table',
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ colSpan: 2, text: 'logo', fontSize: 14 }, {}],
-          [{ rowSpan: 2, image: barcode1, width: 150, alignment: 'center' }, { text: '顺丰隔日', fontSize: 10 }],
-          ['', { text: '代收贷款\n卡号:\n ￥ ', fontSize: 10 }],
+          [{ colSpan: 2, image: data.sf1, width: 300, alignment: 'center' }, {}],
+          [{ rowSpan: 2, image: barcode0, width: 180, alignment: 'center' }, { text: '顺丰隔日', fontSize: 12, alignment: 'center' }],
+          ['', { text: '代收贷款\n卡号:\n ￥ ', fontSize: 12, alignment: 'center' }],
         ],
       },
     },
     { style: 'table',
       table: {
-        widths: ['10%', '90%'],
+        widths: ['2%', '98%'],
         body: [
-          [{ text: '目的地', border: [true, false] }, { text: '', border: [true, false, true] }],
+          [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
           ['收件人', { text: 'name num\naddress', fontSize: 10 }],
           ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
         ],
@@ -104,10 +62,10 @@ function pdfBody() {
   pdfcontent.push(
     { style: 'table',
       table: {
-        widths: ['10%', '50%', '20%', '20%'],
+        widths: ['2%', '58%', '20%', '20%'],
         body: [
           [{ rowSpan: 2, text: '托寄物' }, { rowSpan: 2, colSpan: 2, text: '' }, '',
-          { text: '特安服务', fontSize: 11, alignment: 'center', border: [true, true, true, false] }],
+          { text: '特安服务', fontSize: 10, alignment: 'center', border: [true, true, true, false] }],
           ['', '', '', { text: '自寄 自取', alignment: 'center', border: [true, false, true, false] }],
           [{ rowSpan: 2, text: '备注' }, { text: '', rowSpan: 2 }, { rowSpan: 2, text: '收件员：\n寄件日期：\n派件员：' },
           { text: '签名', border: [true, true, true, false] }],
@@ -120,7 +78,8 @@ function pdfBody() {
     { table: {
       widths: ['30%', '70%'],
       body: [
-          ['', { image: barcode1, width: 150, alignment: 'center' }],
+        [{ image: data.sf3, width: 70, alignment: 'center' },
+        { image: barcode1, width: 160, alignment: 'center' }],
       ],
     },
     }
@@ -128,10 +87,9 @@ function pdfBody() {
   pdfcontent.push(
     { style: 'table',
       table: {
-        widths: ['10%', '90%'],
+        widths: ['2%', '98%'],
         body: [
-          [{ text: '目的地', border: [true, false] }, { text: '', border: [true, false, true] }],
-          ['收件人', { text: 'name num\naddress', fontSize: 10 }],
+          [{ text: '收件人', border: [true, false, true, false] }, { text: 'name num\naddress', fontSize: 10, border: [true, false, true, false] }],
           ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
         ],
       },
@@ -177,32 +135,20 @@ function pdfBody() {
   return pdfcontent;
 }
 
-export function WaybillDef() {
-  // const images = ['public/assets/img/sf1.png', 'public/assets/img/sf2.png','public/assets/img/sf3.png', 'public/assets/img/sf4.png'];
-  // for (var i = 0; i < images.length; i++) {
-  //   encodeImageFileAsURL(images[i], function(data) { imgcodes.push(data); console.log('RESULT:', data) });
-  // }
-  // // encodeImageFileAsURL(images, function(data) { console.log('RESULT:', data) });
+export function WaybillDef(data) {
   const docDefinition = {
     pageSize: 'A5',
     pageMargins: [25, 25],
     content: [],
     styles: {
       table: {
-        fontSize: 6,
+        fontSize: 7,
       },
     },
     defaultStyle: {
       font: 'yahei',
     },
   };
-  // const barcode = canvas.toDataURL((err, png) =>
-  //   JsBarcode("#barcode", "123456789123", {
-  //     text: '子单号 123456789123',
-  //     fontSize: 20,
-  //     width:4,
-  //     height:40,
-  //   }));
-  docDefinition.content = pdfBody();
+  docDefinition.content = pdfBody(data);
   return docDefinition;
 }

@@ -23,6 +23,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
   'SET_INVENTORY_FILTER', 'CHANGE_COLUMNS',
+  'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
 ]);
 const initialState = {
   listFilter: {
@@ -78,6 +79,7 @@ const initialState = {
   shipDetails: [],
   inventoryDataLoading: false,
   allocatedDataLoading: false,
+  waybill: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -148,6 +150,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, outbound: { ...state.outbound, loaded: false } };
     case CLOSE_OUTBOUND_SUCCEED:
       return { ...state, outbound: { ...state.outbound, loaded: false } };
+    case actionTypes.READ_LOGO_SUCCEED:
+      return { ...state, waybill: { ...state.waybill, ...action.result.data } };
     default:
       return state;
   }
@@ -462,5 +466,19 @@ export function changeColumns(column) {
   return {
     type: actionTypes.CHANGE_COLUMNS,
     column,
+  };
+}
+
+export function readWaybillLogo() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.READ_LOGO,
+        actionTypes.READ_LOGO_SUCCEED,
+        actionTypes.READ_LOGO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shipping/outbound/waybillLogo',
+      method: 'get',
+    },
   };
 }
