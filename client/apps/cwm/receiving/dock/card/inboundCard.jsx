@@ -129,7 +129,7 @@ export default class InboundCard extends Component {
     const { inboundNo } = this.props;
     const { inbound, putaway } = this.state;
     return (
-      <Card bodyStyle={{ padding: 0 }}>
+      <Card bodyStyle={{ padding: 0 }} noHovering>
         <Collapse bordered={false} defaultActiveKey={['receiveDetails', 'putAwayDetails']}>
           <Panel header={inboundNo} key="receiveDetails" >
             <Tabs defaultActiveKey="inbound">

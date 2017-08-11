@@ -347,7 +347,7 @@ export default class ReceivingModal extends Component {
               <InfoItem label="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
             </Col>
             <Col sm={12} md={8} lg={4}>
-              <InfoItem label="收货人员" field={inboundProduct.created_by} />
+              <InfoItem label="收货人员" field={<Input />} />
             </Col>
           </Row>
         </Card>

@@ -135,13 +135,13 @@ export default class ReceivingDockPanel extends React.Component {
     return (
       <Row>
         <Col span="6">
-          <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />} field={asnHead.whse_name} />
+          <InfoItem label="仓库" field={asnHead.whse_name} />
         </Col>
         <Col span="6">
           <InfoItem label="货主" field={asnHead.owner_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="采购订单号/海关备案号" addonBefore={<Icon type="tag-o" />} field={asnHead.po_no} />
+          <InfoItem label="采购订单号/海关备案号" field={asnHead.po_no} />
         </Col>
         <Col span="2">
           <InfoItem label="货物属性" field={asnHead.bonded ? '保税' : '非保税'} />
@@ -155,10 +155,11 @@ export default class ReceivingDockPanel extends React.Component {
   render() {
     const { visible } = this.props;
     const { asnHead } = this.state;
+    // TODO
     const menu = (
       <Menu>
-        <Menu.Item key="1">1st menu item</Menu.Item>
-        <Menu.Item key="2">2nd menu item</Menu.Item>
+        <Menu.Item key="1">取消ASN</Menu.Item>
+        <Menu.Item key="2">关闭ASN</Menu.Item>
       </Menu>
     );
     return (

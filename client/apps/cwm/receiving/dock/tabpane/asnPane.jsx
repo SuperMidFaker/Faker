@@ -71,7 +71,7 @@ export default class ASNPane extends React.Component {
     const { asnHead } = this.props;
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }}>
+        <Card bodyStyle={{ padding: 0 }} noHovering>
           <Collapse bordered={false} defaultActiveKey={['main', 'asnDetails']}>
             <Panel header="主信息" key="main">
               <Row gutter={16} className="info-group-underline">
