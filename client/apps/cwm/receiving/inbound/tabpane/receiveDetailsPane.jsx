@@ -132,6 +132,18 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 160,
     fixed: 'left',
   }, {
+    title: '集装箱号',
+    dataIndex: 'container_no',
+    width: 160,
+  }, {
+    title: '采购订单号',
+    dataIndex: 'po_no',
+    width: 160,
+  }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 160,
+  }, {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,

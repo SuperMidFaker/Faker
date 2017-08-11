@@ -220,7 +220,7 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('order_qty', {
                 rules: [{ required: true, message: '请输入订单数量' }],
               })(
-                <Input style={{ width: '70%' }} onChange={this.handleQtyChange} />
+                <Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />
               )}
               <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit_name}
                 style={{ width: '30%' }} onChange={this.handleUnitChange}
@@ -234,9 +234,9 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('unit_price', {
                 initialValue: product.unit_price,
               })(
-                <Input placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
+                <Input type="number" placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
               )}
-              <Input placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
+              <Input type="number" placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
               <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
                 style={{ width: '30%' }} onChange={this.handleCurrChange}
               >
