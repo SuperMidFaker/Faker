@@ -205,7 +205,10 @@ export default class ReceivingModal extends Component {
       avail: data.avail,
     })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
       if (!result.error) {
+        message.success('收货确认成功');
         this.props.hideReceiveModal();
+      } else {
+        message.error('操作失败');
       }
     });
   }

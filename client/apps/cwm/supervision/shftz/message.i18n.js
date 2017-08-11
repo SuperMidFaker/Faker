@@ -47,7 +47,7 @@ const messages = defineMessages({
   },
   ftzCargoNo: {
     id: 'cwm.supervision.shftz.cargo.orig.no',
-    defaultMessage: '原始备件号',
+    defaultMessage: '备案料号',
   },
   hscode: {
     id: 'cwm.supervision.shftz.cargo.hscode',

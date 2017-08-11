@@ -98,13 +98,13 @@ export default class SHFTZCargoList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('productNo'),
-    width: 150,
-    dataIndex: 'product_no',
-  }, {
     title: this.msg('ftzCargoNo'),
     dataIndex: 'ftz_cargo_no',
     width: 160,
+  }, {
+    title: this.msg('productNo'),
+    width: 150,
+    dataIndex: 'product_no',
   }, {
     title: this.msg('hscode'),
     width: 120,
@@ -336,7 +336,7 @@ export default class SHFTZCargoList extends React.Component {
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">备案完成</RadioButton>
+              <RadioButton value="completed">备案料号规则库</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
               {listFilter.status === 'pending' &&

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Tag, Table, Button, Modal, Input } from 'antd';
+import { Tag, Table, Button, Modal, Input, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import PackagePopover from '../../../common/popover/packagePopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
@@ -138,16 +138,40 @@ export default class PutawayDetailsPane extends React.Component {
     if (row.children && row.children.length > 0) {
       details = details.concat(row.children);
     }
-    this.props.showPuttingAwayModal(details);
+    this.props.showPuttingAwayModal(details).then((result) => {
+      if (!result.error) {
+        message.success('操作成功');
+      } else {
+        message.error('操作失败');
+      }
+    });
   }
   handleBatchPutAways = () => {
-    this.props.showPuttingAwayModal(this.state.selectedRows);
+    this.props.showPuttingAwayModal(this.state.selectedRows).then((result) => {
+      if (!result.error) {
+        message.success('操作成功');
+      } else {
+        message.error('操作失败');
+      }
+    });
   }
   handleUndoReceive = (row) => {
-    this.props.undoReceives(this.props.inboundNo, this.props.loginId, [row.trace_id]);
+    this.props.undoReceives(this.props.inboundNo, this.props.loginId, [row.trace_id]).then((result) => {
+      if (!result.error) {
+        message.success('操作成功');
+      } else {
+        message.error('操作失败');
+      }
+    });
   }
   handleBatchUndoReceives = () => {
-    this.props.undoReceives(this.props.inboundNo, this.props.loginId, this.state.selectedRowKeys);
+    this.props.undoReceives(this.props.inboundNo, this.props.loginId, this.state.selectedRowKeys).then((result) => {
+      if (!result.error) {
+        message.success('操作成功');
+      } else {
+        message.error('操作失败');
+      }
+    });
   }
   handleSearch = (value) => {
     this.setState({ searchValue: value });

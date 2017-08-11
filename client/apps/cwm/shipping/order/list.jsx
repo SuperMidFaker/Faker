@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, DatePicker, Dropdown, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message } from 'antd';
+import { Breadcrumb, DatePicker, Dropdown, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
@@ -196,6 +196,10 @@ export default class ShippingOrderList extends React.Component {
     const { loginId } = this.props;
     this.props.releaseSo(record.so_no, loginId).then((result) => {
       if (!result.error) {
+        notification.success({
+          message: '操作成功',
+          description: `${record.so_no} 已释放`,
+        });
         this.handleReload();
       }
     });
