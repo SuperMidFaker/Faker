@@ -85,7 +85,7 @@ export default class MovementModal extends Component {
     dataIndex: 'movement_qty',
     render: (o, record, index) => {
       if (record.trace_pack_qty === -1) {
-        return <Input value={o} onChange={ev => this.handleMoveQtyChange(ev.target.value, index)} style={{ width: 80 }} />;
+        return <Input value={o} type="number" onChange={ev => this.handleMoveQtyChange(ev.target.value, index)} style={{ width: 80 }} />;
       } else {
         return <span>{record.avail_qty}</span>;
       }

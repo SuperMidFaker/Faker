@@ -129,7 +129,7 @@ export default class FTZPane extends React.Component {
   render() {
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }} >
+        <Card bodyStyle={{ padding: 0 }} noHovering>
           <Collapse bordered={false} defaultActiveKey={['entryDetails']}>
             <Panel header="备案明细" key="entryDetails" >
               <div className="table-panel table-fixed-layout">

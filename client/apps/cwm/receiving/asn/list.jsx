@@ -16,7 +16,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { formatMsg } from '../message.i18n';
-import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
+import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
@@ -50,7 +50,7 @@ function fetchData({ state, dispatch }) {
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn }
+  { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease }
 )
 @connectNav({
   depth: 2,
@@ -231,6 +231,23 @@ export default class ReceivingASNList extends React.Component {
       }
     );
   }
+  handleBatchRelease = () => {
+    const { selectedRowKeys } = this.state;
+    const { loginId } = this.props;
+    this.props.batchRelease(selectedRowKeys, loginId).then((result) => {
+      if (!result.error) {
+        const msg = selectedRowKeys.join(',');
+        notification.success({
+          message: '操作成功',
+          description: `${msg} 已释放`,
+        });
+        this.handleListReload();
+        this.setState({
+          selectedRowKeys: [],
+        });
+      }
+    });
+  }
   handleInbound = (row) => {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
@@ -260,6 +277,9 @@ export default class ReceivingASNList extends React.Component {
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
+    });
+    this.setState({
+      selectedRowKeys: [],
     });
   }
   handleOwnerChange = (value) => {
@@ -394,10 +414,11 @@ export default class ReceivingASNList extends React.Component {
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
+              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="asn_no"
                 scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
               />
             </div>

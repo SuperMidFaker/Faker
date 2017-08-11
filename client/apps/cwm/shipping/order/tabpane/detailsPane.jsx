@@ -31,6 +31,7 @@ export default class DetailForm extends Component {
     selectedOwner: PropTypes.number.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     pagination: {
       current: 1,
       total: 0,
@@ -81,6 +82,12 @@ export default class DetailForm extends Component {
   render() {
     const { editable, temporaryDetails, detailEnable, units, currencies } = this.props;
     const { pagination } = this.state;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const columns = [{
       title: '行号',
       dataIndex: 'so_seq_no',
@@ -145,11 +152,11 @@ export default class DetailForm extends Component {
       title: '操作',
       width: 80,
       fixed: 'right',
-      render: (o, record, index) => (
+      render: (o, record) => (
         <span>
           <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />} row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={() => this.handleDelete(index)} label={<Icon type="delete" />} row={record} />
+          <RowUpdater onHit={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
         </span>
       ),
     }];
@@ -158,8 +165,12 @@ export default class DetailForm extends Component {
         <div className="toolbar">
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
           {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
+          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+            <Button size="large" onClick={this.handleBatchDelete} icon="delete" />
+          </div>
         </div>
-        <Table columns={columns} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination}
+        <Table columns={columns} rowSelection={rowSelection} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination}
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />

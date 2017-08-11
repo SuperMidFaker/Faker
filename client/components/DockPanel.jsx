@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Badge, Breadcrumb, Button, Dropdown, Spin } from 'antd';
+import { Alert, Badge, Breadcrumb, Button, Popover, Spin } from 'antd';
 import classNames from 'classnames';
 import './dock-panel.less';
 
@@ -83,9 +83,9 @@ export default class DockPanel extends React.Component {
                 {status ? <Badge status={status} text={statusText} /> : null}
                 {overlay &&
                 <div className={`${prefixCls}-head-overlay`}>
-                  <Dropdown overlay={overlay}>
+                  <Popover placement="bottomRight" title="更多操作" content={overlay} trigger="click">
                     <Button shape="circle" icon="ellipsis" />
-                  </Dropdown>
+                  </Popover>
                 </div>
                 }
                 <div className={`${prefixCls}-head-close`}>

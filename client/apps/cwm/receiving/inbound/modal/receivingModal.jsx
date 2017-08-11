@@ -10,6 +10,7 @@ import QuantityInput from '../../../common/quantityInput';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import messages from '../../message.i18n';
 import { hideReceiveModal, loadProductDetails, receiveProduct } from 'common/reducers/cwmReceive';
+import { CWM_DAMAGE_LEVEL } from 'common/constants';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -243,11 +244,11 @@ export default class ReceivingModal extends Component {
     dataIndex: 'damage_level',
     width: 180,
     render: o => (<Select value={o} style={{ width: 160 }} disabled>
-      <Option value={0}>完好</Option>
-      <Option value={1}>轻微擦痕</Option>
-      <Option value={2}>中度</Option>
-      <Option value={3}>重度</Option>
-      <Option value={4}>严重磨损</Option>
+      <Option value={CWM_DAMAGE_LEVEL[0].value}>{CWM_DAMAGE_LEVEL[0].text}</Option>
+      <Option value={CWM_DAMAGE_LEVEL[1].value}>{CWM_DAMAGE_LEVEL[1].text}</Option>
+      <Option value={CWM_DAMAGE_LEVEL[2].value}>{CWM_DAMAGE_LEVEL[2].text}</Option>
+      <Option value={CWM_DAMAGE_LEVEL[3].value}>{CWM_DAMAGE_LEVEL[3].text}</Option>
+      <Option value={CWM_DAMAGE_LEVEL[4].value}>{CWM_DAMAGE_LEVEL[4].text}</Option>
     </Select>),
   }, {
     title: '收货库位',
@@ -290,11 +291,11 @@ export default class ReceivingModal extends Component {
       <Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }}
         disabled={!!record.trace_id}
       >
-        <Option value={0}>完好</Option>
-        <Option value={1}>轻微擦痕</Option>
-        <Option value={2}>中度</Option>
-        <Option value={3}>重度</Option>
-        <Option value={4}>严重磨损</Option>
+        <Option value={CWM_DAMAGE_LEVEL[0].value}>{CWM_DAMAGE_LEVEL[0].text}</Option>
+        <Option value={CWM_DAMAGE_LEVEL[1].value}>{CWM_DAMAGE_LEVEL[1].text}</Option>
+        <Option value={CWM_DAMAGE_LEVEL[2].value}>{CWM_DAMAGE_LEVEL[2].text}</Option>
+        <Option value={CWM_DAMAGE_LEVEL[3].value}>{CWM_DAMAGE_LEVEL[3].text}</Option>
+        <Option value={CWM_DAMAGE_LEVEL[4].value}>{CWM_DAMAGE_LEVEL[4].text}</Option>
       </Select>),
   }, {
     title: '收货库位',

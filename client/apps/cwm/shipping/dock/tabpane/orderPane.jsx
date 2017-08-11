@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Row, Col, Card, Table, Button, Popconfirm, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { CWM_SO_TYPES, CWM_SO_STATUS } from 'common/constants';
+import { CWM_SO_TYPES, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { cancelOutbound, closeOutbound } from 'common/reducers/cwmShippingOrder';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
@@ -77,13 +77,15 @@ export default class SOPane extends React.Component {
   }
   render() {
     const { soHead } = this.props;
-    const keys = Object.keys(CWM_SO_STATUS);
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }}>
+        <Card bodyStyle={{ padding: 0 }} noHovering>
           <Collapse bordered={false} defaultActiveKey={['main', 'asnDetails']}>
             <Panel header="主信息" key="main">
               <Row gutter={16} className="info-group-underline">
+                <Col span="8">
+                  <InfoItem label="货主" field={soHead.owner_name} />
+                </Col>
                 <Col span="8">
                   <InfoItem label="SO编号" field={soHead.so_no} />
                 </Col>
@@ -91,25 +93,22 @@ export default class SOPane extends React.Component {
                   <InfoItem label="SO类型" field={soHead.so_type && CWM_SO_TYPES.find(item => item.value === soHead.so_type).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="货主" field={soHead.owner_name} />
-                </Col>
-                <Col span="8">
-                  <InfoItem label="状态" field={(soHead.status || soHead.status === 0) && CWM_SO_STATUS[keys[soHead.status]].text} />
+                  <InfoItem label="客户订单号" field={soHead.cust_order_no} />
                 </Col>
                 <Col span="8">
                   <InfoItem label="货物属性" field={soHead.bonded ? '保税' : '非保税'} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="订单总数量" field={soHead.total_qty} />
+                  <InfoItem label="保税监管方式" field={(soHead.bonded_intype || soHead.bonded_intype === 0) && CWM_SO_BONDED_REGTYPES.find(item => item.value === soHead.bonded_intype).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="总发货数量" field={soHead.total_shipped_qty} />
+                  <InfoItem label="预期发货日期" field={moment(soHead.expect_shipping_date).format('YYYY.MM.DD')} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="预期发货日期" field={moment(soHead.expect_shipped_date).format('YYYY.MM.DD')} />
+                  <InfoItem label="收货人" field={soHead.receiver_name} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="创建日期" field={moment(soHead.created_date).format('YYYY.MM.DD')} />
+                  <InfoItem label="承运人" field={soHead.carrier_name} />
                 </Col>
               </Row>
             </Panel>
