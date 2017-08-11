@@ -56,7 +56,7 @@ exports.CWM_ASN_STATUS = {
   },
   EXCEPTION: {
     value: 2,
-    text: '收货异常',
+    text: '收货差异',
     badge: 'warning',
   },
   COMPLETED: {
@@ -287,4 +287,26 @@ exports.CWM_STOCK_SEARCH_TYPE = [{
 }, {
   value: 4,
   text: '按货品/库位汇总',
+}];
+
+exports.CWM_DAMAGE_LEVEL = [{
+  value: 0,
+  text: '包装完好',
+  color: '#87d068',
+}, {
+  value: 1,
+  text: '轻微擦痕',
+  color: 'green',
+}, {
+  value: 2,
+  text: '中度磨损',
+  color: 'orange',
+}, {
+  value: 3,
+  text: '重度磨损',
+  color: 'red',
+}, {
+  value: 4,
+  text: '严重破损',
+  color: '#f50',
 }];

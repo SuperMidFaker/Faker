@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Select, Button, Table, Input } from 'antd';
+import { Modal, Button, Table, Input, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
@@ -9,9 +9,8 @@ import PackagePopover from '../../../common/popover/packagePopover';
 import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
 import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive } from 'common/reducers/cwmReceive';
-import { CWM_INBOUND_STATUS } from 'common/constants';
+import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
 
-const Option = Select.Option;
 const Search = Input.Search;
 
 @injectIntl
@@ -133,14 +132,14 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 160,
     fixed: 'left',
   }, {
-    title: '集装箱号',
-    dataIndex: 'container_no',
-    width: 160,
-  }, {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
     render: o => (<PackagePopover sku={o} />),
+  }, {
+    title: '品名',
+    dataIndex: 'name',
+    width: 160,
   }, {
     title: '预期数量',
     width: 100,
@@ -161,7 +160,7 @@ export default class ReceiveDetailsPane extends React.Component {
         return (<span className="text-error">{o}</span>);
       }
     },
-  }, {
+/*  }, {
     title: '收货库位',
     dataIndex: 'location',
     width: 300,
@@ -178,22 +177,25 @@ export default class ReceiveDetailsPane extends React.Component {
             {Options}
           </Select>);
       }
-    },
+    },*/
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
     width: 120,
-    render: damage => (
-      <Select size="small" className="readonly" value={damage} style={{ width: 100 }} disabled>
-        <Option value={0}>完好</Option>
-        <Option value={1}>轻微擦痕</Option>
-        <Option value={2}>中度</Option>
-        <Option value={3}>重度</Option>
-        <Option value={4}>严重磨损</Option>
-      </Select>),
+    className: 'cell-align-center',
+    render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
-    title: '中文品名',
-    dataIndex: 'name',
+    title: '采购订单号',
+    dataIndex: 'po_no',
+    width: 160,
+  }, {
+    title: '集装箱号',
+    dataIndex: 'container_no',
+    width: 160,
+  }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 100,
   }, {
     title: '收货人员',
     width: 100,
