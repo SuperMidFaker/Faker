@@ -279,7 +279,7 @@ export default class SHFTZRelDetail extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }}>
+            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
               <Row className="info-group-inline">
                 <Col sm={24} lg={6}>
                   <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
@@ -302,7 +302,7 @@ export default class SHFTZRelDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }}>
+            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map(reg => (
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>

@@ -162,11 +162,11 @@ export default class ReceivingASNList extends React.Component {
         } else {
           return (<span><RowUpdater onHit={this.handleInbound} label="入库操作" row={record} /></span>);
         }
-      } else if (record.status === CWM_ASN_STATUS.EXCEPTION.value) {
+      } else if (record.status === CWM_ASN_STATUS.DISCREPANT.value) {
         return (<span>
           <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
           { record.asn_no && <span className="ant-divider" />}
-          { record.asn_no && <RowUpdater onHit={this.handleComplete} label="关闭收货" row={record} />}
+          { record.asn_no && <RowUpdater onHit={this.handleDisprepancy} label="差异处理" row={record} />}
         </span>);
       } else if (record.status === CWM_ASN_STATUS.COMPLETED.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
@@ -255,6 +255,9 @@ export default class ReceivingASNList extends React.Component {
   handleEntryReg = (row) => {
     const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
     this.context.router.push(link);
+  }
+  handleDisprepancy = () => {
+    // TODO
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
@@ -370,7 +373,7 @@ export default class ReceivingASNList extends React.Component {
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="pending">{CWM_ASN_STATUS.PENDING.text}</RadioButton>
             <RadioButton value="inbound">{CWM_ASN_STATUS.INBOUND.text}</RadioButton>
-            <RadioButton value="partial">{CWM_ASN_STATUS.EXCEPTION.text}</RadioButton>
+            <RadioButton value="partial">{CWM_ASN_STATUS.DISCREPANT.text}</RadioButton>
             <RadioButton value="completed">{CWM_ASN_STATUS.COMPLETED.text}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">

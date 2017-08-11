@@ -173,6 +173,9 @@ export default class ShippingOrderList extends React.Component {
           return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} /></span>);
         }
       } else if (record.status === CWM_SO_STATUS.PARTIAL.value) {
+        return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />
+          <span className="ant-divider" />
+          <RowUpdater onHit={this.handleClose} label="关闭订单" row={record} /></span>);
       } else if (record.status === CWM_SO_STATUS.COMPLETED.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span>

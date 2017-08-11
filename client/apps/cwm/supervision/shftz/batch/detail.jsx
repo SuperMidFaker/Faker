@@ -209,7 +209,7 @@ export default class SHFTZBatchDeclDetail extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }}>
+            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
               <Row className="info-group-inline">
                 <Col sm={24} lg={6}>
                   <InfoItem label="清单委托" field={
@@ -235,7 +235,7 @@ export default class SHFTZBatchDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }}>
+            <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {batchApplies.map(reg => (
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>

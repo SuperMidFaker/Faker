@@ -6,6 +6,7 @@ import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip,
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
+import { Logixon } from 'client/components/FontIcon';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
@@ -274,7 +275,9 @@ export default class OutboundDetail extends Component {
             {this.state.tabKey === 'pickingDetails' &&
             <Button size="large" icon="printer" disabled={!pickDetails.length > 0} onClick={this.handlePrint} />
             }
-            <Button size="large" icon="printer" onClick={this.handleWaybillPrint} />
+            <Button size="large" onClick={this.handleWaybillPrint} >
+              <Logixon type="sf-express" />
+            </Button>
             <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
               <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
@@ -282,7 +285,7 @@ export default class OutboundDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Card bodyStyle={{ paddingBottom: 56 }}>
+          <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
             <Row className="info-group-inline">
               <Col sm={24} lg={6}>
                 <InfoItem label="货主" field={outboundHead.owner_name} />
@@ -321,7 +324,7 @@ export default class OutboundDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="订单明细" key="orderDetails">
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} />

@@ -128,7 +128,7 @@ export default class ReceivingDockPanel extends React.Component {
     switch (status) {
       case CWM_ASN_STATUS.PENDING.value: return CWM_ASN_STATUS.PENDING.badge;
       case CWM_ASN_STATUS.INBOUND.value: return CWM_ASN_STATUS.INBOUND.badge;
-      case CWM_ASN_STATUS.EXCEPTION.value: return CWM_ASN_STATUS.EXCEPTION.badge;
+      case CWM_ASN_STATUS.DISCREPANT.value: return CWM_ASN_STATUS.DISCREPANT.badge;
       case CWM_ASN_STATUS.COMPLETED.value: return CWM_ASN_STATUS.COMPLETED.badge;
       default: return 'default';
     }
@@ -137,7 +137,7 @@ export default class ReceivingDockPanel extends React.Component {
     switch (status) {
       case CWM_ASN_STATUS.PENDING.value: return CWM_ASN_STATUS.PENDING.text;
       case CWM_ASN_STATUS.INBOUND.value: return CWM_ASN_STATUS.INBOUND.text;
-      case CWM_ASN_STATUS.EXCEPTION.value: return CWM_ASN_STATUS.EXCEPTION.text;
+      case CWM_ASN_STATUS.DISCREPANT.value: return CWM_ASN_STATUS.DISCREPANT.text;
       case CWM_ASN_STATUS.COMPLETED.value: return CWM_ASN_STATUS.COMPLETED.text;
       default: return '';
     }
@@ -209,7 +209,7 @@ export default class ReceivingDockPanel extends React.Component {
           <Menu.Item key="1">取消ASN</Menu.Item>
         </Menu>
       );
-    } else if (asnHead.status === CWM_ASN_STATUS.EXCEPTION.value) {
+    } else if (asnHead.status === CWM_ASN_STATUS.DISCREPANT.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
           <Menu.Item key="2">关闭ASN</Menu.Item>

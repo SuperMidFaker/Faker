@@ -54,7 +54,7 @@ exports.CWM_ASN_STATUS = {
     text: '已释放',
     badge: 'processing',
   },
-  EXCEPTION: {
+  DISCREPANT: {
     value: 2,
     text: '收货差异',
     badge: 'warning',

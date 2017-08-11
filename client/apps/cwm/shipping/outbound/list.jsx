@@ -126,7 +126,7 @@ export default class OutboundList extends React.Component {
       }
     },
   }, {
-    title: '装箱',
+    title: '复核装箱',
     dataIndex: 'chk_pck_status',
     className: 'cell-align-center',
     render: (o) => {

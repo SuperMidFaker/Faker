@@ -72,7 +72,7 @@ export default class WaveDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Card>
+          <Card bodyStyle={{ paddingBottom: 16 }} noHovering>
             <Row className="info-group-inline">
               <Col sm={24} lg={6}>
                 <InfoItem label="波次号" field={this.props.params.waveNo} />
