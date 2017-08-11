@@ -10,6 +10,7 @@ import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
 import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS } from 'common/constants';
+import moment from 'moment';
 
 const Option = Select.Option;
 const Search = Input.Search;
@@ -79,7 +80,7 @@ export default class ReceiveDetailsPane extends React.Component {
       title: '是否确认收货完成?',
       content: '默认按预期数量收货，确认收货后可以取消收货退回',
       onOk() {
-        return self.props.expressReceive(self.props.inboundNo, self.props.loginId);
+        return self.props.expressReceive(self.props.inboundNo, self.props.loginId, self.props.username);
       },
       onCancel() {},
       okText: '确认收货',
@@ -196,12 +197,14 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'name',
   }, {
     title: '收货人员',
-    width: 100,
+    width: 150,
     dataIndex: 'received_by',
+    render: o => o ? o.join(',') : '',
   }, {
     title: '收货时间',
     width: 100,
-    dataIndex: 'received_date',
+    dataIndex: 'created_date',
+    render: createdDt => createdDt && moment(createdDt).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 100,
