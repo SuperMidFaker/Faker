@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'LOAD_WAVES', 'LOAD_WAVES_SUCCEED', 'LOAD_WAVES_FAIL',
   'CREATE_WAVES', 'CREATE_WAVES_SUCCEED', 'CREATE_WAVES_FAIL',
   'RELEASE_WAVE', 'RELEASE_WAVE_SUCCEED', 'RELEASE_WAVE_FAIL',
+  'BATCH_RELEASE', 'BATCH_RELEASE_SUCCEED', 'BATCH_RELEASE_FAIL',
   'LOAD_WAVE_ORDERS', 'LOAD_WAVE_ORDERS_SUCCEED', 'LOAD_WAVE_ORDERS_FAIL',
   'LOAD_WAVE_DETAILS', 'LOAD_WAVE_DETAILS_SUCCEED', 'LOAD_WAVE_DETAILS_FAIL',
   'CANCEL_WAVE', 'CANCEL_WAVE_SUCCEED', 'CANCEL_WAVE_FAIL',
@@ -208,6 +209,21 @@ export function releaseSo(soNo, loginId) {
       endpoint: 'v1/cwm/release/so',
       method: 'post',
       data: { soNo, loginId },
+    },
+  };
+}
+
+export function batchRelease(soNos, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_RELEASE,
+        actionTypes.BATCH_RELEASE_SUCCEED,
+        actionTypes.BATCH_RELEASE_FAIL,
+      ],
+      endpoint: 'v1/cwm/shipping/batch/release',
+      method: 'post',
+      data: { soNos, loginId },
     },
   };
 }

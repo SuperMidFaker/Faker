@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_ASN', 'LOAD_ASN_SUCCEED', 'LOAD_ASN_FAIL',
   'LOAD_ASN_LISTS', 'LOAD_ASN_LISTS_SUCCEED', 'LOAD_ASN_LISTS_FAIL',
   'RELEASE_ASN', 'RELEASE_ASN_SUCCEED', 'RELEASE_ASN_FAIL',
+  'BATCH_RELEASE', 'BATCH_RELEASE_SUCCEED', 'BATCH_RELEASE_FAIL',
   'CANCEL_ASN', 'CANCEL_ASN_SUCCEED', 'CANCEL_ASN_FAIL',
   'LOAD_INBOUNDS', 'LOAD_INBOUNDS_SUCCEED', 'LOAD_INBOUNDS_FAIL',
   'LOAD_INBOUNDHEAD', 'LOAD_INBOUNDHEAD_SUCCEED', 'LOAD_INBOUNDHEAD_FAIL',
@@ -334,6 +335,21 @@ export function releaseAsn(asnNo, loginId, whseCode) {
       endpoint: 'v1/cwm/receive/asn/release',
       method: 'post',
       data: { asnNo, loginId, whseCode },
+    },
+  };
+}
+
+export function batchRelease(asnNos, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BATCH_RELEASE,
+        actionTypes.BATCH_RELEASE_SUCCEED,
+        actionTypes.BATCH_RELEASE_FAIL,
+      ],
+      endpoint: 'v1/cwm/receive/batch/release',
+      method: 'post',
+      data: { asnNos, loginId },
     },
   };
 }
