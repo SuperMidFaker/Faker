@@ -92,7 +92,7 @@ export default class SHFTZCargoList extends React.Component {
       this.setState({ owners, owner });
       this.handleCargoLoad(1, this.props.listFilter, owner);
     }
-    if (nextProps.cargoRule !== this.props.cargoRule) {
+    if (this.state.rule === null || nextProps.cargoRule !== this.props.cargoRule) {
       this.setState({ rule: nextProps.cargoRule.type });
     }
   }
@@ -246,7 +246,9 @@ export default class SHFTZCargoList extends React.Component {
     this.setState({ rule: e.target.value });
   }
   handleRuleSave = () => {
-    this.props.updateCargoRule({ type: this.state.rule, id: this.props.cargoRule.id });
+    this.props.updateCargoRule({ type: this.state.rule, id: this.props.cargoRule.id }).then(() => {
+      this.handleCargoLoad(1, this.props.listFilter);
+    });
   }
   handleCargoSend = () => {
     this.props.fileCargos(this.state.owner.customs_code, this.props.whse.code).then((result) => {
@@ -290,6 +292,10 @@ export default class SHFTZCargoList extends React.Component {
       height: '30px',
       lineHeight: '30px',
     };
+    const columns = [...this.columns];
+    if (rule === 1) {
+      columns.shift();
+    }
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" >
@@ -379,7 +385,7 @@ export default class SHFTZCargoList extends React.Component {
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <RemoteTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
+                <RemoteTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
                   scroll={{ x: 1400 }} loading={loading}
                 />
               </div>
