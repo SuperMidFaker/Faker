@@ -162,7 +162,8 @@ export default class ShippingOrderList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CWM_SO_STATUS.PENDING.value) {
-        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} /><span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /><span className="ant-divider" /><RowUpdater label="取消" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} />
+          <span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /></span>);
       } else if (record.status === CWM_SO_STATUS.OUTBOUND.value) {
         if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
           return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />
@@ -426,6 +427,7 @@ export default class ShippingOrderList extends React.Component {
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
                 {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
                 {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
               </div>

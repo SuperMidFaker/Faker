@@ -394,6 +394,7 @@ export default class ReceivingASNList extends React.Component {
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
