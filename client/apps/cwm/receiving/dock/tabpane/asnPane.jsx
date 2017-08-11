@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Collapse, Row, Col, Card, Table, Button, Popconfirm, Icon, message } from 'antd';
+import { Collapse, Row, Col, Card, Table, Icon } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES, CWM_ASN_STATUS } from 'common/constants';
-import { cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
+import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
 
@@ -16,7 +15,7 @@ const Panel = Collapse.Panel;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-  }), { cancelAsn, closeAsn }
+  }), { }
 )
 export default class ASNPane extends React.Component {
   static propTypes = {
@@ -24,8 +23,6 @@ export default class ASNPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     asnHead: PropTypes.object.isRequired,
     asnBody: PropTypes.array.isRequired,
-    cancelAsn: PropTypes.func.isRequired,
-    closeAsn: PropTypes.func.isRequired,
   }
   state = {
     tabKey: '',
@@ -53,20 +50,6 @@ export default class ASNPane extends React.Component {
     title: '单价',
     dataIndex: 'unit_price',
   }]
-  handleComplete = (asnNo) => {
-    this.props.closeAsn(asnNo).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      }
-    });
-  }
-  handleDeleteASN = (asnNo) => {
-    this.props.cancelAsn(asnNo).then((result) => {
-      if (result.error) {
-        message.error(result.error.message);
-      }
-    });
-  }
   render() {
     const { asnHead } = this.props;
     return (
@@ -120,20 +103,6 @@ export default class ASNPane extends React.Component {
             </Panel>
           </Collapse>
         </Card>
-        <div>
-          {(asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) &&
-          (<Popconfirm title="确定取消订单?" onConfirm={() => this.handleDeleteASN(asnHead.asn_no)} okText="是" cancelText="否">
-            <Button type="danger" size="large" icon="delete">
-              取消订单
-            </Button>
-          </Popconfirm>)}
-          {asnHead.status === CWM_ASN_STATUS.EXCEPTION.value &&
-          (<Popconfirm title="确定关闭收货?" onConfirm={() => this.handleComplete(asnHead.asn_no)} okText="是" cancelText="否">
-            <Button type="danger" size="large" icon="close-circle-o">
-              关闭收货
-            </Button>
-          </Popconfirm>)}
-        </div>
       </div>
     );
   }
