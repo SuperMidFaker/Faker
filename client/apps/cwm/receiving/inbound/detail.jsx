@@ -121,7 +121,7 @@ export default class ReceiveInbound extends Component {
       { text: '实际库位', style: 'table', alignment: 'center' }, { text: '扩展属性1', style: 'table', alignment: 'center' }]);
     for (let i = 0; i < inboundProducts.length; i++) {
       pdf.push([i + 1, inboundProducts[i].name, inboundProducts[i].product_no, inboundProducts[i].expect_qty,
-        inboundProducts[i].received_qty, '', inboundProducts[i].location, '']);
+        '', '', inboundProducts[i].location, '']);
     }
     pdf.push(['合计', '', '', inboundHead.total_expect_qty, '', '', '', '']);
     return pdf;
@@ -257,7 +257,7 @@ export default class ReceiveInbound extends Component {
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
-          <Card bodyStyle={{ paddingBottom: 56 }}>
+          <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
             <Row className="info-group-inline">
               <Col sm={24} lg={6}>
                 <InfoItem label="货主" field={inboundHead.owner_name} />
@@ -287,7 +287,7 @@ export default class ReceiveInbound extends Component {
               </Steps>
             </div>
           </Card>
-          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
                 <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />

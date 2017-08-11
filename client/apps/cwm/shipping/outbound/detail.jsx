@@ -10,7 +10,7 @@ import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
-import { loadOutboundHead, updateOutboundMode } from 'common/reducers/cwmOutbound';
+import { loadOutboundHead, updateOutboundMode, readWaybillLogo } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -33,8 +33,9 @@ const TabPane = Tabs.TabPane;
     outboundHead: state.cwmOutbound.outboundFormHead,
     reload: state.cwmOutbound.outboundReload,
     pickDetails: state.cwmOutbound.pickDetails,
+    waybill: state.cwmOutbound.waybill,
   }),
-  { loadOutboundHead, updateOutboundMode }
+  { loadOutboundHead, updateOutboundMode, readWaybillLogo }
 )
 @connectNav({
   depth: 3,
@@ -58,6 +59,7 @@ export default class OutboundDetail extends Component {
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
+    this.props.readWaybillLogo();
   }
   componentDidMount() {
     let script;
@@ -125,11 +127,11 @@ export default class OutboundDetail extends Component {
       picking: false,
     });
   }
-  handlePrint = () => {
+  handleWaybillPrint = () => {
     this.setState({
       printedPickingList: true,
     });
-    const docDefinition = WaybillDef();
+    const docDefinition = WaybillDef(this.props.waybill);
     window.pdfMake.fonts = {
       yahei: {
         normal: 'msyh.ttf',
@@ -272,6 +274,7 @@ export default class OutboundDetail extends Component {
             {this.state.tabKey === 'pickingDetails' &&
             <Button size="large" icon="printer" disabled={!pickDetails.length > 0} onClick={this.handlePrint} />
             }
+            <Button size="large" icon="printer" onClick={this.handleWaybillPrint} />
             <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
               <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
@@ -324,13 +327,13 @@ export default class OutboundDetail extends Component {
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
               <TabPane tab="拣货明细" key="pickingDetails">
-                <PickingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                <PickingDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
               <TabPane tab="装箱明细" key="packingDetails">
-                <PackingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                <PackingDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
               <TabPane tab="发货明细" key="shippingDetails">
-                <ShippingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                <ShippingDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
             </Tabs>
           </Card>

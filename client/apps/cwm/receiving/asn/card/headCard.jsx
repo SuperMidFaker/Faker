@@ -79,7 +79,7 @@ export default class HeadCard extends Component {
     const { form: { getFieldDecorator }, owners, asnHead, defaultWhse } = this.props;
     const { bonded } = this.state;
     return (
-      <Card bodyStyle={{ paddingBottom: 8 }}>
+      <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
         <Row>
           <Col span={6}>
             <FormItem label="货主">

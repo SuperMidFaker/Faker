@@ -76,7 +76,10 @@ export default class CreateShippingOrder extends Component {
         this.props.addSo(data).then(
           (result) => {
             if (!result.error) {
+              message.success('发货订单已创建成功');
               this.context.router.push('/cwm/shipping/order');
+            } else {
+              message.error('操作失败');
             }
           }
         );
@@ -133,7 +136,7 @@ export default class CreateShippingOrder extends Component {
         <Content className="main-content">
           <Form layout="vertical">
             <HeadCard form={form} handleOwnerChange={this.handleOwnerChange} />
-            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
                   <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />

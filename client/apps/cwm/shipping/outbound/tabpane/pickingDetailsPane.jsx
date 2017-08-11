@@ -30,12 +30,11 @@ export default class PickingDetailsPane extends React.Component {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
     outboundHead: PropTypes.object.isRequired,
-    shippingMode: PropTypes.string.isRequired,
   }
   state = {
     selectedRowKeys: [],
     selectedRows: [],
-    ButtonStatus: null,
+    currentStep: null,
     operationMode: null,
     searchValue: '',
     loading: false,
@@ -280,8 +279,8 @@ export default class PickingDetailsPane extends React.Component {
     });
   }
   render() {
-    const { pickDetails } = this.props;
-    const { ButtonStatus } = this.state;
+    const { pickDetails, outboundHead } = this.props;
+    const { currentStep } = this.state;
     const dataSource = pickDetails.filter((item) => {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
@@ -301,7 +300,7 @@ export default class PickingDetailsPane extends React.Component {
         } else if (picked && picked.length === selectedRows.length) {
           status = 'allPicked';
         }
-        this.setState({ selectedRowKeys, selectedRows, ButtonStatus: status });
+        this.setState({ selectedRowKeys, selectedRows, currentStep: status });
       },
       selections: [{
         key: 'all-data',
@@ -320,13 +319,13 @@ export default class PickingDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            {ButtonStatus === 'allAllocated' && <span><Button size="large" onClick={this.handleBatchConfirmPicked}>
+            {outboundHead.shipping_mode === 'manual' && currentStep === 'allAllocated' && <span><Button size="large" onClick={this.handleBatchConfirmPicked}>
               <MdIcon type="check-all" />批量拣货确认
             </Button>
               <Button size="large" onClick={this.handleAllocBatchCancel} icon="close">
               批量取消分配
             </Button></span>}
-            {ButtonStatus === 'allPicked' && <span><Button size="large" onClick={this.handleBatchConfirmShipped}>
+            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <span><Button size="large" onClick={this.handleBatchConfirmShipped}>
               <MdIcon type="check-all" />批量发货确认
             </Button>
               <Button size="large" onClick={this.handleBatchCancelPicked} icon="close">

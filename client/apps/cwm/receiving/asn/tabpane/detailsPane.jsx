@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUpload from 'client/components/excelUploader';
 import messages from '../../message.i18n';
-import { showDetailModal, addTemporary, deleteTemporary } from 'common/reducers/cwmReceive';
+import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
 
 const formatMsg = format(messages);
@@ -22,7 +22,7 @@ const formatMsg = format(messages);
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { showDetailModal, addTemporary, deleteTemporary }
+  { showDetailModal, addTemporary, deleteTemporary, clearTemporary }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
@@ -69,6 +69,16 @@ export default class DetailsPane extends Component {
   }
   asnDetailsUploaded = (data) => {
     this.props.addTemporary(data);
+  }
+  handleBatchDelete = () => {
+    const { selectedRowKeys } = this.state;
+    const { temporaryDetails } = this.props;
+    const newTemporary = temporaryDetails.filter((temporary, index) => selectedRowKeys.findIndex(key => key === index) === -1);
+    this.props.clearTemporary();
+    this.props.addTemporary(newTemporary);
+    this.setState({
+      selectedRowKeys: [],
+    });
   }
   render() {
     const { editable, temporaryDetails, detailEnable, form, units, currencies } = this.props;

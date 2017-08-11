@@ -86,7 +86,10 @@ export default class ReceivingASNDetail extends Component {
         this.props.updateASN(data).then(
           (result) => {
             if (!result.error) {
+              message.success('收货通知已保存成功');
               this.context.router.push('/cwm/receiving/asn');
+            } else {
+              message.error('操作失败');
             }
           }
         );
@@ -138,7 +141,7 @@ export default class ReceivingASNDetail extends Component {
         <Content className="main-content">
           <Form layout="vertical">
             <HeadCard asnHead={asnHead} form={form} editable={this.state.editable} />
-            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }}>
+            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="收货明细" key="orderDetails">
                   <DetailsPane asnBody={asnBody} detailEnable selectedOwner={asnHead.owner_partner_id} form={form} editable={this.state.editable} />

@@ -196,6 +196,10 @@ export default class ShippingOrderList extends React.Component {
     const { loginId } = this.props;
     this.props.releaseSo(record.so_no, loginId).then((result) => {
       if (!result.error) {
+        notification.success({
+          message: '操作成功',
+          description: `${record.so_no} 已释放`,
+        });
         this.handleReload();
       }
     });
