@@ -324,13 +324,13 @@ export default class OutboundDetail extends Component {
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
               <TabPane tab="拣货明细" key="pickingDetails">
-                <PickingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                <PickingDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
               <TabPane tab="装箱明细" key="packingDetails">
-                <PackingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                <PackingDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
               <TabPane tab="发货明细" key="shippingDetails">
-                <ShippingDetailsPane shippingMode={this.state.shippingMode} outboundNo={this.props.params.outboundNo} />
+                <ShippingDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
             </Tabs>
           </Card>
