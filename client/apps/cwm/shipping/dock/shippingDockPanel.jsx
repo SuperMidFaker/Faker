@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Icon, Col, Row, Tabs, Button, Menu } from 'antd';
+import { Icon, Col, Row, Tabs, Button, Menu, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_SO_STATUS } from 'common/constants';
-import { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo } from 'common/reducers/cwmShippingOrder';
+import { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, cancelOutbound, closeOutbound } from 'common/reducers/cwmShippingOrder';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -29,7 +29,7 @@ const TabPane = Tabs.TabPane;
     defaultWhse: state.cwmContext.defaultWhse,
     uuid: state.cwmShippingOrder.dock.order.uuid,
   }),
-  { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, loadOrderDetail }
+  { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, loadOrderDetail, cancelOutbound, closeOutbound }
 )
 export default class ShippingDockPanel extends React.Component {
   static propTypes = {
@@ -40,6 +40,8 @@ export default class ShippingDockPanel extends React.Component {
     dock: PropTypes.object.isRequired,
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
+    cancelOutbound: PropTypes.func.isRequired,
+    closeOutbound: PropTypes.func.isRequired,
   }
   state = {
     soHead: {},
@@ -69,6 +71,48 @@ export default class ShippingDockPanel extends React.Component {
   }
   handleClose = () => {
     this.props.hideDock();
+  }
+  cancelOutbound = (soNo) => {
+    this.props.cancelOutbound({
+      so_no: soNo,
+      login_id: this.props.loginId,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  closeOutbound = (soNo) => {
+    const { tenantId, loginId } = this.props;
+    this.props.closeOutbound({
+      so_no: soNo, tenantId, loginId,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  handleMenuClick = (e) => {
+    const { soHead } = this.state;
+    if (e.key === '1') {
+      Modal.confirm({
+        title: '确认取订单?',
+        content: '确认后此订单的相关信息将会被删除',
+        onOk: () => {
+          this.cancelOutbound(soHead.so_no);
+        },
+        onCancel() {},
+      });
+    } else if (e.key === '2') {
+      Modal.confirm({
+        title: '确认关订单?',
+        content: '确认后此订单将会被提前完成',
+        onOk: () => {
+          this.closeOutbound(soHead.so_no);
+        },
+        onCancel() {},
+      });
+    }
   }
   goHomeDock = () => {
     const { uuid } = this.props;
@@ -153,13 +197,20 @@ export default class ShippingDockPanel extends React.Component {
   render() {
     const { visible } = this.props;
     const { soHead } = this.state;
-    // TODO
-    const menu = (
-      <Menu>
-        <Menu.Item key="1">取消订单</Menu.Item>
-        <Menu.Item key="2">关闭订单</Menu.Item>
-      </Menu>
-    );
+    let menu = (<Menu />);
+    if (soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) {
+      menu = (
+        <Menu onClick={this.handleMenuClick}>
+          <Menu.Item key="1">取消订单</Menu.Item>
+        </Menu>
+      );
+    } else if (soHead.status === CWM_SO_STATUS.PARTIAL.value) {
+      menu = (
+        <Menu onClick={this.handleMenuClick}>
+          <Menu.Item key="2">关闭订单</Menu.Item>
+        </Menu>
+      );
+    }
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={this.renderTitle()}

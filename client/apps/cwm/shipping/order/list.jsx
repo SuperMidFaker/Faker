@@ -17,7 +17,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadSos, showDock, releaseSo, createWave, showAddToWave } from 'common/reducers/cwmShippingOrder';
+import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
@@ -52,7 +52,7 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave }
+  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease }
 )
 @connectNav({
   depth: 2,
@@ -204,6 +204,23 @@ export default class ShippingOrderList extends React.Component {
       }
     });
   }
+  handleBatchRelease = () => {
+    const { selectedRowKeys } = this.state;
+    const { loginId } = this.props;
+    this.props.batchRelease(selectedRowKeys, loginId).then((result) => {
+      if (!result.error) {
+        const msg = selectedRowKeys.join(',');
+        notification.success({
+          message: '操作成功',
+          description: `${msg} 已释放`,
+        });
+        this.handleReload();
+        this.setState({
+          selectedRowKeys: [],
+        });
+      }
+    });
+  }
   handleReload = () => {
     this.props.loadSos({
       whseCode: this.props.defaultWhse.code,
@@ -239,6 +256,9 @@ export default class ShippingOrderList extends React.Component {
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
+    });
+    this.setState({
+      selectedRowKeys: [],
     });
   }
   handleOwnerChange = (value) => {

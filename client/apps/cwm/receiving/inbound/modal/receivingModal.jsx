@@ -20,6 +20,7 @@ const Option = Select.Option;
   state => ({
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
+    username: state.account.username,
     visible: state.cwmReceive.receiveModal.visible,
     editable: state.cwmReceive.receiveModal.editable,
     inboundHead: state.cwmReceive.inboundFormHead,
@@ -55,6 +56,7 @@ export default class ReceivingModal extends Component {
                 location: '',
                 damage_level: 0,
                 avail: true,
+                received_by: nextProps.username,
               }];
             } else {
               dataSource = result.data.map(data => ({
@@ -66,6 +68,7 @@ export default class ReceivingModal extends Component {
                 inbound_pack_qty: Number(data.inbound_pack_qty),
                 convey_no: data.convey_no,
                 avail: data.avail_qty > 0,
+                received_by: data.received_by,
               }));
             }
             this.setState({
@@ -90,6 +93,11 @@ export default class ReceivingModal extends Component {
   handleConveyChange = (index, value) => {
     const dataSource = [...this.state.dataSource];
     dataSource[index].convey_no = value;
+    this.setState({ dataSource });
+  }
+  handleReceiverChange = (index, value) => {
+    const dataSource = [...this.state.dataSource];
+    dataSource[index].received_by = value;
     this.setState({ dataSource });
   }
   handleProductReceive = (index, value) => {
@@ -148,6 +156,7 @@ export default class ReceivingModal extends Component {
       location: '',
       damage_level: 0,
       avail: this.props.inboundProduct.expect_qty > this.state.receivedQty,
+      received_by: this.props.username,
     };
     dataSource.push(newDetail);
     this.setState({ dataSource });
@@ -203,6 +212,7 @@ export default class ReceivingModal extends Component {
       inbound_pack_qty: data.inbound_pack_qty,
       convey_no: data.convey_no,
       avail: data.avail,
+      received_by: data.received_by,
     })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
       if (!result.error) {
         message.success('收货确认成功');
@@ -312,6 +322,14 @@ export default class ReceivingModal extends Component {
       </Select>);
     },
   }, {
+    title: '收货人员',
+    dataIndex: 'received_by',
+    width: 120,
+    render: (o, row, index) => (
+      <Input value={o} onChange={ev => this.handleReceiverChange(index, ev.target.value)}
+        disabled={!!row.trace_id}
+      />),
+  }, {
     title: '操作',
     width: 50,
     render: (o, record, index) => !record.trace_id && (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
@@ -348,9 +366,6 @@ export default class ReceivingModal extends Component {
             </Col>
             <Col sm={12} md={8} lg={6}>
               <InfoItem label="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
-            </Col>
-            <Col sm={12} md={8} lg={4}>
-              <InfoItem label="收货人员" field={<Input />} />
             </Col>
           </Row>
         </Card>

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Icon, Col, Row, Tabs, Button, Menu } from 'antd';
+import { Icon, Col, Row, Tabs, Button, Menu, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { CWM_ASN_STATUS } from 'common/constants';
-import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid, getShipmtOrderNo } from 'common/reducers/cwmReceive';
+import { hideDock, changeDockTab, loadAsn, getInstanceUuid, getAsnUuid, getShipmtOrderNo, cancelAsn, closeAsn } from 'common/reducers/cwmReceive';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -28,7 +28,15 @@ const TabPane = Tabs.TabPane;
     asn: state.cwmReceive.dock.asn,
     uuid: state.cwmReceive.dock.asn.uuid,
   }),
-  { hideDock, changeDockTab, loadAsn, getInstanceUuid, loadOrderDetail, getAsnUuid, getShipmtOrderNo }
+  { hideDock,
+    changeDockTab,
+    loadAsn,
+    getInstanceUuid,
+    loadOrderDetail,
+    getAsnUuid,
+    getShipmtOrderNo,
+    cancelAsn,
+    closeAsn }
 )
 export default class ReceivingDockPanel extends React.Component {
   static propTypes = {
@@ -39,6 +47,8 @@ export default class ReceivingDockPanel extends React.Component {
     dock: PropTypes.object.isRequired,
     hideDock: PropTypes.func.isRequired,
     changeDockTab: PropTypes.func.isRequired,
+    cancelAsn: PropTypes.func.isRequired,
+    closeAsn: PropTypes.func.isRequired,
   }
   state = {
     asnHead: {},
@@ -68,6 +78,42 @@ export default class ReceivingDockPanel extends React.Component {
   }
   handleClose = () => {
     this.props.hideDock();
+  }
+  handleComplete = (asnNo) => {
+    this.props.closeAsn(asnNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  handleDeleteASN = (asnNo) => {
+    this.props.cancelAsn(asnNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
+    });
+  }
+  handleMenuClick = (e) => {
+    const { asnHead } = this.state;
+    if (e.key === '1') {
+      Modal.confirm({
+        title: '确认取消ASN?',
+        content: '确认后此ANSN的相关信息将会被删除',
+        onOk: () => {
+          this.handleDeleteASN(asnHead.asn_no);
+        },
+        onCancel() {},
+      });
+    } else if (e.key === '2') {
+      Modal.confirm({
+        title: '确认关闭ASN?',
+        content: '确认后此ANSN将会被提前完成',
+        onOk: () => {
+          this.handleComplete(asnHead.asn_no);
+        },
+        onCancel() {},
+      });
+    }
   }
   goHomeDock = () => {
     const { uuid } = this.props;
@@ -156,12 +202,20 @@ export default class ReceivingDockPanel extends React.Component {
     const { visible } = this.props;
     const { asnHead } = this.state;
     // TODO
-    const menu = (
-      <Menu>
-        <Menu.Item key="1">取消ASN</Menu.Item>
-        <Menu.Item key="2">关闭ASN</Menu.Item>
-      </Menu>
-    );
+    let menu = (<Menu />);
+    if (asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) {
+      menu = (
+        <Menu onClick={this.handleMenuClick}>
+          <Menu.Item key="1">取消ASN</Menu.Item>
+        </Menu>
+      );
+    } else if (asnHead.status === CWM_ASN_STATUS.EXCEPTION.value) {
+      menu = (
+        <Menu onClick={this.handleMenuClick}>
+          <Menu.Item key="2">关闭ASN</Menu.Item>
+        </Menu>
+      );
+    }
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={this.renderTitle()}

@@ -17,6 +17,7 @@ const FormItem = Form.Item;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
+    username: state.account.username,
     visible: state.cwmReceive.batchReceivingModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,
   }),
@@ -54,9 +55,9 @@ export default class BatchReceivingModal extends Component {
       message.info('请选择库位');
       return;
     }
-    const { data, loginId, inboundNo, inboundHead } = this.props;
+    const { data, loginId, inboundNo, inboundHead, username } = this.props;
     const seqNos = data.map(dt => dt.asn_seq_no);
-    this.props.batchReceive(seqNos, location, damageLevel, loginId, inboundHead.asn_no, inboundNo).then((result) => {
+    this.props.batchReceive(seqNos, location, damageLevel, loginId, inboundHead.asn_no, inboundNo, username).then((result) => {
       if (!result.error) {
         this.handleCancel();
       }

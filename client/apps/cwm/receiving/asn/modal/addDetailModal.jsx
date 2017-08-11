@@ -142,7 +142,7 @@ export default class AddDetailModal extends Component {
   handleUnitChange = (value) => {
     const unit = this.props.units.filter(un => un.code === value)[0];
     if (unit) {
-      const product = { ...this.state.product, unit_name: unit.name };
+      const product = { ...this.state.product, unit: unit.code };
       this.setState({ product });
     }
   }
@@ -214,9 +214,9 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('order_qty', {
                 rules: [{ required: true, message: '请输入订单数量' }],
               })(
-                <Input style={{ width: '70%' }} onChange={this.handleQtyChange} />
+                <Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />
             )}
-              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit_name}
+              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit}
                 style={{ width: '30%' }} onChange={this.handleUnitChange}
               >
                 {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
@@ -228,9 +228,9 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('unit_price', {
                 initialValue: product.unit_price,
               })(
-                <Input placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
+                <Input placeholder="单价" type="number" onChange={this.handlePriceChange} style={{ width: '30%' }} />
                 )}
-              <Input placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
+              <Input placeholder="总价" type="number" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
               <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
                 style={{ width: '30%' }} onChange={this.handleCurrChange}
               >

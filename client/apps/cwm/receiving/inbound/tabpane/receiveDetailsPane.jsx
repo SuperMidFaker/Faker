@@ -10,6 +10,7 @@ import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
 import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
+import moment from 'moment';
 
 const Search = Input.Search;
 
@@ -78,7 +79,7 @@ export default class ReceiveDetailsPane extends React.Component {
       title: '是否确认收货完成?',
       content: '默认按预期数量收货，确认收货后可以取消收货退回',
       onOk() {
-        return self.props.expressReceive(self.props.inboundNo, self.props.loginId);
+        return self.props.expressReceive(self.props.inboundNo, self.props.loginId, self.props.username);
       },
       onCancel() {},
       okText: '确认收货',
@@ -132,6 +133,18 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 160,
     fixed: 'left',
   }, {
+    title: '集装箱号',
+    dataIndex: 'container_no',
+    width: 160,
+  }, {
+    title: '采购订单号',
+    dataIndex: 'po_no',
+    width: 160,
+  }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 160,
+  }, {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
@@ -177,7 +190,7 @@ export default class ReceiveDetailsPane extends React.Component {
             {Options}
           </Select>);
       }
-    },*/
+    }, */
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
@@ -198,12 +211,14 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 100,
   }, {
     title: '收货人员',
-    width: 100,
+    width: 150,
     dataIndex: 'received_by',
+    render: o => o ? o.join(',') : '',
   }, {
     title: '收货时间',
     width: 100,
-    dataIndex: 'received_date',
+    dataIndex: 'created_date',
+    render: createdDt => createdDt && moment(createdDt).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 100,
