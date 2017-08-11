@@ -41,6 +41,7 @@ function fetchData({ state, dispatch }) {
   state => ({
     tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
+    customsCode: state.account.customsCode,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.asnFilters,
@@ -384,6 +385,7 @@ export default class ReceivingASNList extends React.Component {
                   data: JSON.stringify({
                     tenantId: this.props.tenantId,
                     tenantName: this.props.tenantName,
+                    customsCode: this.props.customsCode,
                     loginId: this.props.loginId,
                     loginName: this.props.loginName,
                     whseCode: defaultWhse.code,

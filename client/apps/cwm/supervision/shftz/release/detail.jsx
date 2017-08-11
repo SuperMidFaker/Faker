@@ -213,6 +213,17 @@ export default class SHFTZRelDetail extends Component {
       const text = country ? `${country.value}| ${country.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  }, {
+    title: '运费',
+    dataIndex: 'freight',
+  }, {
+    title: '运费币制',
+    dataIndex: 'freight_currency',
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
   }]
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });

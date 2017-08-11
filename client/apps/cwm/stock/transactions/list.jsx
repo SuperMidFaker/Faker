@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadStocks } from 'common/reducers/cwmInventoryStock';
+import { loadTransactions } from 'common/reducers/cwmTransaction';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -20,14 +21,12 @@ const Option = Select.Option;
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
-    loading: state.cwmInventoryStock.loading,
-    stocklist: state.cwmInventoryStock.list,
-    displayedColumns: state.cwmInventoryStock.displayedColumns,
-    listFilter: state.cwmInventoryStock.listFilter,
-    sortFilter: state.cwmInventoryStock.sortFilter,
-    searchOption: state.cwmInventoryStock.searchOption,
+    loading: state.cwmTransaction.loading,
+    transactionlist: state.cwmTransaction.list,
+    listFilter: state.cwmTransaction.listFilter,
+    sortFilter: state.cwmTransaction.sortFilter,
   }),
-  { loadStocks, switchDefaultWhse }
+  { loadTransactions, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -38,12 +37,9 @@ export default class StockTransactionsList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
-    stocklist: PropTypes.object.isRequired,
+    transactionlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     sortFilter: PropTypes.object.isRequired,
-    searchOption: PropTypes.shape({
-      warehouses: PropTypes.arrayOf(PropTypes.shape({ whse_code: PropTypes.string })),
-    }),
   }
   state = {
     collapsed: false,
@@ -63,11 +59,10 @@ export default class StockTransactionsList extends React.Component {
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: (text, row) => this.renderNormalCol(text, row),
 
   }, {
     title: this.msg('descCN'),
-    dataIndex: 'desc_cn',
+    dataIndex: 'name',
     width: 150,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
@@ -75,47 +70,31 @@ export default class StockTransactionsList extends React.Component {
     width: 120,
     dataIndex: 'location',
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
-    title: this.msg('totalQty'),
+    title: '操作人',
     width: 100,
-    dataIndex: 'total_qty',
-    className: 'cell-align-right text-emphasis',
-    render: (text, row) => this.renderNormalCol(text, row),
+    dataIndex: 'trxn_login_name',
   }, {
-    title: this.msg('availQty'),
+    title: '操作类型',
     width: 100,
-    dataIndex: 'avail_qty',
-    className: 'cell-align-right',
-    render: (text) => {
-      if (text === 0) {
-        return <span className="text-disabled">{text}</span>;
-      } else {
+    dataIndex: 'type',
+    /* render: (text) => {
+      if (text > 0) {
         return <span className="text-success">{text}</span>;
-      }
-    },
-  }, {
-    title: this.msg('allocQty'),
-    width: 100,
-    dataIndex: 'alloc_qty',
-    className: 'cell-align-right',
-    render: (text) => {
-      if (text === 0) {
-        return <span className="text-disabled">{text}</span>;
       } else {
-        return <span className="text-warning">{text}</span>;
-      }
-    },
-  }, {
-    title: this.msg('frozenQty'),
-    width: 100,
-    dataIndex: 'frozen_qty',
-    className: 'cell-align-right',
-    render: (text) => {
-      if (text === 0) {
         return <span className="text-disabled">{text}</span>;
+      }
+    }, */
+  }, {
+    title: '操作数量',
+    width: 100,
+    dataIndex: 'transaction_qty',
+    className: 'cell-align-right text-emphasis',
+    render: (text) => {
+      if (text > 0) {
+        return <span className="text-success">{text}</span>;
       } else {
-        return <span className="text-error">{text}</span>;
+        return <span className="text-disabled">{text}</span>;
       }
     },
   }, {
@@ -127,7 +106,6 @@ export default class StockTransactionsList extends React.Component {
     dataIndex: 'product_sku',
     width: 180,
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('lotNo'),
     width: 120,
@@ -147,12 +125,14 @@ export default class StockTransactionsList extends React.Component {
   }, {
     title: this.msg('inboundDate'),
     width: 120,
-    dataIndex: 'inbound_date',
+    dataIndex: 'inbound_timestamp',
+    render: inbtime => inbtime && moment(inbtime).format('YYYY.MM.DD'),
     sorter: true,
   }, {
     title: this.msg('expiryDate'),
     width: 120,
     dataIndex: 'expiry_date',
+    render: expirydate => expirydate && moment(expirydate).format('YYYY.MM.DD'),
     sorter: true,
   }, {
     title: this.msg('attrib1'),
@@ -182,18 +162,22 @@ export default class StockTransactionsList extends React.Component {
     title: this.msg('attrib7'),
     width: 120,
     dataIndex: 'attrib_7_date',
+    render: attr7date => attr7date && moment(attr7date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('attrib8'),
     width: 120,
     dataIndex: 'attrib_8_date',
+    render: attr8date => attr8date && moment(attr8date).format('YYYY.MM.DD'),
   }, {
     title: this.msg('bonded'),
     width: 120,
     dataIndex: 'bonded',
+    render: bonded => bonded ? '是' : '否',
   }, {
     title: this.msg('portion'),
     width: 120,
     dataIndex: 'portion',
+    render: portion => portion ? '是' : '否',
   }, {
     title: this.msg('ftzEntryId'),
     width: 120,
@@ -203,45 +187,37 @@ export default class StockTransactionsList extends React.Component {
     dataIndex: 'gross_weight',
     className: 'cell-align-right',
     width: 120,
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('cbm'),
     dataIndex: 'cbm',
     className: 'cell-align-right',
     width: 120,
-    render: (text, row) => this.renderNormalCol(text, row),
   }]
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
   }
-  handleStockQuery = (filter) => {
-    const { tenantId, stocklist: { pageSize, current } } = this.props;
-    this.props.loadStocks({
+  handleStockQuery = (currentPage, filter) => {
+    const { tenantId, sortFilter, transactionlist: { pageSize, current } } = this.props;
+    this.props.loadTransactions({
       tenantId,
       filter: JSON.stringify(filter),
       pageSize,
-      current,
+      current: currentPage || current,
+      sorter: JSON.stringify(sortFilter),
     });
   }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
-    this.handleStockQuery(filter);
+    this.handleStockQuery(1, filter);
   }
   handleWarehouseSelect = (whno) => {
     const filter = { ...this.props.listFilter, whse_code: whno };
-    this.handleStockQuery(filter);
-  }
-  renderNormalCol(text, row) {
-    const colObj = { children: text, props: {} };
-    if (row.key === 'wh_no') {
-      colObj.props.colSpan = 0;
-    }
-    return colObj;
+    this.handleStockQuery(1, filter);
   }
   render() {
-    const { defaultWhse, whses, loading, displayedColumns, listFilter } = this.props;
-    const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
+    const { defaultWhse, whses, loading, listFilter } = this.props;
+    const columns = this.columns;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -249,7 +225,7 @@ export default class StockTransactionsList extends React.Component {
       },
     };
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadStocks(params),
+      fetcher: params => this.props.loadTransactions(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -265,14 +241,14 @@ export default class StockTransactionsList extends React.Component {
           current: pagination.current,
           pageSize: pagination.pageSize,
           filter: JSON.stringify(listFilter),
-          sorter: {
+          sorter: JSON.stringify({
             field: sorter.field,
             order: sorter.order === 'descend' ? 'DESC' : 'ASC',
-          },
+          }),
         };
         return params;
       },
-      remotes: this.props.stocklist,
+      remotes: this.props.transactionlist,
     });
     return (
       <Layout>
@@ -280,9 +256,7 @@ export default class StockTransactionsList extends React.Component {
           <Breadcrumb>
             <Breadcrumb.Item>
               <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                  }
+                {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>

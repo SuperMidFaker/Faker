@@ -37,10 +37,6 @@ export default class QueryForm extends React.Component {
   state = {
     expandForm: false,
   };
-  onChange = (e) => {
-    this.props.changeSearchType(e.target.value);
-    this.props.clearList();
-  }
   handleFormReset = () => {
     this.props.form.resetFields();
   }
@@ -58,18 +54,6 @@ export default class QueryForm extends React.Component {
       }
     });
   }
-  checkOwners = () => {
-    this.props.checkOwnerColumn();
-  }
-  checkProduct = () => {
-    this.props.checkProductColumn();
-  }
-  checkLocation = () => {
-    this.props.checkLocationColumn();
-  }
-  checkProductLocation = () => {
-    this.props.checkProductLocation();
-  }
   msg = formatMsg(this.props.intl);
   render() {
     const { form: { getFieldDecorator }, owners, filter } = this.props;
@@ -82,13 +66,10 @@ export default class QueryForm extends React.Component {
         <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="货主">
-              {getFieldDecorator('owner', {
-                initialValue: filter.owner,
-              })(
-                <Select showSearch optionFilterProp="children" onChange={this.handleOwnerChange} allowClear >
+              {getFieldDecorator('owner', { initialValue: filter.owner })(
+                <Select showSearch optionFilterProp="children" allowClear>
                   {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
-                </Select>
-          )}
+                </Select>)}
             </FormItem>
           </Col>
           <Col span={5}>
@@ -100,12 +81,14 @@ export default class QueryForm extends React.Component {
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="入库单号">
-              <Input placeholder="ASN/海关入库单号" />
+              {getFieldDecorator('asn_no', { initialValue: filter.asn_no })(
+                <Input placeholder="ASN/海关入库单号" />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="批次号">
-              <Input placeholder="批次号" />
+              {getFieldDecorator('external_lot_no', { initialValue: filter.external_lot_no })(
+                <Input placeholder="批次号" />)}
             </FormItem>
           </Col>
           <Col span={4}>
@@ -121,87 +104,119 @@ export default class QueryForm extends React.Component {
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="序列号">
-              <Input placeholder="序列号" />
+              {getFieldDecorator('serial_no', {
+                initialValue: filter.serial_no,
+              })(<Input placeholder="序列号" />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="追踪ID">
-              <Input placeholder="" />
+              {getFieldDecorator('trace_id', {
+                initialValue: filter.trace_id,
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="库位">
-              {getFieldDecorator('whse_location', {
-                initialValue: filter.whse_location,
-              })(
-                <LocationSelect size="large" />
-          )}
+              {getFieldDecorator('location', {
+                initialValue: filter.location,
+              })(<LocationSelect size="large" />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="库别">
-              <Input placeholder="库别" />
+              {getFieldDecorator('virtual_whse', {
+                initialValue: filter.virtual_whse,
+              })(<Input placeholder="库别" />)}
             </FormItem>
           </Col>
         </Row>}
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="包装情况">
-              <Input placeholder="" />
+              {getFieldDecorator('damage_level', {
+                initialValue: filter.damage_level,
+              })(<Select style={{ width: '100%' }}>
+                <Option value={0}>完好</Option>
+                <Option value={1}>轻微擦痕</Option>
+                <Option value={2}>中度</Option>
+                <Option value={3}>重度</Option>
+                <Option value={4}>严重磨损</Option>
+              </Select>)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="入库日期" >
-              <RangePicker />
+              {getFieldDecorator('inbound_times', {
+                initialValue: filter.inbound_times,
+              })(<RangePicker />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="失效日期" >
-              <RangePicker />
+              {getFieldDecorator('expiry_date', {
+                initialValue: filter.expiry_date,
+              })(<RangePicker />)}
             </FormItem>
           </Col>
         </Row>}
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性1">
-              <Input />
+              {getFieldDecorator('attrib_1_string', {
+                initialValue: filter.attrib_1_string,
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性2">
-              <Input />
+              {getFieldDecorator('attrib_2_string', {
+                initialValue: filter.attrib_2_string,
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性3">
-              <Input />
+              {getFieldDecorator('attrib_3_string', {
+                initialValue: filter.attrib_3_string,
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性4">
-              <Input />
+              {getFieldDecorator('attrib_4_string', {
+                initialValue: filter.attrib_4_string,
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>}
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性5">
-              <Input />
+              {getFieldDecorator('attrib_5_string', {
+                initialValue: filter.attrib_5_string,
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性6">
-              <Input />
+              {getFieldDecorator('attrib_6_string', {
+                initialValue: filter.attrib_6_string,
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性7">
-              <Input />
+              {getFieldDecorator('attrib_7_date', {
+                initialValue: filter.attrib_7_date,
+              })(<RangePicker />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="扩展属性8">
-              <Input />
+              {getFieldDecorator('attrib_8_date', {
+                initialValue: filter.attrib_8_date,
+              })(<RangePicker />)}
             </FormItem>
           </Col>
         </Row>}
