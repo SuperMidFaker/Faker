@@ -261,6 +261,17 @@ export default class SHFTZEntryDetail extends Component {
       const text = country ? `${country.value}| ${country.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  }, {
+    title: '运费',
+    dataIndex: 'freight',
+  }, {
+    title: '运费币制',
+    dataIndex: 'freight_currency',
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
   }]
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
@@ -366,10 +377,10 @@ export default class SHFTZEntryDetail extends Component {
                             <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
                           </Col>
                           <Col sm={8} lg={3}>
-                            <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt} addonAfter="KG" />
+                            <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
                           </Col>
                           <Col sm={8} lg={3}>
-                            <InfoItem size="small" addonBefore="总金额" field={stat.total_amount} addonAfter="美元" />
+                            <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(3)} addonAfter="美元" />
                           </Col>
                         </Row>
                       </div>
