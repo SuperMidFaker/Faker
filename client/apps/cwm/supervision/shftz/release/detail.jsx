@@ -187,19 +187,24 @@ export default class SHFTZRelDetail extends Component {
   }, {
     title: '数量',
     dataIndex: 'qty',
+    width: 100,
     render: o => (<b>{o}</b>),
   }, {
     title: '毛重',
     dataIndex: 'gross_wt',
+    width: 100,
   }, {
     title: '净重',
     dataIndex: 'net_wt',
+    width: 100,
   }, {
     title: '金额',
     dataIndex: 'amount',
+    width: 100,
   }, {
     title: '币制',
     dataIndex: 'currency',
+    width: 100,
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
@@ -208,6 +213,7 @@ export default class SHFTZRelDetail extends Component {
   }, {
     title: '原产国',
     dataIndex: 'country',
+    width: 100,
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
       const text = country ? `${country.value}| ${country.text}` : o;
@@ -216,9 +222,11 @@ export default class SHFTZRelDetail extends Component {
   }, {
     title: '运费',
     dataIndex: 'freight',
+    width: 100,
   }, {
     title: '运费币制',
     dataIndex: 'freight_currency',
+    width: 100,
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
@@ -290,8 +298,8 @@ export default class SHFTZRelDetail extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
-              <Row className="info-group-inline">
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+              <Row gutter={16} className="info-group-underline">
                 <Col sm={24} lg={6}>
                   <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
@@ -301,8 +309,15 @@ export default class SHFTZRelDetail extends Component {
                 <Col sm={24} lg={6}>
                   <InfoItem label="收货单位" field={relSo.receiver_name} />
                 </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="备案时间" field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')} />
+                <Col sm={24} lg={3}>
+                  <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
+                    field={relSo.created_date && moment(relSo.created_date).format('YYYY-MM-DD HH:mm')}
+                  />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
+                    field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')}
+                  />
                 </Col>
               </Row>
               <div className="card-footer">
@@ -327,7 +342,7 @@ export default class SHFTZRelDetail extends Component {
                         }
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
-                            type="date" field={reg.ftz_rel_date} editable={relEditable}
+                            type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
                           />
                         </Col>

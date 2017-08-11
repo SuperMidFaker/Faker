@@ -257,9 +257,9 @@ export default class ReceiveInbound extends Component {
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
-          <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
-            <Row className="info-group-inline">
-              <Col sm={24} lg={6}>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Row gutter={16} className="info-group-underline">
+              <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={inboundHead.owner_name} />
               </Col>
               <Col sm={24} lg={6}>
@@ -272,10 +272,14 @@ export default class ReceiveInbound extends Component {
                 <InfoItem label="总实收数量" field={inboundHead.total_received_qty} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="装箱数量" field={inboundHead.convey_box_qty} editable />
+                <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
+                  field={inboundHead.created_date && moment(inboundHead.created_date).format('YYYY.MM.DD HH:mm')}
+                />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="码盘数量" field={inboundHead.convey_pallet_qty} editable />
+                <InfoItem label="入库时间" addonBefore={<Icon type="clock-circle-o" />}
+                  field={inboundHead.completed_date && moment(inboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
+                />
               </Col>
             </Row>
             <div className="card-footer">

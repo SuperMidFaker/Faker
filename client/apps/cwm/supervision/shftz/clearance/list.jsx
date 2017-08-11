@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Menu, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
+import { openBatchDeclModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import BatchDeclModal from './modal/batchDeclModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -27,23 +27,22 @@ const OptGroup = Select.OptGroup;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    entryList: state.cwmShFtz.entryList,
+    batchlist: state.cwmShFtz.batchApplyList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners,
+    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
   }),
-  { loadEntryRegDatas, switchDefaultWhse }
+  { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList }
 )
 @connectNav({
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZEntryList extends React.Component {
+export default class SHFTZClearanceList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    entryList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -55,53 +54,50 @@ export default class SHFTZEntryList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleEntryListLoad();
+    this.handleBatchApplyLoad();
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'ANS编号',
-    dataIndex: 'asn_no',
-    width: 180,
+    title: '清关委托编号',
+    dataIndex: 'delg_no',
+    width: 150,
     fixed: 'left',
   }, {
     title: '报关单号',
-    width: 180,
     dataIndex: 'pre_entry_seq_no',
-    render: (preno, row) => row.cus_decl_no || preno,
-  }, {
-    title: '海关入库单号',
-    width: 180,
-    dataIndex: 'ftz_ent_no',
-  }, {
-    title: '备案类型',
-    dataIndex: 'ftz_ent_type',
-    render: (enttype) => {
-      const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
-      return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
-    },
+    width: 150,
   }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '仓储企业',
+    title: '收货单位',
     width: 180,
-    dataIndex: 'wh_ent_name',
+    dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '进口日期',
+    title: '委托日期',
     width: 120,
-    dataIndex: 'ie_date',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
-    title: '进库日期',
+    title: '申报日期',
     width: 120,
-    dataIndex: 'ftz_ent_date',
+    dataIndex: 'decl_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('YYYY.MM.DD')}`;
+      }
+    },
+  }, {
+    title: '放行日期',
+    width: 120,
+    dataIndex: 'clear_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
@@ -110,11 +106,10 @@ export default class SHFTZEntryList extends React.Component {
   }, {
     title: '状态',
     dataIndex: 'status',
-    width: 100,
-    fixed: 'right',
+    width: 120,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
+        return (<Badge status="default" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
@@ -125,10 +120,15 @@ export default class SHFTZEntryList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
+    render: (o, record) => {
+      if (record.status < 2) {
+        return <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />;
+      }
+    },
   }]
+
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadEntryRegDatas(params),
+    fetcher: params => this.props.loadBatchApplyList(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -148,11 +148,11 @@ export default class SHFTZEntryList extends React.Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.entryList,
+    remotes: this.props.batchlist,
   })
-  handleEntryListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
-    this.props.loadEntryRegDatas({
+  handleBatchApplyLoad = (currentPage, whsecode, filter) => {
+    const { tenantId, listFilter, whse, batchlist: { pageSize, current } } = this.props;
+    this.props.loadBatchApplyList({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
@@ -164,43 +164,54 @@ export default class SHFTZEntryList extends React.Component {
       }
     });
   }
+  handleBatchDeclLoad = () => {
+    this.handleBatchApplyLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
+  }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleEntryListLoad(1, this.props.whse.code, filter);
+    this.handleBatchApplyLoad(1, this.props.whse.code, filter);
   }
-  handleCreateBtnClick = () => {
-    this.context.router.push('/cwm/ftz/receive/reg');
+  handleCreateBatchDecl = () => {
+    const { listFilter, owners } = this.props;
+    const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
+    this.props.openBatchDeclModal({ ownerCusCode });
+  }
+  handleDelgManifest = (row) => {
+    const ietype = row.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${ietype}/manifest/`;
+    this.context.router.push(`${link}${row.delg_no}`);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/batch/${row.batch_decl_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    this.handleEntryListLoad(1, value);
+    this.handleBatchApplyLoad(1, value);
   }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
-    this.handleEntryListLoad(1, this.props.whse.code, filters);
+    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
   }
   handleOwnerSelectChange = (value) => {
     const filters = { ...this.props.listFilter, ownerView: value };
-    this.handleEntryListLoad(1, this.props.whse.code, filters);
+    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
   }
+
   render() {
-    const { entryList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded === 1);
-    this.dataSource.remotes = entryList;
+    const { listFilter, whses, whse, owners, batchlist } = this.props;
+    const bondedWhses = whses.filter(wh => wh.bonded);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    this.dataSource.remotes = batchlist;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -213,7 +224,7 @@ export default class SHFTZEntryList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <Menu
-              defaultSelectedKeys={['entry']}
+              defaultSelectedKeys={['clearance']}
               mode="inline"
             >
               <Menu.Item key="entry">
@@ -253,21 +264,25 @@ export default class SHFTZEntryList extends React.Component {
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzEntryReg')}
+                {this.msg('ftzClearance')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待备案</RadioButton>
+              <RadioButton value="pending">待清关</RadioButton>
+              <RadioButton value="manifesting">制单中</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">备案完成</RadioButton>
+              <RadioButton value="cleared">清关完成</RadioButton>
             </RadioGroup>
-            <div className="page-header-tools" />
+            <div className="page-header-tools">
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBatchDecl}>
+                {this.msg('createClearance')}
+              </Button>
+            </div>
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar placeholder={this.msg('entrySearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+                <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
                 <span />
                 <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                   onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
@@ -287,13 +302,14 @@ export default class SHFTZEntryList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>
             </div>
           </Content>
         </Layout>
+        <BatchDeclModal reload={this.handleBatchDeclLoad} />
       </Layout>
     );
   }

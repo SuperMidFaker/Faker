@@ -293,7 +293,7 @@ export default class SHFTZCargoList extends React.Component {
       lineHeight: '30px',
     };
     const columns = [...this.columns];
-    if (rule === 1) {
+    if (rule === 0) {
       columns.shift();
     }
     return (

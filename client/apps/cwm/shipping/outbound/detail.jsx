@@ -285,9 +285,9 @@ export default class OutboundDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
-            <Row className="info-group-inline">
-              <Col sm={24} lg={6}>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Row gutter={16} className="info-group-underline">
+              <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={outboundHead.owner_name} />
               </Col>
               { outboundHead.wave_no &&
@@ -301,7 +301,7 @@ export default class OutboundDetail extends Component {
               </Col>
                 }
               <Col sm={12} lg={2}>
-                <InfoItem label="订货总数" field={outboundHead.total_qty} />
+                <InfoItem label="订单总数" field={outboundHead.total_qty} />
               </Col>
               <Col sm={12} lg={2}>
                 <InfoItem label="分配总数" field={outboundHead.total_alloc_qty} />
@@ -311,6 +311,16 @@ export default class OutboundDetail extends Component {
               </Col>
               <Col sm={12} lg={2}>
                 <InfoItem label="发货总数" field={outboundHead.total_shipped_qty} />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
+                  field={outboundHead.created_date && moment(outboundHead.created_date).format('YYYY.MM.DD HH:mm')}
+                />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem label="出库时间" addonBefore={<Icon type="clock-circle-o" />}
+                  field={outboundHead.completed_date && moment(outboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
+                />
               </Col>
             </Row>
             <div className="card-footer">

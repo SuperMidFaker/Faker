@@ -9,6 +9,10 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.release.reg',
     defaultMessage: '出区备案',
   },
+  ftzClearance: {
+    id: 'cwm.supervision.shftz.clearance',
+    defaultMessage: '出库清关',
+  },
   ftzBatchDecl: {
     id: 'cwm.supervision.shftz.batch.decl',
     defaultMessage: '集中报关',
@@ -78,8 +82,12 @@ const messages = defineMessages({
     defaultMessage: '操作',
   },
   createBatchDecl: {
-    id: 'cwm.supervision.shftz.filter.batchdecl',
+    id: 'cwm.supervision.shftz.create.batchdecl',
     defaultMessage: '新建集中报关',
+  },
+  createClearance: {
+    id: 'cwm.supervision.shftz.create.clearance',
+    defaultMessage: '新建出库清关',
   },
 });
 

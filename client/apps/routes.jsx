@@ -70,6 +70,7 @@ import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMSettings from './cwm/settings';
 import * as CWMSupSHFTZEntry from './cwm/supervision/shftz/entry';
 import * as CWMSupSHFTZRelease from './cwm/supervision/shftz/release';
+import * as CWMSupSHFTZClearance from './cwm/supervision/shftz/clearance';
 import * as CWMSupSHFTZBatch from './cwm/supervision/shftz/batch';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
@@ -474,6 +475,10 @@ export default(store, cookie) => {
                 <Route path="release" >
                   <IndexRoute component={CWMSupSHFTZRelease.List} />
                   <Route path=":soNo" component={CWMSupSHFTZRelease.Detail} />
+                </Route>
+                <Route path="clearance" >
+                  <IndexRoute component={CWMSupSHFTZClearance.List} />
+                  <Route path=":clearanceNo" component={CWMSupSHFTZClearance.Detail} />
                 </Route>
                 <Route path="batch" >
                   <IndexRoute component={CWMSupSHFTZBatch.List} />

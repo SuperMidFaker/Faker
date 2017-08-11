@@ -48,8 +48,33 @@ export default class OrderDetailsPane extends React.Component {
     dataIndex: 'product_no',
     width: 160,
   }, {
+    title: 'SKU',
+    dataIndex: 'product_sku',
+    width: 160,
+    render: (o) => {
+      if (o) {
+        return <Button>{o}</Button>;
+      }
+    },
+  }, {
     title: '中文品名',
     dataIndex: 'name',
+  }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 120,
+  }, {
+    title: '入库单号',
+    dataIndex: 'inbound_no',
+    width: 120,
+  }, {
+    title: '批次号',
+    dataIndex: 'external_lot_no',
+    width: 120,
+  }, {
+    title: '产品序列号',
+    dataIndex: 'serial_no',
+    width: 120,
   }, {
     title: '订货数量',
     dataIndex: 'order_qty',
@@ -59,15 +84,6 @@ export default class OrderDetailsPane extends React.Component {
     title: '计量单位',
     dataIndex: 'unit_name',
     width: 80,
-  }, {
-    title: 'SKU',
-    dataIndex: 'product_sku',
-    width: 160,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
   }]
   render() {
     const rowSelection = {

@@ -312,8 +312,8 @@ export default class SHFTZEntryDetail extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
-              <Row className="info-group-inline">
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+              <Row gutter={16} className="info-group-underline">
                 <Col sm={24} lg={6}>
                   <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
@@ -323,8 +323,15 @@ export default class SHFTZEntryDetail extends Component {
                 <Col sm={24} lg={6}>
                   <InfoItem label="收货单位" field={entryAsn.wh_ent_tenant_name} />
                 </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="备案时间" field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY-MM-DD HH:mm')} />
+                <Col sm={24} lg={3}>
+                  <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
+                    field={entryAsn.created_date && moment(entryAsn.created_date).format('YYYY-MM-DD HH:mm')}
+                  />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
+                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY-MM-DD HH:mm')}
+                  />
                 </Col>
               </Row>
               <div className="card-footer">

@@ -225,6 +225,11 @@ export default class SHFTZReleaseList extends React.Component {
                     出区备案
                   </NavLink>
               </Menu.Item>
+              <Menu.Item key="clearance">
+                <NavLink to="/cwm/supervision/shftz/clearance">
+                    出库清关
+                  </NavLink>
+              </Menu.Item>
               <Menu.Item key="batch">
                 <NavLink to="/cwm/supervision/shftz/batch">
                     集中报关
@@ -232,7 +237,7 @@ export default class SHFTZReleaseList extends React.Component {
               </Menu.Item>
               <Menu.Item key="cargo">
                 <NavLink to="/cwm/supervision/shftz/cargo">
-                    货物备案
+                    分拨货物备案
                   </NavLink>
               </Menu.Item>
             </Menu>

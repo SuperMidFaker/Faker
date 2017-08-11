@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Layout, Tabs, Button, Card, Col, Row } from 'antd';
+import moment from 'moment';
+import { Breadcrumb, Layout, Tabs, Button, Card, Col, Row, Icon } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -72,26 +73,36 @@ export default class WaveDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Card bodyStyle={{ paddingBottom: 16 }} noHovering>
-            <Row className="info-group-inline">
+          <Card bodyStyle={{ padding: 16 }} noHovering>
+            <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={6}>
                 <InfoItem label="波次号" field={this.props.params.waveNo} />
               </Col>
-              <Col sm={12} lg={2}>
+              <Col sm={12} lg={3}>
                 <InfoItem label="总订单数" field={waveHead.orderCount} />
               </Col>
-              <Col sm={12} lg={2}>
+              <Col sm={12} lg={3}>
                 <InfoItem label="总订单明细数" field={waveHead.detailCount} />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
+                  field={waveHead.created_date && moment(waveHead.created_date).format('YYYY.MM.DD HH:mm')}
+                />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem label="出库时间" addonBefore={<Icon type="clock-circle-o" />}
+                  field={waveHead.completed_date && moment(waveHead.completed_date).format('YYYY.MM.DD HH:mm')}
+                />
               </Col>
             </Row>
           </Card>
           <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
-            <Tabs defaultActiveKey="orderList">
+            <Tabs defaultActiveKey="orderDetails">
+              <TabPane tab="发货明细" key="orderDetails">
+                <OrderDetailsPane waveNo={this.props.params.waveNo} />
+              </TabPane>
               <TabPane tab="订单列表" key="orderList">
                 <OrderListPane waveNo={this.props.params.waveNo} />
-              </TabPane>
-              <TabPane tab="订单明细" key="orderDetails">
-                <OrderDetailsPane waveNo={this.props.params.waveNo} />
               </TabPane>
             </Tabs>
           </Card>

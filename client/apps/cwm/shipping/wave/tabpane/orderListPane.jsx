@@ -56,20 +56,21 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '货主',
     dataIndex: 'owner_name',
+    width: 150,
   }, {
     title: '收货人',
     dataIndex: 'receiver_name',
-    width: 120,
+    width: 150,
     render: o => (<b>{o}</b>),
   }, {
     title: '承运人',
     dataIndex: 'carrier_name',
-    width: 60,
+    width: 150,
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
-    width: 120,
-    render: o => moment(o).format('YYYY.MM.DD'),
+    width: 150,
+    render: o => moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '要求出货日期',
     dataIndex: 'expect_shipping_date',
