@@ -145,11 +145,11 @@ export default class DetailForm extends Component {
       title: '操作',
       width: 80,
       fixed: 'right',
-      render: (o, record, index) => (
+      render: (o, record) => (
         <span>
           <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />} row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={() => this.handleDelete(index)} label={<Icon type="delete" />} row={record} />
+          <RowUpdater onHit={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
         </span>
       ),
     }];
