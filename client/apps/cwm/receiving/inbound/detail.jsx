@@ -121,7 +121,7 @@ export default class ReceiveInbound extends Component {
       { text: '实际库位', style: 'table', alignment: 'center' }, { text: '扩展属性1', style: 'table', alignment: 'center' }]);
     for (let i = 0; i < inboundProducts.length; i++) {
       pdf.push([i + 1, inboundProducts[i].name, inboundProducts[i].product_no, inboundProducts[i].expect_qty,
-        inboundProducts[i].received_qty, '', inboundProducts[i].location, '']);
+        '', '', inboundProducts[i].location, '']);
     }
     pdf.push(['合计', '', '', inboundHead.total_expect_qty, '', '', '', '']);
     return pdf;
