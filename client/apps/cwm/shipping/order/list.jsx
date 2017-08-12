@@ -164,27 +164,21 @@ export default class ShippingOrderList extends React.Component {
       if (record.status === CWM_SO_STATUS.PENDING.value) {
         return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} />
           <span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /></span>);
-      } else if (record.status === CWM_SO_STATUS.OUTBOUND.value) {
-        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
-          return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={this.handleReleaseReg} label="出区备案" row={record} /></span>);
-        } else {
-          return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} /></span>);
-        }
-      } else if (record.status === CWM_SO_STATUS.PARTIAL.value) {
-        return (<span><RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.handleClose} label="关闭订单" row={record} /></span>);
-      } else if (record.status === CWM_SO_STATUS.COMPLETED.value) {
-        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
+      } else {
+        const outbndActions = (<span>
+          {record.status === CWM_SO_STATUS.OUTBOUND.value && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
+          {record.status === CWM_SO_STATUS.PARTIAL.value && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
+          {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />}</span>);
+        if (record.bonded) {
           return (<span>
-            <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />
+            {outbndActions}
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleReleaseReg} label="备案详情" row={record} />
-          </span>);
+            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleReleaseReg} label="出区备案" row={record} />
+              : <RowUpdater onHit={this.handleReleaseReg} label="备案详情" row={record} />}
+          </span>
+          );
         } else {
-          return (<span><RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} /></span>);
+          return (<span>{outbndActions}</span>);
         }
       }
     },

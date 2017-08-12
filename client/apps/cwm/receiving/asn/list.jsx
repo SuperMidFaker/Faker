@@ -153,31 +153,21 @@ export default class ReceivingASNList extends React.Component {
       if (record.status === CWM_ASN_STATUS.PENDING.value) {
         return (<span><RowUpdater onHit={this.handleReleaseASN} label="释放" row={record} />
           <span className="ant-divider" /><RowUpdater onHit={this.handleEditASN} label="修改" row={record} /></span>);
-      } else if (record.status === CWM_ASN_STATUS.INBOUND.value) {
-        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
+      } else {
+        const inbndActions = (<span>
+          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />}
+          {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowUpdater onHit={this.handleInbound} label="差异处理" row={record} />}
+          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleInbound} label="入库详情" row={record} />}</span>);
+        if (record.bonded) {
           return (<span>
-            <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
+            {inbndActions}
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleEntryReg} label="进区备案" row={record} />
-          </span>);
+            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleEntryReg} label="进区备案" row={record} />
+              : <RowUpdater onHit={this.handleEntryReg} label="备案详情" row={record} />}
+          </span>
+          );
         } else {
-          return (<span><RowUpdater onHit={this.handleInbound} label="入库操作" row={record} /></span>);
-        }
-      } else if (record.status === CWM_ASN_STATUS.DISCREPANT.value) {
-        return (<span>
-          <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />
-          { record.asn_no && <span className="ant-divider" />}
-          { record.asn_no && <RowUpdater onHit={this.handleDisprepancy} label="差异处理" row={record} />}
-        </span>);
-      } else if (record.status === CWM_ASN_STATUS.COMPLETED.value) {
-        if (record.bonded && record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending) {
-          return (<span>
-            <RowUpdater onHit={this.handleInbound} label="入库详情" row={record} />
-            <span className="ant-divider" />
-            <RowUpdater onHit={this.handleEntryReg} label="备案详情" row={record} />
-          </span>);
-        } else {
-          return (<span><RowUpdater onHit={this.handleInbound} label="入库详情" row={record} /></span>);
+          return (<span>{inbndActions}</span>);
         }
       }
     },
