@@ -33,7 +33,9 @@ export default class DeclReleasedModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entry !== this.props.entry) {
-      this.setState({ entryNo: nextProps.entry.entryNo });
+      this.setState({ entryNo: nextProps.entry.entryNo,
+        ieLabel: nextProps.entry.ietype === 0 ? '进口日期' : '出口日期',
+      });
     }
   }
   handleEntryNoChange = (ev) => {
@@ -82,9 +84,9 @@ export default class DeclReleasedModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible, entry } = this.props;
+    const { visible } = this.props;
     const entryNo = this.state.entryNo;
-    const ieLabel = entry.ietype === 0 ? '进口日期' : '出口日期';
+    // const ieLabel = entry.ietype === 0 ? '进口日期' : '出口日期';
     return (
       <Modal title={this.msg('customsClearModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
@@ -93,13 +95,13 @@ export default class DeclReleasedModal extends React.Component {
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <Input onChange={this.handleEntryNoChange} value={entryNo} size="large" />
           </FormItem>
-          <FormItem label="放行时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <DatePicker onChange={this.handleClearDateChange} value={this.state.clearTime && moment(this.state.clearTime)}
+          <FormItem label={this.state.ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+            <DatePicker onChange={this.handleIEDateChange} value={this.state.ieTime && moment(this.state.ieTime)}
               style={{ width: '100%' }} format="YYYY-MM-DD HH:mm" showTime
             />
           </FormItem>
-          <FormItem label={ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <DatePicker onChange={this.handleIEDateChange} value={this.state.ieTime && moment(this.state.ieTime)}
+          <FormItem label="放行时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
+            <DatePicker onChange={this.handleClearDateChange} value={this.state.clearTime && moment(this.state.clearTime)}
               style={{ width: '100%' }} format="YYYY-MM-DD HH:mm" showTime
             />
           </FormItem>

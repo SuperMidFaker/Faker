@@ -243,7 +243,7 @@ export default class SHFTZReleaseList extends React.Component {
             </Menu>
           </div>
         </Sider>
-        <Layout style={{ width: 0 }}>
+        <Layout>
           <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>

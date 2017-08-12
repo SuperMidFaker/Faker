@@ -41,7 +41,7 @@ export default class ActivityEditCard extends React.Component {
   render() {
     const { title, leftLabel, leftValue, rightLabel, rightValue, createdDate } = this.props;
     return (
-      <Card title={<span>{title} <small className="timestamp">{moment(createdDate).format('YYYY-MM-DD HH:mm')}</small></span>} extra={
+      <Card title={<span>{title} <small className="timestamp">{moment(createdDate).format('YYYY-MM-DD HH:mm')}</small></span>} noHovering extra={
         <Popover trigger="click"
           content={<div><a onClick={this.handleEdit}>修改</a><span className="ant-divider" /><a className="mdc-text-red" onClick={this.handleDel}>删除</a></div>}
         >

@@ -728,7 +728,7 @@ export default class TradeItemList extends Component {
             </div>
           </div>
         </Sider>
-        <Layout style={{ width: 0 }}>
+        <Layout>
           <Header className="page-header">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>

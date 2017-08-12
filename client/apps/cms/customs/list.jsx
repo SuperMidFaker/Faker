@@ -222,11 +222,6 @@ export default class CustomsList extends Component {
     width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
-    title: '申报单位',
-    dataIndex: 'agent_name',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={10} />,
-  }, {
     title: '进/出口口岸',
     dataIndex: 'i_e_port',
     render: (o) => {
@@ -263,6 +258,11 @@ export default class CustomsList extends Component {
     dataIndex: 'clear_date',
     width: 100,
     render: clearDate => (clearDate ? moment(clearDate).format('MM.DD HH:mm') : '-'),
+  }, {
+    title: '申报单位',
+    dataIndex: 'agent_name',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '报关人员',
     dataIndex: 'epsend_login_name',

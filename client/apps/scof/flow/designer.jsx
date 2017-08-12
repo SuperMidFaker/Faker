@@ -524,7 +524,7 @@ export default class FlowDesigner extends React.Component {
     const { activeItem } = this.state;
     const NodePanel = activeItem && NodeKindPanelMap[activeItem.get('model').kind];
     return (
-      <Layout style={{ width: 0 }}>
+      <Layout>
         <Layout>
           <Header className="page-header">
             {listCollapsed && <Breadcrumb>

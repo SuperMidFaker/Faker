@@ -281,7 +281,7 @@ export default class CWMSkuList extends React.Component {
             </div>
           </div>
         </Sider>
-        <Layout style={{ width: 0 }}>
+        <Layout>
           <Header className="page-header">
             {owner.id &&
             <Breadcrumb>

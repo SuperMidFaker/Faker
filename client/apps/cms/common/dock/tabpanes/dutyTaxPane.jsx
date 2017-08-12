@@ -291,7 +291,7 @@ export default class DutyTaxPane extends React.Component {
             </div>
           </Card.Grid>
         </Card>
-        <Card title="缴税明细" bodyStyle={{ padding: 0 }}
+        <Card title="缴税明细" bodyStyle={{ padding: 0 }} noHovering
           extra={<Popconfirm title="确定重新估算?" onConfirm={this.handleRecalculation}>
             <Button icon="calculator" loading={this.state.recalLoading}>估算</Button>
           </Popconfirm>}

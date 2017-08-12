@@ -126,48 +126,38 @@ export default class CustomsDeclPane extends React.Component {
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
     const filterOperators = serviceTeamMembers.filter(op => op.name !== bill.preparer_name);
     return (
-      <div className="pane-content tab-pane">
+      <div className="pane-content tab-pane table-list">
         <Spin spinning={customsSpinning}>
-          <Row gutter={16}>
-            <Col span={18} className="table-list">
-              <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }}>
-                <Row gutter={8}>
-                  <Col span="6">
-                    <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>}
-                      field={bill.preparer_name} placeholder="分配操作人员" editable={assignable}
-                      overlay={<Menu onClick={this.handleMenuClick}>
-                        {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}
-                      </Menu>}
-                    />
-                  </Col>
-                  <Col span="6">
-                    <InfoItem label="制单日期" addonBefore={<Icon type="calendar" />}
-                      field={bill.created_date && moment(bill.created_date).format('YYYY.MM.DD')}
-                    />
-                  </Col>
-                  <Col span="6">
-                    <InfoItem label="明细记录数" suffix="项" field={bill.g_count} />
-                  </Col>
-                  <Col span="6">
-                    <InfoItem label="申报货值" suffix="美元" field={bill.total_trades} />
-                  </Col>
-                </Row>
-              </Card>
-              <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} locale={{ emptyText: '尚未生成报关建议书' }} />
-            </Col>
-            <Col span={6}>
-              <Card bodyStyle={{ padding: 16 }} className="secondary-card">
-                <Row gutter={8}>
-                  <Col span="24">
-                    <InfoItem label="报关代理" field={customsPanel.customs_name} />
-                  </Col>
-                  <Col span="24">
-                    <InfoItem label="接单日期" field={customsPanel.acpt_time && moment(customsPanel.acpt_time).format('YYYY.MM.DD')} />
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-          </Row>
+          <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }} noHovering>
+            <Row gutter={16} className="info-group-underline">
+              <Col span="6">
+                <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>}
+                  field={bill.preparer_name} placeholder="分配操作人员" editable={assignable}
+                  overlay={<Menu onClick={this.handleMenuClick}>
+                    {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}
+                  </Menu>}
+                />
+              </Col>
+              <Col span="2">
+                <InfoItem label="清单项数" addonAfter="项" field={bill.g_count} />
+              </Col>
+              <Col span="2">
+                <InfoItem label="总件数" addonAfter="件" field={bill.pack_count} />
+              </Col>
+              <Col span="4">
+                <InfoItem label="总毛重" addonAfter="千克" field={bill.gross_wt} />
+              </Col>
+              <Col span="4">
+                <InfoItem label="总金额" addonAfter="美元" field={bill.total_trades} />
+              </Col>
+              <Col span="6">
+                <InfoItem label="制单时间" addonBefore={<Icon type="clock-circle-o" />}
+                  field={bill.created_date && moment(bill.created_date).format('YYYY.MM.DD HH:mm')}
+                />
+              </Col>
+            </Row>
+          </Card>
+          <Table size="middle" showHeader={false} columns={columns} pagination={false} dataSource={tableDatas} locale={{ emptyText: '尚未生成报关建议书' }} />
         </Spin>
       </div>
     );

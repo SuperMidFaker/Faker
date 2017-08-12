@@ -211,7 +211,7 @@ export default class ExpensePane extends React.Component {
           <div className="pane-header">
             {checkedTags}
           </div>
-          <Card bodyStyle={{ padding: 0 }}>
+          <Card bodyStyle={{ padding: 0 }} noHovering>
             <Collapse defaultActiveKey={['revenue', 'cost']}>
               <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
                 <Table size="small" columns={this.columnFields} dataSource={revenueFees}

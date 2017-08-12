@@ -37,8 +37,8 @@ export default class CustomsDeclSheetCard extends React.Component {
       inspectFlag = <Tag color="rgba(39, 187, 71, 0.65)">通过</Tag>;
     }
     return (
-      <Card title={<a onClick={() => this.handleView()}>{declNo}</a>} extra={declStatus} bodyStyle={{ paddingBottom: 56 }} >
-        <Row gutter={8}>
+      <Card title={<a onClick={() => this.handleView()}>{declNo}</a>} extra={declStatus} bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+        <Row gutter={16} className="info-group-underline">
           <Col span="12">
             <InfoItem label="收发货人" field={customsDecl.trade_name} />
           </Col>

@@ -92,7 +92,7 @@ export default class CiqDeclPane extends React.Component {
         <Spin spinning={ciqSpinning}>
           <Row gutter={16}>
             <Col span={18}>
-              <Card bodyStyle={{ padding: 0 }}>
+              <Card bodyStyle={{ padding: 0 }} noHovering>
                 <Table size="middle" columns={columns} pagination={false} dataSource={ciqPanel.ciqlist} scroll={{ x: 580 }} />
               </Card>
             </Col>
