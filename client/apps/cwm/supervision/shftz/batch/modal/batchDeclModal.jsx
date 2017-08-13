@@ -60,6 +60,11 @@ export default class BatchDeclModal extends Component {
       });
     }
     this.props.loadParams();
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: (window.innerHeight - 460) / 2,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.portionRegs !== this.props.portionRegs) {
@@ -241,6 +246,7 @@ export default class BatchDeclModal extends Component {
       }
     });
   }
+
   render() {
     const { relNo, relDateRange } = this.state;
     const portionForm = (<Form layout="inline">
@@ -260,16 +266,26 @@ export default class BatchDeclModal extends Component {
       </FormItem>
       <Button type="primary" ghost onClick={this.handlePortionOutsQuery}>查询分拨出库单</Button>
     </Form>);
-
+    const title = (<div>
+      <span>分拨集中报关</span>
+      <div className="toolbar-right">
+        <Button onClick={this.handleCancel}>取消</Button>
+        <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>
+      </div>
+    </div>);
     return (
-      <Modal title="集中报关" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
-        onOk={this.handleBatchDecl} onCancel={this.handleCancel} visible={this.props.visible}
+      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+        footer={null} visible={this.props.visible}
       >
         <Card title={portionForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
-          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" scroll={{ y: 220 }} />
+          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+            scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+          />
         </Card>
         <Card title="报关申请明细" bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id" scroll={{ y: 220 }} />
+          <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+            scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+          />
         </Card>
       </Modal>
     );

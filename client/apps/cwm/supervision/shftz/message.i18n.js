@@ -11,11 +11,11 @@ const messages = defineMessages({
   },
   ftzClearance: {
     id: 'cwm.supervision.shftz.clearance',
-    defaultMessage: '出库清关',
+    defaultMessage: '普通出库清关',
   },
   ftzBatchDecl: {
     id: 'cwm.supervision.shftz.batch.decl',
-    defaultMessage: '集中报关',
+    defaultMessage: '分拨集中报关',
   },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',

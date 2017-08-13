@@ -7,7 +7,7 @@ import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, messa
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeBatchDeclModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
+import { closeClearanceModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -17,10 +17,10 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    visible: state.cwmShFtz.batchDeclModal.visible,
+    visible: state.cwmShFtz.clearanceModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
-    ownerCusCode: state.cwmShFtz.batchDeclModal.ownerCusCode,
+    ownerCusCode: state.cwmShFtz.clearanceModal.ownerCusCode,
     portionRegs: state.cwmShFtz.portionout_regs,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -37,7 +37,7 @@ const Option = Select.Option;
       text: tc.cntry_name_cn,
     })),
   }),
-  { closeBatchDeclModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl }
+  { closeClearanceModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl }
 )
 export default class ClearanceModal extends Component {
   static propTypes = {
@@ -60,6 +60,11 @@ export default class ClearanceModal extends Component {
       });
     }
     this.props.loadParams();
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: (window.innerHeight - 460) / 2,
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.portionRegs !== this.props.portionRegs) {
@@ -189,7 +194,7 @@ export default class ClearanceModal extends Component {
   }
   handleCancel = () => {
     this.setState({ ownerCusCode: '', portionRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
-    this.props.closeBatchDeclModal();
+    this.props.closeClearanceModal();
   }
   handleOwnerChange = (ownerCusCode) => {
     this.setState({ ownerCusCode });
@@ -241,6 +246,7 @@ export default class ClearanceModal extends Component {
       }
     });
   }
+
   render() {
     const { relNo, relDateRange } = this.state;
     const portionForm = (<Form layout="inline">
@@ -260,16 +266,26 @@ export default class ClearanceModal extends Component {
       </FormItem>
       <Button type="primary" ghost onClick={this.handlePortionOutsQuery}>查询分拨出库单</Button>
     </Form>);
-
+    const title = (<div>
+      <span>普通出库清关</span>
+      <div className="toolbar-right">
+        <Button onClick={this.handleCancel}>取消</Button>
+        <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>
+      </div>
+    </div>);
     return (
-      <Modal title="集中报关" width="100%" maskClosable={false} wrapClassName="fullscreen-modal"
-        onOk={this.handleBatchDecl} onCancel={this.handleCancel} visible={this.props.visible}
+      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+        footer={null} visible={this.props.visible}
       >
         <Card title={portionForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
-          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" scroll={{ y: 220 }} />
+          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+            scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+          />
         </Card>
         <Card title="报关申请明细" bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id" scroll={{ y: 220 }} />
+          <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+            scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+          />
         </Card>
       </Modal>
     );

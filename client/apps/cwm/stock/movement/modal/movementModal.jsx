@@ -39,6 +39,13 @@ export default class MovementModal extends Component {
     moveType: 1,
     owner: {},
   }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: (window.innerHeight - 460) / 2,
+      });
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   stocksColumns = [{
     title: 'SKU',
@@ -304,12 +311,16 @@ export default class MovementModal extends Component {
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id" scroll={{ y: 220 }} />
+            <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id"
+              scroll={{ x: this.stocksColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            />
           </div>
         </Card>
         <Card title="移库明细" bodyStyle={{ padding: 0 }}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id" scroll={{ y: 220 }} />
+            <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id"
+              scroll={{ x: this.movementColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            />
           </div>
         </Card>
       </Modal>

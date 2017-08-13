@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'OPEN_BATCH_DECL_MODAL', 'CLOSE_BATCH_DECL_MODAL',
+  'OPEN_CLEARANCE_MODAL', 'CLOSE_CLEARANCE_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
@@ -37,6 +38,9 @@ const initialState = {
     visible: false,
     ownerCusCode: '',
   },
+  clearanceModal: {
+    visible: false,
+  },
   portionout_regs: [],
   entryList: {
     totalCount: 0,
@@ -65,7 +69,8 @@ const initialState = {
   cargoRule: {},
   loading: false,
   listFilter: {
-    status: 'pending',
+    status: 'all',
+    type: 'all',
     filterNo: '',
     ownerView: 'all',
   },
@@ -88,6 +93,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_BATCH_DECL_MODAL:
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: false } };
+    case actionTypes.OPEN_CLEARANCE_MODAL:
+      return { ...state, clearanceModal: { ...state.clearanceModal, visible: true, ...action.data } };
+    case actionTypes.CLOSE_CLEARANCE_MODAL:
+      return { ...state, clearanceModal: { ...state.clearanceModal, visible: false } };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
       return { ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.ENTRY_DETAILS_LOAD_SUCCEED:
@@ -161,6 +170,19 @@ export function openBatchDeclModal(modalInfo) {
 export function closeBatchDeclModal() {
   return {
     type: actionTypes.CLOSE_BATCH_DECL_MODAL,
+  };
+}
+
+export function openClearanceModal(modalInfo) {
+  return {
+    type: actionTypes.OPEN_CLEARANCE_MODAL,
+    data: modalInfo,
+  };
+}
+
+export function closeClearanceModal() {
+  return {
+    type: actionTypes.CLOSE_CLEARANCE_MODAL,
   };
 }
 

@@ -95,16 +95,16 @@ export default class AllocatingModal extends Component {
     title: '加入',
     width: 60,
     render: (o, record, index) => {
-      let disabled = !this.props.editable && !record.location;
+      let disabled = !this.props.editable || !record.location;  // 不可编辑 或 没有库位时disable
       if (!disabled) {
         const outboundHead = this.props.outboundHead;
         if (outboundHead.bonded && outboundHead.bonded_outtype === 'normal') {
-          disabled = !!record.ftz_ent_filed_id;
+          disabled = !record.ftz_ent_filed_id;                  // 没有明细ID时disable
         }
         if (outboundHead.bonded && outboundHead.bonded_outtype === 'portion') {
-          disabled = !!record.ftz_ent_filed_id && record.portion;
+          disabled = !(record.ftz_ent_filed_id && record.portion); // 有明细ID 且 是分拨库存时不disable
         }
-        if (!record.avail_qty || record.avail_qty === 0) {
+        if (!record.avail_qty || record.avail_qty === 0) {  // 可用库存为空或等于0时disable
           disabled = true;
         }
       }
@@ -445,28 +445,28 @@ export default class AllocatingModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }} noHovering>
           <Row className="info-group-inline">
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem label="商品货号" field={outboundProduct.product_no} style={{ marginBottom: 0 }} />
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="商品货号" field={outboundProduct.product_no} />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem label="中文品名" field={outboundProduct.name} style={{ marginBottom: 0 }} />
+              <InfoItem label="中文品名" field={outboundProduct.name} />
             </Col>
             <Col sm={12} md={8} lg={6}>
-              <InfoItem label="订货总数" field={<QuantityInput packQty={outboundProduct.order_pack_qty} pcsQty={outboundProduct.order_qty} />}
-                style={{ marginBottom: 0 }}
+              <InfoItem label="订货总数" field={<QuantityInput packQty={outboundProduct.order_pack_qty} pcsQty={outboundProduct.order_qty} />} />
+            </Col>
+            <Col sm={12} md={8} lg={6}>
+              <InfoItem label="已分配总数"
+                field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} expectQty={outboundProduct.order_qty} />}
               />
             </Col>
-            <Col sm={12} md={8} lg={6}>
-              <InfoItem label="已分配总数" field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} expectQty={outboundProduct.order_qty} />}
-                style={{ marginBottom: 0 }}
-              />
-            </Col>
-            <Col sm={12} md={8} lg={6} />
+            {outboundHead.bonded && <Col sm={12} md={8} lg={2}>
+              <InfoItem label="监管方式" field={outboundHead.bonded_outtype} />
+            </Col>}
           </Row>
         </Card>
-        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
+        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id"
               scroll={{ x: filterColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
@@ -474,7 +474,7 @@ export default class AllocatingModal extends Component {
             />
           </div>
         </Card>
-        <Card title="分配明细" bodyStyle={{ padding: 0 }}>
+        <Card title="分配明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id"
               scroll={{ x: this.allocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

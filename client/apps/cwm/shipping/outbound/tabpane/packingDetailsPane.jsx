@@ -5,7 +5,6 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Tag, Icon, Input } from 'antd';
 import { loadPackDetails } from 'common/reducers/cwmOutbound';
-import PackagePopover from '../../../common/popover/packagePopover';
 
 const Search = Input.Search;
 
@@ -54,31 +53,21 @@ export default class PackingDetailsPane extends React.Component {
     dataIndex: 'packed_no',
     width: 150,
   }, {
-    title: 'SKU',
-    dataIndex: 'product_sku',
-    width: 160,
-    render: (o) => {
-      if (o) {
-        return <PackagePopover sku={o} />;
-      }
-    },
-  }, {
-    title: '批次号',
-    dataIndex: 'external_lot_no',
-    width: 100,
-  }, {
-    title: '装箱数量',
-    dataIndex: 'chkpacked_qty',
-    width: 200,
-  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
   }, {
+    title: '装箱数量',
+    dataIndex: 'chkpacked_qty',
+    width: 100,
+  }, {
     title: '中文品名',
     dataIndex: 'name',
     width: 150,
-
+  }, {
+    title: '批次号',
+    dataIndex: 'external_lot_no',
+    width: 150,
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Menu, Button, Form, Icon, Dropdown, Layout, Radio, Select, message, Table, Tag } from 'antd';
+import { Breadcrumb, Menu, Button, Form, Icon, Dropdown, Layout, Radio, Select, message, Table } from 'antd';
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn,
   fileCargos, confirmCargos } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
@@ -98,20 +98,32 @@ export default class SHFTZCargoList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('ftzCargoNo'),
-    dataIndex: 'ftz_cargo_no',
-    width: 160,
-  }, {
     title: this.msg('productNo'),
     width: 150,
     dataIndex: 'product_no',
+  }, {
+    title: this.msg('ftzCargoNo'),
+    dataIndex: 'ftz_cargo_no',
+    width: 160,
+    render: (o, record) => {
+      switch (record.status) {
+        case 0:
+          return <span className="text-warning">{o}<Icon type="exclamation-circle-o" /></span>;
+        case 1:
+          return <span className="text-info">{o}<Icon type="question-circle-o" /></span>;
+        case 2:
+          return <span className="text-success">{o}<Icon type="check-circle-o" /></span>;
+        default:
+          break;
+      }
+    },
   }, {
     title: this.msg('hscode'),
     width: 120,
     dataIndex: 'hscode',
   }, {
     title: this.msg('gname'),
-    width: 120,
+    width: 180,
     dataIndex: 'name',
   }, {
     title: '英文品名',
@@ -143,17 +155,6 @@ export default class SHFTZCargoList extends React.Component {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text;
-    },
-  }, {
-    title: this.msg('cargoType'),
-    width: 100,
-    dataIndex: 'cargo_type',
-    render: (o) => {
-      if (o === '13') {
-        return (<Tag color="yellow">非分拨货物</Tag>);
-      } else if (o === '14') {
-        return (<Tag color="green">分拨货物</Tag>);
-      }
     },
   }, {
     title: this.msg('opColumn'),
@@ -293,7 +294,7 @@ export default class SHFTZCargoList extends React.Component {
       lineHeight: '30px',
     };
     const columns = [...this.columns];
-    if (rule === 0) {
+    if (rule === 1) {
       columns.shift();
     }
     return (

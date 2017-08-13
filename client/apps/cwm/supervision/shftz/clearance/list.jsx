@@ -10,9 +10,9 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/search-bar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openBatchDeclModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';
+import { openClearanceModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import BatchDeclModal from './modal/batchDeclModal';
+import ClearanceModal from './modal/clearanceModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -33,7 +33,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
   }),
-  { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList }
+  { openClearanceModal, switchDefaultWhse, loadBatchApplyList }
 )
 @connectNav({
   depth: 2,
@@ -177,7 +177,7 @@ export default class SHFTZClearanceList extends React.Component {
   handleCreateBatchDecl = () => {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
-    this.props.openBatchDeclModal({ ownerCusCode });
+    this.props.openClearanceModal({ ownerCusCode });
   }
   handleDelgManifest = (row) => {
     const ietype = row.i_e_type === 0 ? 'import' : 'export';
@@ -227,31 +227,27 @@ export default class SHFTZClearanceList extends React.Component {
               defaultSelectedKeys={['clearance']}
               mode="inline"
             >
-              <Menu.Item key="entry">
-                <NavLink to="/cwm/supervision/shftz/entry">
-                    进区备案
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="release">
-                <NavLink to="/cwm/supervision/shftz/release">
-                    出区备案
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="clearance">
-                <NavLink to="/cwm/supervision/shftz/clearance">
-                    出库清关
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="batch">
-                <NavLink to="/cwm/supervision/shftz/batch">
-                    集中报关
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="cargo">
-                <NavLink to="/cwm/supervision/shftz/cargo">
-                    分拨货物备案
-                  </NavLink>
-              </Menu.Item>
+              <Menu.ItemGroup key="g1" title="入库监管">
+                <Menu.Item key="entry">
+                  <NavLink to="/cwm/supervision/shftz/entry">{this.msg('ftzEntryReg')}</NavLink>
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="g2" title="出库监管">
+                <Menu.Item key="release">
+                  <NavLink to="/cwm/supervision/shftz/release">{this.msg('ftzReleaseReg')}</NavLink>
+                </Menu.Item>
+                <Menu.Item key="clearance">
+                  <NavLink to="/cwm/supervision/shftz/clearance">{this.msg('ftzClearance')}</NavLink>
+                </Menu.Item>
+                <Menu.Item key="batch">
+                  <NavLink to="/cwm/supervision/shftz/batch">{this.msg('ftzBatchDecl')}</NavLink>
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="g3" title="货物监管">
+                <Menu.Item key="cargo">
+                  <NavLink to="/cwm/supervision/shftz/cargo">{this.msg('ftzCargoReg')}</NavLink>
+                </Menu.Item>
+              </Menu.ItemGroup>
             </Menu>
           </div>
         </Sider>
@@ -309,7 +305,7 @@ export default class SHFTZClearanceList extends React.Component {
             </div>
           </Content>
         </Layout>
-        <BatchDeclModal reload={this.handleBatchDeclLoad} />
+        <ClearanceModal reload={this.handleBatchDeclLoad} />
       </Layout>
     );
   }

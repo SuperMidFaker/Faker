@@ -275,31 +275,27 @@ export default class SHFTZBatchDeclList extends React.Component {
               defaultSelectedKeys={['batch']}
               mode="inline"
             >
-              <Menu.Item key="entry">
-                <NavLink to="/cwm/supervision/shftz/entry">
-                    进区备案
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="release">
-                <NavLink to="/cwm/supervision/shftz/release">
-                    出区备案
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="clearance">
-                <NavLink to="/cwm/supervision/shftz/clearance">
-                    出库清关
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="batch">
-                <NavLink to="/cwm/supervision/shftz/batch">
-                    集中报关
-                  </NavLink>
-              </Menu.Item>
-              <Menu.Item key="cargo">
-                <NavLink to="/cwm/supervision/shftz/cargo">
-                    分拨货物备案
-                  </NavLink>
-              </Menu.Item>
+              <Menu.ItemGroup key="g1" title="入库监管">
+                <Menu.Item key="entry">
+                  <NavLink to="/cwm/supervision/shftz/entry">{this.msg('ftzEntryReg')}</NavLink>
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="g2" title="出库监管">
+                <Menu.Item key="release">
+                  <NavLink to="/cwm/supervision/shftz/release">{this.msg('ftzReleaseReg')}</NavLink>
+                </Menu.Item>
+                <Menu.Item key="clearance">
+                  <NavLink to="/cwm/supervision/shftz/clearance">{this.msg('ftzClearance')}</NavLink>
+                </Menu.Item>
+                <Menu.Item key="batch">
+                  <NavLink to="/cwm/supervision/shftz/batch">{this.msg('ftzBatchDecl')}</NavLink>
+                </Menu.Item>
+              </Menu.ItemGroup>
+              <Menu.ItemGroup key="g3" title="货物监管">
+                <Menu.Item key="cargo">
+                  <NavLink to="/cwm/supervision/shftz/cargo">{this.msg('ftzCargoReg')}</NavLink>
+                </Menu.Item>
+              </Menu.ItemGroup>
             </Menu>
           </div>
         </Sider>
