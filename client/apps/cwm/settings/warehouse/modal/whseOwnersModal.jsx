@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Alert, Modal, Table, message, Input } from 'antd';
 import { loadwhseOwners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode } from 'common/reducers/cwmWarehouse';
+import { loadWhse } from 'common/reducers/cwmContext';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_BUSINESSE_TYPES, PARTNER_ROLES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -14,8 +15,9 @@ import { formatMsg } from '../message.i18n';
     partners: state.partner.partners,
     visible: state.cwmWarehouse.whseOwnersModal.visible,
     loginId: state.account.loginId,
+    tenantId: state.account.tenantId,
   }),
-  { loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode }
+  { loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode, loadWhse }
 )
 export default class WhseOwnersModal extends Component {
   static propTypes = {
@@ -105,6 +107,7 @@ export default class WhseOwnersModal extends Component {
           message.info('添加成功');
           this.props.hideWhseOwnersModal();
           this.props.loadwhseOwners(whseCode, this.props.whseTenantId);
+          this.props.loadWhse(whseCode, this.props.tenantId);
           const filterPartners = this.state.filterPartners.filter(partner => !this.state.selectedRows.find(owners => owners.id === partner.id));
           this.setState({
             filterPartners,
