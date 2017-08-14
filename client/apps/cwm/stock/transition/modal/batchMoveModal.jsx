@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Input, Modal, Form, Alert } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeBatchMoveModal, batchMove } from 'common/reducers/cwmInventoryStock';
+import { closeBatchMoveModal, batchMove } from 'common/reducers/cwmTransition';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const formatMsg = format(messages);
@@ -17,7 +17,7 @@ const FormItem = Form.Item;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    visible: state.cwmInventoryStock.batchMoveModal.visible,
+    visible: state.cwmTransition.batchMoveModal.visible,
   }),
   { closeBatchMoveModal, batchMove }
 )

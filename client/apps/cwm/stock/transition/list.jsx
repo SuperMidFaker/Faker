@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showTransitionDock, loadStocks, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmInventoryStock';
+import { showTransitionDock, loadTransitions, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
@@ -29,13 +29,12 @@ const Option = Select.Option;
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
-    loading: state.cwmInventoryStock.loading,
-    stocklist: state.cwmInventoryStock.list,
-    displayedColumns: state.cwmInventoryStock.displayedColumns,
-    listFilter: state.cwmInventoryStock.listFilter,
-    sortFilter: state.cwmInventoryStock.sortFilter,
+    loading: state.cwmTransition.loading,
+    transitionlist: state.cwmTransition.list,
+    listFilter: state.cwmTransition.listFilter,
+    sortFilter: state.cwmTransition.sortFilter,
   }),
-  { showTransitionDock, loadStocks, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
+  { showTransitionDock, loadTransitions, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
 )
 @connectNav({
   depth: 2,
@@ -46,12 +45,11 @@ export default class StockTransitionList extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
-    stocklist: PropTypes.object.isRequired,
+    transitionlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     sortFilter: PropTypes.object.isRequired,
   }
   state = {
-    collapsed: false,
     showTableSetting: false,
     selectedRowKeys: [],
   }
@@ -70,11 +68,10 @@ export default class StockTransitionList extends React.Component {
     width: 180,
     sorter: true,
     fixed: 'left',
-    render: (text, row) => this.renderNormalCol(text, row),
 
   }, {
     title: this.msg('descCN'),
-    dataIndex: 'desc_cn',
+    dataIndex: 'name',
     width: 150,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
@@ -82,13 +79,11 @@ export default class StockTransitionList extends React.Component {
     width: 120,
     dataIndex: 'location',
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('totalQty'),
     width: 100,
-    dataIndex: 'total_qty',
+    dataIndex: 'stock_qty',
     className: 'cell-align-right text-emphasis',
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('availQty'),
     width: 100,
@@ -134,7 +129,6 @@ export default class StockTransitionList extends React.Component {
     dataIndex: 'product_sku',
     width: 180,
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('lotNo'),
     width: 120,
@@ -210,19 +204,19 @@ export default class StockTransitionList extends React.Component {
     dataIndex: 'gross_weight',
     className: 'cell-align-right',
     width: 120,
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: this.msg('cbm'),
     dataIndex: 'cbm',
     className: 'cell-align-right',
     width: 120,
-    render: (text, row) => this.renderNormalCol(text, row),
   }, {
     title: '操作',
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      if (record.avail_qty === 1) {
+      if (record.avail_qty === 0 && record.frozen_qty > 0) {
+        return <RowUpdater onHit={this.handleShowDock} label="解冻" row={record} />;
+      } else if (record.avail_qty === 1) {
         return <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />;
       } else {
         return (<span>
@@ -239,13 +233,14 @@ export default class StockTransitionList extends React.Component {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
   }
-  handleStockQuery = (filter) => {
-    const { tenantId, stocklist: { pageSize, current } } = this.props;
-    this.props.loadStocks({
+  handleStockQuery = (currentPage, filter) => {
+    const { tenantId, sortFilter, transitionlist: { pageSize, current } } = this.props;
+    this.props.loadTransitions({
       tenantId,
       filter: JSON.stringify(filter),
+      sorter: JSON.stringify(sortFilter),
       pageSize,
-      current,
+      current: currentPage || current,
     });
   }
   handleBatchTransit = () => {
@@ -257,13 +252,17 @@ export default class StockTransitionList extends React.Component {
   handleBatchFreeze = () => {
     this.props.openBatchFreezeModal();
   }
+  handleStatusChange = (ev) => {
+    const filter = { ...this.props.listFilter, status: ev.target.value };
+    this.handleStockQuery(1, filter);
+  }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
-    this.handleStockQuery(filter);
+    this.handleStockQuery(1, filter);
   }
   handleWarehouseSelect = (whno) => {
     const filter = { ...this.props.listFilter, whse_code: whno };
-    this.handleStockQuery(filter);
+    this.handleStockQuery(1, filter);
   }
   handleShowDock = () => {
     this.props.showTransitionDock();
@@ -274,16 +273,8 @@ export default class StockTransitionList extends React.Component {
   toggleTableSetting = () => {
     this.setState({ showTableSetting: !this.state.showTableSetting });
   }
-  renderNormalCol(text, row) {
-    const colObj = { children: text, props: {} };
-    if (row.key === 'wh_no') {
-      colObj.props.colSpan = 0;
-    }
-    return colObj;
-  }
   render() {
     const { defaultWhse, whses, loading, listFilter } = this.props;
-    // const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -291,7 +282,7 @@ export default class StockTransitionList extends React.Component {
       },
     };
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadStocks(params),
+      fetcher: params => this.props.loadTransitions(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -307,14 +298,14 @@ export default class StockTransitionList extends React.Component {
           current: pagination.current,
           pageSize: pagination.pageSize,
           filter: JSON.stringify(listFilter),
-          sorter: {
+          sorter: JSON.stringify({
             field: sorter.field,
             order: sorter.order === 'descend' ? 'DESC' : 'ASC',
-          },
+          }),
         };
         return params;
       },
-      remotes: this.props.stocklist,
+      remotes: this.props.transitionlist,
     });
     return (
       <Layout>
@@ -331,7 +322,7 @@ export default class StockTransitionList extends React.Component {
               库存变更
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={this.props.listFilter.stockStatus} onChange={this.handleStatusChange} size="large">
+          <RadioGroup value={this.props.listFilter.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="normal">正常库存</RadioButton>
             <RadioButton value="frozen">冻结库存</RadioButton>
           </RadioGroup>

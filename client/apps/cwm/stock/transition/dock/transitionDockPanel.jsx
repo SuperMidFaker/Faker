@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 // import moment from 'moment';
 import { Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { hideTransitionDock } from 'common/reducers/cwmInventoryStock';
+import { hideTransitionDock } from 'common/reducers/cwmTransition';
 // import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import { format } from 'client/common/i18n/helpers';
@@ -21,8 +21,8 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    transitionDock: state.cwmInventoryStock.transitionDock,
-    visible: state.cwmInventoryStock.transitionDock.visible,
+    transitionDock: state.cwmTransition.transitionDock,
+    visible: state.cwmTransition.transitionDock.visible,
   }),
   { hideTransitionDock }
 )

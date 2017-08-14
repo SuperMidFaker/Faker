@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Input, Modal, Alert, Form, Switch } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeBatchFreezeModal, batchFreeze } from 'common/reducers/cwmInventoryStock';
+import { closeBatchFreezeModal, batchFreeze } from 'common/reducers/cwmTransition';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -16,7 +16,7 @@ const FormItem = Form.Item;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    visible: state.cwmInventoryStock.batchFreezeModal.visible,
+    visible: state.cwmTransition.batchFreezeModal.visible,
   }),
   { closeBatchFreezeModal, batchFreeze }
 )

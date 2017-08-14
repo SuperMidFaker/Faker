@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Alert, Modal, Select, Form, DatePicker, Row, Col, Input } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeBatchTransitModal, batchTransit } from 'common/reducers/cwmInventoryStock';
+import { closeBatchTransitModal, batchTransit } from 'common/reducers/cwmTransition';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -16,7 +16,7 @@ const FormItem = Form.Item;
   state => ({
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
-    visible: state.cwmInventoryStock.batchTransitModal.visible,
+    visible: state.cwmTransition.batchTransitModal.visible,
   }),
   { closeBatchTransitModal, batchTransit }
 )

@@ -43,9 +43,6 @@ import scvWarehouse from './scvWarehouse';
 import scvTracking from './scvTracking';
 import scvClassification from './scvClassification';
 import scvClearance from './scvClearance';
-import cwmContext from './cwmContext';
-import cwmTransaction from './cwmTransaction';
-import cwmSku from './cwmSku';
 import cmsExpense from './cmsExpense';
 import cmsBilling from './cmsBilling';
 import cmsTradeitem from './cmsTradeitem';
@@ -61,6 +58,10 @@ import cwmWarehouse from './cwmWarehouse';
 import cwmShFtz from './cwmShFtz';
 import cwmShippingOrder from './cwmShippingOrder';
 import cwmDashboard from './cwmDashboard';
+import cwmContext from './cwmContext';
+import cwmTransaction from './cwmTransaction';
+import cwmTransition from './cwmTransition';
+import cwmSku from './cwmSku';
 
 export default combineReducers({
   activities,
@@ -124,5 +125,6 @@ export default combineReducers({
   cwmShippingOrder,
   cwmDashboard,
   cwmInventoryStock,
+  cwmTransition,
   cwmMovement,
 });

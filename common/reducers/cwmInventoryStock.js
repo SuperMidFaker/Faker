@@ -2,7 +2,6 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/inventory/stock/', [
-  'SHOW_TRANSITION_DOCK', 'HIDE_TRANSITION_DOCK',
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
   'CHECK_OWNER_COLUMN', 'CHECK_PRODUCT_COLUMN', 'CHECK_LOCATION_COLUMN',
   'CHECK_PRODUCT_LOCATION', 'CHANGE_SEARCH_TYPE',
@@ -33,45 +32,16 @@ const initialState = {
     order: '',
   },
   listFilter: {
-    stockStatus: 'normal',
     product_no: null,
     whse_code: '',
     owner: '',
     whse_location: '',
     search_type: 2,
   },
-  batchTransitModal: {
-    visible: false,
-  },
-  batchMoveModal: {
-    visible: false,
-  },
-  batchFreezeModal: {
-    visible: false,
-  },
-  transitionDock: {
-    visible: false,
-  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.HIDE_TRANSITION_DOCK:
-      return { ...state, transitionDock: { ...state.transitionDock, visible: false } };
-    case actionTypes.SHOW_TRANSITION_DOCK:
-      return { ...state, transitionDock: { ...state.transitionDock, visible: true } };
-    case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false } };
-    case actionTypes.OPEN_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: true } };
-    case actionTypes.CLOSE_BATCH_MOVE_MODAL:
-      return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: false } };
-    case actionTypes.OPEN_BATCH_MOVE_MODAL:
-      return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: true } };
-    case actionTypes.CLOSE_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: false } };
-    case actionTypes.OPEN_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true } };
     case actionTypes.LOAD_STOCKS:
       return { ...state,
         loading: true,
@@ -152,55 +122,6 @@ export default function reducer(state = initialState, action) {
     default:
       return state;
   }
-}
-
-export function hideTransitionDock() {
-  return {
-    type: actionTypes.HIDE_TRANSITION_DOCK,
-  };
-}
-
-export function showTransitionDock(detailId) {
-  return {
-    type: actionTypes.SHOW_TRANSITION_DOCK,
-    detailId,
-  };
-}
-
-export function openBatchTransitModal() {
-  return {
-    type: actionTypes.OPEN_BATCH_TRANSIT_MODAL,
-  };
-}
-
-export function closeBatchTransitModal() {
-  return {
-    type: actionTypes.CLOSE_BATCH_TRANSIT_MODAL,
-  };
-}
-
-export function openBatchMoveModal() {
-  return {
-    type: actionTypes.OPEN_BATCH_MOVE_MODAL,
-  };
-}
-
-export function closeBatchMoveModal() {
-  return {
-    type: actionTypes.CLOSE_BATCH_MOVE_MODAL,
-  };
-}
-
-export function openBatchFreezeModal() {
-  return {
-    type: actionTypes.OPEN_BATCH_FREEZE_MODAL,
-  };
-}
-
-export function closeBatchFreezeModal() {
-  return {
-    type: actionTypes.CLOSE_BATCH_FREEZE_MODAL,
-  };
 }
 
 export function loadStocks(params) {
