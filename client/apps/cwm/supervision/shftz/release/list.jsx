@@ -10,6 +10,11 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
+import ShippingDockPanel from '../../../shipping/dock/shippingDockPanel';
+import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
+import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
@@ -32,7 +37,7 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { loadReleaseRegDatas, switchDefaultWhse }
+  { loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
@@ -62,6 +67,7 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'so_no',
     width: 180,
     fixed: 'left',
+    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
   }, {
     title: '海关出库单号',
     width: 180,
@@ -130,7 +136,9 @@ export default class SHFTZReleaseList extends React.Component {
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
   }]
-
+  handlePreview = (soNo, outboundNo) => {
+    this.props.showDock(soNo, outboundNo);
+  }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadReleaseRegDatas(params),
     resolve: result => result.data,
@@ -299,6 +307,10 @@ export default class SHFTZReleaseList extends React.Component {
                 <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
                   indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
+                <ShippingDockPanel />
+                <OrderDockPanel />
+                <DelegationDockPanel />
+                <ShipmentDockPanel />
               </div>
             </div>
           </Content>
