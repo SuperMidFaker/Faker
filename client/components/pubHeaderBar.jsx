@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { routerShape } from 'react-router';
 import { Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from './nav-link';
+import NavLink from './NavLink';
 import { MdIcon } from './FontIcon';
 import { loadTranslation, changeUserLocale, showPreferenceDock } from '../../common/reducers/preference';
 import { showActivitiesDock } from '../../common/reducers/activities';

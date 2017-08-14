@@ -9,7 +9,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import AddMemberModal from './addMemberModal';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';

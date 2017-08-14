@@ -10,7 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import '../index.less';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import { hscodeColumns } from './hscodeColumns';
 
@@ -131,7 +131,7 @@ export default class HsCodeList extends Component {
     const menu = (
       <Menu onClick={this.handleMenuClick}>
         <Menu.Item key="importData">
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/import/gunit`}
+          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/import/gunit`}
             formData={{
               data: JSON.stringify({
                 tenant_id: this.props.tenantId,
@@ -139,7 +139,7 @@ export default class HsCodeList extends Component {
             }} onUploaded={this.handleUploaded}
           >
             <Icon type="file-excel" /> {this.msg('importHsunit')}
-          </ExcelUpload>
+          </ExcelUploader>
         </Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板(申报单位)</Menu.Item>
       </Menu>

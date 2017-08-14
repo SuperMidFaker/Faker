@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message, Checkbox } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
@@ -17,7 +17,7 @@ import { getAuditWay } from 'common/reducers/scvClassification';
 import AddTradeRepoModal from './modals/addTradeRepo';
 import ButtonToggle from 'client/components/ButtonToggle';
 import SearchBar from 'client/components/SearchBar';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
@@ -764,7 +764,7 @@ export default class TradeItemList extends Component {
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   (
                     <Dropdown.Button size="large" overlay={importMenu}>
-                      <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
+                      <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
                         formData={{
                           data: JSON.stringify({
                             repo_id: this.props.repoId,
@@ -773,7 +773,7 @@ export default class TradeItemList extends Component {
                         }} onUploaded={this.handleUploaded}
                       >
                         <Icon type="upload" /> {this.msg('importItems')}
-                      </ExcelUpload>
+                      </ExcelUploader>
                     </Dropdown.Button>
                   )
                 }

@@ -8,7 +8,7 @@ import {
 } from 'common/reducers/corps';
 import { Button, Icon, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import NavLink from '../../../components/nav-link';
+import NavLink from '../../../components/NavLink';
 import showWarningModal from 'client/components/deletion-warning-modal';
 import AppEditor from '../../../components/appmodule-editor';
 import { isLoaded } from 'client/common/redux-actions';

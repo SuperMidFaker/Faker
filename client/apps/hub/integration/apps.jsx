@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Alert, Breadcrumb, Card, Col, Icon, Layout, Row } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content } = Layout;

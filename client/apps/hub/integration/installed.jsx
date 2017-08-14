@@ -5,7 +5,7 @@ import { Breadcrumb, Icon, Layout } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import Table from 'client/components/remoteAntTable';
 import { loadInstalledApps, deleteApp, updateAppStatus } from 'common/reducers/openIntegration';
 import { formatMsg } from './message.i18n';

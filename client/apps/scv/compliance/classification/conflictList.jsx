@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Icon, message, Table } from 'antd';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadConflictItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, setStandardItem } from 'common/reducers/scvClassification';

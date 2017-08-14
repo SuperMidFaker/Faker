@@ -6,7 +6,7 @@ import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { MdIcon, Ikons } from 'client/components/FontIcon';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { hasPermission } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
 import messages from 'client/apps/message.i18n';

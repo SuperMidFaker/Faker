@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from './nav-link';
+import NavLink from './NavLink';
 import { loadTranslation, changeUserLocale } from '../../common/reducers/preference';
 import { logout } from 'common/reducers/account';
 import { format } from 'client/common/i18n/helpers';

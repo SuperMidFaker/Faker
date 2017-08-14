@@ -4,7 +4,7 @@ import { Alert, Card, Form, Icon, Input, Button, Checkbox, Spin } from 'antd';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { submit, setValue, systemLoading } from '../../../common/reducers/auth';
-import NavLink from '../../components/nav-link';
+import NavLink from '../../components/NavLink';
 import { getFormatMsg } from 'client/util/react-ant';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';

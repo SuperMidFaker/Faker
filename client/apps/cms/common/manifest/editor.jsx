@@ -9,7 +9,7 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
 import { loadDocuDatas } from 'common/reducers/cmsInvoice';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';

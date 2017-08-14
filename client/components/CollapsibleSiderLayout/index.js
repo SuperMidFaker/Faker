@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Menu } from 'antd';
-import NavLink from '../nav-link';
+import NavLink from '../NavLink';
 import './index.less';
 
 const { Sider } = Layout;

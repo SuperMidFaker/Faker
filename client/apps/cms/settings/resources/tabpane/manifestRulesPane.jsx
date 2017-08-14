@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Icon, Table, Button, Layout, Popconfirm, Tag, message } from 'antd';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';

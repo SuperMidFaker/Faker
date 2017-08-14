@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import {
   CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE,
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';

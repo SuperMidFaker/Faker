@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Breadcrumb, Menu, Table, Button, Layout, Radio, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import SearchBar from 'client/components/SearchBar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';

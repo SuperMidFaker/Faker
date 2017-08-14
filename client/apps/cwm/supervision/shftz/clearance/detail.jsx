@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';

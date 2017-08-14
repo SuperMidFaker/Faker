@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Menu, Icon, Layout, Row, Col } from 'antd';
-import NavLink from 'client/components/nav-link';
-import HeaderNavBar from 'client/components/headerNavBar';
+import NavLink from 'client/components/NavLink';
+import HeaderNavBar from 'client/components/HeaderNavBar';
 import { setNavTitle } from 'common/reducers/navbar';
 
 const { Header, Content } = Layout;

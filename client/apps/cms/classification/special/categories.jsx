@@ -11,7 +11,7 @@ import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHs
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
 import SearchBar from 'client/components/SearchBar';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import '../index.less';
 
 const formatMsg = format(messages);
@@ -241,7 +241,7 @@ export default class SpecialCategories extends React.Component {
             <div className="page-header-tools">
               <Popover title="导入数据表格式如下" content={content}>
                 <Button type="primary" size="large" ghost>
-                  <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
+                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
                     formData={{
                       data: JSON.stringify({
                         categoryId: hscodeCategory.id,
@@ -250,7 +250,7 @@ export default class SpecialCategories extends React.Component {
                     }} onUploaded={this.handleUploaded}
                   >
                     <Icon type="upload" /> 导入
-                  </ExcelUpload>
+                  </ExcelUploader>
                 </Button>
               </Popover>
             </div>

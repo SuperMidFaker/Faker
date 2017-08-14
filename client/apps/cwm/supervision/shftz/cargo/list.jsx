@@ -10,8 +10,8 @@ import RemoteTable from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/SearchBar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
-import NavLink from 'client/components/nav-link';
-import ExcelUpload from 'client/components/excelUploader';
+import NavLink from 'client/components/NavLink';
+import ExcelUploader from 'client/components/ExcelUploader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
@@ -363,7 +363,7 @@ export default class SHFTZCargoList extends React.Component {
                 }
               {listFilter.status === 'completed' &&
                 <Dropdown.Button size="large" overlay={<Menu />}>
-                  <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
+                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
                     formData={{
                       data: JSON.stringify({
                         tenantId,
@@ -374,7 +374,7 @@ export default class SHFTZCargoList extends React.Component {
                     }} onUploaded={this.handleFiledCargoImport}
                   >
                     <Icon type="upload" /> 导入已备案料号
-                </ExcelUpload>
+                </ExcelUploader>
                 </Dropdown.Button>
                 }
               <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />

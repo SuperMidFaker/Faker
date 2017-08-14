@@ -5,7 +5,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';

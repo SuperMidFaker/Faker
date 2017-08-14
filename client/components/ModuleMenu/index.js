@@ -5,7 +5,7 @@ import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { Menu } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import NavLink from '../nav-link';
+import NavLink from '../NavLink';
 import { DEFAULT_MODULES } from 'common/constants';
 import messages from '../../common/root.i18n';
 import './index.less';

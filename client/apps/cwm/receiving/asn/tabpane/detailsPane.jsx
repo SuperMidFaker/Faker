@@ -6,7 +6,7 @@ import { Button, Icon, Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import messages from '../../message.i18n';
 import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
@@ -159,7 +159,7 @@ export default class DetailsPane extends Component {
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
+          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
             formData={{
               data: JSON.stringify({
                 tenantId: this.props.tenantId,
@@ -169,7 +169,7 @@ export default class DetailsPane extends Component {
             }} onUploaded={this.asnDetailsUploaded}
           >
             {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
-          </ExcelUpload>
+          </ExcelUploader>
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             <Button size="large" onClick={this.handleBatchDelete} icon="delete" />

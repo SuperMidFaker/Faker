@@ -11,7 +11,7 @@ import { loadCustomsDecls } from 'common/reducers/scvClearance';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import DeclStatusPopover from './declStatusPopover';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';

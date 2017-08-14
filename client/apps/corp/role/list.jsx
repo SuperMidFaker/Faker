@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';

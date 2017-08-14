@@ -7,7 +7,7 @@ import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBod
   deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal } from 'common/reducers/cmsManifest';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
 import RowUpdater from 'client/components/rowUpdater';
@@ -795,7 +795,7 @@ export default class ManifestBodyPane extends React.Component {
     } else {
       return (<span>
         <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
+          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
             formData={{
               data: JSON.stringify({
                 bill_seq_no: this.props.billSeqNo,
@@ -805,10 +805,10 @@ export default class ManifestBodyPane extends React.Component {
             }} onUploaded={this.handleUploaded}
           >
             <Icon type="upload" /> {this.msg('unrelatedImport')}
-          </ExcelUpload>
+          </ExcelUploader>
         </Dropdown.Button>
         <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
-          <ExcelUpload endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
+          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
             formData={{
               data: JSON.stringify({
                 bill_seq_no: this.props.billHead.bill_seq_no,
@@ -820,7 +820,7 @@ export default class ManifestBodyPane extends React.Component {
             }} onUploaded={this.handleUploaded}
           >
             <Icon type="link" /> {this.msg('relatedImport')}
-          </ExcelUpload>
+          </ExcelUploader>
         </Dropdown.Button>
         <Dropdown overlay={handlemenu}>
           <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>

@@ -5,7 +5,7 @@ import { locationShape } from 'react-router';
 import NotificationDockPanel from './home/notificationDockPanel';
 import PreferenceDockPanel from './home/preferenceDockPanel';
 import ActivitiesDockPanel from './home/activitiesDockPanel';
-import HeaderNavBar from 'client/components/headerNavBar';
+import HeaderNavBar from 'client/components/HeaderNavBar';
 
 const { Header } = Layout;
 

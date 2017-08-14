@@ -6,7 +6,7 @@ import QueueAnim from 'rc-queue-anim';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 // import connectFetch from 'client/common/decorators/connect-fetch';

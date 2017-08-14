@@ -10,7 +10,7 @@ import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
@@ -370,7 +370,7 @@ export default class ReceivingASNList extends React.Component {
           <div className="page-header-tools">
             {filters.status === 'completed' && filters.ownerCode !== 'all' &&
             <Dropdown.Button size="large" overlay={<Menu />}>
-              <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
+              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
                 formData={{
                   data: JSON.stringify({
                     tenantId: this.props.tenantId,
@@ -385,7 +385,7 @@ export default class ReceivingASNList extends React.Component {
                 }} onUploaded={this.handleAsnStockImport}
               >
                 <Icon type="upload" /> 导入库存ASN
-                </ExcelUpload>
+                </ExcelUploader>
             </Dropdown.Button>
               }
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>

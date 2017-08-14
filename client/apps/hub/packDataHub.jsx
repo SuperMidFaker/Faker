@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Menu, Icon, Layout } from 'antd';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import CorpHeaderBar from 'client/components/corpHeaderBar';
 import { setNavTitle } from 'common/reducers/navbar';
 

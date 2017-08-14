@@ -7,7 +7,7 @@ import { Layout, Table, Button, Input, Popover, Menu, Form, message, Popconfirm,
 import LocationModal from '../modal/locationModal';
 import { MdIcon } from 'client/components/FontIcon';
 import RowUpdater from 'client/components/rowUpdater';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import ZoneEditModal from '../modal/zoneEditModal';
 import { addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone, batchDeleteLocations, clearLocations, showZoneModal } from 'common/reducers/cwmWarehouse';
@@ -304,7 +304,7 @@ export default class ZoneLocationPane extends Component {
       <Layout>
         <Sider className="nav-sider">
           <div className="nav-sider-head">
-            <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
+            <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
               formData={{
                 data: JSON.stringify({
                   tenantId: this.props.tenantId,
@@ -315,7 +315,7 @@ export default class ZoneLocationPane extends Component {
               <Button type="primary" size="large" icon="upload">
                 导入库区库位
               </Button>
-            </ExcelUpload>
+            </ExcelUploader>
           </div>
           <Menu defaultOpenKeys={['zoneMenu']} mode="inline" selectedKeys={selectZone} onClick={this.handleZoneClick}>
             <SubMenu key="zoneMenu" title={<span><MdIcon mode="fontello" type="sitemap" />库区</span>} >

@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, message, Popover, Input, Form } from 'antd';
 import RemoteTable from 'client/components/remoteAntTable';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';

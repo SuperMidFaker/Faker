@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Alert, Button, Card } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import HeaderNavBar from 'client/components/headerNavBar';
+import HeaderNavBar from 'client/components/HeaderNavBar';
 import { setNavTitle } from 'common/reducers/navbar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';

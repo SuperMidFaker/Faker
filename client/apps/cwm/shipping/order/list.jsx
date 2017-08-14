@@ -10,7 +10,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
-import ExcelUpload from 'client/components/excelUploader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
@@ -393,7 +393,7 @@ export default class ShippingOrderList extends React.Component {
           </RadioGroup>
           <div className="page-header-tools">
             <Dropdown.Button size="large" overlay={<Menu />}>
-              <ExcelUpload endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
+              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
                 formData={{
                   data: JSON.stringify({
                     tenantId: this.props.tenantId,
@@ -405,7 +405,7 @@ export default class ShippingOrderList extends React.Component {
                 }} onUploaded={this.handleSoStockImport}
               >
                 <Icon type="upload" /> {this.msg('batchImport')}
-              </ExcelUpload>
+              </ExcelUploader>
             </Dropdown.Button>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}

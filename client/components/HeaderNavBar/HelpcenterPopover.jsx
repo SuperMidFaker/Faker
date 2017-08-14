@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { Icon, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import NavLink from './nav-link';
+import messages from '../message.i18n';
+import NavLink from '../NavLink';
 
 const MenuItem = Menu.Item;
 const formatMsg = format(messages);

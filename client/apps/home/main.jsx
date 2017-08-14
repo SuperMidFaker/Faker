@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Menu, Layout } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import HeaderNavBar from 'client/components/HeaderNavBar';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import ModuleLayout from 'client/components/ModuleLayout';
 import NotificationDockPanel from './notificationDockPanel';
 import PreferenceDockPanel from './preferenceDockPanel';

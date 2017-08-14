@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import CustomsDeclHeadPane from './tabpane/customsDeclHeadPane';
 import CustomsDeclBodyPane from './tabpane/customsDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import NavLink from 'client/components/nav-link';
+import NavLink from 'client/components/NavLink';
 import { formatMsg } from './message.i18n';
 
 const { Header, Content, Sider } = Layout;
