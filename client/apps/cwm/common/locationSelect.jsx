@@ -31,7 +31,7 @@ export default class LocationSelect extends React.Component {
     this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId).then((result) => {
       if (!result.error) {
         this.setState({
-          options: this.props.locations.slice(0, 20),
+          options: this.props.locations.slice(0, 10),
         });
       }
     });

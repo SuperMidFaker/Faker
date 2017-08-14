@@ -90,7 +90,7 @@ export default class ReceivingInboundList extends React.Component {
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
-    dataIndex: 'total_expect_qty',
+    dataIndex: 'total_product_qty',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
   }, {

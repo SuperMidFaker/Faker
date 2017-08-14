@@ -36,6 +36,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'GET_ASN_UUID', 'GET_ASN_UUID_SUCCEED', 'GET_ASN_UUID_FAIL',
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
   'CLEAR_PRODUCT_NOS',
+  'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
 ]);
 
 const initialState = {
@@ -667,5 +668,20 @@ export function getShipmtOrderNo(uuid) { // todo dont repeat
 export function clearProductNos() {
   return {
     type: actionTypes.CLEAR_PRODUCT_NOS,
+  };
+}
+
+export function loadAdviceLocations(productNo, tenantId, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ADVICE_LOCATIONS,
+        actionTypes.LOAD_ADVICE_LOCATIONS_SUCCEED,
+        actionTypes.LOAD_ADVICE_LOCATIONS_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/advice/locations',
+      method: 'get',
+      params: { productNo, tenantId, whseCode },
+    },
   };
 }
