@@ -34,7 +34,6 @@ const Option = Select.Option;
     displayedColumns: state.cwmInventoryStock.displayedColumns,
     listFilter: state.cwmInventoryStock.listFilter,
     sortFilter: state.cwmInventoryStock.sortFilter,
-    searchOption: state.cwmInventoryStock.searchOption,
   }),
   { showTransitionDock, loadStocks, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
 )
@@ -50,9 +49,6 @@ export default class StockTransitionList extends React.Component {
     stocklist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     sortFilter: PropTypes.object.isRequired,
-    searchOption: PropTypes.shape({
-      warehouses: PropTypes.arrayOf(PropTypes.shape({ whse_code: PropTypes.string })),
-    }),
   }
   state = {
     collapsed: false,
