@@ -94,7 +94,7 @@ export default class OutboundList extends React.Component {
     <span>{record.wave_no}</span>,
   }, {
     title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
-    dataIndex: 'total_qty',
+    dataIndex: 'total_product_qty',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
   }, {

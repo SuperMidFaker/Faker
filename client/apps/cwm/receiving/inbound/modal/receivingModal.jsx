@@ -7,7 +7,7 @@ import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
-import LocationSelect from 'client/apps/cwm/common/locationSelect';
+import ReceiveLocations from 'client/apps/cwm/common/receiveLocations';
 import messages from '../../message.i18n';
 import { hideReceiveModal, loadProductDetails, receiveProduct } from 'common/reducers/cwmReceive';
 import { CWM_DAMAGE_LEVEL } from 'common/constants';
@@ -305,7 +305,7 @@ export default class ReceivingModal extends Component {
     dataIndex: 'location',
     width: 180,
     render: (o, record, index) => (
-      <LocationSelect value={o} style={{ width: 160 }} onChange={value => this.handleProductPutAway(index, value)}
+      <ReceiveLocations value={o} style={{ width: 160 }} productNo={this.props.inboundProduct.product_no} onChange={value => this.handleProductPutAway(index, value)}
         disabled={!!record.trace_id}
       />),
   }, {

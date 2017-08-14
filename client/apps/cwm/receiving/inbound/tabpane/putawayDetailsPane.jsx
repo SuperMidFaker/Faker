@@ -138,22 +138,10 @@ export default class PutawayDetailsPane extends React.Component {
     if (row.children && row.children.length > 0) {
       details = details.concat(row.children);
     }
-    this.props.showPuttingAwayModal(details).then((result) => {
-      if (!result.error) {
-        message.success('操作成功');
-      } else {
-        message.error('操作失败');
-      }
-    });
+    this.props.showPuttingAwayModal(details);
   }
   handleBatchPutAways = () => {
-    this.props.showPuttingAwayModal(this.state.selectedRows).then((result) => {
-      if (!result.error) {
-        message.success('操作成功');
-      } else {
-        message.error('操作失败');
-      }
-    });
+    this.props.showPuttingAwayModal(this.state.selectedRows);
   }
   handleUndoReceive = (row) => {
     this.props.undoReceives(this.props.inboundNo, this.props.loginId, [row.trace_id]).then((result) => {
