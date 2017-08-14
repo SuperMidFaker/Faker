@@ -278,7 +278,7 @@ export default class SHFTZReleaseList extends React.Component {
               <div className="toolbar">
                 <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
                 <span />
-                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
                   onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
                 >
                   <Option value="all">全部货主</Option>
