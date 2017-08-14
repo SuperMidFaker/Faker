@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Button, Input, Select } from 'antd';
 import withPrivilege from 'client/common/decorators/withPrivilege';
-import Cascader from 'client/components/region-cascade';
+import Cascader from 'client/components/RegionCascader';
 
 const FormItem = Form.Item;
 const Option = Select.Option;

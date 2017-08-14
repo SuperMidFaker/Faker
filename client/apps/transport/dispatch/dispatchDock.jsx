@@ -13,7 +13,7 @@ import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConf
 import { addPartner } from 'common/reducers/partner';
 import { computeCostCharges } from 'common/reducers/shipment';
 import ChargeSpecForm from '../shipment/forms/chargeSpec';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import DispatchConfirmModal from './DispatchConfirmModal';
 import CarrierModal from '../resources/modals/carrierModal';
 import VehicleFormMini from '../resources/components/VehicleForm-mini';

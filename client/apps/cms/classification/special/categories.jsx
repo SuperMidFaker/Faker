@@ -10,7 +10,7 @@ import messages from '../message.i18n';
 import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import ExcelUpload from 'client/components/excelUploader';
 import '../index.less';
 

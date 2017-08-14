@@ -7,7 +7,7 @@ import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';

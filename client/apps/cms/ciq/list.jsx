@@ -13,7 +13,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import CiqnoFillModal from '../common/ciq/modals/ciqNoFill';
 

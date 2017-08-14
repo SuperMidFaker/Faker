@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Input, Icon, Select, DatePicker } from 'antd';
-import RegionCascade from 'client/components/region-cascade';
+import RegionCascader from 'client/components/RegionCascader';
 import moment from 'moment';
 import * as Location from 'client/util/location';
-import './editable-cell.less';
+import './index.less';
 
 const Option = Select.Option;
 export default class EditableCell extends React.Component {
@@ -112,7 +112,7 @@ export default class EditableCell extends React.Component {
       case 'regionCascade':
         return (<div className="editable-cell-outer">
           <div className="editable-cell-inner">
-            <RegionCascade region={region} onChange={this.handleRegionValueChange} />
+            <RegionCascader region={region} onChange={this.handleRegionValueChange} />
           </div>
           <span className="editable-cell-actions">
             <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />

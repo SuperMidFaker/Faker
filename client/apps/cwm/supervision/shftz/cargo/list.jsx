@@ -7,7 +7,7 @@ import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePort
   fileCargos, confirmCargos } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import RemoteTable from 'client/components/remoteAntTable';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/nav-link';

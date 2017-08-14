@@ -13,7 +13,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTradeParams } from 'common/reducers/cmsTradeitem';
 import { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, loadConflictItems } from 'common/reducers/scvClassification';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import { TRADE_ITEM_STATUS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';

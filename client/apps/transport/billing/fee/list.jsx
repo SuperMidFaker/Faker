@@ -17,7 +17,7 @@ import ExceptionListPopover from '../../tracking/land/modals/exception-list-popo
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
 import ActDate from '../../common/actDate';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
 import ShipmentAdvanceModal from '../../tracking/land/modals/shipment-advance-modal';

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Breadcrumb, Menu, Layout, Button, Table, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/nav-link';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { addUniqueKeys } from 'client/util/dataTransform';
 import VehicleModal from '../modals/vehicleModal';

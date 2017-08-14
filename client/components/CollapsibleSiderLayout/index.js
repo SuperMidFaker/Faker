@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Layout, Menu } from 'antd';
-import NavLink from './nav-link';
-import './CollapsibleSiderLayout.less';
+import NavLink from '../nav-link';
+import './index.less';
 
 const { Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -23,7 +23,7 @@ function isInclusivePath(pathTarget, pathSource) {
     (pathA.split('/').length > 3 && pathB.indexOf(pathA) === 0);
 }
 
-export default class CollapsibleSiderLayout extends React.Component {
+export default class CollapsibleSiderLayout extends PureComponent {
   static propTypes = {
     location: PropTypes.object.isRequired,
     links: PropTypes.arrayOf(PropTypes.shape({

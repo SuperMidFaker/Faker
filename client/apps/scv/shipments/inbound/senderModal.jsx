@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Select, message } from 'antd';
-import RegionCascade from 'client/components/region-cascade';
+import RegionCascader from 'client/components/RegionCascader';
 import { closeModal, sendInboundShipment } from 'common/reducers/scvInboundShipments';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -142,7 +142,7 @@ export default class SendModal extends React.Component {
             </Select>)}
           </FormItem>
           <FormItem label={this.msg('transportDest')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            <RegionCascade onChange={this.handleDestRegionChange} />
+            <RegionCascader onChange={this.handleDestRegionChange} />
           </FormItem>
         </Form>
       </Modal>

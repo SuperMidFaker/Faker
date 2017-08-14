@@ -6,7 +6,7 @@ import { Breadcrumb, Button, Layout, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { loadSkusByOwner } from 'common/reducers/cwmSku';
 import Table from 'client/components/remoteAntTable';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';

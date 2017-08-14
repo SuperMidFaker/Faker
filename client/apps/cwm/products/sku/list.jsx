@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Link } from 'react-router';
 import { Breadcrumb, Button, Collapse, Icon, Popconfirm, Input, Layout, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, delSku, openApplyPackingRuleModal } from 'common/reducers/cwmSku';

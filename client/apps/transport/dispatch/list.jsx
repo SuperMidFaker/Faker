@@ -31,7 +31,7 @@ import AddressColumn from '../common/addressColumn';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import RevokejectModal from '../shipment/dock/revoke-reject';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 import MyShipmentsSelect from '../common/myShipmentsSelect';
 import CustomerSelect from '../common/customerSelect';

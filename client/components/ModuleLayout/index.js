@@ -5,10 +5,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Col } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import { format } from 'client/common/i18n/helpers';
-import NavLink from './nav-link';
-import { DEFAULT_MODULES } from '../../common/constants';
-import messages from '../common/root.i18n';
-import './module-layout.less';
+import NavLink from '../nav-link';
+import { DEFAULT_MODULES } from 'common/constants';
+import messages from 'client/common/root.i18n';
+import './index.less';
 
 const formatMsg = format(messages);
 

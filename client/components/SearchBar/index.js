@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Input, Icon } from 'antd';
-import './search-bar.less';
+import './index.less';
 
 export default class SearchBar extends React.Component {
   static propTypes = {

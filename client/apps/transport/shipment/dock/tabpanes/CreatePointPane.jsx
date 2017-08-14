@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Input, Row, Button, DatePicker } from 'antd';
-import RegionCascade from 'client/components/region-cascade';
+import RegionCascader from 'client/components/RegionCascader';
 
 import { TRACKING_POINT_FROM_TYPE } from 'common/constants';
 import { reportLoc } from 'common/reducers/trackingLandStatus';
@@ -100,7 +100,7 @@ export default class CreatePointPane extends React.Component {
           })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
         </Row>
         <Row style={{ marginTop: 20 }}>
-          <RegionCascade region={[province, city, district, street]} onChange={this.handleRegionChange} />
+          <RegionCascader region={[province, city, district, street]} onChange={this.handleRegionChange} />
         </Row>
         <Row style={{ marginTop: 20 }}>
           {getFieldDecorator('address', {

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Row, Select, Cascader, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { CHINA_CODE } from '../../common/constants';
+import { CHINA_CODE } from 'common/constants';
 import { loadProvinces, loadRegionChildren, loadNextRegionList } from 'common/reducers/chinaRegions';
 import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
+import messages from '../message.i18n';
 import world from './worldwide-regions.json';
 
 const Option = Select.Option;
@@ -80,7 +80,7 @@ function isEmptyRegionProp(region) {
   }),
   { loadRegionChildren, loadProvinces, loadNextRegionList }
 )
-export default class RegionCascade extends React.Component {
+export default class RegionCascader extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     country: PropTypes.string, // undefined 不显示country编辑框

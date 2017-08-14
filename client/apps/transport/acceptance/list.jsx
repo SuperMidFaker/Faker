@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 // import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';

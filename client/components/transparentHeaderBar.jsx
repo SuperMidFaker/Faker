@@ -7,7 +7,7 @@ import { loadTranslation, changeUserLocale } from '../../common/reducers/prefere
 import { logout } from 'common/reducers/account';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import './headerNavBar.less';
+import './HeaderNavBar/index.less';
 
 const formatMsg = format(messages);
 

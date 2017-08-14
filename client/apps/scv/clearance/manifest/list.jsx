@@ -10,7 +10,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import Table from 'client/components/remoteAntTable';
 import { loadManifests, loadManifestTableParams } from 'common/reducers/scvClearance';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import NavLink from 'client/components/nav-link';
 import { formatMsg } from '../message.i18n';
 

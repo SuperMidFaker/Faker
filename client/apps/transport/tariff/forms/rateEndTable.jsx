@@ -4,7 +4,7 @@ import update from 'react/lib/update';
 import { connect } from 'react-redux';
 import { Form, Modal, Input, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import RegionCascader from 'client/components/region-cascade';
+import RegionCascader from 'client/components/RegionCascader';
 import { getEndTableVarColumns, renderRegion, RowClick, ConfirmDel } from './commodity';
 import { submitRateEnd, updateRateEnd, delRateEnd,
   loadRateEnds } from 'common/reducers/transportTariff';

@@ -5,7 +5,7 @@ import { Card, Row, Col, Button, Upload, Modal, Progress, Switch, Tooltip, Icon 
 import RateSourceTable from './rateSourceTable';
 import RateEndTable from './rateEndTable';
 import { loadRateEnds } from 'common/reducers/transportTariff';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import { getEndTableVarColumns } from './commodity';
 import { createFilename } from 'client/util/dataTransform';
 

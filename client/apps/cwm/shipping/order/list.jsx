@@ -8,7 +8,7 @@ import { Breadcrumb, DatePicker, Dropdown, Icon, Layout, Menu, Radio, Select, Bu
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import ExcelUpload from 'client/components/excelUploader';
 import ShippingDockPanel from '../dock/shippingDockPanel';

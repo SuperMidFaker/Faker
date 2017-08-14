@@ -8,7 +8,7 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadInbounds, loadInboundPartners, openModal, openCreateModal } from 'common/reducers/scvInboundShipments';
 import Table from 'client/components/remoteAntTable';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 // import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';

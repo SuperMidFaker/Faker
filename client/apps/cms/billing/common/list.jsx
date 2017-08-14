@@ -12,7 +12,7 @@ import messages from '../message.i18n';
 import BillingForm from './billingForm';
 import { loadBillings, updateBilling, sendBilling, billingInvoiced } from 'common/reducers/cmsBilling';
 import { CMS_BILLING_STATUS } from 'common/constants';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import CancelChargeModal from '../modals/cancelChargeModal';

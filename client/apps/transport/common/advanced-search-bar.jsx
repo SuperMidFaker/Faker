@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Row, Col, Button, DatePicker, Select, Tag } from 'antd';
 import moment from 'moment';
 import { format } from 'client/common/i18n/helpers';
-import RegionCascade from 'client/components/region-cascade';
+import RegionCascader from 'client/components/RegionCascader';
 import messages from './message.i18n';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadFormRequire } from 'common/reducers/shipment';
@@ -179,14 +179,14 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RegionCascade defaultRegion={this.state.consignerRegion} onChange={this.handleConsignerRegionValue} />
+                <RegionCascader defaultRegion={this.state.consignerRegion} onChange={this.handleConsignerRegionValue} />
               </FormItem>
               <FormItem
                 label="到达地"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                <RegionCascade defaultRegion={this.state.consigneeRegion} onChange={this.handleConsigneeRegionValue} />
+                <RegionCascader defaultRegion={this.state.consigneeRegion} onChange={this.handleConsigneeRegionValue} />
               </FormItem>
               <FormItem
                 label="运输模式"

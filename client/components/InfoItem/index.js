@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, Icon, Col, Row, Input } from 'antd';
 import classNames from 'classnames';
-import EditableCell from './EditableCell';
+import EditableCell from '../EditableCell';
 
 function getColCls(col) {
   if (col) {
@@ -14,7 +14,7 @@ function getColCls(col) {
   return '';
 }
 
-export default class InfoItem extends React.Component {
+export default class InfoItem extends PureComponent {
   static defaultProps = {
     prefixCls: 'info-item',
     colon: true,

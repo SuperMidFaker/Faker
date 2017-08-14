@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Breadcrumb, Table, Button, Layout, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';

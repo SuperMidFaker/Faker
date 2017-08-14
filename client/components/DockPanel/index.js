@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Alert, Badge, Breadcrumb, Button, Popover, Spin } from 'antd';
 import classNames from 'classnames';
-import './dock-panel.less';
+import './index.less';
 
 function noop() {}
 
-export default class DockPanel extends React.Component {
+export default class DockPanel extends PureComponent {
   static defaultProps = {
     prefixCls: 'dock-panel',
     alertType: 'info',

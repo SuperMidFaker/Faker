@@ -5,10 +5,10 @@ import { locationShape } from 'react-router';
 import { intlShape, injectIntl } from 'react-intl';
 import { Menu } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import NavLink from './nav-link';
-import { DEFAULT_MODULES } from '../../common/constants';
-import messages from '../common/root.i18n';
-import './module-menu.less';
+import NavLink from '../nav-link';
+import { DEFAULT_MODULES } from 'common/constants';
+import messages from '../../common/root.i18n';
+import './index.less';
 
 const formatMsg = format(messages);
 const MenuItem = Menu.Item;

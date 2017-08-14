@@ -15,7 +15,7 @@ import { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPar
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_BILLING_STATUS } from 'common/constants';
 import CancelChargeModal from './modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;

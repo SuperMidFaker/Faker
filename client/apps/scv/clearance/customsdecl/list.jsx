@@ -9,7 +9,7 @@ import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadCustomsDecls } from 'common/reducers/scvClearance';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import DeclStatusPopover from './declStatusPopover';
 import NavLink from 'client/components/nav-link';
 import { format } from 'client/common/i18n/helpers';

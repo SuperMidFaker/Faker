@@ -15,7 +15,7 @@ import { loadTable, delTariffById, updateTariffValid, loadFormParams,
   showCreateTariffModal, delTariffByQuoteNo, createTariffByNextVersion } from 'common/reducers/transportTariff';
 import { TARIFF_KINDS, TARIFF_METER_METHODS, GOODS_TYPES, TARIFF_PARTNER_PERMISSION } from 'common/constants';
 import CreateTariffModal from './modals/createTariffModal';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import containerMessages from 'client/apps/message.i18n';

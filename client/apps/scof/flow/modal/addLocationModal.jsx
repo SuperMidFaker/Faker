@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Row, Col, AutoComplete } from 'antd';
-import RegionCascade from 'client/components/region-cascade';
+import RegionCascader from 'client/components/RegionCascader';
 import { toggleAddLocationModal, loadTmsBizParams, searchRateEnds } from 'common/reducers/scofFlow';
 import { loadFormRequires } from 'common/reducers/crmOrders';
 import { loadFormRequire } from 'common/reducers/shipment';
@@ -151,7 +151,7 @@ export default class AddLocationModal extends React.Component {
         <Row gutter={10}>
           <Col span="14">
             <FormItem label={this.msg('locationProvince')}>
-              <RegionCascade
+              <RegionCascader
                 region={[region.province, region.city, region.district, region.street]}
                 onChange={this.handleRegionChange}
               />

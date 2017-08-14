@@ -12,7 +12,7 @@ import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openD
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import NavLink from 'client/components/nav-link';
 import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from '../common/customs/modals/fillCustomsNoModal';

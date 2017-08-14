@@ -14,7 +14,7 @@ import { SHIPMENT_BILLING_STATUS, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 
 import CancelChargeModal from '../modals/cancelChargeModal';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import ExportBillingExcel from '../modals/exportBillingsExcel';
 
 const formatMsg = format(messages);

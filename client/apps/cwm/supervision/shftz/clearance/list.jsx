@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Button, Layout, Radio, Menu, Select, message } from 
 import Table from 'client/components/remoteAntTable';
 import NavLink from 'client/components/nav-link';
 import TrimSpan from 'client/components/trimSpan';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openClearanceModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';

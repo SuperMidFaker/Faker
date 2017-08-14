@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, DatePicker, message } from 'antd';
-import RegionCascade from 'client/components/region-cascade';
+import RegionCascader from 'client/components/RegionCascader';
 import InputItem from '../../../shipment/forms/input-item';
 import { closeLocModal, reportLoc } from 'common/reducers/trackingLandStatus';
 import { TRACKING_POINT_FROM_TYPE } from 'common/constants';
@@ -101,7 +101,7 @@ export default class LocationUpdater extends React.Component {
           <FormItem label={this.msg('reportPosition')}
             colon={false}
           >
-            <RegionCascade onChange={this.handleRegionChange} />
+            <RegionCascader onChange={this.handleRegionChange} />
           </FormItem>
           <InputItem colSpan={6} labelName={this.msg('reportLocAddr')}
             formhoc={this.props.form} field="address"

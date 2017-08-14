@@ -14,7 +14,7 @@ import makeColumns from './columnDef';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
-import SearchBar from 'client/components/search-bar';
+import SearchBar from 'client/components/SearchBar';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
