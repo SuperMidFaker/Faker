@@ -11,6 +11,11 @@ import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
+import { showDock } from 'common/reducers/cwmReceive';
+import ReceivingDockPanel from '../../../receiving/dock/receivingDockPanel';
+import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -33,7 +38,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { loadEntryRegDatas, switchDefaultWhse }
+  { loadEntryRegDatas, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
@@ -63,6 +68,7 @@ export default class SHFTZEntryList extends React.Component {
     dataIndex: 'asn_no',
     width: 180,
     fixed: 'left',
+    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '报关单号',
     width: 180,
@@ -127,6 +133,9 @@ export default class SHFTZEntryList extends React.Component {
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
   }]
+  handlePreview = (asnNo) => {
+    this.props.showDock(asnNo);
+  }
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadEntryRegDatas(params),
     resolve: result => result.data,
@@ -301,6 +310,10 @@ export default class SHFTZEntryList extends React.Component {
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>
+              <ReceivingDockPanel />
+              <OrderDockPanel />
+              <DelegationDockPanel />
+              <ShipmentDockPanel />
             </div>
           </Content>
         </Layout>

@@ -272,6 +272,9 @@ export default class PickingDetailsPane extends React.Component {
       }
     });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   resetState = () => {
     this.setState({
       selectedRows: [],
@@ -332,6 +335,9 @@ export default class PickingDetailsPane extends React.Component {
             {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button size="large" onClick={this.handleBatchCancelPicked} icon="close">
               批量取消拣货
             </Button>}
+            <div className="pull-right">
+              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+            </div>
           </div>
           <div className="toolbar-right" />
         </div>

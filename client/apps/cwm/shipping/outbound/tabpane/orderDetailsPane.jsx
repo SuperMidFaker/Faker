@@ -203,6 +203,9 @@ export default class OrderDetailsPane extends React.Component {
   handleSearch = (value) => {
     this.setState({ searchValue: value });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { outboundHead, outboundProducts } = this.props;
     const { ButtonStatus } = this.state;
@@ -253,6 +256,9 @@ export default class OrderDetailsPane extends React.Component {
             {ButtonStatus === 'unalloc' && (<Button size="large" onClick={this.handleAllocBatchCancel} icon="close">
               批量取消分配
             </Button>)}
+            <div className="pull-right">
+              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+            </div>
           </div>
           <div className="toolbar-right">
             { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
