@@ -36,7 +36,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'GET_ASN_UUID', 'GET_ASN_UUID_SUCCEED', 'GET_ASN_UUID_FAIL',
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
   'CLEAR_PRODUCT_NOS',
-  'LOAD_RECEIVE_LOCATIONS', 'LOAD_RECEIVE_LOCATIONS_SUCCEED', 'LOAD_RECEIVE_LOCATIONS_FAIL',
+  'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
 ]);
 
 const initialState = {
@@ -671,15 +671,15 @@ export function clearProductNos() {
   };
 }
 
-export function loadReceiveLocations(productNo, tenantId, whseCode) {
+export function loadAdviceLocations(productNo, tenantId, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_RECEIVE_LOCATIONS,
-        actionTypes.LOAD_RECEIVE_LOCATIONS_SUCCEED,
-        actionTypes.LOAD_RECEIVE_LOCATIONS_FAIL,
+        actionTypes.LOAD_ADVICE_LOCATIONS,
+        actionTypes.LOAD_ADVICE_LOCATIONS_SUCCEED,
+        actionTypes.LOAD_ADVICE_LOCATIONS_FAIL,
       ],
-      endpoint: 'v1/cwm/get/receive/locations',
+      endpoint: 'v1/cwm/get/advice/locations',
       method: 'get',
       params: { productNo, tenantId, whseCode },
     },

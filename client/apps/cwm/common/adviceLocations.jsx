@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
 import { loadLocations } from 'common/reducers/cwmWarehouse';
-import { loadReceiveLocations } from 'common/reducers/cwmReceive';
+import { loadAdviceLocations } from 'common/reducers/cwmReceive';
 const Option = Select.Option;
 
 @connect(
@@ -13,9 +13,9 @@ const Option = Select.Option;
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadLocations, loadReceiveLocations }
+  { loadLocations, loadAdviceLocations }
 )
-export default class ReceiveLocations extends React.Component {
+export default class AdviceLocations extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     size: PropTypes.string,
@@ -32,7 +32,7 @@ export default class ReceiveLocations extends React.Component {
   }
   componentWillMount() {
     this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
-    this.props.loadReceiveLocations(this.props.productNo, this.props.tenantId, this.props.defaultWhse.code).then((result) => {
+    this.props.loadAdviceLocations(this.props.productNo, this.props.tenantId, this.props.defaultWhse.code).then((result) => {
       if (!result.error) {
         if (result.data.length !== 0) {
           this.setState({
@@ -49,7 +49,7 @@ export default class ReceiveLocations extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.productNo !== this.props.productNo) {
-      this.props.loadReceiveLocations(nextProps.productNo, this.props.tenantId, this.props.defaultWhse.code).then((result) => {
+      this.props.loadAdviceLocations(nextProps.productNo, this.props.tenantId, this.props.defaultWhse.code).then((result) => {
         if (!result.error) {
           if (result.data.length !== 0) {
             this.setState({
