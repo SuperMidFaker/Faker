@@ -98,6 +98,9 @@ export default class OrderDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+            <div className="pull-right">
+              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+            </div>
           </div>
         </div>
         <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveDetails} rowKey="wave_seq_no"

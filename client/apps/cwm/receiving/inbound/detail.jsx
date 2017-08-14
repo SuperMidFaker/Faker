@@ -262,7 +262,7 @@ export default class ReceiveInbound extends Component {
               <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={inboundHead.owner_name} />
               </Col>
-              <Col sm={24} lg={6}>
+              <Col sm={24} lg={4}>
                 <InfoItem label="ASN编号" field={inboundHead.asn_no} />
               </Col>
               <Col sm={12} lg={3}>
@@ -280,6 +280,9 @@ export default class ReceiveInbound extends Component {
                 <InfoItem label="入库时间" addonBefore={<Icon type="clock-circle-o" />}
                   field={inboundHead.completed_date && moment(inboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
                 />
+              </Col>
+              <Col sm={24} lg={4}>
+                <InfoItem label="操作模式" field={inboundHead.rec_mode === 'manual' ? '手动' : '扫码'} />
               </Col>
             </Row>
             <div className="card-footer">

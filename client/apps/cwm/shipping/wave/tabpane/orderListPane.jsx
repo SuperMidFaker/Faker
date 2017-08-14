@@ -100,6 +100,9 @@ export default class OrderDetailsPane extends React.Component {
             <Button size="large" onClick={this.handleRemoveOrders} icon="close">
               移除订单
             </Button>
+            <div className="pull-right">
+              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+            </div>
           </div>
           <div className="toolbar-right" />
         </div>

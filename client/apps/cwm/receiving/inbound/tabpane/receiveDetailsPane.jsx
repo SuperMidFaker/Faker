@@ -202,6 +202,9 @@ export default class ReceiveDetailsPane extends React.Component {
   handleSearch = (value) => {
     this.setState({ searchValue: value });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { inboundHead, inboundProducts } = this.props;
     const dataSource = inboundProducts.filter((item) => {
@@ -243,6 +246,9 @@ export default class ReceiveDetailsPane extends React.Component {
               批量收货确认
             </Button>
             }
+            <div className="pull-right">
+              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+            </div>
           </div>
           {/* <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&

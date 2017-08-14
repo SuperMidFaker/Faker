@@ -96,11 +96,16 @@ export default class PickingModal extends Component {
               })(<Input disabled />)
             }
           </FormItem>}
-          {pickMode === 'single' && <FormItem {...formItemLayout} label="目标跟踪号" >
+          {pickMode === 'single' && <FormItem {...formItemLayout} label="跟踪ID" >
             {
               getFieldDecorator('traceId', {
                 initialValue: traceId,
               })(<Input disabled />)
+            }
+          </FormItem>}
+          {pickMode === 'single' && <FormItem {...formItemLayout} label="拣货数量" >
+            {
+              getFieldDecorator('picked_qty')(<Input />)
             }
           </FormItem>}
           <FormItem {...formItemLayout} label="拣货人员" >
@@ -110,11 +115,6 @@ export default class PickingModal extends Component {
               })(<Input />)
             }
           </FormItem>
-          {pickMode === 'single' && <FormItem {...formItemLayout} label="拣货数量" >
-            {
-              getFieldDecorator('picked_qty')(<Input />)
-            }
-          </FormItem>}
           <FormItem {...formItemLayout} label="拣货时间" >
             {
               getFieldDecorator('pickedDate', {

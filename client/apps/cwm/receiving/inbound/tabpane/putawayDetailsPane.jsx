@@ -176,6 +176,9 @@ export default class PutawayDetailsPane extends React.Component {
   handleSearch = (value) => {
     this.setState({ searchValue: value });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { inboundHead, inboundPutaways } = this.props;
     const dataSource = inboundPutaways.filter((item) => {
@@ -224,6 +227,9 @@ export default class PutawayDetailsPane extends React.Component {
             <Button size="large" onClick={this.handleBatchUndoReceives} icon="rollback">
               批量取消收货
             </Button>
+            <div className="pull-right">
+              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+            </div>
           </div>
           <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_PUTAWAY.value &&
