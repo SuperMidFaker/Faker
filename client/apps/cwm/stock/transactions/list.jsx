@@ -45,6 +45,9 @@ export default class StockTransactionsList extends React.Component {
     collapsed: false,
     selectedRowKeys: [],
   }
+  componentWillMount() {
+    this.handleStockQuery(1);
+  }
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('owner'),
@@ -198,10 +201,10 @@ export default class StockTransactionsList extends React.Component {
     message.info('当前仓库已切换');
   }
   handleStockQuery = (currentPage, filter) => {
-    const { tenantId, sortFilter, transactionlist: { pageSize, current } } = this.props;
+    const { tenantId, sortFilter, listFilter, transactionlist: { pageSize, current } } = this.props;
     this.props.loadTransactions({
       tenantId,
-      filter: JSON.stringify(filter),
+      filter: JSON.stringify(filter || listFilter),
       pageSize,
       current: currentPage || current,
       sorter: JSON.stringify(sortFilter),

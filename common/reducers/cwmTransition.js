@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'CLOSE_BATCH_MOVE_MODAL', 'OPEN_BATCH_MOVE_MODAL',
   'CLOSE_BATCH_FREEZE_MODAL', 'OPEN_BATCH_FREEZE_MODAL',
   'LOAD_TRANSITIONS', 'LOAD_TRANSITIONS_SUCCEED', 'LOAD_TRANSITIONS_FAIL',
+  'SPLIT_TRANSIT', 'SPLIT_TRANSIT_SUCCEED', 'SPLIT_TRANSIT_FAIL',
 ]);
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
   },
   transitionDock: {
     visible: false,
+    detail: {},
   },
   loading: false,
   list: {
@@ -41,9 +43,9 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.HIDE_TRANSITION_DOCK:
-      return { ...state, transitionDock: { ...state.transitionDock, visible: false } };
+      return { ...state, transitionDock: { ...state.transitionDock, visible: false, detail: {} } };
     case actionTypes.SHOW_TRANSITION_DOCK:
-      return { ...state, transitionDock: { ...state.transitionDock, visible: true } };
+      return { ...state, transitionDock: { ...state.transitionDock, visible: true, detail: action.data } };
     case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
       return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false } };
     case actionTypes.OPEN_BATCH_TRANSIT_MODAL:
@@ -76,10 +78,10 @@ export function hideTransitionDock() {
   };
 }
 
-export function showTransitionDock(detailId) {
+export function showTransitionDock(inboundDetail) {
   return {
     type: actionTypes.SHOW_TRANSITION_DOCK,
-    detailId,
+    data: inboundDetail,
   };
 }
 
@@ -130,6 +132,21 @@ export function loadTransitions(params) {
       endpoint: 'v1/cwm/stock/inbound/transitions',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function splitTransit(traceIds, transit, loginName, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SPLIT_TRANSIT,
+        actionTypes.SPLIT_TRANSIT_SUCCEED,
+        actionTypes.SPLIT_TRANSIT_FAIL,
+      ],
+      endpoint: 'v1/cwm/stock/transition/split',
+      method: 'post',
+      data: { traceIds, transit, loginName, tenantId },
     },
   };
 }
