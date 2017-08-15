@@ -146,7 +146,7 @@ export function WaybillDef(data) {
       },
     },
     defaultStyle: {
-      font: 'yahei',
+      font: 'selfFont',
     },
   };
   docDefinition.content = pdfBody(data);
