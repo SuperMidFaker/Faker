@@ -8,6 +8,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'CLOSE_BATCH_FREEZE_MODAL', 'OPEN_BATCH_FREEZE_MODAL',
   'LOAD_TRANSITIONS', 'LOAD_TRANSITIONS_SUCCEED', 'LOAD_TRANSITIONS_FAIL',
   'SPLIT_TRANSIT', 'SPLIT_TRANSIT_SUCCEED', 'SPLIT_TRANSIT_FAIL',
+  'MOVE_TRANSIT', 'MOVE_TRANSIT_SUCCEED', 'MOVE_TRANSIT_FAIL',
+  'ADJUST_TRANSIT', 'ADJUST_TRANSIT_SUCCEED', 'ADJUST_TRANSIT_FAIL',
 ]);
 
 const initialState = {
@@ -38,12 +40,13 @@ const initialState = {
   listFilter: {
     status: 'normal',
   },
+  reloadTransitions: false,
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.HIDE_TRANSITION_DOCK:
-      return { ...state, transitionDock: { ...state.transitionDock, visible: false, detail: {} } };
+      return { ...state, transitionDock: { ...state.transitionDock, visible: false, detail: {} }, reloadTransitions: action.data.needReload };
     case actionTypes.SHOW_TRANSITION_DOCK:
       return { ...state, transitionDock: { ...state.transitionDock, visible: true, detail: action.data } };
     case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
@@ -62,7 +65,9 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         listFilter: JSON.parse(action.params.filter),
         sortFilter: JSON.parse(action.params.sorter),
-        loading: true };
+        loading: true,
+        reloadTransitions: false,
+      };
     case actionTypes.LOAD_TRANSITIONS_SUCCEED:
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_TRANSITIONS_FAIL:
@@ -72,9 +77,10 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function hideTransitionDock() {
+export function hideTransitionDock({ needReload }) {
   return {
     type: actionTypes.HIDE_TRANSITION_DOCK,
+    data: { needReload },
   };
 }
 
@@ -147,6 +153,36 @@ export function splitTransit(traceIds, transit, loginName, tenantId) {
       endpoint: 'v1/cwm/stock/transition/split',
       method: 'post',
       data: { traceIds, transit, loginName, tenantId },
+    },
+  };
+}
+
+export function moveTransit(traceIds, transit, targetLocation, movementNo, loginName, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.MOVE_TRANSIT,
+        actionTypes.MOVE_TRANSIT_SUCCEED,
+        actionTypes.MOVE_TRANSIT_FAIL,
+      ],
+      endpoint: 'v1/cwm/stock/transition/move',
+      method: 'post',
+      data: { traceIds, transit, targetLocation, movementNo, loginName, tenantId },
+    },
+  };
+}
+
+export function adjustTransit(traceId, transit, loginName, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADJUST_TRANSIT,
+        actionTypes.ADJUST_TRANSIT_SUCCEED,
+        actionTypes.ADJUST_TRANSIT_FAIL,
+      ],
+      endpoint: 'v1/cwm/stock/transition/adjust',
+      method: 'post',
+      data: { traceId, transit, loginName, tenantId },
     },
   };
 }

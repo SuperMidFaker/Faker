@@ -34,14 +34,7 @@ export default class TransitionDockPanel extends React.Component {
   state = {
   }
 
-  componentWillUnmount() {
-    this.props.hideTransitionDock();
-  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-
-  handleClose = () => {
-    this.props.hideTransitionDock();
-  }
 
   renderTitle = () => (<span>追踪ID:{this.props.detail.trace_id}</span>)
   renderTabs() {

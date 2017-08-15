@@ -45,8 +45,9 @@ export default class StockTransactionsList extends React.Component {
     collapsed: false,
     selectedRowKeys: [],
   }
-  componentWillMount() {
-    this.handleStockQuery(1);
+  componentDidMount() {
+    const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
+    this.handleStockQuery(1, filter);
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -199,6 +200,8 @@ export default class StockTransactionsList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
+    const filter = { ...this.props.listFilter, whse_code: value };
+    this.handleStockQuery(1, filter);
   }
   handleStockQuery = (currentPage, filter) => {
     const { tenantId, sortFilter, listFilter, transactionlist: { pageSize, current } } = this.props;
@@ -212,10 +215,6 @@ export default class StockTransactionsList extends React.Component {
   }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
-    this.handleStockQuery(1, filter);
-  }
-  handleWarehouseSelect = (whno) => {
-    const filter = { ...this.props.listFilter, whse_code: whno };
     this.handleStockQuery(1, filter);
   }
   render() {

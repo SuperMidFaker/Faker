@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Button, Card, Form, Row, Input, InputNumber, Col, DatePicker, message, Select, Switch } from 'antd';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
-import { hideTransitionDock, splitTransit } from 'common/reducers/cwmTransition';
+import { hideTransitionDock, splitTransit, moveTransit } from 'common/reducers/cwmTransition';
 import { loadOwnerUndoneMovements } from 'common/reducers/cwmMovement';
 
 const FormItem = Form.Item;
@@ -17,8 +17,9 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     loginName: state.account.username,
     detail: state.cwmTransition.transitionDock.detail,
+    ownerMovements: state.cwmMovement.ownerMovements,
   }),
-  { hideTransitionDock, splitTransit, loadOwnerUndoneMovements }
+  { hideTransitionDock, splitTransit, moveTransit, loadOwnerUndoneMovements }
 )
 @Form.create()
 export default class TransitPane extends React.Component {
@@ -34,6 +35,7 @@ export default class TransitPane extends React.Component {
     this.props.loadOwnerUndoneMovements(detail.owner_partner_id, detail.whse_code, tenantId);
   }
   handleLocationSelect = (value) => { this.setState({ target_location: value }); }
+  handleMovementNoChange = (value) => { this.setState({ movement_no: value }); }
   handleTransit = () => {
     const transitValues = this.props.form.getFieldsValue();
     const transit = {};
@@ -44,12 +46,18 @@ export default class TransitPane extends React.Component {
         transit[transitKey] = transitValues[transitKey];
       }
     });
+    const { loginName, tenantId } = this.props;
+    let transitOp;
     if (this.state.target_location && this.state.movement_no) {
+      transitOp = this.props.moveTransit([this.props.detail.trace_id], transit, this.state.target_location,
+        this.state.movement_no, loginName, tenantId);
     } else if (valueChanged) {
-      const { loginName, tenantId } = this.props;
-      this.props.splitTransit([this.props.detail.trace_id], transit, loginName, tenantId).then((result) => {
+      transitOp = this.props.splitTransit([this.props.detail.trace_id], transit, loginName, tenantId);
+    }
+    if (transitOp) {
+      transitOp.then((result) => {
         if (!result.error) {
-          this.props.hideTransitionDock(true);
+          this.props.hideTransitionDock({ needReload: true });
         } else {
           message.error(result.error.message);
         }
@@ -61,7 +69,7 @@ export default class TransitPane extends React.Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
     };
-    const { detail, form: { getFieldDecorator } } = this.props;
+    const { detail, form: { getFieldDecorator }, ownerMovements } = this.props;
     return (
       <div className="pane-content tab-pane">
         <Form>
@@ -234,7 +242,8 @@ export default class TransitPane extends React.Component {
               </Col>
               {this.state.target_location && <Col span={8}>
                 <FormItem {...formItemLayout} label="移库单">
-                  <Select />
+                  <Select allowClear showSearch onSelect={this.handleMovementNoChange} />
+                  {ownerMovements.map(oum => <Option key={oum.movement_no} value={oum.movement_no}>{oum.movement_no}</Option>)}
                 </FormItem>
               </Col>}
             </Row>

@@ -43,7 +43,6 @@ export default class StockInventoryList extends React.Component {
     sortFilter: PropTypes.object.isRequired,
   }
   state = {
-    collapsed: false,
     selectedRowKeys: [],
   }
   componentWillMount() {
@@ -52,7 +51,10 @@ export default class StockInventoryList extends React.Component {
         scrollY: window.innerHeight - 400,
       });
     }
-    this.handleStockQuery(1);
+  }
+  componentDidMount() {
+    const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
+    this.handleStockQuery(1, filter);
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -169,6 +171,8 @@ export default class StockInventoryList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
+    const filter = { ...this.props.listFilter, whse_code: value };
+    this.handleStockQuery(1, filter);
   }
   handleStockQuery = (currentPage, filter) => {
     const { tenantId, listFilter, stocklist: { pageSize, current } } = this.props;
@@ -181,10 +185,6 @@ export default class StockInventoryList extends React.Component {
   }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
-    this.handleStockQuery(1, filter);
-  }
-  handleWarehouseSelect = (whno) => {
-    const filter = { ...this.props.listFilter, whse_code: whno };
     this.handleStockQuery(1, filter);
   }
   renderNormalCol(text, row) {

@@ -57,6 +57,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, movementHead: action.result.data };
     case actionTypes.LOAD_MOVEMENT_DETAILS_SUCCESS:
       return { ...state, movementDetails: action.result.data };
+    case actionTypes.LOAD_OWNUNDONEMM_SUCCESS:
+      return { ...state, ownerMovements: action.result.data };
     default:
       return state;
   }

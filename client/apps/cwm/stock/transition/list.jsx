@@ -32,6 +32,7 @@ const Option = Select.Option;
     transitionlist: state.cwmTransition.list,
     listFilter: state.cwmTransition.listFilter,
     sortFilter: state.cwmTransition.sortFilter,
+    reload: state.cwmTransition.reloadTransitions,
   }),
   { showTransitionDock, loadTransitions, splitTransit, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
 )
@@ -53,8 +54,14 @@ export default class StockTransitionList extends React.Component {
     selectedRowKeys: [],
     transitionSplitNum: 0,
   }
-  componentWillMount() {
-    this.handleStockQuery(1);
+  componentDidMount() {
+    const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
+    this.handleStockQuery(1, filter);
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.reload) {
+      this.handleStockQuery();
+    }
   }
   msg = formatMsg(this.props.intl);
 
@@ -241,6 +248,8 @@ export default class StockTransitionList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
+    const filter = { ...this.props.listFilter, whse_code: value };
+    this.handleStockQuery(1, filter);
   }
   handleSplitChange = (value, min, max) => {
     const splitValue = parseFloat(value);
@@ -294,10 +303,6 @@ export default class StockTransitionList extends React.Component {
   }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
-    this.handleStockQuery(1, filter);
-  }
-  handleWarehouseSelect = (whno) => {
-    const filter = { ...this.props.listFilter, whse_code: whno };
     this.handleStockQuery(1, filter);
   }
   handleShowDock = (row) => {
