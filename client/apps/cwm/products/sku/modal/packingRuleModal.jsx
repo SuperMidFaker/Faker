@@ -95,7 +95,7 @@ export default class PackingRuleModal extends Component {
                     rules: [{
                       required: true, message: 'Please input convey_inner_qty!',
                     }],
-                  })(<Input style={{ width: '100%' }} placeholder="SKU包装单位数量" />)}
+                  })(<Input style={{ width: '100%' }} placeholder="SKU件数" />)}
                 </InputGroup>
               </FormItem>
             </Col>
@@ -107,7 +107,7 @@ export default class PackingRuleModal extends Component {
                       required: true, message: 'Please input convey_box_qty!',
                     }],
                     initialValue: conveyBoxQty,
-                  })(<Input style={{ width: '100%' }} placeholder="SKU包装单位数量" onChange={this.handleBoxChange} />)}
+                  })(<Input style={{ width: '100%' }} placeholder="SKU件数" onChange={this.handleBoxChange} />)}
                 </InputGroup>
               </FormItem>
             </Col>
@@ -120,7 +120,7 @@ export default class PackingRuleModal extends Component {
                     }],
                     initialValue: conveyPalletQty,
                   })(<Input style={{ width: '50%' }} placeholder="箱量" onChange={this.handlePalleteChange} />)}
-                  <Input value={conveyPalletQty * conveyBoxQty ? conveyPalletQty * conveyBoxQty : ''} style={{ width: '50%' }} placeholder="SKU包装单位数量" disabled />
+                  <Input value={conveyPalletQty * conveyBoxQty ? conveyPalletQty * conveyBoxQty : ''} style={{ width: '50%' }} placeholder="SKU件数" disabled />
                 </InputGroup>
               </FormItem>
             </Col>

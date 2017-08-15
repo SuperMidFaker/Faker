@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Popover, Form, Input } from 'antd';
+import { Button, Popover, Form, Input, Icon, Tooltip } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
@@ -41,25 +41,57 @@ export default class PackagePopover extends Component {
     const content = (
       <div style={{ width: 280 }}>
         <Form layout="vertical" className="form-layout-compact">
-          <FormItem label="计量单位数量">
+          <FormItem label={(
+            <span>
+                计量单位数量&nbsp;
+                  <Tooltip title="每件SKU对应的商品计量单位数量">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+            </span>
+                )}
+          >
             <Input className="readonly" defaultValue="1" disabled />
           </FormItem>
-          <FormItem label="内包装量">
+          <FormItem label={(
+            <span>
+                内包装量&nbsp;
+                  <Tooltip title="每个内包装容纳的SKU件数、商品计量单位数量">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+            </span>
+                )}
+          >
             <InputGroup compact>
-              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.inner_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU件数" value={skuForm.inner_pack_qty} disabled />
               <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_inner_qty} disabled />
             </InputGroup>
           </FormItem>
-          <FormItem label="装箱量">
+          <FormItem label={(
+            <span>
+                装箱量&nbsp;
+                  <Tooltip title="每箱容纳的SKU件数、商品计量单位数量">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+            </span>
+                )}
+          >
             <InputGroup compact>
-              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU包装单位数量" value={skuForm.box_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU件数" value={skuForm.box_pack_qty} disabled />
               <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_box_qty} disabled />
             </InputGroup>
           </FormItem>
-          <FormItem label="码盘量">
+          <FormItem label={(
+            <span>
+                  码盘量&nbsp;
+                  <Tooltip title="每托盘容纳的箱数量、SKU件数、商品计量单位数量">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+            </span>
+                )}
+          >
             <InputGroup compact>
-              <Input className="readonly" style={{ width: '34%' }} placeholder="箱量" value={skuForm.pallet_box_qty} disabled />
-              <Input className="readonly" style={{ width: '33%' }} placeholder="SKU包装单位数量" value={skuForm.pallet_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '34%' }} placeholder="箱数量" value={skuForm.pallet_box_qty} disabled />
+              <Input className="readonly" style={{ width: '33%' }} placeholder="SKU件数" value={skuForm.pallet_pack_qty} disabled />
               <Input className="readonly" style={{ width: '33%' }} placeholder="计量单位数量" value={skuForm.convey_pallet_qty} disabled />
             </InputGroup>
           </FormItem>
