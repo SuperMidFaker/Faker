@@ -24,23 +24,6 @@ export default class Print extends Component {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
   }
-  componentDidMount() {
-    let script;
-    if (!document.getElementById('pdfmake-min')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-min';
-      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-    if (!document.getElementById('pdfmake-vfsfont')) {
-      script = document.createElement('script');
-      script.id = 'pdfmake-vfsfont';
-      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }
   msg = key => formatMsg(this.props.intl, key);
   pdfPickHead = () => {
     const { outboundHead, defaultWhse, outboundNo } = this.props;
