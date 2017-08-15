@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { loadSku } from 'common/reducers/cwmSku';
+import { loadSkuRule } from 'common/reducers/cwmSku';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -14,15 +14,17 @@ const InputGroup = Input.Group;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     packings: state.cwmSku.params.packings,
-    skuForm: state.cwmSku.skuForm,
+    skuRule: state.cwmSku.skuRule,
   }),
-  { loadSku }
+  { loadSkuRule }
 )
 export default class PackagePopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     sku: PropTypes.string.isRequired,
+    ownerPartnerId: PropTypes.number.isRequired,
   }
   state = {
     visible: false,
@@ -32,12 +34,12 @@ export default class PackagePopover extends Component {
   handleVisibleChange = (visible) => {
     this.setState({ visible });
     if (visible && Object.keys(this.state.sku).length === 0) {
-      this.props.loadSku(this.props.sku);
+      this.props.loadSkuRule(this.props.ownerPartnerId, this.props.sku, this.props.tenantId);
     }
   }
   render() {
     const sku = this.props.sku;
-    const { skuForm } = this.props;
+    const { skuRule } = this.props;
     const content = (
       <div style={{ width: 280 }}>
         <Form layout="vertical" className="form-layout-compact">
@@ -50,7 +52,7 @@ export default class PackagePopover extends Component {
             </span>
                 )}
           >
-            <Input className="readonly" defaultValue="1" disabled />
+            <Input className="readonly" value={skuRule.sku_pack_qty} disabled />
           </FormItem>
           <FormItem label={(
             <span>
@@ -62,8 +64,8 @@ export default class PackagePopover extends Component {
                 )}
           >
             <InputGroup compact>
-              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU件数" value={skuForm.inner_pack_qty} disabled />
-              <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_inner_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU件数" value={skuRule.inner_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuRule.convey_inner_qty} disabled />
             </InputGroup>
           </FormItem>
           <FormItem label={(
@@ -76,8 +78,8 @@ export default class PackagePopover extends Component {
                 )}
           >
             <InputGroup compact>
-              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU件数" value={skuForm.box_pack_qty} disabled />
-              <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuForm.convey_box_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="SKU件数" value={skuRule.box_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '50%' }} placeholder="计量单位数量" value={skuRule.convey_box_qty} disabled />
             </InputGroup>
           </FormItem>
           <FormItem label={(
@@ -90,9 +92,11 @@ export default class PackagePopover extends Component {
                 )}
           >
             <InputGroup compact>
-              <Input className="readonly" style={{ width: '34%' }} placeholder="箱数量" value={skuForm.pallet_box_qty} disabled />
-              <Input className="readonly" style={{ width: '33%' }} placeholder="SKU件数" value={skuForm.pallet_pack_qty} disabled />
-              <Input className="readonly" style={{ width: '33%' }} placeholder="计量单位数量" value={skuForm.convey_pallet_qty} disabled />
+              <Input className="readonly" style={{ width: '34%' }} placeholder="箱数量" value={(skuRule.convey_pallet_qty && skuRule.convey_box_qty) ?
+                 skuRule.convey_pallet_qty / skuRule.convey_box_qty : ''} disabled
+              />
+              <Input className="readonly" style={{ width: '33%' }} placeholder="SKU件数" value={skuRule.pallet_pack_qty} disabled />
+              <Input className="readonly" style={{ width: '33%' }} placeholder="计量单位数量" value={skuRule.convey_pallet_qty} disabled />
             </InputGroup>
           </FormItem>
         </Form>

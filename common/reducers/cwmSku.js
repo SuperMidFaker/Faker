@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/sku/', [
   'OPEN_PACKING_RULE_MODAL', 'CLOSE_PACKING_RULE_MODAL',
   'OPEN_APPLY_PACKING_RULE_MODAL', 'CLOSE_APPLY_PACKING_RULE_MODAL',
   'SAVE_SKU_TEMPLATE', 'SAVE_SKU_TEMPLATE_SUCCEED', 'SAVE_SKU_TEMPLATE_FAIL',
+  'LOAD_SKU_RULE', 'LOAD_SKU_RULE_SUCCEED', 'LOAD_SKU_RULE_FAIL',
 ]);
 
 const initialState = {
@@ -50,6 +51,7 @@ const initialState = {
     inbound_convey: 'PCS',
     outbound_convey: 'PCS',
   },
+  skuRule: {},
   packingRuleModal: {
     visible: false,
   },
@@ -98,6 +100,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, applyPackingRuleModal: { visible: true } };
     case actionTypes.CLOSE_APPLY_PACKING_RULE_MODAL:
       return { ...state, applyPackingRuleModal: { visible: false } };
+    case actionTypes.LOAD_SKU_RULE_SUCCEED:
+      return { ...state, skuRule: { ...action.result.data } };
     default:
       return state;
   }
@@ -263,6 +267,21 @@ export function saveSkuTemplate(data, tenantId, loginId, partnerId) {
       endpoint: 'v1/cwm/product/save/sku/template',
       method: 'post',
       data: { data, tenantId, loginId, partnerId },
+    },
+  };
+}
+
+export function loadSkuRule(ownerPartnerId, productSku, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SKU_RULE,
+        actionTypes.LOAD_SKU_RULE_SUCCEED,
+        actionTypes.LOAD_SKU_RULE_FAIL,
+      ],
+      endpoint: 'v1/cwm/sku/rule/load',
+      method: 'get',
+      params: { ownerPartnerId, productSku, tenantId },
     },
   };
 }

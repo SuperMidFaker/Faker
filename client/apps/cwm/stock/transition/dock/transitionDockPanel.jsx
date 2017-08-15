@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import moment from 'moment';
 import { Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { hideTransitionDock } from 'common/reducers/cwmTransition';
-// import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
 import { format } from 'client/common/i18n/helpers';
 import TransitPane from './tabpane/transitPane';
@@ -21,7 +19,7 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    transitionDock: state.cwmTransition.transitionDock,
+    detail: state.cwmTransition.transitionDock.detail,
     visible: state.cwmTransition.transitionDock.visible,
   }),
   { hideTransitionDock }
@@ -31,7 +29,6 @@ export default class TransitionDockPanel extends React.Component {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
-    transitionDock: PropTypes.object.isRequired,
     hideTransitionDock: PropTypes.func.isRequired,
   }
   state = {
@@ -46,13 +43,10 @@ export default class TransitionDockPanel extends React.Component {
     this.props.hideTransitionDock();
   }
 
-  renderTitle = () => (
-    <span>追踪ID</span>
-    )
-
+  renderTitle = () => (<span>追踪ID:{this.props.detail.trace_id}</span>)
   renderTabs() {
     return (
-      <Tabs defaultActiveKey="transfer" onChange={this.handleTabChange}>
+      <Tabs defaultActiveKey="transfer">
         <TabPane tab={this.msg('库存转移')} key="transfer">
           <TransitPane />
         </TabPane>

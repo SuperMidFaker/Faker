@@ -11,6 +11,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/inventory/movement/', [
   'EXECUTE_MOVE', 'EXECUTE_MOVE_SUCCESS', 'EXECUTE_MOVE_FAIL',
   'CANCEL_MOVEMENT', 'CANCEL_MOVEMENT_SUCCESS', 'CANCEL_MOVEMENT_FAIL',
   'REMOVE_MOVEMENT_DETAIL', 'REMOVE_MOVEMENT_DETAIL_SUCCESS', 'REMOVE_MOVEMENT_DETAIL_FAIL',
+  'LOAD_OWNUNDONEMM', 'LOAD_OWNUNDONEMM_SUCCESS', 'LOAD_OWNUNDONEMM_FAIL',
 ]);
 
 const initialState = {
@@ -35,6 +36,7 @@ const initialState = {
   movementFilter: { owner: 'all' },
   movementHead: {},
   movementDetails: [],
+  ownerMovements: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -195,6 +197,21 @@ export function removeMoveDetail(ids, loginId) {
       endpoint: 'v1/cwm/remove/movement/detail',
       method: 'post',
       data: { ids, loginId },
+    },
+  };
+}
+
+export function loadOwnerUndoneMovements(ownerId, tenantId, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_OWNUNDONEMM,
+        actionTypes.LOAD_OWNUNDONEMM_SUCCESS,
+        actionTypes.LOAD_OWNUNDONEMM_FAIL,
+      ],
+      endpoint: 'v1/cwm/load/owner/undone/movement',
+      method: 'get',
+      params: { ownerId, tenantId, whseCode },
     },
   };
 }

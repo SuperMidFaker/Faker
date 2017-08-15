@@ -14,12 +14,8 @@ const { RangePicker } = DatePicker;
 @injectIntl
 @connect(
   state => ({
-    searchOption: state.cwmInventoryStock.searchOption,
-    displayedColumns: state.cwmInventoryStock.displayedColumns,
-    filter: state.cwmInventoryStock.listFilter,
+    filter: state.cwmTransition.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
-    defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
   }),
   { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList }
 )
@@ -28,10 +24,6 @@ export default class QueryForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
-    searchOption: PropTypes.shape({
-      categories: PropTypes.arrayOf(PropTypes.shape({ category_no: PropTypes.string })),
-    }),
-    displayedColumns: PropTypes.shape({ product_no: PropTypes.bool }),
     onSearch: PropTypes.func.isRequired,
   }
   state = {

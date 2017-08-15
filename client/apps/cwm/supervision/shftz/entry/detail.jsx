@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
@@ -325,12 +324,12 @@ export default class SHFTZEntryDetail extends Component {
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.created_date && moment(entryAsn.created_date).format('YYYY-MM-DD HH:mm')}
+                    field={entryAsn.created_date}
                   />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY-MM-DD HH:mm')}
+                    field={entryAsn.reg_date}
                   />
                 </Col>
               </Row>
@@ -370,13 +369,13 @@ export default class SHFTZEntryDetail extends Component {
                           </Col>
                           <Col sm={12} lg={3}>
                             <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
-                              type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY.MM.DD')} editable={entryEditable}
+                              type="date" field={reg.ie_date} editable={entryEditable}
                               onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
                             />
                           </Col>
                           <Col sm={12} lg={3}>
                             <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                              type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY.MM.DD')} editable={entryEditable}
+                              type="date" field={reg.ftz_ent_date} editable={entryEditable}
                               onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                             />
                           </Col>
