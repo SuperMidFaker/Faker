@@ -44,6 +44,11 @@ const initialState = {
     asn_tag_unit: 'primary',
     so_tag_unit: 'primary',
     variants: [],
+    unit: '007',
+    sku_pack_unit: '00',
+    sku_pack_qty: 1,
+    inbound_convey: 'PCS',
+    outbound_convey: 'PCS',
   },
   packingRuleModal: {
     visible: false,

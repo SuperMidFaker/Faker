@@ -160,7 +160,7 @@ export default class SiderForm extends Component {
             </RadioGroup>
                   )}
           </FormItem>
-          <FormItem label={this.msg('默认入库包装')}>
+          <FormItem label={this.msg('默认入库包装')} required>
             {getFieldDecorator('inbound_convey', {
               initialValue: skuForm.inbound_convey,
             })(<RadioGroup size="large">
@@ -181,7 +181,7 @@ export default class SiderForm extends Component {
                   )}
           </FormItem>
 
-          <FormItem label={this.msg('默认出库包装')}>
+          <FormItem label={this.msg('默认出库包装')} required>
             {getFieldDecorator('outbound_convey', {
               initialValue: skuForm.outbound_convey,
             })(<RadioGroup size="large">

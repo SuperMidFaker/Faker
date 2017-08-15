@@ -116,7 +116,7 @@ export default class MainForm extends Component {
                 {getFieldDecorator('product_no', {
                   rules: [{ required: true }],
                   initialValue: skuForm.product_no,
-                })(<Input />)}
+                })(<Input onChange={e => this.handleFormChange('product_sku', e.target.value)} />)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
@@ -141,7 +141,7 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
-              <FormItem label={this.msg('measureUnit')}>
+              <FormItem label={this.msg('measureUnit')} required>
                 <Select showSearch allowClear optionFilterProp="children" placeholder="选择计量单位"
                   value={skuForm.unit} onChange={this.handleUnitChange}
                 >
@@ -150,7 +150,7 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
-              <FormItem label={this.msg('unitPrice')}>
+              <FormItem label={this.msg('unitPrice')} required>
                 <InputGroup compact>
                   <Select showSearch allowClear optionFilterProp="children" size="large" style={{ width: '40%' }}
                     value={skuForm.currency} onChange={this.handleCurrChange}
@@ -216,14 +216,14 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('skuPack')}>
+              <FormItem label={this.msg('skuPack')} required>
                 <Select allowClear placeholder="选择SKU包装单位" onSelect={this.handlePackUnitChange} value={skuForm.sku_pack_unit}>
                   {CWM_SKU_PACK_UNITS.map(cspu => <Option value={cspu.value} key={cspu.value}>{cspu.text}</Option>)}
                 </Select>
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('perSKUQty')}>
+              <FormItem label={this.msg('perSKUQty')} required>
                 <InputGroup compact>
                   <Input style={{ width: '70%' }} value={skuForm.sku_pack_qty} onChange={this.handlePackQtyChange} />
                   <Input value={skuForm.unit_name} style={{ width: '30%' }} disabled />
