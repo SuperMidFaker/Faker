@@ -118,7 +118,8 @@ export default class OrderDetailsPane extends React.Component {
     title: '计量单位',
     dataIndex: 'unit',
     width: 100,
-    render: o => this.props.units.length > 0 ? this.props.units.find(unit => unit.code === o).name : '',
+    className: 'cell-align-center',
+    render: o => this.props.units.length > 0 && o ? this.props.units.find(unit => unit.code === o).name : '',
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',

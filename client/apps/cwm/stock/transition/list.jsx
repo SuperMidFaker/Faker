@@ -140,6 +140,14 @@ export default class StockTransitionList extends React.Component {
     width: 120,
     dataIndex: 'virtual_whse',
   }, {
+    title: this.msg('bonded'),
+    width: 120,
+    dataIndex: 'bonded',
+  }, {
+    title: this.msg('portion'),
+    width: 120,
+    dataIndex: 'portion',
+  }, {
     title: this.msg('damageLevel'),
     width: 120,
     dataIndex: 'damage_level',
@@ -185,14 +193,6 @@ export default class StockTransitionList extends React.Component {
     title: this.msg('attrib8'),
     width: 120,
     dataIndex: 'attrib_8_date',
-  }, {
-    title: this.msg('bonded'),
-    width: 120,
-    dataIndex: 'bonded',
-  }, {
-    title: this.msg('portion'),
-    width: 120,
-    dataIndex: 'portion',
   }, {
     title: this.msg('ftzEntryId'),
     width: 120,

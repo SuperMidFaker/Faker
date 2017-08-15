@@ -175,12 +175,12 @@ export default class OutboundDetail extends Component {
                 <InfoItem label="货主" field={outboundHead.owner_name} />
               </Col>
               { outboundHead.wave_no &&
-              <Col sm={24} lg={6}>
+              <Col sm={24} lg={4}>
                 <InfoItem label="波次编号" field={outboundHead.wave_no} />
               </Col>
                 }
               { outboundHead.so_no &&
-              <Col sm={24} lg={6}>
+              <Col sm={24} lg={4}>
                 <InfoItem label="SO编号" field={outboundHead.so_no} />
               </Col>
                 }
@@ -205,6 +205,9 @@ export default class OutboundDetail extends Component {
                 <InfoItem label="出库时间" addonBefore={<Icon type="clock-circle-o" />}
                   field={outboundHead.completed_date && moment(outboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
                 />
+              </Col>
+              <Col sm={12} lg={2}>
+                <InfoItem label="操作模式" field={outboundHead.shipping_mode === 'manual' ? '手动' : '扫码'} />
               </Col>
             </Row>
             <div className="card-footer">
