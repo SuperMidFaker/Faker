@@ -10,7 +10,7 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 
 @injectIntl
-export default class CarrierForm extends Component {
+export default class CarrierPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,

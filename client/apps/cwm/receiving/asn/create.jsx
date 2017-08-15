@@ -6,6 +6,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import HeadCard from './card/headCard';
 import DetailsPane from './tabpane/detailsPane';
+import LottingPane from './tabpane/lottingPane';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { addASN, clearTemporary } from 'common/reducers/cwmReceive';
@@ -135,9 +136,12 @@ export default class CreateReceivingASN extends Component {
           <Form layout="vertical">
             <HeadCard form={form} handleOwnerChange={this.handleOwnerChange} />
             <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
-              <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
-                <TabPane tab="收货明细" key="orderDetails">
+              <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
+                <TabPane tab="ASN明细" key="asnDetails">
                   <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
+                </TabPane>
+                <TabPane tab="批次属性" key="lottingProps">
+                  <LottingPane editable={this.state.editable} form={form} />
                 </TabPane>
               </Tabs>
             </Card>

@@ -46,6 +46,7 @@ const initialState = {
     so_tag_unit: 'primary',
     variants: [],
     unit: '007',
+    unit_name: '个',
     sku_pack_unit: '00',
     sku_pack_qty: 1,
     inbound_convey: 'PCS',

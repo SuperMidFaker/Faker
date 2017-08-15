@@ -22,7 +22,7 @@ const formatMsg = format(messages);
   }),
   { showDetailModal, addTemporary, deleteTemporary, clearTemporary }
 )
-export default class DetailForm extends Component {
+export default class DetailsPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,

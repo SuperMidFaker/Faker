@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Dropdown, Menu, Form, Select, Card, Col, Icon, Input, Row, Tooltip, Checkbox } from 'antd';
 import { setSkuForm } from 'common/reducers/cwmSku';
-import { CWM_SKU_PACK_UNITS } from 'common/constants';
+import { CWM_SKU_PACKS } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
@@ -44,7 +44,7 @@ export default class MainForm extends Component {
     }
   }
   handlePackUnitChange = (value) => {
-    const punit = CWM_SKU_PACK_UNITS.filter(pu => pu.value === value)[0];
+    const punit = CWM_SKU_PACKS.filter(pu => pu.value === value)[0];
     if (punit) {
       this.props.setSkuForm({ sku_pack_unit: punit.value, sku_pack_unit_name: punit.text });
     }
@@ -142,15 +142,18 @@ export default class MainForm extends Component {
             </Col>
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('measureUnit')} required>
-                <Select showSearch allowClear optionFilterProp="children" placeholder="选择计量单位"
+                {getFieldDecorator('unit', {
+                  rules: [{ required: true }],
+                  initialValue: skuForm.unit,
+                })(<Select showSearch allowClear optionFilterProp="children" placeholder="选择计量单位"
                   value={skuForm.unit} onChange={this.handleUnitChange}
                 >
                   {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
-                </Select>
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={12}>
-              <FormItem label={this.msg('unitPrice')} required>
+              <FormItem label={this.msg('unitPrice')}>
                 <InputGroup compact>
                   <Select showSearch allowClear optionFilterProp="children" size="large" style={{ width: '40%' }}
                     value={skuForm.currency} onChange={this.handleCurrChange}
@@ -218,7 +221,7 @@ export default class MainForm extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('skuPack')} required>
                 <Select allowClear placeholder="选择SKU包装单位" onSelect={this.handlePackUnitChange} value={skuForm.sku_pack_unit}>
-                  {CWM_SKU_PACK_UNITS.map(cspu => <Option value={cspu.value} key={cspu.value}>{cspu.text}</Option>)}
+                  {CWM_SKU_PACKS.map(cspu => <Option value={cspu.value} key={cspu.value}>{cspu.text}</Option>)}
                 </Select>
               </FormItem>
             </Col>
@@ -256,7 +259,7 @@ export default class MainForm extends Component {
             </Col>
             <Col sm={24} lg={6}>
               <FormItem label={this.msg('unitCBM')}>
-                <Input value={skuForm.cbm} disabled />
+                <Input value={skuForm.cbm} addonAfter="CBM" disabled />
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>

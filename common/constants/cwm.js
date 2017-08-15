@@ -1,9 +1,9 @@
-exports.CWM_SKU_PACK_UNITS = [{
+exports.CWM_SKU_PACKS = [{
   value: '00',
   text: '单件(散装)',
 }, {
   value: '01',
-  text: '包',
+  text: '内包装(包/盒/袋等)',
 }, {
   value: '02',
   text: '木箱',
