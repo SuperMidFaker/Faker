@@ -18,13 +18,21 @@ const messages = defineMessages({
     id: 'cwm.products.import',
     defaultMessage: '导入',
   },
+  save: {
+    id: 'cwm.products.save',
+    defaultMessage: '保存',
+  },
+  cancel: {
+    id: 'cwm.products.cancel',
+    defaultMessage: '取消',
+  },
   createSKU: {
     id: 'cwm.products.sku.create',
-    defaultMessage: '新建货品',
+    defaultMessage: '新建SKU',
   },
   productSearchPlaceholder: {
     id: 'cwm.products.search.placeholder',
-    defaultMessage: 'SKU号或者货号',
+    defaultMessage: 'SKU或商品货号',
   },
   ownerSearch: {
     id: 'cwm.products.owner.search',
@@ -38,21 +46,73 @@ const messages = defineMessages({
     id: 'cwm.products.hscode',
     defaultMessage: '商品编码',
   },
-  productCnDesc: {
+  descCN: {
     id: 'cwm.products.sku.cn.desc',
     defaultMessage: '中文品名',
   },
-  productEnDesc: {
+  descEN: {
     id: 'cwm.products.sku.en.desc',
     defaultMessage: '英文品名',
   },
-  productCategory: {
+  category: {
     id: 'cwm.products.product.category',
-    defaultMessage: '种类',
+    defaultMessage: '商品分类',
   },
-  productType: {
-    id: 'cwm.products.product.type',
-    defaultMessage: '商品类型',
+  measureUnit: {
+    id: 'cwm.products.product.measure.unit',
+    defaultMessage: '计量单位',
+  },
+  unitPrice: {
+    id: 'cwm.products.product.unit.price',
+    defaultMessage: '单价',
+  },
+  alias1: {
+    id: 'cwm.products.product.alias1',
+    defaultMessage: '别名1',
+  },
+  alias2: {
+    id: 'cwm.products.product.alias2',
+    defaultMessage: '别名2',
+  },
+  alias3: {
+    id: 'cwm.products.product.alias3',
+    defaultMessage: '别名3',
+  },
+  skuPack: {
+    id: 'cwm.products.sku.pack',
+    defaultMessage: '包装',
+  },
+  perSKUQty: {
+    id: 'cwm.products.sku.per.qty',
+    defaultMessage: '单位包装数量',
+  },
+  length: {
+    id: 'cwm.products.sku.length',
+    defaultMessage: '长',
+  },
+  width: {
+    id: 'cwm.products.sku.width',
+    defaultMessage: '宽',
+  },
+  height: {
+    id: 'cwm.products.sku.height',
+    defaultMessage: '高',
+  },
+  unitCBM: {
+    id: 'cwm.products.sku.unit.cbm',
+    defaultMessage: '体积',
+  },
+  grossWeight: {
+    id: 'cwm.products.sku.gross.weight',
+    defaultMessage: '毛重',
+  },
+  netWeight: {
+    id: 'cwm.products.sku.net.weight',
+    defaultMessage: '净重',
+  },
+  tareWeight: {
+    id: 'cwm.products.sku.tare.weight',
+    defaultMessage: '皮重',
   },
   lastModifiedDate: {
     id: 'cwm.products.last.modified',

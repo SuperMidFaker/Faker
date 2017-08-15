@@ -146,7 +146,7 @@ export default class ShippingDockPanel extends React.Component {
     const { order } = this.props;
     const tabs = [];
     tabs.push(
-      <TabPane tab={this.msg('shippingOrder')} key="order">
+      <TabPane tab={this.msg('tabSO')} key="order">
         <OrderPane soHead={soHead} soBody={soBody} />
       </TabPane>);
     if (soHead.bonded) {
@@ -157,7 +157,7 @@ export default class ShippingDockPanel extends React.Component {
     }
     if (soHead.status > CWM_SO_STATUS.PENDING.value) {
       tabs.push(
-        <TabPane tab={this.msg('shippingOutbound')} key="outbound">
+        <TabPane tab={this.msg('tabOutbound')} key="outbound">
           <OutboundPane outboundNo={order.outboundNo} />
         </TabPane>);
     }

@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
+import { Breadcrumb, Button, Card, Checkbox, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showTransitionDock, loadTransitions, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
-import TagSelect from 'client/components/TagSelect';
 import QueryForm from './queryForm';
 import TransitionDockPanel from './dock/transitionDockPanel';
 import BatchTransitModal from './modal/batchTransitModal';
@@ -19,7 +18,6 @@ import { formatMsg } from '../message.i18n';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const TagOption = TagSelect.Option;
 const { Header, Content } = Layout;
 const Option = Select.Option;
 
@@ -273,6 +271,9 @@ export default class StockTransitionList extends React.Component {
   toggleTableSetting = () => {
     this.setState({ showTableSetting: !this.state.showTableSetting });
   }
+  renderDisplayColumns() {
+    return <Checkbox>Checkbox</Checkbox>;
+  }
   render() {
     const { defaultWhse, whses, loading, listFilter } = this.props;
     const rowSelection = {
@@ -334,8 +335,10 @@ export default class StockTransitionList extends React.Component {
           <div className="page-body data-table">
             <div className="toolbar">
               <div className="toolbar-right">
-                <Tooltip title="显示字段设置">
-                  <Button shape="circle" icon="setting" onClick={this.toggleTableSetting} />
+                <Tooltip title="自定义显示字段" placement="topRight">
+                  <Popover placement="leftTop" title="自定义显示字段" content={this.renderDisplayColumns()} trigger="click">
+                    <Button shape="circle" icon="bars" />
+                  </Popover>
                 </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
@@ -346,17 +349,6 @@ export default class StockTransitionList extends React.Component {
                 <div className="pull-right">
                   <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
                 </div>
-              </div>
-              <div className={`table-setting ${this.state.showTableSetting ? '' : 'hide'}`}>
-                <div className="pull-right">
-                  <Button type="primary" shape="circle" icon="check" onClick={this.toggleTableSetting} />
-                </div>
-                <TagSelect>
-                  <TagOption value="cat1">货主</TagOption>
-                  <TagOption value="cat2">货号</TagOption>
-                  <TagOption value="cat3">SKU</TagOption>
-                  <TagOption value="cat4">中文品名</TagOption>
-                </TagSelect>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">

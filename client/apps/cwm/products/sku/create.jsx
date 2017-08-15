@@ -88,7 +88,7 @@ export default class CreateProductSku extends Component {
               {this.msg('productsSku')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('createProductSku')}
+              {this.msg('createSKU')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">

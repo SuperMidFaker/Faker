@@ -43,12 +43,14 @@ export default class ASNPane extends React.Component {
     title: '订单数量',
     width: 100,
     dataIndex: 'order_qty',
+    className: 'cell-align-right',
   }, {
     title: '计量单位',
     dataIndex: 'unit_name',
+    className: 'cell-align-center',
   }, {
-    title: '单价',
-    dataIndex: 'unit_price',
+    title: '采购订单号',
+    dataIndex: 'po_no',
   }]
   render() {
     const { asnHead } = this.props;

@@ -77,6 +77,18 @@ const messages = defineMessages({
     id: 'cwm.shipping.transactions.manuf.expiry.date',
     defaultMessage: '生产/失效日期',
   },
+  tabSO: {
+    id: 'cwm.shipping.dock.tab.so',
+    defaultMessage: '发货订单',
+  },
+  tabFTZ: {
+    id: 'cwm.shipping.dock.tab.ftz',
+    defaultMessage: '海关备案',
+  },
+  tabOutbound: {
+    id: 'cwm.shipping.dock.tab.outbound',
+    defaultMessage: '出库信息',
+  },
 });
 
 export default messages;

@@ -216,7 +216,7 @@ export default class MainForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('skuUnit')}>
+              <FormItem label={this.msg('skuPack')}>
                 <Select allowClear placeholder="选择SKU包装单位" onSelect={this.handlePackUnitChange} value={skuForm.sku_pack_unit}>
                   {CWM_SKU_PACK_UNITS.map(cspu => <Option value={cspu.value} key={cspu.value}>{cspu.text}</Option>)}
                 </Select>
@@ -282,10 +282,10 @@ export default class MainForm extends Component {
             </Col>
           </Row>
         </Card>
-        <Card title="海关归类属性" style={{ marginTop: 16 }} extra={<Button icon="sync">同步归类</Button>}>
+        <Card title="海关商品归类" style={{ marginTop: 16 }} extra={<Button icon="sync">同步归类</Button>}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
-              <FormItem label={this.msg('HSCode')}>
+              <FormItem label={this.msg('hscode')}>
                 <Input value={skuForm.hscode} disabled />
               </FormItem>
             </Col>

@@ -122,6 +122,7 @@ export default class DetailForm extends Component {
     }, {
       title: '计量单位',
       dataIndex: 'unit',
+      className: 'cell-align-center',
       render: o => o && units.find(unit => unit.code === o).name,
     }, {
       title: '库别',
@@ -131,7 +132,7 @@ export default class DetailForm extends Component {
       title: 'SKU',
       dataIndex: 'product_sku',
       width: 150,
-      render: o => o ? (<PackagePopover sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,
+      render: o => o ? (<PackagePopover sku={o} />) : <span className="text-error">请设置SKU</span>,
     }, {
       title: '入库单号',
       dataIndex: 'asn_no',

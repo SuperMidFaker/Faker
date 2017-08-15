@@ -45,12 +45,14 @@ export default class SOPane extends React.Component {
     title: '订单数量',
     width: 100,
     dataIndex: 'order_qty',
+    className: 'cell-align-right',
   }, {
     title: '计量单位',
     dataIndex: 'unit_name',
+    className: 'cell-align-center',
   }, {
-    title: '单价',
-    dataIndex: 'unit_price',
+    title: '批次号',
+    dataIndex: 'external_lot_no',
   }]
   render() {
     const { soHead } = this.props;
