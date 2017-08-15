@@ -132,7 +132,7 @@ export default class DetailForm extends Component {
       title: 'SKU',
       dataIndex: 'product_sku',
       width: 150,
-      render: o => o ? (<PackagePopover sku={o} />) : <span className="text-error">请设置SKU</span>,
+      render: o => o ? (<PackagePopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,
     }, {
       title: '入库单号',
       dataIndex: 'asn_no',
