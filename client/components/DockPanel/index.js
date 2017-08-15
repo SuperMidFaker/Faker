@@ -96,7 +96,7 @@ export default class DockPanel extends PureComponent {
             </div>
             <div className={bodyCls}>
               {alert ? <Alert message={alert} type={alertType} /> : null}
-              {children}
+              {visible && children}
             </div>
           </Spin>
         </div>

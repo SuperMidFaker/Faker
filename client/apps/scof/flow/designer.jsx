@@ -483,7 +483,8 @@ export default class FlowDesigner extends React.Component {
       model.out_degree = 0;
       nodeMap[model.id] = model;
     });
-    const edges = graphItems.filter(item => item.get('type') === 'edge').map(item => item.get('model'));
+    const edges = graphItems.filter(item => item.get('type') === 'edge'
+      && item.get('model').target !== item.get('model').source).map(item => item.get('model'));
     edges.forEach((edge) => { // edge move cannot edit in/out degree on the fly
       if (nodeMap[edge.target]) {
         nodeMap[edge.target].in_degree += 1;

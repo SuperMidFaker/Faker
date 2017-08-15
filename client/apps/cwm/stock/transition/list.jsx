@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Checkbox, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showTransitionDock, loadTransitions, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
+import { showTransitionDock, loadTransitions, splitTransit, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
@@ -27,12 +27,13 @@ const Option = Select.Option;
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
+    loginName: state.account.username,
     loading: state.cwmTransition.loading,
     transitionlist: state.cwmTransition.list,
     listFilter: state.cwmTransition.listFilter,
     sortFilter: state.cwmTransition.sortFilter,
   }),
-  { showTransitionDock, loadTransitions, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
+  { showTransitionDock, loadTransitions, splitTransit, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
 )
 @connectNav({
   depth: 2,
@@ -50,6 +51,10 @@ export default class StockTransitionList extends React.Component {
   state = {
     showTableSetting: false,
     selectedRowKeys: [],
+    transitionSplitNum: 0,
+  }
+  componentWillMount() {
+    this.handleStockQuery(1);
   }
   msg = formatMsg(this.props.intl);
 
@@ -120,16 +125,16 @@ export default class StockTransitionList extends React.Component {
     },
   }, {
     title: this.msg('traceId'),
-    width: 120,
+    width: 220,
     dataIndex: 'trace_id',
   }, {
     title: this.msg('SKU'),
     dataIndex: 'product_sku',
-    width: 180,
+    width: 160,
     sorter: true,
   }, {
     title: this.msg('lotNo'),
-    width: 120,
+    width: 180,
     dataIndex: 'external_lot_no',
   }, {
     title: this.msg('serialNo'),
@@ -217,11 +222,17 @@ export default class StockTransitionList extends React.Component {
       } else if (record.avail_qty === 1) {
         return <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />;
       } else {
+        const min = 1;
+        const max = record.avail_qty - 1;
         return (<span>
           <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />
           <span className="ant-divider" />
-          <Popover placement="left" title="拆分数量" content={<span><InputNumber min={1} max={record.avail_qty - 1} /><Button type="primary" icon="check" style={{ marginLeft: 8 }} /></span>} trigger="click">
-            <a onClick={this.handleSplit}>拆分</a>
+          <Popover placement="left" title="拆分数量" content={<span>
+            <InputNumber onChange={value => this.handleSplitChange(value, min, max)} value={this.state.transitionSplitNum} />
+            <Button type="primary" icon="check" style={{ marginLeft: 8 }} onClick={() => this.handleSplitTransition(record)} />
+          </span>} trigger="click"
+          >
+            <a>拆分</a>
           </Popover>
         </span>);
       }
@@ -231,11 +242,38 @@ export default class StockTransitionList extends React.Component {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
   }
+  handleSplitChange = (value, min, max) => {
+    const splitValue = parseFloat(value);
+    if (!isNaN(splitValue)) {
+      if (splitValue < min) {
+        this.setState({ transitionSplitNum: min });
+      } else if (splitValue > max) {
+        this.setState({ transitionSplitNum: max });
+      } else {
+        this.setState({ transitionSplitNum: splitValue });
+      }
+    }
+  }
+  handleSplitTransition = (row) => {
+    if (this.state.transitionSplitNum === 0) {
+      message.error('请先输入拆分数量');
+    } else {
+      const { loginName, tenantId } = this.props;
+      this.props.splitTransit([row.trace_id], { split: this.state.transitionSplitNum, reason: '拆分' }, loginName, tenantId).then((result) => {
+        if (!result.error) {
+          this.handleStockQuery();
+          this.setState({ transitionSplitNum: 0 });
+        } else {
+          message.error(result.error.message);
+        }
+      });
+    }
+  }
   handleStockQuery = (currentPage, filter) => {
-    const { tenantId, sortFilter, transitionlist: { pageSize, current } } = this.props;
+    const { tenantId, sortFilter, listFilter, transitionlist: { pageSize, current } } = this.props;
     this.props.loadTransitions({
       tenantId,
-      filter: JSON.stringify(filter),
+      filter: JSON.stringify(filter || listFilter),
       sorter: JSON.stringify(sortFilter),
       pageSize,
       current: currentPage || current,
@@ -262,8 +300,8 @@ export default class StockTransitionList extends React.Component {
     const filter = { ...this.props.listFilter, whse_code: whno };
     this.handleStockQuery(1, filter);
   }
-  handleShowDock = () => {
-    this.props.showTransitionDock();
+  handleShowDock = (row) => {
+    this.props.showTransitionDock(row);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -314,9 +352,7 @@ export default class StockTransitionList extends React.Component {
           <Breadcrumb>
             <Breadcrumb.Item>
               <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                  }
+                {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>

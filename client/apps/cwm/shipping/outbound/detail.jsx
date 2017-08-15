@@ -62,6 +62,23 @@ export default class OutboundDetail extends Component {
     this.props.loadOutboundHead(this.props.params.outboundNo);
     this.props.readWaybillLogo();
   }
+  componentDidMount() {
+    let script;
+    if (!document.getElementById('pdfmake-min')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-min';
+      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    if (!document.getElementById('pdfmake-vfsfont')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-vfsfont';
+      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -117,9 +134,10 @@ export default class OutboundDetail extends Component {
     });
     const docDefinition = WaybillDef(this.props.waybill);
     window.pdfMake.fonts = {
-      yahei: {
+      selfFont: {
         normal: 'msyh.ttf',
         bold: 'msyh.ttf',
+        italics: 'frutigel.ttf',
       },
     };
     window.pdfMake.createPdf(docDefinition).open();

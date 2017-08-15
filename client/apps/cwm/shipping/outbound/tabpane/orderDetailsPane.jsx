@@ -126,7 +126,7 @@ export default class OrderDetailsPane extends React.Component {
     width: 160,
     render: (o) => {
       if (o) {
-        return <PackagePopover sku={o} />;
+        return <PackagePopover ownerPartnerId={this.props.outboundHead.owner_partner_id} sku={o} />;
       }
     },
   }, {
