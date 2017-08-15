@@ -54,6 +54,13 @@ export default class StockTransitionList extends React.Component {
     selectedRowKeys: [],
     transitionSplitNum: 0,
   }
+  componentWillMount() {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      this.setState({
+        scrollY: window.innerHeight - 400,
+      });
+    }
+  }
   componentDidMount() {
     const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(1, filter);
@@ -394,7 +401,7 @@ export default class StockTransitionList extends React.Component {
             </div>
             <div className="panel-body table-panel table-fixed-layout">
               <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
               />
             </div>
           </div>
