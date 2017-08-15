@@ -112,8 +112,11 @@ export default class CWMSkuList extends React.Component {
     title: this.msg('descCN'),
     dataIndex: 'desc_cn',
   }, {
-    title: this.msg('descEN'),
-    dataIndex: 'desc_en',
+    title: this.msg('skuPack'),
+    dataIndex: 'sku_pack_unit_name',
+  }, {
+    title: this.msg('perSKUQty'),
+    dataIndex: 'sku_pack_qty',
   }, {
     title: this.msg('lastModifiedDate'),
     dataIndex: 'last_modified_date',

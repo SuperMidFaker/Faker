@@ -80,11 +80,11 @@ const messages = defineMessages({
   },
   skuPack: {
     id: 'cwm.products.sku.pack',
-    defaultMessage: '包装',
+    defaultMessage: 'SKU包装',
   },
   perSKUQty: {
     id: 'cwm.products.sku.per.qty',
-    defaultMessage: '单位包装数量',
+    defaultMessage: '每SKU包装数量',
   },
   length: {
     id: 'cwm.products.sku.length',
