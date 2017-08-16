@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import moment from 'moment';
 import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTransactions } from 'common/reducers/cwmTransaction';
@@ -10,6 +9,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
+import { transactionColumns, commonTraceColumns } from '../commonColumns';
 import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
@@ -81,129 +81,7 @@ export default class StockTransactionsList extends React.Component {
     width: 120,
     dataIndex: 'location',
     sorter: true,
-  }, {
-    title: '操作人',
-    width: 100,
-    dataIndex: 'trxn_login_name',
-  }, {
-    title: '操作类型',
-    width: 100,
-    dataIndex: 'type',
-    /* render: (text) => {
-      if (text > 0) {
-        return <span className="text-success">{text}</span>;
-      } else {
-        return <span className="text-disabled">{text}</span>;
-      }
-    }, */
-  }, {
-    title: '操作数量',
-    width: 100,
-    dataIndex: 'transaction_qty',
-    className: 'cell-align-right text-emphasis',
-    render: (text) => {
-      if (text > 0) {
-        return <span className="text-success">{text}</span>;
-      } else {
-        return <span className="text-disabled">{text}</span>;
-      }
-    },
-  }, {
-    title: this.msg('traceId'),
-    width: 120,
-    dataIndex: 'trace_id',
-  }, {
-    title: this.msg('SKU'),
-    dataIndex: 'product_sku',
-    width: 180,
-    sorter: true,
-  }, {
-    title: this.msg('lotNo'),
-    width: 120,
-    dataIndex: 'external_lot_no',
-  }, {
-    title: this.msg('serialNo'),
-    width: 120,
-    dataIndex: 'serial_no',
-  }, {
-    title: this.msg('virtualWhse'),
-    width: 120,
-    dataIndex: 'virtual_whse',
-  }, {
-    title: this.msg('damageLevel'),
-    width: 120,
-    dataIndex: 'damage_level',
-  }, {
-    title: this.msg('inboundDate'),
-    width: 120,
-    dataIndex: 'inbound_timestamp',
-    render: inbtime => inbtime && moment(inbtime).format('YYYY.MM.DD'),
-    sorter: true,
-  }, {
-    title: this.msg('expiryDate'),
-    width: 120,
-    dataIndex: 'expiry_date',
-    render: expirydate => expirydate && moment(expirydate).format('YYYY.MM.DD'),
-    sorter: true,
-  }, {
-    title: this.msg('attrib1'),
-    width: 120,
-    dataIndex: 'attrib_1_string',
-  }, {
-    title: this.msg('attrib2'),
-    width: 120,
-    dataIndex: 'attrib_2_string',
-  }, {
-    title: this.msg('attrib3'),
-    width: 120,
-    dataIndex: 'attrib_3_string',
-  }, {
-    title: this.msg('attrib4'),
-    width: 120,
-    dataIndex: 'attrib_4_string',
-  }, {
-    title: this.msg('attrib5'),
-    width: 120,
-    dataIndex: 'attrib_5_string',
-  }, {
-    title: this.msg('attrib6'),
-    width: 120,
-    dataIndex: 'attrib_6_string',
-  }, {
-    title: this.msg('attrib7'),
-    width: 120,
-    dataIndex: 'attrib_7_date',
-    render: attr7date => attr7date && moment(attr7date).format('YYYY.MM.DD'),
-  }, {
-    title: this.msg('attrib8'),
-    width: 120,
-    dataIndex: 'attrib_8_date',
-    render: attr8date => attr8date && moment(attr8date).format('YYYY.MM.DD'),
-  }, {
-    title: this.msg('bonded'),
-    width: 120,
-    dataIndex: 'bonded',
-    render: bonded => bonded ? '是' : '否',
-  }, {
-    title: this.msg('portion'),
-    width: 120,
-    dataIndex: 'portion',
-    render: portion => portion ? '是' : '否',
-  }, {
-    title: this.msg('ftzEntryId'),
-    width: 120,
-    dataIndex: 'ftz_ent_filed_id',
-  }, {
-    title: this.msg('grossWeight'),
-    dataIndex: 'gross_weight',
-    className: 'cell-align-right',
-    width: 120,
-  }, {
-    title: this.msg('cbm'),
-    dataIndex: 'cbm',
-    className: 'cell-align-right',
-    width: 120,
-  }]
+  }].concat(transactionColumns(this.props.intl)).concat(commonTraceColumns(this.props.intl))
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');

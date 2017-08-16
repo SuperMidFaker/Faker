@@ -117,6 +117,13 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
+            <FormItem {...formItemLayout} label="追踪ID">
+              {getFieldDecorator('trace_id', {
+                initialValue: filter.trace_id,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={5}>
             <FormItem {...formItemLayout} label="库位">
               {getFieldDecorator('location', {
                 initialValue: filter.location,

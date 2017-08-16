@@ -10,17 +10,23 @@ const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'SPLIT_TRANSIT', 'SPLIT_TRANSIT_SUCCEED', 'SPLIT_TRANSIT_FAIL',
   'MOVE_TRANSIT', 'MOVE_TRANSIT_SUCCEED', 'MOVE_TRANSIT_FAIL',
   'ADJUST_TRANSIT', 'ADJUST_TRANSIT_SUCCEED', 'ADJUST_TRANSIT_FAIL',
+  'FREEZE_TRANSIT', 'FREEZE_TRANSIT_SUCCEED', 'FREEZE_TRANSIT_FAIL',
+  'UNFREEZE_TRANSIT', 'UNFREEZE_TRANSIT_SUCCEED', 'UNFREEZE_TRANSIT_FAIL',
 ]);
 
 const initialState = {
   batchTransitModal: {
     visible: false,
+    traceIds: [],
+    detail: {},
   },
   batchMoveModal: {
     visible: false,
   },
   batchFreezeModal: {
     visible: false,
+    freezed: false,
+    traceIds: [],
   },
   transitionDock: {
     visible: false,
@@ -50,17 +56,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SHOW_TRANSITION_DOCK:
       return { ...state, transitionDock: { ...state.transitionDock, visible: true, detail: action.data } };
     case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false } };
+      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false }, reloadTransitions: action.data.needReload };
     case actionTypes.OPEN_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: true } };
+      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_BATCH_MOVE_MODAL:
       return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: false } };
     case actionTypes.OPEN_BATCH_MOVE_MODAL:
       return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: true } };
     case actionTypes.CLOSE_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: false } };
+      return { ...state, batchFreezeModal: initialState.batchFreezeModal, reloadTransitions: action.data.needReload };
     case actionTypes.OPEN_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true } };
+      return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true, ...action.data } };
     case actionTypes.LOAD_TRANSITIONS:
       return { ...state,
         listFilter: JSON.parse(action.params.filter),
@@ -91,15 +97,17 @@ export function showTransitionDock(inboundDetail) {
   };
 }
 
-export function openBatchTransitModal() {
+export function openBatchTransitModal(transitModal) {
   return {
     type: actionTypes.OPEN_BATCH_TRANSIT_MODAL,
+    data: transitModal,
   };
 }
 
-export function closeBatchTransitModal() {
+export function closeBatchTransitModal({ needReload }) {
   return {
     type: actionTypes.CLOSE_BATCH_TRANSIT_MODAL,
+    data: { needReload },
   };
 }
 
@@ -115,15 +123,17 @@ export function closeBatchMoveModal() {
   };
 }
 
-export function openBatchFreezeModal() {
+export function openBatchFreezeModal(freezeModal) {
   return {
     type: actionTypes.OPEN_BATCH_FREEZE_MODAL,
+    data: freezeModal,
   };
 }
 
-export function closeBatchFreezeModal() {
+export function closeBatchFreezeModal({ needReload }) {
   return {
     type: actionTypes.CLOSE_BATCH_FREEZE_MODAL,
+    data: { needReload },
   };
 }
 
@@ -183,6 +193,36 @@ export function adjustTransit(traceId, transit, loginName, tenantId) {
       endpoint: 'v1/cwm/stock/transition/adjust',
       method: 'post',
       data: { traceId, transit, loginName, tenantId },
+    },
+  };
+}
+
+export function freezeTransit(traceIds, transit, loginName, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FREEZE_TRANSIT,
+        actionTypes.FREEZE_TRANSIT_SUCCEED,
+        actionTypes.FREEZE_TRANSIT_FAIL,
+      ],
+      endpoint: 'v1/cwm/stock/transition/freeze',
+      method: 'post',
+      data: { traceIds, transit, loginName, tenantId },
+    },
+  };
+}
+
+export function unfreezeTransit(traceIds, transit, loginName, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UNFREEZE_TRANSIT,
+        actionTypes.UNFREEZE_TRANSIT_SUCCEED,
+        actionTypes.UNFREEZE_TRANSIT_FAIL,
+      ],
+      endpoint: 'v1/cwm/stock/transition/unfreeze',
+      method: 'post',
+      data: { traceIds, transit, loginName, tenantId },
     },
   };
 }

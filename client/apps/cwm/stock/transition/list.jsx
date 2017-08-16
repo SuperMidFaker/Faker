@@ -2,17 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Checkbox, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
+import moment from 'moment';
+import { Input, Breadcrumb, Button, Card, Checkbox, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showTransitionDock, loadTransitions, splitTransit, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
+import { showTransitionDock, loadTransitions, splitTransit, unfreezeTransit,
+  openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import Table from 'client/components/remoteAntTable';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
+import { commonTraceColumns } from '../commonColumns';
 import TransitionDockPanel from './dock/transitionDockPanel';
 import BatchTransitModal from './modal/batchTransitModal';
-import BatchMoveModal from './modal/batchMoveModal';
+// import BatchMoveModal from './modal/batchMoveModal';
 import BatchFreezeModal from './modal/batchFreezeModal';
 import { formatMsg } from '../message.i18n';
 
@@ -34,7 +37,14 @@ const Option = Select.Option;
     sortFilter: state.cwmTransition.sortFilter,
     reload: state.cwmTransition.reloadTransitions,
   }),
-  { showTransitionDock, loadTransitions, splitTransit, switchDefaultWhse, openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal }
+  { showTransitionDock,
+    loadTransitions,
+    splitTransit,
+    unfreezeTransit,
+    switchDefaultWhse,
+    openBatchTransitModal,
+    openBatchMoveModal,
+    openBatchFreezeModal }
 )
 @connectNav({
   depth: 2,
@@ -53,6 +63,7 @@ export default class StockTransitionList extends React.Component {
     showTableSetting: false,
     selectedRowKeys: [],
     transitionSplitNum: 0,
+    unfreezeReason: '',
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -85,7 +96,6 @@ export default class StockTransitionList extends React.Component {
     width: 180,
     sorter: true,
     fixed: 'left',
-
   }, {
     title: this.msg('descCN'),
     dataIndex: 'name',
@@ -95,6 +105,12 @@ export default class StockTransitionList extends React.Component {
     title: this.msg('location'),
     width: 120,
     dataIndex: 'location',
+    sorter: true,
+  }, {
+    title: this.msg('inboundDate'),
+    width: 160,
+    dataIndex: 'inbound_timestamp',
+    render: inbts => inbts && moment(inbts).format('YYYY.MM.DD HH:mm'),
     sorter: true,
   }, {
     title: this.msg('totalQty'),
@@ -137,102 +153,19 @@ export default class StockTransitionList extends React.Component {
         return <span className="text-error">{text}</span>;
       }
     },
-  }, {
-    title: this.msg('traceId'),
-    width: 220,
-    dataIndex: 'trace_id',
-  }, {
-    title: this.msg('SKU'),
-    dataIndex: 'product_sku',
-    width: 160,
-    sorter: true,
-  }, {
-    title: this.msg('lotNo'),
-    width: 180,
-    dataIndex: 'external_lot_no',
-  }, {
-    title: this.msg('serialNo'),
-    width: 120,
-    dataIndex: 'serial_no',
-  }, {
-    title: this.msg('virtualWhse'),
-    width: 120,
-    dataIndex: 'virtual_whse',
-  }, {
-    title: this.msg('bonded'),
-    width: 120,
-    dataIndex: 'bonded',
-  }, {
-    title: this.msg('portion'),
-    width: 120,
-    dataIndex: 'portion',
-  }, {
-    title: this.msg('damageLevel'),
-    width: 120,
-    dataIndex: 'damage_level',
-  }, {
-    title: this.msg('inboundDate'),
-    width: 120,
-    dataIndex: 'inbound_date',
-    sorter: true,
-  }, {
-    title: this.msg('expiryDate'),
-    width: 120,
-    dataIndex: 'expiry_date',
-    sorter: true,
-  }, {
-    title: this.msg('attrib1'),
-    width: 120,
-    dataIndex: 'attrib_1_string',
-  }, {
-    title: this.msg('attrib2'),
-    width: 120,
-    dataIndex: 'attrib_2_string',
-  }, {
-    title: this.msg('attrib3'),
-    width: 120,
-    dataIndex: 'attrib_3_string',
-  }, {
-    title: this.msg('attrib4'),
-    width: 120,
-    dataIndex: 'attrib_4_string',
-  }, {
-    title: this.msg('attrib5'),
-    width: 120,
-    dataIndex: 'attrib_5_string',
-  }, {
-    title: this.msg('attrib6'),
-    width: 120,
-    dataIndex: 'attrib_6_string',
-  }, {
-    title: this.msg('attrib7'),
-    width: 120,
-    dataIndex: 'attrib_7_date',
-  }, {
-    title: this.msg('attrib8'),
-    width: 120,
-    dataIndex: 'attrib_8_date',
-  }, {
-    title: this.msg('ftzEntryId'),
-    width: 120,
-    dataIndex: 'ftz_ent_filed_id',
-  }, {
-    title: this.msg('grossWeight'),
-    dataIndex: 'gross_weight',
-    className: 'cell-align-right',
-    width: 120,
-  }, {
-    title: this.msg('cbm'),
-    dataIndex: 'cbm',
-    className: 'cell-align-right',
-    width: 120,
-  }, {
+  }].concat(commonTraceColumns(this.props.intl)).concat({
     title: '操作',
     width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (record.avail_qty === 0 && record.frozen_qty > 0) {
-        return <RowUpdater onHit={this.handleShowDock} label="解冻" row={record} />;
+        return (<Popover placement="left" title="解冻原因" content={<span>
+          <Input onChange={this.handleUnfreezeReason} value={this.state.unfreezeReason} style={{ width: '70%' }} />
+          <Button type="primary" icon="check" style={{ marginLeft: 8 }} onClick={() => this.handleUnfreezeTransition(record)} />
+        </span>} trigger="click"
+        >
+          <a>解冻</a>
+        </Popover>);
       } else if (record.avail_qty === 1) {
         return <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />;
       } else {
@@ -242,7 +175,9 @@ export default class StockTransitionList extends React.Component {
           <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />
           <span className="ant-divider" />
           <Popover placement="left" title="拆分数量" content={<span>
-            <InputNumber onChange={value => this.handleSplitChange(value, min, max)} value={this.state.transitionSplitNum} />
+            <InputNumber min={min} max={max} onChange={value => this.handleSplitChange(value, min, max)}
+              value={this.state.transitionSplitNum}
+            />
             <Button type="primary" icon="check" style={{ marginLeft: 8 }} onClick={() => this.handleSplitTransition(record)} />
           </span>} trigger="click"
           >
@@ -251,12 +186,26 @@ export default class StockTransitionList extends React.Component {
         </span>);
       }
     },
-  }]
+  })
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
     const filter = { ...this.props.listFilter, whse_code: value };
     this.handleStockQuery(1, filter);
+  }
+  handleUnfreezeReason = (ev) => {
+    this.setState({ unfreezeReason: ev.target.value });
+  }
+  handleUnfreezeTransition = (row) => {
+    const { loginName, tenantId } = this.props;
+    this.props.unfreezeTransit([row.trace_id], { reason: this.state.unfreezeReason }, loginName, tenantId).then((result) => {
+      if (!result.error) {
+        this.handleStockQuery();
+        this.setState({ unfreezeReason: '' });
+      } else {
+        message.error(result.error.message);
+      }
+    });
   }
   handleSplitChange = (value, min, max) => {
     const splitValue = parseFloat(value);
@@ -294,15 +243,28 @@ export default class StockTransitionList extends React.Component {
       pageSize,
       current: currentPage || current,
     });
+    this.handleDeselectRows();
   }
   handleBatchTransit = () => {
-    this.props.openBatchTransitModal();
+    this.props.openBatchTransitModal({
+      traceIds: this.state.selectedRowKeys,
+      detail: this.state.batchTransitDetail,
+    });
   }
   handleBatchMove = () => {
     this.props.openBatchMoveModal();
   }
   handleBatchFreeze = () => {
-    this.props.openBatchFreezeModal();
+    this.props.openBatchFreezeModal({
+      freezed: true,
+      traceIds: this.state.selectedRowKeys,
+    });
+  }
+  handleBatchUnfreeze = () => {
+    this.props.openBatchFreezeModal({
+      freezed: false,
+      traceIds: this.state.selectedRowKeys,
+    });
   }
   handleStatusChange = (ev) => {
     const filter = { ...this.props.listFilter, status: ev.target.value };
@@ -328,8 +290,25 @@ export default class StockTransitionList extends React.Component {
     const { defaultWhse, whses, loading, listFilter } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+      onChange: (selectedRowKeys, selectedRows) => {
+        let enableBatchTransit = true;
+        let i = 0;
+        let batchTransitDetail = {};
+        while (i < selectedRows.length - 1) {
+          if (selectedRows[i].owner_partner_id !== selectedRows[i + 1].owner_partner_id) {
+            enableBatchTransit = false;
+            break;
+          } else {
+            i++;
+          }
+        }
+        if (selectedRows.length > 0 && enableBatchTransit) {
+          batchTransitDetail = { owner_partner_id: selectedRows[0].owner_partner_id,
+            owner_name: selectedRows[0].owner_name,
+            whse_code: selectedRows[0].whse_code,
+          };
+        }
+        this.setState({ selectedRowKeys, enableBatchTransit, batchTransitDetail });
       },
     };
     const dataSource = new Table.DataSource({
@@ -371,7 +350,7 @@ export default class StockTransitionList extends React.Component {
               库存变更
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={this.props.listFilter.status} onChange={this.handleStatusChange} size="large">
+          <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
             <RadioButton value="normal">正常库存</RadioButton>
             <RadioButton value="frozen">冻结库存</RadioButton>
           </RadioGroup>
@@ -391,23 +370,25 @@ export default class StockTransitionList extends React.Component {
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <Button onClick={this.handleBatchTransit}>批量转移</Button>
-                <Button onClick={this.handleBatchMove}>批量移库</Button>
-                <Button onClick={this.handleBatchFreeze}>批量冻结</Button>
+                {listFilter.status === 'normal' && this.state.enableBatchTransit &&
+                  <Button onClick={this.handleBatchTransit}>批量转移</Button>}
+                {/* <Button onClick={this.handleBatchMove}>批量移库</Button>*/}
+                {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
+                {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
                 <div className="pull-right">
                   <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
                 </div>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
+              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered
                 scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
               />
             </div>
           </div>
           <TransitionDockPanel />
           <BatchTransitModal />
-          <BatchMoveModal />
+          {/* <BatchMoveModal /> */}
           <BatchFreezeModal />
         </Content>
       </Layout>

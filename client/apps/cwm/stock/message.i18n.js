@@ -70,6 +70,38 @@ const messages = defineMessages({
     id: 'cwm.stock.cbm',
     defaultMessage: '体积',
   },
+  traceId: {
+    id: 'cwm.stock.trace.id',
+    defaultMessage: '追踪ID',
+  },
+  lotNo: {
+    id: 'cwm.stock.lot.no',
+    defaultMessage: '批次号',
+  },
+  virtualWhse: {
+    id: 'cwm.stock.virtual.whse',
+    defaultMessage: '库别',
+  },
+  bonded: {
+    id: 'cwm.stock.bonded',
+    defaultMessage: '保税',
+  },
+  portion: {
+    id: 'cwm.stock.portion',
+    defaultMessage: '分拨',
+  },
+  damageLevel: {
+    id: 'cwm.stock.damage.level',
+    defaultMessage: '包装情况',
+  },
+  expiryDate: {
+    id: 'cwm.stock.expiry.date',
+    defaultMessage: '失效时间',
+  },
+  ftzEntryId: {
+    id: 'cwm.stock.ftz.entry.id',
+    defaultMessage: '入库明细ID',
+  },
   movement: {
     id: 'cwm.stock.movement',
     defaultMessage: '移库单',

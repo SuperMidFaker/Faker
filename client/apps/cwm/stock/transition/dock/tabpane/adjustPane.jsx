@@ -15,6 +15,7 @@ const formItemLayout = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginName: state.account.username,
     detail: state.cwmTransition.transitionDock.detail,
   }),
   { hideTransitionDock, adjustTransit }
@@ -33,16 +34,20 @@ export default class AdjustPane extends React.Component {
     const adjust = parseFloat(value);
     if (!isNaN(adjust)) {
       const { detail } = this.props;
-      if (detail.avail_qty - adjust > 0) {
-        this.setState({ adjustQty: adjust, finalQty: detail.avail_qty - adjust });
+      if (detail.avail_qty + adjust > 0) {
+        this.setState({ adjustQty: adjust, finalQty: detail.avail_qty + adjust });
+        return;
       }
     }
+    this.setState({ adjustQty: null, finalQty: null });
   }
   handleFinalQty = (value) => {
     const final = parseFloat(value);
     if (!isNaN(final) && final > 0) {
       const { detail } = this.props;
       this.setState({ adjustQty: final - detail.avail_qty, finalQty: final });
+    } else {
+      this.setState({ adjustQty: null, finalQty: null });
     }
   }
   handleReasonChange = (ev) => {
@@ -69,12 +74,14 @@ export default class AdjustPane extends React.Component {
             <Row gutter={16}>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="增减数量">
-                  <InputNumber value={adjustQty} onChange={this.handleAdjustQty} />
+                  <InputNumber min={-this.props.detail.avail_qty + 1} value={adjustQty}
+                    onChange={this.handleAdjustQty} formatter={value => value > 0 ? `+${value}` : value}
+                  />
                 </FormItem>
               </Col>
               <Col span={8}>
                 <FormItem {...formItemLayout} label="目标数量">
-                  <InputNumber value={finalQty} onChange={this.handleFinalQty} />
+                  <InputNumber min={1} value={finalQty} onChange={this.handleFinalQty} />
                 </FormItem>
               </Col>
               <Col span={8}>

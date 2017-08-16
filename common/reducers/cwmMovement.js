@@ -203,7 +203,7 @@ export function removeMoveDetail(ids, loginId) {
   };
 }
 
-export function loadOwnerUndoneMovements(ownerId, tenantId, whseCode) {
+export function loadOwnerUndoneMovements(ownerId, whseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [

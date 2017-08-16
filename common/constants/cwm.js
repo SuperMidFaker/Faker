@@ -310,3 +310,18 @@ exports.CWM_DAMAGE_LEVEL = [{
   text: '严重破损',
   color: '#f50',
 }];
+
+exports.CWM_TRANSACTIONS_TYPE = {
+  inbound: { text: '入库' },
+  outbound: { text: '出库' },
+  transout: { text: '转移出' },
+  transin: { text: '转移入' },
+  moveout: { text: '移库出' },
+  movein: { text: '移库入' },
+  adjustout: { text: '调整出' },
+  adjustin: { text: '调整入' },
+  freezeout: { text: '冻结出' },
+  freezein: { text: '冻结入' },
+  unfreezeout: { text: '解冻出' },
+  unfreezein: { text: '解冻入' },
+};
