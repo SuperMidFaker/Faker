@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
   'CLEAR_PRODUCT_NOS',
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
+  'LOAD_LOT_INFO', 'LOAD_LOT_INFO_SUCCEED', 'LOAD_LOT_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -682,6 +683,21 @@ export function loadAdviceLocations(productNo, tenantId, whseCode) {
       endpoint: 'v1/cwm/get/advice/locations',
       method: 'get',
       params: { productNo, tenantId, whseCode },
+    },
+  };
+}
+
+export function loadLotInfo(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_LOT_INFO,
+        actionTypes.LOAD_LOT_INFO_SUCCEED,
+        actionTypes.LOAD_LOT_INFO_FAIL,
+      ],
+      endpoint: 'v1/cwm/lot/info/load',
+      method: 'get',
+      params: { asnNo },
     },
   };
 }

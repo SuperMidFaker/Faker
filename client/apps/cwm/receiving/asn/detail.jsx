@@ -148,7 +148,7 @@ export default class ReceivingASNDetail extends Component {
                   <DetailsPane asnBody={asnBody} detailEnable selectedOwner={asnHead.owner_partner_id} form={form} editable={this.state.editable} />
                 </TabPane>
                 <TabPane tab="批次属性" key="lottingProps">
-                  <LottingPane editable={this.state.editable} form={form} />
+                  <LottingPane editable={this.state.editable} form={form} asnNo={this.props.params.asnNo} />
                 </TabPane>
               </Tabs>
             </Card>

@@ -115,7 +115,7 @@ export default class DetailsPane extends Component {
       title: '计量单位',
       dataIndex: 'unit',
       className: 'cell-align-center',
-      render: o => o && units.find(unit => unit.code === o).name,
+      render: o => (o && units.length > 0) ? units.find(unit => unit.code === o).name : '',
     }, {
       title: '库别',
       dataIndex: 'virtual_whse',
