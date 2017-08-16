@@ -70,7 +70,8 @@ export default class MainForm extends Component {
           }
         }
       });
-      this.props.setSkuForm({ cbm: Number(cbm.toFixed(3)) });
+      cbm /= 1000000000;
+      this.props.setSkuForm({ cbm });
     } else {
       this.props.setSkuForm({ cbm: null });
     }
