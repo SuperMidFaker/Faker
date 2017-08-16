@@ -91,7 +91,7 @@ export function inventorySearch(filter, tenantId, whseCode, ownerCode) {
   };
 }
 
-export function createMovement(ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginId, details) {
+export function createMovement(ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginName, details) {
   return {
     [CLIENT_API]: {
       types: [
@@ -101,7 +101,7 @@ export function createMovement(ownerCode, ownerName, moveType, reason, whseCode,
       ],
       endpoint: 'v1/cwm/create/movement',
       method: 'post',
-      data: { ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginId, details },
+      data: { ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginName, details },
     },
   };
 }
@@ -158,7 +158,7 @@ export function loadMovementDetails(movementNo) {
   };
 }
 
-export function executeMovement(movementNo, movementDetails, loginId, whseCode) {
+export function executeMovement(movementNo, movementDetails, tenantId, loginName, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -168,12 +168,12 @@ export function executeMovement(movementNo, movementDetails, loginId, whseCode) 
       ],
       endpoint: 'v1/cwm/execute/move',
       method: 'post',
-      data: { movementNo, movementDetails, loginId, whseCode },
+      data: { movementNo, movementDetails, tenantId, loginName, whseCode },
     },
   };
 }
 
-export function cancelMovement(movementNo, loginId) {
+export function cancelMovement(movementNo, loginName, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -183,12 +183,12 @@ export function cancelMovement(movementNo, loginId) {
       ],
       endpoint: 'v1/cwm/cancel/movement',
       method: 'post',
-      data: { movementNo, loginId },
+      data: { movementNo, loginName, tenantId },
     },
   };
 }
 
-export function removeMoveDetail(ids, loginId) {
+export function removeMoveDetail(movementNo, ids, loginName, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -198,7 +198,7 @@ export function removeMoveDetail(ids, loginId) {
       ],
       endpoint: 'v1/cwm/remove/movement/detail',
       method: 'post',
-      data: { ids, loginId },
+      data: { ids, loginName, tenantId, movementNo },
     },
   };
 }

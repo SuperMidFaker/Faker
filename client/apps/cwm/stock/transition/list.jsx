@@ -351,6 +351,7 @@ export default class StockTransitionList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+            <RadioButton value="all">全部</RadioButton>
             <RadioButton value="normal">正常库存</RadioButton>
             <RadioButton value="frozen">冻结库存</RadioButton>
           </RadioGroup>

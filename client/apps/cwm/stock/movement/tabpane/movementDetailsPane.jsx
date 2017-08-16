@@ -63,14 +63,15 @@ export default class MovementDetailsPane extends React.Component {
     });
   }
   handleBatchDetailRemove = () => {
+    const { username, tenantId, movementNo } = this.props;
     if (this.props.movementDetails.length === this.state.selectedRowKeys.length) {
-      this.props.cancelMovement(this.props.movementNo, this.props.loginId).then((result) => {
+      this.props.cancelMovement(movementNo, username, tenantId).then((result) => {
         if (!result.err) {
           this.context.router.push('/cwm/stock/movement');
         }
       });
     } else {
-      this.props.removeMoveDetail(this.state.selectedRowKeys, this.props.loginId).then((result) => {
+      this.props.removeMoveDetail(movementNo, this.state.selectedRowKeys, username, tenantId).then((result) => {
         if (!result.err) {
           this.props.loadMovementDetails(this.props.movementNo);
         }
@@ -78,14 +79,15 @@ export default class MovementDetailsPane extends React.Component {
     }
   }
   removeMoveDetail = (row) => {
+    const { username, tenantId, movementNo } = this.props;
     if (this.props.movementDetails.length === 1) {
-      this.props.cancelMovement(this.props.movementNo, this.props.loginId).then((result) => {
+      this.props.cancelMovement(movementNo, username, tenantId).then((result) => {
         if (!result.err) {
           this.context.router.push('/cwm/stock/movement');
         }
       });
     } else {
-      this.props.removeMoveDetail([row.in_detail_id], this.props.loginId).then((result) => {
+      this.props.removeMoveDetail(movementNo, [row.in_detail_id], username, tenantId).then((result) => {
         if (!result.err) {
           this.props.loadMovementDetails(this.props.movementNo);
         }
@@ -93,14 +95,14 @@ export default class MovementDetailsPane extends React.Component {
     }
   }
   handleExecuteMovement = () => {
-    const self = this;
+    const props = this.props;
     Modal.confirm({
       title: '是否确认移库已完成?',
       onOk() {
-        self.props.executeMovement(self.props.movementNo, self.props.movementDetails, self.props.loginId,
-          self.props.defaultWhse.code).then((result) => {
+        props.executeMovement(props.movementNo, props.movementDetails, props.tenantId,
+          props.username, props.defaultWhse.code).then((result) => {
             if (!result.err) {
-              self.props.loadMovementHead(self.props.movementNo);
+              props.loadMovementHead(props.movementNo);
             }
           });
       },

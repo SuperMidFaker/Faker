@@ -22,6 +22,7 @@ const TabPane = Tabs.TabPane;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    loginName: state.account.username,
     dock: state.cwmShippingOrder.dock,
     visible: state.cwmShippingOrder.dock.visible,
     tabKey: state.cwmShippingOrder.dock.tabKey,
@@ -83,9 +84,9 @@ export default class ShippingDockPanel extends React.Component {
     });
   }
   closeOutbound = (soNo) => {
-    const { tenantId, loginId } = this.props;
+    const { tenantId, loginName } = this.props;
     this.props.closeOutbound({
-      so_no: soNo, tenantId, loginId,
+      so_no: soNo, tenantId, loginName,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message);

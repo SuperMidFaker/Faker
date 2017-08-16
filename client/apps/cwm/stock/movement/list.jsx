@@ -41,6 +41,7 @@ function fetchData({ state, dispatch }) {
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loginId: state.account.loginId,
+    loginName: state.account.username,
     movements: state.cwmMovement.movements,
     loading: state.cwmMovement.movements.loading,
     filter: state.cwmMovement.movementFilter,
@@ -167,7 +168,8 @@ export default class MovementList extends React.Component {
     });
   }
   cancelMovement = (row) => {
-    this.props.cancelMovement(row.movement_no, this.props.loginId).then((result) => {
+    const { loginName, tenantId } = this.props;
+    this.props.cancelMovement(row.movement_no, loginName, tenantId).then((result) => {
       if (!result.err) {
         const whseCode = this.props.defaultWhse.code;
         this.props.loadMovements({

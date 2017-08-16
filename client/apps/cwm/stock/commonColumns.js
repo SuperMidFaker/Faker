@@ -124,4 +124,8 @@ exports.transactionColumns = (/* intl */) => [{
   title: '操作人',
   width: 100,
   dataIndex: 'trxn_login_name',
+}, {
+  title: '事务单号',
+  width: 100,
+  dataIndex: 'transaction_no',
 }];
