@@ -96,10 +96,11 @@ export default class MovementDetailsPane extends React.Component {
   }
   handleExecuteMovement = () => {
     const props = this.props;
+    const inboundDetailIds = props.movementDetails.map(md => md.in_detail_id);
     Modal.confirm({
       title: '是否确认移库已完成?',
       onOk() {
-        props.executeMovement(props.movementNo, props.movementDetails, props.tenantId,
+        props.executeMovement(props.movementNo, inboundDetailIds, props.tenantId,
           props.username, props.defaultWhse.code).then((result) => {
             if (!result.err) {
               props.loadMovementHead(props.movementNo);
@@ -139,7 +140,7 @@ export default class MovementDetailsPane extends React.Component {
   }, {
     title: '操作',
     width: 200,
-    render: (o, record) => <RowUpdater onHit={this.removeMoveDetail} label="取消明细" row={record} />,
+    render: (o, record) => !record.isdone && <RowUpdater onHit={this.removeMoveDetail} label="取消明细" row={record} />,
   }]
   render() {
     const { movementDetails, mode, movementHead } = this.props;

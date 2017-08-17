@@ -168,7 +168,7 @@ export default class StockTransitionList extends React.Component {
         </Popover>);
       } else if (record.avail_qty === 1) {
         return <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />;
-      } else {
+      } else if (record.avail_qty > 1) {
         const min = 1;
         const max = record.avail_qty - 1;
         return (<span>
@@ -184,6 +184,8 @@ export default class StockTransitionList extends React.Component {
             <a>拆分</a>
           </Popover>
         </span>);
+      } else if (record.avail_qty === 0 && record.moving_qty > 0) {
+        return <span>移库中</span>;
       }
     },
   })
@@ -312,7 +314,7 @@ export default class StockTransitionList extends React.Component {
       },
     };
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadTransitions(params),
+      fetcher: (params) => { this.props.loadTransitions(params); this.handleDeselectRows(); },
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,

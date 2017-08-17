@@ -52,7 +52,7 @@ export default class ShippingModal extends Component {
     this.setState({ shippingMode: e.target.value });
   }
   handleSubmit = () => {
-    const { outboundNo, skuPackQty, pickedQty, loginId, tenantId, shipMode, selectedRows, id } = this.props;
+    const { outboundNo, skuPackQty, pickedQty, username, tenantId, shipMode, selectedRows, id } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const list = [];
@@ -77,7 +77,7 @@ export default class ShippingModal extends Component {
             list.push(data);
           }
         }
-        this.props.shipConfirm(outboundNo, list, loginId, tenantId, values.shippedBy, values.shippedDate).then((result) => {
+        this.props.shipConfirm(outboundNo, list, username, tenantId, values.shippedBy, values.shippedDate).then((result) => {
           if (!result.error) {
             this.props.closeShippingModal();
             this.props.loadPickDetails(this.props.outboundNo);

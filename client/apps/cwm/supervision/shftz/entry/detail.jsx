@@ -46,6 +46,7 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
+    owners: state.cwmContext.whseAttrs.owners,
   }),
   { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg }
 )
@@ -65,6 +66,8 @@ export default class SHFTZEntryDetail extends Component {
     queryable: false,
     whyunsent: '',
     tabKey: '',
+    owner: this.props.owners.filter(own => own.name === this.props.entryAsn.owner_name).length === 0 ?
+      {} : this.props.owners.filter(own => own.name === this.props.entryAsn.owner_name)[0],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -96,30 +99,39 @@ export default class SHFTZEntryDetail extends Component {
       }
       this.setState(newState);
     }
+    if (nextProps.entryAsn !== this.props.entryAsn) {
+      const owners = nextProps.owners.filter(owner => owner.name === nextProps.entryAsn.owner_name);
+      const owner = owners.length === 0 ? {} : owners[0];
+      this.setState({ owner });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
-    let nonCargono = false;
-    for (let i = 0; i < this.props.entryRegs.length; i++) {
-      nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
-      if (nonCargono) {
-        break;
-      }
-    }
-    if (nonCargono) {
-      notification.warn({
-        message: '货号未备案',
-        description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
-        btn: (<div>
-          <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
-          <span className="ant-divider" />
-          <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
-        </div>),
-        key: 'confirm-cargono',
-        duration: 0,
-      });
-    } else {
+    if (!this.state.owner.portion_enabled) { // 判断是否启用分拨
       this.handleRegSend();
+    } else {
+      let nonCargono = false;
+      for (let i = 0; i < this.props.entryRegs.length; i++) {
+        nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
+        if (nonCargono) {
+          break;
+        }
+      }
+      if (nonCargono) {
+        notification.warn({
+          message: '货号未备案',
+          description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
+          btn: (<div>
+            <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
+            <span className="ant-divider" />
+            <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
+          </div>),
+          key: 'confirm-cargono',
+          duration: 0,
+        });
+      } else {
+        this.handleRegSend();
+      }
     }
   }
   handleRegSend = () => {

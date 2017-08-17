@@ -158,7 +158,7 @@ export function loadMovementDetails(movementNo) {
   };
 }
 
-export function executeMovement(movementNo, movementDetails, tenantId, loginName, whseCode) {
+export function executeMovement(movementNo, inDetailIds, tenantId, loginName, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -168,7 +168,7 @@ export function executeMovement(movementNo, movementDetails, tenantId, loginName
       ],
       endpoint: 'v1/cwm/execute/move',
       method: 'post',
-      data: { movementNo, movementDetails, tenantId, loginName, whseCode },
+      data: { movementNo, inDetailIds, tenantId, loginName, whseCode },
     },
   };
 }

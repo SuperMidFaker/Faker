@@ -95,7 +95,7 @@ export default class AllocatingModal extends Component {
     title: '加入',
     width: 60,
     render: (o, record, index) => {
-      let disabled = !this.props.editable || !record.location;  // 不可编辑 或 没有库位时disable
+      let disabled = !this.props.editable || !record.inbound_timestamp;  // 不可编辑 或 未入库时disable
       if (!disabled) {
         const outboundHead = this.props.outboundHead;
         if (outboundHead.bonded && outboundHead.bonded_outtype === 'normal') {
