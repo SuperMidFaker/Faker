@@ -31,6 +31,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'MAKE_BAL', 'MAKE_BAL_SUCCEED', 'MAKE_BAL_FAIL',
   'CANCEL_ENR', 'CANCEL_ENR_SUCCEED', 'CANCEL_ENR_FAIL',
   'CANCEL_RER', 'CANCEL_RER_SUCCEED', 'CANCEL_RER_FAIL',
+  'EDIT_GNAME', 'EDIT_GNAME_SUCCEED', 'EDIT_GNAME_FAIL',
 ]);
 
 const initialState = {
@@ -586,6 +587,21 @@ export function cancelRelReg(soNo, whseCode) {
       endpoint: 'v1/cwm/shftz/rel/reg/cancel',
       method: 'post',
       data: { soNo, whseCode },
+    },
+  };
+}
+
+export function editGname(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_GNAME,
+        actionTypes.EDIT_GNAME_SUCCEED,
+        actionTypes.EDIT_GNAME_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/gname/edit',
+      method: 'post',
+      data,
     },
   };
 }

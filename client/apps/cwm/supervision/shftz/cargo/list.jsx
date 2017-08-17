@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Menu, Button, Form, Icon, Dropdown, Layout, Radio, Select, message, Table } from 'antd';
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn,
-  fileCargos, confirmCargos } from 'common/reducers/cwmShFtz';
+  fileCargos, confirmCargos, editGname } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import RemoteTable from 'client/components/remoteAntTable';
 import SearchBar from 'client/components/SearchBar';
@@ -14,6 +14,7 @@ import NavLink from 'client/components/NavLink';
 import ExcelUploader from 'client/components/ExcelUploader';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
+import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -61,7 +62,8 @@ function fetchData({ dispatch }) {
     updatePortionEn,
     fileCargos,
     confirmCargos,
-    loadWhse }
+    loadWhse,
+    editGname }
 )
 @connectNav({
   depth: 2,
@@ -125,6 +127,7 @@ export default class SHFTZCargoList extends React.Component {
     title: this.msg('gname'),
     width: 180,
     dataIndex: 'name',
+    render: (o, record) => <EditableCell value={o} onSave={value => this.handleGnameChange(value, record.id)} />,
   }, {
     title: '英文品名',
     dataIndex: 'en_name',
@@ -188,6 +191,10 @@ export default class SHFTZCargoList extends React.Component {
     this.setState({
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
     });
+  }
+  handleGnameChange = (val, id) => {
+    const change = { name: val };
+    this.props.editGname({ change, id });
   }
   handleCargoLoad = (currentPage, filter, owner) => {
     const { tenantId, whse, listFilter, cargolist: { pageSize, current } } = this.props;
@@ -370,6 +377,7 @@ export default class SHFTZCargoList extends React.Component {
                         loginId,
                         whseCode: whse.code,
                         ownerCusCode: owner.customs_code,
+                        ruleType: rule,
                       }),
                     }} onUploaded={this.handleFiledCargoImport}
                   >
