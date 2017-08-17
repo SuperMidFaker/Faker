@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
   'SET_INVENTORY_FILTER', 'CHANGE_COLUMNS',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
+  'LOAD_COURIERNO', 'LOAD_COURIERNO_SUCCEED', 'LOAD_COURIERNO_FAIL',
 ]);
 const initialState = {
   listFilter: {
@@ -479,6 +480,21 @@ export function readWaybillLogo() {
       ],
       endpoint: 'v1/cwm/shipping/outbound/waybillLogo',
       method: 'get',
+    },
+  };
+}
+
+export function loadCourierNo(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_COURIERNO,
+        actionTypes.LOAD_COURIERNO_SUCCEED,
+        actionTypes.LOAD_COURIERNO_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbounds/shunfeng/order',
+      method: 'post',
+      data,
     },
   };
 }
