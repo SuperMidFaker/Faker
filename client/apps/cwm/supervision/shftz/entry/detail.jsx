@@ -203,7 +203,7 @@ export default class SHFTZEntryDetail extends Component {
     dataIndex: 'ftz_cargo_no',
     width: 160,
   }, {
-    title: '入库单明细ID',
+    title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
     width: 120,
   }, {
@@ -224,28 +224,34 @@ export default class SHFTZEntryDetail extends Component {
     width: 250,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
+    title: '数量',
+    dataIndex: 'qty',
+    width: 100,
+    render: o => (<b>{o}</b>),
+  }, {
     title: '单位',
     dataIndex: 'unit',
+    width: 100,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
-    title: '数量',
-    dataIndex: 'qty',
-    render: o => (<b>{o}</b>),
-  }, {
-    title: '毛重',
-    dataIndex: 'gross_wt',
-  }, {
     title: '净重',
+    width: 100,
     dataIndex: 'net_wt',
   }, {
+    title: '毛重',
+    width: 100,
+    dataIndex: 'gross_wt',
+  }, {
     title: '金额',
+    width: 100,
     dataIndex: 'amount',
   }, {
     title: '币制',
+    width: 100,
     dataIndex: 'currency',
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
@@ -262,9 +268,11 @@ export default class SHFTZEntryDetail extends Component {
     },
   }, {
     title: '运费',
+    width: 100,
     dataIndex: 'freight',
   }, {
     title: '运费币制',
+    width: 100,
     dataIndex: 'freight_currency',
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];

@@ -203,7 +203,7 @@ export default class SHFTZTransferInDetail extends Component {
     dataIndex: 'ftz_cargo_no',
     width: 160,
   }, {
-    title: '入库单明细ID',
+    title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
     width: 120,
   }, {
@@ -224,29 +224,35 @@ export default class SHFTZTransferInDetail extends Component {
     width: 250,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
+    title: '数量',
+    dataIndex: 'qty',
+    width: 100,
+    render: o => (<b>{o}</b>),
+  }, {
     title: '单位',
     dataIndex: 'unit',
+    width: 100,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
       const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
-    title: '数量',
-    dataIndex: 'qty',
-    render: o => (<b>{o}</b>),
-  }, {
-    title: '毛重',
-    dataIndex: 'gross_wt',
-  }, {
     title: '净重',
+    width: 100,
     dataIndex: 'net_wt',
   }, {
+    title: '毛重',
+    width: 100,
+    dataIndex: 'gross_wt',
+  }, {
     title: '金额',
+    width: 100,
     dataIndex: 'amount',
   }, {
     title: '币制',
     dataIndex: 'currency',
+    width: 100,
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
@@ -260,17 +266,6 @@ export default class SHFTZTransferInDetail extends Component {
       const text = country ? `${country.value}| ${country.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
-  }, {
-    title: '运费',
-    dataIndex: 'freight',
-  }, {
-    title: '运费币制',
-    dataIndex: 'freight_currency',
-    render: (o) => {
-      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
-      return text && text.length > 0 && <Tag>{text}</Tag>;
-    },
   }]
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
@@ -282,8 +277,7 @@ export default class SHFTZTransferInDetail extends Component {
     const { entryAsn, entryRegs, whse } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
-    const sendText = sent ? '重新发送' : '发送备案';
+    // const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
     return (
       <div>
         <Header className="page-header">
@@ -302,11 +296,9 @@ export default class SHFTZTransferInDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
-            {entryEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
-            {entryEditable && !this.state.sendable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
+            {this.state.queryable && <Tooltip title="" placement="bottom">
+              <Button type="primary" size="large" icon="sync" onClick={this.handleQuery}>查询核对</Button>
+            </Tooltip>}
           </div>
         </Header>
         <Content className="main-content">

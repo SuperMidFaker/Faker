@@ -166,7 +166,7 @@ export default class SHFTZTransferOutDetail extends Component {
   columns = [{
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
-    width: 100,
+    width: 120,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -190,12 +190,12 @@ export default class SHFTZTransferOutDetail extends Component {
     width: 100,
     render: o => (<b>{o}</b>),
   }, {
-    title: '毛重',
-    dataIndex: 'gross_wt',
-    width: 100,
-  }, {
     title: '净重',
     dataIndex: 'net_wt',
+    width: 100,
+  }, {
+    title: '毛重',
+    dataIndex: 'gross_wt',
     width: 100,
   }, {
     title: '金额',
