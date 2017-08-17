@@ -15,7 +15,7 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -136,10 +136,13 @@ export default class ShippingOrderList extends React.Component {
     title: '货物属性',
     width: 100,
     dataIndex: 'bonded',
-    render: (o) => {
-      if (o === 1) {
-        return (<Tag color="blue">保税</Tag>);
-      } else if (o === 0) {
+    render: (bonded, record) => {
+      if (bonded) {
+        const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === record.bonded_outtype)[0];
+        if (regtype) {
+          return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
+        }
+      } else {
         return (<Tag>非保税</Tag>);
       }
     },
@@ -173,8 +176,8 @@ export default class ShippingOrderList extends React.Component {
           return (<span>
             {outbndActions}
             <span className="ant-divider" />
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleReleaseReg} label="出区备案" row={record} />
-              : <RowUpdater onHit={this.handleReleaseReg} label="备案详情" row={record} />}
+            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleSupervision} label="海关备案" row={record} />
+              : <RowUpdater onHit={this.handleSupervision} label="备案详情" row={record} />}
           </span>
           );
         } else {
@@ -183,8 +186,9 @@ export default class ShippingOrderList extends React.Component {
       }
     },
   }]
-  handleReleaseReg = (row) => {
-    this.context.router.push(`/cwm/supervision/shftz/release/${row.so_no}`);
+  handleSupervision = (row) => {
+    const link = row.bonded_outtype === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${row.so_no}` : `/cwm/supervision/shftz/release/${row.so_no}`;
+    this.context.router.push(link);
   }
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);

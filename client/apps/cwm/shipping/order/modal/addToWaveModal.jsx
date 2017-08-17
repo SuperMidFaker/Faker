@@ -27,7 +27,6 @@ const formatMsg = format(messages);
 export default class AddToWaveModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ownerId: PropTypes.string.isRequired,
     selectedRowKeys: PropTypes.array.isRequired,
     reload: PropTypes.func.isRequired,
   }

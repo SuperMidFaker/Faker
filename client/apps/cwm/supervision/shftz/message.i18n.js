@@ -5,9 +5,17 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.entry.reg',
     defaultMessage: '进区备案',
   },
+  ftzTransferIn: {
+    id: 'cwm.supervision.shftz.transfer.in',
+    defaultMessage: '区内转入',
+  },
   ftzReleaseReg: {
     id: 'cwm.supervision.shftz.release.reg',
     defaultMessage: '出区备案',
+  },
+  ftzTransferOut: {
+    id: 'cwm.supervision.shftz.transfer.out',
+    defaultMessage: '区内转出',
   },
   ftzClearance: {
     id: 'cwm.supervision.shftz.clearance',

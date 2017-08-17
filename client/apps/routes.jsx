@@ -69,7 +69,9 @@ import * as CWMStockMovement from './cwm/stock/movement';
 import * as CWMProductsSku from './cwm/products/sku';
 import * as CWMSettings from './cwm/settings';
 import * as CWMSupSHFTZEntry from './cwm/supervision/shftz/entry';
+import * as CWMSupSHFTZTransferIn from './cwm/supervision/shftz/transfer/in';
 import * as CWMSupSHFTZRelease from './cwm/supervision/shftz/release';
+import * as CWMSupSHFTZTransferOut from './cwm/supervision/shftz/transfer/out';
 import * as CWMSupSHFTZClearance from './cwm/supervision/shftz/clearance';
 import * as CWMSupSHFTZBatch from './cwm/supervision/shftz/batch';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
@@ -472,9 +474,17 @@ export default(store, cookie) => {
                   <IndexRoute component={CWMSupSHFTZEntry.List} />
                   <Route path=":asnNo" component={CWMSupSHFTZEntry.Detail} />
                 </Route>
+                <Route path="transfer/in" >
+                  <IndexRoute component={CWMSupSHFTZTransferIn.List} />
+                  <Route path=":asnNo" component={CWMSupSHFTZTransferIn.Detail} />
+                </Route>
                 <Route path="release" >
                   <IndexRoute component={CWMSupSHFTZRelease.List} />
                   <Route path=":soNo" component={CWMSupSHFTZRelease.Detail} />
+                </Route>
+                <Route path="transfer/out" >
+                  <IndexRoute component={CWMSupSHFTZTransferOut.List} />
+                  <Route path=":asnNo" component={CWMSupSHFTZTransferOut.Detail} />
                 </Route>
                 <Route path="clearance" >
                   <IndexRoute component={CWMSupSHFTZClearance.List} />

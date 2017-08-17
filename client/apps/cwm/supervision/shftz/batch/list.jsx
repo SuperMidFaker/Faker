@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Menu, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import NavLink from 'client/components/NavLink';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openBatchDeclModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import ModuleMenu from '../menu';
 import BatchDeclModal from './modal/batchDeclModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -271,32 +271,7 @@ export default class SHFTZBatchDeclList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <Menu
-              defaultSelectedKeys={['batch']}
-              mode="inline"
-            >
-              <Menu.ItemGroup key="g1" title="入库监管">
-                <Menu.Item key="entry">
-                  <NavLink to="/cwm/supervision/shftz/entry">{this.msg('ftzEntryReg')}</NavLink>
-                </Menu.Item>
-              </Menu.ItemGroup>
-              <Menu.ItemGroup key="g2" title="出库监管">
-                <Menu.Item key="release">
-                  <NavLink to="/cwm/supervision/shftz/release">{this.msg('ftzReleaseReg')}</NavLink>
-                </Menu.Item>
-                <Menu.Item key="clearance">
-                  <NavLink to="/cwm/supervision/shftz/clearance">{this.msg('ftzClearance')}</NavLink>
-                </Menu.Item>
-                <Menu.Item key="batch">
-                  <NavLink to="/cwm/supervision/shftz/batch">{this.msg('ftzBatchDecl')}</NavLink>
-                </Menu.Item>
-              </Menu.ItemGroup>
-              <Menu.ItemGroup key="g3" title="货物监管">
-                <Menu.Item key="cargo">
-                  <NavLink to="/cwm/supervision/shftz/cargo">{this.msg('ftzCargoReg')}</NavLink>
-                </Menu.Item>
-              </Menu.ItemGroup>
-            </Menu>
+            <ModuleMenu currentKey="batch" />
           </div>
         </Sider>
         <Layout>

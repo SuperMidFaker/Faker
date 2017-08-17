@@ -3,51 +3,53 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
+
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import ShippingDockPanel from '../../../shipping/dock/shippingDockPanel';
-import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
-import ModuleMenu from '../menu';
-import { showDock } from 'common/reducers/cwmShippingOrder';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
+import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
+import { showDock } from 'common/reducers/cwmReceive';
+import ModuleMenu from '../../menu';
+import ReceivingDockPanel from '../../../../receiving/dock/receivingDockPanel';
+import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    releaseList: state.cwmShFtz.releaseList,
+    entryList: state.cwmShFtz.entryList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { loadReleaseRegDatas, switchDefaultWhse, showDock }
+  { loadEntryRegDatas, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZReleaseList extends React.Component {
+export default class SHFTZTransferInList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    releaseList: PropTypes.object.isRequired,
+    entryList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -59,27 +61,30 @@ export default class SHFTZReleaseList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleReleaseListLoad();
+    this.handleEntryListLoad();
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'SO编号',
-    dataIndex: 'so_no',
+    title: 'ANS编号',
+    dataIndex: 'asn_no',
     width: 180,
     fixed: 'left',
-    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
+    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '海关出库单号',
+    title: '报关单号',
     width: 180,
-    dataIndex: 'ftz_rel_no',
+    dataIndex: 'pre_entry_seq_no',
+    render: (preno, row) => row.cus_decl_no || preno,
+  }, {
+    title: '海关入库单号',
+    width: 180,
+    dataIndex: 'ftz_ent_no',
   }, {
     title: '备案类型',
-    dataIndex: 'ftz_rel_type',
-    render: (reltype) => {
-      const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
-      if (regtype) {
-        return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
-      }
+    dataIndex: 'ftz_ent_type',
+    render: (enttype) => {
+      const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
+      return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
     },
   }, {
     title: '货主',
@@ -92,30 +97,23 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'wh_ent_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '提货单位',
-    width: 180,
-    dataIndex: 'receiver_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '运输单位',
-    width: 180,
-    dataIndex: 'carrier_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '出口日期',
+    title: '进口日期',
     width: 120,
     dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('YYYY.MM.DD')}`;
+      }
+    },
   }, {
-    title: '报关日期',
+    title: '进库日期',
     width: 120,
-    dataIndex: 'cus_decl_date',
-    render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
-  }, {
-    title: '预计出区日期',
-    width: 120,
-    dataIndex: 'ftz_rel_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
+    dataIndex: 'ftz_ent_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('YYYY.MM.DD')}`;
+      }
+    },
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -136,11 +134,11 @@ export default class SHFTZReleaseList extends React.Component {
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
   }]
-  handlePreview = (soNo, outboundNo) => {
-    this.props.showDock(soNo, outboundNo);
+  handlePreview = (asnNo) => {
+    this.props.showDock(asnNo);
   }
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadReleaseRegDatas(params),
+    fetcher: params => this.props.loadEntryRegDatas(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -160,11 +158,11 @@ export default class SHFTZReleaseList extends React.Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.releaseList,
+    remotes: this.props.entryList,
   })
-  handleReleaseListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
-    this.props.loadReleaseRegDatas({
+  handleEntryListLoad = (currentPage, whsecode, filter) => {
+    const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
+    this.props.loadEntryRegDatas({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
@@ -181,36 +179,39 @@ export default class SHFTZReleaseList extends React.Component {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleReleaseListLoad(1, this.props.whse.code, filter);
+    this.handleEntryListLoad(1, this.props.whse.code, filter);
   }
   handleTypeChange = (ev) => {
     if (ev.target.value === this.props.listFilter.type) {
       return;
     }
     const filter = { ...this.props.listFilter, type: ev.target.value };
-    this.handleReleaseListLoad(1, this.props.whse.code, filter);
+    this.handleEntryListLoad(1, this.props.whse.code, filter);
+  }
+  handleCreateBtnClick = () => {
+    this.context.router.push('/cwm/ftz/receive/reg');
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/release/${row.so_no}`;
+    const link = `/cwm/supervision/shftz/transfer/in/${row.asn_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    this.handleReleaseListLoad(1, value);
+    this.handleEntryListLoad(1, value);
   }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
-    this.handleReleaseListLoad(1, this.props.whse.code, filters);
+    this.handleEntryListLoad(1, this.props.whse.code, filters);
   }
   handleOwnerSelectChange = (value) => {
     const filters = { ...this.props.listFilter, ownerView: value };
-    this.handleReleaseListLoad(1, this.props.whse.code, filters);
+    this.handleEntryListLoad(1, this.props.whse.code, filters);
   }
   render() {
-    const { releaseList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
-    this.dataSource.remotes = releaseList;
+    const { entryList, listFilter, whses, whse, owners } = this.props;
+    const bondedWhses = whses.filter(wh => wh.bonded === 1);
+    this.dataSource.remotes = entryList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -220,7 +221,6 @@ export default class SHFTZReleaseList extends React.Component {
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
-
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -229,7 +229,7 @@ export default class SHFTZReleaseList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="release" />
+            <ModuleMenu currentKey="transferin" />
           </div>
         </Sider>
         <Layout>
@@ -241,7 +241,7 @@ export default class SHFTZReleaseList extends React.Component {
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzReleaseReg')}
+                {this.msg('ftzTransferIn')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
@@ -250,45 +250,39 @@ export default class SHFTZReleaseList extends React.Component {
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
             </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.type} onChange={this.handleTypeChange} size="large">
-              <RadioButton value="all">全部类型</RadioButton>
-              <RadioButton value="normal">普通出库</RadioButton>
-              <RadioButton value="portion">分拨出库</RadioButton>
-            </RadioGroup>
             <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+                <SearchBar placeholder={this.msg('entrySearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
                 <span />
                 <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
                   onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
                 >
-                  <Option value="all">全部货主</Option>
-                  {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-                    search={`${data.partner_code}${data.name}`}
-                  >{data.name}
-                  </Option>)
+                  <OptGroup>
+                    <Option value="all">全部货主</Option>
+                    {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+                      search={`${data.partner_code}${data.name}`}
+                    >{data.name}
+                    </Option>)
                     )}
+                  </OptGroup>
                 </Select>
-                <span />
                 <div className="toolbar-right" />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  <Button size="large">发送报关申请</Button>
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-                  indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
+                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
-                <ShippingDockPanel />
-                <OrderDockPanel />
-                <DelegationDockPanel />
-                <ShipmentDockPanel />
               </div>
+              <ReceivingDockPanel />
+              <OrderDockPanel />
+              <DelegationDockPanel />
+              <ShipmentDockPanel />
             </div>
           </Content>
         </Layout>

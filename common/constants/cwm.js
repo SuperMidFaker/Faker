@@ -27,17 +27,17 @@ exports.CWM_ASN_TYPES = [{
 }];
 
 exports.CWM_ASN_BONDED_REGTYPES = [{
-  value: '1',
+  value: 'entry',
   text: '先报关后入库',
-  ftztext: '一二线进区',
+  ftztext: '进境入库',
   tagcolor: 'blue',
 }, {
-  value: '2',
+  value: 'export',
   text: '先入库后报关',
   ftztext: '视同出口',
   tagcolor: 'green',
 }, {
-  value: '3',
+  value: 'transfer',
   text: '不报关',
   ftztext: '区内转入',
   tagcolor: 'yellow',
