@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio } from 'antd';
+import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio, Modal, Form, Input, Table } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -11,7 +11,7 @@ import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
-import { loadOutboundHead, updateOutboundMode, readWaybillLogo } from 'common/reducers/cwmOutbound';
+import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo } from 'common/reducers/cwmOutbound';
 import Print from './printPIckList';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 import messages from '../message.i18n';
@@ -24,6 +24,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -36,7 +37,7 @@ const TabPane = Tabs.TabPane;
     reload: state.cwmOutbound.outboundReload,
     waybill: state.cwmOutbound.waybill,
   }),
-  { loadOutboundHead, updateOutboundMode, readWaybillLogo }
+  { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo }
 )
 @connectNav({
   depth: 3,
@@ -57,6 +58,8 @@ export default class OutboundDetail extends Component {
     picking: false,
     picked: false,
     tabKey: 'orderDetails',
+    expressModalvisible: false,
+    expressNum: 0,
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -83,6 +86,9 @@ export default class OutboundDetail extends Component {
     if (nextProps.reload) {
       this.props.loadOutboundHead(this.props.params.outboundNo);
     }
+    const { outboundHead } = this.props;
+    const courierNo = outboundHead.courier_no ? outboundHead.courier_no.split(',') : [];
+    this.setState({ expressNum: courierNo.length });
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
@@ -128,11 +134,12 @@ export default class OutboundDetail extends Component {
       picking: false,
     });
   }
-  handleWaybillPrint = () => {
+  handleWaybillPrint = (courierNo, courierNoSon) => {
     this.setState({
       printedPickingList: true,
     });
-    const docDefinition = WaybillDef(this.props.waybill);
+    const { expressNum } = this.state;
+    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum });
     window.pdfMake.fonts = {
       selfFont: {
         normal: 'msyh.ttf',
@@ -153,12 +160,49 @@ export default class OutboundDetail extends Component {
       tabKey,
     });
   }
+  showExpressModal = () => {
+    this.setState({ expressModalvisible: true });
+  }
+  loadCourierNo = () => {
+    this.props.loadCourierNo({
+      outboundNo: this.props.params.outboundNo,
+      tenantId: this.props.tenantId,
+      expressNum: this.state.expressNum,
+    }).then(() => {
+      this.props.loadOutboundHead(this.props.params.outboundNo);
+    });
+  }
   render() {
     const { defaultWhse, outboundHead } = this.props;
     const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
+    const courierNo = outboundHead.courier_no ? outboundHead.courier_no.split(',') : [];
+    const dataSource = courierNo.map((item, index) => {
+      if (index === 0) {
+        return {
+          courier_no: item,
+        };
+      } else {
+        return {
+          courier_no: item,
+        };
+      }
+    });
+    const columns = [{
+      width: 180,
+      dataIndex: 'courier_no',
+      render: (col, row, index) => {
+        if (index === 0) {
+          return <Tooltip title="母单号"><strong>{col}</strong></Tooltip>;
+        }
+        return <Tooltip title="子单号">{col}</Tooltip>;
+      },
+    }, {
+      width: 80,
+      render: row => (<a onClick={() => this.handleWaybillPrint(courierNo[0], row.courier_no)}><Icon type="printer" /></a>),
+    }];
     return (
       <div>
         <Header className="page-header">
@@ -177,7 +221,7 @@ export default class OutboundDetail extends Component {
             {this.state.tabKey === 'pickingDetails' &&
             <Print outboundNo={this.props.params.outboundNo} />
             }
-            <Button size="large" onClick={this.handleWaybillPrint} >
+            <Button size="large" onClick={this.showExpressModal} >
               <Logixon type="sf-express" />
             </Button>
             <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
@@ -255,6 +299,23 @@ export default class OutboundDetail extends Component {
               </TabPane>
             </Tabs>
           </Card>
+          <Modal title="顺丰快递" visible={this.state.expressModalvisible}
+            onCancel={() => this.setState({ expressModalvisible: false })}
+            onOk={() => this.setState({ expressModalvisible: false })}
+          >
+            <Card title="运单信息" extra={
+              <Button onClick={this.loadCourierNo}>
+                  确定
+                </Button>}
+            >
+              <FormItem label="单数" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+                <Input value={this.state.expressNum} type="number" onChange={e => this.setState({ expressNum: Number(e.target.value) })} />
+              </FormItem>
+            </Card>
+            <Card title="快递单号">
+              <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" />
+            </Card>
+          </Modal>
         </Content>
       </div>
     );

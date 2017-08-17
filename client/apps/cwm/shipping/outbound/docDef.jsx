@@ -7,8 +7,13 @@ function textToBase64Barcode(text, mark) {
 }
 
 function pdfBody(data) {
-  const barcode0 = textToBase64Barcode('123456789123', '2/2  子单号 123 456 789 123');
-  const barcode1 = textToBase64Barcode('123456789123', '子单号 123 456 789 123');
+  let barcode0 = textToBase64Barcode(data.courierNoSon, `1/${data.expressNum}  子单号 ${data.courierNoSon}`);
+  let barcode1 = textToBase64Barcode(data.courierNoSon, `子单号 ${data.courierNoSon}`);
+  if (data.courierNoSon === data.courierNo) {
+    barcode0 = textToBase64Barcode(data.courierNoSon, `1/${data.expressNum}  母单号 ${data.courierNoSon}`);
+    barcode1 = textToBase64Barcode(data.courierNoSon, `母单号 ${data.courierNoSon}`);
+  }
+
   let pdfcontent = [];
   pdfcontent = [
     { style: 'table',
