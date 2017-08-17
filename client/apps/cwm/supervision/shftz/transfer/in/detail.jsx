@@ -203,9 +203,9 @@ export default class SHFTZTransferInDetail extends Component {
     dataIndex: 'ftz_cargo_no',
     width: 160,
   }, {
-    title: '备案明细ID',
+    title: '入库单明细ID',
     dataIndex: 'ftz_ent_detail_id',
-    width: 100,
+    width: 120,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -314,13 +314,13 @@ export default class SHFTZTransferInDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={24} lg={6}>
-                  <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
+                  <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="经营单位" field={entryAsn.owner_name} />
+                  <InfoItem label="收货单位" field={entryAsn.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={entryAsn.wh_ent_tenant_name} />
+                  <InfoItem label="收货仓库" field={entryAsn.wh_ent_tenant_name} />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
@@ -335,9 +335,9 @@ export default class SHFTZTransferInDetail extends Component {
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="待备案" />
-                  <Step description="已发送" />
-                  <Step description="备案完成" />
+                  <Step description="未接收" />
+                  <Step description="已接收" />
+                  <Step description="已核对" />
                 </Steps>
               </div>
             </Card>
@@ -360,17 +360,6 @@ export default class SHFTZTransferInDetail extends Component {
                           <Col sm={12} lg={5}>
                             <InfoItem size="small" addonBefore="海关入库单号" field={reg.ftz_ent_no} editable={entryEditable}
                               onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
-                            />
-                          </Col>
-                          <Col sm={12} lg={5}>
-                            <InfoItem size="small" addonBefore="报关单号" field={reg.cus_decl_no} editable={entryEditable}
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
-                            />
-                          </Col>
-                          <Col sm={12} lg={3}>
-                            <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进口日期</span>}
-                              type="date" field={reg.ie_date} editable={entryEditable}
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
                             />
                           </Col>
                           <Col sm={12} lg={3}>

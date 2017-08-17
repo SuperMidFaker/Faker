@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -73,7 +73,7 @@ export default class SHFTZTransferOutList extends React.Component {
     width: 180,
     dataIndex: 'ftz_rel_no',
   }, {
-    title: '备案类型',
+    title: '监管类型',
     dataIndex: 'ftz_rel_type',
     render: (reltype) => {
       const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
@@ -82,37 +82,27 @@ export default class SHFTZTransferOutList extends React.Component {
       }
     },
   }, {
-    title: '货主',
+    title: '发货单位(货主)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '仓储企业',
-    width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '提货单位',
+    title: '收货单位',
     width: 180,
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '运输单位',
+    title: '发货仓库',
     width: 180,
-    dataIndex: 'carrier_name',
+    dataIndex: 'wh_ent_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '出口日期',
-    width: 120,
-    dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+    title: '收货仓库',
+    width: 180,
+    dataIndex: 'receive_wh_ent_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '报关日期',
-    width: 120,
-    dataIndex: 'cus_decl_date',
-    render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
-  }, {
-    title: '预计出区日期',
+    title: '出库日期',
     width: 120,
     dataIndex: 'ftz_rel_date',
     render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
@@ -134,7 +124,7 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="转出明细" row={record} />,
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
@@ -271,7 +261,6 @@ export default class SHFTZTransferOutList extends React.Component {
                 <div className="toolbar-right" />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  <Button size="large">发送报关申请</Button>
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">

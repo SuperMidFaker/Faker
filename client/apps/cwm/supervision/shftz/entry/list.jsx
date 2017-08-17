@@ -79,7 +79,7 @@ export default class SHFTZEntryList extends React.Component {
     width: 180,
     dataIndex: 'ftz_ent_no',
   }, {
-    title: '备案类型',
+    title: '监管类型',
     dataIndex: 'ftz_ent_type',
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
@@ -131,7 +131,7 @@ export default class SHFTZEntryList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="进库明细" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);

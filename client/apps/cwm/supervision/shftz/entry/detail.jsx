@@ -203,9 +203,9 @@ export default class SHFTZEntryDetail extends Component {
     dataIndex: 'ftz_cargo_no',
     width: 160,
   }, {
-    title: '备案明细ID',
+    title: '入库单明细ID',
     dataIndex: 'ftz_ent_detail_id',
-    width: 100,
+    width: 120,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -314,7 +314,7 @@ export default class SHFTZEntryDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={24} lg={6}>
-                  <InfoItem label="备案类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
+                  <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="经营单位" field={entryAsn.owner_name} />

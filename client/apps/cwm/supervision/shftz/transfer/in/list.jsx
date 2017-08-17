@@ -71,40 +71,36 @@ export default class SHFTZTransferInList extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '报关单号',
-    width: 180,
-    dataIndex: 'pre_entry_seq_no',
-    render: (preno, row) => row.cus_decl_no || preno,
-  }, {
     title: '海关入库单号',
     width: 180,
     dataIndex: 'ftz_ent_no',
   }, {
-    title: '备案类型',
+    title: '监管类型',
     dataIndex: 'ftz_ent_type',
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
       return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
     },
   }, {
-    title: '货主',
+    title: '收货单位(货主)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '仓储企业',
+    title: '发货单位',
+    width: 180,
+    dataIndex: 'sender_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '收货仓库',
     width: 180,
     dataIndex: 'wh_ent_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '进口日期',
-    width: 120,
-    dataIndex: 'ie_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
-      }
-    },
+    title: '发货仓库',
+    width: 180,
+    dataIndex: 'send_wh_ent_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '进库日期',
     width: 120,
@@ -121,18 +117,18 @@ export default class SHFTZTransferInList extends React.Component {
     fixed: 'right',
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
+        return (<Badge status="default" text="未接收" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="已发送" />);
+        return (<Badge status="processing" text="已接收" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+        return (<Badge status="success" text="已核对" />);
       }
     },
   }, {
     title: '操作',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -246,9 +242,9 @@ export default class SHFTZTransferInList extends React.Component {
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
               <RadioButton value="all">全部状态</RadioButton>
-              <RadioButton value="pending">待备案</RadioButton>
-              <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">备案完成</RadioButton>
+              <RadioButton value="pending">未接收</RadioButton>
+              <RadioButton value="received">已接收</RadioButton>
+              <RadioButton value="verified">已核对</RadioButton>
             </RadioGroup>
             <div className="page-header-tools" />
           </Header>
