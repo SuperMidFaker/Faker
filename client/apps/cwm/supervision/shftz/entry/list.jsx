@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Menu, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import NavLink from 'client/components/NavLink';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
+import ModuleMenu from '../menu';
 import ReceivingDockPanel from '../../../receiving/dock/receivingDockPanel';
 import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
@@ -228,32 +228,7 @@ export default class SHFTZEntryList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <Menu
-              defaultSelectedKeys={['entry']}
-              mode="inline"
-            >
-              <Menu.ItemGroup key="g1" title="入库监管">
-                <Menu.Item key="entry">
-                  <NavLink to="/cwm/supervision/shftz/entry">{this.msg('ftzEntryReg')}</NavLink>
-                </Menu.Item>
-              </Menu.ItemGroup>
-              <Menu.ItemGroup key="g2" title="出库监管">
-                <Menu.Item key="release">
-                  <NavLink to="/cwm/supervision/shftz/release">{this.msg('ftzReleaseReg')}</NavLink>
-                </Menu.Item>
-                <Menu.Item key="clearance">
-                  <NavLink to="/cwm/supervision/shftz/clearance">{this.msg('ftzClearance')}</NavLink>
-                </Menu.Item>
-                <Menu.Item key="batch">
-                  <NavLink to="/cwm/supervision/shftz/batch">{this.msg('ftzBatchDecl')}</NavLink>
-                </Menu.Item>
-              </Menu.ItemGroup>
-              <Menu.ItemGroup key="g3" title="货物监管">
-                <Menu.Item key="cargo">
-                  <NavLink to="/cwm/supervision/shftz/cargo">{this.msg('ftzCargoReg')}</NavLink>
-                </Menu.Item>
-              </Menu.ItemGroup>
-            </Menu>
+            <ModuleMenu currentKey="entry" />
           </div>
         </Sider>
         <Layout>
@@ -279,7 +254,6 @@ export default class SHFTZEntryList extends React.Component {
               <RadioButton value="all">全部类型</RadioButton>
               <RadioButton value="bonded">{CWM_ASN_BONDED_REGTYPES[0].ftztext}</RadioButton>
               <RadioButton value="export" disabled>{CWM_ASN_BONDED_REGTYPES[1].ftztext}</RadioButton>
-              <RadioButton value="transfer">{CWM_ASN_BONDED_REGTYPES[2].ftztext}</RadioButton>
             </RadioGroup>
             <div className="page-header-tools" />
           </Header>

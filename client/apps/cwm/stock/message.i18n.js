@@ -96,7 +96,7 @@ const messages = defineMessages({
   },
   expiryDate: {
     id: 'cwm.stock.expiry.date',
-    defaultMessage: '失效时间',
+    defaultMessage: '过期日期',
   },
   ftzEntryId: {
     id: 'cwm.stock.ftz.entry.id',

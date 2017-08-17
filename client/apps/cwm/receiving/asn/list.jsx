@@ -13,7 +13,7 @@ import TrimSpan from 'client/components/trimSpan';
 import ExcelUploader from 'client/components/ExcelUploader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { formatMsg } from '../message.i18n';
 import { showDock, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease } from 'common/reducers/cwmReceive';
@@ -125,9 +125,10 @@ export default class ReceivingASNList extends React.Component {
     title: '货物属性',
     dataIndex: 'bonded',
     width: 100,
-    render: (bonded) => {
+    render: (bonded, record) => {
       if (bonded) {
-        return (<Tag color="blue">保税</Tag>);
+        const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === record.bonded_intype)[0];
+        return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
       } else {
         return (<Tag>非保税</Tag>);
       }
@@ -162,8 +163,8 @@ export default class ReceivingASNList extends React.Component {
           return (<span>
             {inbndActions}
             <span className="ant-divider" />
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleEntryReg} label="进区备案" row={record} />
-              : <RowUpdater onHit={this.handleEntryReg} label="备案详情" row={record} />}
+            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleSupervision} label="海关备案" row={record} />
+              : <RowUpdater onHit={this.handleSupervision} label="备案详情" row={record} />}
           </span>
           );
         } else {
@@ -243,8 +244,8 @@ export default class ReceivingASNList extends React.Component {
     const link = `/cwm/receiving/inbound/${row.inbound_no}`;
     this.context.router.push(link);
   }
-  handleEntryReg = (row) => {
-    const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
+  handleSupervision = (row) => {
+    const link = row.bonded_intype === 'transfer' ? `/cwm/supervision/shftz/transfer/in/${row.asn_no}` : `/cwm/supervision/shftz/entry/${row.asn_no}`;
     this.context.router.push(link);
   }
   handleDisprepancy = () => {

@@ -9,14 +9,14 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import ShippingDockPanel from '../../../shipping/dock/shippingDockPanel';
-import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
-import ModuleMenu from '../menu';
+import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
+import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
+import ModuleMenu from '../../menu';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
@@ -43,7 +43,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZReleaseList extends React.Component {
+export default class SHFTZTransferOutList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -191,7 +191,7 @@ export default class SHFTZReleaseList extends React.Component {
     this.handleReleaseListLoad(1, this.props.whse.code, filter);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/release/${row.so_no}`;
+    const link = `/cwm/supervision/shftz/transfer/out/${row.so_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
@@ -229,7 +229,7 @@ export default class SHFTZReleaseList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="release" />
+            <ModuleMenu currentKey="transferout" />
           </div>
         </Sider>
         <Layout>
@@ -241,7 +241,7 @@ export default class SHFTZReleaseList extends React.Component {
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzReleaseReg')}
+                {this.msg('ftzTransferOut')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
@@ -249,12 +249,6 @@ export default class SHFTZReleaseList extends React.Component {
               <RadioButton value="pending">待备案</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
               <RadioButton value="completed">备案完成</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.type} onChange={this.handleTypeChange} size="large">
-              <RadioButton value="all">全部类型</RadioButton>
-              <RadioButton value="normal">普通出库</RadioButton>
-              <RadioButton value="portion">分拨出库</RadioButton>
             </RadioGroup>
             <div className="page-header-tools" />
           </Header>
