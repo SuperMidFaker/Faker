@@ -32,7 +32,7 @@ export default class AdjustPane extends React.Component {
   }
   handleAdjustQty = (value) => {
     const adjust = parseFloat(value);
-    if (!isNaN(adjust)) {
+    if (!isNaN(adjust) && adjust !== 0) {
       const { detail } = this.props;
       if (detail.avail_qty + adjust > 0) {
         this.setState({ adjustQty: adjust, finalQty: detail.avail_qty + adjust });

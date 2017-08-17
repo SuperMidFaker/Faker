@@ -396,7 +396,7 @@ export function cancelPicked(outboundNo, skulist) {
   };
 }
 
-export function shipConfirm(outboundNo, skulist, loginId, tenantId, shippedBy, shippedDate) {
+export function shipConfirm(outboundNo, skulist, loginName, tenantId, shippedBy, shippedDate) {
   return {
     [CLIENT_API]: {
       types: [
@@ -406,7 +406,7 @@ export function shipConfirm(outboundNo, skulist, loginId, tenantId, shippedBy, s
       ],
       endpoint: 'v1/cwm/outbounds/ship',
       method: 'post',
-      data: { outboundNo, skulist, loginId, tenantId, shippedBy, shippedDate },
+      data: { outboundNo, skulist, loginName, tenantId, shippedBy, shippedDate },
     },
   };
 }

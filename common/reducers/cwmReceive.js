@@ -546,7 +546,7 @@ export function expressReceive(inboundNo, loginId, loginName) {
   };
 }
 
-export function batchReceive(seqNos, location, damageLevel, loginId, asnNo, inboundNo, loginName) {
+export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -556,7 +556,7 @@ export function batchReceive(seqNos, location, damageLevel, loginId, asnNo, inbo
       ],
       endpoint: 'v1/cwm/inbound/product/receipt/batch',
       method: 'post',
-      data: { seqNos, location, damageLevel, loginId, asnNo, inboundNo, loginName },
+      data: { seqNos, location, damageLevel, asnNo, inboundNo, loginName },
     },
   };
 }
@@ -576,7 +576,7 @@ export function undoReceives(inboundNo, loginId, traceIds) {
   };
 }
 
-export function batchPutaways(traceIds, location, allocater, allocateDt, loginId, inboundNo, tenantId) {
+export function batchPutaways(traceIds, location, allocater, allocateDt, loginName, inboundNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -586,7 +586,7 @@ export function batchPutaways(traceIds, location, allocater, allocateDt, loginId
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/batch',
       method: 'post',
-      data: { traceIds, location, allocater, allocateDt, loginId, inboundNo, tenantId },
+      data: { traceIds, location, allocater, allocateDt, loginName, inboundNo, tenantId },
     },
   };
 }
