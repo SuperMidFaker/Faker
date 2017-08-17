@@ -34,6 +34,7 @@ export default class BatchTransitModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleCancel = () => {
+    this.props.form.resetFields();
     this.props.closeBatchTransitModal({ needReload: false });
   }
   handleValueChange = (keyValue) => {

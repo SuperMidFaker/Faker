@@ -97,6 +97,7 @@ export default class StockTransactionsList extends React.Component {
       current: currentPage || current,
       sorter: JSON.stringify(sortFilter),
     });
+    this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (searchForm) => {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
@@ -112,7 +113,7 @@ export default class StockTransactionsList extends React.Component {
       },
     };
     const dataSource = new Table.DataSource({
-      fetcher: params => this.props.loadTransactions(params),
+      fetcher: (params) => { this.props.loadTransactions(params); this.setState({ selectedRowKeys: [] }); },
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
