@@ -160,6 +160,9 @@ export default class OutboundDetail extends Component {
       tabKey,
     });
   }
+  handleRegPage = () => {
+    this.context.router.push(`/cwm/supervision/shftz/release/${this.props.outboundHead.so_no}`);
+  }
   showExpressModal = () => {
     this.setState({ expressModalvisible: true });
   }
@@ -218,6 +221,8 @@ export default class OutboundDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {!!outboundHead.bonded && <Button type="primary" size="large" onClick={this.handleRegPage}>
+              备案</Button>}
             {this.state.tabKey === 'pickingDetails' &&
             <Print outboundNo={this.props.params.outboundNo} />
             }

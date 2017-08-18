@@ -10,6 +10,7 @@ exports.commonTraceColumns = (intl) => {
     title: msg('traceId'),
     width: 220,
     dataIndex: 'trace_id',
+    sorter: true,
   }, {
     title: msg('SKU'),
     dataIndex: 'product_sku',
