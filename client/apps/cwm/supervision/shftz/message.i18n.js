@@ -9,6 +9,10 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.transfer.in',
     defaultMessage: '区内转入',
   },
+  batchImport: {
+    id: 'cwm.supervision.shftz.transfer.batch.import',
+    defaultMessage: '批量导入',
+  },
   ftzReleaseReg: {
     id: 'cwm.supervision.shftz.release.reg',
     defaultMessage: '出区备案',
