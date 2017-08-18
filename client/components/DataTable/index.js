@@ -50,7 +50,7 @@ class DataTable extends Component {
     visible: false,
   }
   componentWillMount() {
-    const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
+    const offset = this.props.scrollOffset ? this.props.scrollOffset : 410;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ scrollY: window.innerHeight - offset });
     }
@@ -152,7 +152,6 @@ class DataTable extends Component {
       } : pagination;
       dataSource = data;
     }
-
     let scrollProp;
     if (this.state.scrollY) {
       scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } :

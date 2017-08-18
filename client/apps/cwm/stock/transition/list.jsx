@@ -65,13 +65,6 @@ export default class StockTransitionList extends React.Component {
     transitionSplitNum: 0,
     unfreezeReason: '',
   }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 400,
-      });
-    }
-  }
   componentDidMount() {
     const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(1, filter);
@@ -376,7 +369,7 @@ export default class StockTransitionList extends React.Component {
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered
-            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
+            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
           />
           <TransitionDockPanel />
           <BatchTransitModal />

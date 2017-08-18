@@ -45,13 +45,6 @@ export default class StockInventoryList extends React.Component {
   state = {
     selectedRowKeys: [],
   }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 400,
-      });
-    }
-  }
   componentDidMount() {
     const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(1, filter);
