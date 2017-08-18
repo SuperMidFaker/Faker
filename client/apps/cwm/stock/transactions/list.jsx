@@ -6,7 +6,7 @@ import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTransactions } from 'common/reducers/cwmTransaction';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import DataTable from 'client/components/dataTable/dataTable';
+import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import { transactionColumns, commonTraceColumns } from '../commonColumns';
@@ -138,11 +138,7 @@ export default class StockTransactionsList extends React.Component {
       },
       remotes: this.props.transactionlist,
     });
-    const node = (<div className="toolbar-left">
-      <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-        <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-      </div>
-    </div>);
+
     return (
       <Layout>
         <Header className="page-header">
@@ -166,8 +162,8 @@ export default class StockTransactionsList extends React.Component {
           <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 8 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable node={node} columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
-            scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
+          <DataTable selectedRowKeys={this.state.selectedRowKeys} bordered
+            columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
           />
         </Content>
       </Layout>

@@ -5,7 +5,7 @@ import update from 'react/lib/update';
 import SelectItem from './selectItem';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import './dataTable.less';
+import './index.less';
 
 function noop() {
 }
@@ -37,9 +37,12 @@ class DataTable extends Component {
       PropTypes.instanceOf(DataSource),
     ]),
     node: PropTypes.node,
+    toolbarActions: PropTypes.node,
+    bulkActions: PropTypes.node,
+    selectedRowKeys: PropTypes.object,
   }
 
-  static state = {
+  state = {
     scrollY: null,
     popoverColumns: [],
     tableColumns: [],
@@ -151,7 +154,8 @@ class DataTable extends Component {
 
     let scrollProp;
     if (this.state.scrollY) {
-      scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } : { y: this.state.scrollY };
+      scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } :
+        { x: this.state.tableColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY };
     }
     const content = this.state.popoverColumns.map((column, index) => (
       <SelectItem id={index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
@@ -164,16 +168,20 @@ class DataTable extends Component {
       </div>
     );
     return (
-      <div className="page-body">
+      <div className="page-body data-table">
         <div className="toolbar">
-          {this.props.node}
+          {this.props.toolbarActions}
           <div className="toolbar-right">
-            <Popover placement="left" trigger="click" content={content} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+            <Popover placement="leftTop" trigger="click" content={content} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
               <Tooltip title="显示字段设置">
-                <Button size="large" icon="setting" />
+                <Button size="large" icon="bars" />
               </Tooltip>
             </Popover>
           </div>
+          {this.props.selectedRowKeys && <div className={`bulk-actions ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+            <h3>已选中{this.props.selectedRowKeys.length}项</h3>
+            {this.props.bulkActions}
+          </div>}
         </div>
         <div className="panel-body table-panel table-fixed-layout">
           <Table {...this.props} dataSource={dataSource} pagination={pagination}

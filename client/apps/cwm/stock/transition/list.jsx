@@ -8,7 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { showTransitionDock, loadTransitions, splitTransit, unfreezeTransit,
   openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import DataTable from 'client/components/dataTable/dataTable';
+import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
