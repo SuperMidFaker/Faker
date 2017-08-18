@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tooltip, Button, Popover } from 'antd';
 import update from 'react/lib/update';
-import SelectItem from './selectItems';
+import SelectItem from './selectItem';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import './dataTable.less';
 
 function noop() {
 }
@@ -29,15 +30,16 @@ class DataSource {
 
 /* eslint react/prefer-es6-class: 0 */
 class DataTable extends Component {
-  propTypes = {
+  static propTypes = {
     scrollOffset: PropTypes.number,
     dataSource: PropTypes.oneOfType([
       PropTypes.array,
       PropTypes.instanceOf(DataSource),
     ]),
+    node: PropTypes.node,
   }
 
-  state = {
+  static state = {
     scrollY: null,
     popoverColumns: [],
     tableColumns: [],
@@ -66,12 +68,12 @@ class DataTable extends Component {
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
   }
-  fetch(params = {}) {
+  fetch = (params = {}) => {
     const { dataSource } = this.props;
     const builtinParams = { ...params, ...dataSource.extraParams };
     return dataSource.fetcher(builtinParams);
   }
-  handleTableChange(pagination, filters, sorter) {
+  handleTableChange = (pagination, filters, sorter) => {
     const { dataSource } = this.props;
     const builtinParams = dataSource.getParams.call(this, pagination, filters, sorter);
     this.fetch(builtinParams);
@@ -146,6 +148,7 @@ class DataTable extends Component {
       } : pagination;
       dataSource = data;
     }
+
     let scrollProp;
     if (this.state.scrollY) {
       scrollProp = this.props.scroll ? { ...this.props.scroll, y: this.state.scrollY } : { y: this.state.scrollY };
@@ -161,15 +164,22 @@ class DataTable extends Component {
       </div>
     );
     return (
-      <div className="panel-body table-panel table-fixed-layout">
-        <Popover placement="right" trigger="click" content={content} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-          <Tooltip title="显示字段设置">
-            <Button size="large" icon="setting" style={{ margin: 8 }} />
-          </Tooltip>
-        </Popover>
-        <Table {...this.props} dataSource={dataSource} pagination={pagination}
-          onChange={this.handleTableChange} scroll={scrollProp} columns={this.state.tableColumns}
-        />
+      <div className="page-body">
+        <div className="toolbar">
+          {this.props.node}
+          <div className="toolbar-right">
+            <Popover placement="left" trigger="click" content={content} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+              <Tooltip title="显示字段设置">
+                <Button size="large" icon="setting" />
+              </Tooltip>
+            </Popover>
+          </div>
+        </div>
+        <div className="panel-body table-panel table-fixed-layout">
+          <Table {...this.props} dataSource={dataSource} pagination={pagination}
+            onChange={this.handleTableChange} scroll={scrollProp} columns={this.state.tableColumns}
+          />
+        </div>
       </div>
     );
   }
