@@ -7,7 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
-import { CWM_INBOUND_STATUS } from 'common/constants';
+import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import ReceiveDetailsPane from './tabpane/receiveDetailsPane';
 import Print from './printInboundList';
@@ -78,7 +78,13 @@ export default class ReceiveInbound extends Component {
   handleTabChange = (activeTab) => {
     this.setState({ activeTab });
   }
-
+  handleRegPage = () => {
+    if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES.entry) {
+      this.context.router.push(`/cwm/supervision/shftz/entry/${this.props.inboundHead.asn_no}`);
+    } else if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES.transfer) {
+      this.context.router.push(`/cwm/supervision/shftz/transfer/in/${this.props.inboundHead.asn_no}`);
+    }
+  }
   render() {
     const { defaultWhse, inboundHead } = this.props;
     const tagMenu = (
@@ -111,6 +117,8 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {!!inboundHead.bonded && <Button type="primary" size="large" onClick={this.handleRegPage}>
+              备案</Button>}
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Print inboundNo={this.props.params.inboundNo} />
             }

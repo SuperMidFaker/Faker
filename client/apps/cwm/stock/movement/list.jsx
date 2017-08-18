@@ -214,6 +214,22 @@ export default class MovementList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const node = (<div className="toolbar-left">
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all" key="all">全部货主</Option>
+        {
+            owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
+          }
+      </Select>
+      <div className="toolbar-right" />
+      <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+        <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+      </div>
+    </div>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -236,29 +252,9 @@ export default class MovementList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部货主</Option>
-                {
-                  owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
-                }
-              </Select>
-              <div className="toolbar-right" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="movement_no"
-                scroll={{ x: 1300 }} loading={loading}
-              />
-            </div>
-          </div>
+          <DataTable node={node} columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="movement_no"
+            scroll={{ x: 1300 }} loading={loading}
+          />
         </Content>
         <MovementModal />
       </QueueAnim>

@@ -484,7 +484,7 @@ export default(store, cookie) => {
                 </Route>
                 <Route path="transfer/out" >
                   <IndexRoute component={CWMSupSHFTZTransferOut.List} />
-                  <Route path=":asnNo" component={CWMSupSHFTZTransferOut.Detail} />
+                  <Route path=":soNo" component={CWMSupSHFTZTransferOut.Detail} />
                 </Route>
                 <Route path="clearance" >
                   <IndexRoute component={CWMSupSHFTZClearance.List} />

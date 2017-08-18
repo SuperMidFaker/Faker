@@ -229,6 +229,11 @@ export default class StockInventoryList extends React.Component {
       },
       remotes: this.props.stocklist,
     });
+    const node = (<div className="toolbar-left">
+      <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+        <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+      </div>
+    </div>);
     return (
       <Layout>
         <Header className="page-header">
@@ -257,18 +262,9 @@ export default class StockInventoryList extends React.Component {
           <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <div className="page-body">
-            <div className="toolbar">
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
-                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
-              />
-            </div>
-          </div>
+          <DataTable node={node} columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
+            scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
+          />
         </Content>
       </Layout>
     );
