@@ -79,9 +79,9 @@ export default class ReceiveInbound extends Component {
     this.setState({ activeTab });
   }
   handleRegPage = () => {
-    if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES.entry) {
+    if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES[0].value) {
       this.context.router.push(`/cwm/supervision/shftz/entry/${this.props.inboundHead.asn_no}`);
-    } else if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES.transfer) {
+    } else if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES[2].value) {
       this.context.router.push(`/cwm/supervision/shftz/transfer/in/${this.props.inboundHead.asn_no}`);
     }
   }
