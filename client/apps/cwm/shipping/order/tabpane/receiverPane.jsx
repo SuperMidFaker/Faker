@@ -26,7 +26,7 @@ export default class ReceiverPane extends Component {
             <FormItem label="收货人名称">
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
-                initialValue: soHead.receiver_name,
+                initialValue: soHead && soHead.receiver_name,
               })(
                 <Select placeholder="选择收货人" onSelect={this.handleSelect} />
                 )}
@@ -35,7 +35,7 @@ export default class ReceiverPane extends Component {
           <Col span={6} offset={2}>
             <FormItem label="联系人">
               {getFieldDecorator('receiver_contact', {
-                initialValue: soHead.receiver_contact,
+                initialValue: soHead && soHead.receiver_contact,
               })(
                 <Input />
               )}
@@ -43,8 +43,8 @@ export default class ReceiverPane extends Component {
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="联系方式">
-              <Col span={12}><Input prefix={<Icon type="phone" />} placeholder="电话" value={soHead.receiver_phone} /></Col>
-              <Col span={12}><Input prefix={<Icon type="mobile" />} placeholder="手机" value={soHead.receiver_number} /></Col>
+              <Col span={12}><Input prefix={<Icon type="phone" />} placeholder="电话" value={soHead && soHead.receiver_phone} /></Col>
+              <Col span={12}><Input prefix={<Icon type="mobile" />} placeholder="手机" value={soHead && soHead.receiver_number} /></Col>
             </FormItem>
           </Col>
         </Row>
@@ -57,7 +57,7 @@ export default class ReceiverPane extends Component {
           <Col span={6} offset={2}>
             <FormItem label="详细地址">
               {getFieldDecorator('receiver_address', {
-                initialValue: soHead.receiver_address,
+                initialValue: soHead && soHead.receiver_address,
               })(
                 <Input />
               )}
@@ -66,7 +66,7 @@ export default class ReceiverPane extends Component {
           <Col span={6} offset={2}>
             <FormItem label="邮政编码">
               {getFieldDecorator('receiver_post_code', {
-                initialValue: soHead.receiver_post_code,
+                initialValue: soHead && soHead.receiver_post_code,
               })(
                 <Input />
               )}

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Table } from 'antd';
 
 function noop() {
@@ -23,40 +24,40 @@ class DataSource {
 }
 
 /* eslint react/prefer-es6-class: 0 */
-const RemoteAntTable = React.createClass({
-  propTypes: {
-    scrollOffset: React.PropTypes.number,
-    dataSource: React.PropTypes.oneOfType([
-      React.PropTypes.array,
-      React.PropTypes.instanceOf(DataSource),
+class RemoteAntTable extends Component {
+  propTypes = {
+    scrollOffset: PropTypes.number,
+    dataSource: PropTypes.oneOfType([
+      PropTypes.array,
+      PropTypes.instanceOf(DataSource),
     ]),
-  },
-  getInitialState() {
-    return { scrollY: null };
-  },
+  }
+  state = {
+    scrollY: null,
+  }
   componentWillMount() {
     const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ scrollY: window.innerHeight - offset });
     }
-  },
+  }
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
-  },
+  }
   fetch(params = {}) {
     const { dataSource } = this.props;
     const builtinParams = { ...params, ...dataSource.extraParams };
     return dataSource.fetcher(builtinParams);
-  },
+  }
   handleTableChange(pagination, filters, sorter) {
     const { dataSource } = this.props;
     const builtinParams = dataSource.getParams.call(this, pagination, filters, sorter);
     this.fetch(builtinParams);
-  },
+  }
   resolveCurrent(total, current, pageSize) {
     // 删除完一页时返回上一页
     return total > 0 && (current - 1) * pageSize === total ? current - 1 : current;
-  },
+  }
   render() {
     let dataSource = this.props.dataSource;
     let pagination = this.props.pagination;
@@ -77,8 +78,8 @@ const RemoteAntTable = React.createClass({
         onChange={this.handleTableChange} scroll={scrollProp}
       />
     );
-  },
-});
+  }
+}
 
 RemoteAntTable.DataSource = DataSource;
 export default RemoteAntTable;
