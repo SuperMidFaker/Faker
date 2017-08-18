@@ -5,6 +5,9 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Form, Tag, Icon } from 'antd';
 import WarehouseModal from './modal/warehouseModal';
 import OwnersPane from './tabpane/ownersPane';
+import SuppliersPane from './tabpane/suppliersPane';
+import ReceiversPane from './tabpane/receiversPane';
+import CarriersPane from './tabpane/carriersPane';
 import StaffsPane from './tabpane/staffsPane';
 import ZoneLocationPane from './tabpane/zoneLocationPane';
 import SupervisionPane from './tabpane/supervisionPane';
@@ -110,6 +113,18 @@ export default class WarehouseList extends Component {
     tabs.push(
       <TabPane tab="货主" key="owners">
         <OwnersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="供应商" key="suppliers">
+        <SuppliersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="收货人" key="receivers">
+        <ReceiversPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="承运人" key="carriers">
+        <CarriersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
       </TabPane>);
     tabs.push(
       <TabPane tab="库区/库位" key="location">

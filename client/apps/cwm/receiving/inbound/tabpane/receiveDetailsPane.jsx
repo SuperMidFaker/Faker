@@ -106,30 +106,26 @@ export default class ReceiveDetailsPane extends React.Component {
     fixed: 'left',
     className: 'cell-align-center',
   }, {
-    title: '商品货号',
-    dataIndex: 'product_no',
+    title: '货品',
+    dataIndex: 'product_sku',
     width: 160,
     fixed: 'left',
+    render: o => (<PackagePopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {
-    title: '集装箱号',
-    dataIndex: 'container_no',
+    title: '品名',
+    dataIndex: 'name',
     width: 160,
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
     width: 160,
   }, {
+    title: '集装箱号',
+    dataIndex: 'container_no',
+    width: 160,
+  }, {
     title: '库别',
     dataIndex: 'virtual_whse',
-    width: 160,
-  }, {
-    title: 'SKU',
-    dataIndex: 'product_sku',
-    width: 160,
-    render: o => (<PackagePopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
-  }, {
-    title: '品名',
-    dataIndex: 'name',
     width: 160,
   }, {
     title: '预期数量',

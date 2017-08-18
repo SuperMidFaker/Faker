@@ -45,6 +45,20 @@ export default class PackagePopover extends Component {
         <Form layout="vertical" className="form-layout-compact">
           <FormItem label={(
             <span>
+                SKU&nbsp;
+                  <Tooltip title="仓库料号">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+            </span>
+                )}
+          >
+            <Input className="readonly" value={sku} disabled />
+          </FormItem>
+          <FormItem label="商品货号">
+            <Input className="readonly" value={skuRule.product_no} disabled />
+          </FormItem>
+          <FormItem label={(
+            <span>
                 计量单位数量&nbsp;
                   <Tooltip title="每件SKU对应的商品计量单位数量">
                     <Icon type="question-circle-o" />
@@ -103,7 +117,7 @@ export default class PackagePopover extends Component {
       </div>
     );
     return (
-      <Popover content={content} title="SKU包装规则" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+      <Popover content={content} title="货品信息" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
         <Button size="small">{sku}</Button>
       </Popover>
     );

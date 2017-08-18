@@ -113,7 +113,7 @@ exports.transactionColumns = (/* intl */) => [{
     if (text > 0) {
       return <span className="text-success">+{text}</span>;
     } else {
-      return <span className="text-disabled">{text}</span>;
+      return <span className="text-warning">{text}</span>;
     }
   },
 }, {

@@ -40,7 +40,7 @@ exports.CWM_ASN_BONDED_REGTYPES = [{
   value: 'transfer',
   text: '不报关',
   ftztext: '区内转入',
-  tagcolor: 'yellow',
+  tagcolor: 'cyan',
 }];
 
 exports.CWM_ASN_STATUS = {
@@ -154,7 +154,7 @@ exports.CWM_SO_BONDED_REGTYPES = [{
   value: 'transfer',
   text: '不报关',
   ftztext: '区内转出',
-  tagcolor: 'yellow',
+  tagcolor: 'cyan',
 }];
 
 exports.CWM_BATCH_APPLYTYPES = [{

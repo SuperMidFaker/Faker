@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table } from 'antd';
+import { Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { transactionColumns, commonTraceColumns } from '../../../commonColumns';
 import { loadTraceTransactions } from 'common/reducers/cwmTransaction';
@@ -38,9 +38,11 @@ export default class LogsPane extends React.Component {
     this.columns[0].fixed = 'left';
     return (
       <div className="pane-content tab-pane">
-        <Table dataSource={transactions} loading={loading} rowKey="id" bordered columns={this.columns}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-        />
+        <Card noHovering bodyStyle={{ padding: 0 }} >
+          <Table size="middle" dataSource={transactions} loading={loading} rowKey="id" columns={this.columns}
+            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+          />
+        </Card>
       </div>
     );
   }

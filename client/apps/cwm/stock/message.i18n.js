@@ -62,6 +62,38 @@ const messages = defineMessages({
     id: 'cwm.stock.nonbonded.qty',
     defaultMessage: '非保税数量',
   },
+  attrib1: {
+    id: 'cwm.stock.attrib1',
+    defaultMessage: '扩展属性1',
+  },
+  attrib2: {
+    id: 'cwm.stock.attrib2',
+    defaultMessage: '扩展属性2',
+  },
+  attrib3: {
+    id: 'cwm.stock.attrib3',
+    defaultMessage: '扩展属性3',
+  },
+  attrib4: {
+    id: 'cwm.stock.attrib4',
+    defaultMessage: '扩展属性4',
+  },
+  attrib5: {
+    id: 'cwm.stock.attrib5',
+    defaultMessage: '扩展属性5',
+  },
+  attrib6: {
+    id: 'cwm.stock.attrib6',
+    defaultMessage: '扩展属性6',
+  },
+  attrib7: {
+    id: 'cwm.stock.attrib7',
+    defaultMessage: '扩展属性7',
+  },
+  attrib8: {
+    id: 'cwm.stock.attrib8',
+    defaultMessage: '扩展属性8',
+  },
   grossWeight: {
     id: 'cwm.stock.gross.weight',
     defaultMessage: '毛重',
@@ -77,6 +109,10 @@ const messages = defineMessages({
   lotNo: {
     id: 'cwm.stock.lot.no',
     defaultMessage: '批次号',
+  },
+  serialNo: {
+    id: 'cwm.stock.serial.no',
+    defaultMessage: '序列号',
   },
   virtualWhse: {
     id: 'cwm.stock.virtual.whse',
