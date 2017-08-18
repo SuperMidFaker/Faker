@@ -221,7 +221,7 @@ export default class OutboundDetail extends Component {
               {this.props.params.outboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          {outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
+          {!!outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
           <div className="page-header-tools">
             {!!outboundHead.bonded && <Button type="primary" size="large" onClick={this.handleRegPage}>
               备案</Button>}

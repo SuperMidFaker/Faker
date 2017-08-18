@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import {
@@ -280,30 +280,6 @@ export default class DelegationList extends Component {
       }
     },*/
   }]
-  dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadDelegationList(params),
-    resolve: result => result.data,
-    getPagination: (result, resolve) => ({
-      total: result.totalCount,
-      current: resolve(result.totalCount, result.current, result.pageSize),
-      showSizeChanger: true,
-      showQuickJumper: false,
-      pageSize: result.pageSize,
-      showTotal: total => `共 ${total} 条`,
-    }),
-    getParams: (pagination, filters, sorter) => {
-      const params = {
-        tenantId: this.props.tenantId,
-        loginId: this.props.loginId,
-        pageSize: pagination.pageSize,
-        currentPage: pagination.current,
-      };
-      const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
-      params.filter = JSON.stringify(filter);
-      return params;
-    },
-    remotes: this.props.delegationlist,
-  })
   toggleRightSider = () => {
     this.setState({
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
@@ -480,6 +456,30 @@ export default class DelegationList extends Component {
   }
   render() {
     const { delegationlist, listFilter, tenantId } = this.props;
+    const dataSource = new DataTable.DataSource({
+      fetcher: params => this.props.loadDelegationList(params),
+      resolve: result => result.data,
+      getPagination: (result, resolve) => ({
+        total: result.totalCount,
+        current: resolve(result.totalCount, result.current, result.pageSize),
+        showSizeChanger: true,
+        showQuickJumper: false,
+        pageSize: result.pageSize,
+        showTotal: total => `共 ${total} 条`,
+      }),
+      getParams: (pagination, filters, sorter) => {
+        const params = {
+          tenantId: this.props.tenantId,
+          loginId: this.props.loginId,
+          pageSize: pagination.pageSize,
+          currentPage: pagination.current,
+        };
+        const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
+        params.filter = JSON.stringify(filter);
+        return params;
+      },
+      remotes: this.props.delegationlist,
+    });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -494,9 +494,38 @@ export default class DelegationList extends Component {
     if (listFilter.clientView.partnerIds.length > 0) {
       clientPid = listFilter.clientView.partnerIds[0];
     }
-    let columns = [];
+    const clients = [{
+      name: '全部客户',
+      partner_id: -1,
+    }].concat(this.props.clients);
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
+        onInputSearch={this.handleSearch} value={listFilter.filterNo}
+      />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleClientSelectChange} value={clientPid}
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
+          search={`${data.partner_code}${data.name}`}
+        >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
+          )}
+      </Select>
+      <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+        onChange={this.handleViewChange}
+      >
+        <OptGroup label="常用视图">
+          <Option value="all">全部委托</Option>
+          <Option value="my">我负责的委托</Option>
+        </OptGroup>
+      </Select>
+      <RangePicker size="large" value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      /></span>);
 
-    this.dataSource.remotes = delegationlist;
+    dataSource.remotes = delegationlist;
+    let columns = [];
     columns = [...this.columns];
     columns.push({
       title: this.msg('opColumn'),
@@ -606,10 +635,6 @@ export default class DelegationList extends Component {
       },
     });
 
-    const clients = [{
-      name: '全部客户',
-      partner_id: -1,
-    }].concat(this.props.clients);
     return (
       <Layout>
         <Header className="page-header">
@@ -638,48 +663,10 @@ export default class DelegationList extends Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
-                onInputSearch={this.handleSearch} value={listFilter.filterNo}
-              />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} value={clientPid}
-                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-                  search={`${data.partner_code}${data.name}`}
-                >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                  )}
-              </Select>
-              <span />
-              <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
-                onChange={this.handleViewChange}
-              >
-                <OptGroup label="常用视图">
-                  <Option value="all">全部委托</Option>
-                  <Option value="my">我负责的委托</Option>
-                </OptGroup>
-              </Select>
-              <span />
-              <RangePicker size="large" value={dateVal}
-                ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-                onChange={this.handleDateRangeChange}
-              />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                <div className="pull-right">
-                  <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-                </div>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout table-fixed-layout">
-              <Table rowSelection={rowSelection} columns={columns} dataSource={this.dataSource} loading={delegationlist.loading}
-                rowKey="delg_no" scroll={{ x: 1900 }}
-              />
-            </div>
-          </div>
+          <DataTable toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="delg_no" loading={delegationlist.loading}
+          />
         </Content>
         <DelegationDockPanel />
         <OrderDockPanel />

@@ -310,6 +310,9 @@ export default class ReceivingASNList extends React.Component {
       filters,
     });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { whses, defaultWhse, owners, filters, loading } = this.props;
     const rowSelection = {
@@ -407,33 +410,10 @@ export default class ReceivingASNList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys}
+          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="asn_no" loading={loading}
           />
-          {/* <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部货主</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
-              <div className="toolbar-right" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="asn_no"
-                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
-              />
-            </div>
-          </div>*/}
         </Content>
         <ReceivingDockPanel />
         <OrderDockPanel />

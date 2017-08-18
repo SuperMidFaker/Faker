@@ -5,7 +5,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -210,6 +210,9 @@ export default class ReceivingInboundList extends React.Component {
       filters,
     });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { whses, defaultWhse, owners, filters, loading } = this.props;
     const rowSelection = {
@@ -218,7 +221,7 @@ export default class ReceivingInboundList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadInbounds(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -242,6 +245,17 @@ export default class ReceivingInboundList extends React.Component {
       },
       remotes: this.props.inbound,
     });
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('inboundPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all" key="all">全部货主</Option>
+        {
+          owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
+        }
+      </Select></span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -266,29 +280,10 @@ export default class ReceivingInboundList extends React.Component {
           </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('inboundPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部货主</Option>
-                {
-                  owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
-                }
-              </Select>
-              <div className="toolbar-right" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} loading={loading}
-              />
-            </div>
-          </div>
+          <DataTable toolbarActions={toolbarActions}
+            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
+          />
         </Content>
         <ReceivingDockPanel />
         <OrderDockPanel />
