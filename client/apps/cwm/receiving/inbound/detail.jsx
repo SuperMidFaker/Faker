@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Alert, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip } from 'antd';
+import { Alert, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
+import { Logixon } from 'client/components/FontIcon';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
@@ -102,6 +103,7 @@ export default class ReceiveInbound extends Component {
       cis => CWM_INBOUND_STATUS[cis].value === inboundHead.status
     )[0];
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
+    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
     return (
       <div>
         <Header className="page-header">
@@ -116,9 +118,12 @@ export default class ReceiveInbound extends Component {
               {this.props.params.inboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
+          {!!inboundHead.bonded && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
           <div className="page-header-tools">
-            {!!inboundHead.bonded && <Button type="primary" size="large" onClick={this.handleRegPage}>
-              备案</Button>}
+            {!!inboundHead.bonded && <Tooltip title="海关备案详情" placement="bottom">
+              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" /></Button>
+            </Tooltip>
+            }
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Print inboundNo={this.props.params.inboundNo} />
             }

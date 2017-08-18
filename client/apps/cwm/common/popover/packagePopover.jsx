@@ -43,6 +43,9 @@ export default class PackagePopover extends Component {
     const content = (
       <div style={{ width: 280 }}>
         <Form layout="vertical" className="form-layout-compact">
+          <FormItem label="商品货号">
+            <Input className="readonly" value={skuRule.product_no} disabled />
+          </FormItem>
           <FormItem label={(
             <span>
                 SKU&nbsp;
@@ -54,13 +57,10 @@ export default class PackagePopover extends Component {
           >
             <Input className="readonly" value={sku} disabled />
           </FormItem>
-          <FormItem label="商品货号">
-            <Input className="readonly" value={skuRule.product_no} disabled />
-          </FormItem>
           <FormItem label={(
             <span>
-                计量单位数量&nbsp;
-                  <Tooltip title="每件SKU对应的商品计量单位数量">
+              每SKU商品数量&nbsp;
+                  <Tooltip title="每件SKU对应商品的数量(计量单位)">
                     <Icon type="question-circle-o" />
                   </Tooltip>
             </span>
@@ -70,7 +70,7 @@ export default class PackagePopover extends Component {
           </FormItem>
           <FormItem label={(
             <span>
-                内包装量&nbsp;
+                内包装容量&nbsp;
                   <Tooltip title="每个内包装容纳的SKU件数、商品计量单位数量">
                     <Icon type="question-circle-o" />
                   </Tooltip>
@@ -84,7 +84,7 @@ export default class PackagePopover extends Component {
           </FormItem>
           <FormItem label={(
             <span>
-                装箱量&nbsp;
+                装箱容量&nbsp;
                   <Tooltip title="每箱容纳的SKU件数、商品计量单位数量">
                     <Icon type="question-circle-o" />
                   </Tooltip>
@@ -98,7 +98,7 @@ export default class PackagePopover extends Component {
           </FormItem>
           <FormItem label={(
             <span>
-                  码盘量&nbsp;
+                  码盘容量&nbsp;
                   <Tooltip title="每托盘容纳的箱数量、SKU件数、商品计量单位数量">
                     <Icon type="question-circle-o" />
                   </Tooltip>

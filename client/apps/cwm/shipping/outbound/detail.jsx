@@ -223,17 +223,22 @@ export default class OutboundDetail extends Component {
           </Breadcrumb>
           {!!outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
           <div className="page-header-tools">
-            {!!outboundHead.bonded && <Button type="primary" size="large" onClick={this.handleRegPage}>
-              备案</Button>}
-            {this.state.tabKey === 'pickingDetails' &&
-            <Print outboundNo={this.props.params.outboundNo} />
+            {!!outboundHead.bonded && <Tooltip title="海关备案详情" placement="bottom">
+              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" /></Button>
+            </Tooltip>
             }
-            <Button size="large" onClick={this.showExpressModal} >
-              <Logixon type="sf-express" />
-            </Button>
+            {this.state.tabKey === 'pickingDetails' && <Tooltip title="打印拣货单" placement="bottom">
+              <Print outboundNo={this.props.params.outboundNo} />
+            </Tooltip>
+            }
+            <Tooltip title="打印顺丰速运面单" placement="bottom">
+              <Button size="large" onClick={this.showExpressModal} >
+                <Logixon type="sf-express" />
+              </Button>
+            </Tooltip>
             <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
-              <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
+              <Tooltip title="扫码模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
+              <Tooltip title="手动模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
           </div>
         </Header>
