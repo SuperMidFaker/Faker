@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox } from 'antd';
+import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox, Popover } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
@@ -96,19 +96,24 @@ export default class AllocatingModal extends Component {
     width: 60,
     render: (o, record, index) => {
       let disabled = !this.props.editable || !record.inbound_timestamp;  // 不可编辑 或 未入库时disable
+      let reason = '';
       if (!disabled) {
         const outboundHead = this.props.outboundHead;
         if (outboundHead.bonded && outboundHead.bonded_outtype === 'normal') {
           disabled = !record.ftz_ent_filed_id;                  // 没有明细ID时disable
+          reason = '海关入库明细ID为空';
         }
         if (outboundHead.bonded && outboundHead.bonded_outtype === 'portion') {
           disabled = !(record.ftz_ent_filed_id && record.portion); // 有明细ID 且 是分拨库存时不disable
+          reason = '货物不可分拨';
         }
         if (!record.avail_qty || record.avail_qty === 0) {  // 可用库存为空或等于0时disable
           disabled = true;
+          reason = '库存数量不足';
         }
       }
-      return <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled={disabled} />;
+      return this.props.editable && disabled ? <Popover placement="right" title="原因" content={reason}><Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled /></Popover> :
+      <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled={disabled} />;
     },
   }, {
     title: '现分配数量',
@@ -185,17 +190,19 @@ export default class AllocatingModal extends Component {
     title: '货物属性',
     dataIndex: 'bonded',
     width: 80,
+    className: 'cell-align-center',
     render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
   }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_filed_id',
     width: 120,
+    render: o => o ? <span className="text-success">o</span> : <span className="text-error">无备案信息</span>,
   }, {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
     className: 'cell-align-center',
-    render: portion => portion ? '是' : '否',
+    render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
@@ -427,7 +434,7 @@ export default class AllocatingModal extends Component {
           </FormItem>
         }
         { outboundHead.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
-          <FormItem label="已分拨">
+          <FormItem label="可分拨">
             <Checkbox defaultChecked disabled />
           </FormItem>
         }
@@ -462,7 +469,7 @@ export default class AllocatingModal extends Component {
               />
             </Col>
             {outboundHead.bonded && <Col sm={12} md={8} lg={2}>
-              <InfoItem label="监管方式" field={outboundHead.bonded_outtype} />
+              <InfoItem label="监管方式" field={CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0].ftztext} />
             </Col>}
           </Row>
         </Card>

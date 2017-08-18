@@ -44,12 +44,16 @@ export default class SuppliersPane extends Component {
   }
   columns = [{
     title: '供应商代码',
-    dataIndex: 'owner_code',
+    dataIndex: 'code',
     width: 150,
   }, {
     title: '供应商名称',
-    dataIndex: 'owner_name',
+    dataIndex: 'ent_name',
     width: 250,
+  }, {
+    title: '海关编码',
+    dataIndex: 'cus_code',
+    width: 150,
   }, {
     title: '状态',
     dataIndex: 'active',
@@ -78,8 +82,6 @@ export default class SuppliersPane extends Component {
     width: 150,
     render: record => (
       <span>
-        <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
-        <span className="ant-divider" />
         {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
       </span>

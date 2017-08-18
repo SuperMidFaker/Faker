@@ -85,7 +85,7 @@ export default class SelectItems extends Component {
     const { isDragging, connectDragSource, connectDropTarget, checked, index, title, id } = this.props;
     const opacity = isDragging ? 0 : 1;
     return connectDragSource(connectDropTarget(
-      <div style={{ width: 150, opacity }}>
+      <div style={{ width: 150, opacity, padding: 8 }}>
         <Checkbox id={id} checked={checked} onChange={() => this.props.onChange(index)}>
           {title}
         </Checkbox>

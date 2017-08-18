@@ -44,12 +44,16 @@ export default class ReceiversPane extends Component {
   }
   columns = [{
     title: '收货人代码',
-    dataIndex: 'owner_code',
+    dataIndex: 'code',
     width: 150,
   }, {
     title: '收货人名称',
-    dataIndex: 'owner_name',
+    dataIndex: 'name',
     width: 250,
+  }, {
+    title: '海关编码',
+    dataIndex: 'name',
+    width: 150,
   }, {
     title: '状态',
     dataIndex: 'active',
@@ -78,8 +82,6 @@ export default class ReceiversPane extends Component {
     width: 150,
     render: record => (
       <span>
-        <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
-        <span className="ant-divider" />
         {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
       </span>

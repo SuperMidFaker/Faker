@@ -5,6 +5,7 @@ import update from 'react/lib/update';
 import SelectItem from './selectItems';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import './index.less';
 
 function noop() {
 }

@@ -44,11 +44,11 @@ export default class CarriersPane extends Component {
   }
   columns = [{
     title: '承运人代码',
-    dataIndex: 'owner_code',
+    dataIndex: 'code',
     width: 150,
   }, {
     title: '承运人名称',
-    dataIndex: 'owner_name',
+    dataIndex: 'ent_name',
     width: 250,
   }, {
     title: '状态',

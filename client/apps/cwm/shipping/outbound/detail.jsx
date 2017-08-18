@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio, Modal, Form, Input, Table } from 'antd';
+import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio, Modal, Form, Input, Table, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -13,7 +13,7 @@ import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo } from 'common/reducers/cwmOutbound';
 import Print from './printPIckList';
-import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { WaybillDef } from './docDef';
@@ -177,6 +177,7 @@ export default class OutboundDetail extends Component {
     const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];
+    const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
     const courierNo = outboundHead.courier_no ? outboundHead.courier_no.split(',') : [];
     const dataSource = courierNo.map((item, index) => {
@@ -217,6 +218,7 @@ export default class OutboundDetail extends Component {
               {this.props.params.outboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
+          {outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
           <div className="page-header-tools">
             {this.state.tabKey === 'pickingDetails' &&
             <Print outboundNo={this.props.params.outboundNo} />
