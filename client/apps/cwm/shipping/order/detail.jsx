@@ -153,7 +153,7 @@ export default class CreateShippingOrder extends Component {
                   <ReceiverPane form={form} soHead={soHead} />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
-                  <CarrierPane form={form} />
+                  <CarrierPane form={form} soHead={soHead} />
                 </TabPane>
               </Tabs>
             </Card>

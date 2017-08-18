@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Breadcrumb, Layout, Select, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/dataTable/dataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -184,7 +184,7 @@ export default class MovementList extends React.Component {
   }
   render() {
     const { defaultWhse, whses, owners, loading } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadMovements(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -254,7 +254,7 @@ export default class MovementList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="movement_no"
+              <DataTable columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="movement_no"
                 scroll={{ x: 1300 }} loading={loading}
               />
             </div>

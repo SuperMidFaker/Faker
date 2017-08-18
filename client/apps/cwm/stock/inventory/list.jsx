@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/dataTable/dataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import { formatMsg } from '../message.i18n';
@@ -203,7 +203,7 @@ export default class StockInventoryList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadStocks(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -259,17 +259,12 @@ export default class StockInventoryList extends React.Component {
           </Card>
           <div className="page-body">
             <div className="toolbar">
-              <div className="toolbar-right">
-                <Tooltip title="显示字段设置">
-                  <Button size="large" icon="setting" />
-                </Tooltip>
-              </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
+              <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
                 scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
               />
             </div>

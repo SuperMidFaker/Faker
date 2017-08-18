@@ -6,7 +6,7 @@ import { Breadcrumb, Button, Card, Select, Layout, Tooltip, message } from 'antd
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTransactions } from 'common/reducers/cwmTransaction';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/dataTable/dataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import { transactionColumns, commonTraceColumns } from '../commonColumns';
@@ -112,7 +112,7 @@ export default class StockTransactionsList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: (params) => { this.props.loadTransactions(params); this.setState({ selectedRowKeys: [] }); },
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -173,7 +173,7 @@ export default class StockTransactionsList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
+              <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" bordered
                 scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
               />
             </div>
