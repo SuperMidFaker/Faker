@@ -25,14 +25,14 @@ class DataSource {
 
 /* eslint react/prefer-es6-class: 0 */
 class RemoteAntTable extends Component {
-  propTypes = {
+  static propTypes = {
     scrollOffset: PropTypes.number,
     dataSource: PropTypes.oneOfType([
       PropTypes.array,
       PropTypes.instanceOf(DataSource),
     ]),
   }
-  state = {
+  static state = {
     scrollY: null,
   }
   componentWillMount() {
@@ -44,12 +44,12 @@ class RemoteAntTable extends Component {
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
   }
-  fetch(params = {}) {
+  fetch = (params = {}) => {
     const { dataSource } = this.props;
     const builtinParams = { ...params, ...dataSource.extraParams };
     return dataSource.fetcher(builtinParams);
   }
-  handleTableChange(pagination, filters, sorter) {
+  handleTableChange = (pagination, filters, sorter) => {
     const { dataSource } = this.props;
     const builtinParams = dataSource.getParams.call(this, pagination, filters, sorter);
     this.fetch(builtinParams);
