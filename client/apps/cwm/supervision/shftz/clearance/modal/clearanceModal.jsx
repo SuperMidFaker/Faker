@@ -80,7 +80,7 @@ export default class ClearanceModal extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   portionRegColumns = [{
-    title: '分拨出库单号',
+    title: '普通出库单号',
     dataIndex: 'ftz_rel_no',
     width: 300,
   }, {
@@ -103,7 +103,7 @@ export default class ClearanceModal extends Component {
   }]
 
   regDetailColumns = [{
-    title: '备案料号',
+    title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
     render: (o) => {
@@ -264,7 +264,7 @@ export default class ClearanceModal extends Component {
       <FormItem label="出库日期">
         <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
       </FormItem>
-      <Button type="primary" ghost onClick={this.handlePortionOutsQuery}>查询分拨出库单</Button>
+      <Button type="primary" ghost onClick={this.handlePortionOutsQuery}>查询普通出库单</Button>
     </Form>);
     const title = (<div>
       <span>普通出库清关</span>
@@ -282,7 +282,7 @@ export default class ClearanceModal extends Component {
             scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           />
         </Card>
-        <Card title="报关申请明细" bodyStyle={{ padding: 0 }}>
+        <Card title="清关委托明细" bodyStyle={{ padding: 0 }}>
           <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
             scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           />
