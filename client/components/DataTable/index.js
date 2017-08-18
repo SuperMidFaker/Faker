@@ -162,9 +162,9 @@ class DataTable extends Component {
         onChange={this.handleCheckBoxChange}
       />));
     content.push(
-      <div style={{ marginTop: 8 }}>
-        <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>Save</Button>
-        <Button onClick={this.hidePopover}>cancel</Button>
+      <div className="col-selection-actions">
+        <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>确定</Button>
+        <Button onClick={this.hidePopover}>取消</Button>
       </div>
     );
     return (
@@ -172,7 +172,7 @@ class DataTable extends Component {
         <div className="toolbar">
           {this.props.toolbarActions}
           <div className="toolbar-right">
-            <Popover placement="leftTop" trigger="click" content={content} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+            <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
               <Tooltip title="显示字段设置">
                 <Button size="large" icon="bars" />
               </Tooltip>

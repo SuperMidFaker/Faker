@@ -5,7 +5,23 @@
     margin-right: 8px;
   }
 }
-
-.toolbar-left input {
-  width: 100%;
+.col-selection {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-bottom: 48px;
+  &-actions {
+    position: absolute;
+    padding: 8px;
+    background-color: #fff;
+    bottom: 0;
+  }
+  &-item {
+    width: 180px;
+    padding: 8px;
+  }
+  &-item:hover {
+    background: #eee;
+    overflow: hidden;
+    cursor: move; 
+  }
 }
