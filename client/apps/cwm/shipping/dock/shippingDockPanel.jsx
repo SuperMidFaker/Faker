@@ -95,7 +95,7 @@ export default class ShippingDockPanel extends React.Component {
   }
   handleMenuClick = (e) => {
     const { soHead } = this.state;
-    if (e.key === '1') {
+    if (e.key === 'cancel') {
       Modal.confirm({
         title: '确认取订单?',
         content: '确认后此订单的相关信息将会被删除',
@@ -104,7 +104,7 @@ export default class ShippingDockPanel extends React.Component {
         },
         onCancel() {},
       });
-    } else if (e.key === '2') {
+    } else if (e.key === 'close') {
       Modal.confirm({
         title: '确认关订单?',
         content: '确认后此订单将会被提前完成',
@@ -202,13 +202,13 @@ export default class ShippingDockPanel extends React.Component {
     if (soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="1">取消订单</Menu.Item>
+          <Menu.Item key="cancel">取消订单</Menu.Item>
         </Menu>
       );
     } else if (soHead.status === CWM_SO_STATUS.PARTIAL.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="2">关闭订单</Menu.Item>
+          <Menu.Item key="close">关闭订单</Menu.Item>
         </Menu>
       );
     }

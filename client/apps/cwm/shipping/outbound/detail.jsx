@@ -243,7 +243,7 @@ export default class OutboundDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={outboundHead.owner_name} />

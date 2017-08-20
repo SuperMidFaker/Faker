@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -303,7 +304,7 @@ export default class SHFTZTransferInDetail extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={24} lg={6}>
                   <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
@@ -316,12 +317,12 @@ export default class SHFTZTransferInDetail extends Component {
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.created_date}
+                    field={entryAsn.created_date && moment(entryAsn.created_date).format('YYYY.MM.DD HH:mm')}
                   />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.reg_date}
+                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')}
                   />
                 </Col>
               </Row>
@@ -356,7 +357,7 @@ export default class SHFTZTransferInDetail extends Component {
                           </Col>
                           <Col sm={12} lg={3}>
                             <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                              type="date" field={reg.ftz_ent_date} editable={entryEditable}
+                              type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY.MM.DD')} editable={entryEditable}
                               onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                             />
                           </Col>

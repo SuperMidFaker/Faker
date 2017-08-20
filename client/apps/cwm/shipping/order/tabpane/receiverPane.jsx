@@ -25,7 +25,6 @@ export default class ReceiverPane extends Component {
           <Col span={6}>
             <FormItem label="收货人名称">
               {getFieldDecorator('owner_partner_id', {
-                rules: [{ required: true, message: 'Please select customer!' }],
                 initialValue: soHead && soHead.receiver_name,
               })(
                 <Select placeholder="选择收货人" onSelect={this.handleSelect} />

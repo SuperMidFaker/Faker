@@ -88,7 +88,7 @@ export default class MovementDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Card bodyStyle={{ paddingBottom: 56 }}>
+          <Card bodyStyle={{ paddingBottom: 48 }}>
             <Row>
               <Col sm={24} lg={6}>
                 <InfoItem addonBefore="货主" field={movementHead.owner_name} />

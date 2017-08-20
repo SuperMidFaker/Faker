@@ -95,7 +95,7 @@ export default class ReceivingDockPanel extends React.Component {
   }
   handleMenuClick = (e) => {
     const { asnHead } = this.state;
-    if (e.key === '1') {
+    if (e.key === 'cancel') {
       Modal.confirm({
         title: '确认取消ASN?',
         content: '确认后此ANSN的相关信息将会被删除',
@@ -104,7 +104,7 @@ export default class ReceivingDockPanel extends React.Component {
         },
         onCancel() {},
       });
-    } else if (e.key === '2') {
+    } else if (e.key === 'close') {
       Modal.confirm({
         title: '确认关闭ASN?',
         content: '确认后此ANSN将会被提前完成',
@@ -206,13 +206,13 @@ export default class ReceivingDockPanel extends React.Component {
     if (asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="1">取消ASN</Menu.Item>
+          <Menu.Item key="cancel">取消ASN</Menu.Item>
         </Menu>
       );
     } else if (asnHead.status === CWM_ASN_STATUS.DISCREPANT.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="2">关闭ASN</Menu.Item>
+          <Menu.Item key="close">关闭ASN</Menu.Item>
         </Menu>
       );
     }

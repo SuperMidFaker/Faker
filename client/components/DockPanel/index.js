@@ -17,6 +17,7 @@ export default class DockPanel extends PureComponent {
     prefixCls: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,
     size: PropTypes.string,
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     title: PropTypes.any,
     status: PropTypes.oneOf(['default', 'processing', 'warning', 'error', 'success']),
     statusText: PropTypes.string,

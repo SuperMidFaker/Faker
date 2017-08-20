@@ -81,7 +81,7 @@ export default class CWMOutboundNodeCard extends React.Component {
       <Card title={<span>{title}</span>} extra={so.outbound_no &&
         <Tooltip title="进入详情">
           <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleOutbound} />
-        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
+        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 48 }}
         onClick={() => this.handlePreview(this.props.uuid)}
       >
         <Row>
