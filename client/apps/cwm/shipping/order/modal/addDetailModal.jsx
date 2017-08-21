@@ -1,15 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form, Input, Select } from 'antd';
+import { Modal, Form, Input, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos } from 'common/reducers/cwmReceive';
+import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductSkus } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const InputGroup = Input.Group;
+const Search = Input.Search;
 
 @injectIntl
 @connect(
@@ -17,12 +18,12 @@ const InputGroup = Input.Group;
     tenantId: state.account.tenantId,
     visible: state.cwmReceive.detailModal.visible,
     temporaryDetails: state.cwmReceive.temporaryDetails,
-    productNos: state.cwmReceive.productNos,
+    productSkus: state.cwmReceive.productSkus,
     products: state.cwmReceive.products,
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos }
+  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductSkus }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
@@ -37,21 +38,6 @@ export default class AddDetailModal extends Component {
   state = {
     product: {},
     amount: 0,
-    skus: [],
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.product !== this.props.product) {
-      const product = nextProps.product;
-      product.desc_cn = product.name;
-      this.setState({
-        product,
-      });
-      this.props.form.setFieldsValue({
-        product_no: product.product_no,
-        order_qty: product.order_qty,
-        unit_price: product.unit_price,
-      });
-    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
@@ -65,11 +51,20 @@ export default class AddDetailModal extends Component {
       order_qty: '',
       unit_price: '',
     });
-    this.props.clearProductNos();
+    this.props.clearProductSkus();
   }
   handleSearch = (value) => {
+    if (value.length < 3) {
+      message.info('请至少输入三位货号');
+    }
     const { selectedOwner } = this.props;
-    this.props.loadProducts(value, selectedOwner);
+    this.props.loadProducts(value, selectedOwner, this.props.tenantId).then((result) => {
+      if (!result.error) {
+        this.setState({
+          product: result.data.products[0],
+        });
+      }
+    });
   }
   submit = () => {
     const product = this.state.product;
@@ -100,7 +95,7 @@ export default class AddDetailModal extends Component {
           unit_price: '',
         });
       }
-      this.props.clearProductNos();
+      this.props.clearProductSkus();
     });
   }
   handleQtyChange = (e) => {
@@ -132,10 +127,8 @@ export default class AddDetailModal extends Component {
   handleSelect = (value) => {
     const { products } = this.props;
     const filterProducts = products.filter(item => item.product_no === value);
-    const skus = filterProducts.map(fp => fp.product_sku);
     this.setState({
       product: filterProducts[0],
-      skus,
     });
   }
   handleUnitChange = (value) => {
@@ -160,8 +153,7 @@ export default class AddDetailModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, productNos, units, currencies } = this.props;
-    const { skus } = this.state;
+    const { form: { getFieldDecorator }, visible, productSkus, units, currencies } = this.props;
     const product = this.state.product;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -174,14 +166,12 @@ export default class AddDetailModal extends Component {
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
             })(
-              <Select mode="combobox" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
-                {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
-              </Select>
+              <Search placeholder="请至少输入三位货号" onSearch={this.handleSearch} />
             )}
           </FormItem>
           <FormItem label="SKU" {...formItemLayout}>
             <Select style={{ width: '100%' }} value={product.product_sku} onSelect={this.handleSelectSku}>
-              {skus.map(sku => (<Option value={sku} key={sku}>{sku}</Option>))}
+              {productSkus.map(sku => (<Option value={sku} key={sku}>{sku}</Option>))}
             </Select>
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
