@@ -238,7 +238,7 @@ class DataTable extends Component {
           <div className="welo-data-table-toolbar-right">
             <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
               <Tooltip title="显示字段设置">
-                <Button size="large" icon="bars" />
+                <Button size="large" icon="layout" />
               </Tooltip>
             </Popover>
           </div>
@@ -252,7 +252,7 @@ class DataTable extends Component {
             </div>
           </div>}
         </div>
-        <div className="panel-body table-panel table-fixed-layout">
+        <div className="welo-data-table-body welo-data-table-body-fixed">
           <Table {...this.props} dataSource={dataSource} pagination={pagination}
             onChange={this.handleTableChange} scroll={scrollProp} columns={this.state.tableColumns}
           />

@@ -8,14 +8,16 @@ exports.commonTraceColumns = (intl) => {
   const msg = formatMsg(intl);
   return [{
     title: msg('bonded'),
-    width: 120,
+    width: 80,
     dataIndex: 'bonded',
-    render: bonded => bonded ? '是' : '否',
+    className: 'cell-align-center',
+    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
   }, {
     title: msg('portion'),
-    width: 120,
+    width: 80,
     dataIndex: 'portion',
-    render: portion => portion ? '是' : '否',
+    className: 'cell-align-center',
+    render: portion => portion ? <Tag color="green">可分拨</Tag> : '/',
   }, {
     title: msg('traceId'),
     width: 220,
@@ -101,15 +103,16 @@ exports.commonTraceColumns = (intl) => {
 };
 
 exports.transactionColumns = (/* intl */) => [{
-  title: '操作类型',
-  width: 100,
+  title: '事务类型',
+  width: 80,
   dataIndex: 'type',
-  render: type => <span className="text-success">{CWM_TRANSACTIONS_TYPE[type].text}</span>,
+  className: 'cell-align-center',
+  render: type => <span className="text-emphasis">{CWM_TRANSACTIONS_TYPE[type].text}</span>,
 }, {
-  title: '操作数量',
+  title: '变动数量',
   width: 100,
   dataIndex: 'transaction_qty',
-  className: 'cell-align-right text-emphasis',
+  className: 'cell-align-right',
   render: (text) => {
     if (text > 0) {
       return <span className="text-success">+{text}</span>;
@@ -121,12 +124,18 @@ exports.transactionColumns = (/* intl */) => [{
   title: '原因',
   width: 100,
   dataIndex: 'reason',
+  className: 'text-normal',
+}, {
+  title: '事务时间',
+  width: 150,
+  dataIndex: 'transaction_timestamp',
+  render: traxTime => traxTime && moment(traxTime).format('YYYY.MM.DD HH:mm'),
 }, {
   title: '操作人',
   width: 100,
   dataIndex: 'trxn_login_name',
 }, {
-  title: '事务单号',
+  title: '关联单号',
   width: 180,
   dataIndex: 'transaction_no',
 }, {

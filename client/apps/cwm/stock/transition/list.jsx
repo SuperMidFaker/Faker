@@ -368,8 +368,8 @@ export default class StockTransitionList extends React.Component {
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered
-            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} scrollOffset="410"
+          <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id"
+            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} scrollOffset={390}
           />
           <TransitionDockPanel />
           <BatchTransitModal />
