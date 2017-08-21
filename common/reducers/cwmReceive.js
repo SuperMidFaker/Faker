@@ -35,7 +35,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_SHFTZ_ENTRY', 'LOAD_SHFTZ_ENTRY_SUCCEED', 'LOAD_SHFTZ_ENTRY_FAIL',
   'GET_ASN_UUID', 'GET_ASN_UUID_SUCCEED', 'GET_ASN_UUID_FAIL',
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
-  'CLEAR_PRODUCT_NOS',
+  'CLEAR_PRODUCT_SKUS',
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
   'LOAD_LOT_INFO', 'LOAD_LOT_INFO_SUCCEED', 'LOAD_LOT_INFO_FAIL',
 ]);
@@ -61,7 +61,7 @@ const initialState = {
     visible: false,
   },
   temporaryDetails: [],
-  productNos: [],
+  productSkus: [],
   products: [],
   asnlist: {
     totalCount: 0,
@@ -133,7 +133,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, temporaryDetails };
     }
     case actionTypes.LOAD_PRODUCTS_SUCCEED:
-      return { ...state, productNos: action.result.data.productNos, products: action.result.data.products };
+      return { ...state, productSkus: action.result.data.productSkus, products: action.result.data.products };
     case actionTypes.LOAD_ASN_LISTS:
       return { ...state, asnFilters: JSON.parse(action.params.filters), asnlist: { ...state.asnlist, loading: true }, dock: { ...state.dock, visible: false } };
     case actionTypes.LOAD_ASN_LISTS_SUCCEED:
@@ -167,8 +167,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, inboundReload: true };
     case actionTypes.GET_ASN_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
-    case actionTypes.CLEAR_PRODUCT_NOS:
-      return { ...state, productNos: [] };
+    case actionTypes.CLEAR_PRODUCT_SKUS:
+      return { ...state, productSkus: [] };
     case actionTypes.CANCEL_ASN_SUCCEED:
       return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false } };
     case actionTypes.CLOSE_ASN_SUCCEED:
@@ -281,7 +281,7 @@ export function updateASN(data) {
   };
 }
 
-export function loadProducts(productNo, partnerId) {
+export function loadProducts(productNo, partnerId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -291,7 +291,7 @@ export function loadProducts(productNo, partnerId) {
       ],
       endpoint: 'v1/cwm/receive/productNos/load',
       method: 'get',
-      params: { productNo, partnerId },
+      params: { productNo, partnerId, tenantId },
     },
   };
 }
@@ -666,9 +666,9 @@ export function getShipmtOrderNo(uuid) { // todo dont repeat
   };
 }
 
-export function clearProductNos() {
+export function clearProductSkus() {
   return {
-    type: actionTypes.CLEAR_PRODUCT_NOS,
+    type: actionTypes.CLEAR_PRODUCT_SKUS,
   };
 }
 
