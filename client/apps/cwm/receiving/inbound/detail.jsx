@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import { Logixon } from 'client/components/FontIcon';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
-import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import ReceiveDetailsPane from './tabpane/receiveDetailsPane';
 import Print from './printInboundList';
@@ -104,6 +104,7 @@ export default class ReceiveInbound extends Component {
     )[0];
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
+    const regStatus = CWM_SHFTZ_REG_STATUS.filter(status => status.value === inboundHead.reg_status)[0];
     return (
       <div>
         <Header className="page-header">
@@ -121,7 +122,7 @@ export default class ReceiveInbound extends Component {
           {!!inboundHead.bonded && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
           <div className="page-header-tools">
             {!!inboundHead.bonded && <Tooltip title="海关备案详情" placement="bottom">
-              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" /></Button>
+              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs-o" />{regStatus.text}</Button>
             </Tooltip>
             }
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&

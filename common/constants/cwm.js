@@ -325,3 +325,17 @@ exports.CWM_TRANSACTIONS_TYPE = {
   unfreezeout: { text: '解冻出' },
   unfreezein: { text: '解冻入' },
 };
+
+exports.CWM_SHFTZ_REG_STATUS = [{
+  value: 0,
+  text: '待备案',
+  tagcolor: 'blue',
+}, {
+  value: 1,
+  text: '已发送',
+  tagcolor: 'green',
+}, {
+  value: 2,
+  text: '备案完成',
+  tagcolor: 'cyan',
+}];

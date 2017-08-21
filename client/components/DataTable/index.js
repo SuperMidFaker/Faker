@@ -39,7 +39,7 @@ class DataTable extends Component {
     node: PropTypes.node,
     toolbarActions: PropTypes.node,
     bulkActions: PropTypes.node,
-    selectedRowKeys: PropTypes.object,
+    selectedRowKeys: PropTypes.array,
     handleDeselectRows: PropTypes.func,
   }
 
