@@ -44,11 +44,11 @@ export default class ReceiversPane extends Component {
   }
   columns = [{
     title: '收货人代码',
-    dataIndex: 'owner_code',
+    dataIndex: 'receiver_code',
     width: 150,
   }, {
     title: '收货人名称',
-    dataIndex: 'owner_name',
+    dataIndex: 'receiver_name',
     width: 250,
   }, {
     title: '状态',

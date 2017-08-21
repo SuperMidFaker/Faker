@@ -13,6 +13,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
 import { formatMsg } from '../message.i18n';
+import moment from 'moment';
 
 const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
@@ -119,12 +120,14 @@ export default class CWMSkuList extends React.Component {
     dataIndex: 'sku_pack_qty',
   }, {
     title: this.msg('lastModifiedDate'),
-    dataIndex: 'last_modified_date',
+    dataIndex: 'last_updated_date',
     width: 120,
+    render: col => col && moment(col).format('MM.DD HH:mm'),
   }, {
     title: this.msg('createdDate'),
     dataIndex: 'created_date',
     width: 120,
+    render: col => col && moment(col).format('MM.DD HH:mm'),
   }, {
     title: this.msg('opColumn'),
     width: 100,

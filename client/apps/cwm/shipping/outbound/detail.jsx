@@ -134,12 +134,12 @@ export default class OutboundDetail extends Component {
       picking: false,
     });
   }
-  handleWaybillPrint = (courierNo, courierNoSon) => {
+  handleWaybillPrint = (courierNo, courierNoSon, seq) => {
     this.setState({
       printedPickingList: true,
     });
     const { expressNum } = this.state;
-    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum });
+    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum, seq });
     window.pdfMake.fonts = {
       selfFont: {
         normal: 'msyh.ttf',
@@ -201,7 +201,7 @@ export default class OutboundDetail extends Component {
       },
     }, {
       width: 80,
-      render: row => (<a onClick={() => this.handleWaybillPrint(courierNo[0], row.courier_no)}><Icon type="printer" /></a>),
+      render: (col, row, index) => (<a onClick={() => this.handleWaybillPrint(courierNo[0], row.courier_no, index + 1)}><Icon type="printer" /></a>),
     }];
     return (
       <div>
@@ -303,7 +303,7 @@ export default class OutboundDetail extends Component {
             onCancel={() => this.setState({ expressModalvisible: false })}
             onOk={() => this.setState({ expressModalvisible: false })}
           >
-            <Card title="运单信息" extra={
+            <Card title="运单信息" bodyStyle={{ padding: 0 }} extra={
               <Button onClick={this.loadCourierNo}>
                   确定
                 </Button>}
@@ -312,8 +312,8 @@ export default class OutboundDetail extends Component {
                 <Input value={this.state.expressNum} type="number" onChange={e => this.setState({ expressNum: Number(e.target.value) })} />
               </FormItem>
             </Card>
-            <Card title="快递单号">
-              <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" />
+            <Card title="快递单号" bodyStyle={{ padding: 0 }}>
+              <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" pagination={false} />
             </Card>
           </Modal>
         </Content>
