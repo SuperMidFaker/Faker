@@ -65,10 +65,17 @@
   &-item {
     width: 180px;
     padding: 8px;
+    button {
+      float: right;
+      display: none;
+    }
   }
   &-item:hover {
     background: #eee;
     overflow: hidden;
-    cursor: move; 
+    cursor: move;
+    button {
+      display: inline-block;
+    }
   }
 }

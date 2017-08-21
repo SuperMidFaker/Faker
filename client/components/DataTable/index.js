@@ -59,11 +59,11 @@ class DataTable extends Component {
       checked: true,
       index,
     }));
-    const popoverColumns = this.props.columns.map((column, index) => ({
+    let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+    popoverColumns = popoverColumns.map((column, index) => ({
       ...column,
       checked: true,
-      index,
-    }));
+      index }));
     this.setState({
       tableColumns,
       popoverColumns,
@@ -90,7 +90,7 @@ class DataTable extends Component {
     const columns = [...this.state.popoverColumns];
     const changeOne = columns.find(column => column.index === index);
     changeOne.checked = !changeOne.checked;
-    changeOne.fixed = false;
+    delete changeOne.fixed;
     let newColumns = [];
     if (!changeOne.checked) {
       newColumns = columns.filter(column => column.index !== index).concat(changeOne);
@@ -114,22 +114,17 @@ class DataTable extends Component {
     });
   }
   handleSave = () => {
-    const columns = this.state.popoverColumns.filter(column => column.checked);
-    const width = columns.reduce((prev, curr) => prev + curr.width ? curr.width : 0, 0);
-    let newColumns = [];
-    if (width > 1200) {
-      newColumns = columns.map(column => ({ ...column }));
-    } else {
-      newColumns = columns.map(column => ({ ...column, fixed: false }));
-    }
-
+    const tableColumns = [...this.state.tableColumns];
+    let columns = this.state.popoverColumns.filter(column => column.checked);
+    const operation = tableColumns.find(column => column.dataIndex === 'OPS_COL');
+    if (operation) { columns = columns.concat(operation); }
     this.setState({
-      tableColumns: newColumns,
+      tableColumns: columns.map(column => ({ ...column })),
       visible: false,
     });
   }
   moveSelect = (dragIndex, hoverIndex) => {
-    const popoverColumns = [...this.state.popoverColumns];
+    let popoverColumns = [...this.state.popoverColumns];
     const dragSelect = popoverColumns[dragIndex];
     const state = update(this.state, {
       popoverColumns: {
@@ -139,7 +134,25 @@ class DataTable extends Component {
         ],
       },
     });
-    this.setState({ ...state });
+    popoverColumns = state.popoverColumns.map((column) => {
+      const newColumn = column;
+      delete newColumn.fixed;
+      return newColumn;
+    });
+    this.setState({ popoverColumns });
+  }
+  fixedColumns = (index) => {
+    const popoverColumns = [...this.state.popoverColumns];
+    const position = popoverColumns.findIndex(column => column.index === index);
+    for (let i = 0; i < popoverColumns.length; i++) {
+      const column = popoverColumns[i];
+      if (i <= position) {
+        column.fixed = 'left';
+      } else {
+        delete column.fixed;
+      }
+    }
+    this.setState({ popoverColumns });
   }
   render() {
     let dataSource = this.props.dataSource;
@@ -159,7 +172,7 @@ class DataTable extends Component {
     }
     const content = this.state.popoverColumns.map((column, index) => (
       <SelectItem id={index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
-        onChange={this.handleCheckBoxChange}
+        onChange={this.handleCheckBoxChange} onFixed={this.fixedColumns} fixed={column.fixed}
       />));
     content.push(
       <div className="col-selection-actions">

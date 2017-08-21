@@ -147,6 +147,7 @@ export default class ReceivingInboundList extends React.Component {
     title: '操作',
     width: 100,
     fixed: 'right',
+    dataIndex: 'OPS_COL',
     render: (o, record) => {
       if (record.status === 0) {
         return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
