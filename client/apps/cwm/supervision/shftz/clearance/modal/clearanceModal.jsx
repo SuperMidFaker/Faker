@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { Radio, Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeClearanceModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
+import { closeClearanceModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalClear } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -21,7 +23,7 @@ const Option = Select.Option;
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
     ownerCusCode: state.cwmShFtz.clearanceModal.ownerCusCode,
-    portionRegs: state.cwmShFtz.portionout_regs,
+    normalRegs: state.cwmShFtz.batchout_regs,
     loginId: state.account.loginId,
     loginName: state.account.username,
     units: state.cwmShFtz.params.units.map(un => ({
@@ -37,7 +39,7 @@ const Option = Select.Option;
       text: tc.cntry_name_cn,
     })),
   }),
-  { closeClearanceModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl }
+  { closeClearanceModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalClear }
 )
 export default class ClearanceModal extends Component {
   static propTypes = {
@@ -48,15 +50,17 @@ export default class ClearanceModal extends Component {
     ownerCusCode: '',
     relDateRange: [],
     relNo: '',
-    portionRegs: [],
+    ietype: 'import',
+    normalRegs: [],
     regDetails: [],
   }
   componentWillMount() {
     this.setState({ ownerCusCode: this.props.ownerCusCode });
     if (this.props.ownerCusCode) {
-      this.props.loadPortionOutRegs({
+      this.props.loadBatchOutRegs({
         owner_cus_code: this.props.ownerCusCode,
         whse_code: this.props.defaultWhse.code,
+        rel_type: 'normal',
       });
     }
     this.props.loadParams();
@@ -67,13 +71,14 @@ export default class ClearanceModal extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.portionRegs !== this.props.portionRegs) {
-      this.setState({ portionRegs: nextProps.portionRegs });
+    if (nextProps.normalRegs !== this.props.normalRegs) {
+      this.setState({ normalRegs: nextProps.normalRegs });
     }
     if (nextProps.visible && nextProps.ownerCusCode && nextProps.ownerCusCode !== this.props.ownerCusCode) {
-      this.props.loadPortionOutRegs({
+      this.props.loadBatchOutRegs({
         owner_cus_code: nextProps.ownerCusCode,
         whse_code: nextProps.defaultWhse.code,
+        rel_type: 'normal',
       });
     }
   }
@@ -86,13 +91,9 @@ export default class ClearanceModal extends Component {
   }, {
     title: '货主',
     dataIndex: 'owner_name',
-    width: 150,
-  }, {
-    title: '收货单位',
-    dataIndex: 'receiver_name',
-    width: 200,
   }, {
     title: '出库日期',
+    width: 150,
     dataIndex: 'ftz_rel_date',
     render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
@@ -111,10 +112,6 @@ export default class ClearanceModal extends Component {
         return <Button>{o}</Button>;
       }
     },
-  }, {
-    title: '出库明细ID',
-    dataIndex: 'ftz_rel_detail_id',
-    width: 120,
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
@@ -177,23 +174,23 @@ export default class ClearanceModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddReg = (row) => {
-    this.props.loadPortionDetails(row.pre_entry_seq_no).then((result) => {
+    this.props.loadBatchRegDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relNo = row.ftz_rel_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(
           result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
-        const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
-        this.setState({ regDetails, portionRegs });
+        const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
+        this.setState({ regDetails, normalRegs });
       }
     });
   }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
-    const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
-    this.setState({ regDetails, portionRegs });
+    const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
+    this.setState({ regDetails, normalRegs });
   }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '', portionRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
+    this.setState({ ownerCusCode: '', normalRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
     this.props.closeClearanceModal();
   }
   handleOwnerChange = (ownerCusCode) => {
@@ -205,17 +202,21 @@ export default class ClearanceModal extends Component {
   handleRelRangeChange = (relDateRange) => {
     this.setState({ relDateRange });
   }
-  handlePortionOutsQuery = () => {
+  handleNormalOutsQuery = () => {
     const { ownerCusCode, relNo, relDateRange } = this.state;
-    this.props.loadPortionOutRegs({
+    this.props.loadBatchOutRegs({
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
+      rel_type: 'normal',
       rel_no: relNo,
       start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
       end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
     });
   }
-  handleBatchDecl = () => {
+  handleIetypeChange = (ev) => {
+    this.setState({ ietype: ev.target.value });
+  }
+  handleBatchClear = () => {
     const detailIds = [];
     const relCountObj = {};
     this.state.regDetails.forEach((regd) => {
@@ -237,7 +238,7 @@ export default class ClearanceModal extends Component {
       name: own.name,
     }))[0];
     const { loginId, loginName } = this.props;
-    this.props.beginBatchDecl(detailIds, relCounts, owner, loginId, loginName).then((result) => {
+    this.props.beginNormalClear(this.state.ietype, detailIds, relCounts, owner, loginId, loginName).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -248,7 +249,7 @@ export default class ClearanceModal extends Component {
   }
 
   render() {
-    const { relNo, relDateRange } = this.state;
+    const { relNo, relDateRange, ietype } = this.state;
     const portionForm = (<Form layout="inline">
       <FormItem>
         <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
@@ -264,13 +265,18 @@ export default class ClearanceModal extends Component {
       <FormItem label="出库日期">
         <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
       </FormItem>
-      <Button type="primary" ghost onClick={this.handlePortionOutsQuery}>查询普通出库单</Button>
+      <Button type="primary" ghost onClick={this.handleNormalOutsQuery}>查询普通出库单</Button>
+      <span style={{ marginLeft: 10 }} />
+      <RadioGroup value={ietype} onChange={this.handleIetypeChange}>
+        <RadioButton value="import">进口</RadioButton>
+        <RadioButton value="export">出口</RadioButton>
+      </RadioGroup>
     </Form>);
     const title = (<div>
       <span>普通出库清关</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>
+        <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchClear}>保存</Button>
       </div>
     </div>);
     return (
@@ -278,7 +284,7 @@ export default class ClearanceModal extends Component {
         footer={null} visible={this.props.visible}
       >
         <Card title={portionForm} bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.normalRegs} rowKey="id"
             scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           />
         </Card>

@@ -59,22 +59,23 @@ export default class SHFTZReleaseList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleReleaseListLoad();
+    const filter = { ...this.props.listFilter, status: 'all', type: 'all' };
+    this.handleReleaseListLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'SO编号',
     dataIndex: 'so_no',
-    width: 180,
+    width: 200,
     fixed: 'left',
     render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
   }, {
     title: '海关出库单号',
-    width: 180,
     dataIndex: 'ftz_rel_no',
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
+    width: 100,
     render: (reltype) => {
       const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
       if (regtype) {

@@ -26,6 +26,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_PORS', 'LOAD_PORS_SUCCEED', 'LOAD_PORS_FAIL',
   'LOAD_PTDS', 'LOAD_PTDS_SUCCEED', 'LOAD_PTDS_FAIL',
   'BEGIN_BD', 'BEGIN_BD_SUCCEED', 'BEGIN_BD_FAIL',
+  'BEGIN_NC', 'BEGIN_NC_SUCCEED', 'BEGIN_NC_FAIL',
+  'LOAD_NDLIST', 'LOAD_NDLIST_SUCCEED', 'LOAD_NDLIST_FAIL',
   'APPLY_DETAILS_LOAD', 'APPLY_DETAILS_LOAD_SUCCEED', 'APPLY_DETAILS_LOAD_FAIL',
   'FILE_BA', 'FILE_BA_SUCCEED', 'FILE_BA_FAIL',
   'MAKE_BAL', 'MAKE_BAL_SUCCEED', 'MAKE_BAL_FAIL',
@@ -42,7 +44,7 @@ const initialState = {
   clearanceModal: {
     visible: false,
   },
-  portionout_regs: [],
+  batchout_regs: [],
   entryList: {
     totalCount: 0,
     current: 1,
@@ -50,6 +52,12 @@ const initialState = {
     data: [],
   },
   releaseList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 20,
+    data: [],
+  },
+  normalDelgList: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
@@ -139,6 +147,12 @@ export default function reducer(state = initialState, action) {
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
         rel_regs: state.rel_regs.map(rr => ({ ...rr, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
       };
+    case actionTypes.LOAD_NDLIST:
+      return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
+    case actionTypes.LOAD_NDLIST_SUCCEED:
+      return { ...state, loading: false, normalDelgList: action.result.data };
+    case actionTypes.LOAD_NDLIST_FAIL:
+      return { ...state, loading: false };
     case actionTypes.LOAD_BALIST:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.LOAD_BALIST_SUCCEED:
@@ -146,7 +160,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BALIST_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_PORS_SUCCEED:
-      return { ...state, portionout_regs: action.result.data };
+      return { ...state, batchout_regs: action.result.data };
     case actionTypes.APPLY_DETAILS_LOAD_SUCCEED:
       return { ...state, ...action.result.data };
     case actionTypes.FILE_BA_SUCCEED:
@@ -472,7 +486,7 @@ export function loadBatchApplyList(params) {
   };
 }
 
-export function loadPortionOutRegs(params) {
+export function loadBatchOutRegs(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -480,14 +494,14 @@ export function loadPortionOutRegs(params) {
         actionTypes.LOAD_PORS_SUCCEED,
         actionTypes.LOAD_PORS_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/batch/portionouts',
+      endpoint: 'v1/cwm/shftz/batch/outregs',
       method: 'get',
       params,
     },
   };
 }
 
-export function loadPortionDetails(relNo) {
+export function loadBatchRegDetails(relNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -495,7 +509,7 @@ export function loadPortionDetails(relNo) {
         actionTypes.LOAD_PTDS_SUCCEED,
         actionTypes.LOAD_PTDS_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/batch/portion/details',
+      endpoint: 'v1/cwm/shftz/batch/reg/details',
       method: 'get',
       params: { rel_no: relNo },
     },
@@ -513,6 +527,36 @@ export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName) 
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
       data: { detailIds, relCounts, owner, loginId, loginName },
+    },
+  };
+}
+
+export function beginNormalClear(ietype, detailIds, relCounts, owner, loginId, loginName) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.BEGIN_NC,
+        actionTypes.BEGIN_NC_SUCCEED,
+        actionTypes.BEGIN_NC_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/normal/clear/begin',
+      method: 'post',
+      data: { ietype, detailIds, relCounts, owner, loginId, loginName },
+    },
+  };
+}
+
+export function loadNormalDelgList(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NDLIST,
+        actionTypes.LOAD_NDLIST_SUCCEED,
+        actionTypes.LOAD_NDLIST_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/delegations',
+      method: 'get',
+      params,
     },
   };
 }

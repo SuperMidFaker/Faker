@@ -54,7 +54,8 @@ export default class SHFTZBatchDeclList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleBatchApplyLoad();
+    const filter = { ...this.props.listFilter, status: 'manifesting' };
+    this.handleBatchApplyLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   manifColumns = [{

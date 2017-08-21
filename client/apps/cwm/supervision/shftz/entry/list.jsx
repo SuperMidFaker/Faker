@@ -60,26 +60,27 @@ export default class SHFTZEntryList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleEntryListLoad();
+    const filter = { ...this.props.listFilter, status: 'all', type: 'all' };
+    this.handleEntryListLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 180,
+    width: 200,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '报关单号',
-    width: 180,
     dataIndex: 'pre_entry_seq_no',
     render: (preno, row) => row.cus_decl_no || preno,
   }, {
     title: '海关入库单号',
-    width: 180,
+    width: 220,
     dataIndex: 'ftz_ent_no',
   }, {
     title: '监管类型',
+    width: 80,
     dataIndex: 'ftz_ent_type',
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
