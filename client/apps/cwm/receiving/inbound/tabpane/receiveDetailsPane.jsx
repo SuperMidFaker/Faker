@@ -178,8 +178,8 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '收货时间',
     width: 100,
-    dataIndex: 'created_date',
-    render: createdDt => createdDt && moment(createdDt).format('MM.DD HH:mm'),
+    dataIndex: 'received_date',
+    render: col => col && moment(col).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     width: 100,

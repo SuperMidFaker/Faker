@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { notification, Card, Table, Icon, Modal, Input, Row, Col, Select, Button, message } from 'antd';
+import { notification, Card, Table, Icon, Modal, Input, Row, Col, Select, Button, DatePicker, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
@@ -11,6 +11,7 @@ import AdviceLocations from 'client/apps/cwm/common/adviceLocations';
 import messages from '../../message.i18n';
 import { hideReceiveModal, loadProductDetails, receiveProduct } from 'common/reducers/cwmReceive';
 import { CWM_DAMAGE_LEVEL } from 'common/constants';
+import moment from 'moment';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -40,6 +41,7 @@ export default class ReceivingModal extends Component {
     receivedQty: 0,
     receivedPackQty: 0,
     loading: false,
+    receivedDate: null,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
@@ -76,6 +78,7 @@ export default class ReceivingModal extends Component {
               receivedQty: nextProps.inboundProduct.received_qty,
               receivedPackQty: nextProps.inboundProduct.received_pack_qty,
               loading: false,
+              receivedDate: nextProps.inboundProduct.received_date ? nextProps.inboundProduct.received_date : new Date(),
             });
           }
         });
@@ -141,6 +144,9 @@ export default class ReceivingModal extends Component {
     const dataSource = [...this.state.dataSource];
     dataSource[index].damage_level = value;
     this.setState({ dataSource });
+  }
+  handleReceivedDateChange = (date) => {
+    this.setState({ receivedDate: date.toDate() });
   }
   handleAvailChange = (index, value) => {
     const dataSource = [...this.state.dataSource];
@@ -213,7 +219,7 @@ export default class ReceivingModal extends Component {
       convey_no: data.convey_no,
       avail: data.avail,
       received_by: data.received_by,
-    })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId).then((result) => {
+    })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId, this.state.receivedDate).then((result) => {
       if (!result.error) {
         message.success('收货确认成功');
         this.props.hideReceiveModal();
@@ -336,7 +342,7 @@ export default class ReceivingModal extends Component {
   }]
   render() {
     const { inboundProduct, inboundHead, editable } = this.props;
-    const { receivedQty, receivedPackQty } = this.state;
+    const { receivedQty, receivedPackQty, receivedDate } = this.state;
     let footer;
     if (inboundHead.rec_mode === 'manual' && editable) {
       footer = () => <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />;
@@ -366,6 +372,12 @@ export default class ReceivingModal extends Component {
             </Col>
             <Col sm={12} md={8} lg={6}>
               <InfoItem label="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
+            </Col>
+            <Col sm={12} md={8} lg={4}>
+              <InfoItem label="收货时间" field={<DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
+                value={receivedDate ? moment(receivedDate) : null} onChange={this.handleReceivedDateChange}
+              />}
+              />
             </Col>
           </Row>
         </Card>
