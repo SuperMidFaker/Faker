@@ -94,7 +94,7 @@ export default class AllocatingModal extends Component {
   inventoryColumns = [{
     title: '加入',
     width: 60,
-    render: (o, record, index) => {
+    render: (o, record) => {
       let disabled = !this.props.editable || !record.inbound_timestamp;  // 不可编辑 或 未入库时disable
       let reason = '';
       if (!disabled) {
@@ -112,13 +112,13 @@ export default class AllocatingModal extends Component {
           reason = '库存数量不足';
         }
       }
-      return this.props.editable && disabled ? <Popover placement="right" title="原因" content={reason}><Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled /></Popover> :
-      <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(index)} disabled={disabled} />;
+      return this.props.editable && disabled ? <Popover placement="right" title="原因" content={reason}><Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled /></Popover> :
+      <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled={disabled} />;
     },
   }, {
     title: '现分配数量',
     width: 200,
-    render: (o, record, index) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+    render: (o, record) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, record.index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -236,7 +236,7 @@ export default class AllocatingModal extends Component {
   allocatedColumns = [{
     title: '移出',
     width: 60,
-    render: (o, record, index) => (record.deleteDisabled === true ? '' : <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(index)} disabled={!this.props.editable} />),
+    render: (o, record) => (record.deleteDisabled === true ? '' : <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.index)} disabled={!this.props.editable} />),
   }, {
     title: '已分配数量',
     width: 200,
@@ -475,7 +475,7 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }} noHovering>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData} rowKey="trace_id"
+            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
               scroll={{ x: filterColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
               loading={this.props.inventoryDataLoading}
             />
@@ -483,7 +483,7 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData} rowKey="trace_id"
+            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
               scroll={{ x: this.allocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
               loading={this.props.allocatedDataLoading}
             />
