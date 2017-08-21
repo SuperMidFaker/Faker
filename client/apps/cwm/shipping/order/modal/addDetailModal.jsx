@@ -63,6 +63,9 @@ export default class AddDetailModal extends Component {
         this.setState({
           product: result.data.products[0],
         });
+        this.props.form.setFieldsValue({
+          product_no: result.data.products[0].product_no,
+        });
       }
     });
   }
@@ -150,6 +153,9 @@ export default class AddDetailModal extends Component {
     const product = products.find(p => p.product_sku === value);
     this.setState({
       product,
+    });
+    this.props.form.setFieldsValue({
+      product_no: product.product_no,
     });
   }
   render() {
