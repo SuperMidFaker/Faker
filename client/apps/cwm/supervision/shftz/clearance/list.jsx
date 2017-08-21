@@ -101,6 +101,7 @@ export default class SHFTZClearanceList extends React.Component {
     },
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="清关明细" row={record} />,

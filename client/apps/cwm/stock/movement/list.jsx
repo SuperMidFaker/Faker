@@ -112,6 +112,7 @@ export default class MovementList extends React.Component {
     render: completeddate => completeddate && moment(completeddate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 200,
     fixed: 'right',
     render: (o, record) => {

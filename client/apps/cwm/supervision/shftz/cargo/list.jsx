@@ -161,6 +161,7 @@ export default class SHFTZCargoList extends React.Component {
     },
   }, {
     title: this.msg('opColumn'),
+    dataIndex: 'OPS_COL',
     width: 160,
   }]
   dataSource = new RemoteTable.DataSource({

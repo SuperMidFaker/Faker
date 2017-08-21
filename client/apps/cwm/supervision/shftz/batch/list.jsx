@@ -79,6 +79,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />,
@@ -163,6 +164,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     },
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => {

@@ -269,6 +269,7 @@ export default class CustomsList extends Component {
     width: 100,
   }, {
     title: this.msg('opColumn'),
+    dataIndex: 'OPS_COL',
     width: 140,
     fixed: 'right',
     render: (o, record) => {

@@ -130,6 +130,7 @@ export default class SHFTZEntryList extends React.Component {
     },
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDetail} label="进库明细" row={record} />,
