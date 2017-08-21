@@ -259,7 +259,7 @@ export default class DutyTaxPane extends React.Component {
     const tax = this.state.sumval[0] || {};
     return (
       <div className="pane-content tab-pane">
-        <Card noHovering bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
+        <Card noHovering bodyStyle={{ padding: 0 }}>
           <Card.Grid style={gridStyle}>
             <div className="statistics-cell">
               <h3>完税价格</h3>

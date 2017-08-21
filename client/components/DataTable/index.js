@@ -171,7 +171,7 @@ class DataTable extends Component {
         { x: this.state.tableColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY };
     }
     const content = this.state.popoverColumns.map((column, index) => (
-      <SelectItem id={index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
+      <SelectItem id={index} key={column.index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
         onChange={this.handleCheckBoxChange} onFixed={this.fixedColumns} fixed={column.fixed}
       />));
     content.push(
@@ -181,17 +181,17 @@ class DataTable extends Component {
       </div>
     );
     return (
-      <div className="data-table">
-        <div className="data-table-toolbar">
+      <div className="welo-data-table">
+        <div className="welo-data-table-toolbar">
           {this.props.toolbarActions}
-          <div className="data-table-toolbar-right">
+          <div className="welo-data-table-toolbar-right">
             <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
               <Tooltip title="显示字段设置">
                 <Button size="large" icon="bars" />
               </Tooltip>
             </Popover>
           </div>
-          {this.props.selectedRowKeys && <div className={`data-table-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+          {this.props.selectedRowKeys && <div className={`welo-data-table-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.props.selectedRowKeys.length}项</h3>
             {this.props.bulkActions}
             <div className="pull-right">

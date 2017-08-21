@@ -292,7 +292,7 @@ export default class MovementModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card bodyStyle={{ padding: 16 }} style={{ marginBottom: 16 }}>
+        <Card bodyStyle={{ padding: 16 }}>
           <Form layout="inline">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
@@ -309,7 +309,7 @@ export default class MovementModal extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
+        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }}>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id"
               scroll={{ x: this.stocksColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

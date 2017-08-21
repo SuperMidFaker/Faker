@@ -247,7 +247,7 @@ export default class StockInventoryList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
+          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable selectedRowKeys={this.state.selectedRowKeys} bordered

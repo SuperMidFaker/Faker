@@ -113,7 +113,7 @@ export default class MovementDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }}>
+          <Card bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
                 <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} />

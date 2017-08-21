@@ -135,7 +135,7 @@ export default class CreateReceivingASN extends Component {
         <Content className="main-content">
           <Form layout="vertical">
             <HeadCard form={form} handleOwnerChange={this.handleOwnerChange} />
-            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
+            <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
                 <TabPane tab="ASN明细" key="asnDetails">
                   <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />

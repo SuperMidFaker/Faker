@@ -8,7 +8,7 @@ function noop() {}
 
 export default class DockPanel extends PureComponent {
   static defaultProps = {
-    prefixCls: 'dock-panel',
+    prefixCls: 'welo-dock-panel',
     alertType: 'info',
     loading: false,
     currentDepth: 1,

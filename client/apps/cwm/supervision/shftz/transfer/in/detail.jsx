@@ -334,7 +334,7 @@ export default class SHFTZTransferInDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }} noHovering>
+            <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {entryRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({

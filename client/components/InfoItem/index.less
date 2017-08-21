@@ -1,0 +1,101 @@
+@import "~antd/lib/style/index.less";
+@import "../../variable.less";
+.info-group {
+    &-inline {
+      line-height: 32px;
+      .ant-row:before, .ant-row:after {
+        display: inline-flex;
+      }
+      .welo-info-item {
+        display: inline-flex;
+        margin-top: -16px;
+        margin-bottom: 8px;
+        &-label {
+          line-height: 32px;
+          :after {
+            content: ":";
+            margin: 0 8px 0 2px;
+            position: relative;
+            top: -.5px;
+          }
+        }
+      }
+    }
+    &-underline {
+      .welo-info-item {
+        border-bottom: 1px solid #e9e9e9;
+      }
+    }
+  }
+  
+  .welo-info-item {
+    position: relative;
+    height: auto;
+    width: 100%;
+    display: block;
+    color: @text-color;
+    margin-bottom: 8px;
+    /*
+    &:before {
+      content: " ";
+      display: table;
+    }*/
+    &-label {
+      text-align: right;
+      vertical-align: middle;
+      line-height: 24px;
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(0, 0, 0, 0.85);
+    }
+    &-field {
+      min-height: 32px;
+      font-size: 14px;
+      font-weight: 500;
+      vertical-align: middle;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      line-height: 32px;
+      >a {
+        color: @text-color;
+      }
+      >a:hover {
+        color: @link-hover-color;
+      }
+    }
+    &-placeholder {
+      color: @disabled-color;
+      >a {
+        color: @disabled-color;
+      }
+      >a:hover {
+        color: @link-hover-color;
+      }
+    }
+    &-addon-before {
+      color: @text-color-secondary;
+      font-size: 12px;
+      margin-right: 4px;
+    }
+    &-addon-after {
+      color: @text-color-secondary;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    &-sm > .welo-info-item-field {
+      min-height: 28px;
+      line-height: 28px;
+      .editable-cell-input-wrapper, 
+      .editable-cell-text-wrapper {
+        line-height: 28px;
+      }
+    }
+  }
+  .ant-form-inline .welo-info-item {
+      display: inline-block;
+      margin-right: 10px;
+      margin-bottom: 0;
+  }

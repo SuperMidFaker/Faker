@@ -188,7 +188,7 @@ export default class MainForm extends Component {
             </Col>
           </Row>
         </Card>
-        <Card title="SKU属性" style={{ marginTop: 16 }} extra={<span>
+        <Card title="SKU属性" extra={<span>
           <Checkbox checked={skuForm.product_default} onChange={ev => this.handleFormChange('product_default', ev.target.checked)}>
               设置当前为默认
             </Checkbox>
@@ -286,7 +286,7 @@ export default class MainForm extends Component {
             </Col>
           </Row>
         </Card>
-        <Card title="海关商品归类" style={{ marginTop: 16 }} extra={<Button icon="sync">同步归类</Button>}>
+        <Card title="海关商品归类" extra={<Button icon="sync">同步归类</Button>}>
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('hscode')}>

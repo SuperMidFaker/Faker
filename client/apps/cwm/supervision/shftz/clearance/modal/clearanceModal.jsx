@@ -277,7 +277,7 @@ export default class ClearanceModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card title={portionForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
+        <Card title={portionForm} bodyStyle={{ padding: 0 }}>
           <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
             scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           />

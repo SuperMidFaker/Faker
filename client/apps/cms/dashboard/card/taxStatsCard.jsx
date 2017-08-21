@@ -80,7 +80,7 @@ export default class TaxStatsCard extends Component {
         />
       </div>);
     return (
-      <Card title={this.msg('taxStats')} style={{ marginTop: 16 }} extra={datePicker}>
+      <Card title={this.msg('taxStats')} extra={datePicker}>
         <ul className="statistics-columns">
           <li className="col-3">
             <div className="statistics-cell">

@@ -267,7 +267,7 @@ export default class OrderForm extends Component {
               <Option key={data.partner_id} value={data.partner_id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
             )}
           </Select></span>}
-          bodyStyle={{ padding: 8 }} style={{ marginBottom: 16 }}
+          bodyStyle={{ padding: 8 }}
         >
           <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
             <Panel header="贸易信息" key="trading">

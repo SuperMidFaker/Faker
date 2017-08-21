@@ -353,7 +353,7 @@ export default class ReceivingModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }} noHovering>
+        <Card bodyStyle={{ paddingBottom: 16 }} noHovering>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
               <InfoItem label="商品货号" field={inboundProduct.product_no} />

@@ -365,7 +365,7 @@ export default class StockTransitionList extends React.Component {
           </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
-          <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
+          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered

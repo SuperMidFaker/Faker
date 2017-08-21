@@ -92,7 +92,7 @@ export default class SelectItem extends Component {
           {title}
         </Checkbox>
         <Button size="small" shape="circle" icon="pushpin-o" onClick={() => onFixed(index)} />
-        {fixed && <Icon type="pushpin-o" />}
+        {fixed && <Icon type="pushpin" />}
       </div>
     ));
   }
