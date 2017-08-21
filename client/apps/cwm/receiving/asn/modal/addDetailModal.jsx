@@ -165,7 +165,7 @@ export default class AddDetailModal extends Component {
           </FormItem>
           <FormItem label="SKU" {...formItemLayout}>
             <Select style={{ width: '100%' }} value={product.product_sku} onSelect={this.handleSelectSku}>
-              {productSkus.map(sku => (<Option value={sku} key={sku}>{sku}</Option>))}
+              {productSkus && productSkus.map(sku => (<Option value={sku} key={sku}>{sku}</Option>))}
             </Select>
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
