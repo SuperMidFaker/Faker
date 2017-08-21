@@ -83,7 +83,7 @@ export default class ReceivingASNList extends React.Component {
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '货主',
-    width: 200,
+    width: 240,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {

@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { findDOMNode } from 'react-dom';
-import { Checkbox } from 'antd';
+import { Checkbox, Button, Icon } from 'antd';
 import { DragSource, DropTarget } from 'react-dnd';
 const ItemTypes = {
   CARD: 'card',
@@ -71,7 +71,7 @@ const cardTarget = {
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
 }))
-export default class SelectItems extends Component {
+export default class SelectItem extends Component {
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
@@ -80,15 +80,19 @@ export default class SelectItems extends Component {
     title: PropTypes.string,
     index: PropTypes.number.isRequired,
     moveSelect: PropTypes.func.isRequired,
+    onFixed: PropTypes.func.isRequired,
+    fixed: PropTypes.string,
   };
   render() {
-    const { isDragging, connectDragSource, connectDropTarget, checked, index, title, id } = this.props;
+    const { isDragging, connectDragSource, connectDropTarget, checked, index, title, id, onFixed, fixed } = this.props;
     const opacity = isDragging ? 0 : 1;
     return connectDragSource(connectDropTarget(
       <div className="col-selection-item" style={{ opacity }}>
         <Checkbox id={id} checked={checked} onChange={() => this.props.onChange(index)}>
           {title}
         </Checkbox>
+        <Button size="small" shape="circle" icon="pushpin-o" onClick={() => onFixed(index)} />
+        {fixed && <Icon type="pushpin-o" />}
       </div>
     ));
   }
