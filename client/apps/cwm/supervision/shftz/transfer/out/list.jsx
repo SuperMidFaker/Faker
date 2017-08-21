@@ -146,7 +146,7 @@ export default class SHFTZTransferOutList extends React.Component {
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
       };
-      const filter = { ...this.props.listFilter, type: 'transfer' };
+      const filter = { ...this.props.listFilter, transType: 'transfer' };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -155,7 +155,7 @@ export default class SHFTZTransferOutList extends React.Component {
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
     const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
     let newfilter = filter || listFilter;
-    newfilter = { ...newfilter, type: 'transfer' };
+    newfilter = { ...newfilter, transType: 'transfer' };
     this.props.loadReleaseRegDatas({
       tenantId,
       filter: JSON.stringify(newfilter),

@@ -74,6 +74,7 @@ const initialState = {
     type: 'all',
     filterNo: '',
     ownerView: 'all',
+    transType: '',
   },
   entry_asn: {},
   entry_regs: [],

@@ -153,7 +153,7 @@ export default class SHFTZEntryList extends React.Component {
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
       };
-      const filter = { ...this.props.listFilter };
+      const filter = { ...this.props.listFilter, transType: '' };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -161,9 +161,11 @@ export default class SHFTZEntryList extends React.Component {
   })
   handleEntryListLoad = (currentPage, whsecode, filter) => {
     const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
+    let newfilter = filter || listFilter;
+    newfilter = { ...newfilter, transType: '' };
     this.props.loadEntryRegDatas({
       tenantId,
-      filter: JSON.stringify(filter || listFilter),
+      filter: JSON.stringify(newfilter),
       pageSize,
       currentPage: currentPage || current,
       whseCode: whsecode || whse.code,
