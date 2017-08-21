@@ -96,7 +96,7 @@ export default class DetailsPane extends Component {
       width: 50,
       className: 'cell-align-center',
       fixed: 'left',
-      render: (col, row, index) => index + 1,
+      render: (col, row) => row.index + 1,
     }, {
       title: '货号',
       dataIndex: 'product_no',
