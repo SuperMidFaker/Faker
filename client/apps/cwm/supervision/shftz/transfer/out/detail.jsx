@@ -298,7 +298,7 @@ export default class SHFTZTransferOutDetail extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={24} lg={6}>
                   <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />

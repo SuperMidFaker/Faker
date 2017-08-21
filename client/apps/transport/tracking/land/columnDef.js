@@ -52,8 +52,7 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
     fixed: 'left',
-    width: 110,
-    render: o => <TrimSpan text={o} maxLen={10} />,
+    width: 140,
   }, {
     title: msg('departurePlace'),
     width: 250,

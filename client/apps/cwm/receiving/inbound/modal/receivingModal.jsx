@@ -353,7 +353,7 @@ export default class ReceivingModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }}>
+        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }} noHovering>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
               <InfoItem label="商品货号" field={inboundProduct.product_no} />
@@ -369,7 +369,7 @@ export default class ReceivingModal extends Component {
             </Col>
           </Row>
         </Card>
-        <Card bodyStyle={{ padding: 0 }}>
+        <Card bodyStyle={{ padding: 0 }} noHovering>
           <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
             dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
             loading={this.state.loading}

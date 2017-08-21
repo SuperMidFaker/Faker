@@ -72,9 +72,9 @@ export default class SHFTZClearanceList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货单位',
+    title: '申报单位',
     width: 180,
-    dataIndex: 'receiver_name',
+    dataIndex: 'broker_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '委托日期',
@@ -122,7 +122,7 @@ export default class SHFTZClearanceList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status < 2) {
-        return <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />;
+        return <RowUpdater onHit={this.handleDetail} label="清关明细" row={record} />;
       }
     },
   }]

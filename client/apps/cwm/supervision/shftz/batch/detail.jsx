@@ -209,7 +209,7 @@ export default class SHFTZBatchDeclDetail extends Component {
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
               <Row className="info-group-inline">
                 <Col sm={24} lg={6}>
                   <InfoItem label="清单委托" field={

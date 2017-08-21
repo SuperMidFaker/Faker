@@ -7,9 +7,20 @@ import { formatMsg } from './message.i18n';
 exports.commonTraceColumns = (intl) => {
   const msg = formatMsg(intl);
   return [{
+    title: msg('bonded'),
+    width: 120,
+    dataIndex: 'bonded',
+    render: bonded => bonded ? '是' : '否',
+  }, {
+    title: msg('portion'),
+    width: 120,
+    dataIndex: 'portion',
+    render: portion => portion ? '是' : '否',
+  }, {
     title: msg('traceId'),
     width: 220,
     dataIndex: 'trace_id',
+    sorter: true,
   }, {
     title: msg('SKU'),
     dataIndex: 'product_sku',
@@ -27,16 +38,6 @@ exports.commonTraceColumns = (intl) => {
     title: msg('virtualWhse'),
     width: 120,
     dataIndex: 'virtual_whse',
-  }, {
-    title: msg('bonded'),
-    width: 120,
-    dataIndex: 'bonded',
-    render: bonded => bonded ? '是' : '否',
-  }, {
-    title: msg('portion'),
-    width: 120,
-    dataIndex: 'portion',
-    render: portion => portion ? '是' : '否',
   }, {
     title: msg('damageLevel'),
     width: 120,

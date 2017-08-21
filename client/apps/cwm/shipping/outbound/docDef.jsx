@@ -2,18 +2,23 @@ import JsBarcode from 'jsbarcode';
 
 function textToBase64Barcode(text, mark) {
   const canvas = document.createElement('canvas');
-  JsBarcode(canvas, text, { format: 'CODE39', text: mark, fontSize: 30 });
+  if (mark) {
+    JsBarcode(canvas, text, { format: 'CODE39', text: mark, fontSize: 25, height: 78 });
+  } else {
+    JsBarcode(canvas, text, { format: 'CODE39', displayValue: false, height: 78, marginBottom: 0 });
+  }
   return canvas.toDataURL('image/png');
 }
 
 function pdfBody(data) {
   let barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum}  子单号 ${data.courierNoSon}`);
   let barcode1 = textToBase64Barcode(data.courierNoSon, `子单号 ${data.courierNoSon}`);
+  let bartext = `1/${data.expressNum}   子单号 ${data.courierNoSon}\n \xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 母单号 ${data.courierNo}`;
   if (data.courierNoSon === data.courierNo) {
     barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum}  母单号 ${data.courierNoSon}`);
     barcode1 = textToBase64Barcode(data.courierNoSon, `母单号 ${data.courierNoSon}`);
+    bartext = `1/${data.expressNum}  母单号 ${data.courierNoSon}`;
   }
-
   let pdfcontent = [];
   pdfcontent = [
     { style: 'table',
@@ -21,8 +26,10 @@ function pdfBody(data) {
         widths: ['60%', '40%'],
         body: [
           [{ colSpan: 2, image: data.sf1, width: 300, alignment: 'center' }, {}],
-          [{ rowSpan: 2, image: barcode0, width: 180, alignment: 'center' }, { text: '顺丰隔日', fontSize: 12, alignment: 'center' }],
-          ['', { text: '代收贷款\n卡号:\n ￥ ', fontSize: 12, alignment: 'center' }],
+          [{ rowSpan: 2, image: barcode0, width: 180, alignment: 'center', border: [true, true, true, false] },
+            { text: '顺丰隔日', fontSize: 12, alignment: 'center' }],
+          ['', { rowSpan: 2, text: '代收贷款\n卡号:\n ￥ ', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
+          [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
       },
     },

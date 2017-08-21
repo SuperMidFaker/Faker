@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Alert, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip } from 'antd';
+import { Alert, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
+import { Logixon } from 'client/components/FontIcon';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
-import { CWM_INBOUND_STATUS } from 'common/constants';
+import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import ReceiveDetailsPane from './tabpane/receiveDetailsPane';
 import Print from './printInboundList';
@@ -78,7 +79,13 @@ export default class ReceiveInbound extends Component {
   handleTabChange = (activeTab) => {
     this.setState({ activeTab });
   }
-
+  handleRegPage = () => {
+    if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES[0].value) {
+      this.context.router.push(`/cwm/supervision/shftz/entry/${this.props.inboundHead.asn_no}`);
+    } else if (this.props.inboundHead.bonded_intype === CWM_ASN_BONDED_REGTYPES[2].value) {
+      this.context.router.push(`/cwm/supervision/shftz/transfer/in/${this.props.inboundHead.asn_no}`);
+    }
+  }
   render() {
     const { defaultWhse, inboundHead } = this.props;
     const tagMenu = (
@@ -96,6 +103,8 @@ export default class ReceiveInbound extends Component {
       cis => CWM_INBOUND_STATUS[cis].value === inboundHead.status
     )[0];
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
+    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
+    const regStatus = CWM_SHFTZ_REG_STATUS.filter(status => status.value === inboundHead.reg_status)[0];
     return (
       <div>
         <Header className="page-header">
@@ -110,7 +119,12 @@ export default class ReceiveInbound extends Component {
               {this.props.params.inboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
+          {!!inboundHead.bonded && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
           <div className="page-header-tools">
+            {!!inboundHead.bonded && <Tooltip title="海关备案详情" placement="bottom">
+              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs-o" />{regStatus.text}</Button>
+            </Tooltip>
+            }
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Print inboundNo={this.props.params.inboundNo} />
             }
@@ -139,7 +153,7 @@ export default class ReceiveInbound extends Component {
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={inboundHead.owner_name} />

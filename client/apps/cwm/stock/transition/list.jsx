@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Input, Breadcrumb, Button, Card, Checkbox, Select, Layout, Tooltip, Popover, InputNumber, Radio, message } from 'antd';
+import { Input, Breadcrumb, Button, Card, Checkbox, Select, Layout, Popover, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { showTransitionDock, loadTransitions, splitTransit, unfreezeTransit,
   openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
@@ -313,7 +313,7 @@ export default class StockTransitionList extends React.Component {
         this.setState({ selectedRowKeys, enableBatchTransit, batchTransitDetail });
       },
     };
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: (params) => { this.props.loadTransitions(params); this.handleDeselectRows(); },
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -339,6 +339,19 @@ export default class StockTransitionList extends React.Component {
       },
       remotes: this.props.transitionlist,
     });
+    const node = (<div className="toolbar-left">
+      <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
+        <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+        {listFilter.status === 'normal' && this.state.enableBatchTransit &&
+        <Button onClick={this.handleBatchTransit}>批量转移</Button>}
+        {/* <Button onClick={this.handleBatchMove}>批量移库</Button> */}
+        {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
+        {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
+        <div className="pull-right">
+          <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
+        </div>
+      </div>
+    </div>);
     return (
       <Layout>
         <Header className="page-header">
@@ -362,33 +375,9 @@ export default class StockTransitionList extends React.Component {
           <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <div className="page-body data-table">
-            <div className="toolbar">
-              <div className="toolbar-right">
-                <Tooltip title="自定义显示字段" placement="topRight">
-                  <Popover placement="leftTop" title="自定义显示字段" content={this.renderDisplayColumns()} trigger="click">
-                    <Button shape="circle" icon="bars" />
-                  </Popover>
-                </Tooltip>
-              </div>
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                {listFilter.status === 'normal' && this.state.enableBatchTransit &&
-                  <Button onClick={this.handleBatchTransit}>批量转移</Button>}
-                {/* <Button onClick={this.handleBatchMove}>批量移库</Button>*/}
-                {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
-                {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
-                <div className="pull-right">
-                  <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-                </div>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered
-                scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
-              />
-            </div>
-          </div>
+          <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered
+            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
+          />
           <TransitionDockPanel />
           <BatchTransitModal />
           {/* <BatchMoveModal /> */}

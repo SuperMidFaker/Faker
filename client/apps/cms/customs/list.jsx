@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Breadcrumb, DatePicker, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -340,7 +340,7 @@ export default class CustomsList extends Component {
       }
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCustomsDecls(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -506,6 +506,9 @@ export default class CustomsList extends Component {
     const filters = { ...this.props.listFilter, filterDate: dateString, acptDate: [] };
     this.handleTableLoad(1, filters);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { customslist, listFilter, trades } = this.props;
     this.dataSource.remotes = customslist;
@@ -520,16 +523,16 @@ export default class CustomsList extends Component {
     if (listFilter.filterDate.length > 0 && listFilter.filterDate[0] !== '') {
       dateVal = [moment(listFilter.filterDate[0]), moment(listFilter.filterDate[1])];
     }
-    let bulkBtns = '';
+    let bulkActions = '';
     if (status === 'proposed') {
-      bulkBtns = (
+      bulkActions = (
         <PrivilegeCover module="clearance" feature="customs" action="edit">
           <Button type="default" size="large" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
           批量复核
         </Button>
         </PrivilegeCover>);
     } else if (status === 'reviewed') {
-      bulkBtns = (
+      bulkActions = (
         <span>
           <PrivilegeCover module="clearance" feature="customs" action="edit">
             <Button type="primary" size="large" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
@@ -543,6 +546,30 @@ export default class CustomsList extends Component {
           </Popconfirm>
         </span>);
     }
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleTradesSelectChange} defaultValue="all"
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all">全部收发货人</Option>
+        {trades.map(data => (<Option key={data.id} value={data.id}
+          search={`${data.code}${data.name}`}
+        >{data.name}</Option>)
+        )}
+      </Select>
+      <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+        onChange={this.handleViewChange}
+      >
+        <OptGroup label="常用视图">
+          <Option value="all">全部委托</Option>
+          <Option value="my">我负责的委托</Option>
+        </OptGroup>
+      </Select>
+      <RangePicker size="large" value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      /></span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -570,49 +597,14 @@ export default class CustomsList extends Component {
           <div className="page-header-tools" />
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleTradesSelectChange} defaultValue="all"
-                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all">全部收发货人</Option>
-                {trades.map(data => (<Option key={data.id} value={data.id}
-                  search={`${data.code}${data.name}`}
-                >{data.name}</Option>)
-                )}
-              </Select>
-              <span />
-              <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
-                onChange={this.handleViewChange}
-              >
-                <OptGroup label="常用视图">
-                  <Option value="all">全部委托</Option>
-                  <Option value="my">我负责的委托</Option>
-                </OptGroup>
-              </Select>
-              <span />
-              <RangePicker size="large" value={dateVal}
-                ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
-                onChange={this.handleDateRangeChange}
-              />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                {bulkBtns}
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout table-fixed-layout">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
-                loading={customslist.loading} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-              />
-            </div>
-            <FillCustomsNoModal reload={this.handleTableLoad} />
-            <DeclReleasedModal reload={this.handleTableLoad} />
-            <SendModal reload={this.handleTableLoad} />
-            <BatchSendModal reload={this.handleTableLoad} />
-          </div>
+          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id" loading={customslist.loading}
+          />
+          <FillCustomsNoModal reload={this.handleTableLoad} />
+          <DeclReleasedModal reload={this.handleTableLoad} />
+          <SendModal reload={this.handleTableLoad} />
+          <BatchSendModal reload={this.handleTableLoad} />
         </Content>
         <DelegationDockPanel />
         <OrderDockPanel />
