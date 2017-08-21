@@ -11,13 +11,13 @@ function textToBase64Barcode(text, mark) {
 }
 
 function pdfBody(data) {
-  let barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum}  子单号 ${data.courierNoSon}`);
+  let barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum} 子单号 ${data.courierNoSon}`);
   let barcode1 = textToBase64Barcode(data.courierNoSon, `子单号 ${data.courierNoSon}`);
-  let bartext = `1/${data.expressNum}   子单号 ${data.courierNoSon}\n \xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 母单号 ${data.courierNo}`;
+  let bartext = `\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 母单号 ${data.courierNo}`;
   if (data.courierNoSon === data.courierNo) {
-    barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum}  母单号 ${data.courierNoSon}`);
+    barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum} 母单号 ${data.courierNoSon}`);
     barcode1 = textToBase64Barcode(data.courierNoSon, `母单号 ${data.courierNoSon}`);
-    bartext = `1/${data.expressNum}  母单号 ${data.courierNoSon}`;
+    bartext = '';
   }
   let pdfcontent = [];
   pdfcontent = [
@@ -26,10 +26,10 @@ function pdfBody(data) {
         widths: ['60%', '40%'],
         body: [
           [{ colSpan: 2, image: data.sf1, width: 300, alignment: 'center' }, {}],
-          [{ rowSpan: 2, image: barcode0, width: 180, alignment: 'center', border: [true, true, true, false] },
+          [{ rowSpan: 2, image: barcode0, width: 200, alignment: 'center', border: [true, true, true, false] },
             { text: '顺丰隔日', fontSize: 12, alignment: 'center' }],
           ['', { rowSpan: 2, text: '代收贷款\n卡号:\n ￥ ', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
-          [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
+          [{ text: `${bartext}`, fontSize: 10, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
       },
     },
@@ -91,7 +91,7 @@ function pdfBody(data) {
       widths: ['30%', '70%'],
       body: [
         [{ image: data.sf3, width: 70, alignment: 'center' },
-        { image: barcode1, width: 160, alignment: 'center' }],
+        { image: barcode1, width: 200, alignment: 'center' }],
       ],
     },
     }

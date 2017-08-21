@@ -250,7 +250,7 @@ export default class StockInventoryList extends React.Component {
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable selectedRowKeys={this.state.selectedRowKeys} bordered
+          <DataTable selectedRowKeys={this.state.selectedRowKeys} bordered scrollOffset="410"
             columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
           />
         </Content>

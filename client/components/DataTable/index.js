@@ -42,32 +42,73 @@ class DataTable extends Component {
     selectedRowKeys: PropTypes.array,
     handleDeselectRows: PropTypes.func,
   }
-
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   state = {
     scrollY: null,
     popoverColumns: [],
     tableColumns: [],
     visible: false,
+    pathname: '',
   }
   componentWillMount() {
-    const offset = this.props.scrollOffset ? this.props.scrollOffset : 410;
+    const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ scrollY: window.innerHeight - offset });
     }
-    const tableColumns = this.props.columns.map((column, index) => ({
-      ...column,
-      checked: true,
-      index,
-    }));
-    let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
-    popoverColumns = popoverColumns.map((column, index) => ({
-      ...column,
-      checked: true,
-      index }));
-    this.setState({
-      tableColumns,
-      popoverColumns,
-    });
+    const location = this.context.router.location;
+    let columnRule = {};
+    if (window.localStorage) {
+      columnRule = JSON.parse(window.localStorage.getItem(location.pathname));
+    }
+    if (columnRule) {
+      const tableColumns = this.props.columns;
+      const newTableColumns = [];
+      const newPopoverColumns = [];
+      for (let i = 0; i < columnRule.tableStorage.length; i++) {
+        const item = columnRule.tableStorage[i];
+        let currentOne = null;
+        if (item.dataIndex) {
+          currentOne = tableColumns.find(column => column.dataIndex === item.dataIndex);
+        } else {
+          currentOne = tableColumns.find(column => !column.dataIndex);
+        }
+        newTableColumns.push({ ...currentOne, ...item, index: i });
+      }
+      const popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      for (let i = 0; i < columnRule.popoverStorage.length; i++) {
+        const item = columnRule.popoverStorage[i];
+        let currentOne = null;
+        if (item.dataIndex) {
+          currentOne = popoverColumns.find(column => column.dataIndex === item.dataIndex);
+        } else {
+          currentOne = popoverColumns.find(column => !column.dataIndex);
+        }
+        newPopoverColumns.push({ ...currentOne, ...item, index: i });
+      }
+      this.setState({
+        tableColumns: newTableColumns,
+        popoverColumns: newPopoverColumns,
+        pathname: location.pathname,
+      });
+    } else {
+      const tableColumns = this.props.columns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index,
+      }));
+      let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      popoverColumns = popoverColumns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index }));
+      this.setState({
+        tableColumns,
+        popoverColumns,
+        pathname: location.pathname,
+      });
+    }
   }
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
@@ -115,13 +156,23 @@ class DataTable extends Component {
   }
   handleSave = () => {
     const tableColumns = [...this.state.tableColumns];
-    let columns = this.state.popoverColumns.filter(column => column.checked);
+    const popoverColumns = [...this.state.popoverColumns];
+    const { pathname } = this.state;
+    let columns = popoverColumns.filter(column => column.checked);
     const operation = tableColumns.find(column => column.dataIndex === 'OPS_COL');
     if (operation) { columns = columns.concat(operation); }
+    const newColumns = columns.map(column => ({ ...column }));
     this.setState({
-      tableColumns: columns.map(column => ({ ...column })),
+      tableColumns: newColumns,
       visible: false,
     });
+    if (window.localStorage) {
+      const popoverStorage = popoverColumns.map(column => ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
+      const tableStorage = newColumns.map(column => ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
+      const obj = { popoverStorage, tableStorage };
+      const storage = window.localStorage;
+      storage.setItem(pathname, JSON.stringify(obj));
+    }
   }
   moveSelect = (dragIndex, hoverIndex) => {
     let popoverColumns = [...this.state.popoverColumns];
