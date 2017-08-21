@@ -369,7 +369,7 @@ export default class StockTransitionList extends React.Component {
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered
-            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} scrollOffset="410"
           />
           <TransitionDockPanel />
           <BatchTransitModal />
