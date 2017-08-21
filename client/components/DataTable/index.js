@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Tooltip, Button, Popover } from 'antd';
+import { Table, Tooltip, Button, Popover, message } from 'antd';
 import update from 'react/lib/update';
 import SelectItem from './selectItem';
 import { DragDropContext } from 'react-dnd';
@@ -173,6 +173,7 @@ class DataTable extends Component {
       const storage = window.localStorage;
       storage.setItem(pathname, JSON.stringify(obj));
     }
+    message.info('列表视图已更新');
   }
   moveSelect = (dragIndex, hoverIndex) => {
     let popoverColumns = [...this.state.popoverColumns];

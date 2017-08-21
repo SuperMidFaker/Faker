@@ -21,7 +21,7 @@ const RadioButton = Radio.Button;
   state => ({
     visible: state.cwmShFtz.clearanceModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
+    owners: state.cwmContext.whseAttrs.owners,
     ownerCusCode: state.cwmShFtz.clearanceModal.ownerCusCode,
     normalRegs: state.cwmShFtz.batchout_regs,
     loginId: state.account.loginId,

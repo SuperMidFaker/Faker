@@ -31,7 +31,7 @@ const OptGroup = Select.OptGroup;
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
+    owners: state.cwmContext.whseAttrs.owners,
   }),
   { openClearanceModal, switchDefaultWhse, loadNormalDelgList }
 )
