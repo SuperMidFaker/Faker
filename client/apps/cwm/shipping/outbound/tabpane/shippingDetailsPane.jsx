@@ -20,7 +20,6 @@ export default class ShippingDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
-    outboundHead: PropTypes.object.isRequired,
   }
   state = {
     searchValue: '',

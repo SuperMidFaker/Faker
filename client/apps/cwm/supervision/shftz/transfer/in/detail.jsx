@@ -2,13 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -48,7 +47,7 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg }
+  { loadEntryDetails, updateEntryReg, pairEntryRegProducts }
 )
 @connectNav({
   depth: 3,
@@ -84,9 +83,9 @@ export default class SHFTZTransferInDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleEnqueryMatch = () => {
+  handleEnqueryPairing = () => {
     const asnNo = this.props.params.asnNo;
-    this.props.queryEntryRegInfos(asnNo, this.props.entryAsn.whse_code).then((result) => {
+    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -97,7 +96,7 @@ export default class SHFTZTransferInDetail extends Component {
           this.props.loadEntryDetails({ asnNo });
           notification.success({
             message: '操作成功',
-            description: '备案明细ID已获取',
+            description: '货号明细ID配对完成',
           });
         }
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
@@ -211,7 +210,7 @@ export default class SHFTZTransferInDetail extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             {this.state.comparable && <Tooltip title="" placement="bottom">
-              <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryMatch}>查询核对</Button>
+              <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>
             </Tooltip>}
           </div>
         </Header>
@@ -230,12 +229,12 @@ export default class SHFTZTransferInDetail extends Component {
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.created_date && moment(entryAsn.created_date).format('YYYY.MM.DD HH:mm')}
+                    field={entryAsn.created_date} format="YYYY.MM.DD HH:mm"
                   />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')}
+                    field={entryAsn.reg_date} format="YYYY.MM.DD HH:mm"
                   />
                 </Col>
               </Row>
@@ -270,7 +269,7 @@ export default class SHFTZTransferInDetail extends Component {
                           </Col>
                           <Col sm={12} lg={3}>
                             <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                              type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY.MM.DD')} editable={entryEditable}
+                              type="date" field={reg.ftz_ent_date} editable={entryEditable}
                               onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                             />
                           </Col>

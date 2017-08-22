@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, Icon, Col, Row, Input } from 'antd';
 import classNames from 'classnames';
+import moment from 'moment';
 import EditableCell from '../EditableCell';
+
 import './index.less';
 
 function getColCls(col) {
@@ -73,7 +75,7 @@ export default class InfoItem extends PureComponent {
     }
   }
   renderField() {
-    const { type, field, dataIndex, placeholder, editable, overlay, onEdit, options } = this.props;
+    const { type, format, field, dataIndex, placeholder, editable, overlay, onEdit, options } = this.props;
     if (editable) {
       if (type === 'dropdown') {
         return (<span>{this.renderAddonBefore()}
@@ -86,8 +88,13 @@ export default class InfoItem extends PureComponent {
         </span>);
       }
       return (<EditableCell cellTrigger type={type} value={field} field={dataIndex} options={options} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()} placeholder={placeholder} onSave={onEdit} />);
+    } else {
+      let span = field;
+      if (type === 'date') {
+        span = span && moment(span).format(format || 'YYYY.MM.DD');
+      }
+      return <span>{this.renderAddonBefore()}{span}{this.renderAddonAfter()}</span>;
     }
-    return <span>{this.renderAddonBefore()}{field}{this.renderAddonAfter()}</span>;
   }
   renderAddonBefore() {
     const { prefixCls, addonBefore } = this.props;
