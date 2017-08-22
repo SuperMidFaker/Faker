@@ -30,6 +30,12 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'LOAD_STAFFS', 'LOAD_STAFFS_SUCCEED', 'LOAD_STAFFS_FAIL',
   'CHNAGE_STAFF_STATUS', 'CHNAGE_STAFF_STATUS_SUCCEED', 'CHNAGE_STAFF_STATUS_FAIL',
   'DELETE_STAFF', 'DELETE_STAFF_SUCCEED', 'DELETE_STAFF_FAIL',
+  'ADD_RECEIVER', 'ADD_RECEIVER_SUCCEED', 'ADD_RECEIVER_FAIL',
+  'LOAD_RECEIVERS', 'LOAD_RECEIVERS_SUCCEED', 'LOAD_RECEIVERS_FAIL',
+  'DELETE_RECEIVER', 'DELETE_RECEIVER_SUCCEED', 'DELETE_RECEIVER_FAIL',
+  'UPDATE_RECEIVER', 'UPDATE_RECEIVER_SUCCEED', 'UPDATE_RECEIVER_FAIL',
+  'TOGGLE_RECEIVER_MODAL',
+  'UPDATE_RECEIVER_STATUS', 'UPDATE_RECEIVER_STATUS_SUCCEED', 'UPDATE_RECEIVER_STATUS_FAIL',
 ]);
 
 const initialState = {
@@ -62,6 +68,11 @@ const initialState = {
     visible: false,
   },
   staffs: [],
+  receivers: [],
+  receiverModal: {
+    visible: false,
+    receiver: {},
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -106,6 +117,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, staffModal: { visible: false } };
     case actionTypes.LOAD_STAFFS_SUCCEED:
       return { ...state, staffs: action.result.data };
+    case actionTypes.TOGGLE_RECEIVER_MODAL:
+      return { ...state, receiverModal: { ...state.receiverModal, ...action.data } };
+    case actionTypes.LOAD_RECEIVERS_SUCCEED:
+      return { ...state, receivers: action.result.data };
     default:
       return state;
   }
@@ -514,6 +529,88 @@ export function deleteStaff(id) {
       endpoint: 'v1/cwm/warehouse/delete/staff',
       method: 'post',
       data: { id },
+    },
+  };
+}
+
+export function addReceiver(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_RECEIVER,
+        actionTypes.ADD_RECEIVER_SUCCEED,
+        actionTypes.ADD_RECEIVER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/receiver/add',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadReceivers(whseCode, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_RECEIVERS,
+        actionTypes.LOAD_RECEIVERS_SUCCEED,
+        actionTypes.LOAD_RECEIVERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/receiver/load',
+      method: 'get',
+      params: { whseCode, tenantId },
+    },
+  };
+}
+
+export function deleteReceiver(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_RECEIVER,
+        actionTypes.DELETE_RECEIVER_SUCCEED,
+        actionTypes.DELETE_RECEIVER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/receiver/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function updateReceiver(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_RECEIVER,
+        actionTypes.UPDATE_RECEIVER_SUCCEED,
+        actionTypes.UPDATE_RECEIVER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/receiver/update',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function toggleReceiverModal(visible, receiver = {}) {
+  return {
+    type: actionTypes.TOGGLE_RECEIVER_MODAL,
+    data: { visible, receiver },
+  };
+}
+
+export function changeReceiverStatus(id, status, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_RECEIVER_STATUS,
+        actionTypes.UPDATE_RECEIVER_STATUS_SUCCEED,
+        actionTypes.UPDATE_RECEIVER_STATUS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/receiver/status/update',
+      method: 'post',
+      data: { id, status, loginId },
     },
   };
 }

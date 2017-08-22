@@ -4,12 +4,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Table, Tag } from 'antd';
-import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
-import { loadWhse } from 'common/reducers/cwmContext';
+import { toggleReceiverModal, loadReceivers, deleteReceiver, changeReceiverStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
-import WhseOwnersModal from '../modal/whseOwnersModal';
-import OwnerControlModal from '../modal/ownerControlModal';
+import WhseReceiversModal from '../modal/whseReceiversModal';
 import { formatMsg } from '../message.i18n';
+import * as Location from 'client/util/location';
 
 @injectIntl
 @connect(
@@ -17,42 +16,55 @@ import { formatMsg } from '../message.i18n';
     tenantId: state.account.tenantId,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
+    receivers: state.cwmWarehouse.receivers,
+    loginId: state.account.loginId,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse }
+  { toggleReceiverModal, loadReceivers, deleteReceiver, changeReceiverStatus }
 )
 export default class ReceiversPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
     whseTenantId: PropTypes.number.isRequired,
+    receivers: PropTypes.array.isRequired,
     whseOwners: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       owner_code: PropTypes.string,
       owner_name: PropTypes.string.isRequired,
     })),
   }
-  state = {
-    selectedRowKeys: [],
-  }
   componentWillMount() {
-    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
+    this.props.loadReceivers(this.props.whseCode, this.props.whseTenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
+      this.props.loadReceivers(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
   columns = [{
-    title: '收货人代码',
-    dataIndex: 'receiver_code',
+    title: '代码',
+    dataIndex: 'code',
     width: 150,
   }, {
-    title: '收货人名称',
-    dataIndex: 'receiver_name',
+    title: '名称',
+    dataIndex: 'name',
     width: 250,
   }, {
     title: '海关编码',
-    dataIndex: 'name',
+    dataIndex: 'customs_code',
+    width: 150,
+  }, {
+    title: '邮政编码',
+    dataIndex: 'post_code',
+    width: 150,
+  }, {
+    title: '地址',
+    dataIndex: 'province',
+    width: 150,
+    rencer: (col, row) => Location.renderLocation(row),
+  }, {
+    title: '详细地址',
+    dataIndex: 'address',
     width: 150,
   }, {
     title: '状态',
@@ -66,7 +78,11 @@ export default class ReceiversPane extends Component {
     },
   }, {
     title: '关联货主',
-    dataIndex: 'related_owners',
+    dataIndex: 'owner_partner_id',
+    render: (col) => {
+      const owner = this.props.whseOwners.find(item => item.owner_partner_id === col);
+      return owner ? owner.owner_name : '';
+    },
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
@@ -82,38 +98,45 @@ export default class ReceiversPane extends Component {
     width: 150,
     render: record => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onHit={() => this.changeReceiverStatus(record.id, true)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.changeReceiverStatus(record.id, false)} label="停用" row={record} />}
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.handleEditReceiver(record)} label="修改" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.handleDeleteReceiver(record.id)} label="删除" row={record} />
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
-  handleOwnerControl = (ownerAuth) => {
-    this.props.showOwnerControlModal(ownerAuth);
-  }
-  changeOwnerStatus = (id, status) => {
-    this.props.changeOwnerStatus(id, status).then((result) => {
+  changeReceiverStatus = (id, status) => {
+    this.props.changeReceiverStatus(id, status, this.props.loginId).then((result) => {
       if (!result.error) {
-        this.handleOwnerLoad();
+        this.handleReceiverLoad();
       }
     });
   }
-  handleOwnerLoad = () => {
-    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
-    if (this.props.whseCode === this.props.defaultWhse.code) {
-      this.props.loadWhse(this.props.whseCode, this.props.tenantId);
-    }
+  handleDeleteReceiver = (id) => {
+    this.props.deleteReceiver(id).then((result) => {
+      if (!result.error) {
+        this.handleReceiverLoad();
+      }
+    });
+  }
+  handleEditReceiver = (receiver) => {
+    this.props.toggleReceiverModal(true, receiver);
+  }
+  handleReceiverLoad = () => {
+    this.props.loadReceivers(this.props.whseCode, this.props.whseTenantId);
   }
   render() {
-    const { whseCode, whseTenantId, whseOwners } = this.props;
+    const { whseCode, whseTenantId, whseOwners, receivers } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加收货人</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleReceiverModal(true)}>添加收货人</Button>
         </div>
-        <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
-        <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
-        <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
+        <Table columns={this.columns} dataSource={receivers} rowKey="id" />
+        <WhseReceiversModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
       </div>
     );
   }

@@ -1,22 +1,33 @@
 /* eslint react/no-multi-comp: 0 */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Form, Col, Row, Select, Input, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import Cascader from 'client/components/RegionCascader';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+import { loadReceivers } from 'common/reducers/cwmWarehouse';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
+@connect(
+  () => ({
+
+  }),
+  { loadReceivers }
+)
 export default class ReceiverPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     soHead: PropTypes.object,
+  }
+  componentWillMount() {
+    this.props.loadReceivers(this.props.whseCode, this.props.whseTenantId);
   }
   msg = key => formatMsg(this.props.intl, key)
   handleRegionChange = () => {
