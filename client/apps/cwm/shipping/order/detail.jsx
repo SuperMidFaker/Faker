@@ -51,6 +51,13 @@ export default class CreateShippingOrder extends Component {
     editable: true,
     soHead: {},
     soBody: [],
+    region: {
+      receiver_province: '',
+      receiver_city: '',
+      receiver_district: '',
+      receiver_street: '',
+      receiver_region_code: '',
+    },
   }
   componentWillMount() {
     this.props.getSo(this.props.params.soNo).then(
@@ -59,6 +66,13 @@ export default class CreateShippingOrder extends Component {
           this.setState({
             soHead: result.data.soHead,
             soBody: result.data.soBody,
+            region: {
+              receiver_province: result.data.soHead.receiver_province,
+              receiver_city: result.data.soHead.receiver_city,
+              receiver_district: result.data.soHead.receiver_district,
+              receiver_street: result.data.soHead.receiver_street,
+              receiver_region_code: result.data.soHead.receiver_region_code,
+            },
           });
         }
       }
@@ -76,7 +90,7 @@ export default class CreateShippingOrder extends Component {
     }
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        const data = values;
+        const data = { ...values, ...this.state.region };
         const owner = owners.find(item => item.id === values.owner_partner_id);
         data.soNo = this.props.params.soNo;
         data.ownerName = owner.name;
@@ -107,10 +121,12 @@ export default class CreateShippingOrder extends Component {
       attachments: fileList,
     });
   }
-
+  handleRegionChange = (region) => {
+    this.setState({ region });
+  }
   render() {
     const { form, submitting, defaultWhse } = this.props;
-    const { soHead, soBody } = this.state;
+    const { soHead, soBody, region } = this.state;
     return (
       <div>
         <Header className="page-header">
@@ -150,7 +166,7 @@ export default class CreateShippingOrder extends Component {
                   <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">
-                  <ReceiverPane form={form} soHead={soHead} />
+                  <ReceiverPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} region={region} onRegionChange={this.handleRegionChange} />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
                   <CarrierPane form={form} soHead={soHead} />

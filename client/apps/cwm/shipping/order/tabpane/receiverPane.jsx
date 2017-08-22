@@ -17,6 +17,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     defaultWhse: state.cwmContext.defaultWhse,
+    receivers: state.cwmWarehouse.receivers,
   }),
   { loadReceivers }
 )
@@ -25,20 +26,53 @@ export default class ReceiverPane extends Component {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     soHead: PropTypes.object,
+    editable: PropTypes.bool,
+    detailEnable: PropTypes.bool.isRequired,
+    selectedOwner: PropTypes.number.isRequired,
+    region: PropTypes.object.isRequired,
+    onRegionChange: PropTypes.func.isRequired,
   }
   componentWillMount() {
-    this.props.loadReceivers(this.props.whseCode, this.props.whseTenantId);
+    this.props.loadReceivers(this.props.defaultWhse.code, this.props.defaultWhse.wh_ent_tenant_id);
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleRegionChange = () => {
-    // const [code, province, city, district, street] = value;
-    // const region = Object.assign({}, { region_code: code, province, city, district, street });
-    // this.props.changeRegion(region);
+  handleRegionChange = (value) => {
+    const [code, province, city, district, street] = value;
+    const region = Object.assign({}, { region_code: code, province, city, district, street });
+    this.props.onRegionChange({
+      receiver_province: region.province,
+      receiver_city: region.city,
+      receiver_district: region.district,
+      receiver_street: region.street,
+      receiver_region_code: region.region_code,
+    });
+  }
+  handleSelect = (value) => {
+    console.log(value);
+    const receiver = this.props.receivers.find(item => item.code === value);
+    if (receiver) {
+      this.props.form.setFieldsValue({
+        receiver_code: receiver.code,
+        receiver_name: receiver.name,
+        receiver_contact: receiver.contact,
+        receiver_address: receiver.address,
+        receiver_post_code: receiver.post_code,
+        receiver_phone: receiver.phone,
+        receiver_number: receiver.number,
+      });
+      this.props.onRegionChange({
+        receiver_province: receiver.province,
+        receiver_city: receiver.city,
+        receiver_district: receiver.district,
+        receiver_street: receiver.street,
+        receiver_region_code: receiver.region_code,
+      });
+    }
   }
   render() {
-    const { form: { getFieldDecorator }, soHead } = this.props;
-    const receivers = [];
-    const regionValues = [];
+    const { form: { getFieldDecorator }, soHead, receivers, selectedOwner, region } = this.props;
+    const rcvs = receivers.filter(item => item.owner_partner_id === selectedOwner);
+    const regionValues = [region.receiver_province, region.receiver_city, region.receiver_district, region.receiver_street];
     return (
       <div style={{ padding: 24 }}>
         <Row>
@@ -49,7 +83,7 @@ export default class ReceiverPane extends Component {
                 initialValue: soHead && soHead.receiver_name,
               })(
                 <Select placeholder="选择收货人" onSelect={this.handleSelect}>
-                  {receivers.map(item => (<Option value={item}>{item}</Option>))}
+                  {rcvs.map(item => (<Option value={item.code}>{item.name}</Option>))}
                 </Select>
                 )}
             </FormItem>
@@ -65,8 +99,16 @@ export default class ReceiverPane extends Component {
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="联系方式">
-              <Col span={12}><Input prefix={<Icon type="phone" />} placeholder="电话" value={soHead && soHead.receiver_phone} /></Col>
-              <Col span={12}><Input prefix={<Icon type="mobile" />} placeholder="手机" value={soHead && soHead.receiver_number} /></Col>
+              <Col span={12}>{getFieldDecorator('receiver_phone', {
+                initialValue: soHead && soHead.receiver_phone,
+              })(
+                <Input prefix={<Icon type="phone" />} placeholder="电话" />
+              )}</Col>
+              <Col span={12}>{getFieldDecorator('receiver_number', {
+                initialValue: soHead && soHead.receiver_number,
+              })(
+                <Input prefix={<Icon type="mobile" />} placeholder="手机" />
+              )}</Col>
             </FormItem>
           </Col>
         </Row>

@@ -51,6 +51,13 @@ export default class CreateShippingOrder extends Component {
     editable: true,
     detailEnable: false,
     selectedOwner: null,
+    region: {
+      receiver_province: '',
+      receiver_city: '',
+      receiver_district: '',
+      receiver_street: '',
+      receiver_region_code: '',
+    },
   }
   componentWillUnmount() {
     this.props.clearTemporary();
@@ -64,7 +71,7 @@ export default class CreateShippingOrder extends Component {
     }
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        const data = values;
+        const data = { ...values, ...this.state.region };
         const owner = owners.find(item => item.id === values.owner_partner_id);
         data.ownerName = owner.name;
         data.ownerTenantId = owner.partner_tenant_id;
@@ -100,8 +107,12 @@ export default class CreateShippingOrder extends Component {
       selectedOwner: partnerId,
     });
   }
+  handleRegionChange = (region) => {
+    this.setState({ region });
+  }
   render() {
     const { form, submitting, defaultWhse, temporaryDetails } = this.props;
+    const { region } = this.state;
     const disable = !(this.state.detailEnable && temporaryDetails.length !== 0);
     return (
       <div>
@@ -142,7 +153,7 @@ export default class CreateShippingOrder extends Component {
                   <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">
-                  <ReceiverPane form={form} />
+                  <ReceiverPane form={form} selectedOwner={this.state.selectedOwner} region={region} onRegionChange={this.handleRegionChange} />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
                   <CarrierPane form={form} />
