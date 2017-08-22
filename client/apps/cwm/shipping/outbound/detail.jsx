@@ -135,11 +135,12 @@ export default class OutboundDetail extends Component {
     });
   }
   handleWaybillPrint = (courierNo, courierNoSon, seq) => {
+    const { outboundHead } = this.props;
     this.setState({
       printedPickingList: true,
     });
     const { expressNum } = this.state;
-    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum, seq });
+    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum, seq, outboundHead });
     window.pdfMake.fonts = {
       selfFont: {
         normal: 'msyh.ttf',
@@ -168,6 +169,7 @@ export default class OutboundDetail extends Component {
   }
   loadCourierNo = () => {
     this.props.loadCourierNo({
+      soNo: this.props.outboundHead.so_no,
       outboundNo: this.props.params.outboundNo,
       tenantId: this.props.tenantId,
       expressNum: this.state.expressNum,

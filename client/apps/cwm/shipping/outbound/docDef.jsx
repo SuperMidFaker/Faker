@@ -1,4 +1,5 @@
 import JsBarcode from 'jsbarcode';
+import * as Location from 'client/util/location';
 
 function textToBase64Barcode(text, mark) {
   const canvas = document.createElement('canvas');
@@ -30,6 +31,7 @@ function pdfBody(data) {
     titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
   }
   titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
+  const receiverAddr = `${data.outboundHead.receiver_name} ${data.outboundHead.receiver_phone}\n${Location.renderConsignLocation(data.outboundHead, 'receiver')}${data.outboundHead.receiver_address}`;
   pdfcontent = [
     { style: 'table',
       table: {
@@ -53,8 +55,11 @@ function pdfBody(data) {
         widths: ['2%', '98%'],
         body: [
           // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
-          [{ text: '目的地', border: [true, false] }, { text: 'name', fontSize: 15, border: [true, false, true] }],
-          ['收件人', { text: 'name num\naddress', fontSize: 10 }],
+          [{ text: '目的地', border: [true, false] }, { text: data.outboundHead.destcode, fontSize: 16, border: [true, false, true] }],
+          ['收件人', {
+            text: receiverAddr,
+            fontSize: 10,
+          }],
           ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
         ],
       },
@@ -117,7 +122,14 @@ function pdfBody(data) {
       table: {
         widths: ['2%', '98%'],
         body: [
-          [{ text: '收件人', border: [true, false, true, false] }, { text: 'name num\naddress', fontSize: 10, border: [true, false, true, false] }],
+          [{
+            text: '收件人',
+            border: [true, false, true, false],
+          }, {
+            text: receiverAddr,
+            fontSize: 10,
+            border: [true, false, true, false],
+          }],
           ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
         ],
       },
