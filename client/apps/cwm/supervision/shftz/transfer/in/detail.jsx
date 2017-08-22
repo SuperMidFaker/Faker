@@ -62,9 +62,7 @@ export default class SHFTZTransferInDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    sendable: false,
-    queryable: false,
-    whyunsent: '',
+    comparable: false,
     tabKey: '',
   }
   componentWillMount() {
@@ -76,22 +74,9 @@ export default class SHFTZTransferInDetail extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
-      const queryable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
+      const comparable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      let regDetailExist = true;
-      nextProps.entryRegs.forEach((entReg) => { regDetailExist = regDetailExist && entReg.details.length > 0; });
-      let sendable = regDetailExist && nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-      let unsentReason = '';
-      if (sendable) {
-        const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
-        if (nonCusDeclRegs.length === 0) {
-          sendable = true;
-        } else {
-          unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}未申报`;
-          sendable = false;
-        }
-      }
-      const newState = { queryable, sendable, whyunsent: unsentReason };
+      const newState = { comparable };
       if (this.state.tabKey === '') {
         newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
       }
@@ -99,63 +84,7 @@ export default class SHFTZTransferInDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleSend = () => {
-    let nonCargono = false;
-    for (let i = 0; i < this.props.entryRegs.length; i++) {
-      nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
-      if (nonCargono) {
-        break;
-      }
-    }
-    if (nonCargono) {
-      notification.warn({
-        message: '货号未备案',
-        description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
-        btn: (<div>
-          <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
-          <span className="ant-divider" />
-          <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
-        </div>),
-        key: 'confirm-cargono',
-        duration: 0,
-      });
-    } else {
-      this.handleRegSend();
-    }
-  }
-  handleRegSend = () => {
-    const asnNo = this.props.params.asnNo;
-    notification.close('confirm-cargono');
-    this.props.fileEntryRegs(asnNo, this.props.entryAsn.whse_code).then((result) => {
-      if (!result.error) {
-        const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.entryAsn.bonded_intype)[0];
-        this.props.loadEntryDetails({ asnNo });
-        if (result.data.errorMsg) {
-          notification.warn({
-            message: '结果异常',
-            description: result.data.errorMsg,
-          });
-        } else {
-          notification.success({
-            message: '操作成功',
-            description: `${asnNo} 已发送至 上海自贸区海关监管系统 ${entType && entType.text}`,
-            placement: 'topLeft',
-          });
-        }
-      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-        notification.error({
-          message: '操作失败',
-          description: '仓库监管系统未配置',
-        });
-      } else {
-        notification.error({
-          message: '操作失败',
-          description: result.error.message,
-        });
-      }
-    });
-  }
-  handleQuery = () => {
+  handleEnqueryMatch = () => {
     const asnNo = this.props.params.asnNo;
     this.props.queryEntryRegInfos(asnNo, this.props.entryAsn.whse_code).then((result) => {
       if (!result.error) {
@@ -183,21 +112,6 @@ export default class SHFTZTransferInDetail extends Component {
         });
       }
     });
-  }
-  handleCancelReg = () => {
-    const asnNo = this.props.params.asnNo;
-    this.props.cancelEntryReg(asnNo, this.props.entryAsn.whse_code).then((result) => {
-      if (result.error) {
-        notification.error({
-          message: '操作失败',
-          description: result.error.message,
-        });
-      }
-    });
-  }
-  handleCargoAdd = () => {
-    notification.close('confirm-cargono');
-    this.context.router.push('/cwm/supervision/shftz/cargo');
   }
   columns = [{
     title: '备案料号',
@@ -278,7 +192,6 @@ export default class SHFTZTransferInDetail extends Component {
     const { entryAsn, entryRegs, whse } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    // const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
     return (
       <div>
         <Header className="page-header">
@@ -297,8 +210,8 @@ export default class SHFTZTransferInDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {this.state.queryable && <Tooltip title="" placement="bottom">
-              <Button type="primary" size="large" icon="sync" onClick={this.handleQuery}>查询核对</Button>
+            {this.state.comparable && <Tooltip title="" placement="bottom">
+              <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryMatch}>查询核对</Button>
             </Tooltip>}
           </div>
         </Header>

@@ -54,13 +54,13 @@ class DataTable extends Component {
   }
   componentWillMount() {
     const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
+    const location = this.context.router.location;
+    let columnRule;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ scrollY: window.innerHeight - offset });
-    }
-    const location = this.context.router.location;
-    let columnRule = {};
-    if (window.localStorage) {
-      columnRule = JSON.parse(window.localStorage.getItem(location.pathname));
+      if (window.localStorage) {
+        columnRule = JSON.parse(window.localStorage.getItem(location.pathname));
+      }
     }
     if (columnRule) {
       const tableColumns = this.props.columns;

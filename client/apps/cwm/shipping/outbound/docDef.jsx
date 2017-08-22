@@ -3,9 +3,9 @@ import JsBarcode from 'jsbarcode';
 function textToBase64Barcode(text, mark) {
   const canvas = document.createElement('canvas');
   if (mark) {
-    JsBarcode(canvas, text, { format: 'CODE39', text: mark, fontSize: 25, height: 78 });
+    JsBarcode(canvas, text, { text: mark, fontSize: 15, height: 35 });
   } else {
-    JsBarcode(canvas, text, { format: 'CODE39', displayValue: false, height: 78, marginBottom: 0 });
+    JsBarcode(canvas, text, { displayValue: false, height: 35, marginBottom: 0 });
   }
   return canvas.toDataURL('image/png');
 }
@@ -13,23 +13,38 @@ function textToBase64Barcode(text, mark) {
 function pdfBody(data) {
   let barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum} 子单号 ${data.courierNoSon}`);
   let barcode1 = textToBase64Barcode(data.courierNoSon, `子单号 ${data.courierNoSon}`);
-  let bartext = `\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 母单号 ${data.courierNo}`;
+  let bartext = `\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0 母单号  ${data.courierNo}`;
   if (data.courierNoSon === data.courierNo) {
     barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${data.expressNum} 母单号 ${data.courierNoSon}`);
     barcode1 = textToBase64Barcode(data.courierNoSon, `母单号 ${data.courierNoSon}`);
     bartext = '';
   }
   let pdfcontent = [];
+  const imgCod = true; // 判断是否需要显示COD E 的字段
+  const imgE = true;
+  const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
+  if (imgCod) {
+    titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
+  }
+  if (imgE) {
+    titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
+  }
+  titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
   pdfcontent = [
+    { style: 'table',
+      table: {
+        widths: ['25%', '35%', '15%', '25%'],
+        body: [titleBody],
+      },
+    },
     { style: 'table',
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ colSpan: 2, image: data.sf1, width: 300, alignment: 'center' }, {}],
-          [{ rowSpan: 2, image: barcode0, width: 200, alignment: 'center', border: [true, true, true, false] },
+          [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
             { text: '顺丰隔日', fontSize: 12, alignment: 'center' }],
           ['', { rowSpan: 2, text: '代收贷款\n卡号:\n ￥ ', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
-          [{ text: `${bartext}`, fontSize: 10, alignment: 'center', border: [true, false, true, true] }, ''],
+          [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
       },
     },
@@ -37,7 +52,8 @@ function pdfBody(data) {
       table: {
         widths: ['2%', '98%'],
         body: [
-          [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          [{ text: '目的地', border: [true, false] }, { text: 'name', fontSize: 15, border: [true, false, true] }],
           ['收件人', { text: 'name num\naddress', fontSize: 10 }],
           ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
         ],
@@ -91,7 +107,7 @@ function pdfBody(data) {
       widths: ['30%', '70%'],
       body: [
         [{ image: data.sf3, width: 70, alignment: 'center' },
-        { image: barcode1, width: 200, alignment: 'center' }],
+        { image: barcode1, width: 150, alignment: 'center' }],
       ],
     },
     }
