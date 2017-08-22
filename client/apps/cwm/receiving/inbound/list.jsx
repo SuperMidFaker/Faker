@@ -146,6 +146,8 @@ export default class ReceivingInboundList extends React.Component {
         return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
       } else if (o === 'manual') {
         return (<Tooltip title="人工收货"><Icon type="solution" /></Tooltip>);
+      } else if (o === 'import') {
+        return (<Tooltip title="库存导入"><Icon type="upload" /></Tooltip>);
       }
     },
   }, {

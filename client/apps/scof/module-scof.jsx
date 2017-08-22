@@ -37,27 +37,11 @@ export default class ModuleSCOF extends React.Component {
       text: formatMsg(intl, 'orders'),
     });
     linkMenus.push({
-      single: false,
+      single: true,
       key: 'scof-2',
       path: '/scof/billing',
       icon: 'logixon icon-bill',
       text: formatMsg(intl, 'billing'),
-      sublinks: [{
-        key: 'scof-2-0',
-        path: '/scof/billing/fees',
-        text: '费用管理',
-      }, {
-        key: 'scof-2-1',
-        path: '/scof/billing/list',
-        text: '账单管理',
-      }],
-    });
-    linkMenus.push({
-      single: true,
-      key: 'scof-3',
-      path: '/scof/flow',
-      icon: 'logixon icon-flow',
-      text: formatMsg(intl, 'flow'),
     });
     linkMenus.push({
       single: true,
@@ -65,6 +49,13 @@ export default class ModuleSCOF extends React.Component {
       path: '/scof/customers',
       icon: 'logixon icon-partner',
       text: formatMsg(intl, 'customers'),
+    });
+    linkMenus.push({
+      single: true,
+      key: 'scof-3',
+      path: '/scof/flow',
+      icon: 'logixon icon-flow',
+      text: formatMsg(intl, 'flow'),
     });
     this.setState({ linkMenus });
   }
