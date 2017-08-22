@@ -122,6 +122,7 @@ export default class SHFTZTransferOutList extends React.Component {
     },
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDetail} label="转出明细" row={record} />,

@@ -34,7 +34,7 @@ export default class ClassificationStatsCard extends Component {
   render() {
     const { repoCount, classifiedItems, pendingItems, unclassifiedItems } = this.props.itemsStats;
     return (
-      <Card title={this.msg('classificationStats')} style={{ marginTop: 16 }}
+      <Card title={this.msg('classificationStats')}
         extra={<div style={{ width: 300, marginTop: 4 }}>
           <Strip parts={{ success: classifiedItems, warning: pendingItems, error: unclassifiedItems }} hints={['已归类', '归类待定', '未归类']} />
         </div>}

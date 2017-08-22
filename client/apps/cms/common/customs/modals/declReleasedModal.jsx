@@ -16,6 +16,7 @@ const FormItem = Form.Item;
   state => ({
     visible: state.cmsDeclare.visibleClearModal,
     entry: state.cmsDeclare.clearFillModal,
+    loginName: state.account.username,
   }),
   { closeDeclReleasedModal, setDeclReleased }
 )
@@ -64,13 +65,14 @@ export default class DeclReleasedModal extends React.Component {
       message.error('放行时间未填写', 10);
       return;
     }
-    const { entry } = this.props;
+    const { entry, loginName } = this.props;
     this.props.setDeclReleased({
       delgNo: entry.delgNo,
       preEntrySeqNo: entry.preEntrySeqNo,
       entryNo: this.state.entryNo === entry.entryNo ? null : this.state.entryNo,
       clearTime: this.state.clearTime,
       ieTime: this.state.ieTime,
+      loginName,
     }).then(
       (result) => {
         if (result.error) {

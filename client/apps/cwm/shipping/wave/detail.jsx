@@ -96,7 +96,7 @@ export default class WaveDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
+          <Card bodyStyle={{ padding: 0 }} noHovering>
             <Tabs defaultActiveKey="orderDetails">
               <TabPane tab="发货明细" key="orderDetails">
                 <OrderDetailsPane waveNo={this.props.params.waveNo} />

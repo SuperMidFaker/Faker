@@ -179,6 +179,7 @@ export default class OutboundList extends React.Component {
     render: completeddate => completeddate && moment(completeddate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => {

@@ -60,6 +60,7 @@ export default class AddDetailModal extends Component {
     this.setState({
       product: {},
       amount: 0,
+      sku: [],
     });
     this.props.form.setFieldsValue({
       product_no: '',
@@ -69,8 +70,10 @@ export default class AddDetailModal extends Component {
     this.props.clearProductNos();
   }
   handleSearch = (value) => {
-    const { selectedOwner } = this.props;
-    this.props.loadProducts(value, selectedOwner);
+    if (value.length >= 3) {
+      const { selectedOwner } = this.props;
+      this.props.loadProducts(value, selectedOwner, this.props.tenantId);
+    }
   }
   submit = () => {
     const product = this.state.product;
@@ -94,6 +97,7 @@ export default class AddDetailModal extends Component {
         this.setState({
           product: {},
           amount: 0,
+          sku: [],
         });
         this.props.form.setFieldsValue({
           product_no: '',
@@ -175,7 +179,7 @@ export default class AddDetailModal extends Component {
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
             })(
-              <Select mode="combobox" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
+              <Select mode="combobox" placeholder="请至少输入三位货号" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
                 {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
               </Select>
             )}
@@ -215,7 +219,7 @@ export default class AddDetailModal extends Component {
                 rules: [{ required: true, message: '请输入订单数量' }],
               })(
                 <Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />
-            )}
+              )}
               <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit}
                 style={{ width: '30%' }} onChange={this.handleUnitChange}
               >
@@ -229,7 +233,7 @@ export default class AddDetailModal extends Component {
                 initialValue: product.unit_price,
               })(
                 <Input placeholder="单价" type="number" onChange={this.handlePriceChange} style={{ width: '30%' }} />
-                )}
+              )}
               <Input placeholder="总价" type="number" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
               <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
                 style={{ width: '30%' }} onChange={this.handleCurrChange}

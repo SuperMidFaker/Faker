@@ -328,7 +328,7 @@ export default class SHFTZRelDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }} style={{ marginTop: 16 }} noHovering>
+            <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map(reg => (
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>

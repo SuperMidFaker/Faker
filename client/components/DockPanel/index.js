@@ -8,7 +8,7 @@ function noop() {}
 
 export default class DockPanel extends PureComponent {
   static defaultProps = {
-    prefixCls: 'dock-panel',
+    prefixCls: 'welo-dock-panel',
     alertType: 'info',
     loading: false,
     currentDepth: 1,
@@ -84,7 +84,7 @@ export default class DockPanel extends PureComponent {
                 {status ? <Badge status={status} text={statusText} /> : null}
                 {overlay &&
                 <div className={`${prefixCls}-head-overlay`}>
-                  <Popover placement="bottomRight" title="更多操作" content={overlay} trigger="click">
+                  <Popover placement="bottomRight" title="更多操作" content={<div className={`${prefixCls}-popover`}>{overlay}</div>} trigger="click">
                     <Button shape="circle" icon="ellipsis" />
                   </Popover>
                 </div>

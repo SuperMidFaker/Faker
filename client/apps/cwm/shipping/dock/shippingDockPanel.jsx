@@ -202,13 +202,13 @@ export default class ShippingDockPanel extends React.Component {
     if (soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="cancel">取消订单</Menu.Item>
+          <Menu.Item key="cancel"><Icon type="delete" />取消订单</Menu.Item>
         </Menu>
       );
     } else if (soHead.status === CWM_SO_STATUS.PARTIAL.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="close">关闭订单</Menu.Item>
+          <Menu.Item key="close"><Icon type="close-square" />关闭订单</Menu.Item>
         </Menu>
       );
     }

@@ -45,9 +45,13 @@ export default class BatchTransitModal extends Component {
     const valueChanged = Object.keys(transit).length > 0;
     const { loginName, tenantId, batchTransitModal } = this.props;
     let transitOp;
-    if (this.formValue.target_location && this.formValue.movement_no) {
-      transitOp = this.props.moveTransit(batchTransitModal.traceIds, transit, this.formValue.target_location,
-        this.formValue.movement_no, loginName, tenantId);
+    if (this.formValue.target_location) {
+      if (this.formValue.movement_no) {
+        transitOp = this.props.moveTransit(batchTransitModal.traceIds, transit, this.formValue.target_location,
+          this.formValue.movement_no, loginName, tenantId);
+      } else {
+        message.error('移库单未选');
+      }
     } else if (valueChanged) {
       transitOp = this.props.splitTransit(batchTransitModal.traceIds, transit, loginName, tenantId);
     }

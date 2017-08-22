@@ -148,6 +148,7 @@ export default class StockTransitionList extends React.Component {
     },
   }].concat(commonTraceColumns(this.props.intl)).concat({
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => {
@@ -365,11 +366,11 @@ export default class StockTransitionList extends React.Component {
           </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
-          <Card noHovering style={{ marginBottom: 16 }} bodyStyle={{ paddingBottom: 16 }}>
+          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" bordered
-            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+          <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id"
+            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} scrollOffset={390}
           />
           <TransitionDockPanel />
           <BatchTransitModal />

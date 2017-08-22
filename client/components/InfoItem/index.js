@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Dropdown, Icon, Col, Row, Input } from 'antd';
 import classNames from 'classnames';
 import EditableCell from '../EditableCell';
+import './index.less';
 
 function getColCls(col) {
   if (col) {
@@ -16,7 +17,7 @@ function getColCls(col) {
 
 export default class InfoItem extends PureComponent {
   static defaultProps = {
-    prefixCls: 'info-item',
+    prefixCls: 'welo-info-item',
     colon: true,
     type: 'text',
   };

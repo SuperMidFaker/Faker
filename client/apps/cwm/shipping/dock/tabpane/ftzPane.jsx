@@ -83,7 +83,7 @@ export default class FTZPane extends React.Component {
     width: 200,
   }, {
     title: '单位',
-    dataIndex: 'unit',
+    dataIndex: 'out_unit',
     width: 80,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];

@@ -206,13 +206,13 @@ export default class ReceivingDockPanel extends React.Component {
     if (asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="cancel">取消ASN</Menu.Item>
+          <Menu.Item key="cancel"><Icon type="delete" />取消ASN</Menu.Item>
         </Menu>
       );
     } else if (asnHead.status === CWM_ASN_STATUS.DISCREPANT.value) {
       menu = (
         <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="close">关闭ASN</Menu.Item>
+          <Menu.Item key="close"><Icon type="close-square" />关闭ASN</Menu.Item>
         </Menu>
       );
     }

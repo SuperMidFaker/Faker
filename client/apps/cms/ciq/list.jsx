@@ -143,6 +143,7 @@ export default class CiqDeclList extends Component {
       <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('opColumn'),
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => {

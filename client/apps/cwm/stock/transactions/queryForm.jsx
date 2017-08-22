@@ -65,14 +65,14 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="操作时间">
+            <FormItem {...formItemLayout} label="事务时间">
               {getFieldDecorator('transaction_time', {
                 initialValue: filter.transaction_time,
               })(<RangePicker />)}
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="操作类型">
+            <FormItem {...formItemLayout} label="事务类型">
               {getFieldDecorator('type', {
                 initialValue: filter.type,
               })(<Select allowClear>

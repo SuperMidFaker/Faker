@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, message } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openClearanceModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';
+import { openClearanceModal, loadNormalDelgList } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import ModuleMenu from '../menu';
 import ClearanceModal from './modal/clearanceModal';
@@ -27,13 +27,13 @@ const OptGroup = Select.OptGroup;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    batchlist: state.cwmShFtz.batchApplyList,
+    delglist: state.cwmShFtz.normalDelgList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
+    owners: state.cwmContext.whseAttrs.owners,
   }),
-  { openClearanceModal, switchDefaultWhse, loadBatchApplyList }
+  { openClearanceModal, switchDefaultWhse, loadNormalDelgList }
 )
 @connectNav({
   depth: 2,
@@ -54,7 +54,8 @@ export default class SHFTZClearanceList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleBatchApplyLoad();
+    const filter = { ...this.props.listFilter, status: 'manifesting' };
+    this.handleNormalDelgLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -63,23 +64,18 @@ export default class SHFTZClearanceList extends React.Component {
     width: 150,
     fixed: 'left',
   }, {
-    title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
-    width: 150,
-  }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '申报单位',
-    width: 180,
-    dataIndex: 'broker_name',
+    dataIndex: 'customs_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '委托日期',
     width: 120,
-    dataIndex: 'created_date',
+    dataIndex: 'delg_time',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
@@ -88,7 +84,7 @@ export default class SHFTZClearanceList extends React.Component {
   }, {
     title: '申报日期',
     width: 120,
-    dataIndex: 'decl_date',
+    dataIndex: 'decl_time',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
@@ -97,38 +93,22 @@ export default class SHFTZClearanceList extends React.Component {
   }, {
     title: '放行日期',
     width: 120,
-    dataIndex: 'clear_date',
+    dataIndex: 'clean_time',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 120,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="已发送" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
-      }
-    },
-  }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status < 2) {
-        return <RowUpdater onHit={this.handleDetail} label="清关明细" row={record} />;
-      }
-    },
+    render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="清关明细" row={record} />,
   }]
 
   dataSource = new Table.DataSource({
-    fetcher: params => this.props.loadBatchApplyList(params),
+    fetcher: params => this.props.loadNormalDelgList(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -148,11 +128,11 @@ export default class SHFTZClearanceList extends React.Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.batchlist,
+    remotes: this.props.delglist,
   })
-  handleBatchApplyLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, batchlist: { pageSize, current } } = this.props;
-    this.props.loadBatchApplyList({
+  handleNormalDelgLoad = (currentPage, whsecode, filter) => {
+    const { tenantId, listFilter, whse, delglist: { pageSize, current } } = this.props;
+    this.props.loadNormalDelgList({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
@@ -164,46 +144,45 @@ export default class SHFTZClearanceList extends React.Component {
       }
     });
   }
-  handleBatchDeclLoad = () => {
-    this.handleBatchApplyLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
+  handleNewNormalDelgLoad = () => {
+    this.handleNormalDelgLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
   }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleBatchApplyLoad(1, this.props.whse.code, filter);
+    this.handleNormalDelgLoad(1, this.props.whse.code, filter);
   }
-  handleCreateBatchDecl = () => {
+  handleCreateNormalDecl = () => {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
     this.props.openClearanceModal({ ownerCusCode });
   }
   handleDelgManifest = (row) => {
-    const ietype = row.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${ietype}/manifest/`;
+    const link = `/clearance/${row.i_e_type}/manifest/`;
     this.context.router.push(`${link}${row.delg_no}`);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/batch/${row.batch_decl_no}`;
+    const link = `/cwm/supervision/shftz/clearance/detail/${row.normal_decl_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    this.handleBatchApplyLoad(1, value);
+    this.handleNormalDelgLoad(1, value);
   }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
-    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
+    this.handleNormalDelgLoad(1, this.props.whse.code, filters);
   }
   handleOwnerSelectChange = (value) => {
     const filters = { ...this.props.listFilter, ownerView: value };
-    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
+    this.handleNormalDelgLoad(1, this.props.whse.code, filters);
   }
 
   render() {
-    const { listFilter, whses, whse, owners, batchlist } = this.props;
+    const { listFilter, whses, whse, owners, delglist } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -211,7 +190,7 @@ export default class SHFTZClearanceList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    this.dataSource.remotes = batchlist;
+    this.dataSource.remotes = delglist;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -239,13 +218,12 @@ export default class SHFTZClearanceList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-              <RadioButton value="pending">待清关</RadioButton>
               <RadioButton value="manifesting">制单中</RadioButton>
-              <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="cleared">清关完成</RadioButton>
+              <RadioButton value="sent">已申报</RadioButton>
+              <RadioButton value="cleared">已放行</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBatchDecl}>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNormalDecl}>
                 {this.msg('createClearance')}
               </Button>
             </div>
@@ -280,7 +258,7 @@ export default class SHFTZClearanceList extends React.Component {
             </div>
           </Content>
         </Layout>
-        <ClearanceModal reload={this.handleBatchDeclLoad} />
+        <ClearanceModal reload={this.handleNewNormalDelgLoad} />
       </Layout>
     );
   }

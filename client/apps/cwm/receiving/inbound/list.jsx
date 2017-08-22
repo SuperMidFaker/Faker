@@ -98,6 +98,30 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '预期总数量',
+    dataIndex: 'total_expect_qty',
+    width: 100,
+  }, {
+    title: '实收总数量',
+    dataIndex: 'total_received_qty',
+    width: 100,
+  }, {
+    title: '上架总数量',
+    dataIndex: 'total_putaway_qty',
+    width: 100,
+  }, {
+    title: '收货总体积',
+    dataIndex: 'total_received_vol',
+    width: 100,
+  }, {
+    width: 200,
+    className: 'progress-bar',
+    render: (o, record) => {
+      const processing = record.total_received_qty - record.total_putaway_qty;
+      const warning = record.total_expect_qty - record.total_received_qty;
+      return (<Strip overall={record.total_expect_qty} parts={{ success: record.total_putaway_qty, processing, warning }} hints={['已上架', '未上架', '未收货']} />);
+    },
+  }, {
     title: '状态',
     dataIndex: 'status',
     width: 150,
@@ -111,15 +135,6 @@ export default class ReceivingInboundList extends React.Component {
       } else if (o === 5) {
         return (<Badge status="success" text="已入库" />);
       }
-    },
-  }, {
-    title: '收货数量',
-    width: 250,
-    className: 'progress-bar',
-    render: (o, record) => {
-      const processing = record.total_received_qty - record.total_putaway_qty;
-      const warning = record.total_expect_qty - record.total_received_qty;
-      return (<Strip overall={record.total_expect_qty} parts={{ success: record.total_putaway_qty, processing, warning }} hints={['已上架', '未上架', '未收货']} />);
     },
   }, {
     title: '操作模式',

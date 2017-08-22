@@ -54,7 +54,8 @@ export default class SHFTZBatchDeclList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleBatchApplyLoad();
+    const filter = { ...this.props.listFilter, status: 'manifesting' };
+    this.handleBatchApplyLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   manifColumns = [{
@@ -78,6 +79,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />,
@@ -162,6 +164,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     },
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => {

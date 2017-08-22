@@ -1,6 +1,6 @@
 @import "../../variable.less";
 @dock-panel-width: 680px;
-.dock-panel {
+.welo-dock-panel {
   position: fixed;
   width: @dock-panel-width;
   top: @layout-header-height;
@@ -102,5 +102,17 @@
   }
   &-sm {
     width: 440px;
+  }
+  &-popover {
+    .ant-menu-vertical > .ant-menu-item {
+      font-size: 14px;
+      padding: 0px 8px;
+    }
+    .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+      background-color: transparent;
+    }
+    .ant-menu-item-selected > a {
+      color: #666;
+    }
   }
 }

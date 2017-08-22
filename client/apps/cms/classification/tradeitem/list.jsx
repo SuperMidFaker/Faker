@@ -584,6 +584,7 @@ export default class TradeItemList extends Component {
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
       columns.push({
         title: this.msg('opColumn'),
+        dataIndex: 'OPS_COL',
         width: 150,
         fixed: 'right',
         render: (o, record) => {

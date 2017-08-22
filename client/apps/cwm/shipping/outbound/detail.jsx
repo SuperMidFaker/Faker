@@ -13,7 +13,7 @@ import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo } from 'common/reducers/cwmOutbound';
 import Print from './printPIckList';
-import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { WaybillDef } from './docDef';
@@ -181,6 +181,7 @@ export default class OutboundDetail extends Component {
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];
     const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
+    const regStatus = CWM_SHFTZ_REG_STATUS.filter(status => status.value === outboundHead.reg_status)[0];
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
     const courierNo = outboundHead.courier_no ? outboundHead.courier_no.split(',') : [];
     const dataSource = courierNo.map((item, index) => {
@@ -224,7 +225,7 @@ export default class OutboundDetail extends Component {
           {!!outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
           <div className="page-header-tools">
             {!!outboundHead.bonded && <Tooltip title="海关备案详情" placement="bottom">
-              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" /></Button>
+              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" />{regStatus.text}</Button>
             </Tooltip>
             }
             {this.state.tabKey === 'pickingDetails' && <Tooltip title="打印拣货单" placement="bottom">
@@ -295,7 +296,7 @@ export default class OutboundDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
+          <Card bodyStyle={{ padding: 0 }} noHovering>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="订单明细" key="orderDetails">
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} />

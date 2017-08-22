@@ -196,7 +196,7 @@ export default class AllocatingModal extends Component {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_filed_id',
     width: 120,
-    render: o => o ? <span className="text-success">o</span> : <span className="text-error">无备案信息</span>,
+    render: o => o ? <span className="text-info">{o}</span> : <span className="text-error">无备案信息</span>,
   }, {
     title: '分拨货物',
     dataIndex: 'portion',
@@ -452,7 +452,7 @@ export default class AllocatingModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} style={{ marginBottom: 16 }} noHovering>
+        <Card bodyStyle={{ paddingBottom: 16 }} noHovering>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
               <InfoItem label="商品货号" field={outboundProduct.product_no} />
@@ -473,7 +473,7 @@ export default class AllocatingModal extends Component {
             </Col>}
           </Row>
         </Card>
-        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }} noHovering>
+        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
               scroll={{ x: filterColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

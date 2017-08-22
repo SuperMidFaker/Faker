@@ -281,7 +281,7 @@ export function updateASN(data) {
   };
 }
 
-export function loadProducts(productNo, partnerId) {
+export function loadProducts(productNo, partnerId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -291,7 +291,7 @@ export function loadProducts(productNo, partnerId) {
       ],
       endpoint: 'v1/cwm/receive/productNos/load',
       method: 'get',
-      params: { productNo, partnerId },
+      params: { productNo, partnerId, tenantId },
     },
   };
 }
@@ -516,7 +516,7 @@ export function updateInboundMode(inboundNo, recMode) {
   };
 }
 
-export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId, receivedDate) {
+export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -526,7 +526,7 @@ export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId, rec
       ],
       endpoint: 'v1/cwm/inbound/product/receipt',
       method: 'post',
-      data: { dataSource, seqNo, asnNo, loginId, inboundNo, receivedDate },
+      data: { dataSource, seqNo, asnNo, loginId, inboundNo },
     },
   };
 }
@@ -546,7 +546,7 @@ export function expressReceive(inboundNo, loginId, loginName) {
   };
 }
 
-export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate) {
+export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -556,7 +556,7 @@ export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, lo
       ],
       endpoint: 'v1/cwm/inbound/product/receipt/batch',
       method: 'post',
-      data: { seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate },
+      data: { seqNos, location, damageLevel, asnNo, inboundNo, loginName },
     },
   };
 }

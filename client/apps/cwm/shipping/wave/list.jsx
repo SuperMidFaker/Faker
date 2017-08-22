@@ -95,6 +95,7 @@ export default class WaveList extends React.Component {
     render: o => moment(o).format('YYYY.MM.DD'),
   }, {
     title: '操作',
+    dataIndex: 'OPS_COL',
     width: 150,
     render: (o, record) => {
       if (record.status === 0) {

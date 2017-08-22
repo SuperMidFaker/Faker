@@ -130,6 +130,7 @@ export default class CWMSkuList extends React.Component {
     render: col => col && moment(col).format('MM.DD HH:mm'),
   }, {
     title: this.msg('opColumn'),
+    dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (_, row) => (

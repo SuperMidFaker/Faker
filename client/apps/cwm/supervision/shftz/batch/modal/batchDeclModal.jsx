@@ -7,7 +7,7 @@ import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, messa
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeBatchDeclModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
+import { closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -21,7 +21,7 @@ const Option = Select.Option;
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
     ownerCusCode: state.cwmShFtz.batchDeclModal.ownerCusCode,
-    portionRegs: state.cwmShFtz.portionout_regs,
+    portionRegs: state.cwmShFtz.batchout_regs,
     loginId: state.account.loginId,
     loginName: state.account.username,
     units: state.cwmShFtz.params.units.map(un => ({
@@ -37,7 +37,7 @@ const Option = Select.Option;
       text: tc.cntry_name_cn,
     })),
   }),
-  { closeBatchDeclModal, loadParams, loadPortionOutRegs, loadPortionDetails, beginBatchDecl }
+  { closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl }
 )
 export default class BatchDeclModal extends Component {
   static propTypes = {
@@ -54,9 +54,10 @@ export default class BatchDeclModal extends Component {
   componentWillMount() {
     this.setState({ ownerCusCode: this.props.ownerCusCode });
     if (this.props.ownerCusCode) {
-      this.props.loadPortionOutRegs({
+      this.props.loadBatchOutRegs({
         owner_cus_code: this.props.ownerCusCode,
         whse_code: this.props.defaultWhse.code,
+        rel_type: 'portion',
       });
     }
     this.props.loadParams();
@@ -71,9 +72,10 @@ export default class BatchDeclModal extends Component {
       this.setState({ portionRegs: nextProps.portionRegs });
     }
     if (nextProps.visible && nextProps.ownerCusCode && nextProps.ownerCusCode !== this.props.ownerCusCode) {
-      this.props.loadPortionOutRegs({
+      this.props.loadBatchOutRegs({
         owner_cus_code: nextProps.ownerCusCode,
         whse_code: nextProps.defaultWhse.code,
+        rel_type: 'portion',
       });
     }
   }
@@ -177,7 +179,7 @@ export default class BatchDeclModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddReg = (row) => {
-    this.props.loadPortionDetails(row.pre_entry_seq_no).then((result) => {
+    this.props.loadBatchRegDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relNo = row.ftz_rel_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(
@@ -207,9 +209,10 @@ export default class BatchDeclModal extends Component {
   }
   handlePortionOutsQuery = () => {
     const { ownerCusCode, relNo, relDateRange } = this.state;
-    this.props.loadPortionOutRegs({
+    this.props.loadBatchOutRegs({
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
+      rel_type: 'portion',
       rel_no: relNo,
       start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
       end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
@@ -248,10 +251,10 @@ export default class BatchDeclModal extends Component {
   }
 
   render() {
-    const { relNo, relDateRange } = this.state;
+    const { relNo, relDateRange, ownerCusCode } = this.state;
     const portionForm = (<Form layout="inline">
       <FormItem>
-        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
+        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} value={ownerCusCode}>
           {this.props.owners.map(data => (
             <Option key={data.customs_code} value={data.customs_code}>
               {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
@@ -277,7 +280,7 @@ export default class BatchDeclModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card title={portionForm} bodyStyle={{ padding: 0 }} style={{ marginBottom: 16 }}>
+        <Card title={portionForm} bodyStyle={{ padding: 0 }}>
           <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
             scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           />

@@ -59,6 +59,7 @@ img {
     border-color: #f04134;
 }
 .ant-card{
+  margin-bottom: 16px;
   .ant-collapse {
     border: none;
   }
@@ -390,84 +391,6 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     }
   }
 }
-.layout-nosider-left {
-  .layout-left-sider {
-    display: none;
-  }
-  .layout-header {
-    @media (max-width:767px) {
-      background-color: #fff;
-    }
-    .navbar-header .navbar-brand {
-      background-color: transparent;
-      border-bottom-width: 0;
-      margin-left: 0;
-      margin-right: 10px;
-      width: 80px;
-      background-image: url("../../../public/assets/img/welogix_logo_160_100.png");
-      background-size: auto 48px;
-      @media (min-width:768px) and (max-width:991px) {
-        margin-right:0;
-        padding-left:0;
-        width:80px;
-      }
-      @media (max-width:767px) {
-        display: block;
-      }
-    }
-  }
-  @media (max-width:767px) {
-    .layout-header .navbar-header .am-toggle-layout-left-sider {
-      display: none;
-    }
-  }
-}
-.layout-left-sider {
-  background-color:#333;
-  width: @layout-sider-width;
-  height:100%;
-  left:0;
-  position:absolute;
-  transition:all .35s ease;
-  .am-logo {
-    display:none;
-    @media (max-width:767px) {
-      background:url("../../../public/assets/img/welogix_logo_160_100_white_trans.png") 15px center no-repeat #393838;
-      height:70px;
-      border-bottom:1px solid #353434;
-      display:block;
-    }
-    @media (max-width:767px) and (-webkit-min-device-pixel-ratio:2),(-webkit-min-device-pixel-ratio:2),(-o-min-device-pixel-ratio:2/1),(min-resolution:192dpi) {
-      background-image:url("../../../public/assets/img/welogix_logo_160_100_white_trans.png");
-      background-size:150px 39px
-    }
-  }
-  &:before {
-    content:"";
-    position:fixed;
-    z-index:-1;
-    width:inherit;
-    top:0;
-    left:0;
-    bottom:0;
-    background-color:inherit;
-    transition:all .35s ease
-  }
-  @media (max-width:767px) {
-    width: 60px;
-  }
-}
-.layout-fixed-sider .layout-left-sider {
-  margin-top: @layout-header-height;
-  padding-bottom:80px;
-  position:fixed;
-  top:0;
-  bottom:0;
-  z-index:1031;
-}
-.layout-fixed-sider .layout-left-sider:before {
-  top: @layout-header-height;
-}
 .layout-content {
   position:relative;
   left:0;
@@ -478,9 +401,6 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   @media (max-width:767px) {
     margin-left: 60px;
   }
-}
-.layout-nosider-left .layout-content {
-  margin-left:0
 }
 .layout-fixed-width {
   width: 100%;
@@ -737,7 +657,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     font-size: 14px;
     line-height: 32px;
   }
-  .info-item,
+  .welo-info-item,
   .ant-form-item {
     margin-bottom: 0;
   }
@@ -1156,105 +1076,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   font-size: 14px;
   font-weight: 600;
 }
-.info-group {
-  &-inline {
-    line-height: 32px;
-    .ant-row:before, .ant-row:after {
-      display: inline-flex;
-    }
-    .info-item {
-      display: inline-flex;
-      margin-top: -16px;
-      margin-bottom: 8px;
-      &-label {
-        line-height: 32px;
-        :after {
-          content: ":";
-          margin: 0 8px 0 2px;
-          position: relative;
-          top: -.5px;
-        }
-      }
-    }
-  }
-  &-underline {
-    .info-item {
-      border-bottom: 1px solid #e9e9e9;
-    }
-  }
-}
 
-.info-item {
-  position: relative;
-  height: auto;
-  width: 100%;
-  display: block;
-  color: @text-color;
-  margin-bottom: 8px;
-  /*
-  &:before {
-    content: " ";
-    display: table;
-  }*/
-  &-label {
-    text-align: right;
-    vertical-align: middle;
-    line-height: 24px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: rgba(0, 0, 0, 0.85);
-  }
-  &-field {
-    min-height: 32px;
-    font-size: 14px;
-    font-weight: 500;
-    vertical-align: middle;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    line-height: 32px;
-    >a {
-      color: @text-color;
-    }
-    >a:hover {
-      color: @link-hover-color;
-    }
-  }
-  &-placeholder {
-    color: @disabled-color;
-    >a {
-      color: @disabled-color;
-    }
-    >a:hover {
-      color: @link-hover-color;
-    }
-  }
-  &-addon-before {
-    color: @text-color-secondary;
-    font-size: 12px;
-    margin-right: 4px;
-  }
-  &-addon-after {
-    color: @text-color-secondary;
-    font-size: 12px;
-    margin-left: 4px;
-  }
-  &-sm > .info-item-field {
-    min-height: 28px;
-    line-height: 28px;
-    .editable-cell-input-wrapper, 
-    .editable-cell-text-wrapper {
-      line-height: 28px;
-    }
-  }
-}
-.ant-form-inline .info-item {
-    display: inline-block;
-    margin-right: 10px;
-    margin-bottom: 0;
-}
 .activity-wrapper {
   .ant-collapse-borderless {
     background-color: transparent;

@@ -39,26 +39,13 @@ export default class AddDetailModal extends Component {
     amount: 0,
     skus: [],
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.product !== this.props.product) {
-      const product = nextProps.product;
-      product.desc_cn = product.name;
-      this.setState({
-        product,
-      });
-      this.props.form.setFieldsValue({
-        product_no: product.product_no,
-        order_qty: product.order_qty,
-        unit_price: product.unit_price,
-      });
-    }
-  }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.props.hideDetailModal();
     this.setState({
       product: {},
       amount: 0,
+      sku: [],
     });
     this.props.form.setFieldsValue({
       product_no: '',
@@ -68,8 +55,10 @@ export default class AddDetailModal extends Component {
     this.props.clearProductNos();
   }
   handleSearch = (value) => {
-    const { selectedOwner } = this.props;
-    this.props.loadProducts(value, selectedOwner);
+    if (value.length >= 3) {
+      const { selectedOwner } = this.props;
+      this.props.loadProducts(value, selectedOwner, this.props.tenantId);
+    }
   }
   submit = () => {
     const product = this.state.product;
@@ -93,6 +82,7 @@ export default class AddDetailModal extends Component {
         this.setState({
           product: {},
           amount: 0,
+          sku: [],
         });
         this.props.form.setFieldsValue({
           product_no: '',
@@ -174,7 +164,7 @@ export default class AddDetailModal extends Component {
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
             })(
-              <Select mode="combobox" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
+              <Select mode="combobox" placeholder="请至少输入三位货号" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
                 {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
               </Select>
             )}

@@ -119,7 +119,7 @@ export default class ReceiveInbound extends Component {
               {this.props.params.inboundNo}
             </Breadcrumb.Item>
           </Breadcrumb>
-          {!!inboundHead.bonded && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
+          {!!inboundHead.bonded && entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
           <div className="page-header-tools">
             {!!inboundHead.bonded && <Tooltip title="海关备案详情" placement="bottom">
               <Button size="large" onClick={this.handleRegPage}><Logixon type="customs-o" />{regStatus.text}</Button>
@@ -190,7 +190,7 @@ export default class ReceiveInbound extends Component {
               </Steps>
             </div>
           </Card>
-          <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
+          <Card bodyStyle={{ padding: 0 }} noHovering>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
                 <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />

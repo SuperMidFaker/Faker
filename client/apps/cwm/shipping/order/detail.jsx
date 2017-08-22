@@ -144,7 +144,7 @@ export default class CreateShippingOrder extends Component {
         <Content className="main-content">
           <Form layout="vertical">
             <HeadCard soHead={soHead} form={form} editable={this.state.editable} />
-            <Card style={{ marginTop: 16 }} bodyStyle={{ padding: 0 }} noHovering>
+            <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
                   <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} />

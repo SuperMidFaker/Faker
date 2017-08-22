@@ -56,7 +56,7 @@ export default class ActivityEditCard extends React.Component {
             {
               this.state.is_editing ?
               (
-                <div className="info-item">
+                <div className="welo-info-item">
                   <label className="info-label" htmlFor="pane">{rightLabel}：</label>
                   <Row>
                     <Col span={14}><Input onChange={this.handleValueChange} value={this.state.edit_value} /></Col>

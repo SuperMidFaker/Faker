@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Table, Tooltip, Button, Popover } from 'antd';
+import { Table, Tooltip, Button, Popover, message } from 'antd';
 import update from 'react/lib/update';
 import SelectItem from './selectItem';
 import { DragDropContext } from 'react-dnd';
@@ -42,32 +42,73 @@ class DataTable extends Component {
     selectedRowKeys: PropTypes.array,
     handleDeselectRows: PropTypes.func,
   }
-
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   state = {
     scrollY: null,
     popoverColumns: [],
     tableColumns: [],
     visible: false,
+    pathname: '',
   }
   componentWillMount() {
-    const offset = this.props.scrollOffset ? this.props.scrollOffset : 410;
+    const offset = this.props.scrollOffset ? this.props.scrollOffset : 300;
+    const location = this.context.router.location;
+    let columnRule;
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({ scrollY: window.innerHeight - offset });
+      if (window.localStorage) {
+        columnRule = JSON.parse(window.localStorage.getItem(location.pathname));
+      }
     }
-    const tableColumns = this.props.columns.map((column, index) => ({
-      ...column,
-      checked: true,
-      index,
-    }));
-    let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
-    popoverColumns = popoverColumns.map((column, index) => ({
-      ...column,
-      checked: true,
-      index }));
-    this.setState({
-      tableColumns,
-      popoverColumns,
-    });
+    if (columnRule) {
+      const tableColumns = this.props.columns;
+      const newTableColumns = [];
+      const newPopoverColumns = [];
+      for (let i = 0; i < columnRule.tableStorage.length; i++) {
+        const item = columnRule.tableStorage[i];
+        let currentOne = null;
+        if (item.dataIndex) {
+          currentOne = tableColumns.find(column => column.dataIndex === item.dataIndex);
+        } else {
+          currentOne = tableColumns.find(column => !column.dataIndex);
+        }
+        newTableColumns.push({ ...currentOne, ...item, index: i });
+      }
+      const popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      for (let i = 0; i < columnRule.popoverStorage.length; i++) {
+        const item = columnRule.popoverStorage[i];
+        let currentOne = null;
+        if (item.dataIndex) {
+          currentOne = popoverColumns.find(column => column.dataIndex === item.dataIndex);
+        } else {
+          currentOne = popoverColumns.find(column => !column.dataIndex);
+        }
+        newPopoverColumns.push({ ...currentOne, ...item, index: i });
+      }
+      this.setState({
+        tableColumns: newTableColumns,
+        popoverColumns: newPopoverColumns,
+        pathname: location.pathname,
+      });
+    } else {
+      const tableColumns = this.props.columns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index,
+      }));
+      let popoverColumns = this.props.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      popoverColumns = popoverColumns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index }));
+      this.setState({
+        tableColumns,
+        popoverColumns,
+        pathname: location.pathname,
+      });
+    }
   }
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
@@ -115,13 +156,24 @@ class DataTable extends Component {
   }
   handleSave = () => {
     const tableColumns = [...this.state.tableColumns];
-    let columns = this.state.popoverColumns.filter(column => column.checked);
+    const popoverColumns = [...this.state.popoverColumns];
+    const { pathname } = this.state;
+    let columns = popoverColumns.filter(column => column.checked);
     const operation = tableColumns.find(column => column.dataIndex === 'OPS_COL');
     if (operation) { columns = columns.concat(operation); }
+    const newColumns = columns.map(column => ({ ...column }));
     this.setState({
-      tableColumns: columns.map(column => ({ ...column })),
+      tableColumns: newColumns,
       visible: false,
     });
+    if (window.localStorage) {
+      const popoverStorage = popoverColumns.map(column => ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
+      const tableStorage = newColumns.map(column => ({ dataIndex: column.dataIndex, fixed: column.fixed, checked: column.checked }));
+      const obj = { popoverStorage, tableStorage };
+      const storage = window.localStorage;
+      storage.setItem(pathname, JSON.stringify(obj));
+    }
+    message.info('列表视图已更新');
   }
   moveSelect = (dragIndex, hoverIndex) => {
     let popoverColumns = [...this.state.popoverColumns];
@@ -171,7 +223,7 @@ class DataTable extends Component {
         { x: this.state.tableColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY };
     }
     const content = this.state.popoverColumns.map((column, index) => (
-      <SelectItem id={index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
+      <SelectItem id={index} key={column.index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
         onChange={this.handleCheckBoxChange} onFixed={this.fixedColumns} fixed={column.fixed}
       />));
     content.push(
@@ -181,17 +233,17 @@ class DataTable extends Component {
       </div>
     );
     return (
-      <div className="data-table">
-        <div className="data-table-toolbar">
+      <div className="welo-data-table">
+        <div className="welo-data-table-toolbar">
           {this.props.toolbarActions}
-          <div className="data-table-toolbar-right">
+          <div className="welo-data-table-toolbar-right">
             <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
               <Tooltip title="显示字段设置">
-                <Button size="large" icon="bars" />
+                <Button size="large" icon="layout" />
               </Tooltip>
             </Popover>
           </div>
-          {this.props.selectedRowKeys && <div className={`data-table-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+          {this.props.selectedRowKeys && <div className={`welo-data-table-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.props.selectedRowKeys.length}项</h3>
             {this.props.bulkActions}
             <div className="pull-right">
@@ -201,7 +253,7 @@ class DataTable extends Component {
             </div>
           </div>}
         </div>
-        <div className="panel-body table-panel table-fixed-layout">
+        <div className="welo-data-table-body welo-data-table-body-fixed">
           <Table {...this.props} dataSource={dataSource} pagination={pagination}
             onChange={this.handleTableChange} scroll={scrollProp} columns={this.state.tableColumns}
           />
