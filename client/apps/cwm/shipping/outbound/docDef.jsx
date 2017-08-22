@@ -37,7 +37,8 @@ function pdfBody(data) {
       table: {
         widths: ['2%', '98%'],
         body: [
-          [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          ['目的地', { text: 'name', fontSize: 18 }],
           ['收件人', { text: 'name num\naddress', fontSize: 10 }],
           ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
         ],

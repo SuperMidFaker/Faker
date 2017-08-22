@@ -15,8 +15,8 @@ const Option = Select.Option;
 
 @injectIntl
 @connect(
-  () => ({
-
+  state => ({
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
   { loadReceivers }
 )
