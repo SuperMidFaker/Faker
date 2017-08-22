@@ -67,7 +67,7 @@ const messages = defineMessages({
   },
   expense: {
     id: 'cms.module.billing.expense',
-    defaultMessage: '费用管理',
+    defaultMessage: '费用结算',
   },
   billingReceivable: {
     id: 'cms.module.billing.receivable',
@@ -79,7 +79,7 @@ const messages = defineMessages({
   },
   quote: {
     id: 'cms.module.resources.quote',
-    defaultMessage: '报价管理',
+    defaultMessage: '费率设置',
   },
   classification: {
     id: 'cms.module.classification',
