@@ -251,10 +251,10 @@ export default class BatchDeclModal extends Component {
   }
 
   render() {
-    const { relNo, relDateRange } = this.state;
+    const { relNo, relDateRange, ownerCusCode } = this.state;
     const portionForm = (<Form layout="inline">
       <FormItem>
-        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
+        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} value={ownerCusCode}>
           {this.props.owners.map(data => (
             <Option key={data.customs_code} value={data.customs_code}>
               {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
