@@ -439,9 +439,6 @@ export default class ExpenseList extends Component {
         dataIndex: 'invoice_no',
         width: 180,
       }, {
-        title: this.msg('bLNo'),
-        dataIndex: 'bl_wb_no',
-      }, {
         title: this.msg('acptTime'),
         dataIndex: 'acpt_time',
         width: 120,
@@ -482,6 +479,12 @@ export default class ExpenseList extends Component {
             return <span>{'--:--'}</span>;
           }
         },
+      }, {
+        title: this.msg('opCol'),
+        dataIndex: 'OPS_COL',
+        width: 120,
+        fixed: 'right',
+        render: record => <RowUpdater onHit={this.handleInbound} label="费用明细" row={record} />,
       },
     ];
     let curColumns = columns;
@@ -505,11 +508,18 @@ export default class ExpenseList extends Component {
               {this.msg('expense')}
             </Breadcrumb.Item>
           </Breadcrumb>
+          <RadioGroup value={listFilter.type} onChange={this.handleRadioChange} size="large">
+            <RadioButton value="receivable">{this.msg('receivable')}</RadioButton>
+            <RadioButton value="payable">{this.msg('payable')}</RadioButton>
+            <RadioButton value="both">{this.msg('both')}</RadioButton>
+          </RadioGroup>
+          <span />
           <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
+            <RadioButton value="all">{this.msg('allStatus')}</RadioButton>
             <RadioButton value="pending">{this.msg('statusPending')}</RadioButton>
             <RadioButton value="estimated">{this.msg('statusEstimated')}</RadioButton>
             <RadioButton value="closed">{this.msg('statusClosed')}</RadioButton>
+            <RadioButton value="settled">{this.msg('statusSettled')}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
             <Button size="large" icon="download" onClick={this.handleAdvModelEpt}>

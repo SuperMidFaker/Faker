@@ -14,9 +14,21 @@ const messages = defineMessages({
     id: 'cms.expense',
     defaultMessage: '费用管理',
   },
-  all: {
-    id: 'cms.expense.all',
-    defaultMessage: '全部',
+  both: {
+    id: 'cms.expense.both',
+    defaultMessage: '收入/支出结算',
+  },
+  receivable: {
+    id: 'cms.expense.receivable',
+    defaultMessage: '收入结算',
+  },
+  payable: {
+    id: 'cms.expense.payable',
+    defaultMessage: '支出结算',
+  },
+  allStatus: {
+    id: 'cms.expense.all.status',
+    defaultMessage: '全部状态',
   },
   statusPending: {
     id: 'cms.expense.status.pending',
@@ -28,7 +40,11 @@ const messages = defineMessages({
   },
   statusClosed: {
     id: 'cms.expense.status.closed',
-    defaultMessage: '已结单',
+    defaultMessage: '已关单',
+  },
+  statusSettled: {
+    id: 'cms.expense.status.settled',
+    defaultMessage: '已结算',
   },
   advModel: {
     id: 'cms.expense.advance.model',
