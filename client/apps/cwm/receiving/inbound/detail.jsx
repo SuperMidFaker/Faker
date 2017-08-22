@@ -105,6 +105,14 @@ export default class ReceiveInbound extends Component {
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
     const regStatus = CWM_SHFTZ_REG_STATUS.filter(status => status.value === inboundHead.reg_status)[0];
+    let recMode = '';
+    if (inboundHead.rec_mode === 'manual') {
+      recMode = '单据人工';
+    } else if (inboundHead.rec_mode === 'scan') {
+      recMode = '手持扫码';
+    } else if (inboundHead.rec_mode === 'import') {
+      recMode = '数据导入';
+    }
     return (
       <div>
         <Header className="page-header">
@@ -178,7 +186,7 @@ export default class ReceiveInbound extends Component {
                 />
               </Col>
               <Col sm={24} lg={4}>
-                <InfoItem label="操作模式" field={inboundHead.rec_mode === 'manual' ? '手动' : '扫码'} />
+                <InfoItem label="入库方式" field={recMode} />
               </Col>
             </Row>
             <div className="card-footer">

@@ -101,11 +101,11 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '上架人员',
     width: 100,
-    dataIndex: 'allocate_by',
+    dataIndex: 'put_by',
   }, {
     title: '上架时间',
     width: 100,
-    dataIndex: 'allocate_date',
+    dataIndex: 'put_date',
     render: allocateDt => allocateDt && moment(allocateDt).format('MM.DD HH:mm'),
   }, {
     title: '操作',

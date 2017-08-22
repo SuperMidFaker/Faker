@@ -137,17 +137,17 @@ export default class ReceivingInboundList extends React.Component {
       }
     },
   }, {
-    title: '操作模式',
+    title: '入库方式',
     dataIndex: 'rec_mode',
     width: 80,
     className: 'cell-align-center',
     render: (o) => {
       if (o === 'scan') {
-        return (<Tooltip title="扫码收货"><Icon type="scan" /></Tooltip>);
+        return (<Tooltip title="手持扫码"><Icon type="scan" /></Tooltip>);
       } else if (o === 'manual') {
-        return (<Tooltip title="人工收货"><Icon type="solution" /></Tooltip>);
+        return (<Tooltip title="单据人工"><Icon type="solution" /></Tooltip>);
       } else if (o === 'import') {
-        return (<Tooltip title="库存导入"><Icon type="upload" /></Tooltip>);
+        return (<Tooltip title="数据导入"><Icon type="upload" /></Tooltip>);
       }
     },
   }, {
