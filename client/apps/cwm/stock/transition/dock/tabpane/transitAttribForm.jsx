@@ -35,6 +35,10 @@ export default class TransitForm extends React.Component {
   componentWillMount() {
     const { detail, tenantId } = this.props;
     this.props.loadOwnerUndoneMovements(detail.owner_partner_id, detail.whse_code, tenantId);
+    this.setState({
+      target_location: null,
+      movement_no: null,
+    });
   }
   handleLocationSelect = (value) => { this.setState({ target_location: value }); this.props.onChange({ key: 'target_location', value }); }
   handleMovementNoChange = (value) => { this.setState({ movement_no: value }); this.props.onChange({ key: 'movement_no', value }); }

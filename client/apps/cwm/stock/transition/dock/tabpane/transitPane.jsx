@@ -40,9 +40,13 @@ export default class TransitPane extends React.Component {
     });
     const { loginName, tenantId } = this.props;
     let transitOp;
-    if (this.formValue.target_location && this.formValue.movement_no) {
-      transitOp = this.props.moveTransit([this.props.detail.trace_id], transit, this.formValue.target_location,
-        this.formValue.movement_no, loginName, tenantId);
+    if (this.formValue.target_location) {
+      if (this.formValue.movement_no) {
+        transitOp = this.props.moveTransit([this.props.detail.trace_id], transit, this.formValue.target_location,
+          this.formValue.movement_no, loginName, tenantId);
+      } else {
+        message.error('移库单未选');
+      }
     } else if (valueChanged) {
       transitOp = this.props.splitTransit([this.props.detail.trace_id], transit, loginName, tenantId);
     }
