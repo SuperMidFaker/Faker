@@ -23,7 +23,6 @@ class DataSource {
   }
 }
 
-/* eslint react/prefer-es6-class: 0 */
 class RemoteAntTable extends Component {
   static propTypes = {
     scrollOffset: PropTypes.number,
@@ -32,7 +31,7 @@ class RemoteAntTable extends Component {
       PropTypes.instanceOf(DataSource),
     ]),
   }
-  static state = {
+  state = {
     scrollY: null,
   }
   componentWillMount() {
