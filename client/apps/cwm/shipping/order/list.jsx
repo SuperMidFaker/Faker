@@ -80,7 +80,7 @@ export default class ShippingOrderList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: 'SO编号',
-    width: 180,
+    width: 150,
     dataIndex: 'so_no',
     fixed: 'left',
     render: (o, record) => (
@@ -88,13 +88,13 @@ export default class ShippingOrderList extends React.Component {
         {o}
       </a>),
   }, {
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
+    width: 180,
+  }, {
     title: '货主',
     width: 200,
     dataIndex: 'owner_name',
-  }, {
-    title: '客户订单号',
-    dataIndex: 'cust_order_no',
-    width: 150,
   }, {
     title: '收货人',
     dataIndex: 'receiver_name',

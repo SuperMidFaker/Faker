@@ -78,18 +78,18 @@ export default class ReceivingASNList extends React.Component {
   columns = [{
     title: 'ANS编号',
     dataIndex: 'asn_no',
-    width: 180,
+    width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
+  }, {
+    title: '采购订单号',
+    width: 180,
+    dataIndex: 'po_no',
   }, {
     title: '货主',
     width: 240,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
-  }, {
-    title: '采购订单号',
-    width: 150,
-    dataIndex: 'po_no',
   }, {
     title: '供应商',
     dataIndex: 'seller_name',

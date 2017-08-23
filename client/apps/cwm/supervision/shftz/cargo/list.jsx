@@ -341,9 +341,6 @@ export default class SHFTZCargoList extends React.Component {
                 </Select>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                货主
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
                 {owner.name}
               </Breadcrumb.Item>
             </Breadcrumb>
