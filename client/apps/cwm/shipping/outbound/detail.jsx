@@ -13,11 +13,12 @@ import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo } from 'common/reducers/cwmOutbound';
-import Print from './printPIckList';
+import PrintPickList from './billsPrint/printPIckList';
+import PrintShippingList from './billsPrint/printShippingList';
 import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import { WaybillDef } from './docDef';
+import { WaybillDef } from './billsPrint/docDef';
 import Cascader from 'client/components/RegionCascader';
 
 const formatMsg = format(messages);
@@ -315,7 +316,11 @@ export default class OutboundDetail extends Component {
             </Tooltip>
             }
             {this.state.tabKey === 'pickingDetails' && <Tooltip title="打印拣货单" placement="bottom">
-              <Print outboundNo={this.props.params.outboundNo} />
+              <PrintPickList outboundNo={this.props.params.outboundNo} />
+            </Tooltip>
+            }
+            {this.state.tabKey === 'shippingDetails' && <Tooltip title="打印发货清单" placement="bottom">
+              <PrintShippingList outboundNo={this.props.params.outboundNo} />
             </Tooltip>
             }
             <Tooltip title="打印顺丰速运面单" placement="bottom">
