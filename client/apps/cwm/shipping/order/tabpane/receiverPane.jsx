@@ -48,11 +48,10 @@ export default class ReceiverPane extends Component {
     });
   }
   handleSelect = (value) => {
-    console.log(value);
     const receiver = this.props.receivers.find(item => item.code === value);
     if (receiver) {
       this.props.form.setFieldsValue({
-        receiver_code: receiver.code,
+        // receiver_code: receiver.code,
         receiver_name: receiver.name,
         receiver_contact: receiver.contact,
         receiver_address: receiver.address,

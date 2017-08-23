@@ -21,8 +21,8 @@ function pdfBody(data) {
     bartext = '';
   }
   let pdfcontent = [];
-  const imgCod = true; // 判断是否需要显示COD E 的字段
-  const imgE = true;
+  const imgCod = false; // 判断是否需要显示COD E 的字段
+  const imgE = false;
   const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
   if (imgCod) {
     titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
@@ -31,7 +31,8 @@ function pdfBody(data) {
     titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
   }
   titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
-  const receiverAddr = `${data.outboundHead.receiver_name} ${data.outboundHead.receiver_phone}\n${Location.renderConsignLocation(data.outboundHead, 'receiver')}${data.outboundHead.receiver_address}`;
+  const receiverAddr = `${data.outboundHead.receiver_name} ${data.outboundHead.receiver_phone}\n${Location.renderConsignLocation(data.outboundHead, 'receiver', '')}${data.outboundHead.receiver_address}`;
+  const senderAddr = `${data.whseInfo.contact} ${data.whseInfo.phone}\n${Location.renderLocation(data.whseInfo, 'province', 'city', 'district', 'street', '')}${data.whseInfo.address}`;
   pdfcontent = [
     { style: 'table',
       table: {
@@ -44,7 +45,7 @@ function pdfBody(data) {
         widths: ['60%', '40%'],
         body: [
           [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
-            { text: '顺丰隔日', fontSize: 12, alignment: 'center' }],
+            { text: data.whseInfo.express_type, fontSize: 12, alignment: 'center' }],
           ['', { rowSpan: 2, text: '代收贷款\n卡号:\n ￥ ', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
           [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
@@ -60,7 +61,7 @@ function pdfBody(data) {
             text: receiverAddr,
             fontSize: 10,
           }],
-          ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
+          ['寄件人', { text: senderAddr, fontSize: 10 }],
         ],
       },
       layout: {
@@ -72,7 +73,7 @@ function pdfBody(data) {
     table: {
       widths: ['25%', '25%', '25%', '25%'],
       body: [
-        [{ text: '付款方式：', border: [true, false, false, false] },
+        [{ text: '付款方式：寄付月结', border: [true, false, false, false] },
           { text: '计费重量：', border: [false, false, false, false] },
           { text: '标准化包装费：', border: [false, false, false, false] },
           { text: '签单返还：', border: [false, false, true, false] }],
@@ -130,7 +131,7 @@ function pdfBody(data) {
             fontSize: 10,
             border: [true, false, true, false],
           }],
-          ['寄件人', { text: 'name num\naddress', fontSize: 10 }],
+          ['寄件人', { text: senderAddr, fontSize: 10 }],
         ],
       },
       layout: {
