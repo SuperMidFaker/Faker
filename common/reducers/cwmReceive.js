@@ -516,7 +516,7 @@ export function updateInboundMode(inboundNo, recMode) {
   };
 }
 
-export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId) {
+export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId, receivedDate) {
   return {
     [CLIENT_API]: {
       types: [
@@ -526,7 +526,7 @@ export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId) {
       ],
       endpoint: 'v1/cwm/inbound/product/receipt',
       method: 'post',
-      data: { dataSource, seqNo, asnNo, loginId, inboundNo },
+      data: { dataSource, seqNo, asnNo, loginId, inboundNo, receivedDate },
     },
   };
 }
@@ -546,7 +546,7 @@ export function expressReceive(inboundNo, loginId, loginName) {
   };
 }
 
-export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, loginName) {
+export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate) {
   return {
     [CLIENT_API]: {
       types: [
@@ -556,7 +556,7 @@ export function batchReceive(seqNos, location, damageLevel, asnNo, inboundNo, lo
       ],
       endpoint: 'v1/cwm/inbound/product/receipt/batch',
       method: 'post',
-      data: { seqNos, location, damageLevel, asnNo, inboundNo, loginName },
+      data: { seqNos, location, damageLevel, asnNo, inboundNo, loginName, receivedDate },
     },
   };
 }
