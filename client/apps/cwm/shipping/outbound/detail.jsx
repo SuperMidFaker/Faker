@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio, Modal, Form, Input, Table, Tag } from 'antd';
+import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio, Modal, Form, Input,
+  Table, Tag, Select } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -26,14 +27,21 @@ const RadioButton = Radio.Button;
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
+const Option = Select.Option;
 
-const EXPRESS_TYPE = [
+const EXPRESS_TYPES = [
   { text: '顺丰标快', value: '1' },
   { text: '顺丰特惠', value: '2' },
   { text: '顺丰次晨', value: '5' },
   { text: '顺丰即日', value: '6' },
   { text: '重货快运', value: '18' },
   { text: '物流普运', value: '13' },
+];
+
+const PAY_METHODS = [
+  { text: '寄付月结', value: '1' },
+  { text: '到付', value: '2' },
+  { text: '第三方付', value: '3' },
 ];
 
 @injectIntl
@@ -46,6 +54,7 @@ const EXPRESS_TYPE = [
     outboundHead: state.cwmOutbound.outboundFormHead,
     reload: state.cwmOutbound.outboundReload,
     waybill: state.cwmOutbound.waybill,
+    outboundProducts: state.cwmOutbound.outboundProducts,
   }),
   { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo }
 )
@@ -57,6 +66,7 @@ export default class OutboundDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     updateOutboundMode: PropTypes.func.isRequired,
+    outboundProducts: PropTypes.arrayOf(PropTypes.shape({ seq_no: PropTypes.string.isRequired })),
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -115,7 +125,7 @@ export default class OutboundDetail extends Component {
     if (nextProps.reload) {
       this.props.loadOutboundHead(this.props.params.outboundNo);
     }
-    const { outboundHead } = this.props;
+    const { outboundHead } = nextProps;
     const courierNo = outboundHead.courier_no ? outboundHead.courier_no.split(',') : [];
     this.setState({ expressNum: courierNo.length });
   }
@@ -164,8 +174,9 @@ export default class OutboundDetail extends Component {
     });
   }
   handleWaybillPrint = (courierNo, courierNoSon, seq) => {
-    const { outboundHead } = this.props;
-    const expressType = EXPRESS_TYPE.find(item => item.value === this.state.express_type).text;
+    const { outboundHead, outboundProducts } = this.props;
+    const expressType = EXPRESS_TYPES.find(item => item.value === this.state.express_type).text;
+    const payMethod = PAY_METHODS.find(item => item.value === this.state.pay_method).text;
     const whseInfo = {
       phone: this.state.phone,
       address: this.state.address,
@@ -176,12 +187,21 @@ export default class OutboundDetail extends Component {
       street: this.state.street,
 
       express_type: expressType,
+      pay_method: payMethod,
     };
     this.setState({
       printedPickingList: true,
     });
     const { expressNum } = this.state;
-    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum, seq, outboundHead, whseInfo });
+    const docDefinition = WaybillDef({
+      ...this.props.waybill,
+      courierNo,
+      courierNoSon,
+      expressNum,
+      seq,
+      outboundHead,
+      whseInfo,
+      productName: outboundProducts[0] ? outboundProducts[0].name : '' });
     window.pdfMake.fonts = {
       selfFont: {
         normal: 'msyh.ttf',
@@ -382,25 +402,35 @@ export default class OutboundDetail extends Component {
             onCancel={() => this.setState({ expressModalvisible: false })}
             onOk={() => this.setState({ expressModalvisible: false })}
           >
-            <Card title="运单信息" bodyStyle={{ padding: 0 }} extra={
+            <Card title="运单信息" bodyStyle={{ padding: '8 0 0 0' }} extra={
               <Button onClick={this.loadCourierNo}>
                   确定
                 </Button>}
             >
-              <FormItem label="单数" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+              <FormItem label="单数" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Input value={this.state.expressNum} type="number" onChange={e => this.setState({ expressNum: Number(e.target.value) })} />
               </FormItem>
-              <FormItem label="发货人" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+              <FormItem label="发货人" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Input value={this.state.contact} type="text" onChange={e => this.setState({ contact: e.target.value })} />
               </FormItem>
-              <FormItem label="地址" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+              <FormItem label="地址" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Cascader defaultRegion={regionValues} onChange={this.handleRegionChange} />
               </FormItem>
-              <FormItem label="详细地址" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+              <FormItem label="详细地址" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Input value={this.state.address} type="text" onChange={e => this.setState({ address: e.target.value })} />
               </FormItem>
-              <FormItem label="电话" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+              <FormItem label="电话" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Input value={this.state.phone} type="text" onChange={e => this.setState({ phone: e.target.value })} />
+              </FormItem>
+              <FormItem label="快递类型" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+                <Select placeholder="快递类型" value={this.state.express_type} onChange={value => this.setState({ express_type: value })} style={{ width: '100%' }}>
+                  {EXPRESS_TYPES.map(item => (<Option value={item.value}>{item.text}</Option>))}
+                </Select>
+              </FormItem>
+              <FormItem label="付款方式" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+                <Select placeholder="付款方式" value={this.state.pay_method} onChange={value => this.setState({ pay_method: value })} style={{ width: '100%' }}>
+                  {PAY_METHODS.map(item => (<Option value={item.value}>{item.text}</Option>))}
+                </Select>
               </FormItem>
             </Card>
             <Card title="快递单号" bodyStyle={{ padding: 0 }}>

@@ -20,6 +20,11 @@ function pdfBody(data) {
     barcode1 = textToBase64Barcode(data.courierNoSon, `母单号 ${data.courierNoSon}`);
     bartext = '';
   }
+  if (data.expressNum === 1) {
+    barcode0 = textToBase64Barcode(data.courierNoSon, `运单号 ${data.courierNoSon}`);
+    barcode1 = textToBase64Barcode(data.courierNoSon, `运单号 ${data.courierNoSon}`);
+    bartext = '';
+  }
   let pdfcontent = [];
   const imgCod = false; // 判断是否需要显示COD E 的字段
   const imgE = false;
@@ -35,7 +40,7 @@ function pdfBody(data) {
     titleBody.push({ text: '', border: [false, true, false, false] });
   }
   titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
-  const receiverAddr = `${data.outboundHead.receiver_name} ${data.outboundHead.receiver_phone}\n${Location.renderConsignLocation(data.outboundHead, 'receiver', '')}${data.outboundHead.receiver_address}`;
+  const receiverAddr = `${data.outboundHead.receiver_contact} ${data.outboundHead.receiver_phone}\n${Location.renderConsignLocation(data.outboundHead, 'receiver', '')}${data.outboundHead.receiver_address}`;
   const senderAddr = `${data.whseInfo.contact} ${data.whseInfo.phone}\n${Location.renderLocation(data.whseInfo, 'province', 'city', 'district', 'street', '')}${data.whseInfo.address}`;
   pdfcontent = [
     { style: 'table',
@@ -50,7 +55,7 @@ function pdfBody(data) {
         body: [
           [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
             { text: data.whseInfo.express_type, fontSize: 12, alignment: 'center' }],
-          ['', { rowSpan: 2, text: '代收贷款\n卡号:\n ￥ ', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
+          ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
           [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
       },
@@ -77,16 +82,16 @@ function pdfBody(data) {
     table: {
       widths: ['25%', '25%', '25%', '25%'],
       body: [
-        [{ text: '付款方式：寄付月结', border: [true, false, false, false] },
+        [{ text: `付款方式：${data.whseInfo.pay_method}`, border: [true, false, false, false] },
           { text: '计费重量：', border: [false, false, false, false] },
           { text: '标准化包装费：', border: [false, false, false, false] },
           { text: '签单返还：', border: [false, false, true, false] }],
-        [{ text: '月结账号：', border: [true, false, false, false] },
+        [{ text: '月结账号：9999999999', border: [true, false, false, false] },
           { text: '实际重量：', border: [false, false, false, false] },
           { text: '个性化包装费：', border: [false, false, false, false] },
           { text: '转寄协议客户', border: [false, false, true, false] }],
         [{ text: '第三方地区：', border: [true, false, false, false] },
-          { text: '声明价值：', border: [false, false, false, false] },
+          { text: '声明价值：2304.23 元', border: [false, false, false, false] },
           { text: '超长超重附件费', border: [false, false, false, false] },
           { text: '', border: [false, false, true, false] }],
         [{ text: '费用合计：', border: [true, false, false, false] },
@@ -102,12 +107,12 @@ function pdfBody(data) {
       table: {
         widths: ['2%', '58%', '20%', '20%'],
         body: [
-          [{ rowSpan: 2, text: '托寄物' }, { rowSpan: 2, colSpan: 2, text: '' }, '',
-          { text: '特安服务', fontSize: 10, alignment: 'center', border: [true, true, true, false] }],
+          [{ rowSpan: 2, text: '托寄物' }, { rowSpan: 2, colSpan: 2, text: data.productName, alignment: 'center', fontSize: 12 }, '',
+          { text: '', fontSize: 10, alignment: 'center', border: [true, true, true, false] }],
           ['', '', '', { text: '自寄 自取', alignment: 'center', border: [true, false, true, false] }],
           [{ rowSpan: 2, text: '备注' }, { text: '', rowSpan: 2 }, { rowSpan: 2, text: '收件员：\n寄件日期：\n派件员：' },
           { text: '签名', border: [true, true, true, false] }],
-          ['', '', '', { text: '月  日', alignment: 'right', border: [true, false, true, true] }],
+          ['', '', '', { text: '月     日', alignment: 'right', border: [true, false, true, true] }],
         ],
       },
     }
@@ -147,16 +152,16 @@ function pdfBody(data) {
     table: {
       widths: ['25%', '25%', '25%', '25%'],
       body: [
-        [{ text: '付款方式：', border: [true, false, false, false] },
+        [{ text: `付款方式：${data.whseInfo.pay_method}`, border: [true, false, false, false] },
           { text: '计费重量：', border: [false, false, false, false] },
           { text: '标准化包装费：', border: [false, false, false, false] },
           { text: '签单返还：', border: [false, false, true, false] }],
-        [{ text: '月结账号：', border: [true, false, false, false] },
+        [{ text: '月结账号：9999999999', border: [true, false, false, false] },
           { text: '实际重量：', border: [false, false, false, false] },
           { text: '个性化包装费：', border: [false, false, false, false] },
           { text: '转寄协议客户', border: [false, false, true, false] }],
         [{ text: '第三方地区：', border: [true, false, false, false] },
-          { text: '声明价值：', border: [false, false, false, false] },
+          { text: '声明价值：2304.23 元', border: [false, false, false, false] },
           { text: '超长超重附件费', border: [false, false, false, false] },
           { text: '', border: [false, false, true, false] }],
         [{ text: '费用合计：', border: [true, false, false, false] },
