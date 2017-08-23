@@ -5,7 +5,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, DatePicker, Dropdown, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -324,7 +324,7 @@ export default class ShippingOrderList extends React.Component {
       columns = [...columns];
       columns.splice(10, 1);
     }
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadSos(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -459,7 +459,7 @@ export default class ShippingOrderList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no"
+              <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no"
                 scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
               />
             </div>
