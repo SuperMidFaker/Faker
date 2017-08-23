@@ -367,13 +367,13 @@ export default class ReceivingModal extends Component {
             <Col sm={12} md={8} lg={4}>
               <InfoItem label="中文品名" field={inboundProduct.name} />
             </Col>
-            <Col sm={12} md={8} lg={6}>
+            <Col sm={12} md={8} lg={5}>
               <InfoItem label="预期数量" field={<QuantityInput packQty={inboundProduct.expect_pack_qty} pcsQty={inboundProduct.expect_qty} disabled />} />
             </Col>
-            <Col sm={12} md={8} lg={6}>
+            <Col sm={12} md={8} lg={5}>
               <InfoItem label="现收数量" field={<QuantityInput packQty={receivedPackQty} pcsQty={receivedQty} expectQty={inboundProduct.expect_qty} disabled />} />
             </Col>
-            <Col sm={12} md={8} lg={4}>
+            <Col sm={12} md={8} lg={6}>
               <InfoItem label="收货时间" field={<DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
                 value={receivedDate ? moment(receivedDate) : null} onChange={this.handleReceivedDateChange}
               />}
