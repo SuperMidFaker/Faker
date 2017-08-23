@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Dropdown, Layout, Radio, Menu, Select, Icon, Tag, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import ExcelUploader from 'client/components/ExcelUploader';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -114,7 +114,6 @@ export default class SHFTZTransferInList extends React.Component {
     title: '状态',
     dataIndex: 'status',
     width: 100,
-    fixed: 'right',
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" text="未接收" />);
@@ -134,7 +133,7 @@ export default class SHFTZTransferInList extends React.Component {
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadEntryRegDatas(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -281,7 +280,7 @@ export default class SHFTZTransferInList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
+                <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>

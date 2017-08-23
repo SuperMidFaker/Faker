@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -57,7 +57,7 @@ export default class WaveList extends React.Component {
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '波次编号',
-    width: 180,
+    width: 150,
     dataIndex: 'wave_no',
   }, {
     title: '波次状态',
@@ -170,7 +170,7 @@ export default class WaveList extends React.Component {
   }
   render() {
     const { whses, defaultWhse, filters, loading, owners } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadWaves(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -242,7 +242,7 @@ export default class WaveList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading} />
+              <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading} />
             </div>
           </div>
         </Content>

@@ -4,42 +4,37 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Table, Tag } from 'antd';
-import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
-import { loadWhse } from 'common/reducers/cwmContext';
+import { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
-import WhseOwnersModal from '../modal/whseOwnersModal';
-import OwnerControlModal from '../modal/ownerControlModal';
+import SuppliersModal from '../modal/whseSuppliersModal';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
+    loginId: state.account.loginId,
     tenantId: state.account.tenantId,
+    suppliers: state.cwmWarehouse.suppliers,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse }
+  { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus }
 )
 export default class SuppliersPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
     whseTenantId: PropTypes.number.isRequired,
-    whseOwners: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      owner_code: PropTypes.string,
-      owner_name: PropTypes.string.isRequired,
-    })),
   }
   state = {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
+    this.props.loadSuppliers(this.props.whseCode, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
+      this.props.loadSuppliers(nextProps.whseCode, this.props.tenantId);
     }
   }
   columns = [{
@@ -48,11 +43,11 @@ export default class SuppliersPane extends Component {
     width: 150,
   }, {
     title: '供应商名称',
-    dataIndex: 'ent_name',
+    dataIndex: 'name',
     width: 250,
   }, {
     title: '海关编码',
-    dataIndex: 'cus_code',
+    dataIndex: 'customs_code',
     width: 150,
   }, {
     title: '状态',
@@ -66,7 +61,11 @@ export default class SuppliersPane extends Component {
     },
   }, {
     title: '关联货主',
-    dataIndex: 'related_owners',
+    dataIndex: 'owner_partner_id',
+    render: (col) => {
+      const owner = this.props.whseOwners.find(item => item.owner_partner_id === col);
+      return owner ? owner.owner_name : '';
+    },
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
@@ -80,40 +79,45 @@ export default class SuppliersPane extends Component {
   }, {
     title: '操作',
     width: 150,
-    render: record => (
+    dataIndex: 'OPS_COL',
+    render: (o, record) => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onHit={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.handleEditSupplier(record)} label="修改" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.deleteSupplier(record.id)} label="删除" row={record} />
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
-  handleOwnerControl = (ownerAuth) => {
-    this.props.showOwnerControlModal(ownerAuth);
-  }
-  changeOwnerStatus = (id, status) => {
-    this.props.changeOwnerStatus(id, status).then((result) => {
+  changeSupplierStatus = (id, status, loginId) => {
+    this.props.changeSupplierStatus(id, status, loginId).then((result) => {
       if (!result.error) {
-        this.handleOwnerLoad();
+        this.props.loadSuppliers(this.props.whseCode, this.props.tenantId);
       }
     });
   }
-  handleOwnerLoad = () => {
-    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
-    if (this.props.whseCode === this.props.defaultWhse.code) {
-      this.props.loadWhse(this.props.whseCode, this.props.tenantId);
-    }
+  deleteSupplier = (id) => {
+    this.props.deleteSupplier(id).then((result) => {
+      if (!result.error) {
+        this.props.loadSuppliers(this.props.whseCode, this.props.tenantId);
+      }
+    });
+  }
+  handleEditSupplier = (supplier) => {
+    this.props.toggleSupplierModal(true, supplier);
   }
   render() {
-    const { whseCode, whseTenantId, whseOwners } = this.props;
+    const { whseCode, suppliers } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加供应商</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供应商</Button>
         </div>
-        <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
-        <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
-        <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
+        <Table columns={this.columns} dataSource={suppliers} rowKey="id" />
+        <SuppliersModal whseCode={whseCode} />
       </div>
     );
   }

@@ -81,11 +81,11 @@ export default class ReceivingInboundList extends React.Component {
   columns = [{
     title: '入库单号',
     dataIndex: 'inbound_no',
-    width: 180,
+    width: 160,
     fixed: 'left',
   }, {
     title: 'ANS编号',
-    width: 180,
+    width: 150,
     dataIndex: 'asn_no',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
