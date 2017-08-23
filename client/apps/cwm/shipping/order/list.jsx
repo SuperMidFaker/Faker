@@ -313,6 +313,9 @@ export default class ShippingOrderList extends React.Component {
   handleSoStockImport = () => {
     this.handleReload();
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { whses, defaultWhse, owners, filters, loading } = this.props;
     let columns = this.columns;
@@ -370,6 +373,44 @@ export default class ShippingOrderList extends React.Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all" key="all">全部货主</Option>
+        {
+            owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+          }
+      </Select>
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleReceiverChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all" key="all">全部收货人</Option>
+        {
+            owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+          }
+      </Select>
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleCarrierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all" key="all">全部承运人</Option>
+        {
+            owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+          }
+      </Select>
+      <span />
+      <RangePicker allowClear size="large" ranges={{ Today: [moment(), moment()], 'This Month': [moment(), moment().endOf('month')] }} onChange={this.handleDateRangeChange} />
+    </span>);
+    const bulkActions = (<span>
+      {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
+      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
+      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
+    </span>
+    );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -418,52 +459,10 @@ export default class ShippingOrderList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部货主</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleReceiverChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部收货人</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleCarrierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部承运人</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
-              <span />
-              <RangePicker allowClear size="large" ranges={{ Today: [moment(), moment()], 'This Month': [moment(), moment().endOf('month')] }} onChange={this.handleDateRangeChange} />
-              <div className="toolbar-right" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
-                {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
-                {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no"
-                scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
-              />
-            </div>
-          </div>
+          <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no"
+            toolbarActions={toolbarActions} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
+            bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+          />
         </Content>
         <ShippingDockPanel />
         <OrderDockPanel />

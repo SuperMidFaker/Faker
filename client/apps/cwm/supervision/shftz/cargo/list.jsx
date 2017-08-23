@@ -305,6 +305,9 @@ export default class SHFTZCargoList extends React.Component {
     if (rule === 1) {
       columns.shift();
     }
+    const toolbarActions = (<span>
+      <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+    </span>);
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" >
@@ -387,16 +390,9 @@ export default class SHFTZCargoList extends React.Component {
             </div>
           </Header>
           <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <DataTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
-                  scroll={{ x: 1400 }} loading={loading}
-                />
-              </div>
-            </div>
+            <DataTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
+              toolbarActions={toolbarActions} scroll={{ x: 1400 }} loading={loading}
+            />
           </Content>
         </Layout>
         <Sider
