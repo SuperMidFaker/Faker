@@ -26,9 +26,13 @@ function pdfBody(data) {
   const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
   if (imgCod) {
     titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
+  } else {
+    titleBody.push({ text: '', border: [false, true, false, false] });
   }
   if (imgE) {
     titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
+  } else {
+    titleBody.push({ text: '', border: [false, true, false, false] });
   }
   titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
   const receiverAddr = `${data.outboundHead.receiver_name} ${data.outboundHead.receiver_phone}\n${Location.renderConsignLocation(data.outboundHead, 'receiver', '')}${data.outboundHead.receiver_address}`;
