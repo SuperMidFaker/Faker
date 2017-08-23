@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Layout, Radio, Select, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -107,7 +107,7 @@ export default class SHFTZClearanceList extends React.Component {
     render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="清关明细" row={record} />,
   }]
 
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadNormalDelgList(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -251,7 +251,7 @@ export default class SHFTZClearanceList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
+                <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>

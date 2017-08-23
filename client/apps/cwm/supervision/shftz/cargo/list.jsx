@@ -6,7 +6,7 @@ import { Breadcrumb, Menu, Button, Form, Icon, Dropdown, Layout, Radio, Select, 
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn,
   fileCargos, confirmCargos, editGname } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
-import RemoteTable from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
@@ -164,7 +164,7 @@ export default class SHFTZCargoList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 160,
   }]
-  dataSource = new RemoteTable.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadProductCargo(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -395,7 +395,7 @@ export default class SHFTZCargoList extends React.Component {
                 <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <RemoteTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
+                <DataTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
                   scroll={{ x: 1400 }} loading={loading}
                 />
               </div>
