@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
   'FILE_ERS', 'FILE_ERS_SUCCEED', 'FILE_ERS_FAIL',
   'QUERY_ERI', 'QUERY_ERI_SUCCEED', 'QUERY_ERI_FAIL',
+  'PAIR_ERP', 'PAIR_ERP_SUCCEED', 'PAIR_ERP_FAIL',
   'REL_DETAILS_LOAD', 'REL_DETAILS_LOAD_SUCCEED', 'REL_DETAILS_LOAD_FAIL',
   'UPDATE_RRFIELD', 'UPDATE_RRFIELD_SUCCEED', 'UPDATE_RRFIELD_FAIL',
   'FILE_RSO', 'FILE_RSO_SUCCEED', 'FILE_RSO_FAIL',
@@ -345,6 +346,21 @@ export function queryEntryRegInfos(asnNo, whseCode) {
         actionTypes.QUERY_ERI_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/query',
+      method: 'post',
+      data: { asn_no: asnNo, whse: whseCode },
+    },
+  };
+}
+
+export function pairEntryRegProducts(asnNo, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.PAIR_ERP,
+        actionTypes.PAIR_ERP_SUCCEED,
+        actionTypes.PAIR_ERP_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/regs/matchpair',
       method: 'post',
       data: { asn_no: asnNo, whse: whseCode },
     },

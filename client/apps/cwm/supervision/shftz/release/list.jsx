@@ -211,6 +211,9 @@ export default class SHFTZReleaseList extends React.Component {
     const filters = { ...this.props.listFilter, ownerView: value };
     this.handleReleaseListLoad(1, this.props.whse.code, filters);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { releaseList, listFilter, whses, whse, owners } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded);
@@ -221,6 +224,18 @@ export default class SHFTZReleaseList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
+          )}
+      </Select>
+    </span>);
+    const bulkActions = <Button size="large">发送报关申请</Button>;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -263,37 +278,14 @@ export default class SHFTZReleaseList extends React.Component {
             <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
-                <span />
-                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
-                  onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-                >
-                  <Option value="all">全部货主</Option>
-                  {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-                    search={`${data.partner_code}${data.name}`}
-                  >{data.name}
-                  </Option>)
-                    )}
-                </Select>
-                <span />
-                <div className="toolbar-right" />
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  <Button size="large">发送报关申请</Button>
-                </div>
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-                  indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-                />
-                <ShippingDockPanel />
-                <OrderDockPanel />
-                <DelegationDockPanel />
-                <ShipmentDockPanel />
-              </div>
-            </div>
+            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
+              toolbarActions={toolbarActions} indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+              bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            />
+            <ShippingDockPanel />
+            <OrderDockPanel />
+            <DelegationDockPanel />
+            <ShipmentDockPanel />
           </Content>
         </Layout>
       </Layout>

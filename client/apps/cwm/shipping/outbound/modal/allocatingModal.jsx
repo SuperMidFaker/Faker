@@ -46,7 +46,6 @@ export default class AllocatingModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
-    seqNo: PropTypes.string.isRequired,
     editable: PropTypes.bool.isRequired,
     inventoryDataLoading: PropTypes.bool.isRequired,
     allocatedDataLoading: PropTypes.bool.isRequired,
