@@ -36,6 +36,18 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'UPDATE_RECEIVER', 'UPDATE_RECEIVER_SUCCEED', 'UPDATE_RECEIVER_FAIL',
   'TOGGLE_RECEIVER_MODAL',
   'UPDATE_RECEIVER_STATUS', 'UPDATE_RECEIVER_STATUS_SUCCEED', 'UPDATE_RECEIVER_STATUS_FAIL',
+  'LOAD_SUPPLIERS', 'LOAD_SUPPLIERS_SUCCEED', 'LOAD_SUPPLIERS_FAIL',
+  'TOGGLE_SUPPLIER_MODAL',
+  'ADD_SUPPLIER', 'ADD_SUPPLIER_SUCCEED', 'ADD_SUPPLIER_FAIL',
+  'UPDATE_SUPPLIER_STATUS', 'UPDATE_SUPPLIER_STATUS_SUCCEED', 'UPDATE_SUPPLIER_STATUS_FAIL',
+  'DELETE_SUPPLIER', 'DELETE_SUPPLIER_SUCCEED', 'DELETE_SUPPLIER_FAIL',
+  'UPDATE_SUPPLIER', 'UPDATE_SUPPLIER_SUCCEED', 'UPDATE_SUPPLIER_FAIL',
+  'LOAD_CARRIERS', 'LOAD_CARRIERS_SUCCEED', 'LOAD_CARRIERS_FAIL',
+  'TOGGLE_CARRIER_MODAL',
+  'ADD_CARRIER', 'ADD_CARRIER_SUCCEED', 'ADD_CARRIER_FAIL',
+  'UPDATE_CARRIER_STATUS', 'UPDATE_CARRIER_STATUS_SUCCEED', 'UPDATE_CARRIER_STATUS_FAIL',
+  'DELETE_CARRIER', 'DELETE_CARRIER_SUCCEED', 'DELETE_CARRIER_FAIL',
+  'UPDATE_CARRIER', 'UPDATE_CARRIER_SUCCEED', 'UPDATE_CARRIER_FAIL',
 ]);
 
 const initialState = {
@@ -72,6 +84,16 @@ const initialState = {
   receiverModal: {
     visible: false,
     receiver: {},
+  },
+  suppliers: [],
+  supplierModal: {
+    visible: false,
+    supplier: {},
+  },
+  carriers: [],
+  carrierModal: {
+    visible: false,
+    carrier: {},
   },
 };
 
@@ -121,6 +143,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, receiverModal: { ...state.receiverModal, ...action.data } };
     case actionTypes.LOAD_RECEIVERS_SUCCEED:
       return { ...state, receivers: action.result.data };
+    case actionTypes.LOAD_SUPPLIERS_SUCCEED:
+      return { ...state, suppliers: action.result.data };
+    case actionTypes.TOGGLE_SUPPLIER_MODAL:
+      return { ...state, supplierModal: { ...state.supplierModal, ...action.data } };
+    case actionTypes.LOAD_CARRIERS_SUCCEED:
+      return { ...state, carriers: action.result.data };
+    case actionTypes.TOGGLE_CARRIER_MODAL:
+      return { ...state, carrierModal: { ...state.carrierModal, ...action.data } };
     default:
       return state;
   }
@@ -611,6 +641,170 @@ export function changeReceiverStatus(id, status, loginId) {
       endpoint: 'v1/cwm/warehouse/receiver/status/update',
       method: 'post',
       data: { id, status, loginId },
+    },
+  };
+}
+
+export function loadSuppliers(whseCode, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SUPPLIERS,
+        actionTypes.LOAD_SUPPLIERS_SUCCEED,
+        actionTypes.LOAD_SUPPLIERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/suppliers/load',
+      method: 'get',
+      params: { whseCode, tenantId },
+    },
+  };
+}
+
+export function toggleSupplierModal(visible, supplier = {}) {
+  return {
+    type: actionTypes.TOGGLE_SUPPLIER_MODAL,
+    data: { visible, supplier },
+  };
+}
+
+export function addSupplier(data, tenantId, whseCode, loginId, ownerTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_SUPPLIER,
+        actionTypes.ADD_SUPPLIER_SUCCEED,
+        actionTypes.ADD_SUPPLIER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/supplier/add',
+      method: 'post',
+      data: { data, tenantId, whseCode, loginId, ownerTenantId },
+    },
+  };
+}
+
+export function changeSupplierStatus(id, status, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_SUPPLIER_STATUS,
+        actionTypes.UPDATE_SUPPLIER_STATUS_SUCCEED,
+        actionTypes.UPDATE_SUPPLIER_STATUS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/supplier/status/update',
+      method: 'post',
+      data: { id, status, loginId },
+    },
+  };
+}
+
+export function deleteSupplier(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_SUPPLIER,
+        actionTypes.DELETE_SUPPLIER_SUCCEED,
+        actionTypes.DELETE_SUPPLIER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/supplier/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function updateSupplier(data, id, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_SUPPLIER,
+        actionTypes.UPDATE_SUPPLIER_SUCCEED,
+        actionTypes.UPDATE_SUPPLIER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/supplier/update',
+      method: 'post',
+      data: { data, id, loginId },
+    },
+  };
+}
+
+export function loadCarriers(whseCode, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CARRIERS,
+        actionTypes.LOAD_CARRIERS_SUCCEED,
+        actionTypes.LOAD_CARRIERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/carriers/load',
+      method: 'get',
+      params: { whseCode, tenantId },
+    },
+  };
+}
+
+export function toggleCarrierModal(visible, carrier = {}) {
+  return {
+    type: actionTypes.TOGGLE_CARRIER_MODAL,
+    data: { visible, carrier },
+  };
+}
+
+export function addCarrier(data, tenantId, whseCode, loginId, ownerTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_CARRIER,
+        actionTypes.ADD_CARRIER_SUCCEED,
+        actionTypes.ADD_CARRIER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/carrier/add',
+      method: 'post',
+      data: { data, tenantId, whseCode, loginId, ownerTenantId },
+    },
+  };
+}
+
+export function changeCarrierStatus(id, status, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CARRIER_STATUS,
+        actionTypes.UPDATE_CARRIER_STATUS_SUCCEED,
+        actionTypes.UPDATE_CARRIER_STATUS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/carrier/status/update',
+      method: 'post',
+      data: { id, status, loginId },
+    },
+  };
+}
+
+export function deleteCarrier(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_CARRIER,
+        actionTypes.DELETE_CARRIER_SUCCEED,
+        actionTypes.DELETE_CARRIER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/carrier/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function updateCarrier(data, id, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CARRIER,
+        actionTypes.UPDATE_CARRIER_SUCCEED,
+        actionTypes.UPDATE_CARRIER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/carrier/update',
+      method: 'post',
+      data: { data, id, loginId },
     },
   };
 }

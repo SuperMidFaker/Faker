@@ -25,7 +25,7 @@ export function renderLoc(location, provinceFd = 'province', cityFd = 'city', co
   }
 }
 
-export function renderLocation(location, provinceFd = 'province', cityFd = 'city', countyFd = 'district', streetFd = 'street') {
+export function renderLocation(location, provinceFd = 'province', cityFd = 'city', countyFd = 'district', streetFd = 'street', delimiter = '-') {
   const names = [location[provinceFd]];
   if (location[cityFd] && !(location[cityFd] === '市辖区' || location[cityFd] === '县' || location[cityFd] === '省直辖县市')) {
     names.push(location[cityFd]);
@@ -36,7 +36,7 @@ export function renderLocation(location, provinceFd = 'province', cityFd = 'city
   if (location[streetFd]) {
     names.push(location[streetFd]);
   }
-  return names.join('-');
+  return names.join(delimiter);
 }
 
 export function renderConsignLoc(shipmt, field) {
@@ -46,10 +46,10 @@ export function renderConsignLoc(shipmt, field) {
   return renderLoc(shipmt, province, city, county);
 }
 
-export function renderConsignLocation(shipmt, field) {
+export function renderConsignLocation(shipmt, field, delimiter = '-') {
   const province = `${field}_province`;
   const city = `${field}_city`;
   const county = `${field}_district`;
   const street = `${field}_street`;
-  return renderLocation(shipmt, province, city, county, street);
+  return renderLocation(shipmt, province, city, county, street, delimiter);
 }

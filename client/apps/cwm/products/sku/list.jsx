@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Link } from 'react-router';
-import { Breadcrumb, Button, Collapse, Icon, Popconfirm, Input, Layout, Select, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import { Breadcrumb, Button, Collapse, Icon, Popconfirm, Input, Layout, Select, message, Table } from 'antd';
+import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -142,7 +142,7 @@ export default class CWMSkuList extends React.Component {
         </Popconfirm>
       </div>),
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadOwnerSkus(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -320,7 +320,7 @@ export default class CWMSkuList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
+                <DataTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
                   scroll={{ x: 1400 }} loading={loading}
                 />
               </div>

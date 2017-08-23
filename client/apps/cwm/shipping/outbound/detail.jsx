@@ -17,6 +17,7 @@ import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS } fro
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { WaybillDef } from './docDef';
+import Cascader from 'client/components/RegionCascader';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -25,6 +26,15 @@ const RadioButton = Radio.Button;
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
+
+const EXPRESS_TYPE = [
+  { text: '顺丰标快', value: '1' },
+  { text: '顺丰特惠', value: '2' },
+  { text: '顺丰次晨', value: '5' },
+  { text: '顺丰即日', value: '6' },
+  { text: '重货快运', value: '18' },
+  { text: '物流普运', value: '13' },
+];
 
 @injectIntl
 @connect(
@@ -51,6 +61,13 @@ export default class OutboundDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+
+// 第一单：顺丰标快--寄付月结--保价；
+// 第二单：顺丰特惠--到付--签回单；
+// 第三单：顺丰次晨--第三方付--代收货款；
+// 第四单：顺丰即日--寄付月结--子母件；
+// 第五单：重货快运--寄付月结；
+// 第六单：物流普运--寄付月结
   state = {
     allocated: true,
     pushedTask: false,
@@ -60,6 +77,18 @@ export default class OutboundDetail extends Component {
     tabKey: 'orderDetails',
     expressModalvisible: false,
     expressNum: 0,
+
+
+    phone: '15757129719',
+    address: '物流大道浦东物流股份有限公司',
+    contact: '徐天龙',
+    province: '上海市',
+    city: '市辖区',
+    district: '浦东新区',
+    street: '',
+
+    express_type: '1',
+    pay_method: '1',
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -136,11 +165,23 @@ export default class OutboundDetail extends Component {
   }
   handleWaybillPrint = (courierNo, courierNoSon, seq) => {
     const { outboundHead } = this.props;
+    const expressType = EXPRESS_TYPE.find(item => item.value === this.state.express_type).text;
+    const whseInfo = {
+      phone: this.state.phone,
+      address: this.state.address,
+      contact: this.state.contact,
+      province: this.state.province,
+      city: this.state.city,
+      district: this.state.district,
+      street: this.state.street,
+
+      express_type: expressType,
+    };
     this.setState({
       printedPickingList: true,
     });
     const { expressNum } = this.state;
-    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum, seq, outboundHead });
+    const docDefinition = WaybillDef({ ...this.props.waybill, courierNo, courierNoSon, expressNum, seq, outboundHead, whseInfo });
     window.pdfMake.fonts = {
       selfFont: {
         normal: 'msyh.ttf',
@@ -168,13 +209,34 @@ export default class OutboundDetail extends Component {
     this.setState({ expressModalvisible: true });
   }
   loadCourierNo = () => {
+    const expressInfo = {
+      phone: this.state.phone,
+      address: this.state.address,
+      contact: this.state.contact,
+      province: this.state.province,
+      city: this.state.city,
+      district: this.state.district,
+      street: this.state.street,
+      whse_name: this.props.defaultWhse.whse_name,
+      express_type: this.state.express_type,
+      pay_method: this.state.pay_method,
+    };
     this.props.loadCourierNo({
       soNo: this.props.outboundHead.so_no,
       outboundNo: this.props.params.outboundNo,
       tenantId: this.props.tenantId,
       expressNum: this.state.expressNum,
+      expressInfo,
     }).then(() => {
       this.props.loadOutboundHead(this.props.params.outboundNo);
+    });
+  }
+  handleRegionChange = (value) => {
+    this.setState({
+      province: value.province,
+      city: value.city,
+      district: value.district,
+      street: value.street,
     });
   }
   render() {
@@ -210,6 +272,8 @@ export default class OutboundDetail extends Component {
       width: 80,
       render: (col, row, index) => (<a onClick={() => this.handleWaybillPrint(courierNo[0], row.courier_no, index + 1)}><Icon type="printer" /></a>),
     }];
+    const { province, city, district, street } = this.state;
+    const regionValues = [province, city, district, street];
     return (
       <div>
         <Header className="page-header">
@@ -325,6 +389,18 @@ export default class OutboundDetail extends Component {
             >
               <FormItem label="单数" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
                 <Input value={this.state.expressNum} type="number" onChange={e => this.setState({ expressNum: Number(e.target.value) })} />
+              </FormItem>
+              <FormItem label="发货人" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+                <Input value={this.state.contact} type="text" onChange={e => this.setState({ contact: e.target.value })} />
+              </FormItem>
+              <FormItem label="地址" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+                <Cascader defaultRegion={regionValues} onChange={this.handleRegionChange} />
+              </FormItem>
+              <FormItem label="详细地址" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+                <Input value={this.state.address} type="text" onChange={e => this.setState({ address: e.target.value })} />
+              </FormItem>
+              <FormItem label="电话" labelCol={{ span: 4 }} wrapperCol={{ span: 8 }}>
+                <Input value={this.state.phone} type="text" onChange={e => this.setState({ phone: e.target.value })} />
               </FormItem>
             </Card>
             <Card title="快递单号" bodyStyle={{ padding: 0 }}>

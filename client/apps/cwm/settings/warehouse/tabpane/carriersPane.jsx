@@ -4,42 +4,37 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Table, Tag } from 'antd';
-import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
-import { loadWhse } from 'common/reducers/cwmContext';
+import { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
-import WhseOwnersModal from '../modal/whseOwnersModal';
-import OwnerControlModal from '../modal/ownerControlModal';
+import CarrierModal from '../modal/whseCarrierModal';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
+    loginId: state.account.loginId,
     tenantId: state.account.tenantId,
+    carriers: state.cwmWarehouse.carriers,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse }
+  { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus }
 )
-export default class CarriersPane extends Component {
+export default class SuppliersPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
     whseTenantId: PropTypes.number.isRequired,
-    whseOwners: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      owner_code: PropTypes.string,
-      owner_name: PropTypes.string.isRequired,
-    })),
   }
   state = {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
+    this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
+      this.props.loadCarriers(nextProps.whseCode, this.props.tenantId);
     }
   }
   columns = [{
@@ -48,8 +43,12 @@ export default class CarriersPane extends Component {
     width: 150,
   }, {
     title: '承运人名称',
-    dataIndex: 'ent_name',
+    dataIndex: 'name',
     width: 250,
+  }, {
+    title: '海关编码',
+    dataIndex: 'customs_code',
+    width: 150,
   }, {
     title: '状态',
     dataIndex: 'active',
@@ -62,7 +61,11 @@ export default class CarriersPane extends Component {
     },
   }, {
     title: '关联货主',
-    dataIndex: 'related_owners',
+    dataIndex: 'owner_partner_id',
+    render: (col) => {
+      const owner = this.props.whseOwners.find(item => item.owner_partner_id === col);
+      return owner ? owner.owner_name : '';
+    },
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
@@ -76,42 +79,45 @@ export default class CarriersPane extends Component {
   }, {
     title: '操作',
     width: 150,
-    render: record => (
+    dataIndex: 'OPS_COL',
+    render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
+        {record.active === 0 ? <RowUpdater onHit={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
+        <RowUpdater onHit={() => this.handleEditCarrier(record)} label="修改" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.deleteCarrier(record.id)} label="删除" row={record} />
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
-  handleOwnerControl = (ownerAuth) => {
-    this.props.showOwnerControlModal(ownerAuth);
-  }
-  changeOwnerStatus = (id, status) => {
-    this.props.changeOwnerStatus(id, status).then((result) => {
+  changeCarrierStatus = (id, status) => {
+    this.props.changeCarrierStatus(id, status).then((result) => {
       if (!result.error) {
-        this.handleOwnerLoad();
+        this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
       }
     });
   }
-  handleOwnerLoad = () => {
-    this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
-    if (this.props.whseCode === this.props.defaultWhse.code) {
-      this.props.loadWhse(this.props.whseCode, this.props.tenantId);
-    }
+  deleteCarrier = (id) => {
+    this.props.deleteCarrier(id).then((result) => {
+      if (!result.error) {
+        this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+      }
+    });
+  }
+  handleEditCarrier = (carrier) => {
+    this.props.toggleCarrierModal(true, carrier);
   }
   render() {
-    const { whseCode, whseTenantId, whseOwners } = this.props;
+    const { whseCode, carriers } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加承运人</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加供应商</Button>
         </div>
-        <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
-        <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
-        <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
+        <Table columns={this.columns} dataSource={carriers} rowKey="id" />
+        <CarrierModal whseCode={whseCode} />
       </div>
     );
   }

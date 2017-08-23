@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -174,7 +174,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     },
   }]
 
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadBatchApplyList(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -325,7 +325,7 @@ export default class SHFTZBatchDeclList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
+                <DataTable columns={columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
                   scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
               </div>

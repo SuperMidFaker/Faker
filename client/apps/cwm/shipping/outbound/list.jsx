@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
 import { Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -238,7 +238,7 @@ export default class OutboundList extends React.Component {
   }
   render() {
     const { defaultWhse, whses, owners, loading, filters } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadOutbounds(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -311,7 +311,7 @@ export default class OutboundList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1300 }} loading={loading} />
+              <DataTable columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1300 }} loading={loading} />
             </div>
           </div>
         </Content>

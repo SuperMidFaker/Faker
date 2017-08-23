@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -121,7 +121,6 @@ export default class SHFTZReleaseList extends React.Component {
     title: '状态',
     dataIndex: 'status',
     width: 100,
-    fixed: 'right',
     render: (o) => {
       if (o === 0) {
         return (<Badge status="default" text="待备案" />);
@@ -141,7 +140,7 @@ export default class SHFTZReleaseList extends React.Component {
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadReleaseRegDatas(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -285,7 +284,7 @@ export default class SHFTZReleaseList extends React.Component {
                 </div>
               </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
+                <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
                   indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
                 />
                 <ShippingDockPanel />
