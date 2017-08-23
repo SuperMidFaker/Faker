@@ -4,19 +4,21 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Table, Tag } from 'antd';
-import { showCarrierModal, loadCarriers, changeEnterpriseStatus } from 'common/reducers/cwmWarehouse';
+import { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
-import CarrierModal from '../modal/carrierModal';
+import CarrierModal from '../modal/whseCarrierModal';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
+    loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     carriers: state.cwmWarehouse.carriers,
+    whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showCarrierModal, loadCarriers, changeEnterpriseStatus }
+  { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus }
 )
 export default class SuppliersPane extends Component {
   static propTypes = {
@@ -37,19 +39,19 @@ export default class SuppliersPane extends Component {
   }
   columns = [{
     title: '承运人代码',
-    dataIndex: 'ent_code',
+    dataIndex: 'code',
     width: 150,
   }, {
     title: '承运人名称',
-    dataIndex: 'ent_name',
+    dataIndex: 'name',
     width: 250,
   }, {
     title: '海关编码',
-    dataIndex: 'ent_cus_code',
+    dataIndex: 'customs_code',
     width: 150,
   }, {
     title: '状态',
-    dataIndex: 'status',
+    dataIndex: 'active',
     render: (o) => {
       if (o) {
         return <Tag color="green">正常</Tag>;
@@ -59,7 +61,11 @@ export default class SuppliersPane extends Component {
     },
   }, {
     title: '关联货主',
-    dataIndex: 'related_owners',
+    dataIndex: 'owner_partner_id',
+    render: (col) => {
+      const owner = this.props.whseOwners.find(item => item.owner_partner_id === col);
+      return owner ? owner.owner_name : '';
+    },
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
@@ -76,25 +82,39 @@ export default class SuppliersPane extends Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => (
       <span>
-        {record.status === 0 ? <RowUpdater onHit={() => this.changeEnterpriseStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeEnterpriseStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onHit={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.handleEditCarrier(record)} label="修改" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.deleteCarrier(record.id)} label="删除" row={record} />
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
-  changeEnterpriseStatus = (id, status) => {
-    this.props.changeEnterpriseStatus(id, status).then((result) => {
+  changeCarrierStatus = (id, status) => {
+    this.props.changeCarrierStatus(id, status).then((result) => {
       if (!result.error) {
         this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
       }
     });
+  }
+  deleteCarrier = (id) => {
+    this.props.deleteCarrier(id).then((result) => {
+      if (!result.error) {
+        this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+      }
+    });
+  }
+  handleEditCarrier = (carrier) => {
+    this.props.toggleCarrierModal(true, carrier);
   }
   render() {
     const { whseCode, carriers } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showCarrierModal()}>添加供应商</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加供应商</Button>
         </div>
         <Table columns={this.columns} dataSource={carriers} rowKey="id" />
         <CarrierModal whseCode={whseCode} />

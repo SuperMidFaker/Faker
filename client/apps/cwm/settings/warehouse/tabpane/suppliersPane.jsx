@@ -4,19 +4,21 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Table, Tag } from 'antd';
-import { showSuppliersModal, loadSuppliers, changeEnterpriseStatus } from 'common/reducers/cwmWarehouse';
+import { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
-import SuppliersModal from '../modal/suppliersModal';
+import SuppliersModal from '../modal/whseSuppliersModal';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
   state => ({
+    loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     suppliers: state.cwmWarehouse.suppliers,
+    whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showSuppliersModal, loadSuppliers, changeEnterpriseStatus }
+  { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus }
 )
 export default class SuppliersPane extends Component {
   static propTypes = {
@@ -37,19 +39,19 @@ export default class SuppliersPane extends Component {
   }
   columns = [{
     title: '供应商代码',
-    dataIndex: 'ent_code',
+    dataIndex: 'code',
     width: 150,
   }, {
     title: '供应商名称',
-    dataIndex: 'ent_name',
+    dataIndex: 'name',
     width: 250,
   }, {
     title: '海关编码',
-    dataIndex: 'ent_cus_code',
+    dataIndex: 'customs_code',
     width: 150,
   }, {
     title: '状态',
-    dataIndex: 'status',
+    dataIndex: 'active',
     render: (o) => {
       if (o) {
         return <Tag color="green">正常</Tag>;
@@ -59,7 +61,11 @@ export default class SuppliersPane extends Component {
     },
   }, {
     title: '关联货主',
-    dataIndex: 'related_owners',
+    dataIndex: 'owner_partner_id',
+    render: (col) => {
+      const owner = this.props.whseOwners.find(item => item.owner_partner_id === col);
+      return owner ? owner.owner_name : '';
+    },
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
@@ -76,25 +82,39 @@ export default class SuppliersPane extends Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => (
       <span>
-        {record.status === 0 ? <RowUpdater onHit={() => this.changeEnterpriseStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeEnterpriseStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onHit={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.handleEditSupplier(record)} label="修改" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={() => this.deleteSupplier(record.id)} label="删除" row={record} />
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
-  changeEnterpriseStatus = (id, status) => {
-    this.props.changeEnterpriseStatus(id, status).then((result) => {
+  changeSupplierStatus = (id, status, loginId) => {
+    this.props.changeSupplierStatus(id, status, loginId).then((result) => {
       if (!result.error) {
         this.props.loadSuppliers(this.props.whseCode, this.props.tenantId);
       }
     });
+  }
+  deleteSupplier = (id) => {
+    this.props.deleteSupplier(id).then((result) => {
+      if (!result.error) {
+        this.props.loadSuppliers(this.props.whseCode, this.props.tenantId);
+      }
+    });
+  }
+  handleEditSupplier = (supplier) => {
+    this.props.toggleSupplierModal(true, supplier);
   }
   render() {
     const { whseCode, suppliers } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showSuppliersModal()}>添加供应商</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供应商</Button>
         </div>
         <Table columns={this.columns} dataSource={suppliers} rowKey="id" />
         <SuppliersModal whseCode={whseCode} />
