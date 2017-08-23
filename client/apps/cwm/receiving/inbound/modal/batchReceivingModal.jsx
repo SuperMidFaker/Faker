@@ -95,7 +95,7 @@ export default class BatchReceivingModal extends Component {
         <FormItem {...formItemLayout} label="收货库位">
           <LocationSelect style={{ width: 160 }} onSelect={this.handleLocationChange} value={this.state.location} showSearch />
         </FormItem>
-        <FormItem {...formItemLayout} label="收货库位">
+        <FormItem {...formItemLayout} label="收货时间">
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss"
             value={receivedDate ? moment(receivedDate) : null} onChange={this.handleReceivedDateChange}
           />
