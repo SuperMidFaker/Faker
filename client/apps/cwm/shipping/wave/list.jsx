@@ -168,6 +168,9 @@ export default class WaveList extends React.Component {
     message.info('当前仓库已切换');
     this.handleReload(value, 1);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { whses, defaultWhse, filters, loading, owners } = this.props;
     const dataSource = new DataTable.DataSource({
@@ -200,6 +203,16 @@ export default class WaveList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all" key="all">全部货主</Option>
+        {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
+      </Select>
+    </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -224,27 +237,9 @@ export default class WaveList extends React.Component {
           <div className="page-header-tools" />
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all" key="all">全部货主</Option>
-                {
-                  owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-                }
-              </Select>
-              <div className="toolbar-right" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading} />
-            </div>
-          </div>
+          <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading}
+            toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+          />
         </Content>
       </QueueAnim>
     );

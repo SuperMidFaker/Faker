@@ -199,6 +199,9 @@ export default class SHFTZTransferInList extends React.Component {
     const filters = { ...this.props.listFilter, ownerView: value };
     this.handleEntryListLoad(1, this.props.whse.code, filters);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { entryList, listFilter, whses, whse, owners } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
@@ -209,6 +212,19 @@ export default class SHFTZTransferInList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('entrySearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <OptGroup>
+          <Option value="all">全部货主</Option>
+          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
+            )}
+        </OptGroup>
+      </Select>
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -258,37 +274,14 @@ export default class SHFTZTransferInList extends React.Component {
             </div>
           </Header>
           <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar placeholder={this.msg('entrySearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
-                <span />
-                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
-                  onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-                >
-                  <OptGroup>
-                    <Option value="all">全部货主</Option>
-                    {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-                      search={`${data.partner_code}${data.name}`}
-                    >{data.name}
-                    </Option>)
-                    )}
-                  </OptGroup>
-                </Select>
-                <div className="toolbar-right" />
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                </div>
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
-                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-                />
-              </div>
-              <ReceivingDockPanel />
-              <OrderDockPanel />
-              <DelegationDockPanel />
-              <ShipmentDockPanel />
-            </div>
+            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
+              toolbarActions={toolbarActions} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            />
+            <ReceivingDockPanel />
+            <OrderDockPanel />
+            <DelegationDockPanel />
+            <ShipmentDockPanel />
           </Content>
         </Layout>
       </Layout>

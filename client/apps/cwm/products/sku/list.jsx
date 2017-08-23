@@ -250,6 +250,9 @@ export default class CWMSkuList extends React.Component {
   handleApplyPackingRule = () => {
     this.props.openApplyPackingRuleModal();
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { skulist, owner, whse, whses, loading, syncing, listFilter } = this.props;
     const rowSelection = {
@@ -259,6 +262,12 @@ export default class CWMSkuList extends React.Component {
       },
     };
     this.dataSource.remotes = skulist;
+    const toolbarActions = (<span>
+      <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.sku} />
+    </span>);
+    const bulkActions = (<span>
+      <Button onClick={this.handleApplyPackingRule}>采用包装规则</Button>
+    </span>);
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider">
@@ -311,20 +320,10 @@ export default class CWMSkuList extends React.Component {
             </div>}
           </Header>
           <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.sku} />
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  <Button onClick={this.handleApplyPackingRule}>采用包装规则</Button>
-                </div>
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <DataTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
-                  scroll={{ x: 1400 }} loading={loading}
-                />
-              </div>
-            </div>
+            <DataTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
+              scroll={{ x: 1400 }} loading={loading} toolbarActions={toolbarActions} bulkActions={bulkActions}
+              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            />
           </Content>
         </Layout>
         <Sider
