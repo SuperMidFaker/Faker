@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio, Modal, Form, Input,
-  Table, Tag, Select } from 'antd';
+  Table, Tag, Select, Dropdown, Menu } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -15,6 +15,7 @@ import ShippingDetailsPane from './tabpane/shippingDetailsPane';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo } from 'common/reducers/cwmOutbound';
 import PrintPickList from './billsPrint/printPIckList';
 import PrintShippingList from './billsPrint/printShippingList';
+import PrintShippingConfirm from './billsPrint/printShippingConfirm';
 import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -295,6 +296,19 @@ export default class OutboundDetail extends Component {
     }];
     const { province, city, district, street } = this.state;
     const regionValues = [province, city, district, street];
+    const printMenu = (
+      <Menu>
+        <Menu.Item>
+          <PrintPickList outboundNo={this.props.params.outboundNo} />
+        </Menu.Item>
+        <Menu.Item>
+          <PrintShippingList outboundNo={this.props.params.outboundNo} />
+        </Menu.Item>
+        <Menu.Item>
+          <PrintShippingConfirm outboundNo={this.props.params.outboundNo} />
+        </Menu.Item>
+      </Menu>
+    );
     return (
       <div>
         <Header className="page-header">
@@ -315,14 +329,9 @@ export default class OutboundDetail extends Component {
               <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" />{regStatus.text}</Button>
             </Tooltip>
             }
-            {this.state.tabKey === 'pickingDetails' && <Tooltip title="打印拣货单" placement="bottom">
-              <PrintPickList outboundNo={this.props.params.outboundNo} />
-            </Tooltip>
-            }
-            {this.state.tabKey === 'shippingDetails' && <Tooltip title="打印发货清单" placement="bottom">
-              <PrintShippingList outboundNo={this.props.params.outboundNo} />
-            </Tooltip>
-            }
+            <Dropdown overlay={printMenu}>
+              <Button size="large" icon="printer" />
+            </Dropdown>
             <Tooltip title="打印顺丰速运面单" placement="bottom">
               <Button size="large" onClick={this.showExpressModal} >
                 <Logixon type="sf-express" />
