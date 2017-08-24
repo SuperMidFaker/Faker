@@ -114,7 +114,7 @@ export default class HeadCard extends Component {
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
                 rules: [{ required: true, message: 'Please select reg_type!' }],
-                initialValue: soHead && soHead.bonded_intype,
+                initialValue: soHead && soHead.bonded_outtype,
               })(
                 <RadioGroup>
                   {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}

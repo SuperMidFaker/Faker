@@ -39,6 +39,20 @@ export default class AddDetailModal extends Component {
     amount: 0,
     skus: [],
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.product !== this.props.product) {
+      const product = nextProps.product;
+      product.desc_cn = product.name;
+      this.setState({
+        product,
+      });
+      this.props.form.setFieldsValue({
+        product_no: product.product_no,
+        order_qty: product.order_qty,
+        unit_price: product.unit_price,
+      });
+    }
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.props.hideDetailModal();
