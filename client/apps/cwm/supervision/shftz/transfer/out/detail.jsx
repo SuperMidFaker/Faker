@@ -185,6 +185,18 @@ export default class SHFTZTransferOutDetail extends Component {
     width: 250,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
+    title: '转出数量',
+    dataIndex: 'out_qty',
+    width: 100,
+  }, {
+    title: '转出单位',
+    dataIndex: 'out_unit',
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
     title: '数量',
     dataIndex: 'qty',
     width: 100,
@@ -219,19 +231,6 @@ export default class SHFTZTransferOutDetail extends Component {
       const text = country ? `${country.value}| ${country.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
-  }, {
-    title: '运费',
-    dataIndex: 'freight',
-    width: 100,
-  }, {
-    title: '运费币制',
-    dataIndex: 'freight_currency',
-    width: 100,
-    render: (o) => {
-      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
-      return text && text.length > 0 && <Tag>{text}</Tag>;
-    },
   }]
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
@@ -256,20 +255,6 @@ export default class SHFTZTransferOutDetail extends Component {
         title: '出库明细ID',
         dataIndex: 'ftz_rel_detail_id',
         width: 150,
-      });
-    }
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value) {
-      columns.splice(6, 0, {
-        title: '转出数量',
-        dataIndex: 'out_qty',
-      }, {
-        title: '转出单位',
-        dataIndex: 'out_unit',
-        render: (o) => {
-          const unit = this.props.units.filter(cur => cur.value === o)[0];
-          const text = unit ? `${unit.value}| ${unit.text}` : o;
-          return text && text.length > 0 && <Tag>{text}</Tag>;
-        },
       });
     }
     return (
@@ -333,32 +318,10 @@ export default class SHFTZTransferOutDetail extends Component {
                 {relRegs.map(reg => (
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
-                      {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
-                      <Row>
-                        {relSo.ftz_rel_no &&
-                        <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="出库单号" field={relSo.ftz_rel_no} />
-                        </Col>
-                        }
-                        <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
-                            type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
-                          />
-                        </Col>
-                      </Row>}
-                      {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
-                      <Row>
-                        <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="海关出库单号" field={reg.ftz_rel_no} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                          />
-                        </Col>
-                      </Row>}
                       {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value &&
                       <Row>
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="分拨出库单号" field={reg.ftz_rel_no} editable={relEditable}
+                          <InfoItem size="small" addonBefore="海关出库单号" field={reg.ftz_rel_no} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>

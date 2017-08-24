@@ -110,7 +110,7 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
           {bonded &&
-          <Col span={6} offset={2}>
+          <Col span={8} offset={2}>
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
                 rules: [{ required: true, message: 'Please select reg_type!' }],

@@ -57,7 +57,7 @@ export default class OwnersPane extends Component {
       if (o) {
         return <Tag color="green">正常</Tag>;
       } else {
-        return <Tag>停用</Tag>;
+        return <Tag color="red">停用</Tag>;
       }
     },
   }, {

@@ -175,7 +175,11 @@ export default class AddDetailModal extends Component {
             </Select>
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
-            <Input value={product.desc_cn} />
+            {getFieldDecorator('desc_cn', {
+              initialValue: product.desc_cn,
+            })(
+              <Input />
+            )}
           </FormItem>
           <FormItem label="库别" {...formItemLayout}>
             {getFieldDecorator('virtual_whse', {
