@@ -128,6 +128,19 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
+    title: '库位',
+    dataIndex: 'location',
+    width: 100,
+    render: (o) => {
+      if (o) {
+        return <Tag>{o}</Tag>;
+      }
+    },
+  }, {
+    title: '库别',
+    width: 120,
+    dataIndex: 'virtual_whse',
+  }, {
     title: '库存数量',
     dataIndex: 'stock_qty',
     width: 100,
@@ -168,19 +181,6 @@ export default class AllocatingModal extends Component {
         return <span className="text-error">{text}</span>;
       }
     },
-  }, {
-    title: '库位',
-    dataIndex: 'location',
-    width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
-  }, {
-    title: '库别',
-    width: 120,
-    dataIndex: 'virtual_whse',
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
@@ -263,13 +263,21 @@ export default class AllocatingModal extends Component {
     width: 120,
     dataIndex: 'virtual_whse',
   }, {
-    title: '追踪ID',
-    dataIndex: 'trace_id',
-    width: 160,
+    title: '采购订单号',
+    dataIndex: 'po_no',
+    width: 125,
+  }, {
+    title: 'ASN编号',
+    dataIndex: 'asn_no',
+    width: 125,
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
     width: 150,
+  }, {
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 160,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',
@@ -284,10 +292,6 @@ export default class AllocatingModal extends Component {
     dataIndex: 'inbound_timestamp',
     width: 100,
     render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
-  }, {
-    title: '采购订单号',
-    dataIndex: 'po_no',
-    width: 150,
   }, {
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',
