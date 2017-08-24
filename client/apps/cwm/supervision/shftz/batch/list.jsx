@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
-import DataTable from 'client/components/DataTable';
+import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -174,7 +174,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     },
   }]
 
-  dataSource = new DataTable.DataSource({
+  dataSource = new Table.DataSource({
     fetcher: params => this.props.loadBatchApplyList(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -248,9 +248,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     const filters = { ...this.props.listFilter, ownerView: value };
     this.handleBatchApplyLoad(1, this.props.whse.code, filters);
   }
-  handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [] });
-  }
+
   render() {
     const { listFilter, whses, whse, owners, batchlist } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded);
@@ -265,20 +263,6 @@ export default class SHFTZBatchDeclList extends React.Component {
       columns = this.manifColumns;
     }
     this.dataSource.remotes = batchlist;
-    const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
-      <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
-        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-      >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}
-          </Option>)
-            )}
-        </OptGroup>
-      </Select>
-    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -319,10 +303,33 @@ export default class SHFTZBatchDeclList extends React.Component {
             </div>
           </Header>
           <Content className="main-content" key="main">
-            <DataTable columns={columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
-              toolbarActions={toolbarActions} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            />
+            <div className="page-body">
+              <div className="toolbar">
+                <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+                <span />
+                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+                  onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+                >
+                  <OptGroup>
+                    <Option value="all">全部货主</Option>
+                    {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+                      search={`${data.partner_code}${data.name}`}
+                    >{data.name}
+                    </Option>)
+                    )}
+                  </OptGroup>
+                </Select>
+                <div className="toolbar-right" />
+                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                </div>
+              </div>
+              <div className="panel-body table-panel table-fixed-layout">
+                <Table columns={columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
+                  scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+                />
+              </div>
+            </div>
           </Content>
         </Layout>
         <BatchDeclModal reload={this.handleBatchDeclLoad} />
