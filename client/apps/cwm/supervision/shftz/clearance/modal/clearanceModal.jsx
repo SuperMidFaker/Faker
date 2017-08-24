@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Radio, Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
+import HeadForm from '../form/headForm';
 import messages from '../../message.i18n';
 import { closeClearanceModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalClear } from 'common/reducers/cwmShFtz';
 
@@ -13,8 +14,6 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -85,7 +84,7 @@ export default class ClearanceModal extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   portionRegColumns = [{
-    title: '普通出库单号',
+    title: '出库单号',
     dataIndex: 'ftz_rel_no',
     width: 300,
   }, {
@@ -249,31 +248,27 @@ export default class ClearanceModal extends Component {
   }
 
   render() {
-    const { relNo, relDateRange, ietype, ownerCusCode } = this.state;
-    const portionForm = (<Form layout="inline">
-      <FormItem>
-        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主" value={ownerCusCode}>
-          {this.props.owners.map(data => (
-            <Option key={data.customs_code} value={data.customs_code}>
-              {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
-            </Option>))}
-        </Select>
-      </FormItem>
-      <FormItem label="单号">
-        <Input value={relNo} onChange={this.handleRelNoChange} />
-      </FormItem>
-      <FormItem label="出库日期">
-        <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
-      </FormItem>
-      <Button type="primary" ghost onClick={this.handleNormalOutsQuery}>查询普通出库单</Button>
-      <span style={{ marginLeft: 10 }} />
-      <RadioGroup value={ietype} onChange={this.handleIetypeChange}>
-        <RadioButton value="import">进口</RadioButton>
-        <RadioButton value="export">出口</RadioButton>
-      </RadioGroup>
-    </Form>);
+    const { relNo, relDateRange, ownerCusCode } = this.state;
+    const extraForm = (
+      <Form layout="inline" style={{ marginLeft: 16 }}>
+        <FormItem label="货主">
+          <Select onChange={this.handleOwnerChange} style={{ width: 200 }} placeholder="请选择货主" value={ownerCusCode}>
+            {this.props.owners.map(data => (
+              <Option key={data.customs_code} value={data.customs_code}>
+                {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
+              </Option>))}
+          </Select>
+        </FormItem>
+        <FormItem label="单号">
+          <Input value={relNo} onChange={this.handleRelNoChange} />
+        </FormItem>
+        <FormItem label="出库日期">
+          <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
+        </FormItem>
+        <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
+      </Form>);
     const title = (<div>
-      <span>普通出库清关</span>
+      <span>新建出库清关</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchClear}>保存</Button>
@@ -283,15 +278,22 @@ export default class ClearanceModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card title={portionForm} bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.normalRegs} rowKey="id"
-            scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-          />
+        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+          <HeadForm />
         </Card>
-        <Card title="清关委托明细" bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
-            scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-          />
+        <Card title="普通出库单" extra={extraForm} bodyStyle={{ padding: 0 }} noHovering>
+          <div className="table-panel table-fixed-layout">
+            <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.normalRegs} rowKey="id"
+              scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            />
+          </div>
+        </Card>
+        <Card title="报关清单明细" bodyStyle={{ padding: 0 }} noHovering>
+          <div className="table-panel table-fixed-layout">
+            <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+              scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            />
+          </div>
         </Card>
       </Modal>
     );
