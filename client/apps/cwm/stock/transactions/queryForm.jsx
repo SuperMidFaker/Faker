@@ -91,10 +91,14 @@ export default class QueryForm extends React.Component {
               })(<Input placeholder="入库/出库/移库单号" />)}
             </FormItem>
           </Col>
-          <Col span={4}>
+          <Col span={3}>
             <FormItem>
               <Button type="primary" size="large" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
+            </FormItem>
+          </Col>
+          <Col span={1}>
+            <FormItem>
               <a style={{ marginLeft: 8, fontSize: 12 }} onClick={this.toggleForm}>
                 {this.state.expandForm ? '收起' : '展开'} <Icon type={this.state.expandForm ? 'up' : 'down'} />
               </a>
