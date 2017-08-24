@@ -110,6 +110,7 @@ export default class SHFTZRelDetail extends Component {
             notification.warn({
               message: '结果异常',
               description: result.data.errorMsg,
+              duration: 15,
             });
           } else {
             notification.success({
@@ -127,6 +128,7 @@ export default class SHFTZRelDetail extends Component {
           notification.error({
             message: '操作失败',
             description: result.error.message,
+            duration: 15,
           });
         }
       });
@@ -140,6 +142,7 @@ export default class SHFTZRelDetail extends Component {
           notification.warn({
             message: '结果异常',
             description: result.data.errorMsg,
+            duration: 15,
           });
         } else {
           this.props.loadRelDetails(soNo);
@@ -159,6 +162,7 @@ export default class SHFTZRelDetail extends Component {
         notification.error({
           message: '操作失败',
           description: result.error.message,
+          duration: 15,
         });
       }
     });
@@ -333,31 +337,25 @@ export default class SHFTZRelDetail extends Component {
                 {relRegs.map(reg => (
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
-                      {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
+                      {// 普通出库
+                      relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
                       <Row>
                         {relSo.ftz_rel_no &&
-                        <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="出库单号" field={relSo.ftz_rel_no} />
+                        <Col sm={24} lg={4}>
+                          <InfoItem size="small" addonBefore="普通出库单号" field={relSo.ftz_rel_no} />
                         </Col>
                         }
-                        <Col sm={24} lg={6}>
+                        <Col sm={24} lg={4}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
                             type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
                           />
                         </Col>
                       </Row>}
-                      {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
+                      {// 分拨出库
+                      relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
                       <Row>
-                        <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="海关出库单号" field={reg.ftz_rel_no} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                          />
-                        </Col>
-                      </Row>}
-                      {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value &&
-                      <Row>
-                        <Col sm={24} lg={6}>
+                        <Col sm={24} lg={4}>
                           <InfoItem size="small" addonBefore="分拨出库单号" field={reg.ftz_rel_no} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />

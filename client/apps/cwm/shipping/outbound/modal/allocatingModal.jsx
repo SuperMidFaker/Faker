@@ -138,7 +138,7 @@ export default class AllocatingModal extends Component {
     },
   }, {
     title: '库别',
-    width: 120,
+    width: 100,
     dataIndex: 'virtual_whse',
   }, {
     title: '库存数量',
@@ -184,6 +184,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '入库日期',
     dataIndex: 'inbound_timestamp',
+    width: 100,
     render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
   }, {
     title: '追踪ID',
@@ -209,27 +210,27 @@ export default class AllocatingModal extends Component {
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 150,
+    width: 200,
   }, {
     title: '产品序列号',
     dataIndex: 'serial_no',
-    width: 150,
+    width: 200,
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
-    width: 150,
+    width: 200,
   }, {
     title: 'ASN编号',
     dataIndex: 'asn_no',
-    width: 150,
+    width: 200,
   }, {
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',
-    width: 150,
+    width: 200,
   }, {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
-    width: 150,
+    width: 200,
   }]
 
   allocatedColumns = [{

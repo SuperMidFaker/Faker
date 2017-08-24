@@ -110,6 +110,7 @@ export default class SHFTZTransferOutDetail extends Component {
             notification.warn({
               message: '结果异常',
               description: result.data.errorMsg,
+              duration: 15,
             });
           } else {
             notification.success({
@@ -127,6 +128,7 @@ export default class SHFTZTransferOutDetail extends Component {
           notification.error({
             message: '操作失败',
             description: result.error.message,
+            duration: 15,
           });
         }
       });
@@ -140,6 +142,7 @@ export default class SHFTZTransferOutDetail extends Component {
           notification.warn({
             message: '结果异常',
             description: result.data.errorMsg,
+            duration: 15,
           });
         } else {
           this.props.loadRelDetails(soNo);
@@ -159,6 +162,7 @@ export default class SHFTZTransferOutDetail extends Component {
         notification.error({
           message: '操作失败',
           description: result.error.message,
+          duration: 15,
         });
       }
     });

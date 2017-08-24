@@ -91,6 +91,7 @@ export default class SHFTZTransferInDetail extends Component {
           notification.warn({
             message: '结果异常',
             description: result.data.errorMsg,
+            duration: 15,
           });
         } else {
           this.props.loadEntryDetails({ asnNo });
@@ -108,6 +109,7 @@ export default class SHFTZTransferInDetail extends Component {
         notification.error({
           message: '操作失败',
           description: result.error.message,
+          duration: 15,
         });
       }
     });
