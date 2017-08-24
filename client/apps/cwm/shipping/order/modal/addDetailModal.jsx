@@ -85,7 +85,7 @@ export default class AddDetailModal extends Component {
             unit: product.unit,
             unit_price: product.unit_price,
             product_sku: product.product_sku,
-            currency: Number(product.currency),
+            currency: product.currency && Number(product.currency),
             amount: this.state.amount,
             ...values,
           });
@@ -247,7 +247,7 @@ export default class AddDetailModal extends Component {
                 <Input type="number" placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
               )}
               <Input type="number" placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
-              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
+              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={String(product.currency)}
                 style={{ width: '30%' }} onChange={this.handleCurrChange}
               >
                 {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}

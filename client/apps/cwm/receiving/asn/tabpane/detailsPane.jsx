@@ -142,7 +142,7 @@ export default class DetailsPane extends Component {
       title: '币制',
       dataIndex: 'currency',
       className: 'cell-align-center',
-      render: o => o && <span>{`${o}|${currencies.find(currency => Number(currency.code) === o).name}`}</span>,
+      render: o => o && <span>{`${o}|${currencies.find(currency => Number(currency.code) === Number(o)).name}`}</span>,
     }, {
       title: '操作',
       width: 80,
