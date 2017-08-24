@@ -164,6 +164,12 @@ export default class AddDetailModal extends Component {
       product,
     });
   }
+  handleDescChange = (e) => {
+    const product = { ...this.state.product };
+    this.setState({
+      product: { ...product, desc_cn: e.target.value },
+    });
+  }
   render() {
     const { form: { getFieldDecorator }, visible, productNos, units, currencies, poNo } = this.props;
     const { skus } = this.state;
@@ -190,7 +196,7 @@ export default class AddDetailModal extends Component {
             </Select>
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
-            <Input value={product.desc_cn} />
+            <Input value={product.desc_cn} onChange={this.handleDescChange} />
           </FormItem>
           <FormItem label="库别" {...formItemLayout}>
             {getFieldDecorator('virtual_whse', {
