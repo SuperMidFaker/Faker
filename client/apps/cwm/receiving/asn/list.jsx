@@ -11,6 +11,7 @@ import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import ExcelUploader from 'client/components/ExcelUploader';
+import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
@@ -21,7 +22,7 @@ import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -363,27 +364,31 @@ export default class ReceivingASNList extends React.Component {
     const bulkActions = filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>;
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                  whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
-                }
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('receivingASN')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="pending">{CWM_ASN_STATUS.PENDING.text}</RadioButton>
-            <RadioButton value="inbound">{CWM_ASN_STATUS.INBOUND.text}</RadioButton>
-            <RadioButton value="partial">{CWM_ASN_STATUS.DISCREPANT.text}</RadioButton>
-            <RadioButton value="completed">{CWM_ASN_STATUS.COMPLETED.text}</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {
+                    whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
+                  }
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('receivingASN')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="pending">{CWM_ASN_STATUS.PENDING.text}</RadioButton>
+              <RadioButton value="inbound">{CWM_ASN_STATUS.INBOUND.text}</RadioButton>
+              <RadioButton value="partial">{CWM_ASN_STATUS.DISCREPANT.text}</RadioButton>
+              <RadioButton value="completed">{CWM_ASN_STATUS.COMPLETED.text}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             {filters.status === 'completed' && filters.ownerCode !== 'all' &&
             <Dropdown.Button size="large" overlay={<Menu />}>
               <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
@@ -407,8 +412,8 @@ export default class ReceivingASNList extends React.Component {
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content" key="main">
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
