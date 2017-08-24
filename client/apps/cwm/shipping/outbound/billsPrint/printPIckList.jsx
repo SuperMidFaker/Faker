@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button } from 'antd';
+import { Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
@@ -124,7 +124,9 @@ export default class Print extends Component {
   render() {
     const { pickDetails } = this.props;
     return (
-      <Button size="large" icon="printer" disabled={!pickDetails.length > 0} onClick={this.handlePrint} />
+      <div>
+        <Icon type={pickDetails.length > 0 ? 'check' : 'close'} /> <a disabled={!pickDetails.length > 0} onClick={this.handlePrint}>拣货单</a>
+      </div>
     );
   }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button } from 'antd';
+import { Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 
 @injectIntl
@@ -14,7 +14,7 @@ import { intlShape, injectIntl } from 'react-intl';
   {}
 )
 
-export default class Print extends Component {
+export default class PrintShippingList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
@@ -120,7 +120,9 @@ export default class Print extends Component {
   render() {
     const { shipDetails } = this.props;
     return (
-      <Button size="large" icon="printer" disabled={!shipDetails.length > 0} onClick={this.handlePrint} />
+      <div>
+        <Icon type={shipDetails.length > 0 ? 'check' : 'close'} /> <a disabled={!shipDetails.length > 0} onClick={this.handlePrint}>发货清单</a>
+      </div>
     );
   }
 }
