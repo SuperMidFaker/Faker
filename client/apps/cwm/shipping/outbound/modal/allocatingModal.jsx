@@ -128,14 +128,27 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
+    title: '库位',
+    dataIndex: 'location',
+    width: 100,
+    render: (o) => {
+      if (o) {
+        return <Tag>{o}</Tag>;
+      }
+    },
+  }, {
+    title: '库别',
+    width: 100,
+    dataIndex: 'virtual_whse',
+  }, {
     title: '库存数量',
     dataIndex: 'stock_qty',
-    width: 100,
+    width: 125,
     className: 'cell-align-right text-emphasis',
   }, {
     title: '可用数量',
     dataIndex: 'avail_qty',
-    width: 100,
+    width: 125,
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
@@ -147,7 +160,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '分配数量',
     dataIndex: 'alloc_qty',
-    width: 100,
+    width: 125,
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
@@ -159,7 +172,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '冻结数量',
     dataIndex: 'frozen_qty',
-    width: 100,
+    width: 125,
     className: 'cell-align-right',
     render: (text) => {
       if (text === 0) {
@@ -169,18 +182,10 @@ export default class AllocatingModal extends Component {
       }
     },
   }, {
-    title: '库位',
-    dataIndex: 'location',
+    title: '入库日期',
+    dataIndex: 'inbound_timestamp',
     width: 100,
-    render: (o) => {
-      if (o) {
-        return <Tag>{o}</Tag>;
-      }
-    },
-  }, {
-    title: '库别',
-    width: 120,
-    dataIndex: 'virtual_whse',
+    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
@@ -192,44 +197,40 @@ export default class AllocatingModal extends Component {
     className: 'cell-align-center',
     render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
   }, {
-    title: '入库明细ID',
-    dataIndex: 'ftz_ent_filed_id',
-    width: 120,
-    render: o => o ? <span className="text-info">{o}</span> : <span className="text-error">无备案信息</span>,
-  }, {
     title: '分拨货物',
     dataIndex: 'portion',
     width: 80,
     className: 'cell-align-center',
     render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
   }, {
+    title: '入库明细ID',
+    dataIndex: 'ftz_ent_filed_id',
+    width: 120,
+    render: o => o ? <span className="text-info">{o}</span> : <span className="text-error">无备案信息</span>,
+  }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 150,
+    width: 200,
   }, {
     title: '产品序列号',
     dataIndex: 'serial_no',
-    width: 100,
+    width: 200,
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
-    width: 100,
+    width: 200,
   }, {
     title: 'ASN编号',
     dataIndex: 'asn_no',
-    width: 100,
+    width: 200,
   }, {
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',
-    width: 100,
+    width: 200,
   }, {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
-    width: 100,
-  }, {
-    title: '入库日期',
-    dataIndex: 'inbound_timestamp',
-    render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
+    width: 200,
   }]
 
   allocatedColumns = [{
@@ -263,9 +264,13 @@ export default class AllocatingModal extends Component {
     width: 120,
     dataIndex: 'virtual_whse',
   }, {
-    title: '追踪ID',
-    dataIndex: 'trace_id',
-    width: 160,
+    title: '采购订单号',
+    dataIndex: 'po_no',
+    width: 125,
+  }, {
+    title: 'ASN编号',
+    dataIndex: 'asn_no',
+    width: 125,
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
@@ -275,19 +280,25 @@ export default class AllocatingModal extends Component {
     dataIndex: 'serial_no',
     width: 100,
   }, {
-    title: '货物属性',
-    dataIndex: 'bonded',
-    width: 80,
-    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
-  }, {
     title: '入库日期',
     dataIndex: 'inbound_timestamp',
     width: 100,
     render: inboundts => inboundts && moment(inboundts).format('YYYY.MM.DD'),
   }, {
-    title: '采购订单号',
-    dataIndex: 'po_no',
-    width: 150,
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 160,
+  }, {
+    title: '货物属性',
+    dataIndex: 'bonded',
+    width: 80,
+    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+  }, {
+    title: '分拨货物',
+    dataIndex: 'portion',
+    width: 80,
+    className: 'cell-align-center',
+    render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
   }, {
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',

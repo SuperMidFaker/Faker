@@ -56,7 +56,7 @@ export default class SuppliersPane extends Component {
       if (o) {
         return <Tag color="green">正常</Tag>;
       } else {
-        return <Tag>停用</Tag>;
+        return <Tag color="red">停用</Tag>;
       }
     },
   }, {
@@ -69,12 +69,12 @@ export default class SuppliersPane extends Component {
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
-    width: 120,
+    width: 140,
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
-    width: 120,
+    width: 140,
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '操作',

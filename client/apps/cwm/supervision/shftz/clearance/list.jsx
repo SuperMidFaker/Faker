@@ -64,12 +64,12 @@ export default class SHFTZClearanceList extends React.Component {
     width: 150,
     fixed: 'left',
   }, {
-    title: '货主',
+    title: '提货单位(货主)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '申报单位',
+    title: '报关代理',
     dataIndex: 'customs_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {

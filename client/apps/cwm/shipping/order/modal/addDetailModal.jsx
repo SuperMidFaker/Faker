@@ -39,6 +39,20 @@ export default class AddDetailModal extends Component {
     amount: 0,
     skus: [],
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.product !== this.props.product) {
+      const product = nextProps.product;
+      product.desc_cn = product.name;
+      this.setState({
+        product,
+      });
+      this.props.form.setFieldsValue({
+        product_no: product.product_no,
+        order_qty: product.order_qty,
+        unit_price: product.unit_price,
+      });
+    }
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.props.hideDetailModal();
@@ -71,7 +85,7 @@ export default class AddDetailModal extends Component {
             unit: product.unit,
             unit_price: product.unit_price,
             product_sku: product.product_sku,
-            currency: Number(product.currency),
+            currency: product.currency && Number(product.currency),
             amount: this.state.amount,
             ...values,
           });
@@ -149,6 +163,12 @@ export default class AddDetailModal extends Component {
       product,
     });
   }
+  handleDescChange = (e) => {
+    const product = { ...this.state.product };
+    this.setState({
+      product: { ...product, desc_cn: e.target.value },
+    });
+  }
   render() {
     const { form: { getFieldDecorator }, visible, productNos, units, currencies } = this.props;
     const { skus } = this.state;
@@ -175,7 +195,7 @@ export default class AddDetailModal extends Component {
             </Select>
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
-            <Input value={product.desc_cn} />
+            <Input value={product.desc_cn} onChange={this.handleDescChange} />
           </FormItem>
           <FormItem label="库别" {...formItemLayout}>
             {getFieldDecorator('virtual_whse', {
@@ -227,7 +247,7 @@ export default class AddDetailModal extends Component {
                 <Input type="number" placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
               )}
               <Input type="number" placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
-              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency}
+              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={String(product.currency)}
                 style={{ width: '30%' }} onChange={this.handleCurrChange}
               >
                 {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}

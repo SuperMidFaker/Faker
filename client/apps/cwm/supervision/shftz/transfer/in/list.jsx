@@ -65,7 +65,7 @@ export default class SHFTZTransferInList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'ANS编号',
+    title: 'ASN编号',
     dataIndex: 'asn_no',
     width: 180,
     fixed: 'left',

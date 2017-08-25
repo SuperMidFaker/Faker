@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
+import HeadForm from '../form/headForm';
 import messages from '../../message.i18n';
 import { closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
 
@@ -84,11 +85,11 @@ export default class BatchDeclModal extends Component {
   portionRegColumns = [{
     title: '分拨出库单号',
     dataIndex: 'ftz_rel_no',
-    width: 300,
+    width: 180,
   }, {
     title: '货主',
     dataIndex: 'owner_name',
-    width: 150,
+    width: 200,
   }, {
     title: '收货单位',
     dataIndex: 'receiver_name',
@@ -252,25 +253,26 @@ export default class BatchDeclModal extends Component {
 
   render() {
     const { relNo, relDateRange, ownerCusCode } = this.state;
-    const portionForm = (<Form layout="inline">
-      <FormItem>
-        <Select onChange={this.handleOwnerChange} style={{ width: 300 }} value={ownerCusCode}>
-          {this.props.owners.map(data => (
-            <Option key={data.customs_code} value={data.customs_code}>
-              {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
-            </Option>))}
-        </Select>
-      </FormItem>
-      <FormItem label="单号">
-        <Input value={relNo} onChange={this.handleRelNoChange} />
-      </FormItem>
-      <FormItem label="出库日期">
-        <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
-      </FormItem>
-      <Button type="primary" ghost onClick={this.handlePortionOutsQuery}>查询分拨出库单</Button>
-    </Form>);
+    const extraForm = (
+      <Form layout="inline">
+        <FormItem label="货主">
+          <Select onChange={this.handleOwnerChange} placeholder="请选择货主" style={{ width: 200 }} value={ownerCusCode}>
+            {this.props.owners.map(data => (
+              <Option key={data.customs_code} value={data.customs_code}>
+                {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
+              </Option>))}
+          </Select>
+        </FormItem>
+        <FormItem label="单号">
+          <Input value={relNo} onChange={this.handleRelNoChange} />
+        </FormItem>
+        <FormItem label="出库日期">
+          <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
+        </FormItem>
+        <Button type="primary" ghost size="large" onClick={this.handlePortionOutsQuery}>查找</Button>
+      </Form>);
     const title = (<div>
-      <span>分拨集中报关</span>
+      <span>新建集中报关</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>
@@ -280,15 +282,22 @@ export default class BatchDeclModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card title={portionForm} bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
-            scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-          />
+        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+          <HeadForm />
         </Card>
-        <Card title="报关申请明细" bodyStyle={{ padding: 0 }}>
-          <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
-            scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-          />
+        <Card title="分拨出库单" extra={extraForm} bodyStyle={{ padding: 0 }} noHovering>
+          <div className="table-panel table-fixed-layout">
+            <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+              scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            />
+          </div>
+        </Card>
+        <Card title="报关申请明细" bodyStyle={{ padding: 0 }} noHovering>
+          <div className="table-panel table-fixed-layout">
+            <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+              scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            />
+          </div>
         </Card>
       </Modal>
     );

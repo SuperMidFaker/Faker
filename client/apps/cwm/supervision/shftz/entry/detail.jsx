@@ -146,6 +146,7 @@ export default class SHFTZEntryDetail extends Component {
           notification.warn({
             message: '结果异常',
             description: result.data.errorMsg,
+            duration: 15,
           });
         } else {
           notification.success({
@@ -163,6 +164,7 @@ export default class SHFTZEntryDetail extends Component {
         notification.error({
           message: '操作失败',
           description: result.error.message,
+          duration: 15,
         });
       }
     });
@@ -175,6 +177,7 @@ export default class SHFTZEntryDetail extends Component {
           notification.warn({
             message: '结果异常',
             description: result.data.errorMsg,
+            duration: 15,
           });
         } else {
           this.props.loadEntryDetails({ asnNo });
@@ -192,6 +195,7 @@ export default class SHFTZEntryDetail extends Component {
         notification.error({
           message: '操作失败',
           description: result.error.message,
+          duration: 15,
         });
       }
     });
@@ -203,6 +207,7 @@ export default class SHFTZEntryDetail extends Component {
         notification.error({
           message: '操作失败',
           description: result.error.message,
+          duration: 15,
         });
       }
     });
