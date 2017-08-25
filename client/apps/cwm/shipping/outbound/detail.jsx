@@ -212,7 +212,7 @@ export default class OutboundDetail extends Component {
       ...this.props.waybill,
       courierNo,
       courierNoSon,
-      expressNum,
+      expressNum: Number(expressNum),
       seq,
       outboundHead: { ...outboundHead, origincode: '021' },
       whseInfo,
@@ -254,7 +254,7 @@ export default class OutboundDetail extends Component {
       city: this.state.city,
       district: this.state.district,
       street: this.state.street,
-      whse_name: this.props.defaultWhse.whse_name,
+      whse_name: this.props.defaultWhse.name,
       express_type: this.state.express_type,
       pay_method: this.state.pay_method,
       productName: `${outboundProducts[0] ? outboundProducts[0].name : ''} ${outboundHead.total_qty}`,
@@ -263,7 +263,7 @@ export default class OutboundDetail extends Component {
       soNo: this.props.outboundHead.so_no,
       outboundNo: this.props.params.outboundNo,
       tenantId: this.props.tenantId,
-      expressNum: this.state.expressNum,
+      expressNum: Number(this.state.expressNum),
       expressInfo,
     }).then(() => {
       this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -279,6 +279,7 @@ export default class OutboundDetail extends Component {
   }
   render() {
     const { defaultWhse, outboundHead } = this.props;
+    console.log(defaultWhse);
     const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];

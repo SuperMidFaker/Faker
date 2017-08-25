@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
@@ -20,6 +21,16 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
 
+function fetchData({ state, dispatch }) {
+  dispatch(loadWaves({
+    whseCode: state.cwmContext.defaultWhse.code,
+    tenantId: state.account.tenantId,
+    pageSize: state.cwmShippingOrder.wave.pageSize,
+    current: state.cwmShippingOrder.wave.current,
+    filters: state.cwmShippingOrder.waveFilters,
+  }));
+}
+@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -49,10 +60,6 @@ export default class WaveList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
-  }
-  componentWillMount() {
-    const filters = { ...this.props.filters, ownerCode: 'all' };
-    this.handleReload(null, 1, filters);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -206,7 +213,7 @@ export default class WaveList extends React.Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>

@@ -266,7 +266,7 @@ export default class ReceivingInboundList extends React.Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('inboundPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
