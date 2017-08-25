@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, transferToOwnWhse } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -29,10 +29,12 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantCode: state.account.code,
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
     entryRegs: state.cwmShFtz.entry_regs,
+    owners: state.cwmContext.whseAttrs.owners,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -47,7 +49,7 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadEntryDetails, updateEntryReg, pairEntryRegProducts }
+  { loadEntryDetails, updateEntryReg, pairEntryRegProducts, transferToOwnWhse }
 )
 @connectNav({
   depth: 3,
@@ -189,6 +191,18 @@ export default class SHFTZTransferInDetail extends Component {
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateEntryReg(preRegNo, field, value);
   }
+  handleTransToWhs = () => {
+    const { params, entryAsn, tenantId, tenantCode, username, owners } = this.props;
+    const owner = owners.find(own => own.name === entryAsn.owner_name);
+    this.props.transferToOwnWhse({
+      asnNo: params.asnNo,
+      whseCode: entryAsn.whse_code,
+      tenantId,
+      tenantCode,
+      username,
+      owner,
+    });
+  }
   render() {
     const { entryAsn, entryRegs, whse } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
@@ -211,9 +225,8 @@ export default class SHFTZTransferInDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {this.state.comparable && <Tooltip title="" placement="bottom">
-              <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>
-            </Tooltip>}
+            {this.state.comparable && <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
+            {entryAsn.reg_status > 0 && <Button size="large" icon="export" onClick={this.handleTransToWhs}>转出到仓库</Button>}
           </div>
         </Header>
         <Content className="main-content">

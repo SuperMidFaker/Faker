@@ -35,6 +35,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'CANCEL_ENR', 'CANCEL_ENR_SUCCEED', 'CANCEL_ENR_FAIL',
   'CANCEL_RER', 'CANCEL_RER_SUCCEED', 'CANCEL_RER_FAIL',
   'EDIT_GNAME', 'EDIT_GNAME_SUCCEED', 'EDIT_GNAME_FAIL',
+  'EDIT_REL_WT', 'EDIT_REL_WT_SUCCEED', 'EDIT_REL_WT_FAIL',
+  'TRANSFER_TO_OWN', 'TRANSFER_TO_OWN_SUCCEED', 'TRANSFER_TO_OWN_FAIL',
 ]);
 
 const initialState = {
@@ -661,6 +663,36 @@ export function editGname(data) {
         actionTypes.EDIT_GNAME_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/gname/edit',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function editReleaseWt(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EDIT_REL_WT,
+        actionTypes.EDIT_REL_WT_SUCCEED,
+        actionTypes.EDIT_REL_WT_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/rel/wt/edit',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function transferToOwnWhse(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.TRANSFER_TO_OWN,
+        actionTypes.TRANSFER_TO_OWN_SUCCEED,
+        actionTypes.TRANSFER_TO_OWN_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/transfer/to/ownwhse',
       method: 'post',
       data,
     },

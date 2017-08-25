@@ -346,9 +346,9 @@ export default class OutboundDetail extends Component {
               <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" />{regStatus.text}</Button>
             </Tooltip>
             }
-            <Dropdown overlay={printMenu}>
+            {this.state.tabKey === 'pickingDetails' && <Dropdown overlay={printMenu}>
               <Button size="large" icon="printer" />
-            </Dropdown>
+            </Dropdown>}
             <Tooltip title="打印顺丰速运面单" placement="bottom">
               <Button size="large" onClick={this.showExpressModal} >
                 <Logixon type="sf-express" />
