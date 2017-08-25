@@ -56,6 +56,8 @@ export default class CreateOrder extends Component {
       message.error('请选择客户');
     } else if (formData.cust_shipmt_goods_type === null) {
       message.error('请选择货物类型');
+    } else if (!formData.flow_id) {
+      message.error('请选择流程');
     } else {
       this.props.submitOrder({ formData, tenantId, loginId, username, tenantName }).then((result) => {
         if (result.error) {

@@ -355,7 +355,7 @@ export function queryEntryRegInfos(asnNo, whseCode) {
   };
 }
 
-export function pairEntryRegProducts(asnNo, whseCode) {
+export function pairEntryRegProducts(asnNo, whseCode, tenantId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -365,7 +365,7 @@ export function pairEntryRegProducts(asnNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/matchpair',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode },
+      data: { asn_no: asnNo, whse: whseCode, tenantId, loginName },
     },
   };
 }
