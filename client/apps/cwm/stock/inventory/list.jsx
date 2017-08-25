@@ -9,6 +9,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
+import PackagePopover from '../../common/popover/packagePopover';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 
@@ -69,7 +70,7 @@ export default class StockInventoryList extends React.Component {
     dataIndex: 'product_sku',
     width: 180,
     sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
+    render: (o, row) => (<PackagePopover ownerPartnerId={row.owner_partner_id} sku={o} />),
   }, {
     title: this.msg('descCN'),
     dataIndex: 'desc_cn',
@@ -87,15 +88,9 @@ export default class StockInventoryList extends React.Component {
     dataIndex: 'inbound_date',
     sorter: true,
   }, {
-    title: this.msg('unit'),
-    width: 120,
-    dataIndex: 'unit',
-    sorter: true,
-    render: (text, row) => this.renderNormalCol(text, row),
-  }, {
     title: this.msg('totalQty'),
     width: 100,
-    dataIndex: 'total_qty',
+    dataIndex: 'stock_qty',
     className: 'cell-align-right text-emphasis',
     render: (text, row) => this.renderNormalCol(text, row),
   }, {

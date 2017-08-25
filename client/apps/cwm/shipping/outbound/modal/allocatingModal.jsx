@@ -423,6 +423,7 @@ export default class AllocatingModal extends Component {
         <Option value="asn_no">ASN编号</Option>
         <Option value="ftz_ent_no">海关入库单号</Option>
         <Option value="cus_decl_no">报关单号</Option>
+        <Option value="virtual_whse">库别</Option>
       </Select>
     );
     const inventoryQueryForm = (
