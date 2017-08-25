@@ -60,6 +60,7 @@ function pdfBody(data) {
         ],
       },
     },
+    // 代收货款\n卡号：0123456789\n¥3000元
     { style: 'table',
       table: {
         widths: ['2%', '98%'],
@@ -91,13 +92,13 @@ function pdfBody(data) {
           { text: '个性化包装费：', border: [false, false, false, false] },
           { text: '转寄协议客户', border: [false, false, true, false] }],
         [{ text: '第三方地区：', border: [true, false, false, false] },
-          { text: '声明价值：2304.23 元', border: [false, false, false, false] },
+          { text: '声明价值：', border: [false, false, false, false] },
           { text: '超长超重附件费', border: [false, false, false, false] },
           { text: '', border: [false, false, true, false] }],
         [{ text: '费用合计：', border: [true, false, false, false] },
           { text: '报价费用：', border: [false, false, false, false] },
           { text: '易碎件：', border: [false, false, false, false] },
-          { text: '', border: [false, false, true, false] }],
+          { text: data.whseInfo.return_tracking_no ? `签回单号：${data.whseInfo.return_tracking_no}` : '', border: [false, false, true, false] }],
       ],
     },
   };
@@ -161,13 +162,13 @@ function pdfBody(data) {
           { text: '个性化包装费：', border: [false, false, false, false] },
           { text: '转寄协议客户', border: [false, false, true, false] }],
         [{ text: '第三方地区：', border: [true, false, false, false] },
-          { text: '声明价值：2304.23 元', border: [false, false, false, false] },
+          { text: '声明价值：', border: [false, false, false, false] },
           { text: '超长超重附件费', border: [false, false, false, false] },
           { text: '', border: [false, false, true, false] }],
         [{ text: '费用合计：', border: [true, false, false, false] },
           { text: '报价费用：', border: [false, false, false, false] },
           { text: '易碎件：', border: [false, false, false, false] },
-          { text: '', border: [false, false, true, false] }],
+          { text: data.whseInfo.return_tracking_no ? `签回单号：${data.whseInfo.return_tracking_no}` : '', border: [false, false, true, false] }],
       ],
     },
   };
@@ -200,5 +201,181 @@ export function WaybillDef(data) {
     },
   };
   docDefinition.content = pdfBody(data);
+  return docDefinition;
+}
+
+function podPdfBody(data) {
+  const barcode0 = textToBase64Barcode(data.whseInfo.return_tracking_no, `回单号 ${data.whseInfo.return_tracking_no}`);
+  const barcode1 = textToBase64Barcode(data.whseInfo.return_tracking_no, `回单号 ${data.whseInfo.return_tracking_no}`);
+  let pdfcontent = [];
+  const imgCod = true; // 判断是否需要显示COD E 的字段
+
+  const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
+  if (imgCod) {
+    titleBody.push({ image: data.pod, width: 70, alignment: 'center', border: [false, true, false, false] });
+  } else {
+    titleBody.push({ text: '', border: [false, true, false, false] });
+  }
+  titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
+  const receiverAddr = `${data.outboundHead.receiver_contact} ${data.outboundHead.receiver_phone}\n${Location.renderConsignLocation(data.outboundHead, 'receiver', '')}${data.outboundHead.receiver_address}`;
+  const senderAddr = `${data.whseInfo.contact} ${data.whseInfo.phone}\n${Location.renderLocation(data.whseInfo, 'province', 'city', 'district', 'street', '')}${data.whseInfo.address}`;
+  pdfcontent = [
+    { style: 'table',
+      table: {
+        widths: ['25%', '50%', '25%'],
+        body: [titleBody],
+      },
+    },
+    { style: 'table',
+      table: {
+        widths: ['60%', '40%'],
+        body: [
+          [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
+            { text: '签单返还', fontSize: 12, alignment: 'center' }],
+          ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
+          [{ text: '', fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
+        ],
+      },
+    },
+    { style: 'table',
+      table: {
+        widths: ['2%', '98%'],
+        body: [
+          // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
+          [{ text: '目的地', border: [true, false] }, { text: data.outboundHead.origincode, fontSize: 16, border: [true, false, true] }],
+          ['收件人', {
+            text: senderAddr,
+            fontSize: 10,
+          }],
+          ['寄件人', { text: receiverAddr, fontSize: 10 }],
+        ],
+      },
+      layout: {
+        paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
+      },
+    },
+  ];
+  const detailTab = { style: 'table',
+    table: {
+      widths: ['25%', '25%', '25%', '25%'],
+      body: [
+        [{ text: `付款方式：${data.whseInfo.pay_method}`, border: [true, false, false, false] },
+          { text: '计费重量：', border: [false, false, false, false] },
+          { text: '标准化包装费：', border: [false, false, false, false] },
+          { text: '签单返还：', border: [false, false, true, false] }],
+        [{ text: '月结账号：', border: [true, false, false, false] },
+          { text: '实际重量：', border: [false, false, false, false] },
+          { text: '个性化包装费：', border: [false, false, false, false] },
+          { text: '转寄协议客户', border: [false, false, true, false] }],
+        [{ text: '第三方地区：', border: [true, false, false, false] },
+          { text: '声明价值：', border: [false, false, false, false] },
+          { text: '超长超重附件费', border: [false, false, false, false] },
+          { text: '', border: [false, false, true, false] }],
+        [{ text: '费用合计：', border: [true, false, false, false] },
+          { text: '报价费用：', border: [false, false, false, false] },
+          { text: '易碎件：', border: [false, false, false, false] },
+          { text: `主运单号：${data.courierNo}`, border: [false, false, true, false] }],
+      ],
+    },
+  };
+  pdfcontent.push(detailTab);
+  pdfcontent.push(
+    { style: 'table',
+      table: {
+        widths: ['2%', '58%', '20%', '20%'],
+        body: [
+          [{ rowSpan: 2, text: '托寄物' }, { rowSpan: 2, colSpan: 2, text: data.productName, alignment: 'center', fontSize: 12 }, '',
+          { text: '', fontSize: 10, alignment: 'center', border: [true, true, true, false] }],
+          ['', '', '', { text: '自寄 自取', alignment: 'center', border: [true, false, true, false] }],
+          [{ rowSpan: 2, text: '备注' }, { text: '', rowSpan: 2 }, { rowSpan: 2, text: '收件员：\n寄件日期：\n派件员：' },
+          { text: '签名', border: [true, true, true, false] }],
+          ['', '', '', { text: '月     日', alignment: 'right', border: [true, false, true, true] }],
+        ],
+      },
+    }
+  );
+  pdfcontent.push(
+    { table: {
+      widths: ['30%', '70%'],
+      body: [
+        [{ image: data.sf3, width: 70, alignment: 'center' },
+        { image: barcode1, width: 150, alignment: 'center' }],
+      ],
+    },
+    }
+  );
+  pdfcontent.push(
+    { style: 'table',
+      table: {
+        widths: ['2%', '98%'],
+        body: [
+          [{
+            text: '收件人',
+            border: [true, false, true, false],
+          }, {
+            text: senderAddr,
+            fontSize: 10,
+            border: [true, false, true, false],
+          }],
+          ['寄件人', { text: receiverAddr, fontSize: 10 }],
+        ],
+      },
+      layout: {
+        paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
+      },
+    }
+  );
+  const detailTab2 = { style: 'table',
+    table: {
+      widths: ['25%', '25%', '25%', '25%'],
+      body: [
+        [{ text: `付款方式：${data.whseInfo.pay_method}`, border: [true, false, false, false] },
+          { text: '计费重量：', border: [false, false, false, false] },
+          { text: '标准化包装费：', border: [false, false, false, false] },
+          { text: '签单返还：', border: [false, false, true, false] }],
+        [{ text: '月结账号：', border: [true, false, false, false] },
+          { text: '实际重量：', border: [false, false, false, false] },
+          { text: '个性化包装费：', border: [false, false, false, false] },
+          { text: '转寄协议客户', border: [false, false, true, false] }],
+        [{ text: '第三方地区：', border: [true, false, false, false] },
+          { text: '声明价值：', border: [false, false, false, false] },
+          { text: '超长超重附件费', border: [false, false, false, false] },
+          { text: '', border: [false, false, true, false] }],
+        [{ text: '费用合计：', border: [true, false, false, false] },
+          { text: '报价费用：', border: [false, false, false, false] },
+          { text: '易碎件：', border: [false, false, false, false] },
+          { text: `主运单号：${data.courierNo}`, border: [false, false, true, false] }],
+      ],
+    },
+  };
+  pdfcontent.push(detailTab2);
+  pdfcontent.push(
+    { style: 'table',
+      table: {
+        widths: ['100%'],
+        body: [
+          [{ text: '客户自定义内容\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域', alignment: 'center' }],
+        ],
+      },
+    }
+  );
+  return pdfcontent;
+}
+
+export function podWaybillDef(data) {
+  const docDefinition = {
+    pageSize: 'A5',
+    pageMargins: [25, 25],
+    content: [],
+    styles: {
+      table: {
+        fontSize: 7,
+      },
+    },
+    defaultStyle: {
+      font: 'selfFont',
+    },
+  };
+  docDefinition.content = podPdfBody(data);
   return docDefinition;
 }

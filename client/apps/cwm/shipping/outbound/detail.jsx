@@ -98,8 +98,9 @@ export default class OutboundDetail extends Component {
     district: '浦东新区',
     street: '',
 
-    express_type: '1',
+    express_type: '13',
     pay_method: '1',
+    insure: 0,
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -189,20 +190,33 @@ export default class OutboundDetail extends Component {
 
       express_type: expressType,
       pay_method: payMethod,
+      return_tracking_no: '',
     };
     this.setState({
       printedPickingList: true,
     });
     const { expressNum } = this.state;
+    // podWaybillDef
+    // const docDefinition = podWaybillDef({
+    //   ...this.props.waybill,
+    //   courierNo,
+    //   courierNoSon,
+    //   expressNum,
+    //   seq,
+    //   outboundHead: {...outboundHead, origincode: '021'},
+    //   whseInfo,
+    //   productName: `${outboundProducts[0] ? outboundProducts[0].name : ''} ${outboundHead.total_qty}`
+    // });
     const docDefinition = WaybillDef({
       ...this.props.waybill,
       courierNo,
       courierNoSon,
       expressNum,
       seq,
-      outboundHead,
+      outboundHead: { ...outboundHead, origincode: '021' },
       whseInfo,
-      productName: outboundProducts[0] ? outboundProducts[0].name : '' });
+      productName: `${outboundProducts[0] ? outboundProducts[0].name : ''} ${outboundHead.total_qty}`,
+    });
     window.pdfMake.fonts = {
       selfFont: {
         normal: 'msyh.ttf',
@@ -230,6 +244,7 @@ export default class OutboundDetail extends Component {
     this.setState({ expressModalvisible: true });
   }
   loadCourierNo = () => {
+    const { outboundHead, outboundProducts } = this.props;
     const expressInfo = {
       phone: this.state.phone,
       address: this.state.address,
@@ -241,6 +256,7 @@ export default class OutboundDetail extends Component {
       whse_name: this.props.defaultWhse.whse_name,
       express_type: this.state.express_type,
       pay_method: this.state.pay_method,
+      productName: `${outboundProducts[0] ? outboundProducts[0].name : ''} ${outboundHead.total_qty}`,
     };
     this.props.loadCourierNo({
       soNo: this.props.outboundHead.so_no,
@@ -413,7 +429,7 @@ export default class OutboundDetail extends Component {
                 </Button>}
             >
               <FormItem label="单数" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-                <Input value={this.state.expressNum} type="number" onChange={e => this.setState({ expressNum: Number(e.target.value) })} />
+                <Input value={this.state.expressNum} type="number" onChange={e => this.setState({ expressNum: e.target.value })} />
               </FormItem>
               <FormItem label="发货人" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Input value={this.state.contact} type="text" onChange={e => this.setState({ contact: e.target.value })} />
@@ -436,6 +452,9 @@ export default class OutboundDetail extends Component {
                 <Select placeholder="付款方式" value={this.state.pay_method} onChange={value => this.setState({ pay_method: value })} style={{ width: '100%' }}>
                   {PAY_METHODS.map(item => (<Option value={item.value}>{item.text}</Option>))}
                 </Select>
+              </FormItem>
+              <FormItem label="保价金额" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+                <Input value={this.state.insure} type="number" onChange={e => this.setState({ insure: e.target.value })} />
               </FormItem>
             </Card>
             <Card title="快递单号" bodyStyle={{ padding: 0 }}>

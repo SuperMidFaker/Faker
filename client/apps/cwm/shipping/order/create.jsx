@@ -56,7 +56,7 @@ export default class CreateShippingOrder extends Component {
       receiver_city: '',
       receiver_district: '',
       receiver_street: '',
-      receiver_region_code: '',
+      receiver_region_code: null,
     },
   }
   componentWillUnmount() {
