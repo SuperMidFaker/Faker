@@ -361,22 +361,22 @@ export default class ReceivingModal extends Component {
         disabled={!!row.trace_id}
       />),
   }, {
-    title: '拓展属性1',
+    title: '扩展属性1',
     width: 100,
     dataIndex: 'attrib_1_string',
     render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_1_string')} disabled={!!row.trace_id} />,
   }, {
-    title: '拓展属性2',
+    title: '扩展属性2',
     width: 100,
     dataIndex: 'attrib_2_string',
     render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_2_string')} disabled={!!row.trace_id} />,
   }, {
-    title: '拓展属性3',
+    title: '扩展属性3',
     width: 100,
     dataIndex: 'attrib_3_string',
     render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_3_string')} disabled={!!row.trace_id} />,
   }, {
-    title: '拓展属性4',
+    title: '扩展属性4',
     width: 100,
     dataIndex: 'attrib_4_string',
     render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_4_string')} disabled={!!row.trace_id} />,
