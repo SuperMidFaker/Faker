@@ -9,7 +9,7 @@ import { intlShape, injectIntl } from 'react-intl';
   state => ({
     defaultWhse: state.cwmContext.defaultWhse,
     outboundHead: state.cwmOutbound.outboundFormHead,
-    shipDetails: state.cwmOutbound.shipDetails,
+    pickDetails: state.cwmOutbound.pickDetails,
   }),
   {}
 )
@@ -24,19 +24,15 @@ export default class PrintShippingList extends Component {
     const header = [
       { columns: [
         { text: `客户名称:   ${outboundHead.owner_name}`, style: 'content', width: '60%' },
-        { text: `订单编号:   ${outboundHead.cust_order_no}`, style: 'content', width: '40%' },
+        { text: `订单编号:   ${outboundHead.cust_order_no || ''}`, style: 'content', width: '40%' },
       ] },
-      { text: '送货地址', style: 'content' },
+      { text: `送货地址:   ${outboundHead.receiver_address || ''}`, style: 'content' },
       { text: '附赠品', style: 'content' },
     ];
     return header;
   }
   pdfTable = () => {
-    const { shipDetails } = this.props;
-    // const shipDetails = [
-    //   { product_no: '12121', name: '药物', shipped_qty: 10 },
-    //   { product_no: '42323', name: '牛奶', shipped_qty: 12 },
-    // ];
+    const { pickDetails } = this.props;
     const body = [];
     body.push([
       { text: '序号', style: 'tableHeader', alignment: 'center' },
@@ -44,19 +40,15 @@ export default class PrintShippingList extends Component {
       { text: '产品描述', style: 'tableHeader', alignment: 'center' },
       { text: '数量', style: 'tableHeader', alignment: 'center' },
     ]);
-    for (let i = 0; i < shipDetails.length; i++) {
-      const sp = shipDetails[i];
+    for (let i = 0; i < pickDetails.length; i++) {
+      const sp = pickDetails[i];
       body.push([i + 1, sp.product_no, sp.name, sp.shipped_qty]);
     }
     return body;
   }
   pdfFoot = () => {
-    const { shipDetails } = this.props;
-    // const shipDetails = [
-    //   { product_no: '12121', name: '药物', shipped_qty: 10 },
-    //   { product_no: '42323', name: '牛奶', shipped_qty: 12 },
-    // ];
-    const total = shipDetails.reduce((res, bsf) => ({
+    const { pickDetails } = this.props;
+    const total = pickDetails.reduce((res, bsf) => ({
       shipped_qty: (res.shipped_qty || 0) + (bsf.shipped_qty || 0),
     }), {
       shipped_qty: 0,
@@ -75,7 +67,7 @@ export default class PrintShippingList extends Component {
           margin: [0, 20, 0, 20],
         },
         content: {
-          fontSize: 13,
+          fontSize: 12,
           margin: [10, 0, 5, 10],
         },
         table: {
@@ -118,10 +110,10 @@ export default class PrintShippingList extends Component {
     window.pdfMake.createPdf(docDefinition).open();
   }
   render() {
-    const { shipDetails } = this.props;
+    const { pickDetails } = this.props;
     return (
       <div>
-        <Icon type={shipDetails.length > 0 ? 'check' : 'close'} /> <a disabled={!shipDetails.length > 0} onClick={this.handlePrint}>发货清单</a>
+        <Icon type={pickDetails.length > 0 ? 'check' : 'close'} /> <a disabled={!pickDetails.length > 0} onClick={this.handlePrint}>发货清单</a>
       </div>
     );
   }
