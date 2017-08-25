@@ -46,6 +46,7 @@ const initialState = {
   },
   clearanceModal: {
     visible: false,
+    ownerCusCode: '',
   },
   batchout_regs: [],
   entryList: {
