@@ -9,8 +9,9 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, fileRelTransfers,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg } from 'common/reducers/cwmShFtz';
+  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -55,7 +56,8 @@ function fetchData({ dispatch, params }) {
     fileRelTransfers,
     fileRelPortionouts,
     queryPortionoutInfos,
-    cancelRelReg }
+    cancelRelReg,
+    editReleaseWt }
 )
 @connectNav({
   depth: 3,
@@ -212,7 +214,8 @@ export default class SHFTZTransferOutDetail extends Component {
   }, {
     title: '毛重',
     dataIndex: 'gross_wt',
-    width: 100,
+    width: 130,
+    render: (o, record) => <EditableCell value={o} onSave={value => this.handleWtChange(value, record.id)} />,
   }, {
     title: '金额',
     dataIndex: 'amount',
@@ -236,6 +239,10 @@ export default class SHFTZTransferOutDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
+  handleWtChange = (val, id) => {
+    const change = { gross_wt: val };
+    this.props.editReleaseWt({ change, id });
+  }
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
   }
