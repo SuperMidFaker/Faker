@@ -87,13 +87,26 @@ export default class SHFTZTransferInDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleEnqueryPairing = () => {
     const asnNo = this.props.params.asnNo;
-    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code).then((result) => {
+    const tenantId = this.props.tenantId;
+    const loginName = this.props.username;
+    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, tenantId, loginName).then((result) => {
       if (!result.error) {
-        if (result.data.errorMsg) {
+        if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
+          let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
+              `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
+          if (remainFtzMsg) {
+            remainFtzMsg = `东方支付入库单剩余以下未配: ${remainFtzMsg}`;
+          }
+          let remainPrdtMsg = result.data.remainProducts.map(rps =>
+              `${rps.product_no}-${rps.hscode}-${rps.name} 数量: ${rps.expect_qty}`).join('\n');
+          if (remainPrdtMsg) {
+            remainPrdtMsg = `订单剩余以下未配: ${remainPrdtMsg}`;
+          }
           notification.warn({
-            message: '结果异常',
-            description: result.data.errorMsg,
-            duration: 15,
+            message: '未完全匹配',
+            description: `${remainFtzMsg}\n${remainPrdtMsg}`,
+            duration: 0,
+            placement: 'topLeft',
           });
         } else {
           this.props.loadEntryDetails({ asnNo });

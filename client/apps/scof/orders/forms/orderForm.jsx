@@ -411,7 +411,15 @@ export default class OrderForm extends Component {
                 <Col sm={8}>
                   <FormItem label="件数/包装" {...formItemLayout} required="true">
                     <InputGroup compact>
-                      <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={e => this.handleChange('cust_shipmt_pieces', e.target.value)} />
+                      <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={(ev) => {
+                        const pieces = parseFloat(ev.target.value);
+                        if (!isNaN(pieces)) {
+                          this.handleChange('cust_shipmt_pieces', ev.target.value);
+                        } else {
+                          this.handleChange('cust_shipmt_pieces', null);
+                        }
+                      }}
+                      />
                       <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
                         onChange={value => this.handleKvChange('cust_shipmt_wrap_type', value, 'wrap')}
                         value={formData.cust_shipmt_wrap_type}
@@ -427,7 +435,15 @@ export default class OrderForm extends Component {
                 </Col>
                 <Col sm={8}>
                   <FormItem label="总毛重" {...formItemLayout} required="true">
-                    <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={e => this.handleChange('cust_shipmt_weight', e.target.value)} />
+                    <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={(ev) => {
+                      const weight = parseFloat(ev.target.value);
+                      if (!isNaN(weight)) {
+                        this.handleChange('cust_shipmt_weight', weight);
+                      } else {
+                        this.handleChange('cust_shipmt_weight', null);
+                      }
+                    }}
+                    />
                   </FormItem>
                 </Col>
               </Row>

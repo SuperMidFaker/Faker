@@ -54,18 +54,18 @@ export default class ClearanceModal extends Component {
     regDetails: [],
   }
   componentWillMount() {
-    this.setState({ ownerCusCode: this.props.ownerCusCode });
-    if (this.props.ownerCusCode) {
-      this.props.loadBatchOutRegs({
-        owner_cus_code: this.props.ownerCusCode,
-        whse_code: this.props.defaultWhse.code,
-        rel_type: 'normal',
-      });
-    }
     this.props.loadParams();
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: (window.innerHeight - 460) / 2,
+      });
+    }
+    if (this.props.ownerCusCode) {
+      this.setState({ ownerCusCode: this.props.ownerCusCode });
+      this.props.loadBatchOutRegs({
+        owner_cus_code: this.props.ownerCusCode,
+        whse_code: this.props.defaultWhse.code,
+        rel_type: 'normal',
       });
     }
   }
@@ -79,6 +79,7 @@ export default class ClearanceModal extends Component {
         whse_code: nextProps.defaultWhse.code,
         rel_type: 'normal',
       });
+      this.setState({ ownerCusCode: nextProps.ownerCusCode });
     }
   }
 
@@ -216,6 +217,10 @@ export default class ClearanceModal extends Component {
     this.setState({ ietype: ev.target.value });
   }
   handleBatchClear = () => {
+    if (!this.state.ownerCusCode) {
+      message.error('货主未选定');
+      return;
+    }
     const detailIds = [];
     const relCountObj = {};
     this.state.regDetails.forEach((regd) => {

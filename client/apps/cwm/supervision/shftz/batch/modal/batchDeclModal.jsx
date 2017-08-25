@@ -53,8 +53,8 @@ export default class BatchDeclModal extends Component {
     regDetails: [],
   }
   componentWillMount() {
-    this.setState({ ownerCusCode: this.props.ownerCusCode });
     if (this.props.ownerCusCode) {
+      this.setState({ ownerCusCode: this.props.ownerCusCode });
       this.props.loadBatchOutRegs({
         owner_cus_code: this.props.ownerCusCode,
         whse_code: this.props.defaultWhse.code,
@@ -78,6 +78,7 @@ export default class BatchDeclModal extends Component {
         whse_code: nextProps.defaultWhse.code,
         rel_type: 'portion',
       });
+      this.setState({ ownerCusCode: nextProps.ownerCusCode });
     }
   }
 
@@ -220,6 +221,10 @@ export default class BatchDeclModal extends Component {
     });
   }
   handleBatchDecl = () => {
+    if (!this.state.ownerCusCode) {
+      message.error('货主未选定');
+      return;
+    }
     const detailIds = [];
     const relCountObj = {};
     this.state.regDetails.forEach((regd) => {
