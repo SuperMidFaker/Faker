@@ -71,6 +71,11 @@ export default class ReceivingModal extends Component {
                 convey_no: data.convey_no,
                 avail: data.avail_qty > 0,
                 received_by: data.received_by,
+                serial_no: data.serial_no,
+                attrib_1_string: data.attrib_1_string,
+                attrib_2_string: data.attrib_2_string,
+                attrib_3_string: data.attrib_3_string,
+                attrib_4_string: data.attrib_4_string,
               }));
             }
             this.setState({
@@ -219,6 +224,11 @@ export default class ReceivingModal extends Component {
       convey_no: data.convey_no,
       avail: data.avail,
       received_by: data.received_by,
+      serial_no: data.serial_no,
+      attrib_1_string: data.attrib_1_string,
+      attrib_2_string: data.attrib_2_string,
+      attrib_3_string: data.attrib_3_string,
+      attrib_4_string: data.attrib_4_string,
     })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId, this.state.receivedDate).then((result) => {
       if (!result.error) {
         message.success('收货确认成功');
@@ -227,6 +237,16 @@ export default class ReceivingModal extends Component {
         message.error('操作失败');
       }
     });
+  }
+  handleSerialNoChange = (index, value) => {
+    const dataSource = [...this.state.dataSource];
+    dataSource[index].serial_no = value;
+    this.setState({ dataSource });
+  }
+  handleAttrChange = (index, value, dataIndex) => {
+    const dataSource = [...this.state.dataSource];
+    dataSource[index][dataIndex] = value;
+    this.setState({ dataSource });
   }
   scanColumns = [{
     title: '追踪ID',
@@ -276,6 +296,11 @@ export default class ReceivingModal extends Component {
     dataIndex: 'trace_id',
     width: 200,
     render: o => (<Input className="readonly" prefix={<Icon type="qrcode" />} value={o} disabled />),
+  }, {
+    title: '序列号',
+    width: 150,
+    dataIndex: 'serial_no',
+    render: (o, row, index) => <Input prefix={<Icon type="barcode" />} value={o} onChange={e => this.handleSerialNoChange(index, e.target.value)} disabled={!!row.trace_id} />,
   }, {
     title: '移动单元编号',
     dataIndex: 'convey_no',
@@ -335,6 +360,26 @@ export default class ReceivingModal extends Component {
       <Input value={o} onChange={ev => this.handleReceiverChange(index, ev.target.value)}
         disabled={!!row.trace_id}
       />),
+  }, {
+    title: '拓展属性1',
+    width: 100,
+    dataIndex: 'attrib_1_string',
+    render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_1_string')} disabled={!!row.trace_id} />,
+  }, {
+    title: '拓展属性2',
+    width: 100,
+    dataIndex: 'attrib_2_string',
+    render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_2_string')} disabled={!!row.trace_id} />,
+  }, {
+    title: '拓展属性3',
+    width: 100,
+    dataIndex: 'attrib_3_string',
+    render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_3_string')} disabled={!!row.trace_id} />,
+  }, {
+    title: '拓展属性4',
+    width: 100,
+    dataIndex: 'attrib_4_string',
+    render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_4_string')} disabled={!!row.trace_id} />,
   }, {
     title: '操作',
     width: 50,

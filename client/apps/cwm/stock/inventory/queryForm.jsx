@@ -31,6 +31,7 @@ export default class QueryForm extends React.Component {
   }
   state = {
     expandForm: false,
+    relDateRange: [],
   };
   handleSearchTypeChange = (ev) => {
     this.props.changeSearchType(ev.target.value);
@@ -45,10 +46,14 @@ export default class QueryForm extends React.Component {
   }
   handleStockSearch = (ev) => {
     ev.preventDefault();
+    const { relDateRange } = this.state;
     this.props.form.validateFields((err) => {
       if (!err) {
         const formData = this.props.form.getFieldsValue();
-        this.props.onSearch(formData);
+        this.props.onSearch(Object.assign(
+          formData,
+          { start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
+            end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined }));
       }
     });
   }
@@ -63,6 +68,9 @@ export default class QueryForm extends React.Component {
   }
   checkProductLocation = () => {
     this.props.checkProductLocation();
+  }
+  handleRelRangeChange = (relDateRange) => {
+    this.setState({ relDateRange });
   }
   msg = formatMsg(this.props.intl);
   render() {
@@ -130,7 +138,7 @@ export default class QueryForm extends React.Component {
           </Col>
           <Col span={6}>
             <FormItem {...formItemLayout} label="入库日期" >
-              <RangePicker />
+              <RangePicker onChange={this.handleRelRangeChange} />
             </FormItem>
           </Col>
         </Row>}
