@@ -59,8 +59,21 @@ export default class SHFTZReleaseList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    const filter = { ...this.props.listFilter, status: 'all', type: 'all' };
-    this.handleReleaseListLoad(1, null, filter);
+    const listFilter = this.props.listFilter;
+    let status = listFilter.status;
+    if (['all', 'pending', 'sent', 'completed'].filter(stkey => stkey === status).length === 0) {
+      status = 'all';
+    }
+    let type = listFilter.type;
+    if (['all', 'normal', 'portion'].filter(stkey => stkey === type).length === 0) {
+      type = 'all';
+    }
+    let ownerView = listFilter.ownerView;
+    if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
+      ownerView = 'all';
+    }
+    const filter = { ...listFilter, status, type, ownerView };
+    this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{

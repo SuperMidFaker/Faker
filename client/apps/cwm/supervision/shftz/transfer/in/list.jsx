@@ -61,7 +61,17 @@ export default class SHFTZTransferInList extends React.Component {
     searchInput: '',
   }
   componentDidMount() {
-    this.handleEntryListLoad();
+    const listFilter = this.props.listFilter;
+    let status = listFilter.status;
+    if (['all', 'pending', 'received', 'verified'].filter(stkey => stkey === status).length === 0) {
+      status = 'all';
+    }
+    let ownerView = listFilter.ownerView;
+    if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
+      ownerView = 'all';
+    }
+    const filter = { ...listFilter, status, transType: 'transfer', ownerView };
+    this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{

@@ -53,14 +53,6 @@ export default class BatchDeclModal extends Component {
     regDetails: [],
   }
   componentWillMount() {
-    if (this.props.ownerCusCode) {
-      this.setState({ ownerCusCode: this.props.ownerCusCode });
-      this.props.loadBatchOutRegs({
-        owner_cus_code: this.props.ownerCusCode,
-        whse_code: this.props.defaultWhse.code,
-        rel_type: 'portion',
-      });
-    }
     this.props.loadParams();
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
@@ -72,7 +64,7 @@ export default class BatchDeclModal extends Component {
     if (nextProps.portionRegs !== this.props.portionRegs) {
       this.setState({ portionRegs: nextProps.portionRegs });
     }
-    if (nextProps.visible && nextProps.ownerCusCode && nextProps.ownerCusCode !== this.props.ownerCusCode) {
+    if (nextProps.visible && nextProps.ownerCusCode && nextProps.visible !== this.props.visible) {
       this.props.loadBatchOutRegs({
         owner_cus_code: nextProps.ownerCusCode,
         whse_code: nextProps.defaultWhse.code,

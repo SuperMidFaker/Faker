@@ -60,20 +60,12 @@ export default class ClearanceModal extends Component {
         scrollY: (window.innerHeight - 460) / 2,
       });
     }
-    if (this.props.ownerCusCode) {
-      this.setState({ ownerCusCode: this.props.ownerCusCode });
-      this.props.loadBatchOutRegs({
-        owner_cus_code: this.props.ownerCusCode,
-        whse_code: this.props.defaultWhse.code,
-        rel_type: 'normal',
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.normalRegs !== this.props.normalRegs) {
       this.setState({ normalRegs: nextProps.normalRegs });
     }
-    if (nextProps.visible && nextProps.ownerCusCode && nextProps.ownerCusCode !== this.props.ownerCusCode) {
+    if (nextProps.visible && nextProps.ownerCusCode && nextProps.visible !== this.props.visible) {
       this.props.loadBatchOutRegs({
         owner_cus_code: nextProps.ownerCusCode,
         whse_code: nextProps.defaultWhse.code,
