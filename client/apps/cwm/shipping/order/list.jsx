@@ -103,21 +103,6 @@ export default class ShippingOrderList extends React.Component {
     title: '承运人',
     dataIndex: 'carrier_name',
   }, {
-    title: '要求出货日期',
-    dataIndex: 'expect_shipping_date',
-    width: 120,
-    render: o => o && moment(o).format('YYYY.MM.DD'),
-  }, {
-    title: '发货时间',
-    dataIndex: 'shipped_date',
-    width: 120,
-    render: o => o && moment(o).format('MM.DD HH:mm'),
-  }, {
-    title: '创建时间',
-    width: 120,
-    dataIndex: 'created_date',
-    render: o => moment(o).format('MM.DD HH:mm'),
-  }, {
     title: '状态',
     dataIndex: 'status',
     width: 120,
@@ -159,6 +144,22 @@ export default class ShippingOrderList extends React.Component {
         return (<Badge status="success" text="备案完成" />);
       }
     },
+  }, {
+    title: '要求出货日期',
+    dataIndex: 'expect_shipping_date',
+    width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD'),
+  }, {
+    title: '发货时间',
+    dataIndex: 'shipped_date',
+    width: 120,
+    render: o => o && moment(o).format('MM.DD HH:mm'),
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+    render: o => moment(o).format('MM.DD HH:mm'),
+
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -325,7 +326,7 @@ export default class ShippingOrderList extends React.Component {
     }
     if (!defaultWhse.bonded) {
       columns = [...columns];
-      columns.splice(10, 1);
+      columns.splice(7, 1);
     }
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadSos(params),
@@ -374,7 +375,7 @@ export default class ShippingOrderList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBar placeholder={this.msg('soPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
       <span />
       <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}

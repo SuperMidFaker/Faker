@@ -21,6 +21,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     visible: state.cwmOutbound.allocatingModal.visible,
+    submitting: state.cwmOutbound.allocatingModal.submitting,
     outboundNo: state.cwmOutbound.allocatingModal.outboundNo,
     outboundProduct: state.cwmOutbound.allocatingModal.outboundProduct,
     filters: state.cwmOutbound.inventoryFilter,
@@ -456,7 +457,7 @@ export default class AllocatingModal extends Component {
       <div className="toolbar-right">
         {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
         {editable && <Button onClick={this.handleCancel}>取消</Button>}
-        {editable && <Button type="primary" onClick={this.handleManualAllocSave}>保存</Button>}
+        {editable && <Button type="primary" onClick={this.handleManualAllocSave} loading={this.props.submitting}>保存</Button>}
       </div>
     </div>);
     return (

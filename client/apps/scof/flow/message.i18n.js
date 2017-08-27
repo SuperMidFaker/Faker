@@ -104,7 +104,7 @@ const messages = defineMessages({
   },
   cwmShippingOrder: {
     id: 'scof.flow.biz.cwm.shipping.order',
-    defaultMessage: '发货订单',
+    defaultMessage: '出货订单',
   },
   declCustoms: {
     id: 'scof.flow.biz.cms.declcustoms',

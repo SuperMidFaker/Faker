@@ -251,10 +251,10 @@ export default class OrderDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            {ButtonStatus === 'alloc' && (<Button size="large" onClick={this.handleBatchAutoAlloc}>
+            {ButtonStatus === 'alloc' && (<Button onClick={this.handleBatchAutoAlloc}>
               <MdIcon type="check-all" />批量自动分配
             </Button>)}
-            {ButtonStatus === 'unalloc' && (<Button size="large" onClick={this.handleAllocBatchCancel} icon="close">
+            {ButtonStatus === 'unalloc' && (<Button onClick={this.handleAllocBatchCancel} icon="close">
               批量取消分配
             </Button>)}
             <div className="pull-right">
@@ -263,7 +263,7 @@ export default class OrderDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right">
             { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
-              <Button type="primary" size="large" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
+              <Button type="primary" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
           </div>
         </div>
         <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="seq_no"

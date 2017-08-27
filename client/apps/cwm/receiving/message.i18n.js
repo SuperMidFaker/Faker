@@ -72,11 +72,11 @@ const messages = defineMessages({
   },
   asnPlaceholder: {
     id: 'cwm.receiving.asn.search.place.holder',
-    defaultMessage: '搜索ASN单号/订单号',
+    defaultMessage: '搜索ASN编号/采购订单号',
   },
   inboundPlaceholder: {
     id: 'cwm.receiving.asn.inbound.search.place.holder',
-    defaultMessage: '搜索入库单号',
+    defaultMessage: '搜索ASN编号/入库单号',
   },
   tabASN: {
     id: 'cwm.receiving.dock.tab.asn',

@@ -237,7 +237,7 @@ export default class ReceiveDetailsPane extends React.Component {
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             {inboundHead.rec_mode === 'manual' &&
-            <Button size="large" onClick={this.handleBatchProductReceive}>
+            <Button onClick={this.handleBatchProductReceive}>
               批量收货确认
             </Button>
             }
@@ -247,7 +247,7 @@ export default class ReceiveDetailsPane extends React.Component {
           </div>
           {/* <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
-            <Button size="large" icon="check" onClick={this.handleExpressReceived}>
+            <Button icon="check" onClick={this.handleExpressReceived}>
               快捷收货
             </Button>
             }

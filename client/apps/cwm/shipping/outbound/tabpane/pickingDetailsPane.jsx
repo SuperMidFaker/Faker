@@ -322,17 +322,17 @@ export default class PickingDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            {outboundHead.shipping_mode === 'manual' && currentStep === 'allAllocated' && <Button size="large" onClick={this.handleBatchConfirmPicked}>
+            {outboundHead.shipping_mode === 'manual' && currentStep === 'allAllocated' && <Button onClick={this.handleBatchConfirmPicked}>
               <MdIcon type="check-all" />批量拣货确认
             </Button>
             }
-            {currentStep === 'allAllocated' && <Button size="large" onClick={this.handleAllocBatchCancel} icon="close">
+            {currentStep === 'allAllocated' && <Button onClick={this.handleAllocBatchCancel} icon="close">
               批量取消分配
             </Button>}
-            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button size="large" onClick={this.handleBatchConfirmShipped}>
+            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button onClick={this.handleBatchConfirmShipped}>
               <MdIcon type="check-all" />批量发货确认
             </Button>}
-            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button size="large" onClick={this.handleBatchCancelPicked} icon="close">
+            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button onClick={this.handleBatchCancelPicked} icon="close">
               批量取消拣货
             </Button>}
             <div className="pull-right">

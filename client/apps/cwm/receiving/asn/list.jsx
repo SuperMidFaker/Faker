@@ -96,21 +96,6 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'seller_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '预期到货日期',
-    dataIndex: 'expect_receive_date',
-    width: 120,
-    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-  }, {
-    title: '收货时间',
-    dataIndex: 'received_date',
-    width: 120,
-    render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
-  }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
-    width: 120,
-    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
-  }, {
     title: '状态',
     dataIndex: 'status',
     width: 120,
@@ -147,6 +132,21 @@ export default class ReceivingASNList extends React.Component {
         return (<Badge status="success" text="备案完成" />);
       }
     },
+  }, {
+    title: '预期到货日期',
+    dataIndex: 'expect_receive_date',
+    width: 120,
+    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
+  }, {
+    title: '收货时间',
+    dataIndex: 'received_date',
+    width: 120,
+    render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
+  }, {
+    title: '创建时间',
+    dataIndex: 'created_date',
+    width: 120,
+    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -349,7 +349,7 @@ export default class ReceivingASNList extends React.Component {
     let columns = this.columns;
     if (!defaultWhse.bonded) {
       columns = [...columns];
-      columns.splice(9, 1);
+      columns.splice(6, 1);
     }
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />

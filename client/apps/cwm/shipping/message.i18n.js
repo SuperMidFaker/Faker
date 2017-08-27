@@ -15,11 +15,11 @@ const messages = defineMessages({
   },
   shippingOrder: {
     id: 'cwm.shipping.order',
-    defaultMessage: '发货订单SO',
+    defaultMessage: '出货订单SO',
   },
   createSO: {
     id: 'cwm.shipping.order.create',
-    defaultMessage: '创建发货订单',
+    defaultMessage: '创建出货订单',
   },
   batchImport: {
     id: 'cwm.shipping.order.batch.import',
@@ -32,6 +32,18 @@ const messages = defineMessages({
   shippingOutbound: {
     id: 'cwm.shipping.outbound',
     defaultMessage: '出库单',
+  },
+  soPlaceholder: {
+    id: 'cwm.shipping.so.search.placeholder',
+    defaultMessage: '搜索SO编号/客户订单号',
+  },
+  wavePlaceholder: {
+    id: 'cwm.shipping.wave.search.placeholder',
+    defaultMessage: '搜索波次编号',
+  },
+  outboundPlaceholder: {
+    id: 'cwm.shipping.outbound.search.placeholder',
+    defaultMessage: '搜索SO编号/出库单号',
   },
   outboundListSearchPlaceholder: {
     id: 'cwm.shipping.list.placeholder',
@@ -79,7 +91,7 @@ const messages = defineMessages({
   },
   tabSO: {
     id: 'cwm.shipping.dock.tab.so',
-    defaultMessage: '发货订单',
+    defaultMessage: '出货订单',
   },
   tabFTZ: {
     id: 'cwm.shipping.dock.tab.ftz',

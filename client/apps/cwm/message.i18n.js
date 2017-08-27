@@ -24,7 +24,7 @@ const messages = defineMessages({
   },
   shippingOrder: {
     id: 'cwm.module.shipping.order',
-    defaultMessage: '发货订单',
+    defaultMessage: '出货订单',
   },
   shippingWave: {
     id: 'cwm.module.shipping.wave',

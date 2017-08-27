@@ -187,7 +187,7 @@ const messages = defineMessages({
 
   shippingOrder: {
     id: 'scv.inventory.shipping.order',
-    defaultMessage: '发货订单',
+    defaultMessage: '出货订单',
   },
 
   receivingNotice: {

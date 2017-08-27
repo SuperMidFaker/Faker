@@ -209,10 +209,10 @@ export default class PutawayDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <Button size="large" onClick={this.handleBatchPutAways} icon="check">
+            <Button onClick={this.handleBatchPutAways} icon="check">
               批量上架确认
             </Button>
-            <Button size="large" onClick={this.handleBatchUndoReceives} icon="rollback">
+            <Button onClick={this.handleBatchUndoReceives} icon="rollback">
               批量取消收货
             </Button>
             <div className="pull-right">
@@ -222,7 +222,7 @@ export default class PutawayDetailsPane extends React.Component {
           <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_PUTAWAY.value &&
               dataSource.filter(ds => !ds.receive_location).length === 0 &&
-              <Button type="primary" ghost size="large" icon="check" onClick={this.handleExpressPutAway}>
+              <Button type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
             </Button>
             }
