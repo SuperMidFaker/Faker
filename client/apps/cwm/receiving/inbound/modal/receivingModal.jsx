@@ -259,7 +259,7 @@ export default class ReceivingModal extends Component {
     width: 180,
     render: o => (<Input className="readonly" prefix={<Icon type="barcode" />} value={o} />),
   }, {
-    title: '移动单元编号',
+    title: '容器编号',
     dataIndex: 'convey_no',
     width: 180,
     render: o => (<Input className="readonly" value={o} />),
@@ -302,7 +302,7 @@ export default class ReceivingModal extends Component {
     dataIndex: 'serial_no',
     render: (o, row, index) => <Input prefix={<Icon type="barcode" />} value={o} onChange={e => this.handleSerialNoChange(index, e.target.value)} disabled={!!row.trace_id} />,
   }, {
-    title: '移动单元编号',
+    title: '容器编号',
     dataIndex: 'convey_no',
     width: 180,
     render: (convey, row, index) => (

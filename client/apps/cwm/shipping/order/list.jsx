@@ -150,7 +150,7 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
-    title: '发货时间',
+    title: '出库时间',
     dataIndex: 'shipped_date',
     width: 120,
     render: o => o && moment(o).format('MM.DD HH:mm'),
@@ -159,7 +159,10 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     dataIndex: 'created_date',
     render: o => moment(o).format('MM.DD HH:mm'),
-
+  }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

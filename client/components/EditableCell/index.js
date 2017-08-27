@@ -88,7 +88,7 @@ export default class EditableCell extends React.Component {
       case 'select':
         return (<div className="editable-cell-outer">
           <div className="editable-cell-inner">
-            <Select showSearch placeholder={placeholder} value={value} style={{ width: '100%' }} onChange={this.handleSelectChange}>
+            <Select showSearch {...this.props} placeholder={placeholder} value={value} style={{ width: '100%' }} onChange={this.handleSelectChange}>
               {options && options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)}
             </Select>
           </div>
@@ -101,7 +101,7 @@ export default class EditableCell extends React.Component {
       case 'date':
         return (<div className="editable-cell-outer">
           <div className="editable-cell-inner">
-            <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" value={value && moment(value)} onChange={this.handleDateChange} />
+            <DatePicker {...this.props} style={{ width: '100%' }} format="YYYY-MM-DD" value={value && moment(value)} onChange={this.handleDateChange} />
           </div>
           <span className="editable-cell-actions">
             <Icon type="check" className="editable-cell-icon-save" onClick={this.check} />
@@ -123,7 +123,7 @@ export default class EditableCell extends React.Component {
       default:
         return (<div className="editable-cell-outer">
           <div className="editable-cell-inner">
-            <Input size="large" type={type} value={value}
+            <Input {...this.props} type={type} value={value}
               addonBefore={addonBefore} addonAfter={addonAfter} onChange={this.handleChange} onPressEnter={this.check}
             />
           </div>

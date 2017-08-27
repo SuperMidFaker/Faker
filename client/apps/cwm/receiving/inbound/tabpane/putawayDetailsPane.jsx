@@ -57,7 +57,7 @@ export default class PutawayDetailsPane extends React.Component {
     });
   }
   columns = [{
-    title: '移动单元编号',
+    title: '容器编号',
     dataIndex: 'convey_no',
     width: 150,
     fixed: 'left',

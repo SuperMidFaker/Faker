@@ -72,6 +72,7 @@ export default class SHFTZRelDetail extends Component {
   }
   state = {
     tabKey: '',
+    editable: false,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -83,7 +84,10 @@ export default class SHFTZRelDetail extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       if (this.state.tabKey === '') {
-        this.setState({ tabKey: nextProps.relRegs[0].pre_entry_seq_no });
+        this.setState({
+          tabKey: nextProps.relRegs[0].pre_entry_seq_no,
+          editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
+        });
       }
     }
   }
@@ -198,8 +202,8 @@ export default class SHFTZRelDetail extends Component {
   }, {
     title: '毛重',
     dataIndex: 'gross_wt',
-    width: 130,
-    render: (o, record) => <EditableCell value={o} onSave={value => this.handleWtChange(value, record.id)} />,
+    width: 180,
+    render: (o, record) => <EditableCell size="small" value={o} onSave={value => this.handleWtChange(value, record.id)} />,
   }, {
     title: '净重',
     dataIndex: 'net_wt',
@@ -311,21 +315,21 @@ export default class SHFTZRelDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={6}>
+                <Col sm={12} lg={6}>
                   <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
-                <Col sm={24} lg={6}>
+                <Col sm={12} lg={6}>
                   <InfoItem label="提货单位" field={relSo.owner_name} />
                 </Col>
-                <Col sm={24} lg={6}>
+                <Col sm={12} lg={6}>
                   <InfoItem label="收货单位" field={relSo.receiver_name} />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
                     field={relSo.created_date && moment(relSo.created_date).format('YYYY-MM-DD HH:mm')}
                   />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
                     field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')}
                   />
@@ -348,11 +352,11 @@ export default class SHFTZRelDetail extends Component {
                       relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
                       <Row>
                         {relSo.ftz_rel_no &&
-                        <Col sm={24} lg={4}>
+                        <Col sm={12} lg={6}>
                           <InfoItem size="small" addonBefore="普通出库单号" field={relSo.ftz_rel_no} />
                         </Col>
                         }
-                        <Col sm={24} lg={4}>
+                        <Col sm={12} lg={6}>
                           <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
                             type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
@@ -362,7 +366,7 @@ export default class SHFTZRelDetail extends Component {
                       {// 分拨出库
                       relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
                       <Row>
-                        <Col sm={24} lg={4}>
+                        <Col sm={12} lg={6}>
                           <InfoItem size="small" addonBefore="分拨出库单号" field={reg.ftz_rel_no} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />

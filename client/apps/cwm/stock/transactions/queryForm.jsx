@@ -98,7 +98,7 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={1}>
-            <FormItem>
+            <FormItem style={{ width: 50 }}>
               <a style={{ marginLeft: 8, fontSize: 12 }} onClick={this.toggleForm}>
                 {this.state.expandForm ? '收起' : '展开'} <Icon type={this.state.expandForm ? 'up' : 'down'} />
               </a>

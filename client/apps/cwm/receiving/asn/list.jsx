@@ -138,7 +138,7 @@ export default class ReceivingASNList extends React.Component {
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
-    title: '收货时间',
+    title: '入库时间',
     dataIndex: 'received_date',
     width: 120,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
@@ -147,6 +147,10 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'created_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
+  }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

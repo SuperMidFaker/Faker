@@ -68,7 +68,7 @@ export default class BatchTransitModal extends Component {
   render() {
     const { form, batchTransitModal } = this.props;
     return (
-      <Modal title="批量转移" width={800} onCancel={this.handleCancel} visible={batchTransitModal.visible}
+      <Modal title="批量转移" width={960} onCancel={this.handleCancel} visible={batchTransitModal.visible}
         onOk={this.handleSubmit} okText="确认转移"
       >
         <Alert message={`已选择${batchTransitModal.traceIds.length}项库存数量`} type="info" />

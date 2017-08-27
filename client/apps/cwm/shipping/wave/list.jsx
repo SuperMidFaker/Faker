@@ -101,6 +101,10 @@ export default class WaveList extends React.Component {
     dataIndex: 'created_date',
     render: o => moment(o).format('YYYY.MM.DD'),
   }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 150,

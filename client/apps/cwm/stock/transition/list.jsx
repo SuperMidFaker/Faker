@@ -333,19 +333,12 @@ export default class StockTransitionList extends React.Component {
       },
       remotes: this.props.transitionlist,
     });
-    const node = (<div className="toolbar-left">
-      <div className={`bulk-actions ${this.state.selectedRowKeys.length > 1 ? '' : 'hide'}`}>
-        <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-        {listFilter.status === 'normal' && this.state.enableBatchTransit &&
-        <Button onClick={this.handleBatchTransit}>批量转移</Button>}
-        {/* <Button onClick={this.handleBatchMove}>批量移库</Button> */}
-        {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
-        {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
-        <div className="pull-right">
-          <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-        </div>
-      </div>
-    </div>);
+    const toolbarActions = (<span />);
+    const bulkActions = (<span>
+      {listFilter.status === 'normal' && this.state.enableBatchTransit && <Button onClick={this.handleBatchTransit}>批量转移</Button>}
+      {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
+      {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
+    </span>);
     return (
       <Layout>
         <Header className="page-header">
@@ -369,8 +362,9 @@ export default class StockTransitionList extends React.Component {
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable node={node} columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id"
-            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} scrollOffset={390}
+          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
+            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" scrollOffset={390}
           />
           <TransitionDockPanel />
           <BatchTransitModal />

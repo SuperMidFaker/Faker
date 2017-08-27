@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form, Input, Select } from 'antd';
+import { Button, Modal, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -60,7 +60,7 @@ export default class AddDetailModal extends Component {
     this.setState({
       product: {},
       amount: 0,
-      sku: [],
+      skus: [],
     });
     this.props.form.setFieldsValue({
       product_no: '',
@@ -125,7 +125,7 @@ export default class AddDetailModal extends Component {
       this.setState({ amount: orderQty * e.target.value });
     }
   }
-  handleamountChange = (e) => {
+  handleAmountChange = (e) => {
     const orderQty = this.props.form.getFieldValue('order_qty');
     this.setState({
       amount: e.target.value,
@@ -179,7 +179,7 @@ export default class AddDetailModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal onCancel={this.handleCancel} visible={visible} title="货品明细" onOk={this.submit}>
+      <Modal visible={visible} title="货品明细" onOk={this.submit} onCancel={this.handleCancel}>
         <Form layout="horizontal">
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {
@@ -191,9 +191,10 @@ export default class AddDetailModal extends Component {
             )}
           </FormItem>
           <FormItem label="SKU" {...formItemLayout}>
-            <Select style={{ width: '100%' }} value={product.product_sku} onSelect={this.handleSelectSku}>
+            <Select style={{ width: 290 }} value={product.product_sku} onSelect={this.handleSelectSku}>
               {skus.map(sku => (<Option value={sku} key={sku}>{sku}</Option>))}
             </Select>
+            <Button type="primary" ghost shape="circle" icon="plus" disabled />
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
             <Input value={product.desc_cn} onChange={this.handleDescChange} />
@@ -240,9 +241,9 @@ export default class AddDetailModal extends Component {
               })(
                 <Input placeholder="单价" type="number" onChange={this.handlePriceChange} style={{ width: '30%' }} />
               )}
-              <Input placeholder="总价" type="number" value={this.state.amount || product.amount} onChange={this.handleamountChange} style={{ width: '30%' }} />
+              <Input placeholder="总价" type="number" value={this.state.amount || product.amount} onChange={this.handleAmountChange} style={{ width: '30%' }} />
               <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={String(product.currency)}
-                style={{ width: '30%' }} onChange={this.handleCurrChange}
+                style={{ width: '40%' }} onChange={this.handleCurrChange}
               >
                 {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}
               </Select>

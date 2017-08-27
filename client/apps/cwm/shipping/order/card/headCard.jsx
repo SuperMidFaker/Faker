@@ -86,7 +86,7 @@ export default class HeadCard extends Component {
           <Col span={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
-                rules: [{ required: true, message: 'Please select customer!' }],
+                rules: [{ required: true, message: '请选择货主' }],
                 initialValue: soHead && soHead.owner_partner_id,
               })(
                 <Select placeholder="选择货主" onSelect={this.handleSelect}>
@@ -104,7 +104,8 @@ export default class HeadCard extends Component {
               })(
                 <RadioGroup onChange={this.handleBondedChange}>
                   <RadioButton value={0}>非保税</RadioButton>
-                  { defaultWhse.bonded === 1 && <RadioButton value={1}>保税</RadioButton> }
+                  { defaultWhse.bonded && <RadioButton value={1}>保税</RadioButton> }
+                  { defaultWhse.bonded && <RadioButton value={2}>保税+非保混合</RadioButton> }
                 </RadioGroup>
                 )}
             </FormItem>
@@ -113,7 +114,7 @@ export default class HeadCard extends Component {
           <Col span={8} offset={2}>
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
-                rules: [{ required: true, message: 'Please select reg_type!' }],
+                rules: [{ required: true, message: '请选择保税监管方式' }],
                 initialValue: soHead && soHead.bonded_outtype,
               })(
                 <RadioGroup>
@@ -124,7 +125,7 @@ export default class HeadCard extends Component {
           </Col>
           }
         </Row>
-        <Row gutter={16}>
+        <Row>
           <Col span={6}>
             <FormItem label="要求出货日期" >
               {getFieldDecorator('expect_shipping_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],

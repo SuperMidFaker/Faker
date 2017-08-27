@@ -248,7 +248,7 @@ class DataTable extends Component {
             {this.props.bulkActions}
             <div className="pull-right">
               <Tooltip title="取消选择" placement="left">
-                <Button type="primary" ghost size="large" shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
+                <Button type="primary" ghost shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
               </Tooltip>
             </div>
           </div>}
