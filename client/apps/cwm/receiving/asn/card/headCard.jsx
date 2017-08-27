@@ -29,16 +29,10 @@ export default class HeadCard extends Component {
     form: PropTypes.object.isRequired,
     handleOwnerChange: PropTypes.func,
   }
-  state = {
-    bonded: 0,
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.asnHead !== this.props.asnHead) {
       const { asnHead } = nextProps;
       if (asnHead) {
-        this.setState({
-          bonded: asnHead.bonded,
-        });
         this.props.loadSkuParams(asnHead.owner_partner_id);
       }
     }
@@ -66,18 +60,17 @@ export default class HeadCard extends Component {
     title: this.msg('remark'),
     dataIndex: 'remark',
   }]
-  handleBondedChange = (e) => {
-    this.setState({
-      bonded: e.target.value,
-    });
+  handleBondedChange = (ev) => {
+    if (ev.target.value === 0) {
+      this.props.form.setFieldsValue({ reg_type: null });
+    }
   }
   handleSelect = (value) => {
     this.props.handleOwnerChange(true, value);
     this.props.loadSkuParams(value);
   }
   render() {
-    const { form: { getFieldDecorator }, owners, asnHead, defaultWhse } = this.props;
-    const { bonded } = this.state;
+    const { form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse } = this.props;
     return (
       <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
         <Row>
@@ -95,10 +88,10 @@ export default class HeadCard extends Component {
                   )}
             </FormItem>
           </Col>
-          <Col span={6} offset={2}>
+          <Col span={5} offset={1}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
-                initialValue: asnHead ? asnHead.bonded : bonded,
+                initialValue: asnHead ? asnHead.bonded : 0,
               })(
                 <RadioGroup onChange={this.handleBondedChange}>
                   <RadioButton value={0}>非保税</RadioButton>
@@ -108,7 +101,7 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
           {
-            bonded && <Col span={8} offset={2}>
+            getFieldValue('bonded') === 1 && <Col span={5} offset={1}>
               <FormItem label="保税监管方式">
                 {getFieldDecorator('reg_type', {
                   rules: [{ required: true, message: 'Please select reg_type!' }],
@@ -121,6 +114,15 @@ export default class HeadCard extends Component {
               </FormItem>
             </Col>
           }
+          {
+            getFieldValue('reg_type') === CWM_ASN_BONDED_REGTYPES[2].value && <Col span={6}>
+              <FormItem label="区内转入单">
+                {getFieldDecorator('transfer_in_bills', {
+                  initialValue: asnHead && asnHead.transfer_in_bills,
+                })(<Input placeholder="多个转入入库单以逗号分隔" />)}
+              </FormItem>
+            </Col>
+          }
         </Row>
         <Row>
           <Col span={6}>
@@ -130,14 +132,14 @@ export default class HeadCard extends Component {
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
-          <Col span={6} offset={2}>
+          <Col span={5} offset={1}>
             <FormItem label="采购订单号">
               {getFieldDecorator('po_no', {
                 initialValue: asnHead && asnHead.po_no,
               })(<Input />)}
             </FormItem>
           </Col>
-          <Col span={6} offset={2}>
+          <Col span={5} offset={1}>
             <FormItem label="ASN类型">
               {getFieldDecorator('asn_type', {
                 initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
