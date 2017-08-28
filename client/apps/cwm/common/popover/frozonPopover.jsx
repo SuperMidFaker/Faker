@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Popover, Form, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { freezeOutboundDetail } from 'common/reducers/cwmOutbound';
+import { unfreezeTransit } from 'common/reducers/cwmTransition';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -16,7 +16,7 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     loginName: state.account.loginName,
   }),
-  { freezeOutboundDetail }
+  { unfreezeTransit }
 )
 export default class PackagePopover extends Component {
   static propTypes = {
@@ -48,7 +48,7 @@ export default class PackagePopover extends Component {
   handleConfirm = () => {
     const { tenantId, loginName, traceId } = this.props;
     const { qty, reason } = this.state;
-    this.props.freezeOutboundDetail(traceId, Number(qty), reason, loginName, tenantId).then((result) => {
+    this.props.unfreezeTransit([traceId], { reason }, loginName, tenantId, Number(qty)).then((result) => {
       if (!result.error) {
         this.props.reload();
         this.setState({
