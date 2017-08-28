@@ -42,6 +42,8 @@ export default class ReceivingModal extends Component {
     receivedPackQty: 0,
     loading: false,
     receivedDate: null,
+    disabled: true,
+    saveLoading: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
@@ -124,7 +126,7 @@ export default class ReceivingModal extends Component {
           dataSource[i].avail = true;
         }
       }
-      if (changeQty > remainQty && remainQty >= 0 && dataSource[index].inbound_pack_qty !== 0) {
+      if (changeQty > remainQty && remainQty >= 0) {
         dataSource[index].inbound_pack_qty += remainPackQty;
         dataSource[index].inbound_qty += remainQty;
         dataSource.push(Object.assign({}, dataSource[index], {
@@ -132,12 +134,25 @@ export default class ReceivingModal extends Component {
           inbound_pack_qty: changePackQty - remainPackQty,
           avail: false,
         }));
+        if (dataSource[index].inbound_pack_qty === 0) {
+          dataSource.splice(index, 1);
+        }
       } else {
         dataSource[index].inbound_pack_qty = receivePack;
         dataSource[index].inbound_qty = receivePack * inboundProduct.sku_pack_qty;
       }
       receivedQty += changeQty;
       receivedPackQty += changePackQty;
+      const filterDataSource = dataSource.filter(data => !data.trace_id);
+      if (filterDataSource.find(data => data.inbound_pack_qty > 0)) {
+        this.setState({
+          disabled: false,
+        });
+      } else {
+        this.setState({
+          disabled: true,
+        });
+      }
       this.setState({
         dataSource,
         receivedQty,
@@ -216,6 +231,9 @@ export default class ReceivingModal extends Component {
   }
   handleConfirmReceive = () => {
     const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
+    this.setState({
+      saveLoading: true,
+    });
     this.props.receiveProduct(this.state.dataSource.filter(data => !data.trace_id).map(data => ({
       location: data.location,
       damage_level: data.damage_level,
@@ -236,6 +254,9 @@ export default class ReceivingModal extends Component {
       } else {
         message.error('操作失败');
       }
+      this.setState({
+        saveLoading: false,
+      });
     });
   }
   handleSerialNoChange = (index, value) => {
@@ -388,7 +409,7 @@ export default class ReceivingModal extends Component {
   }]
   render() {
     const { inboundProduct, inboundHead, editable } = this.props;
-    const { receivedQty, receivedPackQty, receivedDate } = this.state;
+    const { receivedQty, receivedPackQty, receivedDate, disabled, saveLoading } = this.state;
     const columns = inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns;
     let footer;
     if (inboundHead.rec_mode === 'manual' && editable) {
@@ -399,7 +420,7 @@ export default class ReceivingModal extends Component {
       <div className="toolbar-right">
         {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
         {editable && <Button onClick={this.handleCancel}>取消</Button>}
-        {editable && <Button type="primary" onClick={this.handleSubmit}>保存</Button>}
+        {editable && <Button disabled={disabled} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>}
       </div>
     </div>);
     return (
