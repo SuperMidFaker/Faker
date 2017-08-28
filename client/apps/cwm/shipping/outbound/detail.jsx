@@ -279,7 +279,6 @@ export default class OutboundDetail extends Component {
   }
   render() {
     const { defaultWhse, outboundHead } = this.props;
-    console.log(defaultWhse);
     const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];

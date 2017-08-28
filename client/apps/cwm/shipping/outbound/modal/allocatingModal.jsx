@@ -7,6 +7,7 @@ import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Sel
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
+import FrozenPopover from '../../../common/popover/frozonPopover';
 import messages from '../../message.i18n';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter, changeColumns } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
@@ -89,6 +90,16 @@ export default class AllocatingModal extends Component {
         })),
       });
     }
+  }
+  handleReLoad = () => {
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, this.props.filters,
+      this.props.bonded, this.props.bonded_outtype, this.props.outboundHead.owner_partner_id).then((result) => {
+        if (!result.error) {
+          this.setState({
+            inventoryData: result.data,
+          });
+        }
+      });
   }
   msg = key => formatMsg(this.props.intl, key);
   inventoryColumns = [{
@@ -175,11 +186,11 @@ export default class AllocatingModal extends Component {
     dataIndex: 'frozen_qty',
     width: 125,
     className: 'cell-align-right',
-    render: (text) => {
+    render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <span className="text-error">{text}</span>;
+        return <FrozenPopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
       }
     },
   }, {

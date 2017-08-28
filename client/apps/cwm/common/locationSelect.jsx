@@ -31,21 +31,19 @@ export default class LocationSelect extends React.Component {
     this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId).then((result) => {
       if (!result.error) {
         this.setState({
-          options: this.props.locations.slice(0, 10),
+          options: result.data,
         });
       }
     });
   }
   handleSearch = (value) => {
-    const options = this.props.locations.filter((item) => {
-      if (value) {
-        const reg = new RegExp(value);
-        return reg.test(item.location);
-      } else {
-        return true;
+    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId, value).then((result) => {
+      if (!result.error) {
+        this.setState({
+          options: result.data,
+        });
       }
     });
-    this.setState({ options });
   }
   render() {
     return (

@@ -271,7 +271,7 @@ export function addLocation(whseCode, zoneCode, location, type, status, tenantId
   };
 }
 
-export function loadLocations(whseCode, zoneCode, tenantId) {
+export function loadLocations(whseCode, zoneCode, tenantId, text) {
   return {
     [CLIENT_API]: {
       types: [
@@ -281,7 +281,7 @@ export function loadLocations(whseCode, zoneCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/location/load',
       method: 'get',
-      params: { whseCode, zoneCode, tenantId },
+      params: { whseCode, zoneCode, tenantId, text },
     },
   };
 }

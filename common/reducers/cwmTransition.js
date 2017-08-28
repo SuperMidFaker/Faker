@@ -212,7 +212,7 @@ export function freezeTransit(traceIds, transit, loginName, tenantId) {
   };
 }
 
-export function unfreezeTransit(traceIds, transit, loginName, tenantId) {
+export function unfreezeTransit(traceIds, transit, loginName, tenantId, qty) {
   return {
     [CLIENT_API]: {
       types: [
@@ -222,7 +222,7 @@ export function unfreezeTransit(traceIds, transit, loginName, tenantId) {
       ],
       endpoint: 'v1/cwm/stock/transition/unfreeze',
       method: 'post',
-      data: { traceIds, transit, loginName, tenantId },
+      data: { traceIds, transit, loginName, tenantId, qty },
     },
   };
 }
