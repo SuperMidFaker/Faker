@@ -237,7 +237,11 @@ export default class SHFTZRelDetail extends Component {
   }]
   handleWtChange = (val, id) => {
     const change = { gross_wt: val };
-    this.props.editReleaseWt({ change, id });
+    this.props.editReleaseWt({ change, id }).then((result) => {
+      if (!result.error) {
+        this.props.loadRelDetails(this.props.params.soNo);
+      }
+    });
   }
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
