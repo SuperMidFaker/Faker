@@ -64,6 +64,8 @@ export default class StockTransitionList extends React.Component {
     selectedRowKeys: [],
     transitionSplitNum: 0,
     unfreezeReason: '',
+    totalQty: 0,
+    allSelectedRows: [],
   }
   componentDidMount() {
     const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
@@ -246,21 +248,21 @@ export default class StockTransitionList extends React.Component {
       traceIds: this.state.selectedRowKeys,
       detail: this.state.batchTransitDetail,
     });
-  }
-  handleBatchMove = () => {
-    this.props.openBatchMoveModal();
+    this.handleDeselectRows();
   }
   handleBatchFreeze = () => {
     this.props.openBatchFreezeModal({
       freezed: true,
       traceIds: this.state.selectedRowKeys,
     });
+    this.handleDeselectRows();
   }
   handleBatchUnfreeze = () => {
     this.props.openBatchFreezeModal({
       freezed: false,
       traceIds: this.state.selectedRowKeys,
     });
+    this.handleDeselectRows();
   }
   handleStatusChange = (ev) => {
     const filter = { ...this.props.listFilter, status: ev.target.value };
@@ -274,7 +276,7 @@ export default class StockTransitionList extends React.Component {
     this.props.showTransitionDock(row);
   }
   handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [] });
+    this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [] });
   }
   toggleTableSetting = () => {
     this.setState({ showTableSetting: !this.state.showTableSetting });
@@ -286,7 +288,21 @@ export default class StockTransitionList extends React.Component {
     const { defaultWhse, whses, loading, listFilter } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys, selectedRows) => {
+      onChange: (selectedRowKeys, selRows) => {
+        const allSelectedRows = this.state.allSelectedRows;
+        allSelectedRows[this.props.transitionlist.current] = selRows;
+        let selectedRows = [];
+        for (let j = 1; j < allSelectedRows.length; j++) {
+          const rows = allSelectedRows[j];
+          if (rows) {
+            selectedRows = selectedRows.concat(rows);
+          }
+        }
+        const total = selectedRows.reduce((res, bsf) => ({
+          stock_qty: (res.stock_qty || 0) + (bsf.stock_qty || 0),
+        }), {
+          stock_qty: 0,
+        });
         let enableBatchTransit = true;
         let i = 0;
         let batchTransitDetail = {};
@@ -304,11 +320,11 @@ export default class StockTransitionList extends React.Component {
             whse_code: selectedRows[0].whse_code,
           };
         }
-        this.setState({ selectedRowKeys, enableBatchTransit, batchTransitDetail });
+        this.setState({ selectedRowKeys, enableBatchTransit, batchTransitDetail, totalQty: total.stock_qty, allSelectedRows });
       },
     };
     const dataSource = new DataTable.DataSource({
-      fetcher: (params) => { this.props.loadTransitions(params); this.handleDeselectRows(); },
+      fetcher: (params) => { this.props.loadTransitions(params); },
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -335,6 +351,7 @@ export default class StockTransitionList extends React.Component {
     });
     const toolbarActions = (<span />);
     const bulkActions = (<span>
+      <h3>选中项库存数量共计 {this.state.totalQty} </h3>
       {listFilter.status === 'normal' && this.state.enableBatchTransit && <Button onClick={this.handleBatchTransit}>批量转移</Button>}
       {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
       {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
