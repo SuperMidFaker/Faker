@@ -292,8 +292,8 @@ export default class ReceivingModal extends Component {
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
-    width: 180,
-    render: o => (<Select value={o} style={{ width: 160 }} disabled>
+    width: 100,
+    render: o => (<Select value={o} style={{ width: 90 }} disabled>
       <Option value={CWM_DAMAGE_LEVEL[0].value}>{CWM_DAMAGE_LEVEL[0].text}</Option>
       <Option value={CWM_DAMAGE_LEVEL[1].value}>{CWM_DAMAGE_LEVEL[1].text}</Option>
       <Option value={CWM_DAMAGE_LEVEL[2].value}>{CWM_DAMAGE_LEVEL[2].text}</Option>
@@ -303,12 +303,12 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货库位',
     dataIndex: 'location',
-    width: 180,
-    render: o => (<Select value={o} showSearch style={{ width: 160 }} disabled />),
+    width: 150,
+    render: o => (<Select value={o} showSearch style={{ width: 140 }} disabled />),
   }, {
     title: '库存状态',
     dataIndex: 'avail',
-    width: 120,
+    width: 70,
     render: avail => avail ? '可用' : '冻结',
   }]
 
@@ -341,9 +341,9 @@ export default class ReceivingModal extends Component {
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
-    width: 180,
+    width: 100,
     render: (o, record, index) => (
-      <Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 160 }}
+      <Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 90 }}
         disabled={!!record.trace_id}
       >
         <Option value={CWM_DAMAGE_LEVEL[0].value}>{CWM_DAMAGE_LEVEL[0].text}</Option>
@@ -355,18 +355,18 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货库位',
     dataIndex: 'location',
-    width: 180,
+    width: 150,
     render: (o, record, index) => (
-      <AdviceLocations value={o} style={{ width: 160 }} productNo={this.props.inboundProduct.product_no} onChange={value => this.handleProductPutAway(index, value)}
+      <AdviceLocations value={o} style={{ width: 140 }} productNo={this.props.inboundProduct.product_no} onChange={value => this.handleProductPutAway(index, value)}
         disabled={!!record.trace_id}
       />),
   }, {
     title: '库存状态',
     dataIndex: 'avail',
-    width: 120,
+    width: 70,
     render: (avail, row, index) => {
       const availStatus = avail ? 'avail' : 'frozen';
-      return (<Select value={availStatus} onChange={value => this.handleAvailChange(index, value)} style={{ width: 160 }}
+      return (<Select value={availStatus} onChange={value => this.handleAvailChange(index, value)} style={{ width: 60 }}
         disabled={!!row.trace_id}
       >
         <Option value="avail">可用</Option>

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Table, Tag, Input } from 'antd';
+import { Modal, Button, Table, Input } from 'antd';
 import { MdIcon } from 'client/components/FontIcon';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
@@ -128,7 +128,6 @@ export default class MovementDetailsPane extends React.Component {
     title: '移库数量',
     width: 180,
     dataIndex: 'move_qty',
-    render: o => <Tag>{o}</Tag>,
   }, {
     title: '来源库位',
     dataIndex: 'from_location',
@@ -139,7 +138,7 @@ export default class MovementDetailsPane extends React.Component {
     width: 180,
   }, {
     title: '操作',
-    width: 200,
+    width: 80,
     render: (o, record) => !record.isdone && <RowUpdater onHit={this.removeMoveDetail} label="取消明细" row={record} />,
   }]
   render() {

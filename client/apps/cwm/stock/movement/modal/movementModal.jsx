@@ -294,7 +294,7 @@ export default class MovementModal extends Component {
         <RangePicker onChange={this.handleDateChange} />
       </FormItem>
       <FormItem>
-        <Button type="primary" ghost onClick={this.handleSearch} disabled={!owner.id}>库存查询</Button>
+        <Button type="primary" ghost onClick={this.handleSearch} disabled={!owner.id}>查询</Button>
       </FormItem>
     </Form>);
     const title = (<div>
@@ -325,7 +325,7 @@ export default class MovementModal extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id"
               scroll={{ x: this.stocksColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

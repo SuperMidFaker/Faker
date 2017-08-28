@@ -74,7 +74,7 @@ export default class HeadCard extends Component {
     return (
       <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
         <Row>
-          <Col span={6}>
+          <Col span={5}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
@@ -84,6 +84,40 @@ export default class HeadCard extends Component {
                   {
                     owners.map(owner => <Option value={owner.id} key={owner.id}>{owner.name}</Option>)
                   }
+                </Select>
+                  )}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem label="预期到货日期" >
+              {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+                initialValue: asnHead ? moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
+              })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem label="供货商">
+              {getFieldDecorator('seller_name', {
+                initialValue: asnHead && asnHead.seller_name,
+              })(<Select mode="combobox" showSearch />)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem label="采购订单号">
+              {getFieldDecorator('po_no', {
+                initialValue: asnHead && asnHead.po_no,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={5}>
+            <FormItem label="ASN类型">
+              {getFieldDecorator('asn_type', {
+                initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
+              })(
+                <Select placeholder="ASN类型">
+                  {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
                 </Select>
                   )}
             </FormItem>
@@ -115,7 +149,7 @@ export default class HeadCard extends Component {
             </Col>
           }
           {
-            getFieldValue('reg_type') === CWM_ASN_BONDED_REGTYPES[2].value && <Col span={6}>
+            getFieldValue('reg_type') === CWM_ASN_BONDED_REGTYPES[2].value && <Col span={5} offset={1}>
               <FormItem label="区内转入单">
                 {getFieldDecorator('transfer_in_bills', {
                   initialValue: asnHead && asnHead.transfer_in_bills,
@@ -123,33 +157,6 @@ export default class HeadCard extends Component {
               </FormItem>
             </Col>
           }
-        </Row>
-        <Row>
-          <Col span={6}>
-            <FormItem label="预期到货日期" >
-              {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-                initialValue: asnHead ? moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
-              })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-          <Col span={5} offset={1}>
-            <FormItem label="采购订单号">
-              {getFieldDecorator('po_no', {
-                initialValue: asnHead && asnHead.po_no,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span={5} offset={1}>
-            <FormItem label="ASN类型">
-              {getFieldDecorator('asn_type', {
-                initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
-              })(
-                <Select placeholder="ASN类型">
-                  {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
-                </Select>
-                  )}
-            </FormItem>
-          </Col>
         </Row>
       </Card>
     );

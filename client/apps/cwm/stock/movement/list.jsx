@@ -113,7 +113,7 @@ export default class MovementList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 200,
+    width: 150,
     fixed: 'right',
     render: (o, record) => {
       if (record.isdone) {

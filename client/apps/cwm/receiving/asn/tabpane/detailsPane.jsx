@@ -117,8 +117,8 @@ export default class DetailsPane extends Component {
       className: 'cell-align-center',
       render: o => (o && units.length > 0) ? units.find(unit => unit.code === o).name : '',
     }, {
-      title: '库别',
-      dataIndex: 'virtual_whse',
+      title: '供货商',
+      dataIndex: 'seller_name',
       width: 150,
     }, {
       title: '采购订单号',
@@ -129,12 +129,16 @@ export default class DetailsPane extends Component {
       dataIndex: 'container_no',
       width: 150,
     }, {
+      title: '库别',
+      dataIndex: 'virtual_whse',
+      width: 150,
+    }, {
       title: '单价',
       dataIndex: 'unit_price',
       width: 100,
       className: 'cell-align-right',
     }, {
-      title: '总价',
+      title: '金额',
       dataIndex: 'amount',
       width: 100,
       className: 'cell-align-right',
