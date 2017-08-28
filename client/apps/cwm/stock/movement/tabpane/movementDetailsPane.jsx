@@ -145,7 +145,7 @@ export default class MovementDetailsPane extends React.Component {
   render() {
     const { movementDetails, mode, movementHead } = this.props;
     return (
-      <div>
+      <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

@@ -28,9 +28,6 @@ export default class LogsPane extends React.Component {
   componentWillMount() {
     const { detail, tenantId } = this.props;
     this.props.loadTraceTransactions(detail.trace_id, tenantId);
-    if (typeof window !== 'undefined') {
-      this.setState({ scrollY: window.innerHeight - 570 });
-    }
   }
 
   msg = formatMsg(this.props.intl);
@@ -45,9 +42,11 @@ export default class LogsPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Card noHovering bodyStyle={{ padding: 0 }} >
-          <Table size="middle" dataSource={transactions} loading={loading} rowKey="id" columns={this.columns}
-            scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0), y: this.state.scrollY }}
-          />
+          <div className="table-panel table-fixed-layout">
+            <Table size="middle" dataSource={transactions} loading={loading} rowKey="id" columns={this.columns}
+              scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
+            />
+          </div>
         </Card>
       </div>
     );

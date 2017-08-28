@@ -251,6 +251,9 @@ export default class MovementModal extends Component {
             stocks: [],
             movements: [],
           });
+          message.success('创建移库成功');
+        } else {
+          message.error('操作失败');
         }
       });
   }

@@ -88,7 +88,7 @@ export default class MovementDetail extends Component {
           </div>
         </Header>
         <Content className="main-content">
-          <Card bodyStyle={{ paddingBottom: 48 }}>
+          <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
             <Row>
               <Col sm={24} lg={6}>
                 <InfoItem addonBefore="货主" field={movementHead.owner_name} />
@@ -113,7 +113,7 @@ export default class MovementDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <Card bodyStyle={{ padding: 0 }}>
+          <Card bodyStyle={{ padding: 0 }} noHovering>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
                 <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} />
