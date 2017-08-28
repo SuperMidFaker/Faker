@@ -178,6 +178,10 @@ export default class SHFTZRelDetail extends Component {
     dataIndex: 'ftz_ent_detail_id',
     width: 100,
   }, {
+    title: '备案料号',
+    dataIndex: 'ftz_cargo_no',
+    width: 160,
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
@@ -192,7 +196,7 @@ export default class SHFTZRelDetail extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    width: 250,
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',
@@ -230,19 +234,6 @@ export default class SHFTZRelDetail extends Component {
       const text = country ? `${country.value}| ${country.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
-  }, {
-    title: '运费',
-    dataIndex: 'freight',
-    width: 100,
-  }, {
-    title: '运费币制',
-    dataIndex: 'freight_currency',
-    width: 100,
-    render: (o) => {
-      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
-      return text && text.length > 0 && <Tag>{text}</Tag>;
-    },
   }]
   handleWtChange = (val, id) => {
     const change = { gross_wt: val };
@@ -270,9 +261,10 @@ export default class SHFTZRelDetail extends Component {
       columns.unshift({
         title: '出库明细ID',
         dataIndex: 'ftz_rel_detail_id',
-        width: 150,
+        width: 100,
       });
     }
+    /*
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value) {
       columns.splice(6, 0, {
         title: '转出数量',
@@ -286,7 +278,7 @@ export default class SHFTZRelDetail extends Component {
           return text && text.length > 0 && <Tag>{text}</Tag>;
         },
       });
-    }
+    }*/
     return (
       <div>
         <Header className="page-header">

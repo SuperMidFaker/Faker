@@ -174,6 +174,10 @@ export default class SHFTZTransferOutDetail extends Component {
     dataIndex: 'ftz_ent_detail_id',
     width: 120,
   }, {
+    title: '备案料号',
+    dataIndex: 'ftz_cargo_no',
+    width: 160,
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
@@ -188,7 +192,7 @@ export default class SHFTZTransferOutDetail extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    width: 250,
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '转出数量',

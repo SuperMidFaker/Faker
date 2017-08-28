@@ -274,9 +274,16 @@ export default class SHFTZTransferInList extends React.Component {
             </div>
           </Header>
           <Content className="main-content" key="main">
-            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
-              toolbarActions={toolbarActions} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              columns={this.columns}
+              rowSelection={rowSelection}
+              dataSource={this.dataSource}
+              indentSize={8}
+              rowKey="id"
+              defaultExpandedRowKeys={['1']}
+              toolbarActions={toolbarActions}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
             />
             <ReceivingDockPanel />
             <OrderDockPanel />

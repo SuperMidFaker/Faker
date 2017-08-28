@@ -253,9 +253,15 @@ export default class SHFTZTransferOutList extends React.Component {
             <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">
-            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-              toolbarActions={toolbarActions} indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              columns={this.columns}
+              rowSelection={rowSelection}
+              dataSource={this.dataSource}
+              toolbarActions={toolbarActions}
+              indentSize={8}
+              rowKey="id"
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
             />
             <ShippingDockPanel />
             <OrderDockPanel />

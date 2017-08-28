@@ -278,9 +278,15 @@ export default class SHFTZReleaseList extends React.Component {
             <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">
-            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-              toolbarActions={toolbarActions} indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-              bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={this.dataSource}
+              rowKey="id"
             />
             <ShippingDockPanel />
             <OrderDockPanel />

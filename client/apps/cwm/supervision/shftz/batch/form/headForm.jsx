@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, Row, Col, Icon, DatePicker } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
-import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -97,58 +95,58 @@ export default class HeadForm extends React.Component {
         </Row>
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="序列号">
+            <FormItem {...formItemLayout} label="运输方式">
               {getFieldDecorator('serial_no', {
                 initialValue: filter.serial_no,
-              })(<Input placeholder="序列号" />)}
+              })(<Input placeholder="运输方式" />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="追踪ID">
+            <FormItem {...formItemLayout} label="运输工具">
               {getFieldDecorator('trace_id', {
                 initialValue: filter.trace_id,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="库位">
+            <FormItem {...formItemLayout} label="贸易方式">
               {getFieldDecorator('location', {
                 initialValue: filter.location,
-              })(<LocationSelect size="large" />)}
+              })(<Input size="large" />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="库别">
+            <FormItem {...formItemLayout} label="运抵国(地区)">
               {getFieldDecorator('virtual_whse', {
                 initialValue: filter.virtual_whse,
-              })(<Input placeholder="库别" />)}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>}
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="扩展属性1">
+            <FormItem {...formItemLayout} label="境内货源地">
               {getFieldDecorator('attrib_1_string', {
                 initialValue: filter.attrib_1_string,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性2">
+            <FormItem {...formItemLayout} label="成交方式">
               {getFieldDecorator('attrib_2_string', {
                 initialValue: filter.attrib_2_string,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性3">
+            <FormItem {...formItemLayout} label="净重">
               {getFieldDecorator('attrib_3_string', {
                 initialValue: filter.attrib_3_string,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性4">
+            <FormItem {...formItemLayout} label="毛重">
               {getFieldDecorator('attrib_4_string', {
                 initialValue: filter.attrib_4_string,
               })(<Input />)}
@@ -157,31 +155,61 @@ export default class HeadForm extends React.Component {
         </Row>}
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="扩展属性5">
+            <FormItem {...formItemLayout} label="出区日期">
               {getFieldDecorator('attrib_5_string', {
                 initialValue: filter.attrib_5_string,
-              })(<Input />)}
+              })(<DatePicker />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性6">
+            <FormItem {...formItemLayout} label="进出口岸">
               {getFieldDecorator('attrib_6_string', {
                 initialValue: filter.attrib_6_string,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性7">
+            <FormItem {...formItemLayout} label="申报日期">
               {getFieldDecorator('attrib_7_date', {
                 initialValue: filter.attrib_7_date,
-              })(<RangePicker />)}
+              })(<DatePicker />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性8">
+            <FormItem {...formItemLayout} label="提单号">
               {getFieldDecorator('attrib_8_date', {
                 initialValue: filter.attrib_8_date,
-              })(<RangePicker />)}
+              })(<Input />)}
+            </FormItem>
+          </Col>
+        </Row>}
+        {this.state.expandForm && <Row gutter={16}>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="运费">
+              {getFieldDecorator('attrib_5_string', {
+                initialValue: filter.attrib_5_string,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem {...formItemLayout} label="保费">
+              {getFieldDecorator('attrib_6_string', {
+                initialValue: filter.attrib_6_string,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem {...formItemLayout} label="杂费">
+              {getFieldDecorator('attrib_7_date', {
+                initialValue: filter.attrib_7_date,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem {...formItemLayout} label="合同发票号">
+              {getFieldDecorator('attrib_8_date', {
+                initialValue: filter.attrib_8_date,
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>}

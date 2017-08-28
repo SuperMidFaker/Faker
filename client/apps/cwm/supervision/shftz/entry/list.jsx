@@ -280,9 +280,16 @@ export default class SHFTZEntryList extends React.Component {
             <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">
-            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} indentSize={8} rowKey="id" defaultExpandedRowKeys={['1']}
-              toolbarActions={toolbarActions} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              toolbarActions={toolbarActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={this.dataSource}
+              indentSize={8}
+              rowKey="id"
+              defaultExpandedRowKeys={['1']}
             />
             <ReceivingDockPanel />
             <OrderDockPanel />
