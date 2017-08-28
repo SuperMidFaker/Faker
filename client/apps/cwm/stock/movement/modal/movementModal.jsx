@@ -222,7 +222,13 @@ export default class MovementModal extends Component {
     const movements = [...this.state.movements];
     const deleteOne = movements[index];
     movements.splice(index, 1);
-    stocks.push(deleteOne);
+    const originStockIndex = stocks.findIndex(stock => stock.id === deleteOne.id);
+    if (originStockIndex || originStockIndex === 0) {
+      stocks[originStockIndex].avail_qty += deleteOne.movement_qty;
+      stocks[originStockIndex].moving_qty -= deleteOne.movement_qty;
+    } else {
+      stocks.push(deleteOne);
+    }
     this.setState({
       stocks,
       movements,
