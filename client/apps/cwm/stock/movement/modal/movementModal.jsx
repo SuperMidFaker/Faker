@@ -87,7 +87,7 @@ export default class MovementModal extends Component {
     width: 100,
   }, {
     title: '目标库位',
-    width: 120,
+    width: 150,
     dataIndex: 'target_location',
     render: (o, record, index) => (<LocationSelect style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)} showSearch />),
   }, {
@@ -134,7 +134,7 @@ export default class MovementModal extends Component {
   }, {
     title: '目标库位',
     dataIndex: 'target_location',
-    width: 100,
+    width: 150,
     render: (o) => {
       if (o) {
         return <Tag>{o}</Tag>;
