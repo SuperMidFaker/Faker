@@ -80,10 +80,14 @@ export default class MovementModal extends Component {
   }, {
     title: '可用数量',
     dataIndex: 'avail_qty',
-    width: 200,
+    width: 100,
+  }, {
+    title: '待移库数量',
+    dataIndex: 'moving_qty',
+    width: 100,
   }, {
     title: '目标库位',
-    width: 100,
+    width: 120,
     dataIndex: 'target_location',
     render: (o, record, index) => (<LocationSelect style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)} showSearch />),
   }, {
@@ -292,7 +296,7 @@ export default class MovementModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card bodyStyle={{ padding: 16 }}>
+        <Card bodyStyle={{ padding: 16 }} noHovering>
           <Form layout="inline">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
@@ -309,14 +313,14 @@ export default class MovementModal extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }}>
+        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id"
               scroll={{ x: this.stocksColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>
         </Card>
-        <Card title="移库明细" bodyStyle={{ padding: 0 }}>
+        <Card title="移库明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id"
               scroll={{ x: this.movementColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

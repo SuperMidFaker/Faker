@@ -82,6 +82,19 @@ export default class SHFTZTransferInList extends React.Component {
       return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
     },
   }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+    render: (o) => {
+      if (o === 0) {
+        return (<Badge status="default" text="未接收" />);
+      } else if (o === 1) {
+        return (<Badge status="processing" text="已接收" />);
+      } else if (o === 2) {
+        return (<Badge status="success" text="已核对" />);
+      }
+    },
+  }, {
     title: '收货单位(货主)',
     width: 180,
     dataIndex: 'owner_name',
@@ -108,19 +121,6 @@ export default class SHFTZTransferInList extends React.Component {
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
-      }
-    },
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 100,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="未接收" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="已接收" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="已核对" />);
       }
     },
   }, {

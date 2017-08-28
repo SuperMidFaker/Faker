@@ -114,7 +114,7 @@ export default class SuppliersPane extends Component {
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加供应商</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加承运人</Button>
         </div>
         <Table columns={this.columns} dataSource={carriers} rowKey="id" />
         <CarrierModal whseCode={whseCode} />

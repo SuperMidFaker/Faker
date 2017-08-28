@@ -312,7 +312,7 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货数量',
     dataIndex: 'inbound_qty',
-    width: 200,
+    width: 220,
     render: (o, record, index) => (
       <QuantityInput packQty={record.inbound_pack_qty} pcsQty={o}
         onChange={e => this.handleProductReceive(index, e.target.value)} disabled={!!record.trace_id}
@@ -353,14 +353,6 @@ export default class ReceivingModal extends Component {
       </Select>);
     },
   }, {
-    title: '收货人员',
-    dataIndex: 'received_by',
-    width: 120,
-    render: (o, row, index) => (
-      <Input value={o} onChange={ev => this.handleReceiverChange(index, ev.target.value)}
-        disabled={!!row.trace_id}
-      />),
-  }, {
     title: '扩展属性1',
     width: 100,
     dataIndex: 'attrib_1_string',
@@ -381,13 +373,23 @@ export default class ReceivingModal extends Component {
     dataIndex: 'attrib_4_string',
     render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_4_string')} disabled={!!row.trace_id} />,
   }, {
+    title: '收货人员',
+    dataIndex: 'received_by',
+    width: 120,
+    render: (o, row, index) => (
+      <Input value={o} onChange={ev => this.handleReceiverChange(index, ev.target.value)}
+        disabled={!!row.trace_id}
+      />),
+  }, {
     title: '操作',
     width: 50,
+    fixed: 'right',
     render: (o, record, index) => !record.trace_id && (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
     const { inboundProduct, inboundHead, editable } = this.props;
     const { receivedQty, receivedPackQty, receivedDate } = this.state;
+    const columns = inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns;
     let footer;
     if (inboundHead.rec_mode === 'manual' && editable) {
       footer = () => <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />;
@@ -427,9 +429,9 @@ export default class ReceivingModal extends Component {
           </Row>
         </Card>
         <Card bodyStyle={{ padding: 0 }} noHovering>
-          <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
+          <Table size="middle" columns={columns}
             dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
-            loading={this.state.loading}
+            loading={this.state.loading} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
           />
         </Card>
       </Modal>
