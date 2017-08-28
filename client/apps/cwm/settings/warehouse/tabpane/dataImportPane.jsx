@@ -4,7 +4,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Form } from 'antd';
 import { formatMsg } from '../message.i18n';
-import { updateWhse } from 'common/reducers/cwmWarehouse';
 import { loadWhseSupervisionApps } from 'common/reducers/openIntegration';
 
 const FormItem = Form.Item;
@@ -15,7 +14,7 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     whseSupervisonApps: state.openIntegration.whseSupervisonApps,
   }),
-  { loadWhseSupervisionApps, updateWhse }
+  { loadWhseSupervisionApps }
 )
 export default class DataImportPane extends Component {
   static propTypes = {

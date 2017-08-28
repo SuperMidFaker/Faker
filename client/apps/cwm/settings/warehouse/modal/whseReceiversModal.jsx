@@ -145,10 +145,10 @@ export default class WhseReceiversModal extends Component {
           <FormItem label="联系人:" {...formItemLayout} >
             {getFieldDecorator('contact')(<Input />)}
           </FormItem>
-          <FormItem label="电话:" {...formItemLayout} >
+          <FormItem label="手机:" {...formItemLayout} >
             {getFieldDecorator('phone')(<Input />)}
           </FormItem>
-          <FormItem label="手机:" {...formItemLayout} >
+          <FormItem label="电话:" {...formItemLayout} >
             {getFieldDecorator('number')(<Input />)}
           </FormItem>
           <FormItem label="邮政编码:" {...formItemLayout}>

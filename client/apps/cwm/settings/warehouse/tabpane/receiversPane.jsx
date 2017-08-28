@@ -44,19 +44,19 @@ export default class ReceiversPane extends Component {
   columns = [{
     title: '代码',
     dataIndex: 'code',
-    width: 150,
+    width: 80,
   }, {
     title: '名称',
     dataIndex: 'name',
-    width: 250,
+    width: 120,
   }, {
     title: '海关编码',
     dataIndex: 'customs_code',
-    width: 150,
+    width: 80,
   }, {
     title: '邮政编码',
     dataIndex: 'post_code',
-    width: 150,
+    width: 80,
   }, {
     title: '地址',
     dataIndex: 'province',
@@ -65,7 +65,7 @@ export default class ReceiversPane extends Component {
   }, {
     title: '详细地址',
     dataIndex: 'address',
-    width: 150,
+    width: 100,
   }, {
     title: '状态',
     dataIndex: 'active',
@@ -79,6 +79,7 @@ export default class ReceiversPane extends Component {
   }, {
     title: '关联货主',
     dataIndex: 'owner_partner_id',
+    width: 150,
     render: (col) => {
       const owner = this.props.whseOwners.find(item => item.owner_partner_id === col);
       return owner ? owner.owner_name : '';
@@ -96,6 +97,7 @@ export default class ReceiversPane extends Component {
   }, {
     title: '操作',
     width: 150,
+    dataIndex: 'id',
     render: record => (
       <span>
         {record.active === 0 ? <RowUpdater onHit={() => this.changeReceiverStatus(record.id, true)} label="启用" row={record} /> :
@@ -131,11 +133,13 @@ export default class ReceiversPane extends Component {
   render() {
     const { whseCode, whseTenantId, whseOwners, receivers } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
+      <div className="table-panel">
         <div className="toolbar">
           <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleReceiverModal(true)}>添加收货人</Button>
         </div>
-        <Table columns={this.columns} dataSource={receivers} rowKey="id" />
+        <Table columns={this.columns} dataSource={receivers} rowKey="id"
+          scroll={{ x: this.columns.map(item => item.width).reduce((a, b) => a + b) }}
+        />
         <WhseReceiversModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
       </div>
     );
