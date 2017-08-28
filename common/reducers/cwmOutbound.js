@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'SET_INVENTORY_FILTER', 'CHANGE_COLUMNS',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
   'LOAD_COURIERNO', 'LOAD_COURIERNO_SUCCEED', 'LOAD_COURIERNO_FAIL',
+  'SHUNFENG_EXPRESS_MODAL',
 ]);
 const initialState = {
   listFilter: {
@@ -81,6 +82,9 @@ const initialState = {
   inventoryDataLoading: false,
   allocatedDataLoading: false,
   waybill: {},
+  shunfengExpressModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -153,6 +157,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, outbound: { ...state.outbound, loaded: false } };
     case actionTypes.READ_LOGO_SUCCEED:
       return { ...state, waybill: { ...state.waybill, ...action.result.data } };
+    case actionTypes.SHUNFENG_EXPRESS_MODAL:
+      return { ...state, shunfengExpressModal: { ...state.shunfengExpressModal, ...action.data } };
     default:
       return state;
   }
@@ -496,5 +502,12 @@ export function loadCourierNo(data) {
       method: 'post',
       data,
     },
+  };
+}
+
+export function toggleShunfengExpressModal(visible) {
+  return {
+    type: actionTypes.SHUNFENG_EXPRESS_MODAL,
+    data: { visible },
   };
 }

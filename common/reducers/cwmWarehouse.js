@@ -183,7 +183,7 @@ export function addWarehouse(params) {
   };
 }
 
-export function editWarehouse(code, name, address, bonded, tenantId, loginId) {
+export function editWarehouse(code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -193,7 +193,7 @@ export function editWarehouse(code, name, address, bonded, tenantId, loginId) {
       ],
       endpoint: 'v1/cwm/warehouse/edit',
       method: 'post',
-      data: { code, name, address, bonded, tenantId, loginId },
+      data: { code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode },
     },
   };
 }

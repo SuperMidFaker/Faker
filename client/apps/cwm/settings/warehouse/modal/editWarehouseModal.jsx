@@ -6,6 +6,7 @@ import { Modal, Form, Input, Radio, message } from 'antd';
 import { hideEditWhseModal, editWarehouse } from 'common/reducers/cwmWarehouse';
 import { loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from '../message.i18n';
+import Cascader from 'client/components/RegionCascader';
 
 const FormItem = Form.Item;
 @injectIntl
@@ -26,6 +27,11 @@ export default class WareHouseModal extends Component {
   }
   state = {
     bonded: 0,
+    province: '',
+    city: '',
+    district: '',
+    street: '',
+    regionCode: null,
   }
   componentWillMount() {
     this.setState({
@@ -36,6 +42,11 @@ export default class WareHouseModal extends Component {
     if (nextProps.warehouse.code !== this.props.warehouse.code) {
       this.setState({
         bonded: nextProps.warehouse.bonded,
+        province: nextProps.warehouse.whse_province,
+        city: nextProps.warehouse.whse_city,
+        district: nextProps.warehouse.whse_district,
+        street: nextProps.warehouse.whse_street,
+        regionCode: nextProps.warehouse.whse_region_code,
       });
     }
   }
@@ -54,7 +65,7 @@ export default class WareHouseModal extends Component {
       if (!err) {
         const { whseCode, whseName, whseAddress } = values;
         const { tenantId, loginId } = this.props;
-        const { bonded } = this.state;
+        const { bonded, province, city, district, street, regionCode } = this.state;
         this.props.editWarehouse(
           whseCode,
           whseName,
@@ -62,6 +73,11 @@ export default class WareHouseModal extends Component {
           bonded,
           tenantId,
           loginId,
+          province,
+          city,
+          district,
+          street,
+          regionCode,
         ).then(
           (result) => {
             if (!result.error) {
@@ -74,12 +90,24 @@ export default class WareHouseModal extends Component {
       }
     });
   }
+  handleRegionChange = (value) => {
+    const [code, province, city, district, street] = value;
+    this.setState({
+      province,
+      city,
+      district,
+      street,
+      regionCode: code,
+    });
+  }
   render() {
     const { form: { getFieldDecorator }, warehouse } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
+    const { province, city, district, street } = this.state;
+    const regionValues = [province, city, district, street];
     return (
       <Modal title="编辑仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>
         <Form>
@@ -99,9 +127,12 @@ export default class WareHouseModal extends Component {
             }
           </FormItem>
           <FormItem {...formItemLayout} label="仓库地址" >
+            <Cascader region={regionValues} onChange={this.handleRegionChange} />
+          </FormItem>
+          <FormItem {...formItemLayout} label="详细地址" >
             {
               getFieldDecorator('whseAddress', {
-                initialValue: warehouse.address,
+                initialValue: warehouse.whse_address,
               })(<Input />)
             }
           </FormItem>

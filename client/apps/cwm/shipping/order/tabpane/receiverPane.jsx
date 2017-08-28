@@ -12,6 +12,7 @@ import { loadReceivers } from 'common/reducers/cwmWarehouse';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
+const InputGroup = Input.Group;
 
 @injectIntl
 @connect(
@@ -98,16 +99,18 @@ export default class ReceiverPane extends Component {
           </Col>
           <Col span={6} offset={2}>
             <FormItem label="联系方式">
-              <Col span={12}>{getFieldDecorator('receiver_phone', {
-                initialValue: soHead && soHead.receiver_phone,
-              })(
-                <Input prefix={<Icon type="phone" />} placeholder="电话" />
-              )}</Col>
-              <Col span={12}>{getFieldDecorator('receiver_number', {
-                initialValue: soHead && soHead.receiver_number,
-              })(
-                <Input prefix={<Icon type="mobile" />} placeholder="手机" />
-              )}</Col>
+              <InputGroup compact>
+                {getFieldDecorator('receiver_phone', {
+                  initialValue: soHead && soHead.receiver_phone,
+                })(
+                  <Input style={{ width: '50%' }} prefix={<Icon type="phone" />} placeholder="电话" />
+                )}
+                {getFieldDecorator('receiver_number', {
+                  initialValue: soHead && soHead.receiver_number,
+                })(
+                  <Input style={{ width: '50%' }} prefix={<Icon type="mobile" />} placeholder="手机" />
+                )}
+              </InputGroup>
             </FormItem>
           </Col>
         </Row>
