@@ -124,7 +124,7 @@ export default class ReceivingModal extends Component {
           dataSource[i].avail = true;
         }
       }
-      if (changeQty > remainQty && remainQty >= 0) {
+      if (changeQty > remainQty && remainQty >= 0 && dataSource[index].inbound_pack_qty !== 0) {
         dataSource[index].inbound_pack_qty += remainPackQty;
         dataSource[index].inbound_qty += remainQty;
         dataSource.push(Object.assign({}, dataSource[index], {

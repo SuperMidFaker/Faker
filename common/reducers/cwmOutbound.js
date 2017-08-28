@@ -25,6 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'SET_INVENTORY_FILTER', 'CHANGE_COLUMNS',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
   'LOAD_COURIERNO', 'LOAD_COURIERNO_SUCCEED', 'LOAD_COURIERNO_FAIL',
+  'FREEZE_OUTBOUND_DETAIL', 'FREEZE_OUTBOUND_DETAIL_SUCCEED', 'FREEZE_OUTBOUND_DETAIL_FAIL',
 ]);
 const initialState = {
   listFilter: {
@@ -495,6 +496,21 @@ export function loadCourierNo(data) {
       endpoint: 'v1/cwm/outbounds/shunfeng/order',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function freezeOutboundDetail(traceId, qty, reason, loginName, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.FREEZE_OUTBOUND_DETAIL,
+        actionTypes.FREEZE_OUTBOUND_DETAIL_SUCCEED,
+        actionTypes.FREEZE_OUTBOUND_DETAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/freeze/outbound/detail',
+      method: 'post',
+      data: { traceId, qty, reason, loginName, tenantId },
     },
   };
 }
