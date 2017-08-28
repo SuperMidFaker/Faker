@@ -84,6 +84,19 @@ export default class SHFTZReleaseList extends React.Component {
       }
     },
   }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+    render: (o) => {
+      if (o === 0) {
+        return (<Badge status="default" text="待备案" />);
+      } else if (o === 1) {
+        return (<Badge status="processing" text="已发送" />);
+      } else if (o === 2) {
+        return (<Badge status="success" text="备案完成" />);
+      }
+    },
+  }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
@@ -118,19 +131,6 @@ export default class SHFTZReleaseList extends React.Component {
     width: 120,
     dataIndex: 'ftz_rel_date',
     render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
-  }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 100,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="已发送" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
-      }
-    },
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -278,9 +278,15 @@ export default class SHFTZReleaseList extends React.Component {
             <div className="page-header-tools" />
           </Header>
           <Content className="main-content" key="main">
-            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource}
-              toolbarActions={toolbarActions} indentSize={8} rowKey="id" scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-              bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            <DataTable
+              toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              rowSelection={rowSelection}
+              selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={this.dataSource}
+              rowKey="id"
             />
             <ShippingDockPanel />
             <OrderDockPanel />

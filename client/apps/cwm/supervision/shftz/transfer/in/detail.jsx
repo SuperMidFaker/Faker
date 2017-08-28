@@ -152,7 +152,7 @@ export default class SHFTZTransferInDetail extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    width: 250,
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',

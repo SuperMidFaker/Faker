@@ -4,11 +4,9 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Input, Select, Row, Col, Icon, DatePicker, Radio } from 'antd';
 import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList } from 'common/reducers/cwmInventoryStock';
-import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -98,28 +96,28 @@ export default class HeadForm extends React.Component {
         </Row>
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="序列号">
+            <FormItem {...formItemLayout} label="出口日期">
               {getFieldDecorator('serial_no', {
                 initialValue: filter.serial_no,
-              })(<Input placeholder="序列号" />)}
+              })(<DatePicker />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="追踪ID">
+            <FormItem {...formItemLayout} label="报关日期">
               {getFieldDecorator('trace_id', {
                 initialValue: filter.trace_id,
-              })(<Input />)}
+              })(<DatePicker />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="库位">
+            <FormItem {...formItemLayout} label="预计出区日期">
               {getFieldDecorator('location', {
                 initialValue: filter.location,
-              })(<LocationSelect size="large" />)}
+              })(<DatePicker size="large" />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="库别">
+            <FormItem {...formItemLayout} label="运输单位">
               {getFieldDecorator('virtual_whse', {
                 initialValue: filter.virtual_whse,
               })(<Input placeholder="库别" />)}
@@ -128,61 +126,31 @@ export default class HeadForm extends React.Component {
         </Row>}
         {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="扩展属性1">
+            <FormItem {...formItemLayout} label="合同发票号">
               {getFieldDecorator('attrib_1_string', {
                 initialValue: filter.attrib_1_string,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性2">
+            <FormItem {...formItemLayout} label="目的地">
               {getFieldDecorator('attrib_2_string', {
                 initialValue: filter.attrib_2_string,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性3">
+            <FormItem {...formItemLayout} label="封志">
               {getFieldDecorator('attrib_3_string', {
                 initialValue: filter.attrib_3_string,
               })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性4">
+            <FormItem {...formItemLayout} label="唛头">
               {getFieldDecorator('attrib_4_string', {
                 initialValue: filter.attrib_4_string,
               })(<Input />)}
-            </FormItem>
-          </Col>
-        </Row>}
-        {this.state.expandForm && <Row gutter={16}>
-          <Col span={5}>
-            <FormItem {...formItemLayout} label="扩展属性5">
-              {getFieldDecorator('attrib_5_string', {
-                initialValue: filter.attrib_5_string,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性6">
-              {getFieldDecorator('attrib_6_string', {
-                initialValue: filter.attrib_6_string,
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性7">
-              {getFieldDecorator('attrib_7_date', {
-                initialValue: filter.attrib_7_date,
-              })(<RangePicker />)}
-            </FormItem>
-          </Col>
-          <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="扩展属性8">
-              {getFieldDecorator('attrib_8_date', {
-                initialValue: filter.attrib_8_date,
-              })(<RangePicker />)}
             </FormItem>
           </Col>
         </Row>}

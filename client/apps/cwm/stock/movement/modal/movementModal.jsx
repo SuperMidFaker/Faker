@@ -80,10 +80,14 @@ export default class MovementModal extends Component {
   }, {
     title: '可用数量',
     dataIndex: 'avail_qty',
-    width: 200,
+    width: 100,
+  }, {
+    title: '待移库数量',
+    dataIndex: 'moving_qty',
+    width: 100,
   }, {
     title: '目标库位',
-    width: 100,
+    width: 150,
     dataIndex: 'target_location',
     render: (o, record, index) => (<LocationSelect style={{ width: 100 }} value={o} onSelect={value => this.handleSelect(value, index)} showSearch />),
   }, {
@@ -100,7 +104,7 @@ export default class MovementModal extends Component {
   }, {
     title: '添加',
     width: 80,
-    render: (o, record, index) => <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddMovement(index)} />,
+    render: (o, record, index) => <Button disabled={record.avail_qty === 0} type="primary" size="small" icon="plus" onClick={() => this.handleAddMovement(index)} />,
   }]
 
   movementColumns = [{
@@ -130,7 +134,7 @@ export default class MovementModal extends Component {
   }, {
     title: '目标库位',
     dataIndex: 'target_location',
-    width: 100,
+    width: 150,
     render: (o) => {
       if (o) {
         return <Tag>{o}</Tag>;
@@ -166,7 +170,7 @@ export default class MovementModal extends Component {
       this.props.defaultWhse.code, this.state.owner.id).then((result) => {
         if (!result.err) {
           this.setState({
-            stocks: result.data,
+            stocks: result.data.map(item => ({ ...item, moving_qty: 0 })),
           });
         }
       });
@@ -192,7 +196,7 @@ export default class MovementModal extends Component {
   handleAddMovement = (index) => {
     const stocks = [...this.state.stocks];
     const movements = [...this.state.movements];
-    const movementOne = stocks[index];
+    const movementOne = { ...stocks[index] };
     if (!movementOne.target_location) {
       message.info('请选择目标库位');
       return;
@@ -203,7 +207,10 @@ export default class MovementModal extends Component {
       message.info('请输入移动数量');
       return;
     }
-    stocks.splice(index, 1);
+    stocks[index].avail_qty -= movementOne.movement_qty;
+    stocks[index].moving_qty += movementOne.movement_qty;
+    stocks[index].movement_qty = '';
+    stocks[index].target_location = '';
     movements.push(movementOne);
     this.setState({
       stocks,
@@ -292,7 +299,7 @@ export default class MovementModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card bodyStyle={{ padding: 16 }}>
+        <Card bodyStyle={{ padding: 16 }} noHovering>
           <Form layout="inline">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
@@ -309,16 +316,16 @@ export default class MovementModal extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }}>
+        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id"
               scroll={{ x: this.stocksColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>
         </Card>
-        <Card title="移库明细" bodyStyle={{ padding: 0 }}>
+        <Card title="移库明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.movementColumns} dataSource={movements} rowKey="id"
+            <Table size="middle" columns={this.movementColumns} dataSource={movements.map((movement, index) => ({ ...movement, index }))} rowKey="index"
               scroll={{ x: this.movementColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>

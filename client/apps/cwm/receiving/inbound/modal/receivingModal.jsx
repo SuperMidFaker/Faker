@@ -42,6 +42,8 @@ export default class ReceivingModal extends Component {
     receivedPackQty: 0,
     loading: false,
     receivedDate: null,
+    disabled: true,
+    saveLoading: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
@@ -132,12 +134,25 @@ export default class ReceivingModal extends Component {
           inbound_pack_qty: changePackQty - remainPackQty,
           avail: false,
         }));
+        if (dataSource[index].inbound_pack_qty === 0) {
+          dataSource.splice(index, 1);
+        }
       } else {
         dataSource[index].inbound_pack_qty = receivePack;
         dataSource[index].inbound_qty = receivePack * inboundProduct.sku_pack_qty;
       }
       receivedQty += changeQty;
       receivedPackQty += changePackQty;
+      const filterDataSource = dataSource.filter(data => !data.trace_id);
+      if (filterDataSource.find(data => data.inbound_pack_qty > 0)) {
+        this.setState({
+          disabled: false,
+        });
+      } else {
+        this.setState({
+          disabled: true,
+        });
+      }
       this.setState({
         dataSource,
         receivedQty,
@@ -216,6 +231,9 @@ export default class ReceivingModal extends Component {
   }
   handleConfirmReceive = () => {
     const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
+    this.setState({
+      saveLoading: true,
+    });
     this.props.receiveProduct(this.state.dataSource.filter(data => !data.trace_id).map(data => ({
       location: data.location,
       damage_level: data.damage_level,
@@ -236,6 +254,9 @@ export default class ReceivingModal extends Component {
       } else {
         message.error('操作失败');
       }
+      this.setState({
+        saveLoading: false,
+      });
     });
   }
   handleSerialNoChange = (index, value) => {
@@ -312,7 +333,7 @@ export default class ReceivingModal extends Component {
   }, {
     title: '收货数量',
     dataIndex: 'inbound_qty',
-    width: 200,
+    width: 220,
     render: (o, record, index) => (
       <QuantityInput packQty={record.inbound_pack_qty} pcsQty={o}
         onChange={e => this.handleProductReceive(index, e.target.value)} disabled={!!record.trace_id}
@@ -353,14 +374,6 @@ export default class ReceivingModal extends Component {
       </Select>);
     },
   }, {
-    title: '收货人员',
-    dataIndex: 'received_by',
-    width: 120,
-    render: (o, row, index) => (
-      <Input value={o} onChange={ev => this.handleReceiverChange(index, ev.target.value)}
-        disabled={!!row.trace_id}
-      />),
-  }, {
     title: '扩展属性1',
     width: 100,
     dataIndex: 'attrib_1_string',
@@ -381,13 +394,23 @@ export default class ReceivingModal extends Component {
     dataIndex: 'attrib_4_string',
     render: (o, row, index) => <Input value={o} onChange={e => this.handleAttrChange(index, e.target.value, 'attrib_4_string')} disabled={!!row.trace_id} />,
   }, {
+    title: '收货人员',
+    dataIndex: 'received_by',
+    width: 120,
+    render: (o, row, index) => (
+      <Input value={o} onChange={ev => this.handleReceiverChange(index, ev.target.value)}
+        disabled={!!row.trace_id}
+      />),
+  }, {
     title: '操作',
     width: 50,
+    fixed: 'right',
     render: (o, record, index) => !record.trace_id && (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
     const { inboundProduct, inboundHead, editable } = this.props;
-    const { receivedQty, receivedPackQty, receivedDate } = this.state;
+    const { receivedQty, receivedPackQty, receivedDate, disabled, saveLoading } = this.state;
+    const columns = inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns;
     let footer;
     if (inboundHead.rec_mode === 'manual' && editable) {
       footer = () => <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAdd} />;
@@ -397,7 +420,7 @@ export default class ReceivingModal extends Component {
       <div className="toolbar-right">
         {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
         {editable && <Button onClick={this.handleCancel}>取消</Button>}
-        {editable && <Button type="primary" onClick={this.handleSubmit}>保存</Button>}
+        {editable && <Button disabled={disabled} loading={saveLoading} type="primary" onClick={this.handleSubmit}>保存</Button>}
       </div>
     </div>);
     return (
@@ -427,9 +450,9 @@ export default class ReceivingModal extends Component {
           </Row>
         </Card>
         <Card bodyStyle={{ padding: 0 }} noHovering>
-          <Table size="middle" columns={inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns}
+          <Table size="middle" columns={columns}
             dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
-            loading={this.state.loading}
+            loading={this.state.loading} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}
           />
         </Card>
       </Modal>
