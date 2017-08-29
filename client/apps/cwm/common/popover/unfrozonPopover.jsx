@@ -18,7 +18,7 @@ const FormItem = Form.Item;
   }),
   { unfreezeTransit }
 )
-export default class FreezePopover extends Component {
+export default class unfrozonPopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     text: PropTypes.string.isRequired,
@@ -65,10 +65,10 @@ export default class FreezePopover extends Component {
     const content = (
       <div style={{ width: 200 }}>
         <Form layout="vertical" className="form-layout-compact">
-          <FormItem label="冻结数量">
+          <FormItem label="解冻数量">
             <Input type="number" value={qty} onChange={this.handleQtyChange} />
           </FormItem>
-          <FormItem label="冻结原因">
+          <FormItem label="解冻原因">
             <Input value={reason} onChange={this.handleReasonChange} />
           </FormItem>
           <FormItem>
@@ -78,8 +78,8 @@ export default class FreezePopover extends Component {
       </div>
     );
     return (
-      <Popover content={content} title="库存冻结" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button size="small">{<span className="text-success">{text}</span>}</Button>
+      <Popover content={content} title="货品信息" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+        <Button size="middle">{<span className="text-error">{text}</span>}</Button>
       </Popover>
     );
   }

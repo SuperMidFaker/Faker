@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Popover, Form, Input } from 'antd';
+import { Button, Popover, Form, Input, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { unfreezeTransit } from 'common/reducers/cwmTransition';
+import { freezeTransit } from 'common/reducers/cwmTransition';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -16,9 +16,9 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     loginName: state.account.loginName,
   }),
-  { unfreezeTransit }
+  { freezeTransit }
 )
-export default class UnfreezePopover extends Component {
+export default class frozonPopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     text: PropTypes.string.isRequired,
@@ -48,7 +48,11 @@ export default class UnfreezePopover extends Component {
   handleConfirm = () => {
     const { tenantId, loginName, traceId } = this.props;
     const { qty, reason } = this.state;
-    this.props.unfreezeTransit([traceId], { reason }, loginName, tenantId, Number(qty)).then((result) => {
+    if (!qty) {
+      message.info('请输入冻结数量');
+      return;
+    }
+    this.props.freezeTransit([traceId], { reason }, loginName, tenantId, Number(qty)).then((result) => {
       if (!result.error) {
         this.props.reload();
         this.setState({
@@ -65,7 +69,7 @@ export default class UnfreezePopover extends Component {
     const content = (
       <div style={{ width: 200 }}>
         <Form layout="vertical" className="form-layout-compact">
-          <FormItem label="解冻数量">
+          <FormItem label="冻结数量">
             <Input type="number" value={qty} onChange={this.handleQtyChange} />
           </FormItem>
           <FormItem label="解冻原因">
@@ -78,8 +82,8 @@ export default class UnfreezePopover extends Component {
       </div>
     );
     return (
-      <Popover content={content} title="库存解冻" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button size="small">{<span className="text-error">{text}</span>}</Button>
+      <Popover content={content} title="货品信息" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+        <Button size="middle">{<span className="text-success">{text}</span>}</Button>
       </Popover>
     );
   }
