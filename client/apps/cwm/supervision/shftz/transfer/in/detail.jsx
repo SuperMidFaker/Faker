@@ -7,7 +7,7 @@ import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Ta
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, transferToOwnWhse } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -49,7 +49,7 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
   }),
-  { loadEntryDetails, updateEntryReg, pairEntryRegProducts, transferToOwnWhse }
+  { loadEntryDetails, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn }
 )
 @connectNav({
   depth: 3,
@@ -201,8 +201,8 @@ export default class SHFTZTransferInDetail extends Component {
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
   }
-  handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateEntryReg(preRegNo, field, value);
+  handleInfoSave = (preRegNo, field, value, virtualTransfer) => {
+    this.props.updateEntryReg(preRegNo, field, value, virtualTransfer);
   }
   handleTransToWhs = () => {
     const { params, entryAsn, tenantId, tenantCode, username, owners } = this.props;
@@ -216,10 +216,17 @@ export default class SHFTZTransferInDetail extends Component {
       owner,
     });
   }
+  handleOwnTransferQuery = () => {
+    const { params, entryAsn, username } = this.props;
+    this.props.queryOwnTransferOutIn({
+      asn_no: params.asnNo,
+      whse: entryAsn.whse_code,
+      username,
+    });
+  }
   render() {
     const { entryAsn, entryRegs, whse } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
-    const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     return (
       <div>
         <Header className="page-header">
@@ -239,7 +246,8 @@ export default class SHFTZTransferInDetail extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             {this.state.comparable && <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
-            {entryAsn.reg_status > 0 && <Button size="large" icon="export" onClick={this.handleTransToWhs}>转出到仓库</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" onClick={this.handleTransToWhs}>转出至原仓库</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" onClick={this.handleOwnTransferQuery}>虚拟转入明细</Button>}
           </div>
         </Header>
         <Content className="main-content">
@@ -291,14 +299,14 @@ export default class SHFTZTransferInDetail extends Component {
                       <div className="panel-header">
                         <Row>
                           <Col sm={12} lg={5}>
-                            <InfoItem size="small" addonBefore="海关入库单号" field={reg.ftz_ent_no} editable={entryEditable}
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                            <InfoItem size="small" addonBefore="海关入库单号" field={reg.ftz_ent_no} editable
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value, reg.virtual_transfer)}
                             />
                           </Col>
                           <Col sm={12} lg={3}>
                             <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                              type="date" field={reg.ftz_ent_date} editable={entryEditable}
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
+                              type="date" field={reg.ftz_ent_date} editable
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value), reg.virtual_transfer)}
                             />
                           </Col>
                           <Col sm={8} lg={2}>

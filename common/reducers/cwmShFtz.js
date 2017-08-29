@@ -37,6 +37,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'EDIT_GNAME', 'EDIT_GNAME_SUCCEED', 'EDIT_GNAME_FAIL',
   'EDIT_REL_WT', 'EDIT_REL_WT_SUCCEED', 'EDIT_REL_WT_FAIL',
   'TRANSFER_TO_OWN', 'TRANSFER_TO_OWN_SUCCEED', 'TRANSFER_TO_OWN_FAIL',
+  'QUERY_OWNTRANF', 'QUERY_OWNTRANF_SUCCEED', 'QUERY_OWNTRANF_FAIL',
 ]);
 
 const initialState = {
@@ -310,7 +311,7 @@ export function syncProdSKUS(data) {
   };
 }
 
-export function updateEntryReg(preRegNo, field, value) {
+export function updateEntryReg(preRegNo, field, value, virtualTransfer) {
   return {
     [CLIENT_API]: {
       types: [
@@ -320,7 +321,7 @@ export function updateEntryReg(preRegNo, field, value) {
       ],
       endpoint: 'v1/cwm/shftz/entry/field/value',
       method: 'post',
-      data: { pre_entry_seq_no: preRegNo, field, value },
+      data: { pre_entry_seq_no: preRegNo, field, value, virtualTransfer },
     },
   };
 }
@@ -696,6 +697,21 @@ export function transferToOwnWhse(data) {
       endpoint: 'v1/cwm/shftz/transfer/to/ownwhse',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function queryOwnTransferOutIn(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUERY_OWNTRANF,
+        actionTypes.QUERY_OWNTRANF_SUCCEED,
+        actionTypes.QUERY_OWNTRANF_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/transfer/ownwhse/query',
+      method: 'post',
+      data: query,
     },
   };
 }
