@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { Tag } from 'antd';
 import { CWM_DAMAGE_LEVEL, CWM_TRANSACTIONS_TYPE } from 'common/constants';
+import TraceIdPopover from '../common/popover/traceIdPopover';
 import { formatMsg } from './message.i18n';
 
 exports.commonTraceColumns = (intl) => {
@@ -23,6 +24,7 @@ exports.commonTraceColumns = (intl) => {
     width: 200,
     dataIndex: 'trace_id',
     sorter: true,
+    render: o => o && <TraceIdPopover traceId={o} />,
   }, {
     title: msg('SKU'),
     dataIndex: 'product_sku',

@@ -17,6 +17,8 @@ import TransitionDockPanel from './dock/transitionDockPanel';
 import BatchTransitModal from './modal/batchTransitModal';
 // import BatchMoveModal from './modal/batchMoveModal';
 import BatchFreezeModal from './modal/batchFreezeModal';
+import FrozenPopover from '../../common/popover/frozenPopover';
+import QtyChangePopover from '../../common/popover/qtyChangePopover';
 import { formatMsg } from '../message.i18n';
 
 const RadioGroup = Radio.Group;
@@ -112,16 +114,17 @@ export default class StockTransitionList extends React.Component {
     width: 100,
     dataIndex: 'stock_qty',
     className: 'cell-align-right text-emphasis',
+    render: (text, record) => <QtyChangePopover text={text} traceId={record.trace_id} reload={this.handleStockQuery} />,
   }, {
     title: this.msg('availQty'),
     width: 100,
     dataIndex: 'avail_qty',
     className: 'cell-align-right',
-    render: (text) => {
+    render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <span className="text-success">{text}</span>;
+        return <FrozenPopover traceId={record.trace_id} text={text} reload={this.handleStockQuery} />;
       }
     },
   }, {
