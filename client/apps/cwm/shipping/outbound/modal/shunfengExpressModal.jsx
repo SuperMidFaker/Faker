@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Icon, Tabs, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button,
+import { Icon, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button,
   Table, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleShunfengExpressModal,
@@ -12,11 +12,14 @@ import { WaybillDef } from '../billsPrint/docDef';
 import Cascader from 'client/components/RegionCascader';
 
 const formatMsg = format(messages);
-const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const formItemLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 18 },
+};
 
 const EXPRESS_TYPES = [
   { text: '顺丰标快', value: '1' },
@@ -340,176 +343,166 @@ export default class ShunfengExpressModal extends Component {
       this.state.receiver_district, this.state.receiver_street];
     const senderRegionValues = [this.state.sender_province, this.state.sender_city,
       this.state.sender_district, this.state.sender_street];
-
+    const title = (<div>
+      <span>顺丰快递单打印</span>
+      <div className="toolbar-right">
+        {<Button onClick={() => this.props.toggleShunfengExpressModal(false)}>关闭</Button>}
+      </div>
+    </div>);
     return (
-      <Modal title="顺丰快递单打印" visible={this.props.visible} width={700}
-        onCancel={() => this.props.toggleShunfengExpressModal(false)}
-        onOk={() => this.props.toggleShunfengExpressModal(false)}
-      >
-        <Tabs activeKey={this.state.tabkey} onChange={this.handleTabChange}>
-          <TabPane tab="订单信息" key="1">
-            <Row>
-              <Col span={12}>
-                <FormItem label="快递类型" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Select placeholder="快递类型" value={this.state.express_type} onChange={value => this.setState({ express_type: value })} style={{ width: '100%' }}>
-                    {EXPRESS_TYPES.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
-                  </Select>
-                </FormItem>
-              </Col>
-              <Col span={12} >
-                <FormItem label="签单返还" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <RadioGroup value={this.state.need_return_tracking_no}
-                    onChange={e => this.setState({ need_return_tracking_no: e.target.value })} style={{ width: '100%' }}
-                  >
-                    <RadioButton value="0">否</RadioButton>
-                    <RadioButton value="1">是</RadioButton>
-                  </RadioGroup>
-                </FormItem>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <FormItem label="付款方式" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Select placeholder="付款方式" value={this.state.pay_method} onChange={value => this.setState({ pay_method: value })} style={{ width: '100%' }}>
-                    {PAY_METHODS.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
-                  </Select>
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="月结卡号" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.custid} onChange={e => this.setState({ custid: e.target.value })} />
-                </FormItem>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <FormItem label="包裹数" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.parcel_quantity} type="number" onChange={e => this.setState({ parcel_quantity: e.target.value })} />
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="托寄物" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.product_name} onChange={e => this.setState({ product_name: e.target.value })} />
-                </FormItem>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <FormItem label="重量" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.weight} onChange={e => this.setState({ weight: e.target.value })} />
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="总件数" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.product_qty} type="number" onChange={e => this.setState({ product_qty: e.target.value })} />
-                </FormItem>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12}>
-                <FormItem label="增值服务" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Select placeholder="增值服务" mode="tags"
-                    value={this.state.added_services ? this.state.added_services.split(',') : []}
-                    onChange={value => this.setState({ added_services: value.join(',') })} style={{ width: '100%' }}
-                  >
-                    {ADDED_SERVICES.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
-                  </Select>
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                {this.state.added_services.indexOf('INSURE') >= 0 &&
-                <FormItem label="保价金额" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.insure_value} type="number" onChange={e => this.setState({ insure_value: e.target.value })} />
-                </FormItem>
-                }
-              </Col>
-            </Row>
-            {this.state.added_services.indexOf('COD') >= 0 &&
-            <Row>
-              <Col span={12}>
-                <FormItem label="代收货款额" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.cod_value} onChange={e => this.setState({ cod_value: e.target.value })} />
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem label="代收货款卡号" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
-                  <Input value={this.state.cod_card_id} onChange={e => this.setState({ cod_card_id: e.target.value })} />
-                </FormItem>
-              </Col>
-            </Row>
-            }
-            <Card>
-              <Row>
+      <Modal title={title} visible={this.props.visible} width="100%" maskClosable={false} closable={false} wrapClassName="fullscreen-modal" footer={null}>
+        <Row gutter={24}>
+          <Col span={16}>
+            <Card title="订单信息" noHovering>
+              <Row className="form-row">
                 <Col span={12}>
-                  <FormItem label="收货人" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="快递类型" {...formItemLayout}>
+                    <Select placeholder="快递类型" value={this.state.express_type} onChange={value => this.setState({ express_type: value })} style={{ width: '100%' }}>
+                      {EXPRESS_TYPES.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
+                    </Select>
+                  </FormItem>
+                </Col>
+                <Col span={12} >
+                  <FormItem label="签单返还" {...formItemLayout}>
+                    <RadioGroup value={this.state.need_return_tracking_no}
+                      onChange={e => this.setState({ need_return_tracking_no: e.target.value })} style={{ width: '100%' }}
+                    >
+                      <RadioButton value="0">否</RadioButton>
+                      <RadioButton value="1">是</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label="付款方式" {...formItemLayout}>
+                    <Select placeholder="付款方式" value={this.state.pay_method} onChange={value => this.setState({ pay_method: value })} style={{ width: '100%' }}>
+                      {PAY_METHODS.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
+                    </Select>
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label="月结卡号" {...formItemLayout}>
+                    <Input value={this.state.custid} onChange={e => this.setState({ custid: e.target.value })} />
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label="包裹数" {...formItemLayout}>
+                    <Input value={this.state.parcel_quantity} type="number" onChange={e => this.setState({ parcel_quantity: e.target.value })} />
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label="托寄物" {...formItemLayout}>
+                    <Input value={this.state.product_name} onChange={e => this.setState({ product_name: e.target.value })} />
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label="重量" {...formItemLayout}>
+                    <Input value={this.state.weight} onChange={e => this.setState({ weight: e.target.value })} />
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label="总件数" {...formItemLayout}>
+                    <Input value={this.state.product_qty} type="number" onChange={e => this.setState({ product_qty: e.target.value })} />
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label="增值服务" {...formItemLayout}>
+                    <Select placeholder="增值服务" mode="tags"
+                      value={this.state.added_services ? this.state.added_services.split(',') : []}
+                      onChange={value => this.setState({ added_services: value.join(',') })} style={{ width: '100%' }}
+                    >
+                      {ADDED_SERVICES.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
+                    </Select>
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  {this.state.added_services.indexOf('INSURE') >= 0 &&
+                  <FormItem label="保价金额" {...formItemLayout}>
+                    <Input value={this.state.insure_value} type="number" onChange={e => this.setState({ insure_value: e.target.value })} />
+                  </FormItem>
+                }
+                </Col>
+                {this.state.added_services.indexOf('COD') >= 0 &&
+                <Col span={12}>
+                  <FormItem label="代收货款额" {...formItemLayout}>
+                    <Input value={this.state.cod_value} onChange={e => this.setState({ cod_value: e.target.value })} />
+                  </FormItem>
+                </Col>
+            }
+                {this.state.added_services.indexOf('COD') >= 0 &&
+                <Col span={12}>
+                  <FormItem label="代收货款卡号" {...formItemLayout}>
+                    <Input value={this.state.cod_card_id} onChange={e => this.setState({ cod_card_id: e.target.value })} />
+                  </FormItem>
+                </Col>
+            }
+              </Row>
+              <Row className="form-row">
+                <Col span={12}>
+                  <FormItem label="收货人" {...formItemLayout}>
                     <Input value={this.state.receiver_contact} placeholder="收货人"
                       onChange={e => this.setState({ receiver_contact: e.target.value })}
                     />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="电话" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="电话" {...formItemLayout}>
                     <Input value={this.state.receiver_phone} placeholder="电话"
                       onChange={e => this.setState({ receiver_phone: e.target.value })}
                     />
                   </FormItem>
                 </Col>
-              </Row>
-              <Row>
                 <Col span={12}>
-                  <FormItem label="地址" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="地址" {...formItemLayout}>
                     <Cascader defaultRegion={receiverRegionValues} onChange={this.handleReceiverRegionChange} />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="详细地址" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="详细地址" {...formItemLayout}>
                     <Input value={this.state.receiver_address}
                       onChange={e => this.setState({ receiver_address: e.target.value })}
                     />
                   </FormItem>
                 </Col>
               </Row>
-            </Card>
-            <Card>
-              <Row>
+              <Row className="form-row">
                 <Col span={12}>
-                  <FormItem label="发货人" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="发货人" {...formItemLayout}>
                     <Input value={this.state.sender_contact} placeholder="发货人"
                       onChange={e => this.setState({ sender_contact: e.target.value })}
                     />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="电话" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="电话" {...formItemLayout}>
                     <Input value={this.state.sender_phone} placeholder="电话"
                       onChange={e => this.setState({ sender_phone: e.target.value })}
                     />
                   </FormItem>
                 </Col>
-              </Row>
-              <Row>
                 <Col span={12}>
-                  <FormItem label="地址" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="地址" {...formItemLayout}>
                     <Cascader defaultRegion={senderRegionValues} onChange={this.handleSenderRegionChange} />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="详细地址" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+                  <FormItem label="详细地址" {...formItemLayout}>
                     <Input value={this.state.sender_address}
                       onChange={e => this.setState({ sender_address: e.target.value })}
                     />
                   </FormItem>
                 </Col>
               </Row>
+
             </Card>
-            <Button onClick={this.orderExpress}>获取单号</Button>
-          </TabPane>
-          <TabPane tab="快递单号" key="2">
-            <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" pagination={false} />
-            <br />
-            {mailno && <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAddZD}>增加子单号</Button>}
-          </TabPane>
-        </Tabs>
+          </Col>
+          <Col span={8}>
+            <Card title="快递单号" extra={<Button type="primary" onClick={this.orderExpress}>获取单号</Button>} noHovering>
+              <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" pagination={false} />
+              <br />
+              {mailno && <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAddZD}>增加子单号</Button>}
+            </Card>
+          </Col>
+        </Row>
       </Modal>
     );
   }
