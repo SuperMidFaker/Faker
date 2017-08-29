@@ -7,6 +7,7 @@ import { Form, Input, Select, DatePicker, Card, Col, Radio, Row } from 'antd';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import moment from 'moment';
 import { loadSkuParams } from 'common/reducers/cwmSku';
+import { getSellers } from 'common/reducers/cwmReceive';
 import { formatMsg } from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -18,16 +19,21 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
+    sellers: state.cwmReceive.sellers,
   }),
-  { loadSkuParams }
+  { loadSkuParams, getSellers }
 )
 export default class HeadCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     handleOwnerChange: PropTypes.func,
+  }
+  componentWillMount() {
+    this.props.getSellers(this.props.tenantId, this.props.defaultWhse.code);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.asnHead !== this.props.asnHead) {
@@ -99,7 +105,9 @@ export default class HeadCard extends Component {
             <FormItem label="供货商">
               {getFieldDecorator('seller_name', {
                 initialValue: asnHead && asnHead.seller_name,
-              })(<Select mode="combobox" showSearch />)}
+              })(<Select mode="combobox" showSearch optionFilterProp="searchText">
+                {this.props.sellers.map(seller => <Option searchText={`${seller.name}${seller.code}`} value={seller.name} key={seller.name}>{seller.name}</Option>)}
+              </Select>)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
