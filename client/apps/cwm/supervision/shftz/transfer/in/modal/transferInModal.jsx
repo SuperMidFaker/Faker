@@ -46,7 +46,7 @@ export default class TransferInModal extends Component {
   state = {
     ownerCusCode: '',
     relDateRange: [],
-    relNo: '',
+    entryRegNo: '',
     portionRegs: [],
     regDetails: [],
     transRegs: [],
@@ -132,7 +132,7 @@ export default class TransferInModal extends Component {
     },
   }, {
     title: '单位',
-    dataIndex: 'out_unit',
+    dataIndex: 'unit',
     width: 100,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
@@ -142,19 +142,19 @@ export default class TransferInModal extends Component {
   }, {
     title: '数量',
     width: 100,
-    dataIndex: 'qty',
+    dataIndex: 'stock_qty',
   }, {
     title: '毛重',
     width: 100,
-    dataIndex: 'gross_wt',
+    dataIndex: 'stock_grosswt',
   }, {
     title: '净重',
     width: 100,
-    dataIndex: 'net_wt',
+    dataIndex: 'stock_netwt',
   }, {
     title: '金额',
     width: 100,
-    dataIndex: 'amount',
+    dataIndex: 'stock_amount',
   }, {
     title: '币制',
     width: 100,
@@ -193,19 +193,19 @@ export default class TransferInModal extends Component {
   handleOwnerChange = (ownerCusCode) => {
     this.setState({ ownerCusCode });
   }
-  handleRelNoChange = (ev) => {
-    this.setState({ relNo: ev.target.value });
+  handleEntryNoChange = (ev) => {
+    this.setState({ entryRegNo: ev.target.value });
   }
   handleRelRangeChange = (relDateRange) => {
     this.setState({ relDateRange });
   }
   handleFilterQuery = () => {
-    const { ownerCusCode, relNo, relDateRange } = this.state;
+    const { ownerCusCode, entryRegNo, relDateRange } = this.state;
     this.props.loadEntryTransRegs({
       ownerCusCode,
       whseCode: this.props.defaultWhse.code,
       tenantId: this.props.tenantId,
-      preSeqNo: relNo,
+      preSeqNo: entryRegNo,
       start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
       end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
     });
@@ -241,7 +241,7 @@ export default class TransferInModal extends Component {
   }
 
   render() {
-    const { relNo, relDateRange, ownerCusCode } = this.state;
+    const { entryRegNo, relDateRange, ownerCusCode } = this.state;
     const extraForm = (
       <Form layout="inline">
         <FormItem label="货主">
@@ -252,8 +252,8 @@ export default class TransferInModal extends Component {
               </Option>))}
           </Select>
         </FormItem>
-        <FormItem label="报关统一编号">
-          <Input value={relNo} onChange={this.handleRelNoChange} />
+        <FormItem label="海关入库单号">
+          <Input value={entryRegNo} onChange={this.handleEntryNoChange} />
         </FormItem>
         <FormItem label="入库日期">
           <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />

@@ -156,7 +156,7 @@ export default class SHFTZTransferInDetail extends Component {
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '数量',
-    dataIndex: 'qty',
+    dataIndex: 'stock_qty',
     width: 100,
     render: o => (<b>{o}</b>),
   }, {
@@ -171,15 +171,15 @@ export default class SHFTZTransferInDetail extends Component {
   }, {
     title: '净重',
     width: 100,
-    dataIndex: 'net_wt',
+    dataIndex: 'stock_netwt',
   }, {
     title: '毛重',
     width: 100,
-    dataIndex: 'gross_wt',
+    dataIndex: 'stock_grosswt',
   }, {
     title: '金额',
     width: 100,
-    dataIndex: 'amount',
+    dataIndex: 'stock_amount',
   }, {
     title: '币制',
     dataIndex: 'currency',
@@ -247,7 +247,7 @@ export default class SHFTZTransferInDetail extends Component {
           <div className="page-header-tools">
             {this.state.comparable && <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
             {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" onClick={this.handleTransToWhs}>转出至原仓库</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" onClick={this.handleOwnTransferQuery}>虚拟转入明细</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" onClick={this.handleOwnTransferQuery}>转入明细</Button>}
           </div>
         </Header>
         <Content className="main-content">
@@ -286,9 +286,9 @@ export default class SHFTZTransferInDetail extends Component {
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {entryRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
-                    total_qty: acc.total_qty + regd.qty,
-                    total_amount: acc.total_amount + regd.amount_usd,
-                    total_net_wt: acc.total_net_wt + regd.net_wt,
+                    total_qty: acc.total_qty + regd.stock_qty,
+                    total_amount: acc.total_amount + regd.stock_amountusd,
+                    total_net_wt: acc.total_net_wt + regd.stock_netwt,
                   }), {
                     total_qty: 0,
                     total_amount: 0,
