@@ -37,7 +37,7 @@ export default class TraceIdPopover extends Component {
     });
   }
   column = [{
-    title: '事物类型',
+    title: '事务',
     width: 80,
     dataIndex: 'type',
     className: 'cell-align-center',
@@ -83,7 +83,7 @@ export default class TraceIdPopover extends Component {
     const { dataSource } = this.state;
     const content = (
       <div style={{ width: 400 }}>
-        <Table columns={this.column} dataSource={dataSource} rowKey="transaction_timestamp" pagination={{ defaultPageSize: 5 }} />
+        <Table size="small" columns={this.column} dataSource={dataSource} rowKey="transaction_timestamp" pagination={{ defaultPageSize: 5 }} />
       </div>
     );
     return (

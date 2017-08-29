@@ -17,7 +17,8 @@ import TransitionDockPanel from './dock/transitionDockPanel';
 import BatchTransitModal from './modal/batchTransitModal';
 // import BatchMoveModal from './modal/batchMoveModal';
 import BatchFreezeModal from './modal/batchFreezeModal';
-import FrozenPopover from '../../common/popover/frozenPopover';
+import FreezePopover from '../../common/popover/freezePopover';
+import UnfreezePopover from '../../common/popover/unfreezePopover';
 import QtyChangePopover from '../../common/popover/qtyChangePopover';
 import { formatMsg } from '../message.i18n';
 
@@ -124,7 +125,7 @@ export default class StockTransitionList extends React.Component {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <FrozenPopover traceId={record.trace_id} text={text} reload={this.handleStockQuery} />;
+        return <FreezePopover traceId={record.trace_id} text={text} reload={this.handleStockQuery} />;
       }
     },
   }, {
@@ -144,11 +145,11 @@ export default class StockTransitionList extends React.Component {
     width: 100,
     dataIndex: 'frozen_qty',
     className: 'cell-align-right',
-    render: (text) => {
+    render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <span className="text-error">{text}</span>;
+        return <UnfreezePopover reload={this.handleStockQuery} traceId={record.trace_id} text={text} />;
       }
     },
   }].concat(commonTraceColumns(this.props.intl)).concat({

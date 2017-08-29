@@ -7,7 +7,7 @@ import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Sel
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
-import UnFrozenPopover from '../../../common/popover/unfrozonPopover';
+import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import messages from '../../message.i18n';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter, changeColumns } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
@@ -190,7 +190,7 @@ export default class AllocatingModal extends Component {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <UnFrozenPopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
+        return <UnfreezePopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
       }
     },
   }, {

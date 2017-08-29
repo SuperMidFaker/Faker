@@ -99,8 +99,8 @@ export default class frozonPopover extends Component {
       </div>
     );
     return (
-      <Popover content={content} title="货品信息" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button size="middle">{<span className="cell-align-right text-emphasis">{text}</span>}</Button>
+      <Popover content={content} title="库存数量调整" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+        <Button size="small">{<span className="cell-align-right text-emphasis">{text}</span>}</Button>
       </Popover>
     );
   }
