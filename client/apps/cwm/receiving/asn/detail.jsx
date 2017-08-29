@@ -27,6 +27,7 @@ const TabPane = Tabs.TabPane;
     temporaryDetails: state.cwmReceive.temporaryDetails,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
+    sellers: state.cwmReceive.sellers,
   }),
   { loadAsn, updateASN, clearTemporary }
 )
@@ -67,15 +68,12 @@ export default class ReceivingASNDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName } = this.props;
-    if (temporaryDetails.length === 0) {
-      message.info('明细不能为空');
-      return;
-    }
+    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, sellers } = this.props;
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const data = values;
         const owner = owners.find(item => item.id === values.owner_partner_id);
+        const seller = sellers.find(sl => sl.name === values.seller_name);
         data.asnNo = this.props.params.asnNo;
         data.ownerName = owner.name;
         data.ownerTenantId = owner.partner_tenant_id;
@@ -84,6 +82,7 @@ export default class ReceivingASNDetail extends Component {
         data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
+        data.seller_code = seller && seller.code;
         this.props.updateASN(data).then(
           (result) => {
             if (!result.error) {
