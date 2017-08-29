@@ -49,6 +49,13 @@ export default class CWMReceivingPane extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
+              <FormItem label={this.msg('supplier')}>
+                {getFieldDecorator('supplier', {
+                  initialValue: model.supplier,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
               <FormItem label="ASN类型">
                 {getFieldDecorator('asn_type', {
                   initialValue: model.asn_type,
@@ -74,7 +81,7 @@ export default class CWMReceivingPane extends Component {
             </Col>
             {
               getFieldValue('bonded') &&
-              <Col sm={24} lg={12} >
+              <Col sm={24} lg={8} >
                 <FormItem label="保税监管方式">
                   {getFieldDecorator('bonded_reg_type', {
                     initialValue: model.bonded_reg_type,

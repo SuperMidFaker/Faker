@@ -20,7 +20,7 @@ exports.commonTraceColumns = (intl) => {
     render: portion => portion ? <Tag color="green">可分拨</Tag> : '/',
   }, {
     title: msg('traceId'),
-    width: 220,
+    width: 200,
     dataIndex: 'trace_id',
     sorter: true,
   }, {
@@ -29,8 +29,16 @@ exports.commonTraceColumns = (intl) => {
     width: 160,
     sorter: true,
   }, {
+    title: msg('poNo'),
+    width: 150,
+    dataIndex: 'po_no',
+  }, {
+    title: msg('asnNo'),
+    width: 150,
+    dataIndex: 'asn_no',
+  }, {
     title: msg('lotNo'),
-    width: 180,
+    width: 150,
     dataIndex: 'external_lot_no',
   }, {
     title: msg('serialNo'),

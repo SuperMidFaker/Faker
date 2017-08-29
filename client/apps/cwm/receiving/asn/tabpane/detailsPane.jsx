@@ -117,10 +117,6 @@ export default class DetailsPane extends Component {
       className: 'cell-align-center',
       render: o => (o && units.length > 0) ? units.find(unit => unit.code === o).name : '',
     }, {
-      title: '供货商',
-      dataIndex: 'seller_name',
-      width: 150,
-    }, {
       title: '采购订单号',
       dataIndex: 'po_no',
       width: 150,

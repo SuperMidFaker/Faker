@@ -7,7 +7,7 @@ import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Sel
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
-import FrozenPopover from '../../../common/popover/frozonPopover';
+import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import messages from '../../message.i18n';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter, changeColumns } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
@@ -190,7 +190,7 @@ export default class AllocatingModal extends Component {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <FrozenPopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
+        return <UnfreezePopover reload={this.handleReLoad} traceId={record.trace_id} text={text} />;
       }
     },
   }, {
@@ -496,7 +496,7 @@ export default class AllocatingModal extends Component {
             </Col>}
           </Row>
         </Card>
-        <Card title={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
               scroll={{ x: filterColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

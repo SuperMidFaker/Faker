@@ -44,7 +44,12 @@ export default class ModuleMenu extends React.Component {
             <NavLink to="/cwm/supervision/shftz/batch">{this.msg('ftzBatchDecl')}</NavLink>
           </Menu.Item>
         </Menu.ItemGroup>
-        <Menu.ItemGroup key="g3" title="货物监管">
+        <Menu.ItemGroup key="g3" title="监管库存">
+          <Menu.Item key="stock">
+            <NavLink to="/cwm/supervision/shftz/stock">{this.msg('ftzStock')}</NavLink>
+          </Menu.Item>
+        </Menu.ItemGroup>
+        <Menu.ItemGroup key="g4" title="货物监管">
           <Menu.Item key="cargo">
             <NavLink to="/cwm/supervision/shftz/cargo">{this.msg('ftzCargoReg')}</NavLink>
           </Menu.Item>

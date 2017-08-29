@@ -29,6 +29,10 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.batch.decl',
     defaultMessage: '分拨集中报关',
   },
+  ftzStock: {
+    id: 'cwm.supervision.shftz.stock',
+    defaultMessage: '监管库存查询',
+  },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',
     defaultMessage: '分拨货物备案',
