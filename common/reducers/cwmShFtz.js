@@ -2,6 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
+  'SHOW_TRANSFER_IN_MODAL',
   'OPEN_BATCH_DECL_MODAL', 'CLOSE_BATCH_DECL_MODAL',
   'OPEN_CLEARANCE_MODAL', 'CLOSE_CLEARANCE_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
@@ -38,10 +39,17 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'EDIT_REL_WT', 'EDIT_REL_WT_SUCCEED', 'EDIT_REL_WT_FAIL',
   'TRANSFER_TO_OWN', 'TRANSFER_TO_OWN_SUCCEED', 'TRANSFER_TO_OWN_FAIL',
   'QUERY_OWNTRANF', 'QUERY_OWNTRANF_SUCCEED', 'QUERY_OWNTRANF_FAIL',
+  'ENTRY_TRANS_LOAD', 'ENTRY_TRANS_LOAD_SUCCEED', 'ENTRY_TRANS_LOAD_FAIL',
+  'LOAD_ETIDS', 'LOAD_ETIDS_SUCCEED', 'LOAD_ETIDS_FAIL',
+  'VIRTUAL_TRANS_SAVE', 'VIRTUAL_TRANS_SAVE_SUCCEED', 'VIRTUAL_TRANS_SAVE_FAIL',
 ]);
 
 const initialState = {
   batchDeclModal: {
+    visible: false,
+    ownerCusCode: '',
+  },
+  transInModal: {
     visible: false,
     ownerCusCode: '',
   },
@@ -100,10 +108,13 @@ const initialState = {
     units: [],
     tradeCountries: [],
   },
+  transRegs: [],
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
+    case actionTypes.SHOW_TRANSFER_IN_MODAL:
+      return { ...state, transInModal: { ...state.transInModal, ...action.data } };
     case actionTypes.OPEN_BATCH_DECL_MODAL:
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_BATCH_DECL_MODAL:
@@ -176,9 +187,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status } };
     case actionTypes.CANCEL_RER_SUCCEED:
       return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status } };
+    case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
+      return { ...state, transRegs: action.result.data };
     default:
       return state;
   }
+}
+
+export function showTransferInModal(data) {
+  return {
+    type: actionTypes.SHOW_TRANSFER_IN_MODAL,
+    data,
+  };
 }
 
 export function openBatchDeclModal(modalInfo) {
@@ -712,6 +732,50 @@ export function queryOwnTransferOutIn(query) {
       endpoint: 'v1/cwm/shftz/transfer/ownwhse/query',
       method: 'post',
       data: query,
+    },
+  };
+}
+export function loadEntryTransRegs(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ENTRY_TRANS_LOAD,
+        actionTypes.ENTRY_TRANS_LOAD_SUCCEED,
+        actionTypes.ENTRY_TRANS_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entryreg/transferIn/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadEntryTransInDetails(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ETIDS,
+        actionTypes.LOAD_ETIDS_SUCCEED,
+        actionTypes.LOAD_ETIDS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/transfer/in/reg/details',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function saveVirtualTransfer(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VIRTUAL_TRANS_SAVE,
+        actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED,
+        actionTypes.VIRTUAL_TRANS_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/virtual/transfer/save',
+      method: 'post',
+      data,
     },
   };
 }

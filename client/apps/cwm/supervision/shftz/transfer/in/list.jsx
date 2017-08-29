@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Dropdown, Layout, Radio, Menu, Select, Icon, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Dropdown, Layout, Radio, Menu, Select, Icon, Tag, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ExcelUploader from 'client/components/ExcelUploader';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
+import { loadEntryRegDatas, showTransferInModal } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
 import ModuleMenu from '../../menu';
 import ReceivingDockPanel from '../../../../receiving/dock/receivingDockPanel';
@@ -21,6 +21,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+import TransferInModal from './modal/transferInModal';
 
 const formatMsg = format(messages);
 const { Header, Content, Sider } = Layout;
@@ -39,7 +40,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { loadEntryRegDatas, switchDefaultWhse, showDock }
+  { loadEntryRegDatas, switchDefaultWhse, showDock, showTransferInModal }
 )
 @connectNav({
   depth: 2,
@@ -212,6 +213,11 @@ export default class SHFTZTransferInList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleCreateTransIn = () => {
+    const { listFilter, owners } = this.props;
+    const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
+    this.props.showTransferInModal({ visible: true, ownerCusCode });
+  }
   render() {
     const { entryList, listFilter, whses, whse, owners } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
@@ -268,6 +274,7 @@ export default class SHFTZTransferInList extends React.Component {
               <RadioButton value="verified">已核对</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
+              <Button size="large" icon="plus" onClick={this.handleCreateTransIn}>新建区内转入</Button>
               <Dropdown.Button size="large" overlay={<Menu />}>
                 <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/upload/shftz/transfer/in`}
                   formData={{
@@ -299,6 +306,7 @@ export default class SHFTZTransferInList extends React.Component {
             <OrderDockPanel />
             <DelegationDockPanel />
             <ShipmentDockPanel />
+            <TransferInModal reload={this.handleEntryListLoad} />
           </Content>
         </Layout>
       </Layout>
