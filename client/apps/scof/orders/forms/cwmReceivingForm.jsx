@@ -82,6 +82,11 @@ export default class CwmReceivingForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
+            <FormItem label="供应商">
+              <Input value={node.supplier} onChange={ev => this.handleCommonFieldChange('supplier', ev.target.value)} />
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
             <FormItem label="ASN类型">
               <Select placeholder="ASN类型" value={node.asn_type} onChange={value => this.handleCommonFieldChange('asn_type', value)}>
                 {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}

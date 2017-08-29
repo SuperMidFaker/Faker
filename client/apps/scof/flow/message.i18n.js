@@ -182,6 +182,10 @@ const messages = defineMessages({
     id: 'scof.flow.biz.cwm.warehouse',
     defaultMessage: '仓库',
   },
+  supplier: {
+    id: 'scof.flow.biz.cwm.supplier',
+    defaultMessage: '供应商',
+  },
   nodeName: {
     id: 'scof.flow.biz.node.name',
     defaultMessage: '节点名称',

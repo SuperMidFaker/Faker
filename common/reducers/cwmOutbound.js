@@ -24,8 +24,10 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
   'SET_INVENTORY_FILTER', 'CHANGE_COLUMNS',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
-  'LOAD_COURIERNO', 'LOAD_COURIERNO_SUCCEED', 'LOAD_COURIERNO_FAIL',
+  'ORDER_EXPRESS', 'ORDER_EXPRESS_SUCCEED', 'ORDER_EXPRESS_FAIL',
+  'ORDER_ZD_EXPRESS', 'ORDER_ZD_EXPRESS_SUCCEED', 'ORDER_ZD_EXPRESS_FAIL',
   'SHUNFENG_EXPRESS_MODAL',
+  'LOAD_SHUNFENG_EXPRESS', 'LOAD_SHUNFENG_EXPRESS_SUCCEED', 'LOAD_SHUNFENG_EXPRESS_FAIL',
 ]);
 const initialState = {
   listFilter: {
@@ -490,13 +492,13 @@ export function readWaybillLogo() {
   };
 }
 
-export function loadCourierNo(data) {
+export function orderExpress(data) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_COURIERNO,
-        actionTypes.LOAD_COURIERNO_SUCCEED,
-        actionTypes.LOAD_COURIERNO_FAIL,
+        actionTypes.ORDER_EXPRESS,
+        actionTypes.ORDER_EXPRESS_SUCCEED,
+        actionTypes.ORDER_EXPRESS_FAIL,
       ],
       endpoint: 'v1/cwm/outbounds/shunfeng/order',
       method: 'post',
@@ -509,5 +511,35 @@ export function toggleShunfengExpressModal(visible) {
   return {
     type: actionTypes.SHUNFENG_EXPRESS_MODAL,
     data: { visible },
+  };
+}
+
+export function loadExpressInfo(outboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHUNFENG_EXPRESS,
+        actionTypes.LOAD_SHUNFENG_EXPRESS_SUCCEED,
+        actionTypes.LOAD_SHUNFENG_EXPRESS_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbounds/shunfeng/express',
+      method: 'get',
+      params: { outboundNo },
+    },
+  };
+}
+
+export function addZD(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ORDER_ZD_EXPRESS,
+        actionTypes.ORDER_ZD_EXPRESS_SUCCEED,
+        actionTypes.ORDER_ZD_EXPRESS_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbounds/shunfeng/order/zd',
+      method: 'post',
+      data,
+    },
   };
 }
