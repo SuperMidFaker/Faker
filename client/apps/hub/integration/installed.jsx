@@ -54,6 +54,8 @@ export default class InstalledAppsList extends React.Component {
         return 'AmberRoad CTM';
       } else if (app === 'SHFTZ') {
         return '上海自贸区监管系统';
+      } else if (app === 'SHUNFENG') {
+        return '顺丰快递';
       }
     },
   }, {
@@ -84,6 +86,8 @@ export default class InstalledAppsList extends React.Component {
           configLink = <NavLink to={`/hub/integration/arctm/config/${row.uuid}`}>配置</NavLink>;
         } else if (row.app_type === 'SHFTZ') {
           configLink = <NavLink to={`/hub/integration/shftz/config/${row.uuid}`}>配置</NavLink>;
+        } else if (row.app_type === 'SHUNFENG') {
+          configLink = <NavLink to={`/hub/integration/shunfeng/config/${row.uuid}`}>配置</NavLink>;
         }
         return (<span>
           {configLink}

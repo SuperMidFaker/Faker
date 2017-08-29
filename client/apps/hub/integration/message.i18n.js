@@ -34,6 +34,10 @@ const messages = defineMessages({
     id: 'hub.integration.app.shftz',
     defaultMessage: '上海自贸区监管',
   },
+  appShunfeng: {
+    id: 'hub.integration.app.shunfeng',
+    defaultMessage: '顺丰快递',
+  },
   easipassConfig: {
     id: 'hub.integration.easipass.config',
     defaultMessage: '亿通配置',
@@ -141,6 +145,26 @@ const messages = defineMessages({
   ftzserver: {
     id: 'hub.integration.shftz.host.url',
     defaultMessage: '监管接口地址',
+  },
+  config: {
+    id: 'hub.integration.config',
+    defaultMessage: '配置',
+  },
+  shunfengUrl: {
+    id: 'hub.integration.shunfeng.url',
+    defaultMessage: 'HTTP服务url',
+  },
+  shunfengCheckword: {
+    id: 'hub.integration.shunfeng.checkword',
+    defaultMessage: '密钥',
+  },
+  shunfengAccesscode: {
+    id: 'hub.integration.shunfeng.accesscode',
+    defaultMessage: '接入编码',
+  },
+  shunfengCustid: {
+    id: 'hub.integration.shunfeng.custid',
+    defaultMessage: '月结卡号',
   },
 });
 

@@ -22,6 +22,7 @@ import * as OpenIntegration from './hub/integration';
 import * as IntegraionArCTM from './hub/integration/arctm';
 import * as IntegraionEasipassEDI from './hub/integration/easipass';
 import * as IntegraionSHFTZ from './hub/integration/shftz';
+import * as IntegraionShunfeng from './hub/integration/shunfeng';
 import Module from './module';
 import TMS from './transport/module-transport';
 import * as TMSDashboard from './transport/dashboard';
@@ -186,6 +187,10 @@ export default(store, cookie) => {
             <Route path="shftz">
               <Route path="install" component={IntegraionSHFTZ.Install} />
               <Route path="config/:uuid" component={IntegraionSHFTZ.Config} />
+            </Route>
+            <Route path="shunfeng">
+              <Route path="install" component={IntegraionShunfeng.Install} />
+              <Route path="config/:uuid" component={IntegraionShunfeng.Config} />
             </Route>
           </Route>
           <Route path="collab">

@@ -171,8 +171,8 @@ export default class ShunfengExpressModal extends Component {
     });
   }
   handleAddZD = () => {
-    const { outboundHead, loginId } = this.props;
-    this.props.addZD({ outboundNo: outboundHead.outbound_no, loginId, expressNum: 1 }).then(() => {
+    const { outboundHead, loginId, tenantId } = this.props;
+    this.props.addZD({ outboundNo: outboundHead.outbound_no, tenantId, loginId, expressNum: 1 }).then(() => {
       this.loadExpresseInfo();
     });
   }

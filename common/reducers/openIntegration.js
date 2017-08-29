@@ -15,6 +15,9 @@ const actionTypes = createActionTypes('@@welogix/hub/integration/', [
   'INSTALL_SHFTZ', 'INSTALL_SHFTZ_SUCCEED', 'INSTALL_SHFTZ_FAIL',
   'UPDATE_SHFTZ', 'UPDATE_SHFTZ_SUCCEED', 'UPDATE_SHFTZ_FAIL',
   'LOAD_WHSESUPV', 'LOAD_WHSESUPV_SUCCEED', 'LOAD_WHSESUPV_FAIL',
+  'INSTALL_SHUNFENG', 'INSTALL_SHUNFENG_SUCCEED', 'INSTALL_SHUNFENG_FAIL',
+  'LOAD_SHUNFENG', 'LOAD_SHUNFENG_SUCCEED', 'LOAD_SHUNFENG_FAIL',
+  'UPDATE_SHUNFENG', 'UPDATE_SHUNFENG_SUCCEED', 'UPDATE_SHUNFENG_FAIL',
 ]);
 
 const initialState = {
@@ -33,6 +36,7 @@ const initialState = {
   easipassApp: {},
   arctm: {},
   shftzApp: {},
+  shunfeng: {},
   whseSupervisonApps: [],
 };
 
@@ -53,6 +57,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, arctm: action.result.data };
     case actionTypes.LOAD_SHFTZ_SUCCEED:
       return { ...state, shftzApp: action.result.data };
+    case actionTypes.LOAD_SHUNFENG_SUCCEED:
+      return { ...state, shunfeng: action.result.data };
     case actionTypes.LOAD_WHSESUPV_SUCCEED:
       return { ...state, whseSupervisonApps: action.result.data };
     default:
@@ -251,6 +257,51 @@ export function loadWhseSupervisionApps(tenantId) {
       endpoint: 'v1/platform/integration/whse/supervisions',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function installShunfengApp(easipass) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.INSTALL_SHUNFENG,
+        actionTypes.INSTALL_SHUNFENG_SUCCEED,
+        actionTypes.INSTALL_SHUNFENG_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/install/shunfeng',
+      method: 'post',
+      data: easipass,
+    },
+  };
+}
+
+export function loadShunfengApp(appuuid) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHUNFENG,
+        actionTypes.LOAD_SHUNFENG_SUCCEED,
+        actionTypes.LOAD_SHUNFENG_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/shunfeng',
+      method: 'get',
+      params: { uuid: appuuid },
+    },
+  };
+}
+
+export function updateShunfengApp(easipass) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_SHUNFENG,
+        actionTypes.UPDATE_SHUNFENG_SUCCEED,
+        actionTypes.UPDATE_SHUNFENG_FAIL,
+      ],
+      endpoint: 'v1/platform/integration/update/shunfeng',
+      method: 'post',
+      data: easipass,
     },
   };
 }

@@ -29,7 +29,7 @@ function pdfBody(data) {
   let pdfcontent = [];
   const imgE = false;
   const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
-  if (expressInfo.need_return_tracking_no === '1') {
+  if (expressInfo.added_services && expressInfo.added_services.indexOf('COD') >= 0) {
     titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
   } else {
     titleBody.push({ text: '', border: [false, true, false, false] });

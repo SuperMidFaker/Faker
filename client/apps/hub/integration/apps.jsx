@@ -57,7 +57,13 @@ export default class IntegrationAppsList extends React.Component {
               <Col sm={24} md={12} lg={8}>
                 <Card title="上海自贸区监管（东方支付）" extra={<NavLink to="/hub/integration/shftz/install">Install</NavLink>} />
               </Col>
-            </Row></QueueAnim>
+              <Col sm={24} md={12} lg={8}>
+                <Card title="顺丰快递下单" extra={<NavLink to="/hub/integration/shunfeng/install">Install</NavLink>}>
+                  通过与顺丰快递公司合作，获取快递单号以打印快递单。
+                </Card>
+              </Col>
+            </Row>
+          </QueueAnim>
         </Content>
       </div>
     );
