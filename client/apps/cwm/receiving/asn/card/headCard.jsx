@@ -103,10 +103,10 @@ export default class HeadCard extends Component {
           </Col>
           <Col span={5} offset={1}>
             <FormItem label="供货商">
-              {getFieldDecorator('seller_name', {
-                initialValue: asnHead && asnHead.seller_name,
+              {getFieldDecorator('supplier_name', {
+                initialValue: asnHead && asnHead.supplier_name,
               })(<Select mode="combobox" showSearch optionFilterProp="searchText">
-                {this.props.sellers.map(seller => <Option searchText={`${seller.name}${seller.code}`} value={seller.name} key={seller.name}>{seller.name}</Option>)}
+                {this.props.sellers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}
               </Select>)}
             </FormItem>
           </Col>

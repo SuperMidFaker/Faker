@@ -65,7 +65,7 @@ export default class CreateReceivingASN extends Component {
       if (!errors) {
         const data = values;
         const owner = owners.find(item => item.id === values.owner_partner_id);
-        const seller = sellers.find(sl => sl.name === values.seller_name);
+        const supplier = sellers.find(sl => sl.name === values.supplier_name);
         data.ownerName = owner.name;
         data.ownerTenantId = owner.partner_tenant_id;
         data.temporaryDetails = temporaryDetails;
@@ -74,7 +74,7 @@ export default class CreateReceivingASN extends Component {
         data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
-        data.seller_code = seller && seller.code;
+        data.supplier_code = supplier && supplier.code;
         this.props.addASN(data).then(
           (result) => {
             if (!result.error) {

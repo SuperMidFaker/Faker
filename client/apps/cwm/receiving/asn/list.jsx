@@ -93,7 +93,7 @@ export default class ReceivingASNList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
     title: '供应商',
-    dataIndex: 'seller_name',
+    dataIndex: 'supplier_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '状态',
