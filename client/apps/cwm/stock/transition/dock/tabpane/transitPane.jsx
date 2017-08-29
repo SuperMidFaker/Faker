@@ -64,10 +64,10 @@ export default class TransitPane extends React.Component {
     const { detail, form } = this.props;
     return (
       <div className="pane-content tab-pane">
-        <Button type="primary" onClick={this.handleTransit}>执行转移</Button>
         <Form>
           <TransitForm batched={false} detail={detail} form={form} onChange={this.handleValueChange} />
         </Form>
+        <div><Button type="primary" onClick={this.handleTransit}>执行转移</Button></div>
       </div>
     );
   }

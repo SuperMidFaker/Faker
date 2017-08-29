@@ -99,7 +99,7 @@ export default class HeadCard extends Component {
             <FormItem label="供货商">
               {getFieldDecorator('seller_name', {
                 initialValue: asnHead && asnHead.seller_name,
-              })(<Select mode="combobox" showSearch />)}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>

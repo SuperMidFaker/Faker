@@ -100,10 +100,10 @@ export default class MovementDetail extends Component {
                 <InfoItem addonBefore="原因" field={movementHead.reason} />
               </Col>
               <Col sm={12} lg={4}>
-                <InfoItem addonBefore="创建时间" field={moment(movementHead.created_date).format('YYYY-MM-DD')} />
+                <InfoItem addonBefore="创建时间" field={moment(movementHead.created_date).format('YYYY-MM-DD HH:mm')} />
               </Col>
               <Col sm={12} lg={4}>
-                <InfoItem addonBefore="移库时间" field={movementHead.completed_date && moment(movementHead.completed_date).format('YYYY-MM-DD')} />
+                <InfoItem addonBefore="移库时间" field={movementHead.completed_date && moment(movementHead.completed_date).format('YYYY-MM-DD HH:mm')} />
               </Col>
             </Row>
             <div className="card-footer">
