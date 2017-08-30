@@ -64,6 +64,7 @@ export default class TraceIdPopover extends Component {
     width: 150,
     dataIndex: 'transaction_timestamp',
     render: traxTime => traxTime && moment(traxTime).format('YYYY.MM.DD HH:mm'),
+    sorter: (a, b) => a.transaction_timestamp - b.transaction_timestamp,
   }]
   msg = key => formatMsg(this.props.intl, key);
   handleVisibleChange = (visible) => {
