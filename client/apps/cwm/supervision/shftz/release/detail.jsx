@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, fileRelTransfers,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -249,6 +249,9 @@ export default class SHFTZRelDetail extends Component {
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateRelReg(preRegNo, field, value);
   }
+  handleOutboundPage = () => {
+    this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
+  }
   render() {
     const { relSo, relRegs, whse } = this.props;
     const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
@@ -256,7 +259,8 @@ export default class SHFTZRelDetail extends Component {
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
     const sendText = sent ? '重新发送' : '发送备案';
     let queryable = false;
-    let sendable = true;
+    let sendable = relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
+    const whyunsent = !sendable ? '出库单配货未完成' : '';
     relRegs.forEach((relReg) => { sendable = sendable && relReg.details.length > 0; });
     const columns = [...this.columns];
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
@@ -301,10 +305,12 @@ export default class SHFTZRelDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {relSo.outbound_no && <Button size="large" onClick={this.handleOutboundPage}>出库单</Button>}
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
+            {relEditable && whyunsent && <Tooltip title={whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>
         <Content className="main-content">
