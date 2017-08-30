@@ -423,6 +423,12 @@ export default class AllocatingModal extends Component {
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
       outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
   }
+  handleVwSearch = (value) => {
+    const { outboundHead } = this.props;
+    const filters = { ...this.props.filters, virtualWhse: value };
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
+      outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
+  }
   render() {
     const { filters, outboundHead, inventoryColumns, editable } = this.props;
     const { outboundProduct } = this.state;
@@ -435,7 +441,6 @@ export default class AllocatingModal extends Component {
         <Option value="asn_no">ASN编号</Option>
         <Option value="ftz_ent_no">海关入库单号</Option>
         <Option value="cus_decl_no">报关单号</Option>
-        <Option value="virtual_whse">库别</Option>
       </Select>
     );
     const inventoryQueryForm = (
@@ -447,6 +452,9 @@ export default class AllocatingModal extends Component {
         </FormItem>
         <FormItem label="库位">
           <LocationSelect showSearch onChange={this.handleLocationChange} value={filters.location} style={{ width: 160 }} />
+        </FormItem>
+        <FormItem label="库别">
+          <Input.Search onSearch={this.handleVwSearch} />
         </FormItem>
         <FormItem label="入库日期">
           <RangePicker onChange={this.handleDateChange} />
