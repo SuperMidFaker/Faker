@@ -6,6 +6,7 @@ import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
@@ -175,6 +176,11 @@ export default class StockInventoryList extends React.Component {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(1, filter);
   }
+  handleExportExcel = () => {
+    const { tenantId, listFilter } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/stock/exportInventoryExcel/${createFilename('inventory')}.xlsx?tenantId=${tenantId}&filters=${
+      JSON.stringify(listFilter)}`);
+  }
   renderNormalCol(text, row) {
     const colObj = { children: text, props: {} };
     if (row.key === 'wh_no') {
@@ -236,7 +242,7 @@ export default class StockInventoryList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button size="large" icon="export">
+            <Button size="large" icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
           </div>
