@@ -97,7 +97,7 @@ export default class WarehouseList extends Component {
     );
   }
   handleEditWarehouse = () => {
-    this.props.showEditWhseModal();
+    this.props.showEditWhseModal(this.state.warehouse);
   }
   handleSearchWhse = (e) => {
     this.props.searchWhse(e.target.value, this.props.tenantId);
@@ -177,7 +177,7 @@ export default class WarehouseList extends Component {
               />
             </div>
             <WarehouseModal />
-            <EditWhseModal warehouse={warehouse} />
+            <EditWhseModal />
           </div>
         </Sider>
         <Layout>

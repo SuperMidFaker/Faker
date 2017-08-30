@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
-Tag, Dropdown, Menu } from 'antd';
+Tag, Dropdown, Menu, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
@@ -12,7 +12,8 @@ import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
-import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo, toggleShunfengExpressModal } from 'common/reducers/cwmOutbound';
+import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo, toggleShunfengExpressModal,
+loadShunfengConfig } from 'common/reducers/cwmOutbound';
 import PrintPickList from './billsPrint/printPIckList';
 import PrintShippingList from './billsPrint/printShippingList';
 import PrintShippingConfirm from './billsPrint/printShippingConfirm';
@@ -40,7 +41,12 @@ const TabPane = Tabs.TabPane;
     waybill: state.cwmOutbound.waybill,
     outboundProducts: state.cwmOutbound.outboundProducts,
   }),
-  { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo, toggleShunfengExpressModal }
+  { loadOutboundHead,
+    updateOutboundMode,
+    readWaybillLogo,
+    loadCourierNo,
+    toggleShunfengExpressModal,
+    loadShunfengConfig }
 )
 @connectNav({
   depth: 3,
@@ -52,6 +58,7 @@ export default class OutboundDetail extends Component {
     updateOutboundMode: PropTypes.func.isRequired,
     toggleShunfengExpressModal: PropTypes.func.isRequired,
     outboundProducts: PropTypes.arrayOf(PropTypes.shape({ seq_no: PropTypes.string.isRequired })),
+    loadShunfengConfig: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -63,6 +70,7 @@ export default class OutboundDetail extends Component {
     picking: false,
     picked: false,
     tabKey: 'orderDetails',
+    shunfengConfig: {},
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -131,7 +139,31 @@ export default class OutboundDetail extends Component {
     this.context.router.push(`/cwm/supervision/shftz/release/${this.props.outboundHead.so_no}`);
   }
   showExpressModal = () => {
-    this.props.toggleShunfengExpressModal(true);
+    this.props.loadShunfengConfig(this.props.tenantId).then((result) => {
+      if (result.error) {
+        const key = `open${Date.now()}`;
+        const btnClick = () => {
+          this.context.router.push('/hub/integration/shunfeng/install');
+          notification.close(key);
+        };
+        const btn = (
+          <Button type="primary" size="small" onClick={btnClick}>
+            去配置
+          </Button>
+        );
+        notification.open({
+          message: '顺丰快递接口',
+          description: result.error.message,
+          btn,
+          key,
+          onClose: () => notification.close(key),
+        });
+      } else {
+        this.setState({ shunfengConfig: result.data }, () => {
+          this.props.toggleShunfengExpressModal(true);
+        });
+      }
+    });
   }
   render() {
     const { defaultWhse, outboundHead } = this.props;
@@ -257,7 +289,7 @@ export default class OutboundDetail extends Component {
               </TabPane>
             </Tabs>
           </Card>
-          <ShunfengExpressModal />
+          <ShunfengExpressModal shunfengConfig={this.state.shunfengConfig} />
         </Content>
       </div>
     );

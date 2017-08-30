@@ -28,6 +28,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'ORDER_ZD_EXPRESS', 'ORDER_ZD_EXPRESS_SUCCEED', 'ORDER_ZD_EXPRESS_FAIL',
   'SHUNFENG_EXPRESS_MODAL',
   'LOAD_SHUNFENG_EXPRESS', 'LOAD_SHUNFENG_EXPRESS_SUCCEED', 'LOAD_SHUNFENG_EXPRESS_FAIL',
+  'LOAD_SHUNFENG_CONFIG', 'LOAD_SHUNFENG_CONFIG_SUCCEED', 'LOAD_SHUNFENG_CONFIG_FAIL',
 ]);
 const initialState = {
   listFilter: {
@@ -514,7 +515,7 @@ export function toggleShunfengExpressModal(visible) {
   };
 }
 
-export function loadExpressInfo(outboundNo) {
+export function loadExpressInfo(outboundNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -524,7 +525,7 @@ export function loadExpressInfo(outboundNo) {
       ],
       endpoint: 'v1/cwm/outbounds/shunfeng/express',
       method: 'get',
-      params: { outboundNo },
+      params: { outboundNo, tenantId },
     },
   };
 }
@@ -540,6 +541,21 @@ export function addZD(data) {
       endpoint: 'v1/cwm/outbounds/shunfeng/order/zd',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function loadShunfengConfig(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SHUNFENG_CONFIG,
+        actionTypes.LOAD_SHUNFENG_CONFIG_SUCCEED,
+        actionTypes.LOAD_SHUNFENG_CONFIG_FAIL,
+      ],
+      endpoint: 'v1/cwm/outbounds/shunfeng/config',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }

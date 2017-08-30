@@ -75,6 +75,7 @@ const initialState = {
   },
   editWarehouseModal: {
     visible: false,
+    warehouse: {},
   },
   staffModal: {
     visible: false,
@@ -130,7 +131,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLEAR_LOCATIONS:
       return { ...state, locations: [] };
     case actionTypes.SHOW_EDIT_WHSE:
-      return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: true } };
+      return { ...state, editWarehouseModal: { ...state.editWarehouseModal, ...action.data, visible: true } };
     case actionTypes.HIDE_EDIT_WHSE:
       return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: false } };
     case actionTypes.SHOW_STAFF_MODAL:
@@ -183,7 +184,7 @@ export function addWarehouse(params) {
   };
 }
 
-export function editWarehouse(code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode) {
+export function editWarehouse(code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode, tel) {
   return {
     [CLIENT_API]: {
       types: [
@@ -193,7 +194,7 @@ export function editWarehouse(code, name, address, bonded, tenantId, loginId, pr
       ],
       endpoint: 'v1/cwm/warehouse/edit',
       method: 'post',
-      data: { code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode },
+      data: { code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode, tel },
     },
   };
 }
@@ -464,9 +465,10 @@ export function clearLocations() {
   };
 }
 
-export function showEditWhseModal() {
+export function showEditWhseModal(warehouse) {
   return {
     type: actionTypes.SHOW_EDIT_WHSE,
+    data: { warehouse },
   };
 }
 
