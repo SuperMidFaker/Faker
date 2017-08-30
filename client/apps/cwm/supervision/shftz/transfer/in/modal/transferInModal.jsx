@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { notification, Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { loadParams, showTransferInModal, loadEntryTransRegs, loadEntryTransInDetails, saveVirtualTransfer } from 'common/reducers/cwmShFtz';
 
@@ -97,6 +97,10 @@ export default class TransferInModal extends Component {
   }]
 
   regDetailColumns = [{
+    title: '系统ID',
+    dataIndex: 'id',
+    width: 100,
+  }, {
     title: '货号',
     dataIndex: 'product_no',
     width: 150,
@@ -225,10 +229,29 @@ export default class TransferInModal extends Component {
       return;
     }
     const detailIds = [];
-
+    const ftzEntDetailRegIds = new Map();
     this.state.regDetails.forEach((regd) => {
       detailIds.push(regd.id);
+      let sysIds = String(regd.id);
+      if (ftzEntDetailRegIds.has(regd.ftz_ent_detail_id)) {
+        sysIds = ftzEntDetailRegIds.get(regd.ftz_ent_detail_id);
+        sysIds = `${sysIds}${String(regd.id)}`;
+      }
+      ftzEntDetailRegIds.set(regd.ftz_ent_detail_id, sysIds);
     });
+    const exceedEntIds = [];
+    ftzEntDetailRegIds.forEach((sysIds, entId) => {
+      if (sysIds.length > 80) {
+        exceedEntIds.push(entId);
+      }
+    });
+    if (exceedEntIds.length > 0) {
+      notification.error({
+        message: '数据问题',
+        description: `以下明细ID${exceedEntIds.join(',')}合并系统ID后长度超过100, 分到多张移库单`,
+      });
+      return;
+    }
     const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode).map(own => ({
       partner_id: own.id,
       tenant_id: own.partner_tenant_id,
