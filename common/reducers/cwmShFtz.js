@@ -108,6 +108,7 @@ const initialState = {
     currencies: [],
     units: [],
     tradeCountries: [],
+    trxModes: [],
   },
   transRegs: [],
 };
