@@ -216,6 +216,15 @@ export default class SHFTZEntryDetail extends Component {
     notification.close('confirm-cargono');
     this.context.router.push('/cwm/supervision/shftz/cargo');
   }
+  handleTabChange = (tabKey) => {
+    this.setState({ tabKey });
+  }
+  handleInfoSave = (preRegNo, field, value) => {
+    this.props.updateEntryReg(preRegNo, field, value);
+  }
+  handleInboundPage = () => {
+    this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
+  }
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -298,15 +307,6 @@ export default class SHFTZEntryDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
-  handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
-  }
-  handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateEntryReg(preRegNo, field, value);
-  }
-  handleInboundPage = () => {
-    this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
-  }
   render() {
     const { entryAsn, entryRegs, whse } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];

@@ -173,6 +173,23 @@ export default class SHFTZRelDetail extends Component {
       }
     });
   }
+  handleWtChange = (val, id) => {
+    const change = { gross_wt: val };
+    this.props.editReleaseWt({ change, id }).then((result) => {
+      if (!result.error) {
+        this.props.loadRelDetails(this.props.params.soNo);
+      }
+    });
+  }
+  handleTabChange = (tabKey) => {
+    this.setState({ tabKey });
+  }
+  handleInfoSave = (preRegNo, field, value) => {
+    this.props.updateRelReg(preRegNo, field, value);
+  }
+  handleOutboundPage = () => {
+    this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
+  }
   columns = [{
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
@@ -235,23 +252,6 @@ export default class SHFTZRelDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
-  handleWtChange = (val, id) => {
-    const change = { gross_wt: val };
-    this.props.editReleaseWt({ change, id }).then((result) => {
-      if (!result.error) {
-        this.props.loadRelDetails(this.props.params.soNo);
-      }
-    });
-  }
-  handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
-  }
-  handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateRelReg(preRegNo, field, value);
-  }
-  handleOutboundPage = () => {
-    this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
-  }
   render() {
     const { relSo, relRegs, whse } = this.props;
     const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
