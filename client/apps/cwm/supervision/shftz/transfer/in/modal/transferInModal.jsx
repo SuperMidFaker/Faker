@@ -108,7 +108,7 @@ export default class TransferInModal extends Component {
   }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
-    width: 150,
+    width: 180,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
