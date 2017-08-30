@@ -19,12 +19,12 @@ function pdfBody(data) {
   if (data.courierNoSon === data.courierNo) {
     barcode0 = textToBase64Barcode(data.courierNoSon, `${data.seq}/${expressInfo.parcel_quantity} 母单号 ${data.courierNoSon}`);
     barcode1 = textToBase64Barcode(data.courierNoSon, `母单号 ${data.courierNoSon}`);
-    bartext = '';
+    bartext = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0';
   }
   if (expressInfo.parcel_quantity === 1) {
     barcode0 = textToBase64Barcode(data.courierNoSon, `运单号 ${data.courierNoSon}`);
     barcode1 = textToBase64Barcode(data.courierNoSon, `运单号 ${data.courierNoSon}`);
-    bartext = '';
+    bartext = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0';
   }
   let pdfcontent = [];
   const imgE = false;
@@ -66,12 +66,12 @@ function pdfBody(data) {
         widths: ['2%', '98%'],
         body: [
           // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
-          [{ text: '目的地', border: [true, false] }, { text: expressInfo.destcode, fontSize: 16, border: [true, false, true] }],
+          [{ text: '目的地', border: [true, false] }, { text: expressInfo.destcode, fontSize: 18, border: [true, false, true] }],
           ['收件人', {
             text: receiverAddr,
-            fontSize: 10,
+            fontSize: 12,
           }],
-          ['寄件人', { text: senderAddr, fontSize: 10 }],
+          ['寄件人', { text: senderAddr, fontSize: 12 }],
         ],
       },
       layout: {
@@ -138,10 +138,10 @@ function pdfBody(data) {
             border: [true, false, true, false],
           }, {
             text: receiverAddr,
-            fontSize: 10,
+            fontSize: 12,
             border: [true, false, true, false],
           }],
-          ['寄件人', { text: senderAddr, fontSize: 10 }],
+          ['寄件人', { text: senderAddr, fontSize: 12 }],
         ],
       },
       layout: {
@@ -189,11 +189,11 @@ function pdfBody(data) {
 export function WaybillDef(data) {
   const docDefinition = {
     pageSize: 'A5',
-    pageMargins: [25, 25],
+    pageMargins: [25, 5],
     content: [],
     styles: {
       table: {
-        fontSize: 7,
+        fontSize: 8,
       },
     },
     defaultStyle: {
@@ -246,9 +246,9 @@ function podPdfBody(data) {
           [{ text: '目的地', border: [true, false] }, { text: expressInfo.origincode, fontSize: 16, border: [true, false, true] }],
           ['收件人', {
             text: senderAddr,
-            fontSize: 10,
+            fontSize: 12,
           }],
-          ['寄件人', { text: receiverAddr, fontSize: 10 }],
+          ['寄件人', { text: receiverAddr, fontSize: 12 }],
         ],
       },
       layout: {
@@ -315,10 +315,10 @@ function podPdfBody(data) {
             border: [true, false, true, false],
           }, {
             text: senderAddr,
-            fontSize: 10,
+            fontSize: 12,
             border: [true, false, true, false],
           }],
-          ['寄件人', { text: receiverAddr, fontSize: 10 }],
+          ['寄件人', { text: receiverAddr, fontSize: 12 }],
         ],
       },
       layout: {
@@ -366,11 +366,11 @@ function podPdfBody(data) {
 export function podWaybillDef(data) {
   const docDefinition = {
     pageSize: 'A5',
-    pageMargins: [25, 25],
+    pageMargins: [25, 5],
     content: [],
     styles: {
       table: {
-        fontSize: 7,
+        fontSize: 8,
       },
     },
     defaultStyle: {

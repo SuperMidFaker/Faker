@@ -100,7 +100,7 @@ export default class ShunfengExpressModal extends Component {
     sender_street: '',
     sender_region_code: null,
 
-    express_type: '13',
+    express_type: '1',
     pay_method: '1',
     insure_value: 0,
     weight: 0,
