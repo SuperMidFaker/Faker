@@ -19,7 +19,7 @@ const Option = Select.Option;
     ownerCusCode: state.cwmShFtz.transInModal.ownerCusCode,
     transRegs: state.cwmShFtz.transRegs,
     defaultWhse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
+    owners: state.cwmContext.whseAttrs.owners,
     portionRegs: state.cwmShFtz.batchout_regs,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -84,11 +84,11 @@ export default class TransferInModal extends Component {
   }, {
     title: '货主',
     dataIndex: 'owner_name',
-    width: 200,
   }, {
     title: '进库日期',
     dataIndex: 'ftz_ent_date',
     render: o => o && moment(o).format('YYYY.MM.DD'),
+    width: 200,
   }, {
     title: '添加',
     width: 80,
@@ -97,8 +97,17 @@ export default class TransferInModal extends Component {
   }]
 
   regDetailColumns = [{
-    title: '备案料号',
+    title: '货号',
     dataIndex: 'product_no',
+    width: 150,
+    render: (o) => {
+      if (o) {
+        return <Button>{o}</Button>;
+      }
+    },
+  }, {
+    title: '备案料号',
+    dataIndex: 'ftz_cargo_no',
     width: 150,
     render: (o) => {
       if (o) {
@@ -140,19 +149,19 @@ export default class TransferInModal extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
-    title: '数量',
+    title: '剩余数量',
     width: 100,
     dataIndex: 'stock_qty',
   }, {
-    title: '毛重',
+    title: '剩余毛重',
     width: 100,
     dataIndex: 'stock_grosswt',
   }, {
-    title: '净重',
+    title: '剩余净重',
     width: 100,
     dataIndex: 'stock_netwt',
   }, {
-    title: '金额',
+    title: '剩余金额',
     width: 100,
     dataIndex: 'stock_amount',
   }, {
@@ -278,7 +287,7 @@ export default class TransferInModal extends Component {
             />
           </div>
         </Card>
-        <Card title="报关申请明细" bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="入库单明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
               scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
