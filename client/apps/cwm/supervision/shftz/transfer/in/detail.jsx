@@ -131,10 +131,6 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   columns = [{
-    title: '系统明细ID',
-    dataIndex: 'id',
-    width: 100,
-  }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 160,
