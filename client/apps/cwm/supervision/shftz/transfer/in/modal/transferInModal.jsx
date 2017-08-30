@@ -248,7 +248,8 @@ export default class TransferInModal extends Component {
     if (exceedEntIds.length > 0) {
       notification.error({
         message: '数据问题',
-        description: `以下明细ID${exceedEntIds.join(',')}合并系统ID后长度超过100, 分到多张移库单`,
+        description: `以下明细ID(${exceedEntIds.join(',')})合并系统ID后长度超过100, 请分到多张移库单`,
+        duration: 0,
       });
       return;
     }
