@@ -158,7 +158,7 @@ export function loadMovementDetails(movementNo) {
   };
 }
 
-export function executeMovement(movementNo, inDetailIds, tenantId, loginName, whseCode) {
+export function executeMovement(movementNo, toTraceIds, tenantId, loginName, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -168,7 +168,7 @@ export function executeMovement(movementNo, inDetailIds, tenantId, loginName, wh
       ],
       endpoint: 'v1/cwm/execute/move',
       method: 'post',
-      data: { movementNo, inDetailIds, tenantId, loginName, whseCode },
+      data: { movementNo, toTraceIds, tenantId, loginName, whseCode },
     },
   };
 }
@@ -188,7 +188,7 @@ export function cancelMovement(movementNo, loginName, tenantId) {
   };
 }
 
-export function removeMoveDetail(movementNo, ids, loginName, tenantId) {
+export function removeMoveDetail(movementNo, toTraceId, loginName, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -198,7 +198,7 @@ export function removeMoveDetail(movementNo, ids, loginName, tenantId) {
       ],
       endpoint: 'v1/cwm/remove/movement/detail',
       method: 'post',
-      data: { ids, loginName, tenantId, movementNo },
+      data: { toTraceId, loginName, tenantId, movementNo },
     },
   };
 }

@@ -87,7 +87,7 @@ export default class MovementDetailsPane extends React.Component {
         }
       });
     } else {
-      this.props.removeMoveDetail(movementNo, [row.in_detail_id], username, tenantId).then((result) => {
+      this.props.removeMoveDetail(movementNo, [row.to_trace_id], username, tenantId).then((result) => {
         if (!result.err) {
           this.props.loadMovementDetails(this.props.movementNo);
         }
@@ -96,11 +96,11 @@ export default class MovementDetailsPane extends React.Component {
   }
   handleExecuteMovement = () => {
     const props = this.props;
-    const inboundDetailIds = props.movementDetails.map(md => md.in_detail_id);
+    const toTraceIds = props.movementDetails.map(md => md.to_trace_id);
     Modal.confirm({
       title: '是否确认移库已完成?',
       onOk() {
-        props.executeMovement(props.movementNo, inboundDetailIds, props.tenantId,
+        props.executeMovement(props.movementNo, toTraceIds, props.tenantId,
           props.username, props.defaultWhse.code).then((result) => {
             if (!result.err) {
               props.loadMovementHead(props.movementNo);
@@ -170,7 +170,7 @@ export default class MovementDetailsPane extends React.Component {
             }
           </div>
         </div>
-        <Table columns={this.columns} dataSource={movementDetails} rowKey="in_detail_id"
+        <Table columns={this.columns} dataSource={movementDetails} rowKey="to_trace_id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
       </div>
