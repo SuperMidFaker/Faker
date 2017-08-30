@@ -29,8 +29,6 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
-    customsCode: state.account.customsCode,
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
@@ -206,14 +204,13 @@ export default class SHFTZTransferInDetail extends Component {
     this.props.updateEntryReg(preRegNo, field, value, virtualTransfer);
   }
   handleTransToWhs = () => {
-    const { params, entryAsn, tenantId, customsCode, tenantName, owners } = this.props;
+    const { params, entryAsn, tenantId, owners, whse } = this.props;
     const owner = owners.find(own => own.name === entryAsn.owner_name);
     this.props.transferToOwnWhse({
       asnNo: params.asnNo,
       whseCode: entryAsn.whse_code,
+      customsWhseCode: whse.customs_whse_code,
       tenantId,
-      customsCode,
-      tenantName,
       owner,
     }).then((result) => {
       if (!result.error) {
