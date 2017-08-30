@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message, Checkbox } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from '../form/headForm';
@@ -37,6 +37,10 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
+    trxModes: state.cwmShFtz.params.trxModes.map(tx => ({
+      value: tx.trx_mode,
+      text: tx.trx_spec,
+    })),
   }),
   { closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl }
 )
@@ -51,6 +55,7 @@ export default class BatchDeclModal extends Component {
     relNo: '',
     portionRegs: [],
     regDetails: [],
+    groupVals: ['supplier', 'trxn_mode'],
   }
   componentWillMount() {
     this.props.loadParams();
@@ -154,6 +159,19 @@ export default class BatchDeclModal extends Component {
     width: 100,
     dataIndex: 'net_wt',
   }, {
+    title: '供货商',
+    width: 100,
+    dataIndex: 'supplier',
+  }, {
+    title: '成交方式',
+    width: 100,
+    dataIndex: 'trxn_mode',
+    render: (o) => {
+      const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
+      const text = mode ? `${mode.value}| ${mode.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
     title: '金额',
     width: 100,
     dataIndex: 'amount',
@@ -238,7 +256,7 @@ export default class BatchDeclModal extends Component {
       name: own.name,
     }))[0];
     const { loginId, loginName } = this.props;
-    this.props.beginBatchDecl(detailIds, relCounts, owner, loginId, loginName).then((result) => {
+    this.props.beginBatchDecl(detailIds, relCounts, owner, loginId, loginName, this.state.groupVals).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -247,7 +265,9 @@ export default class BatchDeclModal extends Component {
       }
     });
   }
-
+  handleCheckChange = (checkedValues) => {
+    this.setState({ groupVals: checkedValues });
+  }
   render() {
     const { relNo, relDateRange, ownerCusCode } = this.state;
     const extraForm = (
@@ -275,6 +295,15 @@ export default class BatchDeclModal extends Component {
         <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>
       </div>
     </div>);
+    const detailExtra = (
+      <div>
+        <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
+          <Checkbox value="supplier">供货商</Checkbox>
+          <Checkbox value="trxn_mode">成交方式</Checkbox>
+          <Checkbox value="currency">币制</Checkbox>
+        </Checkbox.Group>
+      </div>
+    );
     return (
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
@@ -289,7 +318,7 @@ export default class BatchDeclModal extends Component {
             />
           </div>
         </Card>
-        <Card title="报关申请明细" bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="报关申请明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
               scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
