@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button,
-  Table, Select } from 'antd';
+  Table, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleShunfengExpressModal,
 loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
@@ -79,6 +79,8 @@ export default class ShunfengExpressModal extends Component {
 // 第六单：物流普运--寄付月结
   state = {
     printedPickingList: false,
+    mailnoLoading: false,
+    sonMailnoLoading: false,
 
     receiver_phone: '',
     receiver_address: '',
@@ -145,6 +147,7 @@ export default class ShunfengExpressModal extends Component {
   }
   loadExpresseInfo = () => {
     this.props.loadExpressInfo(this.props.outboundHead.outbound_no, this.props.tenantId).then((result) => {
+      this.setState({ mailnoLoading: false, sonMailnoLoading: false });
       if (result.data) {
         this.setState({ ...result.data });
       } else {
@@ -176,6 +179,7 @@ export default class ShunfengExpressModal extends Component {
     });
   }
   handleAddZD = () => {
+    this.setState({ sonMailnoLoading: true });
     const { outboundHead, loginId, tenantId } = this.props;
     this.props.addZD({ outboundNo: outboundHead.outbound_no, tenantId, loginId, expressNum: 1 }).then(() => {
       this.loadExpresseInfo();
@@ -253,6 +257,7 @@ export default class ShunfengExpressModal extends Component {
     window.pdfMake.createPdf(docDefinition).open();
   }
   orderExpress = () => {
+    this.setState({ mailnoLoading: true });
     const { outboundHead } = this.props;
     const expressInfo = {
       express_type: this.state.express_type,
@@ -289,7 +294,10 @@ export default class ShunfengExpressModal extends Component {
       outboundNo: outboundHead.outbound_no,
       tenantId: this.props.tenantId,
       expressInfo,
-    }).then(() => {
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
       this.loadExpresseInfo();
     });
   }
@@ -326,7 +334,7 @@ export default class ShunfengExpressModal extends Component {
       }
     });
     const columns = [{
-      width: 20,
+      width: 30,
       render: (col, row, index) => index + 1,
     }, {
       width: 180,
@@ -498,10 +506,15 @@ export default class ShunfengExpressModal extends Component {
             </Card>
           </Col>
           <Col span={8}>
-            <Card title="快递单号" extra={<Button type="primary" onClick={this.orderExpress}>获取单号</Button>} noHovering>
+            <Card title="快递单号"
+              extra={<Button type="primary" onClick={this.orderExpress} loading={this.state.mailnoLoading}>获取单号</Button>} noHovering
+            >
               <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" pagination={false} />
               <br />
-              {mailno && <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAddZD}>增加子单号</Button>}
+              {mailno &&
+                <Button type="dashed" icon="plus" style={{ width: '100%' }}
+                  onClick={this.handleAddZD} loading={this.state.sonMailnoLoading}
+                >增加子单号</Button>}
             </Card>
           </Col>
         </Row>
