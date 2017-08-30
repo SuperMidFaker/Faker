@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Dropdown, Layout, Radio, Menu, Select, Icon, Tag, message, Button } from 'antd';
+import { Badge, Breadcrumb, Dropdown, Layout, Radio, Menu, Select, Icon, Tag, message, Button, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import ExcelUploader from 'client/components/ExcelUploader';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadEntryRegDatas, showTransferInModal } from 'common/reducers/cwmShFtz';
+import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
 import ModuleMenu from '../../menu';
 import ReceivingDockPanel from '../../../../receiving/dock/receivingDockPanel';
@@ -40,7 +40,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { loadEntryRegDatas, switchDefaultWhse, showDock, showTransferInModal }
+  { loadEntryRegDatas, switchDefaultWhse, showDock, showTransferInModal, deleteVirtualTransfer }
 )
 @connectNav({
   depth: 2,
@@ -139,7 +139,21 @@ export default class SHFTZTransferInList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />,
+    render: (o, record) => {
+      if (record.virtual_transfer) {
+        return (
+          <span>
+            <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />
+            <span className="ant-divider" />
+            <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
+              <a> <Icon type="delete" /></a>
+            </Popconfirm>
+          </span>
+        );
+      } else {
+        return <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />;
+      }
+    },
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -180,6 +194,13 @@ export default class SHFTZTransferInList extends React.Component {
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
+      }
+    });
+  }
+  handleVTransDel = (asnNo) => {
+    this.props.deleteVirtualTransfer({ asnNo }).then((result) => {
+      if (!result.error) {
+        this.handleEntryListLoad();
       }
     });
   }

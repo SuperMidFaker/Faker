@@ -131,6 +131,10 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   columns = [{
+    title: '系统明细ID',
+    dataIndex: 'id',
+    width: 100,
+  }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 160,
@@ -215,14 +219,59 @@ export default class SHFTZTransferInDetail extends Component {
       customsCode,
       tenantName,
       owner,
+    }).then((result) => {
+      if (!result.error) {
+        notification.success({
+          message: '操作成功',
+          placement: 'topLeft',
+        });
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.error({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      }
     });
   }
   handleOwnTransferQuery = () => {
     const { params, entryAsn, username } = this.props;
+    const asnNo = params.asnNo;
     this.props.queryOwnTransferOutIn({
-      asn_no: params.asnNo,
+      asn_no: asnNo,
       whse: entryAsn.whse_code,
       username,
+    }).then((result) => {
+      if (!result.error) {
+        if (result.data.errorMsg) {
+          notification.warn({
+            message: '结果异常',
+            description: result.data.errorMsg,
+            duration: 15,
+          });
+        } else {
+          notification.success({
+            message: '操作成功',
+            placement: 'topLeft',
+          });
+        }
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.error({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      }
     });
   }
   render() {

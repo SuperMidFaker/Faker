@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { notification, Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { loadParams, showTransferInModal, loadEntryTransRegs, loadEntryTransInDetails, saveVirtualTransfer } from 'common/reducers/cwmShFtz';
 
@@ -19,7 +19,7 @@ const Option = Select.Option;
     ownerCusCode: state.cwmShFtz.transInModal.ownerCusCode,
     transRegs: state.cwmShFtz.transRegs,
     defaultWhse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
+    owners: state.cwmContext.whseAttrs.owners,
     portionRegs: state.cwmShFtz.batchout_regs,
     loginId: state.account.loginId,
     loginName: state.account.username,
@@ -84,11 +84,11 @@ export default class TransferInModal extends Component {
   }, {
     title: '货主',
     dataIndex: 'owner_name',
-    width: 200,
   }, {
     title: '进库日期',
     dataIndex: 'ftz_ent_date',
     render: o => o && moment(o).format('YYYY.MM.DD'),
+    width: 200,
   }, {
     title: '添加',
     width: 80,
@@ -97,9 +97,22 @@ export default class TransferInModal extends Component {
   }]
 
   regDetailColumns = [{
-    title: '备案料号',
+    title: '系统ID',
+    dataIndex: 'id',
+    width: 100,
+  }, {
+    title: '货号',
     dataIndex: 'product_no',
     width: 150,
+    render: (o) => {
+      if (o) {
+        return <Button>{o}</Button>;
+      }
+    },
+  }, {
+    title: '备案料号',
+    dataIndex: 'ftz_cargo_no',
+    width: 180,
     render: (o) => {
       if (o) {
         return <Button>{o}</Button>;
@@ -140,19 +153,19 @@ export default class TransferInModal extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
-    title: '数量',
+    title: '剩余数量',
     width: 100,
     dataIndex: 'stock_qty',
   }, {
-    title: '毛重',
+    title: '剩余毛重',
     width: 100,
     dataIndex: 'stock_grosswt',
   }, {
-    title: '净重',
+    title: '剩余净重',
     width: 100,
     dataIndex: 'stock_netwt',
   }, {
-    title: '金额',
+    title: '剩余金额',
     width: 100,
     dataIndex: 'stock_amount',
   }, {
@@ -216,10 +229,30 @@ export default class TransferInModal extends Component {
       return;
     }
     const detailIds = [];
-
+    const ftzEntDetailRegIds = new Map();
     this.state.regDetails.forEach((regd) => {
       detailIds.push(regd.id);
+      let sysIds = String(regd.id);
+      if (ftzEntDetailRegIds.has(regd.ftz_ent_detail_id)) {
+        sysIds = ftzEntDetailRegIds.get(regd.ftz_ent_detail_id);
+        sysIds = `${sysIds}${String(regd.id)}`;
+      }
+      ftzEntDetailRegIds.set(regd.ftz_ent_detail_id, sysIds);
     });
+    const exceedEntIds = [];
+    ftzEntDetailRegIds.forEach((sysIds, entId) => {
+      if (sysIds.length > 80) {
+        exceedEntIds.push(entId);
+      }
+    });
+    if (exceedEntIds.length > 0) {
+      notification.error({
+        message: '数据问题',
+        description: `以下明细ID(${exceedEntIds.join(',')})合并系统ID后长度超过100, 请分到多张移库单`,
+        duration: 0,
+      });
+      return;
+    }
     const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode).map(own => ({
       partner_id: own.id,
       tenant_id: own.partner_tenant_id,
@@ -278,7 +311,7 @@ export default class TransferInModal extends Component {
             />
           </div>
         </Card>
-        <Card title="报关申请明细" bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="入库单明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
               scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
