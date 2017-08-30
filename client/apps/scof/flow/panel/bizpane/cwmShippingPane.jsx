@@ -80,7 +80,7 @@ export default class CWMShippingPane extends Component {
                     initialValue: model.bonded_reg_type,
                   })(
                     <RadioGroup>
-                      {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.text}</RadioButton>)}
+                      {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
                     </RadioGroup>
                   )}
                 </FormItem>

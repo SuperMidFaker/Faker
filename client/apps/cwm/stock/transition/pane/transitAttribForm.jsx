@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Card, Form, Row, Input, InputNumber, Col, DatePicker, Select, Switch } from 'antd';
+import { Form, Row, Input, InputNumber, Col, DatePicker, Select, Switch } from 'antd';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import { loadOwnerUndoneMovements } from 'common/reducers/cwmMovement';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 @injectIntl
@@ -45,7 +45,7 @@ export default class TransitForm extends React.Component {
   render() {
     const { batched, detail, form: { getFieldDecorator }, ownerMovements } = this.props;
     return (
-      <Card noHovering bodyStyle={{ paddingBottom: 0 }} >
+      <div>
         <Row gutter={16} className="form-row">
           <Col span={8}>
             <FormItem {...formItemLayout} label="所属货主">
@@ -220,7 +220,7 @@ export default class TransitForm extends React.Component {
             </FormItem>
           </Col>}
         </Row>
-      </Card>
+      </div>
     );
   }
 }

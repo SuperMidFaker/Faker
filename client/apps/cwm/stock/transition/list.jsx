@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Input, Breadcrumb, Button, Card, Checkbox, Select, Layout, Popover, InputNumber, Radio, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { showTransitionDock, loadTransitions, splitTransit, unfreezeTransit,
+import { openTransitionModal, loadTransitions, splitTransit, unfreezeTransit,
   openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
@@ -13,9 +13,8 @@ import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import { commonTraceColumns } from '../commonColumns';
-import TransitionDockPanel from './dock/transitionDockPanel';
 import BatchTransitModal from './modal/batchTransitModal';
-// import BatchMoveModal from './modal/batchMoveModal';
+import TransitionModal from './modal/transitionModal';
 import BatchFreezeModal from './modal/batchFreezeModal';
 import FreezePopover from '../../common/popover/freezePopover';
 import UnfreezePopover from '../../common/popover/unfreezePopover';
@@ -40,7 +39,7 @@ const Option = Select.Option;
     sortFilter: state.cwmTransition.sortFilter,
     reload: state.cwmTransition.reloadTransitions,
   }),
-  { showTransitionDock,
+  { openTransitionModal,
     loadTransitions,
     splitTransit,
     unfreezeTransit,
@@ -277,7 +276,7 @@ export default class StockTransitionList extends React.Component {
     this.handleStockQuery(1, filter);
   }
   handleShowDock = (row) => {
-    this.props.showTransitionDock(row);
+    this.props.openTransitionModal(row);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [] });
@@ -387,7 +386,7 @@ export default class StockTransitionList extends React.Component {
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" scrollOffset={390}
           />
-          <TransitionDockPanel />
+          <TransitionModal />
           <BatchTransitModal />
           {/* <BatchMoveModal /> */}
           <BatchFreezeModal />
