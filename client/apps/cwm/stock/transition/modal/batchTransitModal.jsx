@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { message, Alert, Modal, Form } from 'antd';
-import TransitForm from '../dock/tabpane/transitAttribForm';
+import TransitForm from '../pane/transitAttribForm';
 import { closeBatchTransitModal, moveTransit, splitTransit } from 'common/reducers/cwmTransition';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
