@@ -16,6 +16,7 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     visible: state.cwmWarehouse.editWarehouseModal.visible,
+    warehouse: state.cwmWarehouse.editWarehouseModal.warehouse,
   }),
   { hideEditWhseModal, editWarehouse, loadWhseContext }
 )
@@ -48,6 +49,12 @@ export default class WareHouseModal extends Component {
         street: nextProps.warehouse.whse_street,
         regionCode: nextProps.warehouse.whse_region_code,
       });
+      this.props.form.setFieldsValue({
+        whseCode: nextProps.warehouse.code,
+        whseName: nextProps.warehouse.name,
+        whseAddress: nextProps.warehouse.whse_address,
+        tel: nextProps.warehouse.tel,
+      });
     }
   }
   msg = formatMsg(this.props.intl)
@@ -63,7 +70,7 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseCode, whseName, whseAddress } = values;
+        const { whseCode, whseName, whseAddress, tel } = values;
         const { tenantId, loginId } = this.props;
         const { bonded, province, city, district, street, regionCode } = this.state;
         this.props.editWarehouse(
@@ -78,6 +85,7 @@ export default class WareHouseModal extends Component {
           district,
           street,
           regionCode,
+          tel,
         ).then(
           (result) => {
             if (!result.error) {
@@ -133,6 +141,13 @@ export default class WareHouseModal extends Component {
             {
               getFieldDecorator('whseAddress', {
                 initialValue: warehouse.whse_address,
+              })(<Input />)
+            }
+          </FormItem>
+          <FormItem {...formItemLayout} label="联系电话" >
+            {
+              getFieldDecorator('tel', {
+                initialValue: warehouse.tel,
               })(<Input />)
             }
           </FormItem>

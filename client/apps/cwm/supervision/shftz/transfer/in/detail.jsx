@@ -131,10 +131,6 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   columns = [{
-    title: '系统明细ID',
-    dataIndex: 'id',
-    width: 100,
-  }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 160,
@@ -219,6 +215,24 @@ export default class SHFTZTransferInDetail extends Component {
       customsCode,
       tenantName,
       owner,
+    }).then((result) => {
+      if (!result.error) {
+        notification.success({
+          message: '操作成功',
+          placement: 'topLeft',
+        });
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.error({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      }
     });
   }
   handleOwnTransferQuery = () => {
@@ -242,11 +256,6 @@ export default class SHFTZTransferInDetail extends Component {
             placement: 'topLeft',
           });
         }
-      } else if (result.error.message === 'TAG_LENGTH_EXCEED') {
-        notification.error({
-          message: '操作失败',
-          description: '移库时相同明细ID合并生成TAG值超过100, 需分成多批移库',
-        });
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',

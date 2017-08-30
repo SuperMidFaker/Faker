@@ -42,6 +42,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'ENTRY_TRANS_LOAD', 'ENTRY_TRANS_LOAD_SUCCEED', 'ENTRY_TRANS_LOAD_FAIL',
   'LOAD_ETIDS', 'LOAD_ETIDS_SUCCEED', 'LOAD_ETIDS_FAIL',
   'VIRTUAL_TRANS_SAVE', 'VIRTUAL_TRANS_SAVE_SUCCEED', 'VIRTUAL_TRANS_SAVE_FAIL',
+  'VIRTUAL_TRANS_DELETE', 'VIRTUAL_TRANS_DELETE_SUCCEED', 'VIRTUAL_TRANS_DELETE_FAIL',
 ]);
 
 const initialState = {
@@ -774,6 +775,21 @@ export function saveVirtualTransfer(data) {
         actionTypes.VIRTUAL_TRANS_SAVE_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/virtual/transfer/save',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function deleteVirtualTransfer(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.VIRTUAL_TRANS_DELETE,
+        actionTypes.VIRTUAL_TRANS_DELETE_SUCCEED,
+        actionTypes.VIRTUAL_TRANS_DELETE_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/virtual/transfer/delete',
       method: 'post',
       data,
     },

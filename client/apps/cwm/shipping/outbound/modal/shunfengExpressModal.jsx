@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Icon, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button,
-  Table, Select } from 'antd';
+  Table, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleShunfengExpressModal,
 loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
@@ -65,6 +65,7 @@ export default class ShunfengExpressModal extends Component {
     outboundProducts: PropTypes.arrayOf(PropTypes.shape({ seq_no: PropTypes.string.isRequired })),
     loadExpressInfo: PropTypes.func.isRequired,
     addZD: PropTypes.func.isRequired,
+    shunfengConfig: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -78,7 +79,8 @@ export default class ShunfengExpressModal extends Component {
 // 第六单：物流普运--寄付月结
   state = {
     printedPickingList: false,
-    tabkey: '1',
+    mailnoLoading: false,
+    sonMailnoLoading: false,
 
     receiver_phone: '',
     receiver_address: '',
@@ -98,7 +100,7 @@ export default class ShunfengExpressModal extends Component {
     sender_street: '',
     sender_region_code: null,
 
-    express_type: '13',
+    express_type: '1',
     pay_method: '1',
     insure_value: 0,
     weight: 0,
@@ -144,15 +146,16 @@ export default class ShunfengExpressModal extends Component {
     }
   }
   loadExpresseInfo = () => {
-    this.props.loadExpressInfo(this.props.outboundHead.outbound_no).then((result) => {
+    this.props.loadExpressInfo(this.props.outboundHead.outbound_no, this.props.tenantId).then((result) => {
+      this.setState({ mailnoLoading: false, sonMailnoLoading: false });
       if (result.data) {
-        this.setState({ ...result.data, tabkey: '2' });
+        this.setState({ ...result.data });
       } else {
         const { defaultWhse, outboundHead, outboundProducts } = this.props;
         this.setState({
-          sender_phone: '',
+          sender_phone: defaultWhse.tel,
           sender_address: defaultWhse.whse_address,
-          sender_contact: '',
+          sender_contact: defaultWhse.name,
           sender_province: defaultWhse.whse_province,
           sender_city: defaultWhse.whse_city,
           sender_district: defaultWhse.whse_district,
@@ -169,20 +172,20 @@ export default class ShunfengExpressModal extends Component {
           receiver_region_code: outboundHead.receiver_region_code,
 
           product_name: outboundProducts[0] ? outboundProducts[0].name : '',
+          product_qty: outboundProducts.map(item => item.order_qty).reduce((a, b) => a + b),
+          custid: this.props.shunfengConfig.custid,
         });
       }
     });
   }
   handleAddZD = () => {
+    this.setState({ sonMailnoLoading: true });
     const { outboundHead, loginId, tenantId } = this.props;
     this.props.addZD({ outboundNo: outboundHead.outbound_no, tenantId, loginId, expressNum: 1 }).then(() => {
       this.loadExpresseInfo();
     });
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleTabChange = (tabkey) => {
-    this.setState({ tabkey });
-  }
   handleWaybillPrint = (courierNo, courierNoSon, seq) => {
     const expressType = EXPRESS_TYPES.find(item => item.value === this.state.express_type).text;
     const payMethod = PAY_METHODS.find(item => item.value === this.state.pay_method).text;
@@ -254,6 +257,7 @@ export default class ShunfengExpressModal extends Component {
     window.pdfMake.createPdf(docDefinition).open();
   }
   orderExpress = () => {
+    this.setState({ mailnoLoading: true });
     const { outboundHead } = this.props;
     const expressInfo = {
       express_type: this.state.express_type,
@@ -290,7 +294,10 @@ export default class ShunfengExpressModal extends Component {
       outboundNo: outboundHead.outbound_no,
       tenantId: this.props.tenantId,
       expressInfo,
-    }).then(() => {
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      }
       this.loadExpresseInfo();
     });
   }
@@ -327,6 +334,9 @@ export default class ShunfengExpressModal extends Component {
       }
     });
     const columns = [{
+      width: 30,
+      render: (col, row, index) => index + 1,
+    }, {
       width: 180,
       dataIndex: 'courier_no',
       render: (col, row, index) => {
@@ -356,7 +366,7 @@ export default class ShunfengExpressModal extends Component {
             <Card title="订单信息" noHovering>
               <Row className="form-row">
                 <Col span={12}>
-                  <FormItem label="快递类型" {...formItemLayout}>
+                  <FormItem label="快递类型" {...formItemLayout} required>
                     <Select placeholder="快递类型" value={this.state.express_type} onChange={value => this.setState({ express_type: value })} style={{ width: '100%' }}>
                       {EXPRESS_TYPES.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
                     </Select>
@@ -365,7 +375,7 @@ export default class ShunfengExpressModal extends Component {
                 <Col span={12} >
                   <FormItem label="签单返还" {...formItemLayout}>
                     <RadioGroup value={this.state.need_return_tracking_no}
-                      onChange={e => this.setState({ need_return_tracking_no: e.target.value })} style={{ width: '100%' }}
+                      onChange={e => this.setState({ need_return_tracking_no: e.target.value })} style={{ fontSize: 13 }}
                     >
                       <RadioButton value="0">否</RadioButton>
                       <RadioButton value="1">是</RadioButton>
@@ -373,20 +383,20 @@ export default class ShunfengExpressModal extends Component {
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="付款方式" {...formItemLayout}>
+                  <FormItem label="付款方式" {...formItemLayout} required>
                     <Select placeholder="付款方式" value={this.state.pay_method} onChange={value => this.setState({ pay_method: value })} style={{ width: '100%' }}>
                       {PAY_METHODS.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
                     </Select>
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="月结卡号" {...formItemLayout}>
-                    <Input value={this.state.custid} onChange={e => this.setState({ custid: e.target.value })} />
+                  <FormItem label="包裹数" {...formItemLayout} required>
+                    <Input value={this.state.parcel_quantity} type="number" onChange={e => this.setState({ parcel_quantity: e.target.value })} />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="包裹数" {...formItemLayout}>
-                    <Input value={this.state.parcel_quantity} type="number" onChange={e => this.setState({ parcel_quantity: e.target.value })} />
+                  <FormItem label="月结卡号" {...formItemLayout}>
+                    <Input value={this.state.custid} onChange={e => this.setState({ custid: e.target.value })} />
                   </FormItem>
                 </Col>
                 <Col span={12}>
@@ -416,21 +426,21 @@ export default class ShunfengExpressModal extends Component {
                 </Col>
                 <Col span={12}>
                   {this.state.added_services.indexOf('INSURE') >= 0 &&
-                  <FormItem label="保价金额" {...formItemLayout}>
+                  <FormItem label="保价金额" {...formItemLayout} required>
                     <Input value={this.state.insure_value} type="number" onChange={e => this.setState({ insure_value: e.target.value })} />
                   </FormItem>
                 }
                 </Col>
                 {this.state.added_services.indexOf('COD') >= 0 &&
                 <Col span={12}>
-                  <FormItem label="代收货款额" {...formItemLayout}>
+                  <FormItem label="代收货款额" {...formItemLayout} required>
                     <Input value={this.state.cod_value} onChange={e => this.setState({ cod_value: e.target.value })} />
                   </FormItem>
                 </Col>
             }
                 {this.state.added_services.indexOf('COD') >= 0 &&
                 <Col span={12}>
-                  <FormItem label="代收货款卡号" {...formItemLayout}>
+                  <FormItem label="代收货款卡号" {...formItemLayout} required>
                     <Input value={this.state.cod_card_id} onChange={e => this.setState({ cod_card_id: e.target.value })} />
                   </FormItem>
                 </Col>
@@ -438,26 +448,26 @@ export default class ShunfengExpressModal extends Component {
               </Row>
               <Row className="form-row">
                 <Col span={12}>
-                  <FormItem label="收货人" {...formItemLayout}>
+                  <FormItem label="收货人" {...formItemLayout} required>
                     <Input value={this.state.receiver_contact} placeholder="收货人"
                       onChange={e => this.setState({ receiver_contact: e.target.value })}
                     />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="电话" {...formItemLayout}>
+                  <FormItem label="电话" {...formItemLayout} required>
                     <Input value={this.state.receiver_phone} placeholder="电话"
                       onChange={e => this.setState({ receiver_phone: e.target.value })}
                     />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="地址" {...formItemLayout}>
+                  <FormItem label="地址" {...formItemLayout} required>
                     <Cascader defaultRegion={receiverRegionValues} onChange={this.handleReceiverRegionChange} />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="详细地址" {...formItemLayout}>
+                  <FormItem label="详细地址" {...formItemLayout} required>
                     <Input value={this.state.receiver_address}
                       onChange={e => this.setState({ receiver_address: e.target.value })}
                     />
@@ -466,26 +476,26 @@ export default class ShunfengExpressModal extends Component {
               </Row>
               <Row className="form-row">
                 <Col span={12}>
-                  <FormItem label="发货人" {...formItemLayout}>
+                  <FormItem label="发货人" {...formItemLayout} required>
                     <Input value={this.state.sender_contact} placeholder="发货人"
                       onChange={e => this.setState({ sender_contact: e.target.value })}
                     />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="电话" {...formItemLayout}>
+                  <FormItem label="电话" {...formItemLayout} required>
                     <Input value={this.state.sender_phone} placeholder="电话"
                       onChange={e => this.setState({ sender_phone: e.target.value })}
                     />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="地址" {...formItemLayout}>
+                  <FormItem label="地址" {...formItemLayout} required>
                     <Cascader defaultRegion={senderRegionValues} onChange={this.handleSenderRegionChange} />
                   </FormItem>
                 </Col>
                 <Col span={12}>
-                  <FormItem label="详细地址" {...formItemLayout}>
+                  <FormItem label="详细地址" {...formItemLayout} required>
                     <Input value={this.state.sender_address}
                       onChange={e => this.setState({ sender_address: e.target.value })}
                     />
@@ -496,10 +506,15 @@ export default class ShunfengExpressModal extends Component {
             </Card>
           </Col>
           <Col span={8}>
-            <Card title="快递单号" extra={<Button type="primary" onClick={this.orderExpress}>获取单号</Button>} noHovering>
+            <Card title="快递单号"
+              extra={<Button type="primary" onClick={this.orderExpress} loading={this.state.mailnoLoading}>获取单号</Button>} noHovering
+            >
               <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" pagination={false} />
               <br />
-              {mailno && <Button type="dashed" icon="plus" style={{ width: '100%' }} onClick={this.handleAddZD}>增加子单号</Button>}
+              {mailno &&
+                <Button type="dashed" icon="plus" style={{ width: '100%' }}
+                  onClick={this.handleAddZD} loading={this.state.sonMailnoLoading}
+                >增加子单号</Button>}
             </Card>
           </Col>
         </Row>

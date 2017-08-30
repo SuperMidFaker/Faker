@@ -48,6 +48,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'UPDATE_CARRIER_STATUS', 'UPDATE_CARRIER_STATUS_SUCCEED', 'UPDATE_CARRIER_STATUS_FAIL',
   'DELETE_CARRIER', 'DELETE_CARRIER_SUCCEED', 'DELETE_CARRIER_FAIL',
   'UPDATE_CARRIER', 'UPDATE_CARRIER_SUCCEED', 'UPDATE_CARRIER_FAIL',
+  'LOAD_LIMIT_LOCATIONS', 'LOAD_LIMIT_LOCATIONS_SUCCEED', 'LOAD_LIMIT_LOCATIONS_FAIL',
 ]);
 
 const initialState = {
@@ -75,6 +76,7 @@ const initialState = {
   },
   editWarehouseModal: {
     visible: false,
+    warehouse: {},
   },
   staffModal: {
     visible: false,
@@ -130,7 +132,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLEAR_LOCATIONS:
       return { ...state, locations: [] };
     case actionTypes.SHOW_EDIT_WHSE:
-      return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: true } };
+      return { ...state, editWarehouseModal: { ...state.editWarehouseModal, ...action.data, visible: true } };
     case actionTypes.HIDE_EDIT_WHSE:
       return { ...state, editWarehouseModal: { ...state.editWarehouseModal, visible: false } };
     case actionTypes.SHOW_STAFF_MODAL:
@@ -183,7 +185,7 @@ export function addWarehouse(params) {
   };
 }
 
-export function editWarehouse(code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode) {
+export function editWarehouse(code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode, tel) {
   return {
     [CLIENT_API]: {
       types: [
@@ -193,7 +195,7 @@ export function editWarehouse(code, name, address, bonded, tenantId, loginId, pr
       ],
       endpoint: 'v1/cwm/warehouse/edit',
       method: 'post',
-      data: { code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode },
+      data: { code, name, address, bonded, tenantId, loginId, province, city, district, street, regionCode, tel },
     },
   };
 }
@@ -280,6 +282,21 @@ export function loadLocations(whseCode, zoneCode, tenantId, text) {
         actionTypes.LOAD_LOCATIONS_FAIL,
       ],
       endpoint: 'v1/cwm/warehouse/location/load',
+      method: 'get',
+      params: { whseCode, zoneCode, tenantId, text },
+    },
+  };
+}
+
+export function loadLimitLocations(whseCode, zoneCode, tenantId, text) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_LIMIT_LOCATIONS,
+        actionTypes.LOAD_LIMIT_LOCATIONS_SUCCEED,
+        actionTypes.LOAD_LIMIT_LOCATIONS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/limit/location/load',
       method: 'get',
       params: { whseCode, zoneCode, tenantId, text },
     },
@@ -464,9 +481,10 @@ export function clearLocations() {
   };
 }
 
-export function showEditWhseModal() {
+export function showEditWhseModal(warehouse) {
   return {
     type: actionTypes.SHOW_EDIT_WHSE,
+    data: { warehouse },
   };
 }
 

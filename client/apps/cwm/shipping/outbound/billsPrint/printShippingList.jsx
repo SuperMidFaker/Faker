@@ -27,7 +27,6 @@ export default class PrintShippingList extends Component {
         { text: `订单编号:   ${outboundHead.cust_order_no || ''}`, style: 'content', width: '40%' },
       ] },
       { text: `送货地址:   ${outboundHead.receiver_address || ''}`, style: 'content' },
-      { text: '附赠品', style: 'content' },
     ];
     return header;
   }

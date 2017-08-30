@@ -225,7 +225,6 @@ export default class TransferInModal extends Component {
       return;
     }
     const detailIds = [];
-
     this.state.regDetails.forEach((regd) => {
       detailIds.push(regd.id);
     });

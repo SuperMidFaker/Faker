@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
+import { loadLimitLocations } from 'common/reducers/cwmWarehouse';
 const Option = Select.Option;
 
 @connect(
@@ -12,7 +12,7 @@ const Option = Select.Option;
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadLocations }
+  { loadLimitLocations }
 )
 export default class LocationSelect extends React.Component {
   static propTypes = {
@@ -28,7 +28,7 @@ export default class LocationSelect extends React.Component {
     options: [],
   }
   componentWillMount() {
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId).then((result) => {
+    this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId).then((result) => {
       if (!result.error) {
         this.setState({
           options: result.data,
@@ -37,7 +37,7 @@ export default class LocationSelect extends React.Component {
     });
   }
   handleSearch = (value) => {
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId, value).then((result) => {
+    this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId, value).then((result) => {
       if (!result.error) {
         this.setState({
           options: result.data,
