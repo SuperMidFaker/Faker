@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { loadLocations } from 'common/reducers/cwmWarehouse';
+import { loadLimitLocations } from 'common/reducers/cwmWarehouse';
 import { loadAdviceLocations } from 'common/reducers/cwmReceive';
 const Option = Select.Option;
 
@@ -13,7 +13,7 @@ const Option = Select.Option;
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadLocations, loadAdviceLocations }
+  { loadLimitLocations, loadAdviceLocations }
 )
 export default class AdviceLocations extends React.Component {
   static propTypes = {
@@ -31,7 +31,6 @@ export default class AdviceLocations extends React.Component {
     receiveLocations: [],
   }
   componentWillMount() {
-    this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId);
     this.props.loadAdviceLocations(this.props.productNo, this.props.tenantId, this.props.defaultWhse.code).then((result) => {
       if (!result.error) {
         if (result.data.length !== 0) {
@@ -66,19 +65,13 @@ export default class AdviceLocations extends React.Component {
     }
   }
   handleSearch = (value) => {
-    if (value === '') {
-      this.setState({ options: this.state.receiveLocations });
-    } else {
-      const options = this.props.locations.filter((item) => {
-        if (value) {
-          const reg = new RegExp(value);
-          return reg.test(item.location);
-        } else {
-          return true;
-        }
-      });
-      this.setState({ options });
-    }
+    this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId, value).then((result) => {
+      if (!result.error) {
+        this.setState({
+          options: result.data,
+        });
+      }
+    });
   }
   render() {
     return (
