@@ -27,7 +27,7 @@ const TabPane = Tabs.TabPane;
     defaultWhse: state.cwmContext.defaultWhse,
     temporaryDetails: state.cwmReceive.temporaryDetails,
     owners: state.cwmContext.whseAttrs.owners,
-    sellers: state.cwmReceive.sellers,
+    suppliers: state.cwmReceive.suppliers,
   }),
   { addASN, clearTemporary }
 )
@@ -56,7 +56,7 @@ export default class CreateReceivingASN extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, sellers } = this.props;
+    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, suppliers } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -65,7 +65,7 @@ export default class CreateReceivingASN extends Component {
       if (!errors) {
         const data = values;
         const owner = owners.find(item => item.id === values.owner_partner_id);
-        const supplier = sellers.find(sl => sl.name === values.supplier_name);
+        const supplier = suppliers.find(sl => sl.name === values.supplier_name);
         data.ownerName = owner.name;
         data.ownerTenantId = owner.partner_tenant_id;
         data.temporaryDetails = temporaryDetails;

@@ -146,6 +146,10 @@ export default class DetailsPane extends Component {
       dataIndex: 'serial_no',
       width: 150,
     }, {
+      title: '供货商',
+      dataIndex: 'supplier',
+      width: 120,
+    }, {
       title: '单价',
       dataIndex: 'unit_price',
       width: 100,

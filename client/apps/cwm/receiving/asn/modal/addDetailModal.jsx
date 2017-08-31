@@ -91,7 +91,7 @@ export default class AddDetailModal extends Component {
             ...values,
           });
         } else {
-          this.props.editTemporary(product.index, { ...product, ...values, amount: this.state.amount });
+          this.props.editTemporary(product.index, { ...product, ...values, amount: this.state.amount ? this.state.amount : product.amount });
         }
         this.handleCancel();
         this.setState({
