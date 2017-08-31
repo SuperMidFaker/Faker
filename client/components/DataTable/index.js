@@ -239,14 +239,15 @@ class DataTable extends Component {
           <div className="welo-data-table-toolbar-right">
             <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
               <Tooltip title="显示字段设置">
-                <Button size="large" icon="layout" />
+                <Button shape="circle" icon="layout" />
               </Tooltip>
             </Popover>
           </div>
-          {this.props.selectedRowKeys && <div className={`welo-data-table-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+          {this.props.selectedRowKeys &&
+          <div className={`welo-data-table-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.props.selectedRowKeys.length}项</h3>
             {this.props.bulkActions}
-            <div className="pull-right">
+            <div className="welo-data-table-toolbar-right">
               <Tooltip title="取消选择" placement="left">
                 <Button type="primary" ghost shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
               </Tooltip>
