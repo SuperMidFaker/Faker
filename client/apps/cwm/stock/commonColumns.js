@@ -117,7 +117,7 @@ exports.transactionColumns = (/* intl */) => [{
   width: 80,
   dataIndex: 'type',
   className: 'cell-align-center',
-  render: type => <span className="text-emphasis">{CWM_TRANSACTIONS_TYPE[type].text}</span>,
+  render: type => type && <span className="text-emphasis">{CWM_TRANSACTIONS_TYPE[type].text}</span>,
 }, {
   title: '变动数量',
   width: 100,

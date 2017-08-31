@@ -82,7 +82,7 @@ export default class HeadCard extends Component {
     const { bonded } = this.state;
     return (
       <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
-        <Row>
+        <Row gutter={24}>
           <Col span={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
@@ -97,21 +97,49 @@ export default class HeadCard extends Component {
                 )}
             </FormItem>
           </Col>
-          <Col span={6} offset={2}>
+          <Col span={6}>
+            <FormItem label="要求出货日期" >
+              {getFieldDecorator('expect_shipping_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+                initialValue: soHead ? moment(new Date(soHead.expect_shipping_date)) : moment(new Date()),
+              })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
+            </FormItem>
+          </Col>
+          <Col span={6}>
+            <FormItem label="客户订单号">
+              {getFieldDecorator('cust_order_no', {
+                initialValue: soHead && soHead.cust_order_no,
+              })(
+                <Input />
+                    )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={6}>
+            <FormItem label="SO类型">
+              {getFieldDecorator('so_type', {
+                initialValue: soHead ? soHead.so_type : CWM_SO_TYPES[0].value,
+              })(
+                <Select placeholder="SO类型">
+                  {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+                </Select>
+                    )}
+            </FormItem>
+          </Col>
+          <Col span={6}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
                 initialValue: soHead ? soHead.bonded : bonded,
               })(
                 <RadioGroup onChange={this.handleBondedChange}>
                   <RadioButton value={0}>非保税</RadioButton>
-                  { defaultWhse.bonded && <RadioButton value={1}>保税</RadioButton> }
-                  { defaultWhse.bonded && <RadioButton value={2}>保税+非保混合</RadioButton> }
+                  { !!defaultWhse.bonded && <RadioButton value={1}>保税</RadioButton> }
                 </RadioGroup>
                 )}
             </FormItem>
           </Col>
           {bonded &&
-          <Col span={8} offset={2}>
+          <Col span={6}>
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
                 rules: [{ required: true, message: '请选择保税监管方式' }],
@@ -124,35 +152,6 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
           }
-        </Row>
-        <Row>
-          <Col span={6}>
-            <FormItem label="要求出货日期" >
-              {getFieldDecorator('expect_shipping_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-                initialValue: soHead ? moment(new Date(soHead.expect_shipping_date)) : moment(new Date()),
-              })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-          <Col span={6} offset={2}>
-            <FormItem label="客户订单号">
-              {getFieldDecorator('cust_order_no', {
-                initialValue: soHead && soHead.cust_order_no,
-              })(
-                <Input />
-                    )}
-            </FormItem>
-          </Col>
-          <Col span={6} offset={2}>
-            <FormItem label="SO类型">
-              {getFieldDecorator('so_type', {
-                initialValue: soHead ? soHead.so_type : CWM_SO_TYPES[0].value,
-              })(
-                <Select placeholder="SO类型">
-                  {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
-                </Select>
-                    )}
-            </FormItem>
-          </Col>
         </Row>
       </Card>
     );

@@ -79,8 +79,8 @@ export default class HeadCard extends Component {
     const { form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse } = this.props;
     return (
       <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
-        <Row>
-          <Col span={5}>
+        <Row gutter={24}>
+          <Col span={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: 'Please select customer!' }],
@@ -94,14 +94,14 @@ export default class HeadCard extends Component {
                   )}
             </FormItem>
           </Col>
-          <Col span={5} offset={1}>
+          <Col span={6}>
             <FormItem label="预期到货日期" >
               {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
                 initialValue: asnHead ? moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
-          <Col span={5} offset={1}>
+          <Col span={6}>
             <FormItem label="供货商">
               {getFieldDecorator('supplier_name', {
                 initialValue: asnHead && asnHead.supplier_name,
@@ -110,7 +110,7 @@ export default class HeadCard extends Component {
               </Select>)}
             </FormItem>
           </Col>
-          <Col span={5} offset={1}>
+          <Col span={6}>
             <FormItem label="采购订单号">
               {getFieldDecorator('po_no', {
                 initialValue: asnHead && asnHead.po_no,
@@ -118,8 +118,8 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col span={5}>
+        <Row gutter={24}>
+          <Col span={6}>
             <FormItem label="ASN类型">
               {getFieldDecorator('asn_type', {
                 initialValue: asnHead ? asnHead.asn_type : CWM_ASN_TYPES[0].value,
@@ -130,7 +130,7 @@ export default class HeadCard extends Component {
                   )}
             </FormItem>
           </Col>
-          <Col span={5} offset={1}>
+          <Col span={6}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
                 initialValue: asnHead ? asnHead.bonded : 0,
@@ -143,7 +143,7 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
           {
-            getFieldValue('bonded') === 1 && <Col span={5} offset={1}>
+            getFieldValue('bonded') === 1 && <Col span={6}>
               <FormItem label="保税监管方式">
                 {getFieldDecorator('reg_type', {
                   rules: [{ required: true, message: 'Please select reg_type!' }],
@@ -157,7 +157,7 @@ export default class HeadCard extends Component {
             </Col>
           }
           {
-            getFieldValue('reg_type') === CWM_ASN_BONDED_REGTYPES[2].value && <Col span={5} offset={1}>
+            getFieldValue('reg_type') === CWM_ASN_BONDED_REGTYPES[2].value && <Col span={6}>
               <FormItem label="区内转入单">
                 {getFieldDecorator('transfer_in_bills', {
                   initialValue: asnHead && asnHead.transfer_in_bills,

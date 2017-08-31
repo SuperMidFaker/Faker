@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Dropdown, Layout, Radio, Menu, Select, Icon, Tag, message, Button, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, Icon, Tag, message, Button, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
-import ExcelUploader from 'client/components/ExcelUploader';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
@@ -296,19 +295,6 @@ export default class SHFTZTransferInList extends React.Component {
             </RadioGroup>
             <div className="page-header-tools">
               <Button size="large" icon="plus" onClick={this.handleCreateTransIn}>新建区内转入</Button>
-              <Dropdown.Button size="large" overlay={<Menu />}>
-                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/upload/shftz/transfer/in`}
-                  formData={{
-                    data: JSON.stringify({
-                      tenantId: this.props.tenantId,
-                      tenantName: this.props.tenantName,
-                      loginId: this.props.loginId,
-                    }),
-                  }} onUploaded={this.handleSoStockImport}
-                >
-                  <Icon type="upload" /> {this.msg('batchImport')}
-                </ExcelUploader>
-              </Dropdown.Button>
             </div>
           </Header>
           <Content className="main-content" key="main">

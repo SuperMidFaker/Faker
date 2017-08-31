@@ -450,6 +450,7 @@ export default class ManifestBodyPane extends React.Component {
         />),
     }, {
       title: this.msg('processingFees'),
+      width: 80,
       render: (o, record, index) =>
         (<ColumnInput field="processing_fees" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody} decimal={3}

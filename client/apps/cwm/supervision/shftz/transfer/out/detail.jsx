@@ -308,10 +308,10 @@ export default class SHFTZTransferOutDetail extends Component {
                   <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="提货单位" field={relSo.owner_name} />
+                  <InfoItem label="收货单位" field={relSo.receiver_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={relSo.receiver_name} />
+                  <InfoItem label="收货仓库号" field={relSo.receiver_whse_code} />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}

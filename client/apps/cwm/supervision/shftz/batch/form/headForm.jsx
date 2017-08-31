@@ -46,8 +46,8 @@ export default class HeadForm extends React.Component {
   render() {
     const { form: { getFieldDecorator }, owners, filter } = this.props;
     const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 },
     };
     return (
       <Form className="form-layout-compact">

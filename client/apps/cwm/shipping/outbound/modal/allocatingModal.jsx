@@ -105,6 +105,7 @@ export default class AllocatingModal extends Component {
   inventoryColumns = [{
     title: '加入',
     width: 60,
+    fixed: 'left',
     render: (o, record) => {
       let disabled = !this.props.editable || !record.inbound_timestamp;  // 不可编辑 或 未入库时disable
       let reason = '';
@@ -248,6 +249,7 @@ export default class AllocatingModal extends Component {
   allocatedColumns = [{
     title: '移出',
     width: 60,
+    fixed: 'left',
     render: (o, record) => (record.deleteDisabled === true ? '' : <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.index)} disabled={!this.props.editable} />),
   }, {
     title: '已分配数量',
