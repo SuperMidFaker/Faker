@@ -99,16 +99,16 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'inventory'),
       }, {
         key: 'cwm-stock-1',
-        path: '/cwm/stock/transactions',
-        text: formatMsg(intl, 'transactions'),
-      }, {
-        key: 'cwm-stock-2',
         path: '/cwm/stock/transition',
         text: formatMsg(intl, 'transition'),
       }, {
-        key: 'cwm-stock-3',
+        key: 'cwm-stock-2',
         path: '/cwm/stock/movement',
         text: formatMsg(intl, 'movement'),
+      }, {
+        key: 'cwm-stock-3',
+        path: '/cwm/stock/transactions',
+        text: formatMsg(intl, 'transactions'),
       }, {
         key: 'cwm-stock-4',
         disabled: true,

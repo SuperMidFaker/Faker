@@ -166,12 +166,12 @@ export default class StockTransitionList extends React.Component {
           <a>解冻</a>
         </Popover>);
       } else if (record.avail_qty === 1) {
-        return <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />;
+        return <RowUpdater onHit={this.handleShowDock} label="调整" row={record} />;
       } else if (record.avail_qty > 1) {
         const min = 1;
         const max = record.avail_qty - 1;
         return (<span>
-          <RowUpdater onHit={this.handleShowDock} label="变更" row={record} />
+          <RowUpdater onHit={this.handleShowDock} label="调整" row={record} />
           <span className="ant-divider" />
           <Popover placement="left" title="拆分数量" content={<span>
             <InputNumber min={min} max={max} onChange={value => this.handleSplitChange(value, min, max)}
@@ -369,7 +369,7 @@ export default class StockTransitionList extends React.Component {
               </Select>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              库存变更
+              库存调整
             </Breadcrumb.Item>
           </Breadcrumb>
           <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">

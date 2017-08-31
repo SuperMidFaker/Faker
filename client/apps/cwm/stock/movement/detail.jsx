@@ -94,7 +94,7 @@ export default class MovementDetail extends Component {
                 <InfoItem addonBefore="货主" field={movementHead.owner_name} />
               </Col>
               <Col sm={12} lg={4}>
-                <InfoItem addonBefore="移库类型" field={movementHead.move_type} />
+                <InfoItem addonBefore="库存移动类型" field={movementHead.move_type} />
               </Col>
               <Col sm={12} lg={6}>
                 <InfoItem addonBefore="原因" field={movementHead.reason} />
@@ -103,7 +103,7 @@ export default class MovementDetail extends Component {
                 <InfoItem addonBefore="创建时间" field={moment(movementHead.created_date).format('YYYY-MM-DD HH:mm')} />
               </Col>
               <Col sm={12} lg={4}>
-                <InfoItem addonBefore="移库时间" field={movementHead.completed_date && moment(movementHead.completed_date).format('YYYY-MM-DD HH:mm')} />
+                <InfoItem addonBefore="库存移动时间" field={movementHead.completed_date && moment(movementHead.completed_date).format('YYYY-MM-DD HH:mm')} />
               </Col>
             </Row>
             <div className="card-footer">

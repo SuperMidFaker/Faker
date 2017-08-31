@@ -213,7 +213,7 @@ export default class TransitForm extends React.Component {
             </FormItem>
           </Col>
           {this.state.target_location && <Col span={8}>
-            <FormItem {...formItemLayout} label="移库单">
+            <FormItem {...formItemLayout} label="库存移动单">
               <Select allowClear showSearch onSelect={this.handleMovementNoChange}>
                 {ownerMovements.map(oum => <Option key={oum.movement_no} value={oum.movement_no}>{oum.movement_no}</Option>)}
               </Select>

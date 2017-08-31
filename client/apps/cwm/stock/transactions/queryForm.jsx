@@ -78,7 +78,7 @@ export default class QueryForm extends React.Component {
               })(<Select allowClear>
                 <Option value="inbound" key="inbound">入库</Option>
                 <Option value="outbound" key="outbound">出库</Option>
-                <Option value="movement" key="movement">移库</Option>
+                <Option value="movement" key="movement">库存移动</Option>
                 <Option value="transit" key="transit">转移</Option>
                 <Option value="adjust" key="adjust">调整</Option>
               </Select>)}
@@ -88,7 +88,7 @@ export default class QueryForm extends React.Component {
             <FormItem {...formItemLayout} label="单证号">
               {getFieldDecorator('transaction_no', {
                 initialValue: filter.transaction_no,
-              })(<Input placeholder="入库/出库/移库单号" />)}
+              })(<Input placeholder="入库/出库/库存移动单号" />)}
             </FormItem>
           </Col>
           <Col span={3}>

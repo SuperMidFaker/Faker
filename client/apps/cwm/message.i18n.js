@@ -48,11 +48,11 @@ const messages = defineMessages({
   },
   movement: {
     id: 'cwm.module.stock.movement',
-    defaultMessage: '移库单',
+    defaultMessage: '库存移动',
   },
   transition: {
     id: 'cwm.module.stock.transition',
-    defaultMessage: '库存变更',
+    defaultMessage: '库存调整',
   },
   counting: {
     id: 'cwm.module.stock.counting',

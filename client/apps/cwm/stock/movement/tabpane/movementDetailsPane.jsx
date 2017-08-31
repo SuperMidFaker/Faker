@@ -98,7 +98,7 @@ export default class MovementDetailsPane extends React.Component {
     const props = this.props;
     const toTraceIds = props.movementDetails.map(md => md.to_trace_id);
     Modal.confirm({
-      title: '是否确认移库已完成?',
+      title: '是否确认库存移动已完成?',
       onOk() {
         props.executeMovement(props.movementNo, toTraceIds, props.tenantId,
           props.username, props.defaultWhse.code).then((result) => {
@@ -108,7 +108,7 @@ export default class MovementDetailsPane extends React.Component {
           });
       },
       onCancel() {},
-      okText: '执行移库',
+      okText: '执行库存移动',
     });
   }
   columns = [{
@@ -125,7 +125,7 @@ export default class MovementDetailsPane extends React.Component {
     width: 150,
     render: o => (<PackagePopover sku={o} />),
   }, {
-    title: '移库数量',
+    title: '库存移动数量',
     width: 180,
     dataIndex: 'move_qty',
     className: 'cell-align-right',
@@ -165,7 +165,7 @@ export default class MovementDetailsPane extends React.Component {
           <div className="toolbar-right">
             {mode === 'manual' && movementHead.isdone === 0 &&
             <Button size="large" icon="check" onClick={this.handleExecuteMovement}>
-              执行移库
+              执行库存移动
             </Button>
             }
           </div>

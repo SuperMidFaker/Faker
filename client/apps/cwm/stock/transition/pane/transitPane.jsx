@@ -45,7 +45,7 @@ export default class TransitPane extends React.Component {
         transitOp = this.props.moveTransit([this.props.detail.trace_id], transit, this.formValue.target_location,
           this.formValue.movement_no, loginName, tenantId);
       } else {
-        message.error('移库单未选');
+        message.error('库存移动单未选');
       }
     } else if (valueChanged) {
       transitOp = this.props.splitTransit([this.props.detail.trace_id], transit, loginName, tenantId);

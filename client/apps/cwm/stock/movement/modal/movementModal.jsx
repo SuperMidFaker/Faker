@@ -6,7 +6,7 @@ import { Card, DatePicker, Table, Select, Form, Modal, Input, Tag, Button, messa
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter } from 'common/reducers/cwmMovement';
-import { CWM_MOVE_TYPE } from 'common/constants';
+import { CWM_MOVEMENT_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 
 const formatMsg = format(messages);
@@ -63,6 +63,11 @@ export default class MovementModal extends Component {
   }, {
     title: '中文品名',
     dataIndex: 'name',
+    width: 150,
+  }, {
+    title: '追踪ID',
+    dataIndex: 'trace_id',
+    width: 180,
   }, {
     title: '当前库位',
     dataIndex: 'location',
@@ -82,7 +87,7 @@ export default class MovementModal extends Component {
     dataIndex: 'avail_qty',
     width: 100,
   }, {
-    title: '待移库数量',
+    title: '待移动数量',
     dataIndex: 'moving_qty',
     width: 100,
   }, {
@@ -125,7 +130,11 @@ export default class MovementModal extends Component {
     dataIndex: 'name',
     width: 150,
   }, {
-    title: '当前库位',
+    title: '来源追踪ID',
+    dataIndex: 'trace_id',
+    width: 180,
+  }, {
+    title: '来源库位',
     dataIndex: 'location',
     width: 100,
     render: o => <Tag>{o}</Tag>,
@@ -141,7 +150,7 @@ export default class MovementModal extends Component {
       }
     },
   }, {
-    title: '移库数量',
+    title: '移动数量',
     width: 200,
     dataIndex: 'movement_qty',
     render: o => <Input disabled value={o} style={{ width: 80 }} />,
@@ -257,7 +266,7 @@ export default class MovementModal extends Component {
             stocks: [],
             movements: [],
           });
-          message.success('创建移库成功');
+          message.success('创建库存移动成功');
         } else {
           message.error('操作失败');
         }
@@ -315,9 +324,9 @@ export default class MovementModal extends Component {
                 {owners.map(own => (<Option value={own.id} key={own.name}>{own.name}</Option>))}
               </Select>
             </FormItem>
-            <FormItem label="移库类型">
+            <FormItem label="库存移动类型">
               <Select style={{ width: 320 }} onSelect={this.handleSelectMoveType} value={this.state.moveType}>
-                {CWM_MOVE_TYPE.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
+                {CWM_MOVEMENT_TYPE.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>)}
               </Select>
             </FormItem>
             <FormItem label="原因">
@@ -332,7 +341,7 @@ export default class MovementModal extends Component {
             />
           </div>
         </Card>
-        <Card title="移库明细" bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="库存移动明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.movementColumns} dataSource={movements.map((movement, index) => ({ ...movement, index }))} rowKey="index"
               scroll={{ x: this.movementColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

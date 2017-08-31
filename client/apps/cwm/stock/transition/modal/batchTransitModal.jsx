@@ -50,7 +50,7 @@ export default class BatchTransitModal extends Component {
         transitOp = this.props.moveTransit(batchTransitModal.traceIds, transit, this.formValue.target_location,
           this.formValue.movement_no, loginName, tenantId);
       } else {
-        message.error('移库单未选');
+        message.error('库存移动单未选');
       }
     } else if (valueChanged) {
       transitOp = this.props.splitTransit(batchTransitModal.traceIds, transit, loginName, tenantId);

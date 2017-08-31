@@ -270,9 +270,12 @@ exports.CWM_MOVEMENT_STATUS = {
   },
 };
 
-exports.CWM_MOVE_TYPE = [{
+exports.CWM_MOVEMENT_TYPE = [{
   value: 1,
-  text: '普通移库',
+  text: '库内移位',
+}, {
+  value: 2,
+  text: '跨仓移库',
 }];
 
 exports.CWM_STOCK_SEARCH_TYPE = [{
@@ -316,8 +319,8 @@ exports.CWM_TRANSACTIONS_TYPE = {
   outbound: { text: '出库' },
   transout: { text: '转移出' },
   transin: { text: '转移入' },
-  moveout: { text: '移库出' },
-  movein: { text: '移库入' },
+  moveout: { text: '库存移动出' },
+  movein: { text: '库存移动入' },
   adjustout: { text: '调整出' },
   adjustin: { text: '调整入' },
   freezeout: { text: '冻结出' },

@@ -43,7 +43,7 @@ export default class TransitionModal extends React.Component {
   render() {
     const { visible, form } = this.props;
     const title = (<div>
-      <span>库存变更:{this.props.detail.trace_id}</span>
+      <span>库存调整 {this.props.detail.trace_id}</span>
       <div className="toolbar-right">
         <Button onClick={this.handleClose}>关闭</Button>
       </div>
@@ -55,7 +55,7 @@ export default class TransitionModal extends React.Component {
         <Form>
           <Row gutter={24}>
             <Col span={12}>
-              <Card title="库存转移" noHovering>
+              <Card title="属性调整" noHovering>
                 <TransitPane form={form} />
               </Card>
             </Col>
@@ -63,12 +63,12 @@ export default class TransitionModal extends React.Component {
               <Card title="数量调整" noHovering>
                 <AdjustPane />
               </Card>
-              <Card title="库存冻结" noHovering>
+              <Card title="状态调整" noHovering>
                 <FreezePane />
               </Card>
             </Col>
             <Col span={6}>
-              <Card title="变更记录" noHovering>
+              <Card title="库存事务记录" noHovering>
                 <LogsPane />
               </Card>
             </Col>

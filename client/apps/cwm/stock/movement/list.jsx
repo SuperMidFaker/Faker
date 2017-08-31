@@ -17,7 +17,7 @@ import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import MovementModal from './modal/movementModal';
 import messages from '../message.i18n';
-import { CWM_MOVE_TYPE } from 'common/constants';
+import { CWM_MOVEMENT_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -88,7 +88,7 @@ export default class MovementList extends React.Component {
   }, {
     title: '类型',
     dataIndex: 'move_type',
-    render: o => o && CWM_MOVE_TYPE[o - 1].text,
+    render: o => o && CWM_MOVEMENT_TYPE[o - 1].text,
   }, {
     title: '状态',
     className: 'cell-align-center',
