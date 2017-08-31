@@ -75,6 +75,7 @@ import * as CWMSupSHFTZRelease from './cwm/supervision/shftz/release';
 import * as CWMSupSHFTZTransferOut from './cwm/supervision/shftz/transfer/out';
 import * as CWMSupSHFTZClearance from './cwm/supervision/shftz/clearance';
 import * as CWMSupSHFTZBatch from './cwm/supervision/shftz/batch';
+import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
@@ -498,6 +499,9 @@ export default(store, cookie) => {
                 <Route path="batch" >
                   <IndexRoute component={CWMSupSHFTZBatch.List} />
                   <Route path=":batchNo" component={CWMSupSHFTZBatch.Detail} />
+                </Route>
+                <Route path="stock" >
+                  <IndexRoute component={CWMSupSHFTZStock.List} />
                 </Route>
                 <Route path="cargo" >
                   <IndexRoute component={CWMSupSHFTZCargo.List} />

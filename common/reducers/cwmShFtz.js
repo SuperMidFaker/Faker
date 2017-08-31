@@ -43,6 +43,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_ETIDS', 'LOAD_ETIDS_SUCCEED', 'LOAD_ETIDS_FAIL',
   'VIRTUAL_TRANS_SAVE', 'VIRTUAL_TRANS_SAVE_SUCCEED', 'VIRTUAL_TRANS_SAVE_FAIL',
   'VIRTUAL_TRANS_DELETE', 'VIRTUAL_TRANS_DELETE_SUCCEED', 'VIRTUAL_TRANS_DELETE_FAIL',
+  'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
 ]);
 
 const initialState = {
@@ -111,6 +112,7 @@ const initialState = {
     trxModes: [],
   },
   transRegs: [],
+  stockDatas: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -191,6 +193,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status } };
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
+    case actionTypes.LOAD_STOCKS_SUCCEED:
+      return { ...state, stockDatas: action.result.data };
     default:
       return state;
   }
@@ -796,3 +800,19 @@ export function deleteVirtualTransfer(data) {
     },
   };
 }
+
+export function loadFtzStocks(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_STOCKS,
+        actionTypes.LOAD_STOCKS_SUCCEED,
+        actionTypes.LOAD_STOCKS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/stock/details/get',
+      method: 'get',
+      params,
+    },
+  };
+}
+
