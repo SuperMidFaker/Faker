@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { transactionColumns, commonTraceColumns } from '../../../commonColumns';
+import { transactionColumns, commonTraceColumns } from '../../commonColumns';
 import { loadTraceTransactions } from 'common/reducers/cwmTransaction';
 import { formatMsg } from '../../../message.i18n';
 
@@ -11,7 +11,7 @@ import { formatMsg } from '../../../message.i18n';
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    detail: state.cwmTransition.transitionDock.detail,
+    detail: state.cwmTransition.transitionModal.detail,
     loading: state.cwmTransaction.traceLoading,
     transactions: state.cwmTransaction.traceTransactions,
   }),
@@ -40,7 +40,7 @@ export default class LogsPane extends React.Component {
     const { loading, transactions } = this.props;
     this.columns[0].fixed = 'left';
     return (
-      <div className="pane-content tab-pane">
+      <div>
         <Card noHovering bodyStyle={{ padding: 0 }} >
           <div className="table-panel table-fixed-layout">
             <Table size="middle" dataSource={transactions} loading={loading} rowKey="id" columns={this.columns}

@@ -180,7 +180,7 @@ export default class TransferInModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddReg = (row) => {
-    this.props.loadEntryTransInDetails({ preEntrySeqNo: row.pre_entry_seq_no }).then((result) => {
+    this.props.loadEntryTransInDetails({ preEntrySeqNo: row.pre_entry_seq_no, tenantId: this.props.tenantId }).then((result) => {
       if (!result.error) {
         const entNo = row.ftz_ent_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(

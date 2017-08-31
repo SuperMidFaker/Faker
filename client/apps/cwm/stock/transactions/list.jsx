@@ -6,6 +6,7 @@ import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadTransactions } from 'common/reducers/cwmTransaction';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
@@ -96,6 +97,11 @@ export default class StockTransactionsList extends React.Component {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(1, filter);
   }
+  handleExportExcel = () => {
+    const { tenantId, listFilter, sortFilter } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/transactions/exportTransactionsExcel/${createFilename('transactions')}.xlsx?tenantId=${tenantId}&filters=${
+      JSON.stringify(listFilter)}&sorter=${JSON.stringify(sortFilter)}`);
+  }
   render() {
     const { defaultWhse, whses, loading, listFilter } = this.props;
     const columns = this.columns;
@@ -146,7 +152,7 @@ export default class StockTransactionsList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button size="large" icon="export">
+            <Button size="large" icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
           </div>

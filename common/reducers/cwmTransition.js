@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
-  'HIDE_TRANSITION_DOCK', 'SHOW_TRANSITION_DOCK',
+  'CLOSE_TRANSITION_MODAL', 'OPEN_TRANSITION_MODAL',
   'CLOSE_BATCH_TRANSIT_MODAL', 'OPEN_BATCH_TRANSIT_MODAL',
   'CLOSE_BATCH_MOVE_MODAL', 'OPEN_BATCH_MOVE_MODAL',
   'CLOSE_BATCH_FREEZE_MODAL', 'OPEN_BATCH_FREEZE_MODAL',
@@ -28,8 +28,9 @@ const initialState = {
     freezed: false,
     traceIds: [],
   },
-  transitionDock: {
+  transitionModal: {
     visible: false,
+    needReload: false,
     detail: {},
   },
   loading: false,
@@ -44,17 +45,21 @@ const initialState = {
     order: '',
   },
   listFilter: {
-    status: 'normal',
+    status: 'all',
   },
   reloadTransitions: false,
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.HIDE_TRANSITION_DOCK:
-      return { ...state, transitionDock: { ...state.transitionDock, visible: false, detail: {} }, reloadTransitions: action.data.needReload };
-    case actionTypes.SHOW_TRANSITION_DOCK:
-      return { ...state, transitionDock: { ...state.transitionDock, visible: true, detail: action.data } };
+    case actionTypes.CLOSE_TRANSITION_MODAL:
+      return { ...state, transitionModal: { ...state.transitionModal, visible: false, detail: {} }, reloadTransitions: action.data.needReload };
+    case actionTypes.OPEN_TRANSITION_MODAL:
+      return { ...state, transitionModal: { ...state.transitionModal, visible: true, detail: action.data } };
+    case actionTypes.MOVE_TRANSIT_SUCCEED:
+    case actionTypes.ADJUST_TRANSIT_SUCCEED:
+    case actionTypes.FREEZE_TRANSIT_SUCCEED:
+      return { ...state, transitionModal: { ...state.transitionModal, needReload: true } };
     case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
       return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false }, reloadTransitions: action.data.needReload };
     case actionTypes.OPEN_BATCH_TRANSIT_MODAL:
@@ -83,16 +88,16 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function hideTransitionDock({ needReload }) {
+export function closeTransitionModal({ needReload }) {
   return {
-    type: actionTypes.HIDE_TRANSITION_DOCK,
+    type: actionTypes.CLOSE_TRANSITION_MODAL,
     data: { needReload },
   };
 }
 
-export function showTransitionDock(inboundDetail) {
+export function openTransitionModal(inboundDetail) {
   return {
-    type: actionTypes.SHOW_TRANSITION_DOCK,
+    type: actionTypes.OPEN_TRANSITION_MODAL,
     data: inboundDetail,
   };
 }

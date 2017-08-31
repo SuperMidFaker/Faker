@@ -83,8 +83,8 @@ export default class SHFTZEntryDetail extends Component {
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
       let regDetailExist = true;
       nextProps.entryRegs.forEach((entReg) => { regDetailExist = regDetailExist && entReg.details.length > 0; });
-      let sendable = regDetailExist && nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-      let unsentReason = '';
+      let sendable = nextProps.entryAsn.inbound_no && regDetailExist && nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
+      let unsentReason = !nextProps.entryAsn.inbound_no ? '入库通知未释放' : '';
       if (sendable) {
         const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
         if (nonCusDeclRegs.length === 0) {
@@ -216,6 +216,15 @@ export default class SHFTZEntryDetail extends Component {
     notification.close('confirm-cargono');
     this.context.router.push('/cwm/supervision/shftz/cargo');
   }
+  handleTabChange = (tabKey) => {
+    this.setState({ tabKey });
+  }
+  handleInfoSave = (preRegNo, field, value) => {
+    this.props.updateEntryReg(preRegNo, field, value);
+  }
+  handleInboundPage = () => {
+    this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
+  }
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -298,12 +307,6 @@ export default class SHFTZEntryDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
-  handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
-  }
-  handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateEntryReg(preRegNo, field, value);
-  }
   render() {
     const { entryAsn, entryRegs, whse } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
@@ -328,8 +331,9 @@ export default class SHFTZEntryDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {entryAsn.inbound_no && <Button size="large" onClick={this.handleInboundPage}>入库单</Button>}
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
+            {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>同步入库明细</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
             {entryEditable && !this.state.sendable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}

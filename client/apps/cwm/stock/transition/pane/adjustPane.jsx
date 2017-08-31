@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { message, Button, Card, Form, Row, Input, Col, InputNumber } from 'antd';
+import { message, Button, Form, Row, Input, Col, InputNumber } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { hideTransitionDock, adjustTransit } from 'common/reducers/cwmTransition';
+import { closeTransitionModal, adjustTransit } from 'common/reducers/cwmTransition';
 
 const FormItem = Form.Item;
 const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
 };
 
 @injectIntl
@@ -16,9 +16,9 @@ const formItemLayout = {
   state => ({
     tenantId: state.account.tenantId,
     loginName: state.account.username,
-    detail: state.cwmTransition.transitionDock.detail,
+    detail: state.cwmTransition.transitionModal.detail,
   }),
-  { hideTransitionDock, adjustTransit }
+  { closeTransitionModal, adjustTransit }
 )
 export default class AdjustPane extends React.Component {
   static propTypes = {
@@ -58,7 +58,8 @@ export default class AdjustPane extends React.Component {
       const { loginName, tenantId } = this.props;
       this.props.adjustTransit(this.props.detail.trace_id, this.state, loginName, tenantId).then((result) => {
         if (!result.error) {
-          this.props.hideTransitionDock({ needReload: true });
+          message.success('库存数量调整成功');
+          // this.props.closeTransitionModal({ needReload: true });
         } else {
           message.error(result.error.message);
         }
@@ -68,31 +69,27 @@ export default class AdjustPane extends React.Component {
   render() {
     const { adjustQty, finalQty, reason } = this.state;
     return (
-      <div className="pane-content tab-pane">
-        <Form>
-          <Card noHovering bodyStyle={{ paddingBottom: 0 }}>
-            <Row gutter={16}>
-              <Col span={8}>
-                <FormItem {...formItemLayout} label="增减数量">
-                  <InputNumber min={-this.props.detail.avail_qty + 1} value={adjustQty}
-                    onChange={this.handleAdjustQty} formatter={value => value > 0 ? `+${value}` : value}
-                  />
-                </FormItem>
-              </Col>
-              <Col span={8}>
-                <FormItem {...formItemLayout} label="目标数量">
-                  <InputNumber min={1} value={finalQty} onChange={this.handleFinalQty} />
-                </FormItem>
-              </Col>
-              <Col span={8}>
-                <FormItem {...formItemLayout} label="调整原因">
-                  <Input value={reason} onChange={this.handleReasonChange} />
-                </FormItem>
-              </Col>
-            </Row>
-          </Card>
-          <Button type="primary" onClick={this.handleAdjustTransit}>执行调整</Button>
-        </Form>
+      <div>
+        <Row>
+          <Col span={24}>
+            <FormItem {...formItemLayout} label="增减数量">
+              <InputNumber min={-this.props.detail.avail_qty + 1} value={adjustQty}
+                onChange={this.handleAdjustQty} formatter={value => value > 0 ? `+${value}` : value}
+              />
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayout} label="目标数量">
+              <InputNumber min={1} value={finalQty} onChange={this.handleFinalQty} />
+            </FormItem>
+          </Col>
+          <Col span={24}>
+            <FormItem {...formItemLayout} label="调整原因">
+              <Input value={reason} onChange={this.handleReasonChange} />
+            </FormItem>
+          </Col>
+        </Row>
+        <Button type="primary" onClick={this.handleAdjustTransit}>执行调整</Button>
       </div>
     );
   }

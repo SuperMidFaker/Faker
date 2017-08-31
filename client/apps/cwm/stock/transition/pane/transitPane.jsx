@@ -2,20 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, message } from 'antd';
+import { Button, message } from 'antd';
 import TransitForm from './transitAttribForm';
-import { hideTransitionDock, splitTransit, moveTransit } from 'common/reducers/cwmTransition';
+import { closeTransitionModal, splitTransit, moveTransit } from 'common/reducers/cwmTransition';
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
     loginName: state.account.username,
-    detail: state.cwmTransition.transitionDock.detail,
+    detail: state.cwmTransition.transitionModal.detail,
   }),
-  { hideTransitionDock, splitTransit, moveTransit }
+  { closeTransitionModal, splitTransit, moveTransit }
 )
-@Form.create()
+
 export default class TransitPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -53,7 +53,8 @@ export default class TransitPane extends React.Component {
     if (transitOp) {
       transitOp.then((result) => {
         if (!result.error) {
-          this.props.hideTransitionDock({ needReload: true });
+          // this.props.closeTransitionModal({ needReload: true });
+          message.success('库存转移成功');
         } else {
           message.error(result.error.message);
         }
@@ -63,11 +64,9 @@ export default class TransitPane extends React.Component {
   render() {
     const { detail, form } = this.props;
     return (
-      <div className="pane-content tab-pane">
-        <Form>
-          <TransitForm batched={false} detail={detail} form={form} onChange={this.handleValueChange} />
-        </Form>
-        <div><Button type="primary" onClick={this.handleTransit}>执行转移</Button></div>
+      <div>
+        <TransitForm batched={false} detail={detail} form={form} onChange={this.handleValueChange} />
+        <Button type="primary" onClick={this.handleTransit}>执行转移</Button>
       </div>
     );
   }

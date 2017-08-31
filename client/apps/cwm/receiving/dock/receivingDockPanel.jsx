@@ -197,30 +197,27 @@ export default class ReceivingDockPanel extends React.Component {
         </Col>
       </Row>);
   }
+  renderMenu() {
+    const { asnHead } = this.state;
+    const menuItems = [];
+    if (asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) {
+      menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消ASN</Menu.Item>);
+    } else if (asnHead.status === CWM_ASN_STATUS.DISCREPANT.value) {
+      menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭ASN</Menu.Item>);
+    }
+    menuItems.push(<Menu.Item key="export"><Icon type="export" />导出ASN</Menu.Item>);
+    return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
+  }
 
   render() {
     const { visible } = this.props;
     const { asnHead } = this.state;
-    // TODO
-    let menu = (<Menu />);
-    if (asnHead.status === CWM_ASN_STATUS.PENDING.value || asnHead.status === CWM_ASN_STATUS.INBOUND.value) {
-      menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="cancel"><Icon type="delete" />取消ASN</Menu.Item>
-        </Menu>
-      );
-    } else if (asnHead.status === CWM_ASN_STATUS.DISCREPANT.value) {
-      menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="close"><Icon type="close-square" />关闭ASN</Menu.Item>
-        </Menu>
-      );
-    }
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={this.renderTitle()}
-        status={this.renderStatus(asnHead.status)} statusText={this.renderStatusMsg(asnHead.status)}
-        overlay={menu}
+        status={this.renderStatus(asnHead.status)}
+        statusText={this.renderStatusMsg(asnHead.status)}
+        overlay={this.renderMenu()}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}
       >

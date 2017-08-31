@@ -195,30 +195,27 @@ export default class ShippingDockPanel extends React.Component {
       <span>{button}<span>{order.so_no}</span></span>
     );
   }
+  renderMenu() {
+    const { soHead } = this.state;
+    const menuItems = [];
+    if (soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) {
+      menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消订单</Menu.Item>);
+    } else if (soHead.status === CWM_SO_STATUS.PARTIAL.value) {
+      menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭订单</Menu.Item>);
+    }
+    menuItems.push(<Menu.Item key="export"><Icon type="export" />导出订单</Menu.Item>);
+    return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
+  }
   render() {
     const { visible } = this.props;
     const { soHead } = this.state;
-    let menu = (<Menu />);
-    if (soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) {
-      menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="cancel"><Icon type="delete" />取消订单</Menu.Item>
-        </Menu>
-      );
-    } else if (soHead.status === CWM_SO_STATUS.PARTIAL.value) {
-      menu = (
-        <Menu onClick={this.handleMenuClick}>
-          <Menu.Item key="close"><Icon type="close-square" />关闭订单</Menu.Item>
-        </Menu>
-      );
-    }
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={this.renderTitle()}
-        status={this.renderStatus(soHead.status)} statusText={this.renderStatusMsg(soHead.status)}
-        overlay={menu}
+        status={this.renderStatus(soHead.status)}
+        statusText={this.renderStatusMsg(soHead.status)}
+        overlay={this.renderMenu()}
         extra={this.renderExtra()}
-        // alert={this.renderAlert()}
       >
         {this.renderTabs()}
       </DockPanel>

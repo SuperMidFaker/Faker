@@ -108,6 +108,7 @@ const initialState = {
     currencies: [],
     units: [],
     tradeCountries: [],
+    trxModes: [],
   },
   transRegs: [],
 };
@@ -557,7 +558,7 @@ export function loadBatchRegDetails(relNo) {
   };
 }
 
-export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName) {
+export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName, groupVals) {
   return {
     [CLIENT_API]: {
       types: [
@@ -567,7 +568,7 @@ export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName) 
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
-      data: { detailIds, relCounts, owner, loginId, loginName },
+      data: { detailIds, relCounts, owner, loginId, loginName, groupVals },
     },
   };
 }
