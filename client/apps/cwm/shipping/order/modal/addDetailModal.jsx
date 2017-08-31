@@ -4,7 +4,7 @@ import { Modal, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos } from 'common/reducers/cwmReceive';
+import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -21,8 +21,10 @@ const InputGroup = Input.Group;
     products: state.cwmReceive.products,
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
+    suppliers: state.cwmReceive.suppliers,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos }
+  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
@@ -38,6 +40,9 @@ export default class AddDetailModal extends Component {
     product: {},
     amount: 0,
     skus: [],
+  }
+  componentWillMount() {
+    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.product !== this.props.product) {
@@ -90,7 +95,7 @@ export default class AddDetailModal extends Component {
             ...values,
           });
         } else {
-          this.props.editTemporary(product.index, { ...product, ...values, amount: this.state.amount });
+          this.props.editTemporary(product.index, { ...product, ...values, amount: this.state.amount ? this.state.amount : product.amount });
         }
         this.handleCancel();
         this.setState({
@@ -224,6 +229,13 @@ export default class AddDetailModal extends Component {
             })(
               <Input />
             )}
+          </FormItem>
+          <FormItem label="供货商" {...formItemLayout}>
+            {getFieldDecorator('supplier', {
+              initialValue: product.supplier,
+            })(<Select showSearch optionFilterProp="searchText">
+              {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}
+            </Select>)}
           </FormItem>
           <FormItem label="订单数量" {...formItemLayout}>
             <InputGroup compact>
