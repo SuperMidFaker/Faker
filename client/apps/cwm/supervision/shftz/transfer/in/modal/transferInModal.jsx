@@ -249,7 +249,7 @@ export default class TransferInModal extends Component {
   }
 
   render() {
-    const { entryRegNo, relDateRange, ownerCusCode } = this.state;
+    const { entryRegNo, relDateRange, transRegs, ownerCusCode } = this.state;
     const extraForm = (
       <Form layout="inline">
         <FormItem label="货主">
@@ -275,6 +275,27 @@ export default class TransferInModal extends Component {
         <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleSaveTrans}>保存</Button>
       </div>
     </div>);
+    const stat = transRegs.reduce((acc, regd) => ({
+      total_qty: acc.total_qty + regd.stock_qty,
+      total_amount: acc.total_amount + regd.stock_amount,
+      total_netwt: acc.total_netwt + regd.stock_netwt,
+    }), {
+      total_qty: 0,
+      total_amount: 0,
+      total_netwt: 0,
+    });
+    const detailStatForm = (
+      <Form layout="inline">
+        <FormItem label="总数量">
+          <Input defaultValue={stat.total_qty} />
+        </FormItem>
+        <FormItem label="总净重">
+          <Input defaultValue={stat.total_netwt} />
+        </FormItem>
+        <FormItem label="总金额">
+          <Input defaultValue={stat.total_amount} />
+        </FormItem>
+      </Form>);
     return (
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
@@ -286,7 +307,7 @@ export default class TransferInModal extends Component {
             />
           </div>
         </Card>
-        <Card title="入库单明细" bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="入库单明细" extra={detailStatForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
               scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

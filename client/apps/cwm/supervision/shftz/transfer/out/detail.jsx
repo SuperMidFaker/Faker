@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, fileRelTransfers,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { loadRelDetails, loadParams, updateRelReg, fileRelTransfers,
+  cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -52,10 +52,7 @@ function fetchData({ dispatch, params }) {
   }),
   { loadRelDetails,
     updateRelReg,
-    fileRelStockouts,
     fileRelTransfers,
-    fileRelPortionouts,
-    queryPortionoutInfos,
     cancelRelReg,
     editReleaseWt }
 )
@@ -91,54 +88,10 @@ export default class SHFTZTransferOutDetail extends Component {
   handleSend = () => {
     const soNo = this.props.params.soNo;
     const relSo = this.props.relSo;
-    let fileOp;
-    let entType;
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
-      fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code);
-      entType = CWM_SO_BONDED_REGTYPES[0].text;
-    }
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
-      fileOp = this.props.fileRelPortionouts(soNo, relSo.whse_code);
-      entType = CWM_SO_BONDED_REGTYPES[1].text;
-    }
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value) {
-      fileOp = this.props.fileRelTransfers(soNo, relSo.whse_code);
-      entType = CWM_SO_BONDED_REGTYPES[2].text;
-    }
-    if (fileOp) {
-      fileOp.then((result) => {
-        if (!result.error) {
-          if (result.data.errorMsg) {
-            notification.warn({
-              message: '结果异常',
-              description: result.data.errorMsg,
-              duration: 15,
-            });
-          } else {
-            notification.success({
-              message: '操作成功',
-              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType.text}`,
-              placement: 'topLeft',
-            });
-          }
-        } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-          notification.error({
-            message: '操作失败',
-            description: '仓库监管系统未配置',
-          });
-        } else {
-          notification.error({
-            message: '操作失败',
-            description: result.error.message,
-            duration: 15,
-          });
-        }
-      });
-    }
-  }
-  handleQuery = () => {
-    const soNo = this.props.params.soNo;
-    this.props.queryPortionoutInfos(soNo, this.props.relSo.whse_code).then((result) => {
+    const tenantId = this.props.tenantId;
+    const customsWhseCode = this.props.whse.customs_whse_code;
+    const entType = CWM_SO_BONDED_REGTYPES[2].text;
+    this.props.fileRelTransfers(soNo, relSo.whse_code, customsWhseCode, tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -147,19 +100,29 @@ export default class SHFTZTransferOutDetail extends Component {
             duration: 15,
           });
         } else {
-          this.props.loadRelDetails(soNo);
+          notification.success({
+            message: '操作成功',
+            description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType}`,
+            placement: 'topLeft',
+          });
         }
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
           description: '仓库监管系统未配置',
         });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
       }
     });
   }
   handleCancelReg = () => {
     const soNo = this.props.params.soNo;
-    this.props.cancelEntryReg(soNo, this.props.relSo.whse_code).then((result) => {
+    this.props.cancelRelReg(soNo).then((result) => {
       if (result.error) {
         notification.error({
           message: '操作失败',
@@ -263,19 +226,10 @@ export default class SHFTZTransferOutDetail extends Component {
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
     const sendText = sent ? '重新发送' : '发送备案';
-    let queryable = false;
-    let sendable = true;
+    let sendable = relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
+    const whyunsent = !sendable ? '出库单配货未完成' : '';
     relRegs.forEach((relReg) => { sendable = sendable && relReg.details.length > 0; });
     const columns = [...this.columns];
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
-      queryable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
-        relRegs.filter(er => !er.ftz_rel_no).length === 0;
-      columns.unshift({
-        title: '出库明细ID',
-        dataIndex: 'ftz_rel_detail_id',
-        width: 150,
-      });
-    }
     return (
       <div>
         <Header className="page-header">
@@ -295,9 +249,9 @@ export default class SHFTZTransferOutDetail extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>获取状态</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
+            {relEditable && whyunsent && <Tooltip title={whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>
         <Content className="main-content">

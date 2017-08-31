@@ -352,7 +352,7 @@ export function updateEntryReg(preRegNo, field, value, virtualTransfer) {
   };
 }
 
-export function fileEntryRegs(asnNo, whseCode) {
+export function fileEntryRegs(asnNo, whseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -362,12 +362,12 @@ export function fileEntryRegs(asnNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/file',
       method: 'post',
-      data: { asn_no: asnNo, whse_code: whseCode },
+      data: { asn_no: asnNo, whse: whseCode, tenantId },
     },
   };
 }
 
-export function queryEntryRegInfos(asnNo, whseCode) {
+export function queryEntryRegInfos(asnNo, whseCode, customsWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -377,12 +377,27 @@ export function queryEntryRegInfos(asnNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/query',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode },
+      data: { asn_no: asnNo, whse: whseCode, customsWhseCode, tenantId },
     },
   };
 }
 
-export function pairEntryRegProducts(asnNo, whseCode, tenantId, loginName) {
+export function cancelEntryReg(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_ENR,
+        actionTypes.CANCEL_ENR_SUCCEED,
+        actionTypes.CANCEL_ENR_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/reg/cancel',
+      method: 'post',
+      data: { asnNo },
+    },
+  };
+}
+
+export function pairEntryRegProducts(asnNo, whseCode, customsWhseCode, tenantId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -392,7 +407,7 @@ export function pairEntryRegProducts(asnNo, whseCode, tenantId, loginName) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/matchpair',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, tenantId, loginName },
+      data: { asn_no: asnNo, whse: whseCode, customsWhseCode, tenantId, loginName },
     },
   };
 }
@@ -427,7 +442,7 @@ export function updateRelReg(preRegNo, field, value) {
   };
 }
 
-export function fileRelStockouts(soNo, whseCode) {
+export function fileRelStockouts(soNo, whseCode, customsWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -437,12 +452,12 @@ export function fileRelStockouts(soNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/stockouts',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode },
+      data: { so_no: soNo, whse_code: whseCode, customsWhseCode, tenantId },
     },
   };
 }
 
-export function fileRelTransfers(soNo, whseCode) {
+export function fileRelTransfers(soNo, whseCode, customsWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -452,12 +467,12 @@ export function fileRelTransfers(soNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/transfers',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode },
+      data: { so_no: soNo, whse_code: whseCode, customsWhseCode, tenantId },
     },
   };
 }
 
-export function fileRelPortionouts(soNo, whseCode) {
+export function fileRelPortionouts(soNo, whseCode, customsWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -467,12 +482,12 @@ export function fileRelPortionouts(soNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/portionouts',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode },
+      data: { so_no: soNo, whse_code: whseCode, customsWhseCode, tenantId },
     },
   };
 }
 
-export function queryPortionoutInfos(soNo, whseCode) {
+export function queryPortionoutInfos(soNo, whseCode, customsWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -482,12 +497,27 @@ export function queryPortionoutInfos(soNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/release/portionouts/query',
       method: 'post',
-      data: { so_no: soNo, whse: whseCode },
+      data: { so_no: soNo, whse: whseCode, customsWhseCode, tenantId },
     },
   };
 }
 
-export function fileCargos(ownerCusCode, whse) {
+export function cancelRelReg(soNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_RER,
+        actionTypes.CANCEL_RER_SUCCEED,
+        actionTypes.CANCEL_RER_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/rel/reg/cancel',
+      method: 'post',
+      data: { soNo },
+    },
+  };
+}
+
+export function fileCargos(ownerCusCode, whse, customsWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -497,12 +527,12 @@ export function fileCargos(ownerCusCode, whse) {
       ],
       endpoint: 'v1/cwm/shftz/product/file/cargos',
       method: 'post',
-      data: { owner_cus_code: ownerCusCode, whse },
+      data: { owner_cus_code: ownerCusCode, whse, customsWhseCode, tenantId },
     },
   };
 }
 
-export function confirmCargos(ownerCusCode, whse) {
+export function confirmCargos(ownerCusCode, whse, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -512,7 +542,7 @@ export function confirmCargos(ownerCusCode, whse) {
       ],
       endpoint: 'v1/cwm/shftz/product/confirm/cargos',
       method: 'post',
-      data: { owner_cus_code: ownerCusCode, whse },
+      data: { owner_cus_code: ownerCusCode, whse, tenantId },
     },
   };
 }
@@ -622,7 +652,7 @@ export function loadApplyDetails(batchNo) {
   };
 }
 
-export function fileBatchApply(batchNo, whseCode, loginId) {
+export function fileBatchApply(batchNo, whseCode, loginId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -632,12 +662,12 @@ export function fileBatchApply(batchNo, whseCode, loginId) {
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/file',
       method: 'post',
-      data: { batchNo, whseCode, loginId },
+      data: { batchNo, whseCode, loginId, tenantId },
     },
   };
 }
 
-export function makeBatchApplied(batchNo, whseCode) {
+export function makeBatchApplied(batchNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -647,37 +677,7 @@ export function makeBatchApplied(batchNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/applied',
       method: 'post',
-      data: { batchNo, whseCode },
-    },
-  };
-}
-
-export function cancelEntryReg(asnNo, whseCode) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CANCEL_ENR,
-        actionTypes.CANCEL_ENR_SUCCEED,
-        actionTypes.CANCEL_ENR_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/entry/reg/cancel',
-      method: 'post',
-      data: { asnNo, whseCode },
-    },
-  };
-}
-
-export function cancelRelReg(soNo, whseCode) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CANCEL_RER,
-        actionTypes.CANCEL_RER_SUCCEED,
-        actionTypes.CANCEL_RER_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/rel/reg/cancel',
-      method: 'post',
-      data: { soNo, whseCode },
+      data: { batchNo, tenantId },
     },
   };
 }

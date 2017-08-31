@@ -11,7 +11,7 @@ import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, tra
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-
+// separate owntransfer transferin
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
@@ -88,7 +88,8 @@ export default class SHFTZTransferInDetail extends Component {
     const asnNo = this.props.params.asnNo;
     const tenantId = this.props.tenantId;
     const loginName = this.props.username;
-    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, tenantId, loginName).then((result) => {
+    const customsWhseCode = this.props.whse.customs_whse_code;
+    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, customsWhseCode, tenantId, loginName).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
@@ -238,7 +239,9 @@ export default class SHFTZTransferInDetail extends Component {
     this.props.queryOwnTransferOutIn({
       asn_no: asnNo,
       whse: entryAsn.whse_code,
+      customsWhseCode: this.props.whse.customs_whse_code,
       username,
+      tenantId: this.props.tenantId,
     }).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {

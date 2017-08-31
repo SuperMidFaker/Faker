@@ -138,7 +138,7 @@ export default class SHFTZEntryDetail extends Component {
   handleRegSend = () => {
     const asnNo = this.props.params.asnNo;
     notification.close('confirm-cargono');
-    this.props.fileEntryRegs(asnNo, this.props.entryAsn.whse_code).then((result) => {
+    this.props.fileEntryRegs(asnNo, this.props.whse.code, this.props.tenantId).then((result) => {
       if (!result.error) {
         const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.entryAsn.bonded_intype)[0];
         this.props.loadEntryDetails({ asnNo });
@@ -171,7 +171,9 @@ export default class SHFTZEntryDetail extends Component {
   }
   handleQuery = () => {
     const asnNo = this.props.params.asnNo;
-    this.props.queryEntryRegInfos(asnNo, this.props.entryAsn.whse_code).then((result) => {
+    const customsWhseCode = this.props.whse.customs_whse_code;
+    const whseCode = this.props.whse.code;
+    this.props.queryEntryRegInfos(asnNo, whseCode, customsWhseCode, this.props.tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -226,6 +228,10 @@ export default class SHFTZEntryDetail extends Component {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
   }
   columns = [{
+    title: '行号',
+    dataIndex: 'asn_seq_no',
+    width: 70,
+  }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 160,
@@ -234,13 +240,17 @@ export default class SHFTZEntryDetail extends Component {
     dataIndex: 'ftz_ent_detail_id',
     width: 120,
   }, {
+    title: '报关单行号',
+    dataIndex: 'decl_g_no',
+    width: 120,
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 160,
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 100,
+    width: 150,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -253,6 +263,11 @@ export default class SHFTZEntryDetail extends Component {
   }, {
     title: '数量',
     dataIndex: 'qty',
+    width: 100,
+    render: o => (<b>{o}</b>),
+  }, {
+    title: '剩余数量',
+    dataIndex: 'stock_qty',
     width: 100,
     render: o => (<b>{o}</b>),
   }, {
@@ -269,6 +284,10 @@ export default class SHFTZEntryDetail extends Component {
     width: 100,
     dataIndex: 'net_wt',
   }, {
+    title: '剩余净重',
+    width: 100,
+    dataIndex: 'stock_netwt',
+  }, {
     title: '毛重',
     width: 100,
     dataIndex: 'gross_wt',
@@ -276,6 +295,10 @@ export default class SHFTZEntryDetail extends Component {
     title: '金额',
     width: 100,
     dataIndex: 'amount',
+  }, {
+    title: '剩余金额',
+    width: 100,
+    dataIndex: 'stock_amount',
   }, {
     title: '币制',
     width: 100,
@@ -297,6 +320,10 @@ export default class SHFTZEntryDetail extends Component {
     title: '运费',
     width: 100,
     dataIndex: 'freight',
+  }, {
+    title: '剩余运费',
+    width: 100,
+    dataIndex: 'stock_freight',
   }, {
     title: '运费币制',
     width: 100,

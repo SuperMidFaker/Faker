@@ -8,7 +8,7 @@ import { Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, fileRelTransfers,
+import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
@@ -53,7 +53,6 @@ function fetchData({ dispatch, params }) {
   { loadRelDetails,
     updateRelReg,
     fileRelStockouts,
-    fileRelTransfers,
     fileRelPortionouts,
     queryPortionoutInfos,
     cancelRelReg,
@@ -95,19 +94,17 @@ export default class SHFTZRelDetail extends Component {
   handleSend = () => {
     const soNo = this.props.params.soNo;
     const relSo = this.props.relSo;
+    const tenantId = this.props.tenantId;
+    const customsWhseCode = this.props.whse.customs_whse_code;
     let fileOp;
     let entType;
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
-      fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code);
+      fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code, customsWhseCode, tenantId);
       entType = CWM_SO_BONDED_REGTYPES[0].text;
     }
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
-      fileOp = this.props.fileRelPortionouts(soNo, relSo.whse_code);
+      fileOp = this.props.fileRelPortionouts(soNo, relSo.whse_code, customsWhseCode, tenantId);
       entType = CWM_SO_BONDED_REGTYPES[1].text;
-    }
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value) {
-      fileOp = this.props.fileRelTransfers(soNo, relSo.whse_code);
-      entType = CWM_SO_BONDED_REGTYPES[2].text;
     }
     if (fileOp) {
       fileOp.then((result) => {
@@ -121,7 +118,7 @@ export default class SHFTZRelDetail extends Component {
           } else {
             notification.success({
               message: '操作成功',
-              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType.text}`,
+              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType}`,
               placement: 'topLeft',
             });
           }
@@ -142,7 +139,10 @@ export default class SHFTZRelDetail extends Component {
   }
   handleQuery = () => {
     const soNo = this.props.params.soNo;
-    this.props.queryPortionoutInfos(soNo, this.props.relSo.whse_code).then((result) => {
+    const tenantId = this.props.tenantId;
+    const customsWhseCode = this.props.whse.customs_whse_code;
+    const whseCode = this.props.whse.code;
+    this.props.queryPortionoutInfos(soNo, whseCode, customsWhseCode, tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -163,7 +163,7 @@ export default class SHFTZRelDetail extends Component {
   }
   handleCancelReg = () => {
     const soNo = this.props.params.soNo;
-    this.props.cancelEntryReg(soNo, this.props.relSo.whse_code).then((result) => {
+    this.props.cancelRelReg(soNo).then((result) => {
       if (result.error) {
         notification.error({
           message: '操作失败',

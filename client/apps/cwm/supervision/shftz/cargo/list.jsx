@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Menu, Button, Form, Icon, Dropdown, Layout, Radio, Select, message, Table } from 'antd';
-import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS, updatePortionEn,
+import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS,
   fileCargos, confirmCargos, editGname } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
@@ -59,7 +59,6 @@ function fetchData({ dispatch }) {
     switchDefaultWhse,
     updateCargoRule,
     syncProdSKUS,
-    updatePortionEn,
     fileCargos,
     confirmCargos,
     loadWhse,
@@ -260,7 +259,9 @@ export default class SHFTZCargoList extends React.Component {
     });
   }
   handleCargoSend = () => {
-    this.props.fileCargos(this.state.owner.customs_code, this.props.whse.code).then((result) => {
+    const tenantId = this.props.tenantId;
+    const whse = this.props.whse;
+    this.props.fileCargos(this.state.owner.customs_code, whse.code, whse.customs_whse_code, tenantId).then((result) => {
       if (!result.error) {
         const filter = { ...this.props.listFilter, status: 'sent' };
         this.handleCargoLoad(1, filter);
@@ -268,7 +269,7 @@ export default class SHFTZCargoList extends React.Component {
     });
   }
   handleCargoConfirm = () => {
-    this.props.confirmCargos(this.state.owner.customs_code, this.props.whse.code).then((result) => {
+    this.props.confirmCargos(this.state.owner.customs_code, this.props.whse.code, this.props.tenantId).then((result) => {
       if (!result.error) {
         const filter = { ...this.props.listFilter, status: 'completed' };
         this.handleCargoLoad(1, filter);

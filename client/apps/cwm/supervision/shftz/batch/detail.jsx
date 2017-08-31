@@ -82,7 +82,10 @@ export default class SHFTZBatchDeclDetail extends Component {
   handleSend = () => {
     const batchNo = this.props.params.batchNo;
     const batchDecl = this.props.batchDecl;
-    this.props.fileBatchApply(batchNo, batchDecl.whse_code, this.props.loginId).then((result) => {
+    const customsWhseCode = this.props.whse.customs_whse_code;
+    const tenantId = this.props.tenantId;
+    const loginId = this.props.loginId;
+    this.props.fileBatchApply(batchNo, batchDecl.whse_code, customsWhseCode, loginId, tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -111,7 +114,7 @@ export default class SHFTZBatchDeclDetail extends Component {
   }
   handleQuery = () => {
     const batchNo = this.props.params.batchNo;
-    this.props.makeBatchApplied(batchNo, this.props.batchDecl.whse_code).then((result) => {
+    this.props.makeBatchApplied(batchNo, this.props.tenantId).then((result) => {
       if (!result.error) {
         this.props.loadApplyDetails(batchNo);
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
