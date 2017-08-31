@@ -44,7 +44,7 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseCode, whseName, whseAddress, tel } = values;
+        const { whseCode, whseName, whseAddress, tel, customsWhseCode } = values;
         const { tenantId, tenantName } = this.props;
         const { isBonded, province, city, district, street, regionCode } = this.state;
         this.props.addWarehouse({
@@ -60,6 +60,7 @@ export default class WareHouseModal extends Component {
           street,
           regionCode,
           tel,
+          customsWhseCode,
         }).then((result) => {
           if (!result.error) {
             message.info('添加仓库成功');
@@ -107,6 +108,10 @@ export default class WareHouseModal extends Component {
               })(<Input />)
             }
           </FormItem>
+          {isBonded === 1 && <FormItem {...formItemLayout} label="海关编号" >
+            {getFieldDecorator('customsWhseCode', {
+            })(<Input />)}
+          </FormItem>}
           <FormItem {...formItemLayout} label="仓库地址" >
             <Cascader defaultRegion={regionValues} onChange={this.handleRegionChange} />
           </FormItem>

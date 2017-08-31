@@ -21,6 +21,7 @@ import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease }
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -320,6 +321,9 @@ export default class ShippingOrderList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleMenuClick = () => {
+    window.open(`${API_ROOTS.default}v1/cwm/shipping/order/model/download/${createFilename('shippingOrderModel')}.xlsx`);
+  }
   render() {
     const { whses, defaultWhse, owners, filters, loading } = this.props;
     let columns = this.columns;
@@ -415,6 +419,10 @@ export default class ShippingOrderList extends React.Component {
       {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
     </span>
     );
+    const importMenu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
+      </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -442,7 +450,7 @@ export default class ShippingOrderList extends React.Component {
             <RadioButton value="inWave">已加入波次计划</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
-            <Dropdown.Button size="large" overlay={<Menu />}>
+            <Dropdown.Button size="large" overlay={importMenu}>
               <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
                 formData={{
                   data: JSON.stringify({

@@ -38,7 +38,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'CLEAR_PRODUCT_NOS',
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
   'LOAD_LOT_INFO', 'LOAD_LOT_INFO_SUCCEED', 'LOAD_LOT_INFO_FAIL',
-  'GET_SELLERS', 'GET_SELLERS_SUCCEED', 'GET_SELLERS_FAIL',
+  'GET_SUPPLIERS', 'GET_SUPPLIERS_SUCCEED', 'GET_SUPPLIERS_FAIL',
 ]);
 
 const initialState = {
@@ -93,7 +93,7 @@ const initialState = {
     visible: false,
     details: [],
   },
-  sellers: [],
+  suppliers: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -175,8 +175,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false } };
     case actionTypes.CLOSE_ASN_SUCCEED:
       return { ...state, dock: { ...state.dock, visible: false }, asnlist: { ...state.asnlist, loaded: false }, inbound: { ...state.inbound, loaded: false } };
-    case actionTypes.GET_SELLERS_SUCCEED:
-      return { ...state, sellers: action.result.data };
+    case actionTypes.GET_SUPPLIERS_SUCCEED:
+      return { ...state, suppliers: action.result.data };
     default:
       return state;
   }
@@ -706,15 +706,15 @@ export function loadLotInfo(asnNo) {
   };
 }
 
-export function getSellers(tenantId, whseCode) {
+export function getSuppliers(tenantId, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_SELLERS,
-        actionTypes.GET_SELLERS_SUCCEED,
-        actionTypes.GET_SELLERS_FAIL,
+        actionTypes.GET_SUPPLIERS,
+        actionTypes.GET_SUPPLIERS_SUCCEED,
+        actionTypes.GET_SUPPLIERS_FAIL,
       ],
-      endpoint: 'v1/cwm/get/sellers',
+      endpoint: 'v1/cwm/get/suppliers',
       method: 'get',
       params: { tenantId, whseCode },
     },
