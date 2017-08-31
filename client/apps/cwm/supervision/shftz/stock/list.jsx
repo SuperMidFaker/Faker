@@ -8,12 +8,13 @@ import { Breadcrumb, Button, Card, Select, Layout, message, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import DataTable from 'client/components/dataTable';
+import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
+import ModuleMenu from '../menu';
 import QueryForm from './queryForm';
 import { formatMsg } from './message.i18n';
 
-const { Header, Content } = Layout;
+const { Sider, Header, Content } = Layout;
 const Option = Select.Option;
 
 @injectIntl
@@ -248,6 +249,7 @@ export default class SHFTZStockList extends React.Component {
   }
   render() {
     const { defaultWhse, whses } = this.props;
+    const bondedWhses = whses.filter(wh => wh.bonded);
     const columns = this.columns;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -258,31 +260,45 @@ export default class SHFTZStockList extends React.Component {
 
     return (
       <Layout>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              货主海关入库明细
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
-            <Button size="large" icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
-              {this.msg('export')}
-            </Button>
+        <Sider width={200} className="menu-sider" key="sider">
+          <div className="page-header">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                  上海自贸区监管
+                </Breadcrumb.Item>
+            </Breadcrumb>
           </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
-            <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
-          </Card>
-          <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}
-            columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
-          />
-        </Content>
+          <div className="left-sider-panel">
+            <ModuleMenu currentKey="stock" />
+          </div>
+        </Sider>
+        <Layout>
+          <Header className="page-header">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {bondedWhses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                监管库存查询
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            <div className="page-header-tools">
+              <Button size="large" icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
+                {this.msg('export')}
+              </Button>
+            </div>
+          </Header>
+          <Content className="main-content" key="main">
+            <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
+              <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
+            </Card>
+            <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}
+              columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
+            />
+          </Content>
+        </Layout>
       </Layout>
     );
   }
