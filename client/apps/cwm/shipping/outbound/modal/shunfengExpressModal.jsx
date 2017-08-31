@@ -47,12 +47,10 @@ const ADDED_SERVICES = [
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    defaultWhse: state.cwmContext.defaultWhse,
-    outboundHead: state.cwmOutbound.outboundFormHead,
     reload: state.cwmOutbound.outboundReload,
     waybill: state.cwmOutbound.waybill,
-    outboundProducts: state.cwmOutbound.outboundProducts,
     visible: state.cwmOutbound.shunfengExpressModal.visible,
+    config: state.cwmOutbound.shunfengExpressModal.config,
   }),
   { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleShunfengExpressModal, loadExpressInfo, addZD }
 )
@@ -62,10 +60,9 @@ export default class ShunfengExpressModal extends Component {
     visible: PropTypes.bool.isRequired,
     updateOutboundMode: PropTypes.func.isRequired,
     toggleShunfengExpressModal: PropTypes.func.isRequired,
-    outboundProducts: PropTypes.arrayOf(PropTypes.shape({ seq_no: PropTypes.string.isRequired })),
     loadExpressInfo: PropTypes.func.isRequired,
     addZD: PropTypes.func.isRequired,
-    shunfengConfig: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -142,47 +139,24 @@ export default class ShunfengExpressModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible) {
-      this.loadExpresseInfo();
+      this.loadExpressInfo(nextProps);
     }
   }
-  loadExpresseInfo = () => {
-    this.props.loadExpressInfo(this.props.outboundHead.outbound_no, this.props.tenantId).then((result) => {
+  loadExpressInfo = (props) => {
+    this.props.loadExpressInfo(props.config.order_no, props.tenantId).then((result) => {
       this.setState({ mailnoLoading: false, sonMailnoLoading: false });
       if (result.data) {
         this.setState({ ...result.data });
       } else {
-        const { defaultWhse, outboundHead, outboundProducts } = this.props;
-        this.setState({
-          sender_phone: defaultWhse.tel,
-          sender_address: defaultWhse.whse_address,
-          sender_contact: defaultWhse.name,
-          sender_province: defaultWhse.whse_province,
-          sender_city: defaultWhse.whse_city,
-          sender_district: defaultWhse.whse_district,
-          sender_street: defaultWhse.whse_street,
-          sender_region_code: defaultWhse.whse_region_code,
-
-          receiver_phone: outboundHead.receiver_phone || outboundHead.receiver_number,
-          receiver_address: outboundHead.receiver_address,
-          receiver_contact: outboundHead.receiver_contact,
-          receiver_province: outboundHead.receiver_province,
-          receiver_city: outboundHead.receiver_city,
-          receiver_district: outboundHead.receiver_district,
-          receiver_street: outboundHead.receiver_street,
-          receiver_region_code: outboundHead.receiver_region_code,
-
-          product_name: outboundProducts[0] ? outboundProducts[0].name : '',
-          product_qty: outboundProducts.map(item => item.order_qty).reduce((a, b) => a + b),
-          custid: this.props.shunfengConfig.custid,
-        });
+        this.setState({ ...this.props.config });
       }
     });
   }
   handleAddZD = () => {
     this.setState({ sonMailnoLoading: true });
-    const { outboundHead, loginId, tenantId } = this.props;
-    this.props.addZD({ outboundNo: outboundHead.outbound_no, tenantId, loginId, expressNum: 1 }).then(() => {
-      this.loadExpresseInfo();
+    const { config, loginId, tenantId } = this.props;
+    this.props.addZD({ orderNo: config.order_no, tenantId, loginId, expressNum: 1 }).then(() => {
+      this.loadExpressInfo(this.props);
     });
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -236,9 +210,7 @@ export default class ShunfengExpressModal extends Component {
     //   courierNoSon,
     //   expressNum,
     //   seq,
-    //   outboundHead: {...outboundHead, origincode: '021'},
     //   whseInfo,
-    //   productName: `${outboundProducts[0] ? outboundProducts[0].name : ''} ${outboundHead.total_qty}`
     // });
     const docDefinition = WaybillDef({
       ...this.props.waybill,
@@ -258,7 +230,7 @@ export default class ShunfengExpressModal extends Component {
   }
   orderExpress = () => {
     this.setState({ mailnoLoading: true });
-    const { outboundHead } = this.props;
+    const { config } = this.props;
     const expressInfo = {
       express_type: this.state.express_type,
       pay_method: this.state.pay_method,
@@ -290,15 +262,14 @@ export default class ShunfengExpressModal extends Component {
       receiver_region_code: this.state.receiver_region_code,
     };
     this.props.orderExpress({
-      soNo: outboundHead.so_no,
-      outboundNo: outboundHead.outbound_no,
+      orderNo: config.order_no,
       tenantId: this.props.tenantId,
       expressInfo,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message);
       }
-      this.loadExpresseInfo();
+      this.loadExpressInfo();
     });
   }
   handleReceiverRegionChange = (value) => {

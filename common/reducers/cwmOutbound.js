@@ -87,6 +87,7 @@ const initialState = {
   waybill: {},
   shunfengExpressModal: {
     visible: false,
+    config: {},
   },
 };
 
@@ -508,14 +509,14 @@ export function orderExpress(data) {
   };
 }
 
-export function toggleShunfengExpressModal(visible) {
+export function toggleShunfengExpressModal(visible, config = {}) {
   return {
     type: actionTypes.SHUNFENG_EXPRESS_MODAL,
-    data: { visible },
+    data: { visible, config },
   };
 }
 
-export function loadExpressInfo(outboundNo, tenantId) {
+export function loadExpressInfo(orderNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -525,7 +526,7 @@ export function loadExpressInfo(outboundNo, tenantId) {
       ],
       endpoint: 'v1/cwm/outbounds/shunfeng/express',
       method: 'get',
-      params: { outboundNo, tenantId },
+      params: { orderNo, tenantId },
     },
   };
 }

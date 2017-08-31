@@ -70,7 +70,6 @@ export default class OutboundDetail extends Component {
     picking: false,
     picked: false,
     tabKey: 'orderDetails',
-    shunfengConfig: {},
   }
   componentWillMount() {
     this.props.loadOutboundHead(this.props.params.outboundNo);
@@ -159,8 +158,30 @@ export default class OutboundDetail extends Component {
           onClose: () => notification.close(key),
         });
       } else {
-        this.setState({ shunfengConfig: result.data }, () => {
-          this.props.toggleShunfengExpressModal(true);
+        const { defaultWhse, outboundHead, outboundProducts } = this.props;
+        this.props.toggleShunfengExpressModal(true, {
+          ...result.data,
+          order_no: outboundHead.outbound_no,
+          sender_phone: defaultWhse.tel,
+          sender_address: defaultWhse.whse_address,
+          sender_contact: defaultWhse.name,
+          sender_province: defaultWhse.whse_province,
+          sender_city: defaultWhse.whse_city,
+          sender_district: defaultWhse.whse_district,
+          sender_street: defaultWhse.whse_street,
+          sender_region_code: defaultWhse.whse_region_code,
+
+          receiver_phone: outboundHead.receiver_phone || outboundHead.receiver_number,
+          receiver_address: outboundHead.receiver_address,
+          receiver_contact: outboundHead.receiver_contact,
+          receiver_province: outboundHead.receiver_province,
+          receiver_city: outboundHead.receiver_city,
+          receiver_district: outboundHead.receiver_district,
+          receiver_street: outboundHead.receiver_street,
+          receiver_region_code: outboundHead.receiver_region_code,
+
+          product_name: outboundProducts[0] ? outboundProducts[0].name : '',
+          product_qty: outboundProducts.map(item => item.order_qty).reduce((a, b) => a + b),
         });
       }
     });
@@ -289,7 +310,7 @@ export default class OutboundDetail extends Component {
               </TabPane>
             </Tabs>
           </Card>
-          <ShunfengExpressModal shunfengConfig={this.state.shunfengConfig} />
+          <ShunfengExpressModal />
         </Content>
       </div>
     );

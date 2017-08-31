@@ -189,11 +189,11 @@ function pdfBody(data) {
 export function WaybillDef(data) {
   const docDefinition = {
     pageSize: 'A5',
-    pageMargins: [25, 5],
+    pageMargins: [20, 6],
     content: [],
     styles: {
       table: {
-        fontSize: 8,
+        fontSize: 7,
       },
     },
     defaultStyle: {
@@ -366,7 +366,7 @@ function podPdfBody(data) {
 export function podWaybillDef(data) {
   const docDefinition = {
     pageSize: 'A5',
-    pageMargins: [25, 5],
+    pageMargins: [20, 6],
     content: [],
     styles: {
       table: {

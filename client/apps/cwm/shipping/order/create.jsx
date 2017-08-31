@@ -156,7 +156,7 @@ export default class CreateShippingOrder extends Component {
                   <ReceiverPane form={form} selectedOwner={this.state.selectedOwner} region={region} onRegionChange={this.handleRegionChange} />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
-                  <CarrierPane form={form} />
+                  <CarrierPane form={form} selectedOwner={this.state.selectedOwner} />
                 </TabPane>
               </Tabs>
             </Card>
