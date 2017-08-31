@@ -109,12 +109,12 @@ export default class SHFTZTransferInDetail extends Component {
             placement: 'topLeft',
           });
         } else {
-          this.props.loadEntryDetails({ asnNo });
           notification.success({
             message: '操作成功',
             description: '货号明细ID配对完成',
           });
         }
+        this.props.loadEntryDetails({ asnNo });
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
@@ -144,7 +144,7 @@ export default class SHFTZTransferInDetail extends Component {
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 100,
+    width: 180,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
