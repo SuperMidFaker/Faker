@@ -21,7 +21,6 @@ const Option = Select.Option;
 @connect(
   state => ({
     whses: state.cwmContext.whses,
-    whse: state.cwmContext.defaultWhse,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
@@ -60,7 +59,7 @@ export default class SHFTZStockList extends React.Component {
   }
   componentDidMount() {
     if (this.props.owners[0]) {
-      const filter = { ownerCode: this.props.owners[0].customs_code, entNo: '', whse_code: this.props.defaultWhse.code };
+      const filter = { ownerCode: this.props.owners[0].customs_code, entNo: '', whse_code: this.props.defaultWhse.customs_whse_code };
       this.handleStockQuery(filter);
     }
   }
@@ -213,7 +212,7 @@ export default class SHFTZStockList extends React.Component {
     this.setState({ selectedRowKeys: [], filter });
   }
   handleSearch = (searchForm) => {
-    const filter = { ...this.state.filter, ...searchForm, whse_code: this.props.defaultWhse.code };
+    const filter = { ...this.state.filter, ...searchForm };
     this.handleStockQuery(filter);
   }
   s2ab = (s) => {
