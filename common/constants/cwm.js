@@ -339,3 +339,11 @@ exports.CWM_SHFTZ_REG_STATUS = [{
   text: '备案完成',
   tagcolor: 'cyan',
 }];
+
+exports.DELIVER_TYPES = [{
+  name: '客户自提', value: 1,
+}, {
+  name: '仓库配送', value: 2,
+}, {
+  name: '第三方配送', value: 3,
+}];

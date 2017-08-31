@@ -7,6 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { loadCarriers } from 'common/reducers/cwmWarehouse';
+import { DELIVER_TYPES } from 'common/constants/cwm';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -26,7 +27,6 @@ export default class CarrierPane extends Component {
     form: PropTypes.object.isRequired,
     soHead: PropTypes.object,
     editable: PropTypes.bool,
-    detailEnable: PropTypes.bool.isRequired,
     selectedOwner: PropTypes.number.isRequired,
   }
   componentWillMount() {
@@ -38,7 +38,18 @@ export default class CarrierPane extends Component {
     const crs = carriers.filter(item => item.owner_partner_id === selectedOwner);
     return (
       <div style={{ padding: 24 }}>
-        <Row>
+        <Row gutter={16}>
+          <Col span={6}>
+            <FormItem label="配送方式" >
+              {getFieldDecorator('delivery_type', {
+                initialValue: soHead && soHead.delivery_type,
+              })(
+                <Select placeholder="选择配送方式">
+                  {DELIVER_TYPES.map(item => (<Option value={item.value}>{item.name}</Option>))}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
           <Col span={6}>
             <FormItem label="承运人" >
               {getFieldDecorator('carrier_code', {
