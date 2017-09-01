@@ -89,7 +89,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRANSITIONS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_TTDETAIL:
-      return { ...state, transitionModal: { ...state.transitionModal, loading: true } };
+      return { ...state, transitionModal: { ...state.transitionModal, loading: true, needReload: false } };
     case actionTypes.LOAD_TTDETAIL_FAIL:
       return { ...state, transitionModal: { ...state.transitionModal, loading: false } };
     case actionTypes.LOAD_TTDETAIL_SUCCEED:
