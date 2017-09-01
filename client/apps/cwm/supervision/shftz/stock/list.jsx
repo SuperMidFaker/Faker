@@ -73,15 +73,15 @@ export default class SHFTZStockList extends React.Component {
   }, {
     title: this.msg('billNo'),
     dataIndex: 'ftz_ent_no',
-    width: 150,
+    width: 200,
+  }, {
+    title: this.msg('cusNo'),
+    width: 180,
+    dataIndex: 'cus_decl_no',
   }, {
     title: this.msg('cid'),
     dataIndex: 'cargo_id',
     width: 180,
-  }, {
-    title: this.msg('cusNo'),
-    width: 120,
-    dataIndex: 'cus_decl_no',
   }, {
     title: this.msg('stockQty'),
     dataIndex: 'stock_qty',

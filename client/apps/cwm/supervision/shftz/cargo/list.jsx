@@ -128,16 +128,12 @@ export default class SHFTZCargoList extends React.Component {
     dataIndex: 'name',
     render: (o, record) => <EditableCell value={o} onSave={value => this.handleGnameChange(value, record.id)} />,
   }, {
-    title: '英文品名',
-    dataIndex: 'en_name',
-    width: 120,
-  }, {
-    title: this.msg('unit'),
-    width: 120,
-    dataIndex: 'unit',
+    title: this.msg('currency'),
+    width: 140,
+    dataIndex: 'currency',
     render: (o) => {
-      const unit = this.props.units.filter(cur => cur.value === o)[0];
-      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text;
     },
   }, {
@@ -147,15 +143,6 @@ export default class SHFTZCargoList extends React.Component {
     render: (o) => {
       const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
       const text = country ? `${country.value}| ${country.text}` : o;
-      return text;
-    },
-  }, {
-    title: this.msg('currency'),
-    width: 140,
-    dataIndex: 'currency',
-    render: (o) => {
-      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text;
     },
   }, {
