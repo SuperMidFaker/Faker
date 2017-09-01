@@ -44,7 +44,7 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseCode, whseName, whseAddress, tel, customsWhseCode } = values;
+        const { whseCode, whseName, whseAddress, whseTel, customsWhseCode } = values;
         const { tenantId, tenantName } = this.props;
         const { isBonded, province, city, district, street, regionCode } = this.state;
         this.props.addWarehouse({
@@ -59,7 +59,7 @@ export default class WareHouseModal extends Component {
           district,
           street,
           regionCode,
-          tel,
+          whseTel,
           customsWhseCode,
         }).then((result) => {
           if (!result.error) {
@@ -122,7 +122,7 @@ export default class WareHouseModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="联系电话" >
             {
-              getFieldDecorator('tel')(<Input />)
+              getFieldDecorator('whseTel')(<Input />)
             }
           </FormItem>
           <FormItem {...formItemLayout} label="保税性质" >

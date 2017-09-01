@@ -162,7 +162,7 @@ export default class OutboundDetail extends Component {
         this.props.toggleShunfengExpressModal(true, {
           ...result.data,
           order_no: outboundHead.outbound_no,
-          sender_phone: defaultWhse.tel,
+          sender_phone: defaultWhse.whse_tel,
           sender_address: defaultWhse.whse_address,
           sender_contact: defaultWhse.name,
           sender_province: defaultWhse.whse_province,
