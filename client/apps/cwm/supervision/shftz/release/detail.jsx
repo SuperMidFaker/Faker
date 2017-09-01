@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification, Popover, Checkbox } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
+  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
@@ -48,6 +48,10 @@ function fetchData({ dispatch, params }) {
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
+    trxModes: state.cwmShFtz.params.trxModes.map(tx => ({
+      value: tx.trx_mode,
+      text: tx.trx_spec,
+    })),
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
@@ -57,7 +61,8 @@ function fetchData({ dispatch, params }) {
     fileRelPortionouts,
     queryPortionoutInfos,
     cancelRelReg,
-    editReleaseWt }
+    editReleaseWt,
+    splitRelDetails }
 )
 @connectNav({
   depth: 3,
@@ -73,6 +78,7 @@ export default class SHFTZRelDetail extends Component {
   state = {
     tabKey: '',
     editable: false,
+    groupVals: ['supplier', 'trxn_mode'],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -191,6 +197,17 @@ export default class SHFTZRelDetail extends Component {
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
   }
+  handleCheckChange = (checkedValues) => {
+    this.setState({ groupVals: checkedValues });
+  }
+  handleDetailSplit = () => {
+    const soNo = this.props.params.soNo;
+    this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals, loginId: this.props.loginId }).then((result) => {
+      if (!result.error) {
+        this.props.loadRelDetails(soNo);
+      }
+    });
+  }
   columns = [{
     title: '行号',
     dataIndex: 'seq_no',
@@ -243,6 +260,19 @@ export default class SHFTZRelDetail extends Component {
     dataIndex: 'amount',
     width: 100,
   }, {
+    title: '供货商',
+    width: 100,
+    dataIndex: 'supplier',
+  }, {
+    title: '成交方式',
+    width: 100,
+    dataIndex: 'trxn_mode',
+    render: (o) => {
+      const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
+      const text = mode ? `${mode.value}| ${mode.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
     title: '币制',
     dataIndex: 'currency',
     width: 100,
@@ -281,6 +311,18 @@ export default class SHFTZRelDetail extends Component {
         width: 100,
       });
     }
+    const content = (
+      <div>
+        <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
+          <Checkbox value="supplier">供货商</Checkbox>
+          <Checkbox value="trxn_mode">成交方式</Checkbox>
+          <Checkbox value="currency">币制</Checkbox>
+        </Checkbox.Group>
+        <div style={{ marginTop: 16 }}>
+          <Button disabled={!this.state.groupVals.length > 0} onClick={this.handleDetailSplit}>确定</Button>
+        </div>
+      </div>
+    );
     return (
       <div>
         <Header className="page-header">
@@ -299,6 +341,12 @@ export default class SHFTZRelDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value &&
+              relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
+              <Popover title="拆分条件" content={content}>
+                <Button size="large">明细拆分</Button>
+              </Popover>
+            }
             {relSo.outbound_no && <Button size="large" onClick={this.handleOutboundPage}>出库单</Button>}
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {queryable && <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>获取状态</Button>}
@@ -341,41 +389,66 @@ export default class SHFTZRelDetail extends Component {
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                {relRegs.map(reg => (
-                  <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
-                    <div className="panel-header">
-                      {// 普通出库
-                      relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
-                      <Row>
-                        {relSo.ftz_rel_no &&
-                        <Col sm={12} lg={6}>
-                          <InfoItem size="small" addonBefore="普通出库单号" field={relSo.ftz_rel_no} />
-                        </Col>
-                        }
-                        <Col sm={12} lg={6}>
-                          <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
-                            type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
-                          />
-                        </Col>
-                      </Row>}
-                      {// 分拨出库
-                      relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
-                      <Row>
-                        <Col sm={12} lg={6}>
-                          <InfoItem size="small" addonBefore="分拨出库单号" field={reg.ftz_rel_no} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                          />
-                        </Col>
-                      </Row>}
+                {relRegs.map((reg) => {
+                  const stat = reg.details.reduce((acc, regd) => ({
+                    total_qty: acc.total_qty + regd.qty,
+                    total_amount: acc.total_amount + regd.amount,
+                    total_net_wt: acc.total_net_wt + regd.net_wt,
+                  }), {
+                    total_qty: 0,
+                    total_amount: 0,
+                    total_net_wt: 0,
+                  });
+                  const totCol = (
+                    <div>
+                      <Col sm={8} lg={2} offset={4}>
+                        <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
+                      </Col>
+                      <Col sm={8} lg={3}>
+                        <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
+                      </Col>
+                      <Col sm={8} lg={3}>
+                        <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(3)} />
+                      </Col>
                     </div>
-                    <div className="table-panel table-fixed-layout">
-                      <Table size="middle" columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                        scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                      />
-                    </div>
-                  </TabPane>)
-                )}
+                  );
+                  return (
+                    <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                      <div className="panel-header">
+                        {// 普通出库
+                        relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
+                        <Row>
+                          {relSo.ftz_rel_no &&
+                          <Col sm={12} lg={6}>
+                            <InfoItem size="small" addonBefore="普通出库单号" field={relSo.ftz_rel_no} />
+                          </Col>
+                          }
+                          <Col sm={12} lg={6}>
+                            <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
+                              type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
+                            />
+                          </Col>
+                          {totCol}
+                        </Row>}
+                        {// 分拨出库
+                        relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
+                        <Row>
+                          <Col sm={12} lg={6}>
+                            <InfoItem size="small" addonBefore="分拨出库单号" field={reg.ftz_rel_no} editable={relEditable}
+                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
+                            />
+                          </Col>
+                          {totCol}
+                        </Row>}
+                      </div>
+                      <div className="table-panel table-fixed-layout">
+                        <Table size="middle" columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
+                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                        />
+                      </div>
+                    </TabPane>);
+                })}
               </Tabs>
             </Card>
           </Form>

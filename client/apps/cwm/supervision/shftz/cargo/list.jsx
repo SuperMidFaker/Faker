@@ -358,23 +358,21 @@ export default class SHFTZCargoList extends React.Component {
                   确认备案
                 </Button>
                 }
-              {listFilter.status === 'completed' &&
-                <Dropdown.Button size="large" overlay={<Menu />}>
-                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
-                    formData={{
-                      data: JSON.stringify({
-                        tenantId,
-                        loginId,
-                        whseCode: whse.code,
-                        ownerCusCode: owner.customs_code,
-                        ruleType: rule,
-                      }),
-                    }} onUploaded={this.handleFiledCargoImport}
-                  >
-                    <Icon type="upload" /> 导入已备案料号
-                </ExcelUploader>
-                </Dropdown.Button>
-                }
+              <Dropdown.Button size="large" overlay={<Menu />}>
+                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
+                  formData={{
+                    data: JSON.stringify({
+                      tenantId,
+                      loginId,
+                      whseCode: whse.code,
+                      ownerCusCode: owner.customs_code,
+                      ruleType: rule,
+                    }),
+                  }} onUploaded={this.handleFiledCargoImport}
+                >
+                  <Icon type="upload" /> 导入备案料号
+              </ExcelUploader>
+              </Dropdown.Button>
               <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
             </div>
           </Header>
