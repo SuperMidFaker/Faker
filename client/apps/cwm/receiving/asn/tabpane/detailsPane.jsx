@@ -10,7 +10,6 @@ import ExcelUploader from 'client/components/ExcelUploader';
 import messages from '../../message.i18n';
 import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
-import { createFilename } from 'client/util/dataTransform';
 
 const formatMsg = format(messages);
 
@@ -81,8 +80,8 @@ export default class DetailsPane extends Component {
       selectedRowKeys: [],
     });
   }
-  handleModelDownload = () => {
-    window.open(`${API_ROOTS.default}v1/cwm/receiving/detail/model/download/${createFilename('receivingDetailModel')}.xlsx`);
+  handleTemplateDownload = () => {
+    window.open(`${__CDN__}/assets/template/ASN_details_import.xlsx`);
   }
   render() {
     const { editable, temporaryDetails, detailEnable, form, units, currencies } = this.props;
@@ -133,11 +132,6 @@ export default class DetailsPane extends Component {
       dataIndex: 'virtual_whse',
       width: 150,
     }, {
-      title: '单价',
-      dataIndex: 'unit_price',
-      width: 100,
-      className: 'cell-align-right',
-    }, {
       title: '金额',
       dataIndex: 'amount',
       width: 100,
@@ -174,7 +168,7 @@ export default class DetailsPane extends Component {
           >
             {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
           </ExcelUploader>
-          <Button icon="download" onClick={this.handleModelDownload}>模版下载</Button>
+          <Button icon="download" onClick={this.handleTemplateDownload}>模版下载</Button>
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             <Button size="large" onClick={this.handleBatchDelete} icon="delete" />
