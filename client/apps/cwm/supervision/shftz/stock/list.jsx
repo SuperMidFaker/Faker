@@ -23,7 +23,7 @@ const Option = Select.Option;
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
-    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
+    owners: state.cwmContext.whseAttrs.owners,
     stockDatas: state.cwmShFtz.stockDatas,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
@@ -61,6 +61,17 @@ export default class SHFTZStockList extends React.Component {
     if (this.props.owners[0]) {
       const filter = { ownerCode: this.props.owners[0].customs_code, entNo: '', whse_code: this.props.defaultWhse.customs_whse_code };
       this.handleStockQuery(filter);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.owners !== this.props.owners) {
+      if (nextProps.owners[0]) {
+        const filter = { ownerCode: nextProps.owners[0].customs_code, entNo: '', whse_code: nextProps.defaultWhse.customs_whse_code };
+        this.handleStockQuery(filter);
+      } else {
+        const filter = { ownerCode: '', entNo: '', whse_code: nextProps.defaultWhse.customs_whse_code };
+        this.setState({ filter });
+      }
     }
   }
   msg = formatMsg(this.props.intl);
@@ -205,7 +216,6 @@ export default class SHFTZStockList extends React.Component {
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    this.setState({ filter: { ownerCode: '', entNo: '', whse_code: value } });
   }
   handleStockQuery = (filter) => {
     this.props.loadFtzStocks(filter);

@@ -3,7 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cwm/transaction/', [
   'LOAD_TRANSACTIONS', 'LOAD_TRANSACTIONS_SUCCEED', 'LOAD_TRANSACTIONS_FAIL',
-  'LOAD_TATRANSACTIONS', 'LOAD_TATRANSACTIONS_SUCCEED', 'LOAD_TATRANSACTIONS_FAIL',
+  'LOAD_TRACE_TRANSACTIONS', 'LOAD_TRACE_TRANSACTIONS_SUCCEED', 'LOAD_TRACE_TRANSACTIONS_FAIL',
 ]);
 
 const initialState = {
@@ -35,11 +35,11 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_TRANSACTIONS_FAIL:
       return { ...state, loading: false };
-    case actionTypes.LOAD_TATRANSACTIONS:
+    case actionTypes.LOAD_TRACE_TRANSACTIONS:
       return { ...state, traceLoading: true };
-    case actionTypes.LOAD_TATRANSACTIONS_SUCCEED:
+    case actionTypes.LOAD_TRACE_TRANSACTIONS_SUCCEED:
       return { ...state, traceTransactions: action.result.data, traceLoading: false };
-    case actionTypes.LOAD_TATRANSACTIONS_FAIL:
+    case actionTypes.LOAD_TRACE_TRANSACTIONS_FAIL:
       return { ...state, traceLoading: false };
     default:
       return state;
@@ -65,9 +65,9 @@ export function loadTraceTransactions(traceId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_TATRANSACTIONS,
-        actionTypes.LOAD_TATRANSACTIONS_SUCCEED,
-        actionTypes.LOAD_TATRANSACTIONS_FAIL,
+        actionTypes.LOAD_TRACE_TRANSACTIONS,
+        actionTypes.LOAD_TRACE_TRANSACTIONS_SUCCEED,
+        actionTypes.LOAD_TRACE_TRANSACTIONS_FAIL,
       ],
       endpoint: 'v1/cwm/stock/trace/transactions',
       method: 'get',

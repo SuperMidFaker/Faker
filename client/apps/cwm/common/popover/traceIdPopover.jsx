@@ -84,7 +84,7 @@ export default class TraceIdPopover extends Component {
     const { dataSource } = this.state;
     const content = (
       <div style={{ width: 400 }}>
-        <Table size="small" columns={this.column} dataSource={dataSource} rowKey="transaction_timestamp" pagination={{ defaultPageSize: 10 }} />
+        <Table size="small" columns={this.column} dataSource={dataSource} rowKey="id" pagination={{ defaultPageSize: 10 }} />
       </div>
     );
     return (
