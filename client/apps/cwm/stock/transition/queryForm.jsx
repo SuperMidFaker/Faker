@@ -113,21 +113,12 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="库位">
-              {getFieldDecorator('location', {
-                initialValue: filter.location,
-              })(<LocationSelect size="large" />)}
+            <FormItem {...formItemLayout} label="入库明细ID">
+              {getFieldDecorator('ftz_ent_filed_id', {
+                initialValue: filter.ftz_ent_filed_id,
+              })(<Input />)}
             </FormItem>
           </Col>
-          <Col span={5}>
-            <FormItem {...formItemLayout} label="库别">
-              {getFieldDecorator('virtual_whse', {
-                initialValue: filter.virtual_whse,
-              })(<Input placeholder="库别" />)}
-            </FormItem>
-          </Col>
-        </Row>}
-        {this.state.expandForm && <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="包装情况">
               {getFieldDecorator('damage_level', {
@@ -139,6 +130,22 @@ export default class QueryForm extends React.Component {
                 <Option value={3}>重度</Option>
                 <Option value={4}>严重磨损</Option>
               </Select>)}
+            </FormItem>
+          </Col>
+        </Row>}
+        {this.state.expandForm && <Row gutter={16}>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="库位">
+              {getFieldDecorator('location', {
+                initialValue: filter.location,
+              })(<LocationSelect size="large" />)}
+            </FormItem>
+          </Col>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="库别">
+              {getFieldDecorator('virtual_whse', {
+                initialValue: filter.virtual_whse,
+              })(<Input placeholder="库别" />)}
             </FormItem>
           </Col>
           <Col span={5}>

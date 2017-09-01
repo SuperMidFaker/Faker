@@ -47,6 +47,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
 ]);
 
 const initialState = {
+  submitting: false,
   batchDeclModal: {
     visible: false,
     ownerCusCode: '',
@@ -195,6 +196,15 @@ export default function reducer(state = initialState, action) {
       return { ...state, transRegs: action.result.data };
     case actionTypes.LOAD_STOCKS_SUCCEED:
       return { ...state, stockDatas: action.result.data };
+    case actionTypes.BEGIN_BD:
+    case actionTypes.BEGIN_NC:
+      return { ...state, submitting: true };
+    case actionTypes.BEGIN_BD_SUCCEED:
+    case actionTypes.BEGIN_NC_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.BEGIN_BD_FAIL:
+    case actionTypes.BEGIN_NC_FAIL:
+      return { ...state, submitting: false };
     default:
       return state;
   }

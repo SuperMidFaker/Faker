@@ -191,9 +191,17 @@ export default class SHFTZRelDetail extends Component {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
   }
   columns = [{
+    title: '行号',
+    dataIndex: 'seq_no',
+    width: 60,
+  }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
     width: 100,
+    /* }, {
+    title: '入库行号',
+    dataIndex: 'asn_seq_no',
+    width: 100, */
   }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -272,21 +280,6 @@ export default class SHFTZRelDetail extends Component {
         width: 100,
       });
     }
-    /*
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value) {
-      columns.splice(6, 0, {
-        title: '转出数量',
-        dataIndex: 'out_qty',
-      }, {
-        title: '转出单位',
-        dataIndex: 'out_unit',
-        render: (o) => {
-          const unit = this.props.units.filter(cur => cur.value === o)[0];
-          const text = unit ? `${unit.value}| ${unit.text}` : o;
-          return text && text.length > 0 && <Tag>{text}</Tag>;
-        },
-      });
-    }*/
     return (
       <div>
         <Header className="page-header">

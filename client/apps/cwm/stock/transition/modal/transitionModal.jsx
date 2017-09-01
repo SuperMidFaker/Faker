@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Col, Card, Form, Modal, Row } from 'antd';
+import { Button, Col, Card, Form, Modal, Row, Spin } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeTransitionModal } from 'common/reducers/cwmTransition';
+import { closeTransitionModal, loadTransitionTraceDetail } from 'common/reducers/cwmTransition';
 import { format } from 'client/common/i18n/helpers';
 import TransitPane from '../pane/transitPane';
 import AdjustPane from '../pane/adjustPane';
@@ -18,10 +18,12 @@ const formatMsg = format(messages);
   state => ({
     tenantId: state.account.tenantId,
     detail: state.cwmTransition.transitionModal.detail,
+    trace_id: state.cwmTransition.transitionModal.trace_id,
     visible: state.cwmTransition.transitionModal.visible,
     needReload: state.cwmTransition.transitionModal.needReload,
+    loading: state.cwmTransition.transitionModal.loading,
   }),
-  { closeTransitionModal }
+  { closeTransitionModal, loadTransitionTraceDetail }
 )
 @Form.create()
 export default class TransitionModal extends React.Component {
@@ -31,19 +33,22 @@ export default class TransitionModal extends React.Component {
     visible: PropTypes.bool.isRequired,
     closeTransitionModal: PropTypes.func.isRequired,
   }
-  state = {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && (nextProps.trace_id !== this.props.trace_id || nextProps.needReload)) {
+      this.props.loadTransitionTraceDetail(nextProps.trace_id, this.props.tenantId);
+    }
   }
   handleClose = () => {
     this.props.form.resetFields();
-    this.props.closeTransitionModal({ needReload: true });
+    this.props.closeTransitionModal();
   }
 
   msg = descriptor => formatMsg(this.props.intl, descriptor)
 
   render() {
-    const { visible, form } = this.props;
+    const { visible, form, loading } = this.props;
     const title = (<div>
-      <span>库存调整 {this.props.detail.trace_id}</span>
+      <span>库存调整 {this.props.trace_id}</span>
       <div className="toolbar-right">
         <Button onClick={this.handleClose}>关闭</Button>
       </div>
@@ -52,6 +57,7 @@ export default class TransitionModal extends React.Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         visible={visible} footer={null}
       >
+        <Spin spinning={loading}>
         <Form>
           <Row gutter={24}>
             <Col span={12}>
@@ -74,6 +80,7 @@ export default class TransitionModal extends React.Component {
             </Col>
           </Row>
         </Form>
+        </Spin>
       </Modal>
     );
   }

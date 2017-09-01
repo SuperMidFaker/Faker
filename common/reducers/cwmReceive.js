@@ -100,11 +100,13 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.ADD_ASN:
     case actionTypes.UPDATE_ASN:
+    case actionTypes.RECEIVE_PRODUCT:
       return { ...state, submitting: true };
     case actionTypes.ADD_ASN_SUCCEED:
     case actionTypes.ADD_ASN_FAIL:
     case actionTypes.UPDATE_ASN_SUCCEED:
     case actionTypes.UPDATE_ASN_FAIL:
+    case actionTypes.RECEIVE_PRODUCT_FAIL:
       return { ...state, submitting: false };
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
@@ -166,7 +168,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.RECEIVES_UNDO_SUCCEED:
     case actionTypes.PUTAWAY_BATCH_SUCCEED:
     case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
-      return { ...state, inboundReload: true };
+      return { ...state, inboundReload: true, submitting: false };
     case actionTypes.GET_ASN_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
     case actionTypes.CLEAR_PRODUCT_NOS:

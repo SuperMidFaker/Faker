@@ -319,14 +319,14 @@ exports.CWM_TRANSACTIONS_TYPE = {
   outbound: { text: '出库' },
   transout: { text: '转移出' },
   transin: { text: '转移入' },
-  moveout: { text: '库存移动出' },
-  movein: { text: '库存移动入' },
+  moveout: { text: '移动出' },
+  movein: { text: '移动入' },
   adjustout: { text: '调整出' },
   adjustin: { text: '调整入' },
-  freezeout: { text: '冻结出' },
+  freezeout: { text: '可用出' },
   freezein: { text: '冻结入' },
-  unfreezeout: { text: '解冻出' },
-  unfreezein: { text: '解冻入' },
+  unfreezeout: { text: '可用入' },
+  unfreezein: { text: '冻结出' },
 };
 
 exports.CWM_SHFTZ_REG_STATUS = [{

@@ -31,6 +31,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_SHUNFENG_CONFIG', 'LOAD_SHUNFENG_CONFIG_SUCCEED', 'LOAD_SHUNFENG_CONFIG_FAIL',
 ]);
 const initialState = {
+  submitting: false,
   listFilter: {
     sortField: '',
     sortOrder: '',
@@ -123,13 +124,17 @@ export default function reducer(state = initialState, action) {
       return { ...state, inventoryDataLoading: true, inventoryFilter: JSON.parse(action.params.filters) };
     case actionTypes.LOAD_PRODUCT_INBOUND_DETAILS_SUCCEED:
       return { ...state, inventoryData: action.result.data, inventoryDataLoading: false };
+    case actionTypes.MANUAL_ALLOC:
+      return { ...state, submitting: true };
+    case actionTypes.MANUAL_ALLOC_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.AUTO_ALLOC_SUCCEED:
     case actionTypes.MANUAL_ALLOC_SUCCEED:
     case actionTypes.CANCEL_PRDALLOC_SUCCEED:
     case actionTypes.CANCEL_TRACE_ALLOC_SUCCEED:
     case actionTypes.OUTBOUNDS_PICK_SUCCEED:
     case actionTypes.UNDO_PICKED_SUCCEED:
-      return { ...state, outboundReload: true };
+      return { ...state, outboundReload: true, submitting: false };
     case actionTypes.LOAD_PICK_DETAILS_SUCCEED:
       return { ...state, pickDetails: action.result.data };
     case actionTypes.LOAD_ALLOCATED_DETAILS:

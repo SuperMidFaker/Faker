@@ -22,7 +22,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     visible: state.cwmOutbound.allocatingModal.visible,
-    submitting: state.cwmOutbound.allocatingModal.submitting,
+    submitting: state.cwmOutbound.submitting,
     outboundNo: state.cwmOutbound.allocatingModal.outboundNo,
     outboundProduct: state.cwmOutbound.allocatingModal.outboundProduct,
     filters: state.cwmOutbound.inventoryFilter,

@@ -133,6 +133,10 @@ export default class SHFTZTransferOutDetail extends Component {
     });
   }
   columns = [{
+    title: '行号',
+    dataIndex: 'seq_no',
+    width: 60,
+  }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
     width: 120,

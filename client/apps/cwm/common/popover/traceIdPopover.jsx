@@ -27,15 +27,6 @@ export default class TraceIdPopover extends Component {
     visible: false,
     dataSource: [],
   }
-  componentWillMount() {
-    this.props.loadTraceTransactions(this.props.traceId, this.props.tenantId).then((result) => {
-      if (!result.error) {
-        this.setState({
-          dataSource: result.data,
-        });
-      }
-    });
-  }
   column = [{
     title: '事务',
     width: 80,
