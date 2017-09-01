@@ -12,6 +12,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     owners: state.cwmContext.whseAttrs.owners,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
   { }
 )
@@ -26,6 +27,11 @@ export default class QueryForm extends React.Component {
   state = {
     expandForm: false,
   };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.defaultWhse !== this.props.defaultWhse) {
+      this.props.form.resetFields();
+    }
+  }
   handleFormReset = () => {
     this.props.form.resetFields();
   }
@@ -51,7 +57,7 @@ export default class QueryForm extends React.Component {
           <Col span={6}>
             <FormItem {...formItemLayout} label={this.msg('owner')}>
               {getFieldDecorator('ownerCode', {
-                value: filter.ownerCode,
+                initialValue: filter.ownerCode,
                 rules: [{ required: true }],
               })(<Select showSearch optionFilterProp="children" allowClear>
                 {owners.map(owner => (<Option value={owner.customs_code} key={owner.id}>{owner.name}</Option>))}
