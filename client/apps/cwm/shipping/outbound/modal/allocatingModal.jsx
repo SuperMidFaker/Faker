@@ -432,11 +432,11 @@ export default class AllocatingModal extends Component {
       outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
   }
   render() {
-    const { filters, outboundHead, inventoryColumns, editable } = this.props;
+    const { filters, outboundHead, inventoryColumns, editable, defaultWhse } = this.props;
     const { outboundProduct } = this.state;
     const filterInventoryColumns = this.inventoryColumns.filter((col) => {
       if (inventoryColumns[col.dataIndex] !== false) {
-        if (outboundHead.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
+        if (defaultWhse.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
           col.dataIndex === 'ftz_ent_filed_id')) {
           return false;
         } else {
@@ -446,7 +446,7 @@ export default class AllocatingModal extends Component {
       return false;
     });
     const filterAllocatedColumns = this.allocatedColumns.filter((col) => {
-      if (outboundHead.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
+      if (defaultWhse.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
         col.dataIndex === 'ftz_ent_no' || col.dataIndex === 'cus_decl_no')) {
         return false;
       } else {
