@@ -19,6 +19,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     visible: state.cwmShFtz.batchDeclModal.visible,
+    submitting: state.cwmShFtz.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
     ownerCusCode: state.cwmShFtz.batchDeclModal.ownerCusCode,
@@ -269,6 +270,7 @@ export default class BatchDeclModal extends Component {
     this.setState({ groupVals: checkedValues });
   }
   render() {
+    const { submitting } = this.props;
     const { relNo, relDateRange, ownerCusCode } = this.state;
     const extraForm = (
       <Form layout="inline">
@@ -292,7 +294,7 @@ export default class BatchDeclModal extends Component {
       <span>新建集中报关</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>
+        <Button type="primary" loading={submitting} disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>
       </div>
     </div>);
     const detailExtra = (

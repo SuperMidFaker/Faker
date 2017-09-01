@@ -27,6 +27,7 @@ const Option = Select.Option;
     inboundHead: state.cwmReceive.inboundFormHead,
     inboundNo: state.cwmReceive.receiveModal.inboundNo,
     inboundProduct: state.cwmReceive.receiveModal.inboundProduct,
+    saveLoading: state.cwmReceive.submitting,
   }),
   { hideReceiveModal, loadProductDetails, receiveProduct }
 )
@@ -43,7 +44,6 @@ export default class ReceivingModal extends Component {
     loading: false,
     receivedDate: null,
     disabled: true,
-    saveLoading: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
@@ -231,9 +231,6 @@ export default class ReceivingModal extends Component {
   }
   handleConfirmReceive = () => {
     const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
-    this.setState({
-      saveLoading: true,
-    });
     this.props.receiveProduct(this.state.dataSource.filter(data => !data.trace_id).map(data => ({
       location: data.location,
       damage_level: data.damage_level,
@@ -254,9 +251,6 @@ export default class ReceivingModal extends Component {
       } else {
         message.error('操作失败');
       }
-      this.setState({
-        saveLoading: false,
-      });
     });
   }
   handleSerialNoChange = (index, value) => {
@@ -408,8 +402,8 @@ export default class ReceivingModal extends Component {
     render: (o, record, index) => !record.trace_id && (<RowUpdater onHit={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
-    const { inboundProduct, inboundHead, editable } = this.props;
-    const { receivedQty, receivedPackQty, receivedDate, disabled, saveLoading } = this.state;
+    const { inboundProduct, inboundHead, editable, saveLoading } = this.props;
+    const { receivedQty, receivedPackQty, receivedDate, disabled } = this.state;
     const columns = inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns;
     let footer;
     if (inboundHead.rec_mode === 'manual' && editable) {
