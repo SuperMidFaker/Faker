@@ -21,6 +21,7 @@ const FormItem = Form.Item;
     locations: state.cwmWarehouse.locations,
     visible: state.cwmReceive.puttingAwayModal.visible,
     details: state.cwmReceive.puttingAwayModal.details,
+    submitting: state.cwmReceive.submitting,
   }),
   { hidePuttingAwayModal, batchPutaways }
 )
@@ -78,6 +79,7 @@ export default class PuttingAwayModal extends Component {
     });
   }
   render() {
+    const { submitting } = this.props;
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
@@ -98,7 +100,7 @@ export default class PuttingAwayModal extends Component {
       }
     }
     return (
-      <Modal title="上架确认" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal title="上架确认" onCancel={this.handleCancel} visible={this.props.visible} confirmLoading={submitting} onOk={this.handleSubmit}>
         <FormItem {...formItemLayout} label="上架库位">
           <Select showSearch style={{ width: 160 }} onSelect={this.handleLocationChange} value={this.state.location}>
             {this.props.locations.map((loc) => {

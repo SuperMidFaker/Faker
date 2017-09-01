@@ -54,6 +54,7 @@ function fetchData({ dispatch }) {
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
+    submitting: state.cwmShFtz.submitting,
   }),
   { loadProductCargo,
     switchDefaultWhse,
@@ -268,7 +269,7 @@ export default class SHFTZCargoList extends React.Component {
     this.handleCargoLoad(1, filter);
   }
   render() {
-    const { cargolist, listFilter, loading, whses, whse, tenantId, loginId } = this.props;
+    const { cargolist, listFilter, loading, whses, whse, tenantId, loginId, submitting } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
     const filterOwners = owners.filter(item => item.portion_enabled);
@@ -343,17 +344,17 @@ export default class SHFTZCargoList extends React.Component {
             </RadioGroup>
             <div className="page-header-tools">
               {listFilter.status === 'pending' &&
-              <Button size="large" icon="sync" onClick={this.handleSyncProductSKUs} >
+              <Button size="large" icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
                 同步SKU
               </Button>
               }
               {listFilter.status === 'pending' &&
-                <Button type="primary" size="large" icon="cloud-upload-o" onClick={this.handleCargoSend}>
+                <Button type="primary" size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>
                   发送备案
                 </Button>
                 }
               {listFilter.status === 'sent' &&
-                <Button type="primary" ghost size="large" icon="check" onClick={this.handleCargoConfirm}>
+                <Button type="primary" ghost size="large" icon="check" loading={submitting} onClick={this.handleCargoConfirm}>
                   确认备案
                 </Button>
                 }
@@ -404,7 +405,7 @@ export default class SHFTZCargoList extends React.Component {
                 </RadioGroup>
               </FormItem>
               <FormItem>
-                <Button type="primary" icon="save" onClick={this.handleRuleSave}>保存</Button>
+                <Button type="primary" icon="save" loading={submitting} onClick={this.handleRuleSave}>保存</Button>
               </FormItem>
             </Form>
           </div>
