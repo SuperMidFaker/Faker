@@ -22,7 +22,6 @@ export default class LocationSelect extends React.Component {
     onChange: PropTypes.func,
     onSelect: PropTypes.func,
     disabled: PropTypes.bool,
-    loadLocations: PropTypes.func.isRequired,
   }
   state = {
     options: [],
