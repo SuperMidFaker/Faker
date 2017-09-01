@@ -59,17 +59,17 @@ export default class SHFTZStockList extends React.Component {
   }
   componentDidMount() {
     if (this.props.owners[0]) {
-      const filter = { ownerCode: this.props.owners[0].customs_code, entNo: '', whse_code: this.props.defaultWhse.customs_whse_code };
+      const filter = { ownerCode: this.props.owners[0].customs_code, entNo: '' };
       this.handleStockQuery(filter);
     }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.owners !== this.props.owners) {
       if (nextProps.owners[0]) {
-        const filter = { ownerCode: nextProps.owners[0].customs_code, entNo: '', whse_code: nextProps.defaultWhse.customs_whse_code };
+        const filter = { ownerCode: nextProps.owners[0].customs_code, entNo: '' };
         this.handleStockQuery(filter);
       } else {
-        const filter = { ownerCode: '', entNo: '', whse_code: nextProps.defaultWhse.customs_whse_code };
+        const filter = { ...this.state.filter, ownerCode: '', entNo: '' };
         this.setState({ filter });
       }
     }
@@ -217,7 +217,11 @@ export default class SHFTZStockList extends React.Component {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
   }
-  handleStockQuery = (filter) => {
+  handleStockQuery = (filters) => {
+    const filter = { ...filters,
+      cus_whse_code: this.props.defaultWhse.customs_whse_code,
+      whse_code: this.props.defaultWhse.code,
+      tenantId: this.props.tenantId };
     this.props.loadFtzStocks(filter);
     this.setState({ selectedRowKeys: [], filter });
   }
