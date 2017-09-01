@@ -10,9 +10,9 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.stock.billNo',
     defaultMessage: '单号',
   },
-  cid: {
-    id: 'cwm.supervision.shftz.stock.cid',
-    defaultMessage: '货物ID',
+  detailId: {
+    id: 'cwm.supervision.shftz.stock.detailid',
+    defaultMessage: '明细ID',
   },
   stockQty: {
     id: 'cwm.supervision.shftz.stock.stockQty',
@@ -108,7 +108,7 @@ const messages = defineMessages({
   },
   usdMoney: {
     id: 'cwm.supervision.shftz.stock.usdMoney',
-    defaultMessage: 'usdMoney',
+    defaultMessage: '美元金额',
   },
   cusNo: {
     id: 'cwm.supervision.shftz.stock.cusNo',
