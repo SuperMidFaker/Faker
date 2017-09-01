@@ -35,6 +35,11 @@ export default class LogsPane extends React.Component {
     title: this.msg('location'),
     width: 120,
     dataIndex: 'location',
+  }, {
+    title: this.msg('traceId'),
+    width: 200,
+    dataIndex: 'trace_id',
+    sorter: true,
   }).concat(commonTraceColumns(this.props.intl))
   render() {
     const { loading, transactions } = this.props;

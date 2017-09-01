@@ -10,6 +10,7 @@ import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
+import TraceIdPopover from '../../common/popover/traceIdPopover';
 import { transactionColumns, commonTraceColumns } from '../commonColumns';
 import { formatMsg } from '../message.i18n';
 
@@ -75,6 +76,12 @@ export default class StockTransactionsList extends React.Component {
     width: 120,
     dataIndex: 'location',
     sorter: true,
+  }, {
+    title: this.msg('traceId'),
+    width: 200,
+    dataIndex: 'trace_id',
+    sorter: true,
+    render: o => o && <TraceIdPopover traceId={o} />,
   }].concat(transactionColumns(this.props.intl)).concat(commonTraceColumns(this.props.intl))
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);

@@ -16,6 +16,7 @@ import { commonTraceColumns } from '../commonColumns';
 import BatchTransitModal from './modal/batchTransitModal';
 import TransitionModal from './modal/transitionModal';
 import BatchFreezeModal from './modal/batchFreezeModal';
+import TraceIdPopover from '../../common/popover/traceIdPopover';
 import FreezePopover from '../../common/popover/freezePopover';
 import UnfreezePopover from '../../common/popover/unfreezePopover';
 import QtyChangePopover from '../../common/popover/qtyChangePopover';
@@ -151,6 +152,12 @@ export default class StockTransitionList extends React.Component {
         return <UnfreezePopover reload={this.handleStockQuery} traceId={record.trace_id} text={text} />;
       }
     },
+  }, {
+    title: this.msg('traceId'),
+    width: 200,
+    dataIndex: 'trace_id',
+    sorter: true,
+    render: o => o && <TraceIdPopover traceId={o} />,
   }].concat(commonTraceColumns(this.props.intl)).concat({
     title: '操作',
     dataIndex: 'OPS_COL',

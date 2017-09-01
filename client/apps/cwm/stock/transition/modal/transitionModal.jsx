@@ -69,7 +69,7 @@ export default class TransitionModal extends React.Component {
             </Col>
             <Col span={6}>
               <Card title="库存事务记录" noHovering>
-                <LogsPane />
+                <LogsPane traceId={this.props.detail.trace_id} />
               </Card>
             </Col>
           </Row>
