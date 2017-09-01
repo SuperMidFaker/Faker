@@ -19,8 +19,10 @@ const Search = Input.Search;
     loginId: state.account.loginId,
     loginName: state.account.username,
     inboundHead: state.cwmReceive.inboundFormHead,
-    inboundPutaways: state.cwmReceive.inboundPutaways,
+    inboundPutaways: state.cwmReceive.inboundPutaways.list,
+    loading: state.cwmReceive.inboundPutaways.loading,
     reload: state.cwmReceive.inboundReload,
+    submitting: state.cwmReceive.submitting,
   }),
   { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways }
 )
@@ -34,7 +36,6 @@ export default class PutawayDetailsPane extends React.Component {
     selectedRowKeys: [],
     selectedRows: [],
     searchValue: '',
-    loading: false,
   }
   componentWillMount() {
     this.handleLoad();
@@ -51,10 +52,7 @@ export default class PutawayDetailsPane extends React.Component {
     }
   }
   handleLoad = () => {
-    this.setState({ loading: true });
-    this.props.loadInboundPutaways(this.props.inboundNo).then(() => {
-      this.setState({ loading: false });
-    });
+    this.props.loadInboundPutaways(this.props.inboundNo);
   }
   columns = [{
     title: '容器编号',
@@ -168,7 +166,7 @@ export default class PutawayDetailsPane extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { inboundHead, inboundPutaways } = this.props;
+    const { inboundHead, inboundPutaways, submitting } = this.props;
     const dataSource = inboundPutaways.filter((item) => {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
@@ -212,7 +210,7 @@ export default class PutawayDetailsPane extends React.Component {
             <Button onClick={this.handleBatchPutAways} icon="check">
               批量上架确认
             </Button>
-            <Button onClick={this.handleBatchUndoReceives} icon="rollback">
+            <Button loading={submitting} onClick={this.handleBatchUndoReceives} icon="rollback">
               批量取消收货
             </Button>
             <div className="pull-right">
@@ -222,7 +220,7 @@ export default class PutawayDetailsPane extends React.Component {
           <div className="toolbar-right">
             {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_PUTAWAY.value &&
               dataSource.filter(ds => !ds.receive_location).length === 0 &&
-              <Button type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
+              <Button loading={submitting} type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
             </Button>
             }
@@ -231,7 +229,7 @@ export default class PutawayDetailsPane extends React.Component {
         <Table size="middle" columns={columns} rowSelection={rowSelection} indentSize={0}
           dataSource={dataSource} rowKey="trace_id"
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-          loading={this.state.loading}
+          loading={this.props.loading}
         />
         <PuttingAwayModal inboundNo={this.props.inboundNo} />
       </div>

@@ -22,6 +22,7 @@ const FormItem = Form.Item;
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
     username: state.account.username,
+    submitting: state.cwmOutbound.submitting,
   }),
   { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails }
 )
@@ -90,14 +91,14 @@ export default class ShippingModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, username } = this.props;
+    const { form: { getFieldDecorator }, username, submitting } = this.props;
     const { shippingMode } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal title="发货确认" maskClosable={false} onOk={this.handleSubmit} onCancel={this.handleCancel} visible={this.props.visible}>
+      <Modal title="发货确认" maskClosable={false} onOk={this.handleSubmit} onCancel={this.handleCancel} confirmLoading={submitting} visible={this.props.visible}>
         <Form>
           <FormItem {...formItemLayout} label="发货方式" >
             <Radio.Group value={shippingMode} onChange={this.handleChange}>

@@ -49,6 +49,7 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
+    submitting: state.cwmShFtz.submitting,
   }),
   { loadRelDetails,
     updateRelReg,
@@ -225,7 +226,7 @@ export default class SHFTZTransferOutDetail extends Component {
     this.props.updateRelReg(preRegNo, field, value);
   }
   render() {
-    const { relSo, relRegs, whse } = this.props;
+    const { relSo, relRegs, whse, submitting } = this.props;
     const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
@@ -252,9 +253,9 @@ export default class SHFTZTransferOutDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
+            {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
             {relEditable && whyunsent && <Tooltip title={whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>

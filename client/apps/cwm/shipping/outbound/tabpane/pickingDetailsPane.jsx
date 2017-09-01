@@ -22,6 +22,7 @@ const Search = Input.Search;
     reload: state.cwmOutbound.outboundReload,
     pickDetails: state.cwmOutbound.pickDetails,
     outboundHead: state.cwmOutbound.outboundFormHead,
+    submitting: state.cwmOutbound.submitting,
   }),
   { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc }
 )
@@ -282,7 +283,7 @@ export default class PickingDetailsPane extends React.Component {
     });
   }
   render() {
-    const { pickDetails, outboundHead } = this.props;
+    const { pickDetails, outboundHead, submitting } = this.props;
     const { currentStep } = this.state;
     const dataSource = pickDetails.filter((item) => {
       if (this.state.searchValue) {
@@ -332,7 +333,7 @@ export default class PickingDetailsPane extends React.Component {
             {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button onClick={this.handleBatchConfirmShipped}>
               <MdIcon type="check-all" />批量发货确认
             </Button>}
-            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button onClick={this.handleBatchCancelPicked} icon="close">
+            {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
               批量取消拣货
             </Button>}
             <div className="pull-right">

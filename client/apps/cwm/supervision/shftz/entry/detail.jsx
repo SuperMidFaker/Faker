@@ -48,6 +48,7 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    submitting: state.cwmShFtz.submitting,
   }),
   { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg }
 )
@@ -211,6 +212,8 @@ export default class SHFTZEntryDetail extends Component {
           description: result.error.message,
           duration: 15,
         });
+      } else {
+        this.props.loadEntryDetails({ asnNo });
       }
     });
   }
@@ -335,7 +338,7 @@ export default class SHFTZEntryDetail extends Component {
     },
   }]
   render() {
-    const { entryAsn, entryRegs, whse } = this.props;
+    const { entryAsn, entryRegs, whse, submitting } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
@@ -359,10 +362,10 @@ export default class SHFTZEntryDetail extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             {entryAsn.inbound_no && <Button size="large" onClick={this.handleInboundPage}>入库单</Button>}
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {this.state.queryable && <Button size="large" icon="sync" onClick={this.handleQuery}>同步入库明细</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
+            {this.state.queryable && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
             {entryEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
             {entryEditable && !this.state.sendable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </div>
         </Header>

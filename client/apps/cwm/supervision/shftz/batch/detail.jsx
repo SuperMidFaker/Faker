@@ -47,6 +47,7 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
+    submitting: state.cwmShFtz.submitting,
   }),
   { loadApplyDetails, fileBatchApply, makeBatchApplied }
 )
@@ -183,7 +184,7 @@ export default class SHFTZBatchDeclDetail extends Component {
     this.props.updateRelReg(preRegNo, field, value);
   }
   render() {
-    const { batchDecl, batchApplies, whse } = this.props;
+    const { batchDecl, batchApplies, whse, submitting } = this.props;
     const relEditable = batchDecl.status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = batchDecl.status === CWM_SHFTZ_APIREG_STATUS.sent;
     const sendText = sent ? '重新发送' : '发送备案';
@@ -205,9 +206,9 @@ export default class SHFTZBatchDeclDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {sent && <Button size="large" icon="sync" onClick={this.handleQuery}>申请完成</Button>}
+            {sent && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
             {relEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} disabled={!relEditable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} loading={submitting} disabled={!relEditable}>{sendText}</Button>}
           </div>
         </Header>
         <Content className="main-content">

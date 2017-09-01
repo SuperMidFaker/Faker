@@ -84,7 +84,10 @@ const initialState = {
   inboundFilters: { status: 'all', ownerCode: 'all' },
   inboundFormHead: {},
   inboundProducts: [],
-  inboundPutaways: [],
+  inboundPutaways: {
+    list: [],
+    loading: false,
+  },
   inboundReload: false,
   batchReceivingModal: {
     visible: false,
@@ -150,8 +153,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, inboundFormHead: action.result.data, inboundReload: false };
     case actionTypes.LOAD_INBPRDDETAILS_SUCCEED:
       return { ...state, inboundProducts: action.result.data, inboundReload: false };
+    case actionTypes.LOAD_INBPUTAWAYS:
+      return { ...state, inboundPutaways: { ...state.inboundPutaways, loading: true } };
     case actionTypes.LOAD_INBPUTAWAYS_SUCCEED:
-      return { ...state, inboundPutaways: action.result.data, inboundReload: false };
+      return { ...state, inboundPutaways: { ...state.inboundPutaways, list: action.result.data, loading: false }, inboundReload: false };
+    case actionTypes.LOAD_INBPUTAWAYS_FAIL:
+      return { ...state, inboundPutaways: { ...state.inboundPutaways, list: action.result.data, loading: false }, inboundReload: false };
     case actionTypes.UPDATE_INBMODE_SUCCEED:
       return { ...state, inboundFormHead: { ...state.inboundFormHead, rec_mode: action.data.recMode } };
     case actionTypes.SHOW_BATCH_RECEIVING_MODAL:
@@ -164,11 +171,30 @@ export default function reducer(state = initialState, action) {
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: false } };
     case actionTypes.RECEIVE_PRODUCT_SUCCEED:
     case actionTypes.RECEIVE_EXPRESS_SUCCEED:
+    case actionTypes.RECEIVE_BATCH:
+      return { ...state, submitting: true };
     case actionTypes.RECEIVE_BATCH_SUCCEED:
+      return { ...state, submitting: false, inboundReload: true };
+    case actionTypes.RECEIVE_BATCH_FAIL:
+      return { ...state, submitting: false, inboundReload: true };
+    case actionTypes.RECEIVES_UNDO:
+      return { ...state, submitting: true, inboundPutaways: { ...state.inboundPutaways, loading: true } };
     case actionTypes.RECEIVES_UNDO_SUCCEED:
+      return { ...state, submitting: false, inboundReload: true };
+    case actionTypes.RECEIVES_UNDO_FAIL:
+      return { ...state, submitting: false, inboundReload: true };
+    case actionTypes.PUTAWAY_BATCH:
+      return { ...state, submitting: true };
     case actionTypes.PUTAWAY_BATCH_SUCCEED:
+      return { ...state, submitting: false, inboundReload: true };
+    case actionTypes.PUTAWAY_BATCH_FAIL:
+      return { ...state, submitting: false, inboundReload: true };
+    case actionTypes.PUTAWAY_EXPRESS:
+      return { ...state, submitting: true };
     case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
       return { ...state, inboundReload: true, submitting: false };
+    case actionTypes.PUTAWAY_EXPRESS_FAIL:
+      return { ...state, submitting: false, inboundReload: true };
     case actionTypes.GET_ASN_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
     case actionTypes.CLEAR_PRODUCT_NOS:

@@ -126,15 +126,35 @@ export default function reducer(state = initialState, action) {
       return { ...state, inventoryData: action.result.data, inventoryDataLoading: false };
     case actionTypes.MANUAL_ALLOC:
       return { ...state, submitting: true };
-    case actionTypes.MANUAL_ALLOC_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.AUTO_ALLOC_SUCCEED:
     case actionTypes.MANUAL_ALLOC_SUCCEED:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.MANUAL_ALLOC_FAIL:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.AUTO_ALLOC:
+      return { ...state, submitting: true };
+    case actionTypes.AUTO_ALLOC_SUCCEED:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.AUTO_ALLOC_FAIL:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.CANCEL_PRDALLOC:
+      return { ...state, submitting: true };
     case actionTypes.CANCEL_PRDALLOC_SUCCEED:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.CANCEL_PRDALLOC_FAIL:
+      return { ...state, submitting: false, outboundReload: true };
     case actionTypes.CANCEL_TRACE_ALLOC_SUCCEED:
+    case actionTypes.OUTBOUNDS_PICK:
+      return { ...state, submitting: true };
     case actionTypes.OUTBOUNDS_PICK_SUCCEED:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.OUTBOUNDS_PICK_FAIL:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.UNDO_PICKED:
+      return { ...state, submitting: true };
     case actionTypes.UNDO_PICKED_SUCCEED:
       return { ...state, outboundReload: true, submitting: false };
+    case actionTypes.UNDO_PICKED_FAIL:
+      return { ...state, submitting: false, outboundReload: true };
     case actionTypes.LOAD_PICK_DETAILS_SUCCEED:
       return { ...state, pickDetails: action.result.data };
     case actionTypes.LOAD_ALLOCATED_DETAILS:
@@ -168,6 +188,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, waybill: { ...state.waybill, ...action.result.data } };
     case actionTypes.SHUNFENG_EXPRESS_MODAL:
       return { ...state, shunfengExpressModal: { ...state.shunfengExpressModal, ...action.data } };
+    case actionTypes.OUTBOUNDS_SHIP:
+      return { ...state, submitting: true };
+    case actionTypes.OUTBOUNDS_SHIP_SUCCEED:
+      return { ...state, submitting: false, outboundReload: true };
+    case actionTypes.OUTBOUNDS_SHIP_FAIL:
+      return { ...state, submitting: false, outboundReload: true };
     default:
       return state;
   }

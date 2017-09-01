@@ -20,6 +20,7 @@ const FormItem = Form.Item;
     username: state.account.username,
     visible: state.cwmReceive.batchReceivingModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,
+    submitting: state.cwmReceive.submitting,
   }),
   { hideBatchReceivingModal, batchReceive }
 )
@@ -73,13 +74,14 @@ export default class BatchReceivingModal extends Component {
     });
   }
   render() {
+    const { submitting } = this.props;
     const { receivedDate } = this.state;
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
     return (
-      <Modal title="批量收货" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit} okText="确认收货">
+      <Modal title="批量收货" onCancel={this.handleCancel} visible={this.props.visible} confirmLoading={submitting} onOk={this.handleSubmit} okText="确认收货">
         <FormItem {...formItemLayout} label="收货数量">
           <Checkbox checked>实际收货数量与预期一致</Checkbox>
         </FormItem>

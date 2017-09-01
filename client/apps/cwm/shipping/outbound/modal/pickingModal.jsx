@@ -23,6 +23,7 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
+    submitting: state.cwmOutbound.submitting,
   }),
   { closePickingModal, pickConfirm, loadPickDetails, loadOutboundHead }
 )
@@ -81,13 +82,13 @@ export default class PickingModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, traceId, location, pickMode, username } = this.props;
+    const { form: { getFieldDecorator }, traceId, location, pickMode, username, submitting } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal title="拣货确认" maskClosable={false} onOk={this.handleSubmit} onCancel={this.handleCancel} visible={this.props.visible}>
+      <Modal title="拣货确认" maskClosable={false} onOk={this.handleSubmit} onCancel={this.handleCancel} confirmLoading={submitting} visible={this.props.visible}>
         <Form>
           {pickMode === 'single' && <FormItem {...formItemLayout} label="目标库位" >
             {

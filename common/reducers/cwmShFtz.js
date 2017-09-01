@@ -161,13 +161,28 @@ export default function reducer(state = initialState, action) {
             return rr;
           }
         }) };
+    case actionTypes.FILE_RSO:
+      return { ...state, submitting: true };
     case actionTypes.FILE_RSO_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_RSO_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_RTS:
+      return { ...state, submitting: true };
     case actionTypes.FILE_RTS_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_RTS_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_RPO:
+      return { ...state, submitting: true };
     case actionTypes.FILE_RPO_SUCCEED:
       return { ...state,
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
+        submitting: false,
         rel_regs: state.rel_regs.map(rr => ({ ...rr, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
       };
+    case actionTypes.FILE_RPO_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.LOAD_NDLIST:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.LOAD_NDLIST_SUCCEED:
@@ -184,26 +199,111 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchout_regs: action.result.data };
     case actionTypes.APPLY_DETAILS_LOAD_SUCCEED:
       return { ...state, ...action.result.data };
+    case actionTypes.FILE_BA:
+      return { ...state, submitting: true };
     case actionTypes.FILE_BA_SUCCEED:
-      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status } };
+      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
+    case actionTypes.FILE_BA_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.MAKE_BAL:
+      return { ...state, submitting: true };
     case actionTypes.MAKE_BAL_SUCCEED:
-      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status } };
+      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
+    case actionTypes.MAKE_BAL_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.CANCEL_ENR:
+      return { ...state, submitting: true };
     case actionTypes.CANCEL_ENR_SUCCEED:
-      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status } };
+      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status }, submitting: false };
+    case actionTypes.CANCEL_ENR_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.CANCEL_RER:
+      return { ...state, submitting: true };
     case actionTypes.CANCEL_RER_SUCCEED:
-      return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status } };
+      return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status }, submitting: false };
+    case actionTypes.CANCEL_RER_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
     case actionTypes.LOAD_STOCKS_SUCCEED:
       return { ...state, stockDatas: action.result.data };
+    case actionTypes.SYNC_SKU:
+      return { ...state, submitting: true };
+    case actionTypes.SYNC_SKU_SUCCESS:
+      return { ...state, submitting: false };
+    case actionTypes.SYNC_SKU_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.UPDATE_CARGO_RULE:
+      return { ...state, submitting: true };
+    case actionTypes.UPDATE_CARGO_RULE_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.UPDATE_CARGO_RULE_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_ERS:
+      return { ...state, submitting: true };
+    case actionTypes.FILE_ERS_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_ERS_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.QUERY_ERI:
+      return { ...state, submitting: true };
+    case actionTypes.QUERY_ERI_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.QUERY_ERI_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.PAIR_ERP:
+      return { ...state, submitting: true };
+    case actionTypes.PAIR_ERP_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.PAIR_ERP_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.QUERY_POI:
+      return { ...state, submitting: true };
+    case actionTypes.QUERY_POI_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.QUERY_POI_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_CARGO:
+      return { ...state, submitting: true };
+    case actionTypes.FILE_CARGO_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.FILE_CARGO_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.CONFIRM_CARGO:
+      return { ...state, submitting: true };
+    case actionTypes.CONFIRM_CARGO_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.CONFIRM_CARGO_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.BEGIN_BD:
-    case actionTypes.BEGIN_NC:
       return { ...state, submitting: true };
     case actionTypes.BEGIN_BD_SUCCEED:
-    case actionTypes.BEGIN_NC_SUCCEED:
       return { ...state, submitting: false };
     case actionTypes.BEGIN_BD_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.BEGIN_NC:
+      return { ...state, submitting: true };
+    case actionTypes.BEGIN_NC_SUCCEED:
+      return { ...state, submitting: false };
     case actionTypes.BEGIN_NC_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.TRANSFER_TO_OWN:
+      return { ...state, submitting: true };
+    case actionTypes.TRANSFER_TO_OWN_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.TRANSFER_TO_OWN_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.QUERY_OWNTRANF:
+      return { ...state, submitting: true };
+    case actionTypes.QUERY_OWNTRANF_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.QUERY_OWNTRANF_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.VIRTUAL_TRANS_SAVE:
+      return { ...state, submitting: true };
+    case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
+      return { ...state, submitting: false };
+    case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
       return { ...state, submitting: false };
     default:
       return state;

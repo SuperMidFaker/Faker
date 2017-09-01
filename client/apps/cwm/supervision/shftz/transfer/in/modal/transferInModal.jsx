@@ -35,6 +35,7 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
+    submitting: state.cwmShFtz.submitting,
   }),
   { loadParams, showTransferInModal, loadEntryTransRegs, loadEntryTransInDetails, saveVirtualTransfer }
 )
@@ -249,6 +250,7 @@ export default class TransferInModal extends Component {
   }
 
   render() {
+    const { submitting } = this.props;
     const { entryRegNo, relDateRange, transRegs, ownerCusCode } = this.state;
     const extraForm = (
       <Form layout="inline">
@@ -272,7 +274,7 @@ export default class TransferInModal extends Component {
       <span>新建区内转入</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" disabled={this.state.regDetails.length === 0} onClick={this.handleSaveTrans}>保存</Button>
+        <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleSaveTrans}>保存</Button>
       </div>
     </div>);
     const stat = transRegs.reduce((acc, regd) => ({

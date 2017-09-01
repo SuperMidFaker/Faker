@@ -47,6 +47,7 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
+    submitting: state.cwmShFtz.submitting,
   }),
   { loadEntryDetails, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn }
 )
@@ -275,7 +276,7 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   render() {
-    const { entryAsn, entryRegs, whse } = this.props;
+    const { entryAsn, entryRegs, whse, submitting } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     return (
       <div>
@@ -295,9 +296,9 @@ export default class SHFTZTransferInDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {this.state.comparable && <Button type="primary" size="large" icon="sync" onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" onClick={this.handleTransToWhs}>转出至原仓库</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" onClick={this.handleOwnTransferQuery}>转入明细</Button>}
+            {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>转出至原仓库</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>转入明细</Button>}
           </div>
         </Header>
         <Content className="main-content">
