@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
 import TransitForm from './transitAttribForm';
-import { closeTransitionModal, splitTransit, moveTransit } from 'common/reducers/cwmTransition';
+import { splitTransit, moveTransit } from 'common/reducers/cwmTransition';
 
 @injectIntl
 @connect(
@@ -13,9 +13,8 @@ import { closeTransitionModal, splitTransit, moveTransit } from 'common/reducers
     loginName: state.account.username,
     detail: state.cwmTransition.transitionModal.detail,
   }),
-  { closeTransitionModal, splitTransit, moveTransit }
+  { splitTransit, moveTransit }
 )
-
 export default class TransitPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -53,7 +52,6 @@ export default class TransitPane extends React.Component {
     if (transitOp) {
       transitOp.then((result) => {
         if (!result.error) {
-          // this.props.closeTransitionModal({ needReload: true });
           message.success('库存转移成功');
         } else {
           message.error(result.error.message);

@@ -25,9 +25,10 @@ export default class LogsPane extends React.Component {
   state = {
     scrollY: 0,
   }
-  componentWillMount() {
-    const { detail, tenantId } = this.props;
-    this.props.loadTraceTransactions(detail.trace_id, tenantId);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.detail !== this.props.detail) {
+      this.props.loadTraceTransactions(nextProps.detail.trace_id, nextProps.tenantId);
+    }
   }
 
   msg = formatMsg(this.props.intl);

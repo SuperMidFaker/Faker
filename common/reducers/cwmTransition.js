@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'ADJUST_TRANSIT', 'ADJUST_TRANSIT_SUCCEED', 'ADJUST_TRANSIT_FAIL',
   'FREEZE_TRANSIT', 'FREEZE_TRANSIT_SUCCEED', 'FREEZE_TRANSIT_FAIL',
   'UNFREEZE_TRANSIT', 'UNFREEZE_TRANSIT_SUCCEED', 'UNFREEZE_TRANSIT_FAIL',
+  'LOAD_TTDETAIL', 'LOAD_TTDETAIL_SUCCEED', 'LOAD_TTDETAIL_FAIL',
 ]);
 
 const initialState = {
@@ -30,7 +31,9 @@ const initialState = {
   },
   transitionModal: {
     visible: false,
+    trace_id: '',
     needReload: false,
+    loading: false,
     detail: {},
   },
   loading: false,
@@ -53,15 +56,17 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.CLOSE_TRANSITION_MODAL:
-      return { ...state, transitionModal: { ...state.transitionModal, visible: false, detail: {} }, reloadTransitions: action.data.needReload };
+      return { ...state, transitionModal: { ...state.transitionModal, visible: false, detail: {} } };
     case actionTypes.OPEN_TRANSITION_MODAL:
-      return { ...state, transitionModal: { ...state.transitionModal, visible: true, detail: action.data } };
+      return { ...state, transitionModal: { ...state.transitionModal, visible: true, trace_id: action.data } };
+    case actionTypes.SPLIT_TRANSIT_SUCCEED:
     case actionTypes.MOVE_TRANSIT_SUCCEED:
     case actionTypes.ADJUST_TRANSIT_SUCCEED:
     case actionTypes.FREEZE_TRANSIT_SUCCEED:
-      return { ...state, transitionModal: { ...state.transitionModal, needReload: true } };
+    case actionTypes.UNFREEZE_TRANSIT_SUCCEED:
+      return { ...state, transitionModal: { ...state.transitionModal, needReload: true }, reloadTransitions: true };
     case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false }, reloadTransitions: action.data.needReload };
+      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false } };
     case actionTypes.OPEN_BATCH_TRANSIT_MODAL:
       return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_BATCH_MOVE_MODAL:
@@ -69,7 +74,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.OPEN_BATCH_MOVE_MODAL:
       return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: true } };
     case actionTypes.CLOSE_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: initialState.batchFreezeModal, reloadTransitions: action.data.needReload };
+      return { ...state, batchFreezeModal: initialState.batchFreezeModal };
     case actionTypes.OPEN_BATCH_FREEZE_MODAL:
       return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true, ...action.data } };
     case actionTypes.LOAD_TRANSITIONS:
@@ -83,29 +88,34 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_TRANSITIONS_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_TTDETAIL:
+      return { ...state, transitionModal: { ...state.transitionModal, loading: true } };
+    case actionTypes.LOAD_TTDETAIL_FAIL:
+      return { ...state, transitionModal: { ...state.transitionModal, loading: false } };
+    case actionTypes.LOAD_TTDETAIL_SUCCEED:
+      return { ...state, transitionModal: { ...state.transitionModal, detail: action.result.data, loading: false } };
     default:
       return state;
   }
 }
 
-export function closeTransitionModal({ needReload }) {
+export function closeTransitionModal() {
   return {
     type: actionTypes.CLOSE_TRANSITION_MODAL,
-    data: { needReload },
   };
 }
 
-export function openTransitionModal(inboundDetail) {
+export function openTransitionModal(traceId) {
   return {
     type: actionTypes.OPEN_TRANSITION_MODAL,
-    data: inboundDetail,
+    data: traceId,
   };
 }
 
-export function openBatchTransitModal(transitModal) {
+export function openBatchTransitModal(batchTransit) {
   return {
     type: actionTypes.OPEN_BATCH_TRANSIT_MODAL,
-    data: transitModal,
+    data: batchTransit,
   };
 }
 
@@ -228,6 +238,21 @@ export function unfreezeTransit(traceIds, transit, loginName, tenantId, qty) {
       endpoint: 'v1/cwm/stock/transition/unfreeze',
       method: 'post',
       data: { traceIds, transit, loginName, tenantId, qty },
+    },
+  };
+}
+
+export function loadTransitionTraceDetail(traceId, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TTDETAIL,
+        actionTypes.LOAD_TTDETAIL_SUCCEED,
+        actionTypes.LOAD_TTDETAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/trace/detail',
+      method: 'get',
+      params: { traceId, tenantId },
     },
   };
 }

@@ -130,6 +130,10 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   columns = [{
+    title: '行号',
+    dataIndex: 'asn_seq_no',
+    width: 60,
+  }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 160,

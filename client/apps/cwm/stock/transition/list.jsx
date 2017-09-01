@@ -173,12 +173,12 @@ export default class StockTransitionList extends React.Component {
           <a>解冻</a>
         </Popover>);
       } else if (record.avail_qty === 1) {
-        return <RowUpdater onHit={this.handleShowDock} label="调整" row={record} />;
+        return <RowUpdater onHit={this.handleTransitModal} label="调整" row={record} />;
       } else if (record.avail_qty > 1) {
         const min = 1;
         const max = record.avail_qty - 1;
         return (<span>
-          <RowUpdater onHit={this.handleShowDock} label="调整" row={record} />
+          <RowUpdater onHit={this.handleTransitModal} label="调整" row={record} />
           <span className="ant-divider" />
           <Popover placement="left" title="拆分数量" content={<span>
             <InputNumber min={min} max={max} onChange={value => this.handleSplitChange(value, min, max)}
@@ -282,8 +282,8 @@ export default class StockTransitionList extends React.Component {
     const filter = { ...this.props.listFilter, ...searchForm, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(1, filter);
   }
-  handleShowDock = (row) => {
-    this.props.openTransitionModal(row);
+  handleTransitModal = (row) => {
+    this.props.openTransitionModal(row.trace_id);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [] });

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { message, Button, Form, Row, Input, Col, InputNumber } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { closeTransitionModal, adjustTransit } from 'common/reducers/cwmTransition';
+import { adjustTransit } from 'common/reducers/cwmTransition';
 
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -18,7 +18,7 @@ const formItemLayout = {
     loginName: state.account.username,
     detail: state.cwmTransition.transitionModal.detail,
   }),
-  { closeTransitionModal, adjustTransit }
+  { adjustTransit }
 )
 export default class AdjustPane extends React.Component {
   static propTypes = {
@@ -59,7 +59,6 @@ export default class AdjustPane extends React.Component {
       this.props.adjustTransit(this.props.detail.trace_id, this.state, loginName, tenantId).then((result) => {
         if (!result.error) {
           message.success('库存数量调整成功');
-          // this.props.closeTransitionModal({ needReload: true });
         } else {
           message.error(result.error.message);
         }
