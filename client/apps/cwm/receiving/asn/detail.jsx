@@ -27,7 +27,7 @@ const TabPane = Tabs.TabPane;
     temporaryDetails: state.cwmReceive.temporaryDetails,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
-    sellers: state.cwmReceive.sellers,
+    suppliers: state.cwmReceive.suppliers,
   }),
   { loadAsn, updateASN, clearTemporary }
 )
@@ -68,12 +68,12 @@ export default class ReceivingASNDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, sellers } = this.props;
+    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, suppliers } = this.props;
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const data = values;
         const owner = owners.find(item => item.id === values.owner_partner_id);
-        const supplier = sellers.find(sl => sl.name === values.supplier_name);
+        const supplier = suppliers.find(sl => sl.name === values.supplier_name);
         data.asnNo = this.props.params.asnNo;
         data.ownerName = owner.name;
         data.ownerTenantId = owner.partner_tenant_id;
