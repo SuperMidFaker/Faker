@@ -53,7 +53,7 @@ export default class WareHouseModal extends Component {
         whseCode: nextProps.warehouse.code,
         whseName: nextProps.warehouse.name,
         whseAddress: nextProps.warehouse.whse_address,
-        tel: nextProps.warehouse.tel,
+        whseTel: nextProps.warehouse.whse_tel,
       });
     }
   }
@@ -70,10 +70,10 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseCode, whseName, whseAddress, tel, customsWhseCode } = values;
+        const { whseCode, whseName, whseAddress, whseTel, customsWhseCode } = values;
         const { tenantId, loginId } = this.props;
         const { bonded, province, city, district, street, regionCode } = this.state;
-        this.props.editWarehouse(
+        this.props.editWarehouse({
           whseCode,
           whseName,
           whseAddress,
@@ -85,9 +85,9 @@ export default class WareHouseModal extends Component {
           district,
           street,
           regionCode,
-          tel,
+          whseTel,
           customsWhseCode,
-        ).then(
+        }).then(
           (result) => {
             if (!result.error) {
               message.info('编辑仓库成功');
@@ -152,8 +152,8 @@ export default class WareHouseModal extends Component {
           </FormItem>
           <FormItem {...formItemLayout} label="联系电话" >
             {
-              getFieldDecorator('tel', {
-                initialValue: warehouse.tel,
+              getFieldDecorator('whseTel', {
+                initialValue: warehouse.whse_tel,
               })(<Input />)
             }
           </FormItem>

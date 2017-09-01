@@ -434,7 +434,25 @@ export default class AllocatingModal extends Component {
   render() {
     const { filters, outboundHead, inventoryColumns, editable } = this.props;
     const { outboundProduct } = this.state;
-    const filterColumns = this.inventoryColumns.filter(col => inventoryColumns[col.dataIndex] !== false);
+    const filterInventoryColumns = this.inventoryColumns.filter((col) => {
+      if (inventoryColumns[col.dataIndex] !== false) {
+        if (outboundHead.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
+          col.dataIndex === 'ftz_ent_filed_id')) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+      return false;
+    });
+    const filterAllocatedColumns = this.allocatedColumns.filter((col) => {
+      if (outboundHead.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
+        col.dataIndex === 'ftz_ent_no' || col.dataIndex === 'cus_decl_no')) {
+        return false;
+      } else {
+        return true;
+      }
+    });
     const searchOptions = (
       <Select defaultValue={filters.searchType} style={{ width: 120 }} onSelect={this.handleSelectChangeType}>
         <Option value="external_lot_no">批次号</Option>
@@ -508,16 +526,16 @@ export default class AllocatingModal extends Component {
         </Card>
         <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={filterColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
-              scroll={{ x: filterColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            <Table size="middle" columns={filterInventoryColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
+              scroll={{ x: filterInventoryColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
               loading={this.props.inventoryDataLoading}
             />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.allocatedColumns} dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
-              scroll={{ x: this.allocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+            <Table size="middle" columns={filterAllocatedColumns} dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
+              scroll={{ x: filterAllocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
               loading={this.props.allocatedDataLoading}
             />
           </div>
