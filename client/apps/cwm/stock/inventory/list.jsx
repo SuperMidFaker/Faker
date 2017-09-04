@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
@@ -74,7 +75,7 @@ export default class StockInventoryList extends React.Component {
     render: (o, row) => (<PackagePopover ownerPartnerId={row.owner_partner_id} sku={o} />),
   }, {
     title: this.msg('descCN'),
-    dataIndex: 'desc_cn',
+    dataIndex: 'name',
     width: 150,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
@@ -86,8 +87,9 @@ export default class StockInventoryList extends React.Component {
   }, {
     title: this.msg('inboundDate'),
     width: 120,
-    dataIndex: 'inbound_date',
+    dataIndex: 'inbound_timestamp',
     sorter: true,
+    render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
     title: this.msg('totalQty'),
     width: 100,
@@ -189,8 +191,7 @@ export default class StockInventoryList extends React.Component {
     return colObj;
   }
   render() {
-    const { defaultWhse, whses, loading, displayedColumns, listFilter } = this.props;
-    const columns = this.columns.filter(col => displayedColumns[col.dataIndex] !== false);
+    const { defaultWhse, whses, loading, listFilter } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -252,7 +253,7 @@ export default class StockInventoryList extends React.Component {
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}
-            columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
+            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
           />
         </Content>
       </Layout>

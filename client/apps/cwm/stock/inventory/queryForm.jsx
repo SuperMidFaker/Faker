@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Form, Input, Select, Radio, Row, Col, Icon, DatePicker } from 'antd';
-import { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType } from 'common/reducers/cwmInventoryStock';
+import { changeSearchType } from 'common/reducers/cwmInventoryStock';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
@@ -20,7 +20,7 @@ const { RangePicker } = DatePicker;
     filter: state.cwmInventoryStock.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType }
+  { changeSearchType }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -56,18 +56,6 @@ export default class QueryForm extends React.Component {
             end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined }));
       }
     });
-  }
-  checkOwners = () => {
-    this.props.checkOwnerColumn();
-  }
-  checkProduct = () => {
-    this.props.checkProductColumn();
-  }
-  checkLocation = () => {
-    this.props.checkLocationColumn();
-  }
-  checkProductLocation = () => {
-    this.props.checkProductLocation();
   }
   handleRelRangeChange = (relDateRange) => {
     this.setState({ relDateRange });
