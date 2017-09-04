@@ -79,7 +79,7 @@ export default class SHFTZClearanceList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '报关代理',
-    dataIndex: 'customs_name',
+    dataIndex: 'broker_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '委托日期',

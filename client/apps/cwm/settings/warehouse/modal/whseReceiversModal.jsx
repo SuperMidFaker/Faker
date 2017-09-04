@@ -106,16 +106,17 @@ export default class WhseReceiversModal extends Component {
     return (
       <Modal title="添加收货人" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form layout="horizontal">
-          <FormItem label="名称:" required {...formItemLayout}>
-            {getFieldDecorator('name')(<Input required />)}
-          </FormItem>
-          <FormItem label="代码:" required {...formItemLayout}>
+          <FormItem label="代码" required {...formItemLayout}>
             {getFieldDecorator('code')(<Input />)}
           </FormItem>
-          <FormItem label="海关编码:" {...formItemLayout}>
+          <FormItem label="名称" required {...formItemLayout}>
+            {getFieldDecorator('name')(<Input required />)}
+          </FormItem>
+
+          <FormItem label="海关编码" {...formItemLayout}>
             {getFieldDecorator('customs_code')(<Input />)}
           </FormItem>
-          <FormItem label="关联货主:" required {...formItemLayout}>
+          <FormItem label="关联货主" required {...formItemLayout}>
             {getFieldDecorator('owner_partner_id')(
               <Select id="select"
                 showSearch
@@ -136,24 +137,25 @@ export default class WhseReceiversModal extends Component {
               )}
           </FormItem>
 
-          <FormItem label="省/市/区" required {...formItemLayout}>
+          <FormItem label="地区" required {...formItemLayout}>
             <Cascader defaultRegion={regionValues} onChange={this.handleRegionChange} />
           </FormItem>
-          <FormItem label="具体地址:" {...formItemLayout}>
+          <FormItem label="详细地址" {...formItemLayout}>
             {getFieldDecorator('address')(<Input />)}
           </FormItem>
-          <FormItem label="联系人:" {...formItemLayout} >
-            {getFieldDecorator('contact')(<Input />)}
-          </FormItem>
-          <FormItem label="手机:" {...formItemLayout} >
-            {getFieldDecorator('phone')(<Input />)}
-          </FormItem>
-          <FormItem label="电话:" {...formItemLayout} >
-            {getFieldDecorator('number')(<Input />)}
-          </FormItem>
-          <FormItem label="邮政编码:" {...formItemLayout}>
+          <FormItem label="邮政编码" {...formItemLayout}>
             {getFieldDecorator('post_code')(<Input />)}
           </FormItem>
+          <FormItem label="联系人" {...formItemLayout} >
+            {getFieldDecorator('contact')(<Input />)}
+          </FormItem>
+          <FormItem label="手机" {...formItemLayout} >
+            {getFieldDecorator('phone')(<Input />)}
+          </FormItem>
+          <FormItem label="电话" {...formItemLayout} >
+            {getFieldDecorator('number')(<Input />)}
+          </FormItem>
+
         </Form>
       </Modal>
     );

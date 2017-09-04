@@ -87,6 +87,10 @@ export default class SHFTZBatchDeclList extends React.Component {
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '报关代理',
+    dataIndex: 'broker_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
