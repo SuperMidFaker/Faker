@@ -58,7 +58,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_TRANSITION_MODAL:
       return { ...state, transitionModal: { ...state.transitionModal, visible: false, detail: {} } };
     case actionTypes.OPEN_TRANSITION_MODAL:
-      return { ...state, transitionModal: { ...state.transitionModal, visible: true, trace_id: action.data } };
+      return { ...state, transitionModal: { ...state.transitionModal, visible: true, trace_id: action.data, needReload: true } };
     case actionTypes.SPLIT_TRANSIT_SUCCEED:
     case actionTypes.MOVE_TRANSIT_SUCCEED:
     case actionTypes.ADJUST_TRANSIT_SUCCEED:
@@ -66,7 +66,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UNFREEZE_TRANSIT_SUCCEED:
       return { ...state, transitionModal: { ...state.transitionModal, needReload: true }, reloadTransitions: true };
     case actionTypes.CLOSE_BATCH_TRANSIT_MODAL:
-      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false } };
+      return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: false }, reloadTransitions: action.data.needReload };
     case actionTypes.OPEN_BATCH_TRANSIT_MODAL:
       return { ...state, batchTransitModal: { ...state.batchTransitModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_BATCH_MOVE_MODAL:
@@ -74,7 +74,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.OPEN_BATCH_MOVE_MODAL:
       return { ...state, batchMoveModal: { ...state.batchMoveModal, visible: true } };
     case actionTypes.CLOSE_BATCH_FREEZE_MODAL:
-      return { ...state, batchFreezeModal: initialState.batchFreezeModal };
+      return { ...state, batchFreezeModal: initialState.batchFreezeModal, reloadTransitions: action.data.needReload };
     case actionTypes.OPEN_BATCH_FREEZE_MODAL:
       return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true, ...action.data } };
     case actionTypes.LOAD_TRANSITIONS:
