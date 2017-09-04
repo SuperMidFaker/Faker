@@ -12,6 +12,7 @@ import DockPanel from 'client/components/DockPanel';
 import OrderPane from './tabpane/orderPane';
 import FTZPane from './tabpane/ftzPane';
 import OutboundPane from './tabpane/outboundPane';
+import { createFilename } from 'client/util/dataTransform';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -124,6 +125,9 @@ export default class ShippingDockPanel extends React.Component {
       }
     );
   }
+  handleExportExcel = () => {
+    window.open(`${API_ROOTS.default}v1/cwm/shipping/exportSoExcel/${createFilename('so')}.xlsx?soNo=${this.props.order.so_no}&outboundNo=${this.props.order.outboundNo}`);
+  }
   renderStatus(status) {
     switch (status) {
       case CWM_SO_STATUS.PENDING.value: return CWM_SO_STATUS.PENDING.badge;
@@ -203,7 +207,7 @@ export default class ShippingDockPanel extends React.Component {
     } else if (soHead.status === CWM_SO_STATUS.PARTIAL.value) {
       menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭订单</Menu.Item>);
     }
-    menuItems.push(<Menu.Item key="export"><Icon type="export" />导出订单</Menu.Item>);
+    menuItems.push(<Menu.Item key="export"><Icon type="export" /><span onClick={this.handleExportExcel}>导出订单</span></Menu.Item>);
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
   render() {
