@@ -28,11 +28,19 @@ export default class CarrierPane extends Component {
     soHead: PropTypes.object,
     editable: PropTypes.bool,
     selectedOwner: PropTypes.number.isRequired,
+    onCarrierChange: PropTypes.func.isRequired,
   }
   componentWillMount() {
     this.props.loadCarriers(this.props.defaultWhse.code, this.props.defaultWhse.wh_ent_tenant_id);
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = key => formatMsg(this.props.intl, key)
+  handleCarrierChange = (value) => {
+    const { carriers, selectedOwner } = this.props;
+    const c = carriers.filter(item => item.owner_partner_id === selectedOwner).find(item => item.code === value);
+    if (c) {
+      this.props.onCarrierChange(c.name);
+    }
+  }
   render() {
     const { form: { getFieldDecorator }, soHead, carriers, selectedOwner } = this.props;
     const crs = carriers.filter(item => item.owner_partner_id === selectedOwner);
@@ -56,7 +64,7 @@ export default class CarrierPane extends Component {
                 rules: [{ message: 'Please select customer!' }],
                 initialValue: soHead && soHead.carrier_code,
               })(
-                <Select placeholder="选择承运人" onSelect={() => {}}>
+                <Select placeholder="选择承运人" onChange={this.handleCarrierChange}>
                   {crs.map(item => (<Option value={item.code}>{item.name}</Option>))}
                 </Select>
               )}

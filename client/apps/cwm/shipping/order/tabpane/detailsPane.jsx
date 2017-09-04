@@ -123,7 +123,11 @@ export default class DetailsPane extends Component {
       title: '计量单位',
       dataIndex: 'unit',
       className: 'cell-align-center',
-      render: o => o && units.find(unit => unit.code === o).name,
+      render: (o) => {
+        const unit = units.find(item => item.code === o);
+        if (unit) return unit.name;
+        return '';
+      },
     }, {
       title: '库别',
       dataIndex: 'virtual_whse',

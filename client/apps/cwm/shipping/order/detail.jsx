@@ -58,6 +58,7 @@ export default class CreateShippingOrder extends Component {
       receiver_street: '',
       receiver_region_code: null,
     },
+    carrier_name: '',
   }
   componentWillMount() {
     this.props.getSo(this.props.params.soNo).then(
@@ -73,6 +74,7 @@ export default class CreateShippingOrder extends Component {
               receiver_street: result.data.soHead.receiver_street,
               receiver_region_code: result.data.soHead.receiver_region_code,
             },
+            carrier_name: result.data.soHead.carrier_name,
           });
         }
       }
@@ -90,7 +92,7 @@ export default class CreateShippingOrder extends Component {
     }
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
-        const data = { ...values, ...this.state.region };
+        const data = { ...values, ...this.state.region, carrier_name: this.state.carrier_name };
         const owner = owners.find(item => item.id === values.owner_partner_id);
         data.soNo = this.props.params.soNo;
         data.ownerName = owner.name;
@@ -123,6 +125,9 @@ export default class CreateShippingOrder extends Component {
   }
   handleRegionChange = (region) => {
     this.setState({ region });
+  }
+  handleCarrierChange = (value) => {
+    this.setState({ carrier_name: value });
   }
   render() {
     const { form, submitting, defaultWhse } = this.props;
@@ -169,7 +174,7 @@ export default class CreateShippingOrder extends Component {
                   <ReceiverPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} region={region} onRegionChange={this.handleRegionChange} />
                 </TabPane>
                 <TabPane tab="承运人" key="carrier">
-                  <CarrierPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} />
+                  <CarrierPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} onCarrierChange={this.handleCarrierChange} />
                 </TabPane>
               </Tabs>
             </Card>
