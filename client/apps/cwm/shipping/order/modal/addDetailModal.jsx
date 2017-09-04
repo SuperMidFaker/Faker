@@ -209,9 +209,9 @@ export default class AddDetailModal extends Component {
               <Input />
             )}
           </FormItem>
-          <FormItem label="入库单号" {...formItemLayout}>
-            {getFieldDecorator('asn_no', {
-              initialValue: product.asn_no,
+          <FormItem label="入库订单号" {...formItemLayout}>
+            {getFieldDecorator('po_no', {
+              initialValue: product.po_no,
             })(
               <Input />
             )}
