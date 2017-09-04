@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message, Popconfirm } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openBatchDeclModal, loadBatchApplyList } from 'common/reducers/cwmShFtz';
+import { openBatchDeclModal, loadBatchApplyList, batchDelgCancel } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import ModuleMenu from '../menu';
 import BatchDeclModal from './modal/batchDeclModal';
@@ -33,7 +33,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
   }),
-  { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList }
+  { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList, batchDelgCancel }
 )
 @connectNav({
   depth: 2,
@@ -87,11 +87,23 @@ export default class SHFTZBatchDeclList extends React.Component {
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '报关代理',
+    dataIndex: 'broker_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />,
+    render: (o, record) => (
+      <span>
+        <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />
+        <span className="ant-divider" />
+        <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
+          <a>取消委托</a>
+        </Popconfirm>
+      </span>
+    ),
   }]
   columns = [{
     title: '集中报关编号',
@@ -234,6 +246,13 @@ export default class SHFTZBatchDeclList extends React.Component {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
     this.props.openBatchDeclModal({ ownerCusCode });
+  }
+  handleDelgCancel = (row) => {
+    this.props.batchDelgCancel(row).then((result) => {
+      if (!result.error) {
+        this.handleBatchApplyLoad();
+      }
+    });
   }
   handleDelgManifest = (row) => {
     const ietype = row.i_e_type === 0 ? 'import' : 'export';

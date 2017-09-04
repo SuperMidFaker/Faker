@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, message } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openClearanceModal, loadNormalDelgList } from 'common/reducers/cwmShFtz';
+import { openClearanceModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import ModuleMenu from '../menu';
 import ClearanceModal from './modal/clearanceModal';
@@ -33,7 +33,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { openClearanceModal, switchDefaultWhse, loadNormalDelgList }
+  { openClearanceModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
 )
 @connectNav({
   depth: 2,
@@ -79,7 +79,7 @@ export default class SHFTZClearanceList extends React.Component {
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '报关代理',
-    dataIndex: 'customs_name',
+    dataIndex: 'broker_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '委托日期',
@@ -113,7 +113,15 @@ export default class SHFTZClearanceList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDelgManifest} label="清关明细" row={record} />,
+    render: (o, record) => (
+      <span>
+        <RowUpdater onHit={this.handleDelgManifest} label="清关明细" row={record} />
+        <span className="ant-divider" />
+        <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
+          <a>取消委托</a>
+        </Popconfirm>
+      </span>
+    ),
   }]
 
   dataSource = new DataTable.DataSource({
@@ -155,6 +163,13 @@ export default class SHFTZClearanceList extends React.Component {
   }
   handleNewNormalDelgLoad = () => {
     this.handleNormalDelgLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
+  }
+  handleDelgCancel = (row) => {
+    this.props.cancelBatchNormalClear({ normal_decl_no: row.normal_decl_no, delg_no: row.delg_no }).then((result) => {
+      if (!result.error) {
+        this.handleNewNormalDelgLoad();
+      }
+    });
   }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {

@@ -45,6 +45,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'VIRTUAL_TRANS_DELETE', 'VIRTUAL_TRANS_DELETE_SUCCEED', 'VIRTUAL_TRANS_DELETE_FAIL',
   'LOAD_STOCKS', 'LOAD_STOCKS_SUCCEED', 'LOAD_STOCKS_FAIL',
   'REL_DETAILS_SPLIT', 'REL_DETAILS_SPLIT_SUCCEED', 'REL_DETAILS_SPLIT_FAIL',
+  'CANCEL_BD', 'CANCEL_BD_SUCCEED', 'CANCEL_BD_FAIL',
+  'CANCEL_NC', 'CANCEL_NC_SUCCEED', 'CANCEL_NC_FAIL',
 ]);
 
 const initialState = {
@@ -718,6 +720,21 @@ export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName, 
   };
 }
 
+export function batchDelgCancel(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_BD,
+        actionTypes.CANCEL_BD_SUCCEED,
+        actionTypes.CANCEL_BD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/delg/cancel',
+      method: 'post',
+      data,
+    },
+  };
+}
+
 export function beginNormalClear(ietype, detailIds, relCounts, owner, loginId, loginName) {
   return {
     [CLIENT_API]: {
@@ -729,6 +746,21 @@ export function beginNormalClear(ietype, detailIds, relCounts, owner, loginId, l
       endpoint: 'v1/cwm/shftz/batch/normal/clear/begin',
       method: 'post',
       data: { ietype, detailIds, relCounts, owner, loginId, loginName },
+    },
+  };
+}
+
+export function cancelBatchNormalClear(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_NC,
+        actionTypes.CANCEL_NC_SUCCEED,
+        actionTypes.CANCEL_NC_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/batch/normal/clear/cancel',
+      method: 'post',
+      data,
     },
   };
 }

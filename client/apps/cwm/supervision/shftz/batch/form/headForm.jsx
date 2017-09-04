@@ -71,13 +71,13 @@ export default class HeadForm extends React.Component {
           </Col>
           <Col span={5} offset={1}>
             <FormItem {...formItemLayout} label="报关代理">
-              {getFieldDecorator('asn_no', { initialValue: filter.asn_no })(
+              {getFieldDecorator('broker', { initialValue: filter.broker })(
                 <Select placeholder="请选择报关代理" />)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
             <FormItem {...formItemLayout} label="类型">
-              {getFieldDecorator('external_lot_no', { initialValue: filter.external_lot_no })(
+              {getFieldDecorator('apply_type', { initialValue: filter.apply_type })(
                 <Select placeholder="请选择报关申请类型" defaultValue="0">
                   <Option value="0" key="0">普通报关申请单</Option>
                   <Option value="1" key="1">跨关区报关申请单</Option>

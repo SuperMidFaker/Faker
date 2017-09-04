@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag } from 'antd';
+import { Button, Icon, Table, Tag } from 'antd';
 import { toggleReceiverModal, loadReceivers, deleteReceiver, changeReceiverStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseReceiversModal from '../modal/whseReceiversModal';
@@ -42,9 +42,9 @@ export default class ReceiversPane extends Component {
     }
   }
   columns = [{
-    title: '代码',
+    title: '收货人代码',
     dataIndex: 'code',
-    width: 80,
+    width: 100,
   }, {
     title: '名称',
     dataIndex: 'name',
@@ -52,13 +52,9 @@ export default class ReceiversPane extends Component {
   }, {
     title: '海关编码',
     dataIndex: 'customs_code',
-    width: 80,
+    width: 100,
   }, {
-    title: '邮政编码',
-    dataIndex: 'post_code',
-    width: 80,
-  }, {
-    title: '地址',
+    title: '地区',
     dataIndex: 'province',
     width: 150,
     rencer: (col, row) => Location.renderLocation(row),
@@ -87,25 +83,25 @@ export default class ReceiversPane extends Component {
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
-    width: 140,
+    width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
-    width: 140,
+    width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '操作',
-    width: 150,
+    width: 140,
     dataIndex: 'id',
     render: record => (
       <span>
         {record.active === 0 ? <RowUpdater onHit={() => this.changeReceiverStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeReceiverStatus(record.id, false)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditReceiver(record)} label="修改" row={record} />
+        <RowUpdater onHit={() => this.handleEditReceiver(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleDeleteReceiver(record.id)} label="删除" row={record} />
+        <RowUpdater onHit={() => this.handleDeleteReceiver(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]

@@ -112,7 +112,7 @@ const messages = defineMessages({
   },
   cusNo: {
     id: 'cwm.supervision.shftz.stock.cusNo',
-    defaultMessage: '海关编号',
+    defaultMessage: '海关进库单号',
   },
   export: {
     id: 'cwm.supervision.shftz.stock.export',
