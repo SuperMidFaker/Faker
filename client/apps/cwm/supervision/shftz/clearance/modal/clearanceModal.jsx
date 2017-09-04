@@ -18,6 +18,7 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     visible: state.cwmShFtz.clearanceModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
@@ -68,6 +69,7 @@ export default class ClearanceModal extends Component {
     }
     if (nextProps.visible && nextProps.ownerCusCode && nextProps.visible !== this.props.visible) {
       this.props.loadBatchOutRegs({
+        tenantId: this.props.tenantId,
         owner_cus_code: nextProps.ownerCusCode,
         whse_code: nextProps.defaultWhse.code,
         rel_type: 'normal',
@@ -198,6 +200,7 @@ export default class ClearanceModal extends Component {
   handleNormalOutsQuery = () => {
     const { ownerCusCode, relNo, relDateRange } = this.state;
     this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
