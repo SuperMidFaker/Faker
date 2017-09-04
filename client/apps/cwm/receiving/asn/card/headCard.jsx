@@ -158,10 +158,10 @@ export default class HeadCard extends Component {
           }
           {
             getFieldValue('reg_type') === CWM_ASN_BONDED_REGTYPES[2].value && <Col span={6}>
-              <FormItem label="区内转入单">
+              <FormItem label="海关进库单号">
                 {getFieldDecorator('transfer_in_bills', {
                   initialValue: asnHead && asnHead.transfer_in_bills,
-                })(<Input placeholder="多个转入入库单以逗号分隔" />)}
+                })(<Input placeholder="多个进库单号以逗号分隔" />)}
               </FormItem>
             </Col>
           }

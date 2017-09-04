@@ -297,8 +297,8 @@ export default class SHFTZTransferInDetail extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>转出至原仓库</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>转入明细</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>转移入分拨</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取分拨明细ID</Button>}
           </div>
         </Header>
         <Content className="main-content">
@@ -350,7 +350,7 @@ export default class SHFTZTransferInDetail extends Component {
                       <div className="panel-header">
                         <Row>
                           <Col sm={12} lg={5}>
-                            <InfoItem size="small" addonBefore="海关入库单号" field={reg.ftz_ent_no} editable
+                            <InfoItem size="small" addonBefore="海关进库单号" field={reg.ftz_ent_no} editable
                               onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value, reg.virtual_transfer)}
                             />
                           </Col>

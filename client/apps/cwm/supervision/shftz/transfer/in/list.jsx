@@ -81,7 +81,7 @@ export default class SHFTZTransferInList extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '海关入库单号',
+    title: '海关进库单号',
     width: 200,
     dataIndex: 'ftz_ent_no',
   }, {
@@ -294,7 +294,7 @@ export default class SHFTZTransferInList extends React.Component {
               <RadioButton value="verified">已核对</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
-              <Button size="large" icon="plus" onClick={this.handleCreateTransIn}>新建区内转入</Button>
+              <Button size="large" icon="plus" onClick={this.handleCreateTransIn}>转移入分拨</Button>
             </div>
           </Header>
           <Content className="main-content" key="main">

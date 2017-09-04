@@ -237,7 +237,7 @@ export default class AllocatingModal extends Component {
     dataIndex: 'asn_no',
     width: 200,
   }, {
-    title: '海关入库单号',
+    title: '海关进库单号',
     dataIndex: 'ftz_ent_no',
     width: 200,
   }, {
@@ -314,7 +314,7 @@ export default class AllocatingModal extends Component {
     className: 'cell-align-center',
     render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
   }, {
-    title: '海关入库单号',
+    title: '海关进库单号',
     dataIndex: 'ftz_ent_no',
     width: 150,
   }, {
@@ -459,7 +459,7 @@ export default class AllocatingModal extends Component {
         <Option value="serial_no">序列号</Option>
         <Option value="po_no">采购订单号</Option>
         <Option value="asn_no">ASN编号</Option>
-        <Option value="ftz_ent_no">海关入库单号</Option>
+        <Option value="ftz_ent_no">海关进库单号</Option>
         <Option value="cus_decl_no">报关单号</Option>
       </Select>
     );

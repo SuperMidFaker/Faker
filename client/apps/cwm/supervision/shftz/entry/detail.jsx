@@ -418,7 +418,7 @@ export default class SHFTZEntryDetail extends Component {
                       <div className="panel-header">
                         <Row>
                           <Col sm={12} lg={5}>
-                            <InfoItem size="small" addonBefore="海关入库单号" field={reg.ftz_ent_no} editable={entryEditable}
+                            <InfoItem size="small" addonBefore="海关进库单号" field={reg.ftz_ent_no} editable={entryEditable}
                               onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
                             />
                           </Col>

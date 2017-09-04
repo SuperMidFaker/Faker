@@ -89,7 +89,7 @@ export default class SHFTZEntryList extends React.Component {
     width: 180,
     render: (preno, row) => row.cus_decl_no || preno,
   }, {
-    title: '海关入库单号',
+    title: '海关进库单号',
     width: 200,
     dataIndex: 'ftz_ent_no',
   }, {

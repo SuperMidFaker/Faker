@@ -79,7 +79,7 @@ export default class TransferInModal extends Component {
     dataIndex: 'asn_no',
     width: 180,
   }, {
-    title: '海关入库单号',
+    title: '海关进库单号',
     width: 200,
     dataIndex: 'ftz_ent_no',
   }, {
@@ -262,7 +262,7 @@ export default class TransferInModal extends Component {
               </Option>))}
           </Select>
         </FormItem>
-        <FormItem label="海关入库单号">
+        <FormItem label="海关进库单号">
           <Input value={entryRegNo} onChange={this.handleEntryNoChange} />
         </FormItem>
         <FormItem label="入库日期">
@@ -271,7 +271,7 @@ export default class TransferInModal extends Component {
         <Button type="primary" ghost size="large" onClick={this.handleFilterQuery}>查找</Button>
       </Form>);
     const title = (<div>
-      <span>新建区内转入</span>
+      <span>转移入分拨</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleSaveTrans}>保存</Button>
