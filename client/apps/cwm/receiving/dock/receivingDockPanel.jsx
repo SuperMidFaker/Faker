@@ -12,6 +12,7 @@ import DockPanel from 'client/components/DockPanel';
 import ASNPane from './tabpane/asnPane';
 import FTZPane from './tabpane/ftzPane';
 import InboundPane from './tabpane/inboundPane';
+import { createFilename } from 'client/util/dataTransform';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -124,6 +125,9 @@ export default class ReceivingDockPanel extends React.Component {
       }
     );
   }
+  handleExportExcel = () => {
+    window.open(`${API_ROOTS.default}v1/cwm/receiving/exportAsnExcel/${createFilename('asn')}.xlsx?asnNo=${this.props.asn.asn_no}`);
+  }
   renderStatus(status) {
     switch (status) {
       case CWM_ASN_STATUS.PENDING.value: return CWM_ASN_STATUS.PENDING.badge;
@@ -205,10 +209,9 @@ export default class ReceivingDockPanel extends React.Component {
     } else if (asnHead.status === CWM_ASN_STATUS.DISCREPANT.value) {
       menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭ASN</Menu.Item>);
     }
-    menuItems.push(<Menu.Item key="export"><Icon type="export" />导出ASN</Menu.Item>);
+    menuItems.push(<Menu.Item key="export"><Icon type="export" /><span onClick={this.handleExportExcel}>导出ASN</span></Menu.Item>);
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
-
   render() {
     const { visible } = this.props;
     const { asnHead } = this.state;
