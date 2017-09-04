@@ -18,6 +18,7 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     visible: state.cwmShFtz.batchDeclModal.visible,
     submitting: state.cwmShFtz.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -72,6 +73,7 @@ export default class BatchDeclModal extends Component {
     }
     if (nextProps.visible && nextProps.ownerCusCode && nextProps.visible !== this.props.visible) {
       this.props.loadBatchOutRegs({
+        tenantId: this.props.tenantId,
         owner_cus_code: nextProps.ownerCusCode,
         whse_code: nextProps.defaultWhse.code,
         rel_type: 'portion',
@@ -223,6 +225,7 @@ export default class BatchDeclModal extends Component {
   handlePortionOutsQuery = () => {
     const { ownerCusCode, relNo, relDateRange } = this.state;
     this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'portion',
