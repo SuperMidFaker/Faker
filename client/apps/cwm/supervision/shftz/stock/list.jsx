@@ -58,23 +58,6 @@ export default class SHFTZStockList extends React.Component {
   componentWillMount() {
     this.props.loadParams();
   }
-  componentDidMount() {
-    if (this.props.owners[0]) {
-      const filter = { ownerCode: this.props.owners[0].customs_code, entNo: '' };
-      this.handleStockQuery(filter);
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.owners !== this.props.owners) {
-      if (nextProps.owners[0]) {
-        const filter = { ownerCode: nextProps.owners[0].customs_code, entNo: '' };
-        this.handleStockQuery(filter);
-      } else {
-        const filter = { ...this.state.filter, ownerCode: '', entNo: '' };
-        this.setState({ filter });
-      }
-    }
-  }
   msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('owner'),
@@ -244,16 +227,10 @@ export default class SHFTZStockList extends React.Component {
   }
 
   handleExportExcel = () => {
-    const titleMap = new Map();
-    this.columns.forEach((col) => { titleMap.set(col.dataIndex, col.title); });
     const csvData = [];
     this.props.stockDatas.forEach((dt) => {
       const out = {};
-      Object.keys(dt).forEach((key) => {
-        if (titleMap.get(key)) {
-          out[titleMap.get(key)] = dt[key];
-        }
-      });
+      this.columns.forEach((col) => { out[col.title] = dt[col.dataIndex]; });
       csvData.push(out);
     });
     const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
