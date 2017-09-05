@@ -36,6 +36,7 @@ const RadioButton = Radio.Button;
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    loading: state.cwmShFtz.loading,
   }),
   { loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
@@ -300,6 +301,7 @@ export default class SHFTZReleaseList extends React.Component {
               columns={this.columns}
               dataSource={this.dataSource}
               rowKey="id"
+              loading={this.props.loading}
             />
             <ShippingDockPanel />
             <OrderDockPanel />

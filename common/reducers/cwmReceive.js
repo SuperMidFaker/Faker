@@ -110,7 +110,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_ASN_SUCCEED:
     case actionTypes.UPDATE_ASN_FAIL:
     case actionTypes.RECEIVE_PRODUCT_FAIL:
-      return { ...state, submitting: false };
+      return { ...state, submitting: false, inboundReload: true };
+    case actionTypes.RECEIVE_PRODUCT_SUCCEED:
+      return { ...state, submitting: false, inboundReload: true };
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:
@@ -169,7 +171,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true, details: action.data } };
     case actionTypes.HIDE_PUTTING_AWAY_MODAL:
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: false } };
-    case actionTypes.RECEIVE_PRODUCT_SUCCEED:
     case actionTypes.RECEIVE_EXPRESS_SUCCEED:
     case actionTypes.RECEIVE_BATCH:
       return { ...state, submitting: true };
