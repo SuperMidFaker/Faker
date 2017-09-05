@@ -345,14 +345,14 @@ export function closeBatchDeclModal() {
   };
 }
 
-export function openClearanceModal(modalInfo) {
+export function openNormalDeclModal(modalInfo) {
   return {
     type: actionTypes.OPEN_CLEARANCE_MODAL,
     data: modalInfo,
   };
 }
 
-export function closeClearanceModal() {
+export function closeNormalDeclModal() {
   return {
     type: actionTypes.CLOSE_CLEARANCE_MODAL,
   };
@@ -747,7 +747,7 @@ export function batchDelgCancel(data) {
   };
 }
 
-export function beginNormalClear(ietype, detailIds, relCounts, owner, loginId, loginName) {
+export function beginNormalDecl(ietype, detailIds, relCounts, owner, loginId, loginName) {
   return {
     [CLIENT_API]: {
       types: [

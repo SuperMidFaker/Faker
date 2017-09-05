@@ -9,10 +9,10 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openClearanceModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
+import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import ModuleMenu from '../menu';
-import ClearanceModal from './modal/clearanceModal';
+import NormalDeclModal from './modal/normalDeclModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -34,7 +34,7 @@ const OptGroup = Select.OptGroup;
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
   }),
-  { openClearanceModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
+  { openNormalDeclModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
 )
 @connectNav({
   depth: 2,
@@ -182,7 +182,7 @@ export default class SHFTZClearanceList extends React.Component {
   handleCreateNormalDecl = () => {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
-    this.props.openClearanceModal({ ownerCusCode });
+    this.props.openNormalDeclModal({ ownerCusCode });
   }
   handleDelgManifest = (row) => {
     const link = `/clearance/${row.i_e_type}/manifest/`;
@@ -271,13 +271,12 @@ export default class SHFTZClearanceList extends React.Component {
           </Header>
           <Content className="main-content" key="main">
             <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
-              toolbarActions={toolbarActions} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+              toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}
             />
           </Content>
         </Layout>
-        <ClearanceModal reload={this.handleNewNormalDelgLoad} />
+        <NormalDeclModal reload={this.handleNewNormalDelgLoad} />
       </Layout>
     );
   }

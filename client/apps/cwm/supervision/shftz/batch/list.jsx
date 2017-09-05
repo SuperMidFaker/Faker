@@ -68,16 +68,11 @@ export default class SHFTZBatchDeclList extends React.Component {
     this.handleBatchApplyLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
-  manifColumns = [{
+  /* manifColumns = [{
     title: '集中报关编号',
     dataIndex: 'batch_decl_no',
     width: 150,
     fixed: 'left',
-  }, {
-    title: '委托编号',
-    width: 180,
-    dataIndex: 'delg_no',
-    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '货主',
     width: 180,
@@ -86,10 +81,6 @@ export default class SHFTZBatchDeclList extends React.Component {
   }, {
     title: '收货单位',
     dataIndex: 'receiver_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '报关代理',
-    dataIndex: 'broker_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '操作',
@@ -106,11 +97,18 @@ export default class SHFTZBatchDeclList extends React.Component {
       </span>
     ),
   }]
-  columns = [{
+  */
+  /* {
     title: '集中报关编号',
     dataIndex: 'batch_decl_no',
     width: 150,
     fixed: 'left',
+  }
+  */
+  columns = [{
+    title: '报关委托编号',
+    width: 150,
+    dataIndex: 'delg_no',
   }, {
     title: '报关申请单号',
     dataIndex: 'ftz_apply_no',
@@ -129,6 +127,23 @@ export default class SHFTZBatchDeclList extends React.Component {
     width: 180,
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '报关代理',
+    dataIndex: 'broker_name',
+    width: 150,
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '供应商',
+    dataIndex: 'supplier',
+    width: 100,
+  }, {
+    title: '成交方式',
+    dataIndex: 'trxn_mode',
+    width: 80,
+  }, {
+    title: '币制',
+    dataIndex: 'currency',
+    width: 80,
   }, {
     title: '申请类型',
     dataIndex: 'type',
@@ -154,7 +169,7 @@ export default class SHFTZBatchDeclList extends React.Component {
       }
     },
   }, {
-    title: '申报日期',
+    title: '报关日期',
     width: 120,
     dataIndex: 'decl_date',
     render: (o) => {
@@ -192,6 +207,13 @@ export default class SHFTZBatchDeclList extends React.Component {
     render: (o, record) => {
       if (record.status < 2) {
         return <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />;
+      } else if (record.manifested === 0) {
+        return (<span>
+          <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />
+          <span className="ant-divider" />
+          <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
+            <a>取消委托</a>
+          </Popconfirm></span>);
       }
     },
   }]
@@ -277,7 +299,9 @@ export default class SHFTZBatchDeclList extends React.Component {
     const filters = { ...this.props.listFilter, ownerView: value };
     this.handleBatchApplyLoad(1, this.props.whse.code, filters);
   }
-
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { listFilter, whses, whse, owners, batchlist } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded);
@@ -287,11 +311,28 @@ export default class SHFTZBatchDeclList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    let columns = this.columns;
+    /* let columns = this.columns;
     if (listFilter.status === 'manifesting') {
       columns = this.manifColumns;
     }
+    */
     this.dataSource.remotes = batchlist;
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <span />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+        onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <OptGroup>
+          <Option value="all">全部货主</Option>
+          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+            search={`${data.partner_code}${data.name}`}
+          >{data.name}
+          </Option>)
+          )}
+        </OptGroup>
+      </Select>
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -319,11 +360,11 @@ export default class SHFTZBatchDeclList extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-              <RadioButton value="manifesting">制单中</RadioButton>
-              <RadioButton value="pending">待申请</RadioButton>
+              <RadioButton value="manifesting">报关委托</RadioButton>
+              <RadioButton value="pending">报关申请</RadioButton>
               <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="applied">申请完成</RadioButton>
-              <RadioButton value="cleared">已报关</RadioButton>
+              <RadioButton value="applied">申请通过</RadioButton>
+              <RadioButton value="cleared">报关放行</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBatchDecl}>
@@ -332,33 +373,10 @@ export default class SHFTZBatchDeclList extends React.Component {
             </div>
           </Header>
           <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
-                <span />
-                <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
-                  onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-                >
-                  <OptGroup>
-                    <Option value="all">全部货主</Option>
-                    {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-                      search={`${data.partner_code}${data.name}`}
-                    >{data.name}
-                    </Option>)
-                    )}
-                  </OptGroup>
-                </Select>
-                <div className="toolbar-right" />
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                </div>
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <DataTable columns={columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
-                  scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }} loading={this.props.loading}
-                />
-              </div>
-            </div>
+            <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
+              toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+              loading={this.props.loading}
+            />
           </Content>
         </Layout>
         <BatchDeclModal reload={this.handleBatchDeclLoad} />

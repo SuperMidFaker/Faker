@@ -10,6 +10,7 @@ import ReceiversPane from './tabpane/receiversPane';
 import CarriersPane from './tabpane/carriersPane';
 import StaffsPane from './tabpane/staffsPane';
 import ZoneLocationPane from './tabpane/zoneLocationPane';
+import BrokersPane from './tabpane/brokersPane';
 import SupervisionPane from './tabpane/supervisionPane';
 import DataImportPane from './tabpane/dataImportPane';
 import EditWhseModal from './modal/editWarehouseModal';
@@ -134,6 +135,12 @@ export default class WarehouseList extends Component {
       <TabPane tab="员工" key="staffs">
         <StaffsPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
       </TabPane>);
+    if (warehouse.bonded) {
+      tabs.push(
+        <TabPane tab="报关代理" key="brokers">
+          <BrokersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
+        </TabPane>);
+    }
     if (warehouse.bonded) {
       tabs.push(
         <TabPane tab="保税监管" key="supervision">

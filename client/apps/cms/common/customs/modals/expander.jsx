@@ -94,7 +94,7 @@ export default class Expander extends Component {
  /*   }, {
       title: this.msg('trafMode'),
       dataIndex: 'traf_mode',
-      width: 100,*/
+      width: 100, */
     }, {
       title: this.msg('declType'),
       width: 180,

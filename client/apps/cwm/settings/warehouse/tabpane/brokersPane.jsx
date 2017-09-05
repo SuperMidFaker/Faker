@@ -20,7 +20,7 @@ import { formatMsg } from '../message.i18n';
   }),
   { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus }
 )
-export default class CarriersPane extends Component {
+export default class BrokersPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
@@ -38,11 +38,11 @@ export default class CarriersPane extends Component {
     }
   }
   columns = [{
-    title: '承运人代码',
+    title: '统一社会信用代码',
     dataIndex: 'code',
     width: 150,
   }, {
-    title: '承运人名称',
+    title: '报关代理名称',
     dataIndex: 'name',
     width: 250,
   }, {
@@ -114,7 +114,7 @@ export default class CarriersPane extends Component {
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加承运人</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加报关代理</Button>
         </div>
         <Table columns={this.columns} dataSource={carriers} rowKey="id" />
         <CarrierModal whseCode={whseCode} />

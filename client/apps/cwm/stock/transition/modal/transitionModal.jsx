@@ -58,28 +58,28 @@ export default class TransitionModal extends React.Component {
         visible={visible} footer={null}
       >
         <Spin spinning={loading}>
-        <Form>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Card title="属性调整" noHovering>
-                <TransitPane form={form} />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="数量调整" noHovering>
-                <AdjustPane />
-              </Card>
-              <Card title="状态调整" noHovering>
-                <FreezePane />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card title="库存事务记录" noHovering>
-                <LogsPane traceId={this.props.detail.trace_id} />
-              </Card>
-            </Col>
-          </Row>
-        </Form>
+          <Form>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Card title="属性调整" noHovering>
+                  <TransitPane form={form} />
+                </Card>
+              </Col>
+              <Col span={6}>
+                <Card title="数量调整" noHovering>
+                  <AdjustPane />
+                </Card>
+                <Card title="状态调整" noHovering>
+                  <FreezePane />
+                </Card>
+              </Col>
+              <Col span={6}>
+                <Card title="库存事务记录" noHovering>
+                  <LogsPane traceId={this.props.detail.trace_id} />
+                </Card>
+              </Col>
+            </Row>
+          </Form>
         </Spin>
       </Modal>
     );

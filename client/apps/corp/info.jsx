@@ -219,7 +219,7 @@ export default class CorpInfo extends React.Component {
           label="删除企业"
           field="一旦你删除了企业，企业内所有数据内容都将会被永久删除并不可恢复，请谨慎对待！"
           action={<Button type="danger" size="large">删除企业</Button>}
-        />*/}
+        /> */}
       </Card>);
   }
   renderEnterpriseForm() {

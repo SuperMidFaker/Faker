@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from '../form/headForm';
 import messages from '../../message.i18n';
-import { closeClearanceModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalClear } from 'common/reducers/cwmShFtz';
+import { closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
+const Search = Input.Search;
 const Option = Select.Option;
 
 @injectIntl
@@ -40,9 +40,9 @@ const Option = Select.Option;
     })),
     submitting: state.cwmShFtz.submitting,
   }),
-  { closeClearanceModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalClear }
+  { closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl }
 )
-export default class ClearanceModal extends Component {
+export default class NormalDeclModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     reload: PropTypes.func.isRequired,
@@ -59,7 +59,7 @@ export default class ClearanceModal extends Component {
     this.props.loadParams();
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
-        scrollY: (window.innerHeight - 460) / 2,
+        scrollY: (window.innerHeight - 460),
       });
     }
   }
@@ -79,10 +79,10 @@ export default class ClearanceModal extends Component {
   }
 
   msg = key => formatMsg(this.props.intl, key);
-  portionRegColumns = [{
+  normalRegColumns = [{
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
-    width: 300,
+    width: 180,
   }, {
     title: '货主',
     dataIndex: 'owner_name',
@@ -99,6 +99,10 @@ export default class ClearanceModal extends Component {
   }]
 
   regDetailColumns = [{
+    title: '出库单号',
+    dataIndex: 'ftz_rel_no',
+    width: 180,
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
@@ -186,7 +190,7 @@ export default class ClearanceModal extends Component {
   }
   handleCancel = () => {
     this.setState({ ownerCusCode: '', normalRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
-    this.props.closeClearanceModal();
+    this.props.closeNormalDeclModal();
   }
   handleOwnerChange = (ownerCusCode) => {
     this.setState({ ownerCusCode });
@@ -238,7 +242,7 @@ export default class ClearanceModal extends Component {
       name: own.name,
     }))[0];
     const { loginId, loginName } = this.props;
-    this.props.beginNormalClear(this.state.ietype, detailIds, relCounts, owner, loginId, loginName).then((result) => {
+    this.props.beginNormalDecl(this.state.ietype, detailIds, relCounts, owner, loginId, loginName).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -250,7 +254,7 @@ export default class ClearanceModal extends Component {
 
   render() {
     const { submitting } = this.props;
-    const { relNo, relDateRange, ownerCusCode } = this.state;
+    const { relNo, ownerCusCode } = this.state;
     const extraForm = (
       <Form layout="inline" style={{ marginLeft: 16 }}>
         <FormItem label="货主">
@@ -261,11 +265,8 @@ export default class ClearanceModal extends Component {
               </Option>))}
           </Select>
         </FormItem>
-        <FormItem label="单号">
+        <FormItem label="出库单号">
           <Input value={relNo} onChange={this.handleRelNoChange} />
-        </FormItem>
-        <FormItem label="出库日期">
-          <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
         </FormItem>
         <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
       </Form>);
@@ -280,23 +281,35 @@ export default class ClearanceModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+        <Card noHovering bodyStyle={{ padding: 8, paddingBottom: 0 }}>
           <HeadForm />
         </Card>
-        <Card title="普通出库单" extra={extraForm} bodyStyle={{ padding: 0 }} noHovering>
-          <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.normalRegs} rowKey="id"
-              scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-            />
-          </div>
-        </Card>
-        <Card title="报关清单明细" bodyStyle={{ padding: 0 }} noHovering>
-          <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
-              scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-            />
-          </div>
-        </Card>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
+              <div className="table-panel table-fixed-layout">
+                <div className="toolbar">
+                  {extraForm}
+                </div>
+                <Table size="middle" columns={this.normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
+                  scroll={{ x: this.normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                />
+              </div>
+            </Card>
+          </Col>
+          <Col span={12}>
+            <Card title="报关清单明细" bodyStyle={{ padding: 0 }} noHovering>
+              <div className="table-panel table-fixed-layout">
+                <div className="toolbar">
+                  <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                </div>
+                <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+                  scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                />
+              </div>
+            </Card>
+          </Col>
+        </Row>
       </Modal>
     );
   }
