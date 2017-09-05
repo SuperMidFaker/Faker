@@ -37,6 +37,7 @@ const OptGroup = Select.OptGroup;
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    loading: state.cwmShFtz.loading,
   }),
   { loadEntryRegDatas, switchDefaultWhse, showDock }
 )
@@ -303,6 +304,7 @@ export default class SHFTZEntryList extends React.Component {
               indentSize={8}
               rowKey="id"
               defaultExpandedRowKeys={['1']}
+              loading={this.props.loading}
             />
             <ReceivingDockPanel />
             <OrderDockPanel />
