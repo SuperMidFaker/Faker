@@ -227,7 +227,7 @@ export default class PutawayDetailsPane extends React.Component {
           </div>
         </div>
         <Table size="middle" columns={columns} rowSelection={rowSelection} indentSize={0}
-          dataSource={dataSource} rowKey="trace_id"
+          dataSource={dataSource} rowKey="id"
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           loading={this.props.loading}
         />

@@ -253,7 +253,7 @@ export default class ReceiveDetailsPane extends React.Component {
             }
           </div> */}
         </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="asn_seq_no"
+        <Table size="middle" columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
           loading={this.state.loading}
         />

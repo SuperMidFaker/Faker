@@ -156,8 +156,6 @@ export default class StockInventoryList extends React.Component {
     className: 'cell-align-right',
     width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    dataIndex: 'spacer',
   }]
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);

@@ -105,7 +105,9 @@ export default class HeadCard extends Component {
             <FormItem label="供货商">
               {getFieldDecorator('supplier_name', {
                 initialValue: asnHead && asnHead.supplier_name,
-              })(<Select mode="combobox" showSearch optionFilterProp="searchText">
+              })(<Select allowClear showSearch showArrow optionFilterProp="searchText"
+                notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加供货商</a>}
+              >
                 {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}
               </Select>)}
             </FormItem>

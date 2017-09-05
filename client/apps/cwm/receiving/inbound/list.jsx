@@ -84,7 +84,7 @@ export default class ReceivingInboundList extends React.Component {
     width: 160,
     fixed: 'left',
   }, {
-    title: 'ANS编号',
+    title: 'ASN编号',
     width: 150,
     dataIndex: 'asn_no',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
