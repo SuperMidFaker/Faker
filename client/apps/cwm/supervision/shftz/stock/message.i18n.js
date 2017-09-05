@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   billNo: {
     id: 'cwm.supervision.shftz.stock.billNo',
-    defaultMessage: '单号',
+    defaultMessage: '海关入库单',
   },
   detailId: {
     id: 'cwm.supervision.shftz.stock.detailid',
@@ -112,7 +112,7 @@ const messages = defineMessages({
   },
   cusNo: {
     id: 'cwm.supervision.shftz.stock.cusNo',
-    defaultMessage: '海关进库单号',
+    defaultMessage: '报关单号',
   },
   export: {
     id: 'cwm.supervision.shftz.stock.export',

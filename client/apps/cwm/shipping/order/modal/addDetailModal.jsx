@@ -41,9 +41,6 @@ export default class AddDetailModal extends Component {
     amount: 0,
     skus: [],
   }
-  componentWillMount() {
-    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code);
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.product !== this.props.product) {
       const product = nextProps.product;

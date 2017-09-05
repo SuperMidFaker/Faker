@@ -250,7 +250,7 @@ export default class MovementList extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys}
-            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="movement_no" loading={loading}
+            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
           />
         </Content>
         <MovementModal />

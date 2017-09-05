@@ -735,7 +735,7 @@ export function loadLotInfo(asnNo) {
   };
 }
 
-export function getSuppliers(tenantId, whseCode) {
+export function getSuppliers(tenantId, whseCode, ownerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -745,7 +745,7 @@ export function getSuppliers(tenantId, whseCode) {
       ],
       endpoint: 'v1/cwm/get/suppliers',
       method: 'get',
-      params: { tenantId, whseCode },
+      params: { tenantId, whseCode, ownerPartnerId },
     },
   };
 }
