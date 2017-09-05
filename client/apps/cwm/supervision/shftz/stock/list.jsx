@@ -37,6 +37,7 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
+    loading: state.cwmShFtz.loading,
   }),
   { loadFtzStocks, loadParams, switchDefaultWhse }
 )
@@ -307,7 +308,7 @@ export default class SHFTZStockList extends React.Component {
             <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
             </Card>
-            <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}
+            <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
               columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
             />
           </Content>

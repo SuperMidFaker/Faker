@@ -38,6 +38,7 @@ const OptGroup = Select.OptGroup;
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    loading: state.cwmShFtz.loading,
   }),
   { loadEntryRegDatas, switchDefaultWhse, showDock, showTransferInModal, deleteVirtualTransfer }
 )
@@ -308,6 +309,7 @@ export default class SHFTZTransferInList extends React.Component {
               toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
+              loading={this.props.loading}
             />
             <ReceivingDockPanel />
             <OrderDockPanel />

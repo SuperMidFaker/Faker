@@ -32,6 +32,7 @@ const OptGroup = Select.OptGroup;
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    loading: state.cwmShFtz.loading,
   }),
   { openClearanceModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
 )
@@ -272,6 +273,7 @@ export default class SHFTZClearanceList extends React.Component {
             <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
               toolbarActions={toolbarActions} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 220), 0) }}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+              loading={this.props.loading}
             />
           </Content>
         </Layout>

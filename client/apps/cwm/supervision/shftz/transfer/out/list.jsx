@@ -36,6 +36,7 @@ const RadioButton = Radio.Button;
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    loading: state.cwmShFtz.loading,
   }),
   { loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
@@ -272,6 +273,7 @@ export default class SHFTZTransferOutList extends React.Component {
               rowKey="id"
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
+              loading={this.props.loading}
             />
             <ShippingDockPanel />
             <OrderDockPanel />
