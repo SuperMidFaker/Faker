@@ -471,7 +471,7 @@ export default class ShippingOrderList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="so_no"
+          <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
             toolbarActions={toolbarActions} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}
             bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
           />

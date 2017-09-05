@@ -267,7 +267,7 @@ export default class OrderDetailsPane extends React.Component {
               <Button loading={submitting} type="primary" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
           </div>
         </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="seq_no"
+        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
           loading={this.state.loading}
         />

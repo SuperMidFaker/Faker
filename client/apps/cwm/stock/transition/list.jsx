@@ -391,7 +391,7 @@ export default class StockTransitionList extends React.Component {
           </Card>
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="trace_id" scrollOffset={390}
+            columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" scrollOffset={390}
           />
           <TransitionModal />
           <BatchTransitModal />

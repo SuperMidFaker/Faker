@@ -8,6 +8,8 @@ import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import moment from 'moment';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { getSuppliers } from 'common/reducers/cwmReceive';
+import WhseSuppliersModal from '../../../settings/warehouse/modal/whseSuppliersModal';
+import { toggleSupplierModal } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../../message.i18n';
 
 const dateFormat = 'YYYY/MM/DD';
@@ -24,16 +26,13 @@ const RadioGroup = Radio.Group;
     defaultWhse: state.cwmContext.defaultWhse,
     suppliers: state.cwmReceive.suppliers,
   }),
-  { loadSkuParams, getSuppliers }
+  { loadSkuParams, getSuppliers, toggleSupplierModal }
 )
 export default class HeadCard extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,
     handleOwnerChange: PropTypes.func,
-  }
-  componentWillMount() {
-    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.asnHead !== this.props.asnHead) {
@@ -74,6 +73,7 @@ export default class HeadCard extends Component {
   handleSelect = (value) => {
     this.props.handleOwnerChange(true, value);
     this.props.loadSkuParams(value);
+    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, value);
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse } = this.props;
@@ -105,8 +105,8 @@ export default class HeadCard extends Component {
             <FormItem label="供货商">
               {getFieldDecorator('supplier_name', {
                 initialValue: asnHead && asnHead.supplier_name,
-              })(<Select allowClear showSearch showArrow optionFilterProp="searchText"
-                notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加供货商</a>}
+              })(<Select allowClear showSearch showArrow optionFilterProp="searchText" disabled={!this.props.form.getFieldValue('owner_partner_id')}
+                notFoundContent={<a onClick={() => this.props.toggleSupplierModal(true)}>+ 添加供货商</a>}
               >
                 {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}
               </Select>)}
@@ -168,6 +168,7 @@ export default class HeadCard extends Component {
             </Col>
           }
         </Row>
+        <WhseSuppliersModal whseCode={defaultWhse.code} ownerPartnerId={this.props.form.getFieldValue('owner_partner_id')} />
       </Card>
     );
   }

@@ -421,7 +421,7 @@ export default class ReceivingASNList extends React.Component {
         <Content className="main-content" key="main">
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="asn_no" loading={loading}
+            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
             locale={{ emptyText: '没有当前状态的ASN' }}
           />
         </Content>
