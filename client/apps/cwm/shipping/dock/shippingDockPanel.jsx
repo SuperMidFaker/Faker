@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Icon, Col, Row, Tabs, Button, Menu, Modal, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { CWM_SO_STATUS } from 'common/constants';
+import { CWM_SO_STATUS, CWM_OUTBOUND_STATUS } from 'common/constants';
 import { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, cancelOutbound, closeOutbound } from 'common/reducers/cwmShippingOrder';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import InfoItem from 'client/components/InfoItem';
@@ -48,6 +48,8 @@ export default class ShippingDockPanel extends React.Component {
   state = {
     soHead: {},
     soBody: [],
+    outbounds: [],
+    closeModalVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.order.so_no && !this.props.visible && nextProps.visible) {
@@ -58,6 +60,7 @@ export default class ShippingDockPanel extends React.Component {
             this.setState({
               soHead: result.data.soHead ? result.data.soHead : {},
               soBody: result.data.soBody,
+              outbounds: result.data.outbounds,
             });
           }
         }
@@ -84,11 +87,13 @@ export default class ShippingDockPanel extends React.Component {
       }
     });
   }
-  closeOutbound = (soNo) => {
+  closeOutbound = (pickedDealtype) => {
     const { tenantId, loginName } = this.props;
+    const { soHead } = this.state;
     this.props.closeOutbound({
-      so_no: soNo, tenantId, loginName,
+      so_no: soHead.so_no, tenantId, loginName, pickedDealtype,
     }).then((result) => {
+      this.setState({ closeModalVisible: true });
       if (result.error) {
         message.error(result.error.message);
       }
@@ -106,14 +111,7 @@ export default class ShippingDockPanel extends React.Component {
         onCancel() {},
       });
     } else if (e.key === 'close') {
-      Modal.confirm({
-        title: '确认关订单?',
-        content: '确认后此订单将会被提前完成',
-        onOk: () => {
-          this.closeOutbound(soHead.so_no);
-        },
-        onCancel() {},
-      });
+      this.setState({ closeModalVisible: true });
     }
   }
   goHomeDock = () => {
@@ -200,12 +198,13 @@ export default class ShippingDockPanel extends React.Component {
     );
   }
   renderMenu() {
-    const { soHead } = this.state;
+    const { outbounds } = this.state;
+    const showClose = outbounds.some(item => item.status >= CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value);
     const menuItems = [];
-    if (soHead.status === CWM_SO_STATUS.PENDING.value || soHead.status === CWM_SO_STATUS.OUTBOUND.value) {
-      menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消订单</Menu.Item>);
-    } else if (soHead.status === CWM_SO_STATUS.PARTIAL.value) {
+    if (showClose) {
       menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭订单</Menu.Item>);
+    } else {
+      menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消订单</Menu.Item>);
     }
     menuItems.push(<Menu.Item key="export"><Icon type="export" /><span onClick={this.handleExportExcel}>导出订单</span></Menu.Item>);
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
@@ -222,6 +221,18 @@ export default class ShippingDockPanel extends React.Component {
         extra={this.renderExtra()}
       >
         {this.renderTabs()}
+        <Modal
+          visible={this.state.closeModalVisible}
+          onCancel={() => this.setState({ closeModalVisible: false })}
+          title="请选择"
+          footer={[
+            <Button key="back" size="large" onClick={() => this.closeOutbound('move')}>移库</Button>,
+            <Button key="submit" type="primary" size="large" onClick={() => this.closeOutbound('return')}>放回</Button>,
+          ]}
+        >
+          <p>对已捡货物如何处理，移库：则会生成移库单，放回：则按原路退回至未分配状态</p>
+          <p>对未捡货物则默认原路退回至未分配状态</p>
+        </Modal>
       </DockPanel>
     );
   }
