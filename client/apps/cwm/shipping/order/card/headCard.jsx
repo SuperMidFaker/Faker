@@ -9,6 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { loadSkuParams } from 'common/reducers/cwmSku';
+import { getSuppliers } from 'common/reducers/cwmReceive';
 
 const dateFormat = 'YYYY/MM/DD';
 const formatMsg = format(messages);
@@ -20,10 +21,11 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadSkuParams }
+  { loadSkuParams, getSuppliers }
 )
 export default class HeadCard extends Component {
   static propTypes = {
@@ -76,6 +78,7 @@ export default class HeadCard extends Component {
   handleSelect = (value) => {
     this.props.handleOwnerChange(true, value);
     this.props.loadSkuParams(value);
+    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, value);
   }
   render() {
     const { form: { getFieldDecorator }, owners, soHead, defaultWhse } = this.props;

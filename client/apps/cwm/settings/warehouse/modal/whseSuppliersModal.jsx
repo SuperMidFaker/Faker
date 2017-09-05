@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Input, Form, Select } from 'antd';
-import { toggleSupplierModal, addSupplier, loadSuppliers, updateSupplier } from 'common/reducers/cwmWarehouse';
+import { toggleSupplierModal, addSupplier, loadSuppliers, updateSupplier, loadwhseOwners } from 'common/reducers/cwmWarehouse';
+import { getSuppliers } from 'common/reducers/cwmReceive';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -18,7 +19,7 @@ const Option = Select.Option;
     visible: state.cwmWarehouse.supplierModal.visible,
     supplier: state.cwmWarehouse.supplierModal.supplier,
   }),
-  { toggleSupplierModal, addSupplier, loadSuppliers, updateSupplier }
+  { toggleSupplierModal, addSupplier, loadSuppliers, updateSupplier, loadwhseOwners, getSuppliers }
 )
 
 @Form.create()
@@ -26,6 +27,10 @@ export default class SuppliersModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
+    ownerPartnerId: PropTypes.number,
+  }
+  componentWillMount() {
+    this.props.loadwhseOwners(this.props.whseCode, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible && nextProps.supplier.id) {
@@ -35,9 +40,10 @@ export default class SuppliersModal extends Component {
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
     this.props.toggleSupplierModal(false);
+    this.props.form.resetFields();
   }
   handleAdd = () => {
-    const { tenantId, whseCode, loginId, whseOwners, supplier } = this.props;
+    const { tenantId, whseCode, loginId, whseOwners, supplier, ownerPartnerId } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const ownerTenantId = whseOwners.find(owner => owner.owner_partner_id === values.owner_partner_id).owner_tenant_id;
@@ -51,14 +57,18 @@ export default class SuppliersModal extends Component {
             if (!result.error) {
               this.props.loadSuppliers(whseCode, tenantId);
               this.props.toggleSupplierModal(false);
+              if (ownerPartnerId) {
+                this.props.getSuppliers(tenantId, whseCode, ownerPartnerId);
+              }
             }
           });
         }
       }
+      this.props.form.resetFields();
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, whseOwners } = this.props;
+    const { form: { getFieldDecorator }, visible, whseOwners, ownerPartnerId } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
@@ -75,12 +85,15 @@ export default class SuppliersModal extends Component {
             {getFieldDecorator('customs_code')(<Input />)}
           </FormItem>
           <FormItem label="关联货主:" required {...formItemLayout}>
-            {getFieldDecorator('owner_partner_id')(
+            {getFieldDecorator('owner_partner_id', {
+              initialValue: ownerPartnerId,
+            })(
               <Select id="select"
                 showSearch
                 placeholder=""
                 optionFilterProp="children"
                 notFoundContent=""
+                disabled={!!ownerPartnerId}
               >
                 {
                   whseOwners.map(pt => (
