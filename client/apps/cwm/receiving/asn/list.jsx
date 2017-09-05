@@ -77,7 +77,7 @@ export default class ReceivingASNList extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: 'ANS编号',
+    title: 'ASN编号',
     dataIndex: 'asn_no',
     width: 150,
     fixed: 'left',

@@ -131,14 +131,22 @@ export default function reducer(state = initialState, action) {
       return { ...state, clearanceModal: { ...state.clearanceModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_CLEARANCE_MODAL:
       return { ...state, clearanceModal: { ...state.clearanceModal, visible: false } };
+    case actionTypes.ENTRY_REG_LOAD:
+      return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
-      return { ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter) };
+      return { ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false };
+    case actionTypes.ENTRY_REG_LOAD_FAIL:
+      return { ...state, loading: false };
     case actionTypes.ENTRY_DETAILS_LOAD_SUCCEED:
       return { ...state, ...action.result.data };
     case actionTypes.PARAMS_LOAD_SUCCEED:
       return { ...state, params: action.result.data };
+    case actionTypes.RELEASE_REG_LOAD:
+      return { ...state, loading: true };
     case actionTypes.RELEASE_REG_LOAD_SUCCEED:
-      return { ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter) };
+      return { ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false };
+    case actionTypes.RELEASE_REG_LOAD_FAIL:
+      return { ...state, loading: false };
     case actionTypes.PRODUCT_CARGO_LOAD:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.PRODUCT_CARGO_LOAD_SUCCEED:
@@ -228,8 +236,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, submitting: false };
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
+    case actionTypes.LOAD_STOCKS:
+      return { ...state, loading: true };
     case actionTypes.LOAD_STOCKS_SUCCEED:
-      return { ...state, stockDatas: action.result.data };
+      return { ...state, stockDatas: action.result.data, loading: false };
+    case actionTypes.LOAD_STOCKS_FAIL:
+      return { ...state, loading: false };
     case actionTypes.SYNC_SKU:
       return { ...state, submitting: true };
     case actionTypes.SYNC_SKU_SUCCESS:

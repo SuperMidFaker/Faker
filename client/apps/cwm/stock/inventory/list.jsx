@@ -72,7 +72,7 @@ export default class StockInventoryList extends React.Component {
     dataIndex: 'product_sku',
     width: 180,
     sorter: true,
-    render: (o, row) => (<PackagePopover ownerPartnerId={row.owner_partner_id} sku={o} />),
+    render: (o, row) => o && (<PackagePopover ownerPartnerId={row.owner_partner_id} sku={o} />),
   }, {
     title: this.msg('descCN'),
     dataIndex: 'name',
@@ -156,8 +156,6 @@ export default class StockInventoryList extends React.Component {
     className: 'cell-align-right',
     width: 120,
     render: (text, row) => this.renderNormalCol(text, row),
-  }, {
-    dataIndex: 'spacer',
   }]
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);

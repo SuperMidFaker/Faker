@@ -78,7 +78,7 @@ export default class SHFTZRelDetail extends Component {
   state = {
     tabKey: '',
     editable: false,
-    groupVals: ['supplier', 'trxn_mode'],
+    groupVals: ['supplier', 'trxn_mode', 'currency'],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {

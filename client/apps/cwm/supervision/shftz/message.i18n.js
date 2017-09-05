@@ -39,7 +39,7 @@ const messages = defineMessages({
   },
   entrySearchPlaceholder: {
     id: 'cms.supervision.shftz.entry.search.placeholder',
-    defaultMessage: 'ANS编号/报关单号/海关进库单号',
+    defaultMessage: 'ASN编号/报关单号/海关进库单号',
   },
   releaseSearchPlaceholder: {
     id: 'cms.supervision.shftz.release.search.placeholder',

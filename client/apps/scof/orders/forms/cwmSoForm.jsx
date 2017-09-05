@@ -69,7 +69,7 @@ export default class CwmSoForm extends Component {
     const { recParams, formData } = this.props;
     const node = formData.node;
     return (
-      <Card>
+      <Card noHovering>
         <Row gutter={20}>
           <Col sm={24} lg={8}>
             <FormItem label="仓库">
