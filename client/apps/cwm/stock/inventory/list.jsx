@@ -14,8 +14,9 @@ import QueryForm from './queryForm';
 import PackagePopover from '../../common/popover/packagePopover';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
+import PageHeader from 'client/components/PageHeader';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Option = Select.Option;
 
 @injectIntl
@@ -224,28 +225,30 @@ export default class StockInventoryList extends React.Component {
     });
     return (
       <Layout>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                  }
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              库存余量
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {
+                      whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                    }
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                库存余量
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg(CWM_STOCK_SEARCH_TYPE[listFilter.search_type - 1].text)}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button size="large" icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content" key="main">
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />

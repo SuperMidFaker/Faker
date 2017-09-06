@@ -16,13 +16,14 @@ import ReceivingDockPanel from '../../../receiving/dock/receivingDockPanel';
 import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
+import PageHeader from 'client/components/PageHeader';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -268,31 +269,34 @@ export default class SHFTZEntryList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                  {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzEntryReg')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-              <RadioButton value="all">全部状态</RadioButton>
-              <RadioButton value="pending">待备案</RadioButton>
-              <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">备案完成</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.type} onChange={this.handleTypeChange} size="large">
-              <RadioButton value="all">全部类型</RadioButton>
-              <RadioButton value="bonded">{CWM_ASN_BONDED_REGTYPES[0].ftztext}</RadioButton>
-              <RadioButton value="export" disabled>{CWM_ASN_BONDED_REGTYPES[1].ftztext}</RadioButton>
-            </RadioGroup>
-            <div className="page-header-tools" />
-          </Header>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
+                  </Select>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('ftzEntryReg')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Nav>
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+                <RadioButton value="all">全部状态</RadioButton>
+                <RadioButton value="pending">待备案</RadioButton>
+                <RadioButton value="sent">已发送</RadioButton>
+                <RadioButton value="completed">备案完成</RadioButton>
+              </RadioGroup>
+              <span />
+              <RadioGroup value={listFilter.type} onChange={this.handleTypeChange} size="large">
+                <RadioButton value="all">全部类型</RadioButton>
+                <RadioButton value="bonded">{CWM_ASN_BONDED_REGTYPES[0].ftztext}</RadioButton>
+                <RadioButton value="export" disabled>{CWM_ASN_BONDED_REGTYPES[1].ftztext}</RadioButton>
+              </RadioGroup>
+            </PageHeader.Nav>
+          </PageHeader>
           <Content className="main-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}

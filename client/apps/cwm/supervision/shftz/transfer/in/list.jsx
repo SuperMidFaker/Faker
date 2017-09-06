@@ -21,9 +21,10 @@ import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import TransferInModal from './modal/transferInModal';
+import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -277,27 +278,31 @@ export default class SHFTZTransferInList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                  {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzTransferIn')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-              <RadioButton value="all">全部状态</RadioButton>
-              <RadioButton value="pending">未接收</RadioButton>
-              <RadioButton value="received">已接收</RadioButton>
-              <RadioButton value="verified">已核对</RadioButton>
-            </RadioGroup>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
+                  </Select>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('ftzTransferIn')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Nav>
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+                <RadioButton value="all">全部状态</RadioButton>
+                <RadioButton value="pending">未接收</RadioButton>
+                <RadioButton value="received">已接收</RadioButton>
+                <RadioButton value="verified">已核对</RadioButton>
+              </RadioGroup>
+            </PageHeader.Nav>
+            <PageHeader.Actions>
               <Button size="large" icon="plus" onClick={this.handleCreateTransIn}>转移入分拨</Button>
-            </div>
-          </Header>
+            </PageHeader.Actions>
+          </PageHeader>
           <Content className="main-content" key="main">
             <DataTable
               columns={this.columns}

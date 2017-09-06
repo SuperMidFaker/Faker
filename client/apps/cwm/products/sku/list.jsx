@@ -12,10 +12,11 @@ import { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, delSku, openApplyPac
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
+import PageHeader from 'client/components/PageHeader';
 import { formatMsg } from '../message.i18n';
 import moment from 'moment';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Search = Input.Search;
 const Option = Select.Option;
 const Panel = Collapse.Panel;
@@ -295,18 +296,20 @@ export default class CWMSkuList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
+          <PageHeader>
             {owner.id &&
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                货主
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {owner.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>}
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  货主
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {owner.name}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>}
             {owner.id &&
-            <div className="page-header-tools">
+            <PageHeader.Actions>
               <Button size="large" icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>
                 {this.msg('syncTradeItems')}
               </Button>
@@ -317,8 +320,8 @@ export default class CWMSkuList extends React.Component {
                 {this.msg('createSKU')}
               </Button>
               <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider} />
-            </div>}
-          </Header>
+            </PageHeader.Actions>}
+          </PageHeader>
           <Content className="main-content" key="main">
             <DataTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
               scroll={{ x: 1400 }} loading={loading} toolbarActions={toolbarActions} bulkActions={bulkActions}

@@ -12,6 +12,7 @@ import messages from '../../message.i18n';
 import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter, changeColumns } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
+import AllocatedPopover from '../../../common/popover/allocatedPopover';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -175,11 +176,11 @@ export default class AllocatingModal extends Component {
     dataIndex: 'alloc_qty',
     width: 125,
     className: 'cell-align-right',
-    render: (text) => {
+    render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <span className="text-warning">{text}</span>;
+        return <AllocatedPopover traceId={record.trace_id} text={text} />;
       }
     },
   }, {

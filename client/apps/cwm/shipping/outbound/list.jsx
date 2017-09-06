@@ -21,9 +21,10 @@ import messages from '../message.i18n';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -283,28 +284,32 @@ export default class OutboundList extends React.Component {
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                  whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                }
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('shippingOutbound')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} size="large">
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="created">待出库</RadioButton>
-            <RadioButton value="allocating">分配</RadioButton>
-            <RadioButton value="picking">拣货</RadioButton>
-            <RadioButton value="shipping">发货</RadioButton>
-            <RadioButton value="completed">已出库</RadioButton>
-          </RadioGroup>
-        </Header>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {
+                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                  }
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('shippingOutbound')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup defaultValue={filters.status} onChange={this.handleStatusChange} size="large">
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="created">待出库</RadioButton>
+              <RadioButton value="allocating">分配</RadioButton>
+              <RadioButton value="picking">拣货</RadioButton>
+              <RadioButton value="shipping">发货</RadioButton>
+              <RadioButton value="completed">已出库</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+        </PageHeader>
         <Content className="main-content" key="main">
           <DataTable columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1300 }} loading={loading}
             toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}

@@ -13,11 +13,12 @@ import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import ModuleMenu from '../menu';
 import NormalDeclModal from './modal/normalDeclModal';
+import PageHeader from 'client/components/PageHeader';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -247,28 +248,32 @@ export default class SHFTZClearanceList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                  {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('ftzClearance')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-              <RadioButton value="manifesting">制单中</RadioButton>
-              <RadioButton value="sent">已申报</RadioButton>
-              <RadioButton value="cleared">已放行</RadioButton>
-            </RadioGroup>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
+                  </Select>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('ftzClearance')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Nav>
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+                <RadioButton value="manifesting">制单中</RadioButton>
+                <RadioButton value="sent">已申报</RadioButton>
+                <RadioButton value="cleared">已放行</RadioButton>
+              </RadioGroup>
+            </PageHeader.Nav>
+            <PageHeader.Actions>
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNormalDecl}>
                 {this.msg('createClearance')}
               </Button>
-            </div>
-          </Header>
+            </PageHeader.Actions>
+          </PageHeader>
           <Content className="main-content" key="main">
             <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
               toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}

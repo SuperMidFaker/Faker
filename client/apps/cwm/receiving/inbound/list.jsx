@@ -20,9 +20,10 @@ import Strip from 'client/components/Strip';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -276,27 +277,31 @@ export default class ReceivingInboundList extends React.Component {
       </Select></span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                  whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                }
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('receivingInound')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large" >
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="create">待入库</RadioButton>
-            <RadioButton value="receive">收货</RadioButton>
-            <RadioButton value="putaway">上架</RadioButton>
-            <RadioButton value="completed">已入库</RadioButton>
-          </RadioGroup>
-        </Header>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {
+                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                  }
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('receivingInound')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large" >
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="create">待入库</RadioButton>
+              <RadioButton value="receive">收货</RadioButton>
+              <RadioButton value="putaway">上架</RadioButton>
+              <RadioButton value="completed">已入库</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+        </PageHeader>
         <Content className="main-content" key="main">
           <DataTable toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
