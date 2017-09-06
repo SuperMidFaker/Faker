@@ -21,6 +21,10 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.transfer.out',
     defaultMessage: '区内转出',
   },
+  ftzTransferSelf: {
+    id: 'cwm.supervision.shftz.transfer.self',
+    defaultMessage: '同库转移',
+  },
   ftzClearance: {
     id: 'cwm.supervision.shftz.clearance',
     defaultMessage: '普通出库清关',
