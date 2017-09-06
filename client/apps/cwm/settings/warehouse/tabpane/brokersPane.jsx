@@ -4,9 +4,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Table, Tag } from 'antd';
-import { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus } from 'common/reducers/cwmWarehouse';
+import { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
-import CarrierModal from '../modal/whseCarrierModal';
+import BrokerModal from '../modal/whseBrokersModal';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -14,11 +14,11 @@ import { formatMsg } from '../message.i18n';
   state => ({
     loginId: state.account.loginId,
     tenantId: state.account.tenantId,
-    carriers: state.cwmWarehouse.carriers,
+    brokers: state.cwmWarehouse.brokers,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus }
+  { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus }
 )
 export default class BrokersPane extends Component {
   static propTypes = {
@@ -30,11 +30,11 @@ export default class BrokersPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+    this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadCarriers(nextProps.whseCode, this.props.tenantId);
+      this.props.loadBrokers(nextProps.whseCode, this.props.tenantId);
     }
   }
   columns = [{
@@ -75,42 +75,42 @@ export default class BrokersPane extends Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onHit={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowUpdater onHit={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
         <RowUpdater onHit={() => this.handleEditCarrier(record)} label="修改" row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.deleteCarrier(record.id)} label="删除" row={record} />
+        <RowUpdater onHit={() => this.deleteBroker(record.id)} label="删除" row={record} />
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
-  changeCarrierStatus = (id, status) => {
-    this.props.changeCarrierStatus(id, status).then((result) => {
+  changeBrokerStatus = (id, status) => {
+    this.props.changeBrokerStatus(id, status).then((result) => {
       if (!result.error) {
-        this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+        this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
       }
     });
   }
-  deleteCarrier = (id) => {
-    this.props.deleteCarrier(id).then((result) => {
+  deleteBroker = (id) => {
+    this.props.deleteBroker(id).then((result) => {
       if (!result.error) {
-        this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+        this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
       }
     });
   }
-  handleEditCarrier = (carrier) => {
-    this.props.toggleCarrierModal(true, carrier);
+  handleEditCarrier = (broker) => {
+    this.props.toggleBrokerModal(true, broker);
   }
   render() {
-    const { whseCode, carriers } = this.props;
+    const { whseCode, brokers } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加报关代理</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleBrokerModal(true)}>添加报关代理</Button>
         </div>
-        <Table columns={this.columns} dataSource={carriers} rowKey="id" />
-        <CarrierModal whseCode={whseCode} />
+        <Table columns={this.columns} dataSource={brokers} rowKey="id" />
+        <BrokerModal whseCode={whseCode} />
       </div>
     );
   }

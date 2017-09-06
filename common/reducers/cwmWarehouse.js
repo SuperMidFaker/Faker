@@ -49,6 +49,12 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'DELETE_CARRIER', 'DELETE_CARRIER_SUCCEED', 'DELETE_CARRIER_FAIL',
   'UPDATE_CARRIER', 'UPDATE_CARRIER_SUCCEED', 'UPDATE_CARRIER_FAIL',
   'LOAD_LIMIT_LOCATIONS', 'LOAD_LIMIT_LOCATIONS_SUCCEED', 'LOAD_LIMIT_LOCATIONS_FAIL',
+  'LOAD_BROKERS', 'LOAD_BROKERS_SUCCEED', 'LOAD_BROKERS_FAIL',
+  'TOGGLE_BROKER_MODAL',
+  'ADD_BROKER', 'ADD_BROKER_SUCCEED', 'ADD_BROKER_FAIL',
+  'UPDATE_BROKER_STATUS', 'UPDATE_BROKER_STATUS_SUCCEED', 'UPDATE_BROKER_STATUS_FAIL',
+  'DELETE_BROKER', 'DELETE_BROKER_SUCCEED', 'DELETE_BROKER_FAIL',
+  'UPDATE_BROKER', 'UPDATE_BROKER_SUCCEED', 'UPDATE_BROKER_FAIL',
 ]);
 
 const initialState = {
@@ -96,6 +102,11 @@ const initialState = {
   carrierModal: {
     visible: false,
     carrier: {},
+  },
+  brokers: [],
+  brokerModal: {
+    visible: false,
+    broker: {},
   },
 };
 
@@ -153,6 +164,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, carriers: action.result.data };
     case actionTypes.TOGGLE_CARRIER_MODAL:
       return { ...state, carrierModal: { ...state.carrierModal, ...action.data } };
+    case actionTypes.LOAD_BROKERS_SUCCEED:
+      return { ...state, brokers: action.result.data };
+    case actionTypes.TOGGLE_BROKER_MODAL:
+      return { ...state, brokerModal: { ...state.brokerModal, ...action.data } };
     default:
       return state;
   }
@@ -821,6 +836,88 @@ export function updateCarrier(data, id, loginId) {
         actionTypes.UPDATE_CARRIER_FAIL,
       ],
       endpoint: 'v1/cwm/warehouse/carrier/update',
+      method: 'post',
+      data: { data, id, loginId },
+    },
+  };
+}
+
+export function loadBrokers(whseCode, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BROKERS,
+        actionTypes.LOAD_BROKERS_SUCCEED,
+        actionTypes.LOAD_BROKERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/brokers/load',
+      method: 'get',
+      params: { whseCode, tenantId },
+    },
+  };
+}
+
+export function toggleBrokerModal(visible, broker = {}) {
+  return {
+    type: actionTypes.TOGGLE_BROKER_MODAL,
+    data: { visible, broker },
+  };
+}
+
+export function addBroker(data, tenantId, whseCode, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ADD_BROKER,
+        actionTypes.ADD_BROKER_SUCCEED,
+        actionTypes.ADD_BROKER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/broker/add',
+      method: 'post',
+      data: { data, tenantId, whseCode, loginId },
+    },
+  };
+}
+
+export function changeBrokerStatus(id, status, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_BROKER_STATUS,
+        actionTypes.UPDATE_BROKER_STATUS_SUCCEED,
+        actionTypes.UPDATE_BROKER_STATUS_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/broker/status/update',
+      method: 'post',
+      data: { id, status, loginId },
+    },
+  };
+}
+
+export function deleteBroker(id) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_BROKER,
+        actionTypes.DELETE_BROKER_SUCCEED,
+        actionTypes.DELETE_BROKER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/broker/delete',
+      method: 'post',
+      data: { id },
+    },
+  };
+}
+
+export function updateBroker(data, id, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_BROKER,
+        actionTypes.UPDATE_BROKER_SUCCEED,
+        actionTypes.UPDATE_BROKER_FAIL,
+      ],
+      endpoint: 'v1/cwm/warehouse/broker/update',
       method: 'post',
       data: { data, id, loginId },
     },
