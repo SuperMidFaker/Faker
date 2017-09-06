@@ -199,11 +199,13 @@ export default class ShippingDockPanel extends React.Component {
   }
   renderMenu() {
     const { outbounds } = this.state;
-    const showClose = outbounds.some(item => item.status >= CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value);
+    const showClose = outbounds.some(item => item.status >= CWM_OUTBOUND_STATUS.PARTIAL_PICKED.value && item.status < CWM_OUTBOUND_STATUS.COMPLETED.value);
+    const showCancel = outbounds.length === 0 || outbounds.some(item => item.status >= CWM_OUTBOUND_STATUS.CREATED.value && item.status <= CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
     const menuItems = [];
     if (showClose) {
       menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭订单</Menu.Item>);
-    } else {
+    }
+    if (showCancel) {
       menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消订单</Menu.Item>);
     }
     menuItems.push(<Menu.Item key="export"><Icon type="export" /><span onClick={this.handleExportExcel}>导出订单</span></Menu.Item>);
