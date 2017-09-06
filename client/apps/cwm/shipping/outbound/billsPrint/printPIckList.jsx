@@ -62,18 +62,17 @@ export default class Print extends Component {
   }
   pdfPickDetails = () => {
     const { outboundHead, pickDetails } = this.props;
-    let datas = [];
-    if (pickDetails.length !== 16) {
-      datas = pickDetails.concat([{}]);
-    }
     const pdf = [];
-    pdf.push([{ text: '项', style: 'tableHeader', alignment: 'center' }, { text: '货号', style: 'tableHeader', alignment: 'center' },
-      { text: '产品名称', style: 'tableHeader', alignment: 'center' }, { text: '待捡数', style: 'tableHeader', alignment: 'center' },
-      { text: '实件数', style: 'tableHeader', alignment: 'center' }, { text: '库位', style: 'tableHeader', alignment: 'center' },
-      { text: '扩展属性1', style: 'tableHeader', alignment: 'center' }]);
-    for (let i = 0; i < datas.length; i++) {
-      const data = datas[i];
+    pdf.push([{ text: '项', style: 'tableHeader' }, { text: '货号', style: 'tableHeader' },
+      { text: '产品名称', style: 'tableHeader' }, { text: '待捡数', style: 'tableHeader' },
+      { text: '实件数', style: 'tableHeader' }, { text: '库位', style: 'tableHeader' },
+      { text: '扩展属性1', style: 'tableHeader' }]);
+    for (let i = 0; i < pickDetails.length; i++) {
+      const data = pickDetails[i];
       pdf.push([i + 1, data.product_no || '', data.name || '', data.alloc_qty || '', '', data.location || '', '']);
+    }
+    if (pickDetails.length !== 16) {
+      pdf.push(['', '', '', '', '', '', '']);
     }
     pdf.push(['合计', '', '', outboundHead.total_alloc_qty, '', '', '']);
     return pdf;
@@ -113,12 +112,14 @@ export default class Print extends Component {
         table: {
           fontSize: 10,
           color: 'black',
+          alignment: 'center',
           margin: [2, 2, 2, 2],
         },
         tableHeader: {
           fontSize: 11,
           bold: true,
           color: 'black',
+          alignment: 'center',
           margin: [2, 5, 2, 5],
         },
         footer: {
@@ -143,7 +144,7 @@ export default class Print extends Component {
         layout: {
           hLineColor: 'gray',
           vLineColor: 'gray',
-          paddingBottom(i, node) { console.log(node.table.body, num); return (node.table.body[i][3].text === '') ? 10 * num : 1; },
+          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
         },
       },
       this.pdfSign(),

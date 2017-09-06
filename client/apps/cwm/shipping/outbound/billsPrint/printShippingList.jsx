@@ -22,10 +22,8 @@ export default class PrintShippingList extends Component {
   pdfHead = () => {
     const { outboundHead } = this.props;
     const header = [
-      { columns: [
-        { text: `客户名称:   ${outboundHead.owner_name}`, style: 'content', width: '60%' },
-        { text: `订单编号:   ${outboundHead.cust_order_no || ''}`, style: 'content', width: '40%' },
-      ] },
+      { text: `客户名称:   ${outboundHead.owner_name}`, style: 'content' },
+      { text: `订单编号:   ${outboundHead.cust_order_no || ''}`, style: 'content' },
       { text: `送货地址:   ${outboundHead.receiver_address || ''}`, style: 'content' },
     ];
     return header;
@@ -34,49 +32,47 @@ export default class PrintShippingList extends Component {
     const { pickDetails } = this.props;
     const body = [];
     body.push([
-      { text: '序号', style: 'tableHeader', alignment: 'center' },
-      { text: '产品编号', style: 'tableHeader', alignment: 'center' },
-      { text: '产品描述', style: 'tableHeader', alignment: 'center' },
-      { text: '数量', style: 'tableHeader', alignment: 'center' },
+      { text: '序号', style: 'tableHeader' },
+      { text: '产品编号', style: 'tableHeader' },
+      { text: '产品描述', style: 'tableHeader' },
+      { text: '数量', style: 'tableHeader' },
     ]);
     for (let i = 0; i < pickDetails.length; i++) {
       const sp = pickDetails[i];
       body.push([i + 1, sp.product_no, sp.name, sp.shipped_qty]);
     }
-    return body;
-  }
-  pdfFoot = () => {
-    const { pickDetails } = this.props;
     const total = pickDetails.reduce((res, bsf) => ({
       shipped_qty: (res.shipped_qty || 0) + (bsf.shipped_qty || 0),
     }), {
       shipped_qty: 0,
     });
-    const footer = [{ text: `总计       ${total.shipped_qty}`, style: 'footer', alignment: 'right' }];
-    return footer;
+    body.push(['总计', '', '', `${total.shipped_qty}`]);
+    return body;
   }
   handleDocDef = () => {
     const docDefinition = {
       content: [],
       styles: {
         title: {
-          fontSize: 20,
+          fontSize: 18,
           bold: true,
           alignment: 'center',
           margin: [0, 20, 0, 20],
         },
         content: {
-          fontSize: 12,
+          fontSize: 10,
           margin: [10, 0, 5, 10],
         },
         table: {
-          fontSize: 12,
+          fontSize: 10,
+          alignment: 'center',
         },
         tableHeader: {
-          fontSize: 12,
+          fontSize: 10,
+          alignment: 'center',
         },
         footer: {
-          fontSize: 12,
+          fontSize: 10,
           bold: true,
           margin: [2, 4, 90, 2],
         },
@@ -92,8 +88,11 @@ export default class PrintShippingList extends Component {
     docDefinition.content.push({
       style: 'table',
       table: { widths: ['10%', '25%', '45%', '20%'], headerRows: 1, body: this.pdfTable() },
+      layout: {
+        hLineColor: 'gray',
+        vLineColor: 'gray',
+      },
     });
-    docDefinition.content.push(this.pdfFoot());
     return docDefinition;
   }
   handlePrint = () => {
