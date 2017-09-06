@@ -117,7 +117,7 @@ export default class ManifestHeadPane extends React.Component {
         </div>
         <div className="pane-content form-layout-multi-col">
           <Form layout="horizontal">
-            <Card bodyStyle={{ padding: 16 }}>
+            <Card bodyStyle={{ padding: 16 }} noHovering>
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
@@ -202,7 +202,7 @@ export default class ManifestHeadPane extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Card>
+            <Card noHovering>
               <Row>
                 <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
               </Row>

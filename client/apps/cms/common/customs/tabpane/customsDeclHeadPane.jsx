@@ -82,7 +82,7 @@ export default class CustomsDeclHeadPane extends React.Component {
             </Row>
           </div>
           <div className="pane-content form-layout-multi-col">
-            <Card bodyStyle={{ padding: 16 }}>
+            <Card bodyStyle={{ padding: 16 }} noHovering>
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
@@ -165,7 +165,7 @@ export default class CustomsDeclHeadPane extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Card>
+            <Card noHovering>
               <Row>
                 <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
               </Row>

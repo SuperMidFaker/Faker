@@ -47,7 +47,7 @@ export default class TraceIdPopover extends Component {
     },
   }, {
     title: '原因',
-    width: 100,
+    width: 150,
     dataIndex: 'reason',
     className: 'text-normal',
   }, {
@@ -74,13 +74,13 @@ export default class TraceIdPopover extends Component {
     const { traceId } = this.props;
     const { dataSource } = this.state;
     const content = (
-      <div style={{ width: 400 }}>
+      <div style={{ width: 480 }}>
         <Table size="small" columns={this.column} dataSource={dataSource} rowKey="id" pagination={{ defaultPageSize: 10 }} />
       </div>
     );
     return (
       <Popover content={content} title="变更记录" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button size="middle">{traceId}</Button>
+        <Button size="small">{traceId}</Button>
       </Popover>
     );
   }

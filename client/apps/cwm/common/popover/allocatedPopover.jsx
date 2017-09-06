@@ -27,10 +27,9 @@ export default class allocatedPopover extends Component {
     dataSource: [],
   }
   column = [{
-    title: '所属SO',
+    title: '所属出货订单',
     width: 120,
     dataIndex: 'so_no',
-    className: 'cell-align-center',
   }, {
     title: '分配数量',
     width: 80,
@@ -62,12 +61,12 @@ export default class allocatedPopover extends Component {
     const { dataSource } = this.state;
     const content = (
       <div style={{ width: 400 }}>
-        <Table size="small" columns={this.column} dataSource={dataSource} rowKey="id" pagination={{ defaultPageSize: 10 }} />
+        <Table size="small" columns={this.column} dataSource={dataSource} rowKey="id" pagination={false} />
       </div>
     );
     return (
-      <Popover content={content} title="变更记录" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button size="middle"><span className="text-warning">{text}</span></Button>
+      <Popover content={content} title="分配记录" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+        <Button size="small"><span className="text-warning">{text}</span></Button>
       </Popover>
     );
   }

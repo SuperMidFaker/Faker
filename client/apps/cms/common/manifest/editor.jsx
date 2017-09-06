@@ -216,7 +216,13 @@ export default class ManifestEditor extends React.Component {
       onCancel() {},
     });
   }
-  handleSelectChange = (value) => {
+  handleRuleChange = (value) => {
+    if (value === undefined) {
+      // TODO
+      message.info('制单规则已清除');
+    }
+  }
+  handleRuleReload = (value) => {
     if (value) {
       this.props.loadTemplateFormVals(value).then((result) => {
         if (result.error) {
@@ -230,6 +236,7 @@ export default class ManifestEditor extends React.Component {
           }
           const headData = { ...this.props.billHead, ...formData };
           this.setState({ headData });
+          this.setState({ currentRule: value });
           const rules = {
             template_id: formData.template_id,
             rule_g_name: formData.rule_g_name,
@@ -259,6 +266,7 @@ export default class ManifestEditor extends React.Component {
             sort_hscode: formData.sort_hscode,
           };
           this.props.saveBillRules({ rules, billSeqNo: this.props.billHead.bill_seq_no });
+          message.success('制单规则加载成功');
         }
       });
     } else {
@@ -426,14 +434,15 @@ export default class ManifestEditor extends React.Component {
                   />
                 </Tooltip>}
               {editable && getFieldDecorator('model', modelProps)(<Select
-                placeholder="选择可用清单模板"
+                placeholder="选择制单规则"
                 optionFilterProp="search"
                 size="large"
-                onChange={this.handleSelectChange}
+                onSelect={this.handleRuleReload}
+                onChange={this.handleRuleChange}
                 style={{ width: 200 }}
                 allowClear
               >
-                <OptGroup label="可用清单模板">
+                <OptGroup label="可用制单规则">
                   {templates.map(data => (<Option key={data.id} value={data.id}
                     search={`${data.id}${data.template_name}`}
                   ><Icon type="book" /> {data.template_name}</Option>)
