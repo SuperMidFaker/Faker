@@ -29,6 +29,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'SHUNFENG_EXPRESS_MODAL',
   'LOAD_SHUNFENG_EXPRESS', 'LOAD_SHUNFENG_EXPRESS_SUCCEED', 'LOAD_SHUNFENG_EXPRESS_FAIL',
   'LOAD_SHUNFENG_CONFIG', 'LOAD_SHUNFENG_CONFIG_SUCCEED', 'LOAD_SHUNFENG_CONFIG_FAIL',
+  'LOAD_TRACEID_OUTBOUND', 'LOAD_TRACEID_OUTBOUND_SUCCEED', 'LOAD_TRACEID_OUTBOUND_FAIL',
 ]);
 const initialState = {
   submitting: false,
@@ -588,6 +589,21 @@ export function loadShunfengConfig(tenantId) {
       endpoint: 'v1/cwm/outbounds/shunfeng/config',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function loadOutboundsByTraceId(traceId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TRACEID_OUTBOUND,
+        actionTypes.LOAD_TRACEID_OUTBOUND_SUCCEED,
+        actionTypes.LOAD_TRACEID_OUTBOUND_FAIL,
+      ],
+      endpoint: 'v1/cwm/traceid/outbounds',
+      method: 'get',
+      params: { traceId },
     },
   };
 }

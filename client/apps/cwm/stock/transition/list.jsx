@@ -20,6 +20,7 @@ import TraceIdPopover from '../../common/popover/traceIdPopover';
 import FreezePopover from '../../common/popover/freezePopover';
 import UnfreezePopover from '../../common/popover/unfreezePopover';
 import QtyChangePopover from '../../common/popover/qtyChangePopover';
+import AllocatedPopover from '../../common/popover/allocatedPopover';
 import PageHeader from 'client/components/PageHeader';
 import { formatMsg } from '../message.i18n';
 
@@ -134,11 +135,11 @@ export default class StockTransitionList extends React.Component {
     width: 100,
     dataIndex: 'alloc_qty',
     className: 'cell-align-right',
-    render: (text) => {
+    render: (text, record) => {
       if (text === 0) {
         return <span className="text-disabled">{text}</span>;
       } else {
-        return <span className="text-warning">{text}</span>;
+        return <AllocatedPopover traceId={record.trace_id} text={text} />;
       }
     },
   }, {
