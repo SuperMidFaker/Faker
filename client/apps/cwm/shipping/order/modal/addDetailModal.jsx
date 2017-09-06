@@ -113,9 +113,6 @@ export default class AddDetailModal extends Component {
     const unitPrice = this.props.form.getFieldValue('unit_price');
     const amount = this.state.amount;
     if (!unitPrice && !amount) { return; }
-    if (unitPrice) {
-      this.setState({ amount: unitPrice * e.target.value });
-    }
     if (!unitPrice && amount) {
       this.props.form.setFieldsValue({ unit_price: (amount / e.target.value).toFixed(2) });
     }

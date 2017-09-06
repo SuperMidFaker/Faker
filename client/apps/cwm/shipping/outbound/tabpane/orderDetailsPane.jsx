@@ -200,7 +200,13 @@ export default class OrderDetailsPane extends React.Component {
     });
   }
   handleAllocBatchCancel = () => {
-    this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId);
+    this.props.cancelProductsAlloc(this.props.outboundNo, this.state.selectedRowKeys, this.props.loginId).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: result.error.message,
+        });
+      }
+    });
   }
   handleSearch = (value) => {
     this.setState({ searchValue: value });

@@ -243,9 +243,9 @@ export default class SHFTZEntryDetail extends Component {
     dataIndex: 'ftz_ent_detail_id',
     width: 120,
   }, {
-    title: '报关单行号',
+    title: '项号',
     dataIndex: 'decl_g_no',
-    width: 120,
+    width: 60,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
