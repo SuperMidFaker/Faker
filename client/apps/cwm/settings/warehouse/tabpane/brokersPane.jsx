@@ -38,13 +38,13 @@ export default class BrokersPane extends Component {
     }
   }
   columns = [{
-    title: '统一社会信用代码',
-    dataIndex: 'code',
-    width: 150,
-  }, {
     title: '报关代理名称',
     dataIndex: 'name',
     width: 250,
+  }, {
+    title: '统一社会信用代码',
+    dataIndex: 'uscc_code',
+    width: 150,
   }, {
     title: '海关编码',
     dataIndex: 'customs_code',
@@ -58,13 +58,6 @@ export default class BrokersPane extends Component {
       } else {
         return <Tag color="red">停用</Tag>;
       }
-    },
-  }, {
-    title: '关联货主',
-    dataIndex: 'owner_partner_id',
-    render: (col) => {
-      const owner = this.props.whseOwners.find(item => item.owner_partner_id === col);
-      return owner ? owner.owner_name : '';
     },
   }, {
     title: '最后修改时间',
