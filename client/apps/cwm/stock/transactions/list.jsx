@@ -11,10 +11,11 @@ import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
 import TraceIdPopover from '../../common/popover/traceIdPopover';
+import PageHeader from 'client/components/PageHeader';
 import { transactionColumns, commonTraceColumns } from '../commonColumns';
 import { formatMsg } from '../message.i18n';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Option = Select.Option;
 
 @injectIntl
@@ -147,23 +148,25 @@ export default class StockTransactionsList extends React.Component {
 
     return (
       <Layout>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              库存流水
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                库存流水
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button size="large" icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content" key="main">
           <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
             <QueryForm onSearch={this.handleSearch} />

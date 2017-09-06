@@ -5,10 +5,11 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, Menu, message } from 'antd';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate } from 'common/reducers/cmsInvoice';
+import PageHeader from 'client/components/PageHeader';
 import { CWM_DOCU_TYPE } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 @injectIntl
 @connect(
@@ -113,16 +114,18 @@ export default class TemplatesList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('templates')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('templates')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
               <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
-            </div>
-          </Header>
+            </PageHeader.Actions>
+          </PageHeader>
           <Content className="main-content">
             <div className="page-body" />
           </Content>

@@ -22,9 +22,10 @@ import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import { createFilename } from 'client/util/dataTransform';
+import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -425,31 +426,35 @@ export default class ShippingOrderList extends React.Component {
       </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                  whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                }
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('shippingOrder')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="pending">订单接收</RadioButton>
-            <RadioButton value="outbound">已释放</RadioButton>
-            <RadioButton value="partial">部分发货</RadioButton>
-            <RadioButton value="completed">发货完成</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
-            <RadioButton value="inWave">已加入波次计划</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {
+                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                  }
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('shippingOrder')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="pending">订单接收</RadioButton>
+              <RadioButton value="outbound">已释放</RadioButton>
+              <RadioButton value="partial">部分发货</RadioButton>
+              <RadioButton value="completed">发货完成</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+              <RadioButton value="inWave">已加入波次计划</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             <Dropdown.Button size="large" overlay={importMenu}>
               <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
                 formData={{
@@ -468,8 +473,8 @@ export default class ShippingOrderList extends React.Component {
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content" key="main">
           <DataTable columns={columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
             toolbarActions={toolbarActions} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }} loading={loading}

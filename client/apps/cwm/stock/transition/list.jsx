@@ -20,11 +20,12 @@ import TraceIdPopover from '../../common/popover/traceIdPopover';
 import FreezePopover from '../../common/popover/freezePopover';
 import UnfreezePopover from '../../common/popover/unfreezePopover';
 import QtyChangePopover from '../../common/popover/qtyChangePopover';
+import PageHeader from 'client/components/PageHeader';
 import { formatMsg } from '../message.i18n';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Option = Select.Option;
 
 @injectIntl
@@ -368,23 +369,27 @@ export default class StockTransitionList extends React.Component {
     </span>);
     return (
       <Layout>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              库存调整
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="normal">正常库存</RadioButton>
-            <RadioButton value="frozen">冻结库存</RadioButton>
-          </RadioGroup>
-        </Header>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                库存调整
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="normal">正常库存</RadioButton>
+              <RadioButton value="frozen">冻结库存</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+        </PageHeader>
         <Content className="main-content" key="main">
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />

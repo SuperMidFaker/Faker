@@ -16,11 +16,12 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import MovementModal from './modal/movementModal';
+import PageHeader from 'client/components/PageHeader';
 import messages from '../message.i18n';
 import { CWM_MOVEMENT_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Option = Select.Option;
 
 function fetchData({ state, dispatch }) {
@@ -229,25 +230,27 @@ export default class MovementList extends React.Component {
 
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                {
-                  whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
-                }
-              </Select>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('movement')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                  {
+                    whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
+                  }
+                </Select>
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('movement')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateMovement}>
               {this.msg('createMovement')}
             </Button>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content" key="main">
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys}
             columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
