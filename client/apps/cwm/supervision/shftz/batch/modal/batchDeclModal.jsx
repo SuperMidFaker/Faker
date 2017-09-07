@@ -47,6 +47,7 @@ const Option = Select.Option;
   }),
   { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl }
 )
+@Form.create()
 export default class BatchDeclModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -295,7 +296,7 @@ export default class BatchDeclModal extends Component {
     const { submitting, billTemplates } = this.props;
     const { relNo, ownerCusCode, template } = this.state;
     const extraForm = (
-      <Form layout="inline">
+      <div>
         <FormItem label="货主">
           <Select onChange={this.handleOwnerChange} placeholder="请选择货主" style={{ width: 200 }} value={ownerCusCode}>
             {this.props.owners.map(data => (
@@ -308,7 +309,7 @@ export default class BatchDeclModal extends Component {
           <Input value={relNo} onChange={this.handleRelNoChange} />
         </FormItem>
         <Button type="primary" ghost size="large" onClick={this.handlePortionOutsQuery}>查找</Button>
-      </Form>);
+      </div>);
     const title = (<div>
       <span>新建集中报关</span>
       <div className="toolbar-right">
@@ -317,52 +318,56 @@ export default class BatchDeclModal extends Component {
       </div>
     </div>);
     const detailExtra = (
-      <div>
+      <FormItem label="拆分选项">
         <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
           <Checkbox value="supplier">供货商</Checkbox>
           <Checkbox value="trxn_mode">成交方式</Checkbox>
           <Checkbox value="currency">币制</Checkbox>
         </Checkbox.Group>
-      </div>
+      </FormItem>
     );
     return (
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card noHovering bodyStyle={{ padding: 8, paddingBottom: 0 }}>
-          <HeadForm />
-        </Card>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering>
-              <div className="table-panel table-fixed-layout">
-                <div className="toolbar">
-                  {extraForm}
-                </div>
-                <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
-                  scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-                />
-              </div>
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card title="报关申请明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
-              <div className="table-panel table-fixed-layout">
-                <div className="toolbar">
-                  <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
-                  <div className="toolbar-right">
-                    <Select size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
-                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
-                    </Select>
+        <Form layout="inline">
+          <Card noHovering bodyStyle={{ padding: 8, paddingBottom: 0 }}>
+            <HeadForm form={this.props.form} />
+          </Card>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering>
+                <div className="table-panel table-fixed-layout">
+                  <div className="toolbar">
+                    {extraForm}
                   </div>
+                  <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+                    scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  />
                 </div>
-                <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
-                  scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-                />
-              </div>
-            </Card>
-          </Col>
-        </Row>
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card title="报关申请明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
+                <div className="table-panel table-fixed-layout">
+                  <div className="toolbar">
+                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                    <div className="toolbar-right">
+                      <FormItem label="制单规则">
+                        <Select size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
+                          {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                        </Select>
+                      </FormItem>
+                    </div>
+                  </div>
+                  <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  />
+                </div>
+              </Card>
+            </Col>
+          </Row>
+        </Form>
       </Modal>
     );
   }

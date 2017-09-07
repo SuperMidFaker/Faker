@@ -84,6 +84,10 @@ export default class SHFTZClearanceList extends React.Component {
     dataIndex: 'broker_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '成交方式',
+    dataIndex: 'trxn_mode',
+    width: 80,
+  }, {
     title: '委托日期',
     width: 120,
     dataIndex: 'delg_time',
@@ -117,7 +121,7 @@ export default class SHFTZClearanceList extends React.Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleDelgManifest} label="清关明细" row={record} />
+        <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
         <span className="ant-divider" />
         <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
           <a>取消委托</a>
