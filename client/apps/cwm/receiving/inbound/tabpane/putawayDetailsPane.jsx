@@ -184,7 +184,7 @@ export default class PutawayDetailsPane extends React.Component {
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
-          const selectedRowKeys = dataSource.map(item => item.trace_id);
+          const selectedRowKeys = dataSource.map(item => item.id);
           this.setState({
             selectedRowKeys,  // TODO
             selectedRows: dataSource,
