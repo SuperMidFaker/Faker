@@ -46,9 +46,11 @@ const Option = Select.Option;
     })),
     submitting: state.cwmShFtz.submitting,
     suppliers: state.cwmReceive.suppliers,
+    brokers: state.cwmWarehouse.brokers,
   }),
   { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
 )
+@Form.create()
 export default class NormalDeclModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -58,7 +60,6 @@ export default class NormalDeclModal extends Component {
     ownerCusCode: '',
     relDateRange: [],
     relNo: '',
-    ietype: 'import',
     normalRegs: [],
     regDetails: [],
     supplier: '',
@@ -110,9 +111,6 @@ export default class NormalDeclModal extends Component {
     title: '供应商',
     dataIndex: 'supplier',
     width: 150,
-    filterDropdown: (
-      <div className="custom-filter-dropdown" />
-    ),
   }, {
     title: '币制',
     dataIndex: 'currency',
@@ -229,18 +227,6 @@ export default class NormalDeclModal extends Component {
     this.setState({ ownerCusCode: '', normalRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
     this.props.closeNormalDeclModal();
   }
-  handleOwnerChange = (ownerCusCode) => {
-    const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
-    this.setState({ ownerCusCode });
-    if (owner) {
-      this.props.loadManifestTemplates({
-        owner_partner_id: owner.id,
-        tenant_id: this.props.tenantId,
-        ietype: 0,
-      });
-      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
-    }
-  }
   handleTemplateChange = (template) => {
     this.setState({ template });
   }
@@ -250,9 +236,6 @@ export default class NormalDeclModal extends Component {
   handleCurrencyChange = (currency) => {
     this.setState({ currency });
   }
-  handleTrxModeChange = (trxMode) => {
-    this.setState({ trxMode });
-  }
   handleRelNoChange = (ev) => {
     this.setState({ relNo: ev.target.value });
   }
@@ -260,7 +243,8 @@ export default class NormalDeclModal extends Component {
     this.setState({ relDateRange });
   }
   handleNormalOutsQuery = () => {
-    const { ownerCusCode, relNo, relDateRange, currency, supplier, trxMode } = this.state;
+    const { ownerCusCode, relNo, relDateRange, currency, supplier } = this.state;
+    const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
       tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
@@ -273,9 +257,6 @@ export default class NormalDeclModal extends Component {
       supplier,
       trxMode,
     });
-  }
-  handleIetypeChange = (ev) => {
-    this.setState({ ietype: ev.target.value });
   }
   handleBatchClear = () => {
     if (!this.state.ownerCusCode) {
@@ -303,19 +284,33 @@ export default class NormalDeclModal extends Component {
       name: own.name,
     }))[0];
     const { loginId, loginName } = this.props;
-    this.props.beginNormalDecl(this.state.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName).then((result) => {
-      if (!result.error) {
-        this.handleCancel();
-        this.props.reload();
-      } else {
-        message.error(result.error.message);
-      }
+    this.props.form.validateFields((errors, values) => {
+      const broker = this.props.brokers.find(bk => bk.customs_code === values.broker);
+      this.props.beginNormalDecl(values.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName, broker, values.trxn_mode).then((result) => {
+        if (!result.error) {
+          this.handleCancel();
+          this.props.reload();
+        } else {
+          message.error(result.error.message);
+        }
+      });
     });
   }
-
+  handleOwnerChange = (ownerCusCode) => {
+    const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
+    this.setState({ ownerCusCode });
+    if (owner) {
+      this.props.loadManifestTemplates({
+        owner_partner_id: owner.id,
+        tenant_id: this.props.tenantId,
+        ietype: 0,
+      });
+      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
+    }
+  }
   render() {
     const { submitting, billTemplates } = this.props;
-    const { relNo, ownerCusCode, template, supplier, currency, trxMode } = this.state;
+    const { relNo, ownerCusCode, template, supplier, currency } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -325,7 +320,7 @@ export default class NormalDeclModal extends Component {
         <Row>
           <Col span={6}>
             <FormItem {...formItemLayout} label="货主">
-              <Select onChange={this.handleOwnerChange} style={{ width: 150 }} placeholder="请选择货主" value={ownerCusCode}>
+              <Select onChange={this.handleOwnerChange} style={{ width: 150 }} disabled placeholder="请选择货主" value={ownerCusCode}>
                 {this.props.owners.map(data => (
                   <Option key={data.customs_code} value={data.customs_code}>
                     {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
@@ -339,16 +334,6 @@ export default class NormalDeclModal extends Component {
                 {this.props.suppliers.map(data => (
                   <Option key={data.code} value={data.code}>
                     {data.name}
-                  </Option>))}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={3}>
-            <FormItem>
-              <Select placeholder="成交方式" onChange={this.handleTrxModeChange} style={{ width: 80 }} value={trxMode}>
-                {this.props.trxModes.map(data => (
-                  <Option key={data.value} value={data.value}>
-                    {data.text}
                   </Option>))}
               </Select>
             </FormItem>
@@ -383,7 +368,7 @@ export default class NormalDeclModal extends Component {
         footer={null} visible={this.props.visible}
       >
         <Card noHovering bodyStyle={{ padding: 8, paddingBottom: 0 }}>
-          <HeadForm />
+          <HeadForm ownerCusCode={this.state.ownerCusCode} handleOwnerChange={this.handleOwnerChange} form={this.props.form} />
         </Card>
         <Row gutter={16}>
           <Col span={12}>
