@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification, Popover, Checkbox } from 'antd';
+import { Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification, Checkbox, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
@@ -206,6 +206,7 @@ export default class SHFTZRelDetail extends Component {
     const soNo = this.props.params.soNo;
     this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals, loginId: this.props.loginId }).then((result) => {
       if (!result.error) {
+        message.success('明细已拆分');
         this.props.loadRelDetails(soNo);
       }
     });
@@ -314,18 +315,24 @@ export default class SHFTZRelDetail extends Component {
       });
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
-    const content = (
-      <div>
-        <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
-          <Checkbox value="supplier">供货商</Checkbox>
-          <Checkbox value="trxn_mode">成交方式</Checkbox>
-          <Checkbox value="currency">币制</Checkbox>
-        </Checkbox.Group>
-        <div style={{ marginTop: 16 }}>
-          <Button disabled={!this.state.groupVals.length > 0} onClick={this.handleDetailSplit}>确定</Button>
-        </div>
-      </div>
-    );
+    let splitExtra = null;
+    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value
+        && relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value
+        && relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.processing) {
+      splitExtra = (<Form layout="inline">
+        <Form.Item label="拆分选项: ">
+          <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
+            <Checkbox value="supplier">供货商</Checkbox>
+            <Checkbox value="trxn_mode">成交方式</Checkbox>
+            <Checkbox value="currency">币制</Checkbox>
+          </Checkbox.Group>
+        </Form.Item>
+        <Form.Item>
+          <Button disabled={!this.state.groupVals.length > 0} onClick={this.handleDetailSplit}>拆分明细</Button>
+        </Form.Item>
+      </Form>);
+    }
+
     return (
       <div>
         <PageHeader>
@@ -352,13 +359,6 @@ export default class SHFTZRelDetail extends Component {
         }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value &&
-              relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
-              <Popover title="拆分条件" content={content}>
-                <Button size="large">明细拆分</Button>
-              </Popover>
-            }
-
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {queryable && <Tooltip title="向监管系统接口查询并同步分拨出库单明细数据" placement="bottom">
               <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
@@ -402,7 +402,7 @@ export default class SHFTZRelDetail extends Component {
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange} tabBarExtraContent={splitExtra}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
                     total_qty: acc.total_qty + regd.qty,
