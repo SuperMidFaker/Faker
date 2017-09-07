@@ -105,10 +105,12 @@ export default class NormalDeclModal extends Component {
     title: '币制',
     dataIndex: 'currency',
     width: 80,
+    render: o => o && this.props.currencies.find(currency => currency.value === o).text,
   }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
     width: 100,
+    render: o => o && this.props.trxModes.find(trx => trx.value === o).text,
   }, {
     title: '出库日期',
     width: 150,
