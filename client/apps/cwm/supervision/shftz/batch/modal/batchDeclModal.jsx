@@ -292,7 +292,7 @@ export default class BatchDeclModal extends Component {
     this.setState({ groupVals: checkedValues });
   }
   render() {
-    const { submitting } = this.props;
+    const { submitting, billTemplates } = this.props;
     const { relNo, ownerCusCode, template } = this.state;
     const extraForm = (
       <Form layout="inline">
@@ -302,11 +302,6 @@ export default class BatchDeclModal extends Component {
               <Option key={data.customs_code} value={data.customs_code}>
                 {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
               </Option>))}
-          </Select>
-        </FormItem>
-        <FormItem label="关联模板">
-          <Select onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
-            {this.props.billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
           </Select>
         </FormItem>
         <FormItem label="出库单号">
@@ -355,6 +350,11 @@ export default class BatchDeclModal extends Component {
               <div className="table-panel table-fixed-layout">
                 <div className="toolbar">
                   <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                  <div className="toolbar-right">
+                    <Select size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
+                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                    </Select>
+                  </div>
                 </div>
                 <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
                   scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
