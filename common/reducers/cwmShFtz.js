@@ -698,7 +698,7 @@ export function batchDelgCancel(data) {
   };
 }
 
-export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, loginId, loginName) {
+export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, loginId, loginName, broker, trxnMode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -708,7 +708,7 @@ export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, l
       ],
       endpoint: 'v1/cwm/shftz/batch/normal/clear/begin',
       method: 'post',
-      data: { ietype, template, detailIds, relCounts, owner, loginId, loginName },
+      data: { ietype, template, detailIds, relCounts, owner, loginId, loginName, broker, trxnMode },
     },
   };
 }
