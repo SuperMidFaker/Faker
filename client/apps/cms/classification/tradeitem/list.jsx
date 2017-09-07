@@ -648,11 +648,17 @@ export default class TradeItemList extends Component {
                 <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
                   <Icon type="edit" /> {this.msg('modify')}
                 </NavLink>
+                <span className="ant-divider" />
+                <NavLink to={`/clearance/classification/tradeitem/newSrc/${record.id}`}>
+                  <Icon type="copy" /> {this.msg('addNewSrc')}
+                </NavLink>
               </span>
             );
           } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== tenantId) {
             return (
-              <RowUpdater onHit={this.handleCopyToStage} label={<span><Icon type="copy" /> {this.msg('copyToStage')}</span>} row={record} />
+              <NavLink to={`/clearance/classification/tradeitem/newSrc/${record.id}`}>
+                <Icon type="copy" /> {this.msg('addNewSrc')}
+              </NavLink>
             );
           }
         },

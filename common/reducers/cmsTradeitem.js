@@ -27,6 +27,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'UPGRADE_MODE', 'UPGRADE_MODE_SUCCEED', 'UPGRADE_MODE_FAIL',
   'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
+  'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
 ]);
 
 const initialState = {
@@ -129,7 +130,7 @@ export function saveComparedItemDatas(datas) {
   };
 }
 
-export function loadTradeItem(itemId) {
+export function loadTradeItem(itemId, action) {
   return {
     [CLIENT_API]: {
       types: [
@@ -139,7 +140,7 @@ export function loadTradeItem(itemId) {
       ],
       endpoint: 'v1/cms/tradeitem/editItem/load',
       method: 'get',
-      params: { itemId },
+      params: { itemId, action },
     },
   };
 }
@@ -479,6 +480,21 @@ export function copyToStage(datas) {
       endpoint: 'v1/cms/tradeitem/item/stage/copy',
       method: 'post',
       data: datas,
+    },
+  };
+}
+
+export function itemNewSrcSave(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ITEM_NEWSRC_SAVE,
+        actionTypes.ITEM_NEWSRC_SAVE_SUCCEED,
+        actionTypes.ITEM_NEWSRC_SAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/newSrc/save',
+      method: 'post',
+      data,
     },
   };
 }
