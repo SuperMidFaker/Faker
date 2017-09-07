@@ -107,9 +107,12 @@ export default class NormalDeclModal extends Component {
     dataIndex: 'owner_name',
     width: 280,
   }, {
-    title: '普通出库供应商',
+    title: '供应商',
     dataIndex: 'supplier',
     width: 150,
+    filterDropdown: (
+      <div className="custom-filter-dropdown" />
+    ),
   }, {
     title: '币制',
     dataIndex: 'currency',
@@ -311,7 +314,7 @@ export default class NormalDeclModal extends Component {
   }
 
   render() {
-    const { submitting } = this.props;
+    const { submitting, billTemplates } = this.props;
     const { relNo, ownerCusCode, template, supplier, currency, trxMode } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -320,9 +323,9 @@ export default class NormalDeclModal extends Component {
     const extraForm = (
       <Form layout="inline" style={{ marginLeft: 16 }}>
         <Row>
-          <Col span={8}>
+          <Col span={6}>
             <FormItem {...formItemLayout} label="货主">
-              <Select onChange={this.handleOwnerChange} style={{ width: 200 }} placeholder="请选择货主" value={ownerCusCode}>
+              <Select onChange={this.handleOwnerChange} style={{ width: 150 }} placeholder="请选择货主" value={ownerCusCode}>
                 {this.props.owners.map(data => (
                   <Option key={data.customs_code} value={data.customs_code}>
                     {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
@@ -330,14 +333,9 @@ export default class NormalDeclModal extends Component {
               </Select>
             </FormItem>
           </Col>
-        <FormItem label="关联模板">
-          <Select onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
-            {this.props.billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
-          </Select>
-        </FormItem>
-          <Col span={8}>
+          <Col span={6}>
             <FormItem {...formItemLayout} label="供应商">
-              <Select onChange={this.handleSupplierChange} style={{ width: 200 }} value={supplier}>
+              <Select onChange={this.handleSupplierChange} style={{ width: 150 }} value={supplier}>
                 {this.props.suppliers.map(data => (
                   <Option key={data.code} value={data.code}>
                     {data.name}
@@ -345,9 +343,9 @@ export default class NormalDeclModal extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col span={8}>
-            <FormItem {...formItemLayout} label="成交方式">
-              <Select onChange={this.handleTrxModeChange} style={{ width: 200 }} value={trxMode}>
+          <Col span={3}>
+            <FormItem>
+              <Select placeholder="成交方式" onChange={this.handleTrxModeChange} style={{ width: 80 }} value={trxMode}>
                 {this.props.trxModes.map(data => (
                   <Option key={data.value} value={data.value}>
                     {data.text}
@@ -355,12 +353,9 @@ export default class NormalDeclModal extends Component {
               </Select>
             </FormItem>
           </Col>
-        </Row>
-        <br />
-        <Row>
-          <Col span={8}>
-            <FormItem {...formItemLayout} label="币制">
-              <Select onChange={this.handleCurrencyChange} style={{ width: 200 }} value={currency}>
+          <Col span={3}>
+            <FormItem>
+              <Select placeholder="币制" onChange={this.handleCurrencyChange} style={{ width: 80 }} value={currency}>
                 {this.props.currencies.map(data => (
                   <Option key={data.value} value={data.value}>
                     {data.text}
@@ -368,9 +363,9 @@ export default class NormalDeclModal extends Component {
               </Select>
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <FormItem {...formItemLayout} label="出库单号">
-              <Input value={relNo} onChange={this.handleRelNoChange} style={{ width: 200 }} />
+              <Input value={relNo} onChange={this.handleRelNoChange} />
             </FormItem>
           </Col>
           <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
@@ -408,6 +403,11 @@ export default class NormalDeclModal extends Component {
               <div className="table-panel table-fixed-layout">
                 <div className="toolbar">
                   <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                  <div className="toolbar-right">
+                    <Select size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
+                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                    </Select>
+                  </div>
                 </div>
                 <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
                   scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
