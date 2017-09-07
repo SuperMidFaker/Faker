@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Breadcrumb, Layout, Tabs, Button, Card, Col, Row, Icon } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
+import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
 import OrderListPane from './tabpane/orderListPane';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
@@ -14,7 +15,7 @@ import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const TabPane = Tabs.TabPane;
 
 @injectIntl
@@ -56,22 +57,24 @@ export default class WaveDetail extends Component {
     const { defaultWhse, waveHead } = this.props;
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {defaultWhse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('shippingWave')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.waveNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {defaultWhse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('shippingWave')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.waveNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button size="large" onClick={this.handleRelease}>释放</Button>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content">
           <Card bodyStyle={{ padding: 16 }} noHovering>
             <Row gutter={16} className="info-group-underline">

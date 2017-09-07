@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Form, Layout, Row, Col, Button, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import PageHeader from 'client/components/PageHeader';
 import { loadSkuParams, cleanSkuForm, createSku } from 'common/reducers/cwmSku';
 import MainForm from './forms/mainForm';
 import SiderForm from './forms/siderForm';
 import { formatMsg } from '../message.i18n';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -79,27 +80,29 @@ export default class CreateProductSku extends Component {
     const { form, submitting } = this.props;
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('products')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('productsSku')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('createSKU')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('products')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('productsSku')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('createSKU')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
             <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
             </Button>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
             <Row gutter={16}>

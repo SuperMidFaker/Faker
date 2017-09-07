@@ -3,6 +3,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Layout, Table, Tooltip, Button, Input, Breadcrumb, Tabs, Form, Tag, Icon } from 'antd';
+import PageHeader from 'client/components/PageHeader';
 import WarehouseModal from './modal/warehouseModal';
 import OwnersPane from './tabpane/ownersPane';
 import SuppliersPane from './tabpane/suppliersPane';
@@ -18,7 +19,7 @@ import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, clearL
 import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from './message.i18n';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Search = Input.Search;
 const TabPane = Tabs.TabPane;
 
@@ -188,14 +189,16 @@ export default class WarehouseList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {warehouse.name} ({warehouse.code}) {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <a onClick={this.handleEditWarehouse}><Icon type="edit" /></a>
-          </Header>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {warehouse.name} ({warehouse.code}) {warehouse.bonded === 1 && <Tag color="green">保税仓</Tag>}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+              <a onClick={this.handleEditWarehouse}><Icon type="edit" /></a>
+            </PageHeader.Title>
+          </PageHeader>
           <Content className="main-content">
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="owners">

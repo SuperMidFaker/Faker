@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
+import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
 import NavLink from 'client/components/NavLink';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied } from 'common/reducers/cwmShFtz';
@@ -14,7 +15,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -187,27 +188,29 @@ export default class SHFTZClearanceDetail extends Component {
     const sendText = sent ? '重新发送' : '发送备案';
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
               上海自贸区监管
             </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {whse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('ftzBatchDecl')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.batchNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+              <Breadcrumb.Item>
+                {whse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('ftzBatchDecl')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.batchNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             {sent && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} loading={submitting} disabled={!relEditable}>{sendText}</Button>}
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
