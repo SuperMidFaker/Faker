@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import { getSuppliers } from 'common/reducers/cwmReceive';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from '../form/headForm';
@@ -38,9 +39,14 @@ const Option = Select.Option;
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
+    trxModes: state.cwmShFtz.params.trxModes.map(tm => ({
+      value: tm.trx_mode,
+      text: tm.trx_spec,
+    })),
     submitting: state.cwmShFtz.submitting,
+    suppliers: state.cwmReceive.suppliers,
   }),
-  { closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl }
+  { closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
 )
 export default class NormalDeclModal extends Component {
   static propTypes = {
@@ -54,6 +60,9 @@ export default class NormalDeclModal extends Component {
     ietype: 'import',
     normalRegs: [],
     regDetails: [],
+    supplier: '',
+    currency: '',
+    trxMode: '',
   }
   componentWillMount() {
     this.props.loadParams();
@@ -75,6 +84,8 @@ export default class NormalDeclModal extends Component {
         rel_type: 'normal',
       });
       this.setState({ ownerCusCode: nextProps.ownerCusCode });
+      const owner = this.props.owners.find(ow => ow.customs_code === nextProps.ownerCusCode);
+      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
     }
   }
 
@@ -86,6 +97,20 @@ export default class NormalDeclModal extends Component {
   }, {
     title: '货主',
     dataIndex: 'owner_name',
+  }, {
+    title: '普通出库供应商',
+    dataIndex: 'supplier',
+    width: 150,
+  }, {
+    title: '币制',
+    dataIndex: 'currency',
+    width: 80,
+    render: o => o && this.props.currencies.find(currency => currency.value === o).text,
+  }, {
+    title: '成交方式',
+    dataIndex: 'trxn_mode',
+    width: 100,
+    render: o => o && this.props.trxModes.find(trx => trx.value === o).text,
   }, {
     title: '出库日期',
     width: 150,
@@ -193,7 +218,18 @@ export default class NormalDeclModal extends Component {
     this.props.closeNormalDeclModal();
   }
   handleOwnerChange = (ownerCusCode) => {
+    const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
+    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
     this.setState({ ownerCusCode });
+  }
+  handleSupplierChange = (supplier) => {
+    this.setState({ supplier });
+  }
+  handleCurrencyChange = (currency) => {
+    this.setState({ currency });
+  }
+  handleTrxModeChange = (trxMode) => {
+    this.setState({ trxMode });
   }
   handleRelNoChange = (ev) => {
     this.setState({ relNo: ev.target.value });
@@ -202,7 +238,7 @@ export default class NormalDeclModal extends Component {
     this.setState({ relDateRange });
   }
   handleNormalOutsQuery = () => {
-    const { ownerCusCode, relNo, relDateRange } = this.state;
+    const { ownerCusCode, relNo, relDateRange, currency, supplier, trxMode } = this.state;
     this.props.loadBatchOutRegs({
       tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
@@ -211,6 +247,9 @@ export default class NormalDeclModal extends Component {
       rel_no: relNo,
       start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
       end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
+      currency,
+      supplier,
+      trxMode,
     });
   }
   handleIetypeChange = (ev) => {
@@ -254,21 +293,64 @@ export default class NormalDeclModal extends Component {
 
   render() {
     const { submitting } = this.props;
-    const { relNo, ownerCusCode } = this.state;
+    const { relNo, ownerCusCode, supplier, currency, trxMode } = this.state;
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    };
     const extraForm = (
       <Form layout="inline" style={{ marginLeft: 16 }}>
-        <FormItem label="货主">
-          <Select onChange={this.handleOwnerChange} style={{ width: 200 }} placeholder="请选择货主" value={ownerCusCode}>
-            {this.props.owners.map(data => (
-              <Option key={data.customs_code} value={data.customs_code}>
-                {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
-              </Option>))}
-          </Select>
-        </FormItem>
-        <FormItem label="出库单号">
-          <Input value={relNo} onChange={this.handleRelNoChange} />
-        </FormItem>
-        <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
+        <Row>
+          <Col span={8}>
+            <FormItem {...formItemLayout} label="货主">
+              <Select onChange={this.handleOwnerChange} style={{ width: 200 }} placeholder="请选择货主" value={ownerCusCode}>
+                {this.props.owners.map(data => (
+                  <Option key={data.customs_code} value={data.customs_code}>
+                    {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
+                  </Option>))}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem {...formItemLayout} label="供应商">
+              <Select onChange={this.handleSupplierChange} style={{ width: 200 }} value={supplier}>
+                {this.props.suppliers.map(data => (
+                  <Option key={data.code} value={data.code}>
+                    {data.name}
+                  </Option>))}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem {...formItemLayout} label="成交方式">
+              <Select onChange={this.handleTrxModeChange} style={{ width: 200 }} value={trxMode}>
+                {this.props.trxModes.map(data => (
+                  <Option key={data.value} value={data.value}>
+                    {data.text}
+                  </Option>))}
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <br />
+        <Row>
+          <Col span={8}>
+            <FormItem {...formItemLayout} label="币制">
+              <Select onChange={this.handleCurrencyChange} style={{ width: 200 }} value={currency}>
+                {this.props.currencies.map(data => (
+                  <Option key={data.value} value={data.value}>
+                    {data.text}
+                  </Option>))}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={8}>
+            <FormItem {...formItemLayout} label="出库单号">
+              <Input value={relNo} onChange={this.handleRelNoChange} style={{ width: 200 }} />
+            </FormItem>
+          </Col>
+          <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
+        </Row>
       </Form>);
     const title = (<div>
       <span>新建出库清关</span>
