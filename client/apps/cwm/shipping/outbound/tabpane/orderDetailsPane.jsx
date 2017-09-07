@@ -246,8 +246,17 @@ export default class OrderDetailsPane extends React.Component {
         text: '选择全部项',
         onSelect: () => {
           const selectedRowKeys = dataSource.map(item => item.id);
+          let status = null;
+          const unallocated = dataSource.find(item => item.alloc_qty < item.order_qty);
+          const allocated = dataSource.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
+          if (unallocated && !allocated) {
+            status = 'alloc';
+          } else if (!unallocated && allocated) {
+            status = 'unalloc';
+          }
           this.setState({
             selectedRowKeys,  // TODO
+            ButtonStatus: status,
           });
         },
       }],
