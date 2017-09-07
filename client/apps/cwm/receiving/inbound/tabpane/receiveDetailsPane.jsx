@@ -219,7 +219,7 @@ export default class ReceiveDetailsPane extends React.Component {
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
-          const selectedRowKeys = dataSource.map(item => item.id);
+          const selectedRowKeys = dataSource.filter(item => !(item.trace_id.length >= 1)).map(item => item.id);
           this.setState({
             selectedRowKeys,  // TODO
             selectedRows: dataSource,
