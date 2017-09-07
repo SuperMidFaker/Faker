@@ -311,8 +311,18 @@ export default class PickingDetailsPane extends React.Component {
         text: '选择全部项',
         onSelect: () => {
           const selectedRowKeys = dataSource.map(item => item.id);
+          let status = null;
+          const allocated = dataSource.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
+          const picked = dataSource.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_PICKED.value);
+          if (allocated && allocated.length === dataSource.length) {
+            status = 'allAllocated';
+          } else if (picked && picked.length === dataSource.length) {
+            status = 'allPicked';
+          }
           this.setState({
-            selectedRowKeys,  // TODO
+            selectedRowKeys,
+            selectedRows: dataSource,
+            currentStep: status,
           });
         },
       }],
