@@ -45,35 +45,31 @@ export default class HeadForm extends React.Component {
   }
   render() {
     const { form: { getFieldDecorator }, owners, ownerCusCode, brokers } = this.props;
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
-    };
     return (
       <Form className="form-layout-compact">
         <Row gutter={16}>
-          <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="提货单位">
+          <Col span={5}>
+            <FormItem label="提货单位">
               {getFieldDecorator('owner', { initialValue: ownerCusCode,
                 rules: [{ required: true, message: '提货单位必选' }],
               })(
-                <Select placeholder="请选择提货单位" showSearch optionFilterProp="children" allowClear onChange={this.handleOwnerChange}>
+                <Select placeholder="请选择提货单位" showSearch optionFilterProp="children" allowClear onChange={this.handleOwnerChange} style={{ width: 200 }}>
                   {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
                 </Select>)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="报关代理">
+            <FormItem label="报关代理">
               {getFieldDecorator('broker')(
-                <Select placeholder="请选择报关代理" >
+                <Select placeholder="请选择报关代理" style={{ width: 200 }} >
                   {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>))}
                 </Select>)}
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="成交方式">
+            <FormItem label="成交方式">
               {getFieldDecorator('trxn_mode')(
-                <Select placeholder="请选择成交方式">
+                <Select placeholder="请选择成交方式" style={{ width: 200 }}>
                   {this.props.trxModes.map(data => (
                     <Option key={data.value} value={data.value}>
                       {data.text}
@@ -82,7 +78,7 @@ export default class HeadForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5} offset={1}>
-            <FormItem {...formItemLayout} label="类型">
+            <FormItem label="类型">
               {getFieldDecorator('ietype', { initialValue: 'import' })(
                 <RadioGroup onChange={this.handleIetypeChange} >
                   <RadioButton value="import">进口</RadioButton>

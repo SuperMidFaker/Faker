@@ -31,11 +31,15 @@ const messages = defineMessages({
   },
   stageClassified: {
     id: 'cms.classificagtion.tradeitem.stage.classified',
-    defaultMessage: '自留归类区',
+    defaultMessage: '新来源归类区',
   },
   copProductNo: {
     id: 'cms.classificagtion.tradeitem.table.cop.product.no',
     defaultMessage: '商品货号',
+  },
+  srcProductNo: {
+    id: 'cms.classificagtion.tradeitem.table.src.product.no',
+    defaultMessage: '源标识',
   },
   hscode: {
     id: 'cms.classificagtion.tradeitem.table.hscode',
@@ -240,6 +244,10 @@ const messages = defineMessages({
   refuse: {
     id: 'cms.classificagtion.tradeitem.refuse',
     defaultMessage: '拒绝',
+  },
+  addNewSrc: {
+    id: 'cms.classificagtion.tradeitem.add.newSource',
+    defaultMessage: '添加新来源',
   },
   copyToStage: {
     id: 'cms.classificagtion.tradeitem.copy.stage',

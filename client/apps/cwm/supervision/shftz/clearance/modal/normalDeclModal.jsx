@@ -104,18 +104,38 @@ export default class NormalDeclModal extends Component {
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
   }, {
-    title: '货主',
-    dataIndex: 'owner_name',
-    width: 280,
-  }, {
     title: '供应商',
     dataIndex: 'supplier',
     width: 150,
+    filterDropdown: (
+      <div className="filter-dropdown">
+        <Select allowClear onChange={this.handleSupplierChange} style={{ width: 150 }} value={this.state.supplier}>
+          {this.props.suppliers.map(data => (
+            <Option key={data.code} value={data.code}>
+              {data.name}
+            </Option>))}
+        </Select>
+      </div>
+      ),
   }, {
     title: '币制',
     dataIndex: 'currency',
     width: 80,
     render: o => o && this.props.currencies.find(currency => currency.value === o).text,
+    filterDropdown: (
+      <div className="filter-dropdown">
+        <Select allowClear placeholder="币制" onChange={this.handleCurrencyChange} style={{ width: 80 }} value={this.state.currency}>
+          {this.props.currencies.map(data => (
+            <Option key={data.value} value={data.value}>
+              {data.text}
+            </Option>))}
+        </Select>
+      </div>
+    ),
+  }, {
+    title: '货主',
+    dataIndex: 'owner_name',
+    width: 150,
   }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
@@ -310,52 +330,22 @@ export default class NormalDeclModal extends Component {
   }
   render() {
     const { submitting, billTemplates } = this.props;
-    const { relNo, ownerCusCode, template, supplier, currency } = this.state;
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
-    };
+    const { relNo, ownerCusCode, template } = this.state;
     const extraForm = (
-      <Form layout="inline" style={{ marginLeft: 16 }}>
-        <Row>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label="货主">
-              <Select onChange={this.handleOwnerChange} style={{ width: 150 }} disabled placeholder="请选择货主" value={ownerCusCode}>
-                {this.props.owners.map(data => (
-                  <Option key={data.customs_code} value={data.customs_code}>
-                    {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
-                  </Option>))}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label="供应商">
-              <Select onChange={this.handleSupplierChange} style={{ width: 150 }} value={supplier}>
-                {this.props.suppliers.map(data => (
-                  <Option key={data.code} value={data.code}>
-                    {data.name}
-                  </Option>))}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={3}>
-            <FormItem>
-              <Select placeholder="币制" onChange={this.handleCurrencyChange} style={{ width: 80 }} value={currency}>
-                {this.props.currencies.map(data => (
-                  <Option key={data.value} value={data.value}>
-                    {data.text}
-                  </Option>))}
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label="出库单号">
-              <Input value={relNo} onChange={this.handleRelNoChange} />
-            </FormItem>
-          </Col>
-          <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
-        </Row>
-      </Form>);
+      <div>
+        <FormItem label="货主">
+          <Select onChange={this.handleOwnerChange} style={{ width: 150 }} disabled placeholder="请选择货主" value={ownerCusCode}>
+            {this.props.owners.map(data => (
+              <Option key={data.customs_code} value={data.customs_code}>
+                {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
+              </Option>))}
+          </Select>
+        </FormItem>
+        <FormItem label="出库单号">
+          <Input value={relNo} onChange={this.handleRelNoChange} />
+        </FormItem>
+        <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
+      </div>);
     const title = (<div>
       <span>新建出库清关</span>
       <div className="toolbar-right">
@@ -367,40 +357,44 @@ export default class NormalDeclModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card noHovering bodyStyle={{ padding: 8, paddingBottom: 0 }}>
-          <HeadForm ownerCusCode={this.state.ownerCusCode} handleOwnerChange={this.handleOwnerChange} form={this.props.form} />
-        </Card>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
-              <div className="table-panel table-fixed-layout">
-                <div className="toolbar">
-                  {extraForm}
-                </div>
-                <Table size="middle" columns={this.normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
-                  scroll={{ x: this.normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-                />
-              </div>
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card title="报关清单明细" bodyStyle={{ padding: 0 }} noHovering>
-              <div className="table-panel table-fixed-layout">
-                <div className="toolbar">
-                  <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
-                  <div className="toolbar-right">
-                    <Select size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
-                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
-                    </Select>
+        <Form layout="inline">
+          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+            <HeadForm ownerCusCode={this.state.ownerCusCode} handleOwnerChange={this.handleOwnerChange} form={this.props.form} />
+          </Card>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
+                <div className="table-panel table-fixed-layout">
+                  <div className="toolbar">
+                    {extraForm}
                   </div>
+                  <Table size="middle" columns={this.normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
+                    scroll={{ x: this.normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  />
                 </div>
-                <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
-                  scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-                />
-              </div>
-            </Card>
-          </Col>
-        </Row>
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card title="报关清单明细" bodyStyle={{ padding: 0 }} noHovering>
+                <div className="table-panel table-fixed-layout">
+                  <div className="toolbar">
+                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                    <div className="toolbar-right">
+                      <FormItem label="制单规则">
+                        <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
+                          {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                        </Select>
+                      </FormItem>
+                    </div>
+                  </div>
+                  <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  />
+                </div>
+              </Card>
+            </Col>
+          </Row>
+        </Form>
       </Modal>
     );
   }

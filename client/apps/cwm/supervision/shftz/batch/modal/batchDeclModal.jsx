@@ -354,7 +354,7 @@ export default class BatchDeclModal extends Component {
                     <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
                     <div className="toolbar-right">
                       <FormItem label="制单规则">
-                        <Select size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
+                        <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
                           {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
                         </Select>
                       </FormItem>

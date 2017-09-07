@@ -368,6 +368,7 @@ export default(store, cookie) => {
                 <IndexRoute component={CMSTradeItem.List} />
                 <Route path="create" component={CMSTradeItem.Create} />
                 <Route path="edit/:id" component={CMSTradeItem.Edit} />
+                <Route path="newSrc/:id" component={CMSTradeItem.NewSrc} />
               </Route>
               <Route path="hscode" component={CMSClassificationHsCode.List} />
               <Route path="special" component={CMSClassificationSpecial.Categories} />
