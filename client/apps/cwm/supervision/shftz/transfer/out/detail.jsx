@@ -310,14 +310,13 @@ export default class SHFTZTransferOutDetail extends Component {
                 {relRegs.map(reg => (
                   <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
-                      {relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[2].value &&
                       <Row>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore="海关出库单号" field={reg.ftz_rel_no} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>
-                      </Row>}
+                      </Row>
                     </div>
                     <div className="table-panel table-fixed-layout">
                       <Table size="middle" columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"

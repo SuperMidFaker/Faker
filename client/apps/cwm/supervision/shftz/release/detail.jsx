@@ -353,6 +353,7 @@ export default class SHFTZRelDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value &&
+              relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
               relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
               <Popover title="拆分条件" content={content}>
                 <Button size="large">明细拆分</Button>
@@ -432,11 +433,9 @@ export default class SHFTZRelDetail extends Component {
                         {// 普通出库
                         relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
                         <Row>
-                          {relSo.ftz_rel_no &&
                           <Col sm={12} lg={6}>
-                            <InfoItem size="small" addonBefore="普通出库单号" field={relSo.ftz_rel_no} />
+                            <InfoItem size="small" addonBefore="普通出库单号" field={reg.ftz_rel_no} />
                           </Col>
-                          }
                           <Col sm={12} lg={6}>
                             <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
                               type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
