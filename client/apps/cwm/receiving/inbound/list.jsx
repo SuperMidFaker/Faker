@@ -10,8 +10,10 @@ import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
+import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
+import { CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import messages from '../message.i18n';
 import ReceivingDockPanel from '../dock/receivingDockPanel';
 import { showDock, loadInbounds } from 'common/reducers/cwmReceive';
@@ -20,7 +22,6 @@ import Strip from 'client/components/Strip';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
-import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -127,15 +128,8 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'status',
     width: 150,
     render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待入库" />);
-      } else if (o === 1 || o === 2) {
-        return (<Badge status="processing" text="收货" />);
-      } else if (o === 3 || o === 4) {
-        return (<Badge status="processing" text="上架" />);
-      } else if (o === 5) {
-        return (<Badge status="success" text="已入库" />);
-      }
+      const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === o)[0];
+      return <Badge status={inbStatus.badge} text={inbStatus.text} />;
     },
   }, {
     title: '入库方式',

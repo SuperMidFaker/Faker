@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 // separate owntransfer transferin
@@ -55,6 +55,7 @@ function fetchData({ dispatch, params }) {
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
+  jumpOut: true,
 })
 export default class SHFTZTransferInDetail extends Component {
   static propTypes = {
@@ -210,6 +211,9 @@ export default class SHFTZTransferInDetail extends Component {
   handleInfoSave = (preRegNo, field, value, virtualTransfer) => {
     this.props.updateEntryReg(preRegNo, field, value, virtualTransfer);
   }
+  handleInboundPage = () => {
+    this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
+  }
   handleTransToWhs = () => {
     const { params, entryAsn, tenantId, owners, whse } = this.props;
     const owner = owners.find(own => own.name === entryAsn.owner_name);
@@ -279,6 +283,7 @@ export default class SHFTZTransferInDetail extends Component {
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
+    const inbStatus = entryAsn.inbound_status && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     return (
       <div>
         <Header className="page-header">
@@ -297,6 +302,11 @@ export default class SHFTZTransferInDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            {entryAsn.inbound_no &&
+            <Button size="large" icon="link" onClick={this.handleInboundPage}>
+              <Badge status={inbStatus.badge} text={inbStatus.text} />
+            </Button>
+            }
             {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
             {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>转移入分拨</Button>}
             {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取分拨明细ID</Button>}

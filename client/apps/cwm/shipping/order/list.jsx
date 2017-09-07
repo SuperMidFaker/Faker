@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, DatePicker, Dropdown, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
+import { Breadcrumb, DatePicker, Popover, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
@@ -134,7 +134,7 @@ export default class ShippingOrderList extends React.Component {
       }
     },
   }, {
-    title: '备案状态',
+    title: '监管状态',
     dataIndex: 'reg_status',
     width: 120,
     render: (o) => {
@@ -422,7 +422,7 @@ export default class ShippingOrderList extends React.Component {
     );
     const importMenu = (
       <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
+        <Menu.Item key="model"><Icon type="file-excel" />下载导入模板</Menu.Item>
       </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -455,21 +455,23 @@ export default class ShippingOrderList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Dropdown.Button size="large" overlay={importMenu}>
-              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
-                formData={{
-                  data: JSON.stringify({
-                    tenantId: this.props.tenantId,
-                    tenantName: this.props.tenantName,
-                    loginId: this.props.loginId,
-                    whseCode: defaultWhse.code,
-                    whseName: defaultWhse.name,
-                  }),
-                }} onUploaded={this.handleSoStockImport}
-              >
-                <Icon type="upload" /> {this.msg('batchImport')}
-              </ExcelUploader>
-            </Dropdown.Button>
+            <Popover content={importMenu}>
+              <Button size="large">
+                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
+                  formData={{
+                    data: JSON.stringify({
+                      tenantId: this.props.tenantId,
+                      tenantName: this.props.tenantName,
+                      loginId: this.props.loginId,
+                      whseCode: defaultWhse.code,
+                      whseName: defaultWhse.name,
+                    }),
+                  }} onUploaded={this.handleSoStockImport}
+                >
+                  <Icon type="upload" /> {this.msg('batchImport')}
+                </ExcelUploader>
+              </Button>
+            </Popover>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>
