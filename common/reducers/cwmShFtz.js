@@ -47,6 +47,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'REL_DETAILS_SPLIT', 'REL_DETAILS_SPLIT_SUCCEED', 'REL_DETAILS_SPLIT_FAIL',
   'CANCEL_BD', 'CANCEL_BD_SUCCEED', 'CANCEL_BD_FAIL',
   'CANCEL_NC', 'CANCEL_NC_SUCCEED', 'CANCEL_NC_FAIL',
+  'LOAD_MANIFTEMP', 'LOAD_MANIFTEMP_SUCCEED', 'LOAD_MANIFTEMP_FAIL',
 ]);
 
 const initialState = {
@@ -117,6 +118,7 @@ const initialState = {
   },
   transRegs: [],
   stockDatas: [],
+  billTemplates: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -173,27 +175,68 @@ export default function reducer(state = initialState, action) {
           }
         }) };
     case actionTypes.FILE_RSO:
+    case actionTypes.FILE_RTS:
+    case actionTypes.FILE_BA:
+    case actionTypes.MAKE_BAL:
+    case actionTypes.CANCEL_ENR:
+    case actionTypes.CANCEL_RER:
+    case actionTypes.SYNC_SKU:
+    case actionTypes.FILE_RPO:
+    case actionTypes.UPDATE_CARGO_RULE:
+    case actionTypes.FILE_ERS:
+    case actionTypes.QUERY_ERI:
+    case actionTypes.PAIR_ERP:
+    case actionTypes.QUERY_POI:
+    case actionTypes.FILE_CARGO:
+    case actionTypes.CONFIRM_CARGO:
+    case actionTypes.BEGIN_BD:
+    case actionTypes.BEGIN_NC:
+    case actionTypes.TRANSFER_TO_OWN:
+    case actionTypes.QUERY_OWNTRANF:
+    case actionTypes.VIRTUAL_TRANS_SAVE:
       return { ...state, submitting: true };
     case actionTypes.FILE_RSO_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.FILE_RSO_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.FILE_RTS:
-      return { ...state, submitting: true };
     case actionTypes.FILE_RTS_SUCCEED:
-      return { ...state, submitting: false };
+    case actionTypes.FILE_RSO_FAIL:
     case actionTypes.FILE_RTS_FAIL:
+    case actionTypes.FILE_BA_FAIL:
+    case actionTypes.MAKE_BAL_FAIL:
+    case actionTypes.CANCEL_ENR_FAIL:
+    case actionTypes.CANCEL_RER_FAIL:
+    case actionTypes.SYNC_SKU_SUCCESS:
+    case actionTypes.SYNC_SKU_FAIL:
+    case actionTypes.FILE_RPO_FAIL:
+    case actionTypes.UPDATE_CARGO_RULE_SUCCEED:
+    case actionTypes.UPDATE_CARGO_RULE_FAIL:
+    case actionTypes.FILE_ERS_SUCCEED:
+    case actionTypes.FILE_ERS_FAIL:
+    case actionTypes.QUERY_ERI_SUCCEED:
+    case actionTypes.QUERY_ERI_FAIL:
+    case actionTypes.PAIR_ERP_SUCCEED:
+    case actionTypes.PAIR_ERP_FAIL:
+    case actionTypes.QUERY_POI_SUCCEED:
+    case actionTypes.QUERY_POI_FAIL:
+    case actionTypes.FILE_CARGO_SUCCEED:
+    case actionTypes.FILE_CARGO_FAIL:
+    case actionTypes.CONFIRM_CARGO_SUCCEED:
+    case actionTypes.CONFIRM_CARGO_FAIL:
+    case actionTypes.BEGIN_BD_SUCCEED:
+    case actionTypes.BEGIN_BD_FAIL:
+    case actionTypes.BEGIN_NC_SUCCEED:
+    case actionTypes.BEGIN_NC_FAIL:
+    case actionTypes.TRANSFER_TO_OWN_SUCCEED:
+    case actionTypes.TRANSFER_TO_OWN_FAIL:
+    case actionTypes.QUERY_OWNTRANF_SUCCEED:
+    case actionTypes.QUERY_OWNTRANF_FAIL:
+    case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
+    case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
       return { ...state, submitting: false };
-    case actionTypes.FILE_RPO:
-      return { ...state, submitting: true };
     case actionTypes.FILE_RPO_SUCCEED:
       return { ...state,
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
         submitting: false,
         rel_regs: state.rel_regs.map(rr => ({ ...rr, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
       };
-    case actionTypes.FILE_RPO_FAIL:
-      return { ...state, submitting: false };
     case actionTypes.LOAD_NDLIST:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.LOAD_NDLIST_SUCCEED:
@@ -210,30 +253,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchout_regs: action.result.data };
     case actionTypes.APPLY_DETAILS_LOAD_SUCCEED:
       return { ...state, ...action.result.data };
-    case actionTypes.FILE_BA:
-      return { ...state, submitting: true };
     case actionTypes.FILE_BA_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
-    case actionTypes.FILE_BA_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.MAKE_BAL:
-      return { ...state, submitting: true };
     case actionTypes.MAKE_BAL_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
-    case actionTypes.MAKE_BAL_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.CANCEL_ENR:
-      return { ...state, submitting: true };
     case actionTypes.CANCEL_ENR_SUCCEED:
       return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status }, submitting: false };
-    case actionTypes.CANCEL_ENR_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.CANCEL_RER:
-      return { ...state, submitting: true };
     case actionTypes.CANCEL_RER_SUCCEED:
       return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status }, submitting: false };
-    case actionTypes.CANCEL_RER_FAIL:
-      return { ...state, submitting: false };
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
     case actionTypes.LOAD_STOCKS:
@@ -242,84 +269,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, stockDatas: action.result.data, loading: false };
     case actionTypes.LOAD_STOCKS_FAIL:
       return { ...state, loading: false };
-    case actionTypes.SYNC_SKU:
-      return { ...state, submitting: true };
-    case actionTypes.SYNC_SKU_SUCCESS:
-      return { ...state, submitting: false };
-    case actionTypes.SYNC_SKU_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.UPDATE_CARGO_RULE:
-      return { ...state, submitting: true };
-    case actionTypes.UPDATE_CARGO_RULE_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.UPDATE_CARGO_RULE_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.FILE_ERS:
-      return { ...state, submitting: true };
-    case actionTypes.FILE_ERS_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.FILE_ERS_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.QUERY_ERI:
-      return { ...state, submitting: true };
-    case actionTypes.QUERY_ERI_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.QUERY_ERI_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.PAIR_ERP:
-      return { ...state, submitting: true };
-    case actionTypes.PAIR_ERP_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.PAIR_ERP_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.QUERY_POI:
-      return { ...state, submitting: true };
-    case actionTypes.QUERY_POI_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.QUERY_POI_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.FILE_CARGO:
-      return { ...state, submitting: true };
-    case actionTypes.FILE_CARGO_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.FILE_CARGO_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.CONFIRM_CARGO:
-      return { ...state, submitting: true };
-    case actionTypes.CONFIRM_CARGO_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.CONFIRM_CARGO_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.BEGIN_BD:
-      return { ...state, submitting: true };
-    case actionTypes.BEGIN_BD_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.BEGIN_BD_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.BEGIN_NC:
-      return { ...state, submitting: true };
-    case actionTypes.BEGIN_NC_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.BEGIN_NC_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.TRANSFER_TO_OWN:
-      return { ...state, submitting: true };
-    case actionTypes.TRANSFER_TO_OWN_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.TRANSFER_TO_OWN_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.QUERY_OWNTRANF:
-      return { ...state, submitting: true };
-    case actionTypes.QUERY_OWNTRANF_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.QUERY_OWNTRANF_FAIL:
-      return { ...state, submitting: false };
-    case actionTypes.VIRTUAL_TRANS_SAVE:
-      return { ...state, submitting: true };
-    case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
-      return { ...state, submitting: false };
-    case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
-      return { ...state, submitting: false };
+    case actionTypes.LOAD_MANIFTEMP_SUCCEED:
+      return { ...state, billTemplates: action.result.data };
     default:
       return state;
   }
@@ -717,7 +668,7 @@ export function loadBatchRegDetails(relNo) {
   };
 }
 
-export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName, groupVals) {
+export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals) {
   return {
     [CLIENT_API]: {
       types: [
@@ -727,7 +678,7 @@ export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName, 
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
-      data: { detailIds, relCounts, owner, loginId, loginName, groupVals },
+      data: { template, detailIds, relCounts, owner, loginId, loginName, groupVals },
     },
   };
 }
@@ -747,7 +698,7 @@ export function batchDelgCancel(data) {
   };
 }
 
-export function beginNormalDecl(ietype, detailIds, relCounts, owner, loginId, loginName) {
+export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, loginId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -757,7 +708,7 @@ export function beginNormalDecl(ietype, detailIds, relCounts, owner, loginId, lo
       ],
       endpoint: 'v1/cwm/shftz/batch/normal/clear/begin',
       method: 'post',
-      data: { ietype, detailIds, relCounts, owner, loginId, loginName },
+      data: { ietype, template, detailIds, relCounts, owner, loginId, loginName },
     },
   };
 }
@@ -982,6 +933,21 @@ export function splitRelDetails(data) {
       endpoint: 'v1/cwm/shftz/rel/details/split',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function loadManifestTemplates(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MANIFTEMP,
+        actionTypes.LOAD_MANIFTEMP_SUCCEED,
+        actionTypes.LOAD_MANIFTEMP_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/owner/billtemplates',
+      method: 'get',
+      params,
     },
   };
 }
