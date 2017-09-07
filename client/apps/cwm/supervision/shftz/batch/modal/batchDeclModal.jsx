@@ -331,7 +331,7 @@ export default class BatchDeclModal extends Component {
         footer={null} visible={this.props.visible}
       >
         <Form layout="inline">
-          <Card noHovering bodyStyle={{ padding: 8, paddingBottom: 0 }}>
+          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <HeadForm form={this.props.form} />
           </Card>
           <Row gutter={16}>

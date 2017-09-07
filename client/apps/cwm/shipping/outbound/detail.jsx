@@ -8,6 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import { Logixon } from 'client/components/FontIcon';
+import PageHeader from 'client/components/PageHeader';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
@@ -23,7 +24,7 @@ import { format } from 'client/common/i18n/helpers';
 import ShunfengExpressModal from './modal/shunfengExpressModal';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Step = Steps.Step;
@@ -210,24 +211,28 @@ export default class OutboundDetail extends Component {
     );
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {defaultWhse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('shippingOutbound')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.outboundNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          {!!outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {defaultWhse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('shippingOutbound')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.outboundNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+            {!!outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
+          </PageHeader.Title>
+          <PageHeader.Nav>
             {!!outboundHead.bonded && <Tooltip title="海关监管" placement="bottom">
               <Button size="large" icon="link" onClick={this.handleRegPage}><Badge status={regStatus.badge} text={regStatus.text} /></Button>
             </Tooltip>
-            }
+        }
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             {this.state.tabKey === 'pickingDetails' && <Dropdown overlay={printMenu}>
               <Button size="large" icon="printer" />
             </Dropdown>}
@@ -240,8 +245,8 @@ export default class OutboundDetail extends Component {
               <Tooltip title="扫码模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
               <Tooltip title="手动模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
             </RadioGroup>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content">
           <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
             <Row gutter={16} className="info-group-underline">

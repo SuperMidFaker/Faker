@@ -8,6 +8,7 @@ import { Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Ca
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
+import PageHeader from 'client/components/PageHeader';
 import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
@@ -16,7 +17,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -327,32 +328,37 @@ export default class SHFTZRelDetail extends Component {
     );
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
               上海自贸区监管
             </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {whse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('ftzReleaseReg')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.soNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+              <Breadcrumb.Item>
+                {whse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('ftzReleaseReg')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.soNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
+              <Button size="large" icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
+            </Tooltip>
+        }
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             {relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value &&
               relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
               <Popover title="拆分条件" content={content}>
                 <Button size="large">明细拆分</Button>
               </Popover>
             }
-            {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
-            </Tooltip>
-            }
+
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {queryable && <Tooltip title="向监管系统接口查询并同步分拨出库单明细数据" placement="bottom">
               <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
@@ -361,8 +367,8 @@ export default class SHFTZRelDetail extends Component {
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
             {relEditable && whyunsent && <Tooltip title={whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>

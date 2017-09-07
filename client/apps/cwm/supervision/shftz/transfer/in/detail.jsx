@@ -4,17 +4,18 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, Tooltip, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
+import PageHeader from 'client/components/PageHeader';
 import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 // separate owntransfer transferin
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -286,32 +287,37 @@ export default class SHFTZTransferInDetail extends Component {
     const inbStatus = entryAsn.inbound_status && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
               上海自贸区监管
             </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {whse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('ftzTransferIn')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.asnNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
-            {entryAsn.inbound_no &&
-            <Button size="large" icon="link" onClick={this.handleInboundPage}>
-              <Badge status={inbStatus.badge} text={inbStatus.text} />
-            </Button>
+              <Breadcrumb.Item>
+                {whse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('ftzTransferIn')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.asnNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
+              <Button size="large" icon="link" onClick={this.handleInboundPage}>
+                <Badge status={inbStatus.badge} text={inbStatus.text} />
+              </Button>
+            </Tooltip>
             }
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
             {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>转移入分拨</Button>}
             {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取分拨明细ID</Button>}
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>

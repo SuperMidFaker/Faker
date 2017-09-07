@@ -133,13 +133,15 @@ export default class ReceiveInbound extends Component {
             </Breadcrumb>
             {!!inboundHead.bonded && entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
           </PageHeader.Title>
-          <PageHeader.Actions>
+          <PageHeader.Nav>
             {!!inboundHead.bonded && <Tooltip title="海关监管" placement="bottom">
               <Button size="large" icon="link" onClick={this.handleRegPage}>
                 <Badge status={regStatus.badge} text={regStatus.text} />
               </Button>
             </Tooltip>
             }
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
             <Print inboundNo={this.props.params.inboundNo} />
             }

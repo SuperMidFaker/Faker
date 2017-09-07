@@ -8,13 +8,14 @@ import { Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, 
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
+import PageHeader from 'client/components/PageHeader';
 import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -347,35 +348,39 @@ export default class SHFTZEntryDetail extends Component {
     const inbStatus = entryAsn.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
               上海自贸区监管
             </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {whse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('ftzEntryReg')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.asnNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+              <Breadcrumb.Item>
+                {whse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('ftzEntryReg')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.asnNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
             {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
               <Button size="large" icon="link" onClick={this.handleInboundPage}>
                 <Badge status={inbStatus.badge} text={inbStatus.text} />
               </Button>
             </Tooltip>
             }
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {this.state.queryable && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
             {entryEditable && !this.state.sendable && <Tooltip title={this.state.whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
