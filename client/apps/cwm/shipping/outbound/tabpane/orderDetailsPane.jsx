@@ -245,7 +245,7 @@ export default class OrderDetailsPane extends React.Component {
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
-          const selectedRowKeys = dataSource.map(item => item.seq_no);
+          const selectedRowKeys = dataSource.map(item => item.id);
           this.setState({
             selectedRowKeys,  // TODO
           });
