@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification, Popover, Checkbox } from 'antd';
+import { Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification, Popover, Checkbox } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -67,6 +67,7 @@ function fetchData({ dispatch, params }) {
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
+  jumpOut: true,
 })
 export default class SHFTZRelDetail extends Component {
   static propTypes = {
@@ -295,7 +296,7 @@ export default class SHFTZRelDetail extends Component {
     const { relSo, relRegs, whse, submitting } = this.props;
     const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
+    const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
     let queryable = false;
     let sendable = relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
@@ -311,6 +312,7 @@ export default class SHFTZRelDetail extends Component {
         width: 100,
       });
     }
+    const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     const content = (
       <div>
         <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
@@ -347,9 +349,15 @@ export default class SHFTZRelDetail extends Component {
                 <Button size="large">明细拆分</Button>
               </Popover>
             }
-            {relSo.outbound_no && <Button size="large" onClick={this.handleOutboundPage}>出库单</Button>}
+            {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
+              <Button size="large" icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
+            </Tooltip>
+            }
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {queryable && <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>获取状态</Button>}
+            {queryable && <Tooltip title="向监管系统接口查询并同步分拨出库单明细数据" placement="bottom">
+              <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
+            </Tooltip>
+            }
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
             {relEditable && whyunsent && <Tooltip title={whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}

@@ -91,7 +91,7 @@ exports.CWM_INBOUND_STATUS = {
 
 exports.CWM_SHFTZ_APIREG_STATUS = {
   pending: 0,
-  sent: 1,
+  processing: 1,
   completed: 2,
 };
 
@@ -329,18 +329,112 @@ exports.CWM_TRANSACTIONS_TYPE = {
   unfreezein: { text: '冻结出' },
 };
 
-exports.CWM_SHFTZ_REG_STATUS = [{
+exports.CWM_SHFTZ_REG_STATUS_INDICATOR = [{
   value: 0,
   text: '待备案',
   tagcolor: 'blue',
+  badge: 'warning',
 }, {
   value: 1,
   text: '已发送',
   tagcolor: 'green',
+  badge: 'processing',
 }, {
   value: 2,
   text: '备案完成',
   tagcolor: 'cyan',
+  badge: 'success',
+}];
+
+exports.CWM_SHFTZ_TRANSFER_STATUS_INDICATOR = [{
+  value: 0,
+  text: '未接收',
+  tagcolor: 'blue',
+  badge: 'warning',
+}, {
+  value: 1,
+  text: '数据比对',
+  tagcolor: 'green',
+  badge: 'processing',
+}, {
+  value: 2,
+  text: '接收完成',
+  tagcolor: 'cyan',
+  badge: 'success',
+}];
+
+exports.CWM_INBOUND_STATUS_INDICATOR = [{
+  value: 0,
+  text: '待入库',
+  tagcolor: 'blue',
+  badge: 'warning',
+}, {
+  value: 1,
+  text: '收货',
+  tagcolor: 'green',
+  badge: 'processing',
+}, {
+  value: 2,
+  text: '收货',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 3,
+  text: '上架',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 4,
+  text: '上架',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 5,
+  text: '已入库',
+  tagcolor: 'cyan',
+  badge: 'success',
+}];
+
+exports.CWM_OUTBOUND_STATUS_INDICATOR = [{
+  value: 0,
+  text: '待出库',
+  tagcolor: 'blue',
+  badge: 'warning',
+}, {
+  value: 1,
+  text: '部分分配',
+  tagcolor: 'green',
+  badge: 'processing',
+}, {
+  value: 2,
+  text: '全部分配',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 3,
+  text: '部分拣货',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 4,
+  text: '全部拣货',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 5,
+  text: '复核装箱',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 6,
+  text: '部分发货',
+  tagcolor: 'cyan',
+  badge: 'processing',
+}, {
+  value: 7,
+  text: '已出库',
+  tagcolor: 'cyan',
+  badge: 'success',
 }];
 
 exports.DELIVER_TYPES = [{

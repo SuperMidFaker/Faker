@@ -60,6 +60,7 @@ function fetchData({ dispatch, params }) {
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
+  jumpOut: true,
 })
 export default class SHFTZTransferOutDetail extends Component {
   static propTypes = {
@@ -229,7 +230,7 @@ export default class SHFTZTransferOutDetail extends Component {
     const { relSo, relRegs, whse, submitting } = this.props;
     const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
+    const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
     let sendable = relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
     const whyunsent = !sendable ? '出库单配货未完成' : '';

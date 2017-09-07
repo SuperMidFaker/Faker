@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
+import { Badge, Breadcrumb, Icon, Layout, Tabs, Steps, Button, Card, Col, Row, Tooltip, Radio,
 Tag, Dropdown, Menu, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
@@ -17,7 +17,7 @@ loadShunfengConfig } from 'common/reducers/cwmOutbound';
 import PrintPickList from './billsPrint/printPIckList';
 import PrintShippingList from './billsPrint/printShippingList';
 import PrintShippingConfirm from './billsPrint/printShippingConfirm';
-import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS } from 'common/constants';
+import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import ShunfengExpressModal from './modal/shunfengExpressModal';
@@ -51,6 +51,7 @@ const TabPane = Tabs.TabPane;
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
+  jumpOut: true,
 })
 export default class OutboundDetail extends Component {
   static propTypes = {
@@ -192,7 +193,7 @@ export default class OutboundDetail extends Component {
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];
     const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
-    const regStatus = CWM_SHFTZ_REG_STATUS.filter(status => status.value === outboundHead.reg_status)[0];
+    const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0];
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
     const printMenu = (
       <Menu>
@@ -223,8 +224,8 @@ export default class OutboundDetail extends Component {
           </Breadcrumb>
           {!!outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
           <div className="page-header-tools">
-            {!!outboundHead.bonded && <Tooltip title="海关备案详情" placement="bottom">
-              <Button size="large" onClick={this.handleRegPage}><Logixon type="customs" />{regStatus.text}</Button>
+            {!!outboundHead.bonded && <Tooltip title="海关监管" placement="bottom">
+              <Button size="large" icon="link" onClick={this.handleRegPage}><Badge status={regStatus.badge} text={regStatus.text} /></Button>
             </Tooltip>
             }
             {this.state.tabKey === 'pickingDetails' && <Dropdown overlay={printMenu}>
@@ -288,7 +289,7 @@ export default class OutboundDetail extends Component {
                 <Step description="待出库" />
                 <Step description="分配" />
                 <Step description="拣货" />
-                <Step description="装箱" />
+                <Step description="复核装箱" />
                 <Step description="发货" />
                 <Step description="已出库" />
               </Steps>

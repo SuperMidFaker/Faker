@@ -1,6 +1,40 @@
- .page-header > span > span {
-   font-size: 14px;
-   line-height: 28px;
-   vertical-align: middle;
-   margin-right: 8px;
- }
+ .page-header {
+    > span > span {
+      font-size: 14px;
+      line-height: 28px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    &-title {
+      display: inline;
+    }
+    &-actions {
+      position: fixed;
+      right: 16px;
+      background: rgba(252,252,252,0.95);
+      padding: 8px 0;
+      display: inline-flex;
+      .ant-upload.ant-upload-select,
+      >span {
+        display: inline-flex;
+      }
+      >.ant-radio-group,
+      >.ant-btn-group {
+        display: inline-flex;
+        margin-left: 8px;
+      }
+      .ant-radio-group-large .ant-radio-button-wrapper {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .ant-select,
+      >button,
+      >span {
+        margin-left: 8px;
+      }
+      >a {
+        line-height: 32px;
+      }
+    }
+ } 
+    

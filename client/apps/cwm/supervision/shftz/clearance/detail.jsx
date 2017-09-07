@@ -183,7 +183,7 @@ export default class SHFTZClearanceDetail extends Component {
   render() {
     const { batchDecl, batchApplies, whse, submitting } = this.props;
     const relEditable = batchDecl.status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = batchDecl.status === CWM_SHFTZ_APIREG_STATUS.sent;
+    const sent = batchDecl.status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
     return (
       <div>

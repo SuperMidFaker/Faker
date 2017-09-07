@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
+import { Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -55,6 +55,7 @@ function fetchData({ dispatch, params }) {
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
+  jumpOut: true,
 })
 export default class SHFTZEntryDetail extends Component {
   static propTypes = {
@@ -341,8 +342,9 @@ export default class SHFTZEntryDetail extends Component {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent;
+    const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
+    const inbStatus = entryAsn.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     return (
       <div>
         <Header className="page-header">
@@ -361,7 +363,12 @@ export default class SHFTZEntryDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {entryAsn.inbound_no && <Button size="large" onClick={this.handleInboundPage}>入库单</Button>}
+            {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
+              <Button size="large" icon="link" onClick={this.handleInboundPage}>
+                <Badge status={inbStatus.badge} text={inbStatus.text} />
+              </Button>
+            </Tooltip>
+            }
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {this.state.queryable && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
             {entryEditable &&

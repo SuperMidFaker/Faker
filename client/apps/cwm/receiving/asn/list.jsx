@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Button, Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Select, Tag, notification, message } from 'antd';
+import { Badge, Button, Breadcrumb, Icon, Layout, Radio, Select, Tag, notification, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -120,16 +120,32 @@ export default class ReceivingASNList extends React.Component {
       }
     },
   }, {
-    title: '备案状态',
+    title: '监管状态',
     dataIndex: 'reg_status',
     width: 100,
-    render: (o) => {
-      if (o === CWM_SHFTZ_APIREG_STATUS.pending) {
-        return (<Badge status="default" text="待备案" />);
-      } else if (o === CWM_SHFTZ_APIREG_STATUS.sent) {
-        return (<Badge status="processing" text="已发送" />);
-      } else if (o === CWM_SHFTZ_APIREG_STATUS.completed) {
-        return (<Badge status="success" text="备案完成" />);
+    render: (o, record) => {
+      if (record.bonded_intype === 'transfer') {
+        switch (o) {
+          case CWM_SHFTZ_APIREG_STATUS.pending:
+            return (<Badge status="default" text="未接收" />);
+          case CWM_SHFTZ_APIREG_STATUS.processing:
+            return (<Badge status="processing" text="数据比对" />);
+          case CWM_SHFTZ_APIREG_STATUS.completed:
+            return (<Badge status="success" text="接收完成" />);
+          default:
+            break;
+        }
+      } else {
+        switch (o) {
+          case CWM_SHFTZ_APIREG_STATUS.pending:
+            return (<Badge status="default" text="待备案" />);
+          case CWM_SHFTZ_APIREG_STATUS.processing:
+            return (<Badge status="processing" text="已发送" />);
+          case CWM_SHFTZ_APIREG_STATUS.completed:
+            return (<Badge status="success" text="备案完成" />);
+          default:
+            break;
+        }
       }
     },
   }, {
@@ -394,7 +410,7 @@ export default class ReceivingASNList extends React.Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {filters.status === 'completed' && filters.ownerCode !== 'all' &&
-            <Dropdown.Button size="large" overlay={<Menu />}>
+            <Button size="large">
               <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
                 formData={{
                   data: JSON.stringify({
@@ -411,8 +427,8 @@ export default class ReceivingASNList extends React.Component {
               >
                 <Icon type="upload" /> 导入库存ASN
                 </ExcelUploader>
-            </Dropdown.Button>
-              }
+            </Button>
+            }
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>

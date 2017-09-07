@@ -90,7 +90,7 @@ export default class SHFTZBatchDeclList extends React.Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />
+        <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
         <span className="ant-divider" />
         <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
           <a>取消委托</a>
@@ -210,7 +210,7 @@ export default class SHFTZBatchDeclList extends React.Component {
         return <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />;
       } else if (record.manifested === 0) {
         return (<span>
-          <RowUpdater onHit={this.handleDelgManifest} label="委托清单" row={record} />
+          <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
           <span className="ant-divider" />
           <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
             <a>取消委托</a>
