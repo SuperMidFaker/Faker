@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col, Row } from 'antd';
+import { Form, Select, Input, Card, Col, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -16,7 +16,7 @@ const Option = Select.Option;
 function getFieldInits(formData) {
   const init = {};
   if (formData) {
-    ['cop_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'element', 'g_unit_1', 'g_unit_2', 'g_unit_3',
+    ['cop_product_no', 'src_product_no', 'hscode', 'g_name', 'en_name', 'g_model', 'element', 'g_unit_1', 'g_unit_2', 'g_unit_3',
       'unit_1', 'unit_2', 'fixed_unit', 'origin_country', 'customs_control', 'inspection_quarantine',
       'currency', 'pre_classify_no', 'remark',
     ].forEach((fd) => {
@@ -26,6 +26,17 @@ function getFieldInits(formData) {
       init[fd] = formData[fd] === undefined ? null : formData[fd];
     });
     init.specialMark = formData.special_mark ? formData.special_mark.split('/') : [];
+    if (formData.srcNos && formData.srcNos.length > 0) {
+      init.src_product_no = `${formData.cop_product_no}_${formData.srcNos.length}`;
+      let num = 0;
+      for (let i = 0; i < formData.srcNos.length; i++) {
+        if (formData.srcNos[i] === init.src_product_no) {
+          num++;
+          init.src_product_no = `${formData.cop_product_no}_${formData.srcNos.length + num}`;
+          i = 0;
+        }
+      }
+    }
   }
   return init;
 }
@@ -41,6 +52,8 @@ function getFieldInits(formData) {
     tradeCountries: state.cmsTradeitem.params.tradeCountries,
     fieldInits: getFieldInits(state.cmsTradeitem.itemData),
     hscodes: state.cmsHsCode.hscodes,
+    repoId: state.cmsTradeitem.repoId,
+    itemData: state.cmsTradeitem.itemData,
   }),
   { loadHscodes }
 )
@@ -55,6 +68,8 @@ export default class BasicForm extends Component {
     tradeCountries: PropTypes.array,
     hscodes: PropTypes.object,
     action: PropTypes.string.isRequired,
+    repoId: PropTypes.number.isRequired,
+    itemData: PropTypes.object.isRequired,
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.hscodes !== nextProps.hscodes) {
@@ -93,6 +108,17 @@ export default class BasicForm extends Component {
       searchText: value,
     });
   }
+  handleCopNoChange = (e) => {
+    this.props.form.setFieldsValue({ src_product_no: e.target.value });
+  }
+  handleSrcNoChange = (e) => {
+    const srcNos = this.props.itemData.srcNos;
+    srcNos.forEach((no) => {
+      if (no === e.target.value) {
+        return message.error('该源标记号已存在', 5);
+      }
+    });
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes, action } = this.props;
@@ -110,27 +136,33 @@ export default class BasicForm extends Component {
       <div>
         <Card bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('copProductNo')}>
                 {getFieldDecorator('cop_product_no', {
                   rules: [{ required: true, message: '商品货号必填' }],
                   initialValue: fieldInits.cop_product_no,
-                })(<Input disabled={action === 'edit'} />)}
+                })(<Input disabled={action !== 'create'} onChange={this.handleCopNoChange} />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
+            <Col sm={24} lg={8}>
+              <FormItem label={this.msg('srcProductNo')}>
+                {getFieldDecorator('src_product_no', {
+                  initialValue: fieldInits.src_product_no,
+                })(<Input disabled={action !== 'newSrc'} onChange={this.handleSrcNoChange} />)}
+              </FormItem>
+            </Col>
+            <Col sm={24} lg={8}>
               <FormItem label={this.msg('hscode')}>
                 {getFieldDecorator('hscode', {
                   rules: [{ required: true, message: '商品编码必填' }],
                   initialValue: fieldInits.hscode,
                 })(<Select combobox optionFilterProp="search" onChange={this.handleSearch} >
-                  {
-                      hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
-                        search={data.hscode}
-                      >{data.hscode}</Option>)
-                      )}
+                  { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
+                    search={data.hscode}
+                  >{data.hscode}</Option>)
+                    )}
                 </Select>
-                  )}
+                )}
               </FormItem>
             </Col>
             <Col sm={24} lg={24}>
@@ -146,6 +178,7 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('gName')}>
                 {getFieldDecorator('g_name', {
                   initialValue: fieldInits.g_name,
+                  rules: [{ required: true, message: '中文品名必填' }],
                 })(<Input />)}
               </FormItem>
             </Col>
