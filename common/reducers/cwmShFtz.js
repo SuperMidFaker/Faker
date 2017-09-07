@@ -47,6 +47,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'REL_DETAILS_SPLIT', 'REL_DETAILS_SPLIT_SUCCEED', 'REL_DETAILS_SPLIT_FAIL',
   'CANCEL_BD', 'CANCEL_BD_SUCCEED', 'CANCEL_BD_FAIL',
   'CANCEL_NC', 'CANCEL_NC_SUCCEED', 'CANCEL_NC_FAIL',
+  'LOAD_MANIFTEMP', 'LOAD_MANIFTEMP_SUCCEED', 'LOAD_MANIFTEMP_FAIL',
 ]);
 
 const initialState = {
@@ -117,6 +118,7 @@ const initialState = {
   },
   transRegs: [],
   stockDatas: [],
+  billTemplates: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -267,6 +269,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, stockDatas: action.result.data, loading: false };
     case actionTypes.LOAD_STOCKS_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_MANIFTEMP_SUCCEED:
+      return { ...state, billTemplates: action.result.data };
     default:
       return state;
   }
@@ -664,7 +668,7 @@ export function loadBatchRegDetails(relNo) {
   };
 }
 
-export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName, groupVals) {
+export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals) {
   return {
     [CLIENT_API]: {
       types: [
@@ -674,7 +678,7 @@ export function beginBatchDecl(detailIds, relCounts, owner, loginId, loginName, 
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
-      data: { detailIds, relCounts, owner, loginId, loginName, groupVals },
+      data: { template, detailIds, relCounts, owner, loginId, loginName, groupVals },
     },
   };
 }
@@ -694,7 +698,7 @@ export function batchDelgCancel(data) {
   };
 }
 
-export function beginNormalDecl(ietype, detailIds, relCounts, owner, loginId, loginName) {
+export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, loginId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -704,7 +708,7 @@ export function beginNormalDecl(ietype, detailIds, relCounts, owner, loginId, lo
       ],
       endpoint: 'v1/cwm/shftz/batch/normal/clear/begin',
       method: 'post',
-      data: { ietype, detailIds, relCounts, owner, loginId, loginName },
+      data: { ietype, template, detailIds, relCounts, owner, loginId, loginName },
     },
   };
 }
@@ -929,6 +933,21 @@ export function splitRelDetails(data) {
       endpoint: 'v1/cwm/shftz/rel/details/split',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function loadManifestTemplates(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_MANIFTEMP,
+        actionTypes.LOAD_MANIFTEMP_SUCCEED,
+        actionTypes.LOAD_MANIFTEMP_FAIL,
+      ],
+      endpoint: 'v1/cms/settings/owner/billtemplates',
+      method: 'get',
+      params,
     },
   };
 }

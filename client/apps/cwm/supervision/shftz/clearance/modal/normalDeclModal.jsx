@@ -9,7 +9,7 @@ import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from '../form/headForm';
 import messages from '../../message.i18n';
-import { closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
+import { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -25,6 +25,7 @@ const Option = Select.Option;
     owners: state.cwmContext.whseAttrs.owners,
     ownerCusCode: state.cwmShFtz.clearanceModal.ownerCusCode,
     normalRegs: state.cwmShFtz.batchout_regs,
+    billTemplates: state.cwmShFtz.billTemplates,
     loginId: state.account.loginId,
     loginName: state.account.username,
     units: state.cwmShFtz.params.units.map(un => ({
@@ -46,7 +47,7 @@ const Option = Select.Option;
     submitting: state.cwmShFtz.submitting,
     suppliers: state.cwmReceive.suppliers,
   }),
-  { closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
+  { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
 )
 export default class NormalDeclModal extends Component {
   static propTypes = {
@@ -63,6 +64,7 @@ export default class NormalDeclModal extends Component {
     supplier: '',
     currency: '',
     trxMode: '',
+    template: undefined,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -83,9 +85,16 @@ export default class NormalDeclModal extends Component {
         whse_code: nextProps.defaultWhse.code,
         rel_type: 'normal',
       });
+      const owner = nextProps.owners.filter(own => own.customs_code === nextProps.ownerCusCode)[0];
+      if (owner) {
+        this.props.loadManifestTemplates({
+          owner_partner_id: owner.id,
+          tenant_id: nextProps.tenantId,
+          ietype: 0,
+        });
+        this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
+      }
       this.setState({ ownerCusCode: nextProps.ownerCusCode });
-      const owner = this.props.owners.find(ow => ow.customs_code === nextProps.ownerCusCode);
-      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
     }
   }
 
@@ -93,10 +102,10 @@ export default class NormalDeclModal extends Component {
   normalRegColumns = [{
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
-    width: 180,
   }, {
     title: '货主',
     dataIndex: 'owner_name',
+    width: 280,
   }, {
     title: '普通出库供应商',
     dataIndex: 'supplier',
@@ -126,7 +135,6 @@ export default class NormalDeclModal extends Component {
   regDetailColumns = [{
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
-    width: 180,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -148,6 +156,7 @@ export default class NormalDeclModal extends Component {
     title: '规格型号',
     dataIndex: 'model',
     render: o => <TrimSpan text={o} maxLen={30} />,
+    width: 240,
   }, {
     title: '原产国',
     dataIndex: 'country',
@@ -219,8 +228,18 @@ export default class NormalDeclModal extends Component {
   }
   handleOwnerChange = (ownerCusCode) => {
     const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
-    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
     this.setState({ ownerCusCode });
+    if (owner) {
+      this.props.loadManifestTemplates({
+        owner_partner_id: owner.id,
+        tenant_id: this.props.tenantId,
+        ietype: 0,
+      });
+      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
+    }
+  }
+  handleTemplateChange = (template) => {
+    this.setState({ template });
   }
   handleSupplierChange = (supplier) => {
     this.setState({ supplier });
@@ -281,7 +300,7 @@ export default class NormalDeclModal extends Component {
       name: own.name,
     }))[0];
     const { loginId, loginName } = this.props;
-    this.props.beginNormalDecl(this.state.ietype, detailIds, relCounts, owner, loginId, loginName).then((result) => {
+    this.props.beginNormalDecl(this.state.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -293,7 +312,7 @@ export default class NormalDeclModal extends Component {
 
   render() {
     const { submitting } = this.props;
-    const { relNo, ownerCusCode, supplier, currency, trxMode } = this.state;
+    const { relNo, ownerCusCode, template, supplier, currency, trxMode } = this.state;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -311,6 +330,11 @@ export default class NormalDeclModal extends Component {
               </Select>
             </FormItem>
           </Col>
+        <FormItem label="关联模板">
+          <Select onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
+            {this.props.billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+          </Select>
+        </FormItem>
           <Col span={8}>
             <FormItem {...formItemLayout} label="供应商">
               <Select onChange={this.handleSupplierChange} style={{ width: 200 }} value={supplier}>
