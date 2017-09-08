@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Card, DatePicker, Table, Form, Modal, Input, Tag, Row, Col, Button, Select, message, Checkbox, Popover } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { format } from 'client/common/i18n/helpers';
+import TrimSpan from 'client/components/trimSpan';
 import QuantityInput from '../../../common/quantityInput';
 import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import messages from '../../message.i18n';
@@ -69,9 +70,8 @@ export default class AllocatingModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      const { outboundHead } = nextProps;
       this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters,
-        outboundHead.bonded, outboundHead.bonded_outtype, nextProps.outboundHead.owner_partner_id);
+         nextProps.outboundHead.owner_partner_id);
       this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
       this.setState({
         outboundProduct: nextProps.outboundProduct,
@@ -94,13 +94,13 @@ export default class AllocatingModal extends Component {
   }
   handleReLoad = () => {
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, this.props.filters,
-      this.props.bonded, this.props.bonded_outtype, this.props.outboundHead.owner_partner_id).then((result) => {
-        if (!result.error) {
-          this.setState({
-            inventoryData: result.data,
-          });
-        }
-      });
+       this.props.outboundHead.owner_partner_id).then((result) => {
+         if (!result.error) {
+           this.setState({
+             inventoryData: result.data,
+           });
+         }
+       });
   }
   msg = key => formatMsg(this.props.intl, key);
   inventoryColumns = [{
@@ -203,7 +203,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
-    width: 160,
+    width: 200,
   }, {
     title: '货物属性',
     dataIndex: 'bonded',
@@ -225,14 +225,17 @@ export default class AllocatingModal extends Component {
     title: '批次号',
     dataIndex: 'external_lot_no',
     width: 200,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '产品序列号',
     dataIndex: 'serial_no',
     width: 200,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
     width: 200,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: 'ASN编号',
     dataIndex: 'asn_no',
@@ -282,6 +285,7 @@ export default class AllocatingModal extends Component {
     title: '采购订单号',
     dataIndex: 'po_no',
     width: 125,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: 'ASN编号',
     dataIndex: 'asn_no',
@@ -290,6 +294,7 @@ export default class AllocatingModal extends Component {
     title: '批次号',
     dataIndex: 'external_lot_no',
     width: 150,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',
@@ -302,7 +307,7 @@ export default class AllocatingModal extends Component {
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
-    width: 160,
+    width: 200,
   }, {
     title: '货物属性',
     dataIndex: 'bonded',
@@ -341,13 +346,13 @@ export default class AllocatingModal extends Component {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, location: value };
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
-      outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
+       outboundHead.owner_partner_id);
   }
   handleDateChange = (dates, dateString) => {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, startTime: new Date(dateString[0]).setHours(0, 0, 0, 0), endTime: new Date(dateString[1]).setHours(0, 0, 0, 0) };
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
-      outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
+       outboundHead.owner_partner_id);
   }
   handleAddAllocate = (index) => {
     const inventoryData = [...this.state.inventoryData];
@@ -424,13 +429,13 @@ export default class AllocatingModal extends Component {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, searchContent: this.state.searchContent };
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
-      outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
+       outboundHead.owner_partner_id);
   }
   handleVwSearch = (value) => {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, virtualWhse: value };
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
-      outboundHead.bonded, outboundHead.bonded_outtype, outboundHead.owner_partner_id);
+       outboundHead.owner_partner_id);
   }
   render() {
     const { filters, outboundHead, inventoryColumns, editable, defaultWhse } = this.props;
@@ -493,7 +498,7 @@ export default class AllocatingModal extends Component {
       </Form>);
 
     const title = (<div>
-      <span>出库分配</span>
+      <span>{outboundHead.so_no} 第{outboundProduct.seq_no}行 出库分配</span>
       <div className="toolbar-right">
         {!editable && <Button onClick={this.handleCancel}>关闭</Button>}
         {editable && <Button onClick={this.handleCancel}>取消</Button>}

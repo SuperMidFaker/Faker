@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Button, Breadcrumb, Icon, Layout, Radio, Select, Tag, notification, message } from 'antd';
+import { Popover, Badge, Button, Breadcrumb, Icon, Layout, Radio, Select, Tag, notification, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -410,24 +410,26 @@ export default class ReceivingASNList extends React.Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {filters.status === 'completed' && filters.ownerCode !== 'all' &&
-            <Button size="large">
-              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
-                formData={{
-                  data: JSON.stringify({
-                    tenantId: this.props.tenantId,
-                    tenantName: this.props.tenantName,
-                    customsCode: this.props.customsCode,
-                    loginId: this.props.loginId,
-                    loginName: this.props.loginName,
-                    whseCode: defaultWhse.code,
-                    whseName: defaultWhse.name,
-                    owner: owners.filter(owner => owner.id === filters.ownerCode)[0],
-                  }),
-                }} onUploaded={this.handleAsnStockImport}
-              >
-                <Icon type="upload" /> 导入库存ASN
+              <Popover content={<a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>}>
+                <Button size="large">
+                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
+                    formData={{
+                      data: JSON.stringify({
+                        tenantId: this.props.tenantId,
+                        tenantName: this.props.tenantName,
+                        customsCode: this.props.customsCode,
+                        loginId: this.props.loginId,
+                        loginName: this.props.loginName,
+                        whseCode: defaultWhse.code,
+                        whseName: defaultWhse.name,
+                        owner: owners.filter(owner => owner.id === filters.ownerCode)[0],
+                      }),
+                    }} onUploaded={this.handleAsnStockImport}
+                  >
+                    <Icon type="upload" /> 导入库存ASN
                 </ExcelUploader>
-            </Button>
+                </Button>
+              </Popover>
             }
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}

@@ -108,14 +108,8 @@ export default class ReceiveInbound extends Component {
     const regStatus = inboundHead.bonded_intype === 'transfer' ?
       CWM_SHFTZ_TRANSFER_STATUS_INDICATOR.filter(status => status.value === inboundHead.reg_status)[0] :
       CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === inboundHead.reg_status)[0];
-    let recMode = '';
-    if (inboundHead.rec_mode === 'manual') {
-      recMode = '单据人工';
-    } else if (inboundHead.rec_mode === 'scan') {
-      recMode = '手持扫码';
-    } else if (inboundHead.rec_mode === 'import') {
-      recMode = '数据导入';
-    }
+    const scanLabel = inboundHead.rec_mode === 'scan' ? ' 扫码模式' : '';
+    const manualLabel = inboundHead.rec_mode === 'manual' ? ' 手动模式' : '';
     return (
       <div>
         <PageHeader>
@@ -155,8 +149,8 @@ export default class ReceiveInbound extends Component {
             <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange} size="large"
               disabled={currentStatus === CWM_INBOUND_STATUS.COMPLETED.step}
             >
-              <Tooltip title="扫码模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="手动模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
+              <Tooltip title="扫码入库操作模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
+              <Tooltip title="手动入库操作模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
@@ -193,9 +187,6 @@ export default class ReceiveInbound extends Component {
                 <InfoItem label="入库时间" addonBefore={<Icon type="clock-circle-o" />}
                   field={inboundHead.completed_date && moment(inboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
                 />
-              </Col>
-              <Col sm={24} lg={4}>
-                <InfoItem label="入库方式" field={recMode} />
               </Col>
             </Row>
             <div className="card-footer">

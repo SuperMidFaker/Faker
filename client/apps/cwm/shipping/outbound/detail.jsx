@@ -196,6 +196,8 @@ export default class OutboundDetail extends Component {
     const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
     const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0];
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
+    const scanLabel = outboundHead.shipping_mode === 'scan' ? ' 扫码模式' : '';
+    const manualLabel = outboundHead.shipping_mode === 'manual' ? ' 手动模式' : '';
     const printMenu = (
       <Menu>
         <Menu.Item>
@@ -242,8 +244,8 @@ export default class OutboundDetail extends Component {
               </Button>
             </Tooltip>
             <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
-              <Tooltip title="扫码模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="手动模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
+              <Tooltip title="扫码出库操作模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
+              <Tooltip title="手动出库操作模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
@@ -284,9 +286,6 @@ export default class OutboundDetail extends Component {
                 <InfoItem label="出库时间" addonBefore={<Icon type="clock-circle-o" />}
                   field={outboundHead.completed_date && moment(outboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
                 />
-              </Col>
-              <Col sm={12} lg={2}>
-                <InfoItem label="操作模式" field={outboundHead.shipping_mode === 'manual' ? '手动' : '扫码'} />
               </Col>
             </Row>
             <div className="card-footer">

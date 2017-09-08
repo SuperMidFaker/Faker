@@ -6,6 +6,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PackagePopover from '../../../common/popover/packagePopover';
+import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import RowUpdater from 'client/components/rowUpdater';
 import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement } from 'common/reducers/cwmMovement';
 
@@ -133,6 +134,7 @@ export default class MovementDetailsPane extends React.Component {
     title: '来源追踪ID',
     dataIndex: 'from_trace_id',
     width: 180,
+    render: o => o && <TraceIdPopover traceId={o} />,
   }, {
     title: '来源库位',
     dataIndex: 'from_location',
@@ -141,6 +143,7 @@ export default class MovementDetailsPane extends React.Component {
     title: '目的追踪ID',
     dataIndex: 'to_trace_id',
     width: 180,
+    render: o => o && <TraceIdPopover traceId={o} />,
   }, {
     title: '目的库位',
     dataIndex: 'to_location',
