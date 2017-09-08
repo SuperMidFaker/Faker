@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Popconfirm, Icon, Tooltip, Tag, message, Table, Button } from 'antd';
-import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import { createFilename } from 'client/util/dataTransform';
 import { setCompareVisible, saveComparedItemDatas,
@@ -142,18 +141,8 @@ export default class ImportComparisonModal extends React.Component {
       }
     });
   }
-  handleCodeChoose = (row, index) => {
+  handleUpdate = (row, index, feedback) => {
     const dataSource = this.state.dataSource;
-    let feedback = '';
-    if (row.feedback === 'prehscode') {
-      feedback = 'newhscode';
-    } else if (row.feedback === 'newhscode') {
-      feedback = 'prehscode';
-    } else if (row.feedback === 'newGmodel') {
-      feedback = 'preGmodel';
-    } else if (row.feedback === 'preGmodel') {
-      feedback = 'newGmodel';
-    }
     const change = {};
     change[row.id] = feedback;
     dataSource[index] = { ...row, feedback };
@@ -177,6 +166,11 @@ export default class ImportComparisonModal extends React.Component {
         return (
           <Tooltip title="导入数据有重复，请删除重复项">
             <Tag color="red">{o}</Tag>
+          </Tooltip>);
+      } else if (record.feedback === 'newSrc') {
+        return (
+          <Tooltip title="添加新来源">
+            <Tag color="green">{o}</Tag>
           </Tooltip>);
       } else {
         return <span>{o}</span>;
@@ -227,6 +221,10 @@ export default class ImportComparisonModal extends React.Component {
     dataIndex: 'g_name',
     width: 200,
   }, {
+    title: this.msg('preGname'),
+    dataIndex: 'item_g_name',
+    width: 200,
+  }, {
     title: this.msg('gModel'),
     dataIndex: 'g_model',
     width: 300,
@@ -237,7 +235,8 @@ export default class ImportComparisonModal extends React.Component {
             <Tag color="green">{o}</Tag>
           </Tooltip>);
       } else {
-        return <span>{o}</span>;
+        const spanText = `${o.substring(0, 15)}...`;
+        return (<Tooltip title={o}><span>{spanText || ''}</span></Tooltip>);
       }
     },
   }, {
@@ -251,7 +250,8 @@ export default class ImportComparisonModal extends React.Component {
             <Tag color="green">{o}</Tag>
           </Tooltip>);
       } else {
-        return <span>{o}</span>;
+        const spanText = `${o.substring(0, 15)}...`;
+        return (<Tooltip title={o}><span>{spanText || ''}</span></Tooltip>);
       }
     },
   }, {
@@ -281,20 +281,12 @@ export default class ImportComparisonModal extends React.Component {
       width: 130,
       fixed: 'right',
       render: (o, record, index) => {
-        if (record.feedback === 'prehscode') {
+        if (record.feedback === 'newUpdate') {
           return (
             <span>
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
+              <a onClick={() => this.handleUpdate(record, index, 'newhscode')} role="presentation">更新</a>
               <span className="ant-divider" />
-              <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
-                <a role="presentation"><Icon type="delete" /></a>
-              </Popconfirm>
-            </span>
-          );
-        } else if (record.feedback === 'newhscode') {
-          return (
-            <span>
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
+              <a onClick={() => this.handleUpdate(record, index, 'newSrc')} role="presentation">添加新来源</a>
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="presentation"><Icon type="delete" /></a>
@@ -304,7 +296,7 @@ export default class ImportComparisonModal extends React.Component {
         } else if (record.feedback === 'preGmodel') {
           return (
             <span>
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
+              <a onClick={() => this.handleUpdate(record, index, 'newGmodel')} role="presentation">使用新规格型号</a>
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="presentation"><Icon type="delete" /></a>
@@ -314,7 +306,7 @@ export default class ImportComparisonModal extends React.Component {
         } else if (record.feedback === 'newGmodel') {
           return (
             <span>
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
+              <a onClick={() => this.handleUpdate(record, index, 'preGmodel')} role="presentation">使用原规格型号</a>
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="presentation"><Icon type="delete" /></a>

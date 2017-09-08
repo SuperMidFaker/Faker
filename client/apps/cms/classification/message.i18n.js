@@ -53,6 +53,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.g.name',
     defaultMessage: '中文品名',
   },
+  preGname: {
+    id: 'cms.classificagtion.tradeitem.pre.gname',
+    defaultMessage: '中文品名(已有)',
+  },
   enName: {
     id: 'cms.classificagtion.tradeitem.en.description',
     defaultMessage: '英文描述',
