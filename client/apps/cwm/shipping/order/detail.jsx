@@ -130,6 +130,11 @@ export default class CreateShippingOrder extends Component {
   handleCarrierChange = (value) => {
     this.setState({ carrier_name: value });
   }
+  handleOwnerChange = (bool, partnerId) => {
+    this.setState({
+      soHead: { ...this.state.soHead, owner_partner_id: partnerId },
+    });
+  }
   render() {
     const { form, submitting, defaultWhse } = this.props;
     const { soHead, soBody, region } = this.state;
@@ -167,7 +172,7 @@ export default class CreateShippingOrder extends Component {
         </PageHeader>
         <Content className="main-content">
           <Form layout="vertical">
-            <HeadCard soHead={soHead} form={form} editable={this.state.editable} />
+            <HeadCard soHead={soHead} form={form} editable={this.state.editable} handleOwnerChange={this.handleOwnerChange} />
             <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
