@@ -354,7 +354,7 @@ export default class NormalDeclModal extends Component {
         <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
       </div>);
     const title = (<div>
-      <span>新建出库清关</span>
+      <span>新建普通出库报关</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleBatchClear}>保存</Button>

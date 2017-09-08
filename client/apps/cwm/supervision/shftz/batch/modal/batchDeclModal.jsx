@@ -311,7 +311,7 @@ export default class BatchDeclModal extends Component {
         <Button type="primary" ghost size="large" onClick={this.handlePortionOutsQuery}>查找</Button>
       </div>);
     const title = (<div>
-      <span>新建集中报关</span>
+      <span>新建分拨集中报关</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" loading={submitting} disabled={this.state.regDetails.length === 0} onClick={this.handleBatchDecl}>保存</Button>

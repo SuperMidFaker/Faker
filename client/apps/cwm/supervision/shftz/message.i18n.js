@@ -103,11 +103,11 @@ const messages = defineMessages({
   },
   createBatchDecl: {
     id: 'cwm.supervision.shftz.create.batchdecl',
-    defaultMessage: '新建集中报关',
+    defaultMessage: '新建分拨集中报关',
   },
   createClearance: {
     id: 'cwm.supervision.shftz.create.clearance',
-    defaultMessage: '新建出库清关',
+    defaultMessage: '新建普通出库报关',
   },
 });
 

@@ -297,7 +297,7 @@ export default class SHFTZClearanceList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="sent">海关申报</RadioButton>
-                <RadioButton value="cleared">清关放行</RadioButton>
+                <RadioButton value="cleared">报关放行</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
