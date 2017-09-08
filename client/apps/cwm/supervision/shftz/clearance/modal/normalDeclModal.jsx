@@ -57,6 +57,7 @@ export default class NormalDeclModal extends Component {
     reload: PropTypes.func.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     ownerCusCode: '',
     relDateRange: [],
     relNo: '',
@@ -331,6 +332,12 @@ export default class NormalDeclModal extends Component {
   render() {
     const { submitting, billTemplates } = this.props;
     const { relNo, ownerCusCode, template } = this.state;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const extraForm = (
       <div>
         <FormItem label="货主">
@@ -379,6 +386,9 @@ export default class NormalDeclModal extends Component {
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                    <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                    </div>
                     <div className="toolbar-right">
                       <FormItem label="制单规则">
                         <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
@@ -387,7 +397,7 @@ export default class NormalDeclModal extends Component {
                       </FormItem>
                     </div>
                   </div>
-                  <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+                  <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowSelection={rowSelection} rowKey="id"
                     scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>

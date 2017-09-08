@@ -66,6 +66,8 @@ export default class MovementDetail extends Component {
   render() {
     const { defaultWhse, movementHead } = this.props;
     const movingStep = movementHead.isdone ? 1 : 0;
+    const scanLabel = movementHead.moving_mode === 'scan' ? ' 扫码模式' : '';
+    const manualLabel = movementHead.moving_mode === 'manual' ? ' 手动模式' : '';
     return (
       <div>
         <Header className="page-header">
@@ -82,8 +84,8 @@ export default class MovementDetail extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             <RadioGroup value={this.state.mode} onChange={this.handleMovingModeChange} size="large" disabled={movingStep === 1}>
-              <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" /></RadioButton></Tooltip>
-              <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" /></RadioButton></Tooltip>
+              <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
+              <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>
           </div>
         </Header>
