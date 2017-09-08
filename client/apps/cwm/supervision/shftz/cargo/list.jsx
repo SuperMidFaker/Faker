@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Menu, Button, Form, Icon, Dropdown, Layout, Radio, Select, message, Table } from 'antd';
+import { Breadcrumb, Button, Form, Icon, Popover, Layout, Radio, Select, message, Table } from 'antd';
 import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS,
   fileCargos, confirmCargos, editGname } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
@@ -358,21 +358,23 @@ export default class SHFTZCargoList extends React.Component {
                   确认备案
                 </Button>
                 }
-              <Dropdown.Button size="large" overlay={<Menu />}>
-                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
-                  formData={{
-                    data: JSON.stringify({
-                      tenantId,
-                      loginId,
-                      whseCode: whse.code,
-                      ownerCusCode: owner.customs_code,
-                      ruleType: rule,
-                    }),
-                  }} onUploaded={this.handleFiledCargoImport}
-                >
-                  <Icon type="upload" /> 导入备案料号
+              <Popover content={<a href={`${XLSX_CDN}/分拨货物备案料号模板.xlsx`}><Icon type="file-excel" />下载导入模板</a>}>
+                <Button size="large">
+                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
+                    formData={{
+                      data: JSON.stringify({
+                        tenantId,
+                        loginId,
+                        whseCode: whse.code,
+                        ownerCusCode: owner.customs_code,
+                        ruleType: rule,
+                      }),
+                    }} onUploaded={this.handleFiledCargoImport}
+                  >
+                    <Icon type="upload" /> 导入备案料号
               </ExcelUploader>
-              </Dropdown.Button>
+                </Button>
+              </Popover>
               <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
             </div>
           </Header>

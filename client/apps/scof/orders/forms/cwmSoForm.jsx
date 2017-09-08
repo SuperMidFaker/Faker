@@ -59,7 +59,7 @@ export default class CwmSoForm extends Component {
       this.handleSetClientForm({
         bonded: ev.target.value,
         bonded_reg_type: null,
-        ship_after_decl_days: '',
+        ship_after_decl_days: null,
         expected_shipping_date: null,
       });
     }

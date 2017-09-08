@@ -21,7 +21,6 @@ import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease }
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
-import { createFilename } from 'client/util/dataTransform';
 import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
@@ -323,7 +322,7 @@ export default class ShippingOrderList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleMenuClick = () => {
-    window.open(`${API_ROOTS.default}v1/cwm/shipping/order/model/download/${createFilename('shippingOrderModel')}.xlsx`);
+    window.open(`${XLSX_CDN}/SO批量导入模板.xlsx`);
   }
   render() {
     const { whses, defaultWhse, owners, filters, loading } = this.props;
