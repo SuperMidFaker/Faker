@@ -20,7 +20,7 @@ const InputGroup = Input.Group;
   }),
   { loadSkuRule }
 )
-export default class PackagePopover extends Component {
+export default class SKUPopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     sku: PropTypes.string.isRequired,
@@ -117,7 +117,7 @@ export default class PackagePopover extends Component {
       </div>
     );
     return (
-      <Popover content={content} title="货品信息" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+      <Popover content={content} trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
         <Button size="small">{sku}</Button>
       </Popover>
     );

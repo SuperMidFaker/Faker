@@ -382,7 +382,7 @@ export default class NormalDeclModal extends Component {
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="报关清单明细" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="委托清关明细" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />

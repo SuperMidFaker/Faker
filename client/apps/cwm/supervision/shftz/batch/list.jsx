@@ -364,7 +364,7 @@ export default class SHFTZBatchDeclList extends React.Component {
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-                <RadioButton value="manifesting">报关委托</RadioButton>
+                <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="pending">报关申请</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>
                 <RadioButton value="applied">申请通过</RadioButton>

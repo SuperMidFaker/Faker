@@ -520,7 +520,7 @@ export default class AllocatingModal extends Component {
                 field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} expectQty={outboundProduct.order_qty} />}
               />
             </Col>
-            {outboundHead.bonded && <Col sm={12} md={8} lg={2}>
+            {outboundHead.bonded > 0 && <Col sm={12} md={8} lg={2}>
               <InfoItem label="监管方式" field={CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0].ftztext} />
             </Col>}
           </Row>

@@ -8,7 +8,8 @@ import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
-import PackagePopover from '../../../common/popover/packagePopover';
+import SKUPopover from '../../../common/popover/skuPopover';
+import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import { openPickingModal, openShippingModal, loadPickDetails, cancelPicked, loadOutboundHead, cancelTraceAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
@@ -68,7 +69,7 @@ export default class PickingDetailsPane extends React.Component {
     width: 160,
     render: (o) => {
       if (o) {
-        return <PackagePopover ownerPartnerId={this.props.outboundHead.owner_partner_id} sku={o} />;
+        return <SKUPopover ownerPartnerId={this.props.outboundHead.owner_partner_id} sku={o} />;
       }
     },
   }, {
@@ -99,26 +100,31 @@ export default class PickingDetailsPane extends React.Component {
       }
     },
   }, {
-    title: '商品货号',
-    dataIndex: 'product_no',
-    width: 160,
-  }, {
-    title: '中文品名',
-    dataIndex: 'name',
-    width: 150,
-  }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
-    width: 160,
+    width: 180,
+    render: o => o && <TraceIdPopover traceId={o} />,
+  }, {
+    title: '货物属性',
+    dataIndex: 'bonded',
+    width: 80,
+    className: 'cell-align-center',
+    render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+  }, {
+    title: '分拨货物',
+    dataIndex: 'portion',
+    width: 80,
+    className: 'cell-align-center',
+    render: portion => portion ? <Tag color="green">可分拨</Tag> : <Tag>否</Tag>,
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 100,
+    width: 150,
   }, {
-    title: '产品序列号',
+    title: '序列号',
     dataIndex: 'serial_no',
     width: 100,
   }, {

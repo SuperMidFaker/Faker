@@ -7,7 +7,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import PackagePopover from '../../../common/popover/packagePopover';
+import SKUPopover from '../../../common/popover/skuPopover';
 import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import AddDetailModal from '../modal/addDetailModal';
 
@@ -136,7 +136,7 @@ export default class DetailsPane extends Component {
       title: 'SKU',
       dataIndex: 'product_sku',
       width: 150,
-      render: o => o ? (<PackagePopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,
+      render: o => o ? (<SKUPopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,
     }, {
       title: '入库单号',
       dataIndex: 'asn_no',

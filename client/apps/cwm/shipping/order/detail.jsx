@@ -106,7 +106,7 @@ export default class CreateShippingOrder extends Component {
         this.props.updateSo(data).then(
           (result) => {
             if (!result.error) {
-              message.success('发货通知已保存成功');
+              message.success('出货订单已保存成功');
               this.context.router.push('/cwm/shipping/order');
             } else {
               message.error('操作失败');

@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Tag, Table, Button, Modal, Input, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
-import PackagePopover from '../../../common/popover/packagePopover';
+import SKUPopover from '../../../common/popover/skuPopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
 import { CWM_INBOUND_STATUS } from 'common/constants';
@@ -72,7 +72,7 @@ export default class PutawayDetailsPane extends React.Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 160,
-    render: o => (<PackagePopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
+    render: o => (<SKUPopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {
     title: '收货数量',
     width: 100,

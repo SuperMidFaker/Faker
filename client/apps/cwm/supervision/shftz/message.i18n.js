@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   ftzClearance: {
     id: 'cwm.supervision.shftz.clearance',
-    defaultMessage: '普通出库清关',
+    defaultMessage: '普通出库报关',
   },
   ftzBatchDecl: {
     id: 'cwm.supervision.shftz.batch.decl',

@@ -122,7 +122,7 @@ export default class ShippingOrderList extends React.Component {
           </RadioGroup>
           <div className="page-header-tools">
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
-              {this.msg('createShippingOrder')}
+              {this.msg('createSO')}
             </Button>
           </div>
         </Header>

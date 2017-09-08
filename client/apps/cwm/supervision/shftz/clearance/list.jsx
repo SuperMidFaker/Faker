@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm, Tooltip, Icon } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -70,10 +70,18 @@ export default class SHFTZClearanceList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '清关委托编号',
+    title: '报关委托编号',
     dataIndex: 'delg_no',
     width: 150,
     fixed: 'left',
+  }, {
+    title: <Tooltip title="普通出库的海关出库单号">提货单号 <small><Icon type="question-circle-o" /></small></Tooltip>,
+    dataIndex: 'ftz_rel_no',
+    width: 150,
+  }, {
+    title: '报关单号',
+    dataIndex: 'pre_entry_seq_no',
+    width: 150,
   }, {
     title: '提货单位(货主)',
     width: 180,
@@ -82,18 +90,23 @@ export default class SHFTZClearanceList extends React.Component {
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
     width: 80,
   }, {
-    title: '委托日期',
+    title: '状态',
+    dataIndex: 'status',
+    width: 80,
+  }, {
+    title: '委托时间',
     width: 120,
     dataIndex: 'delg_time',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
+        return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {
@@ -102,7 +115,7 @@ export default class SHFTZClearanceList extends React.Component {
     dataIndex: 'decl_time',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
+        return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {
@@ -111,16 +124,31 @@ export default class SHFTZClearanceList extends React.Component {
     dataIndex: 'clean_time',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
+        return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_time',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 200,
     fixed: 'right',
     render: (o, record) => (
       <span>
+        <RowUpdater onHit={this.handleDetail} label="委托明细" row={record} />
+        <span className="ant-divider" />
         <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
         <span className="ant-divider" />
         <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
@@ -194,7 +222,7 @@ export default class SHFTZClearanceList extends React.Component {
     this.context.router.push(`${link}${row.delg_no}`);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/clearance/detail/${row.normal_decl_no}`;
+    const link = `/cwm/supervision/shftz/clearance/${row.normal_decl_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
@@ -267,9 +295,9 @@ export default class SHFTZClearanceList extends React.Component {
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-                <RadioButton value="manifesting">制单中</RadioButton>
-                <RadioButton value="sent">已申报</RadioButton>
-                <RadioButton value="cleared">已放行</RadioButton>
+                <RadioButton value="manifesting">委托制单</RadioButton>
+                <RadioButton value="sent">海关申报</RadioButton>
+                <RadioButton value="cleared">清关放行</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>

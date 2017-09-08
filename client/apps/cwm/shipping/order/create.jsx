@@ -12,7 +12,7 @@ import CarrierPane from './tabpane/carrierPane';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { clearTemporary } from 'common/reducers/cwmReceive';
-import { addSo } from 'common/reducers/cwmShippingOrder';
+import { createSO } from 'common/reducers/cwmShippingOrder';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -31,7 +31,7 @@ const TabPane = Tabs.TabPane;
     temporaryDetails: state.cwmReceive.temporaryDetails,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { clearTemporary, addSo }
+  { clearTemporary, createSO }
 )
 @connectNav({
   depth: 3,
@@ -82,7 +82,7 @@ export default class CreateShippingOrder extends Component {
         data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
-        this.props.addSo(data).then(
+        this.props.createSO(data).then(
           (result) => {
             if (!result.error) {
               message.success('出货订单已创建成功');

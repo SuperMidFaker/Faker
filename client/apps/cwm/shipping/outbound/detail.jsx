@@ -226,10 +226,10 @@ export default class OutboundDetail extends Component {
                 {this.props.params.outboundNo}
               </Breadcrumb.Item>
             </Breadcrumb>
-            {!!outboundHead.bonded && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
+            {!!(outboundHead.bonded > 0) && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
           </PageHeader.Title>
           <PageHeader.Nav>
-            {!!outboundHead.bonded && <Tooltip title="海关监管" placement="bottom">
+            {!!(outboundHead.bonded > 0) && <Tooltip title="海关监管" placement="bottom">
               <Button size="large" icon="link" onClick={this.handleRegPage}><Badge status={regStatus.badge} text={regStatus.text} /></Button>
             </Tooltip>
         }

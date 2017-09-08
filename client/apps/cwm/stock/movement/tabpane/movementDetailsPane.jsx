@@ -5,7 +5,7 @@ import { Modal, Button, Table, Input } from 'antd';
 import { MdIcon } from 'client/components/FontIcon';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import PackagePopover from '../../../common/popover/packagePopover';
+import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import RowUpdater from 'client/components/rowUpdater';
 import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement } from 'common/reducers/cwmMovement';
@@ -124,7 +124,7 @@ export default class MovementDetailsPane extends React.Component {
     title: 'SKU',
     dataIndex: 'product_sku',
     width: 150,
-    render: o => (<PackagePopover sku={o} />),
+    render: o => (<SKUPopover sku={o} />),
   }, {
     title: '库存移动数量',
     width: 180,

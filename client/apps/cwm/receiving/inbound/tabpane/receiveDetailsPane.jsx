@@ -5,7 +5,7 @@ import { Modal, Button, Table, Input, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
-import PackagePopover from '../../../common/popover/packagePopover';
+import SKUPopover from '../../../common/popover/skuPopover';
 import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
 import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive } from 'common/reducers/cwmReceive';
@@ -110,7 +110,7 @@ export default class ReceiveDetailsPane extends React.Component {
     dataIndex: 'product_sku',
     width: 200,
     fixed: 'left',
-    render: o => (<PackagePopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
+    render: o => (<SKUPopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {
     title: '品名',
     dataIndex: 'name',

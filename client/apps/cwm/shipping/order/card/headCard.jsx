@@ -135,6 +135,7 @@ export default class HeadCard extends Component {
                 initialValue: soHead ? soHead.bonded : bonded,
               })(
                 <RadioGroup onChange={this.handleBondedChange}>
+                  <RadioButton value={-1}>不限</RadioButton>
                   <RadioButton value={0}>非保税</RadioButton>
                   { !!defaultWhse.bonded && <RadioButton value={1}>保税</RadioButton> }
                 </RadioGroup>
@@ -145,7 +146,6 @@ export default class HeadCard extends Component {
           <Col span={6}>
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
-                rules: [{ required: true, message: '请选择保税监管方式' }],
                 initialValue: soHead && soHead.bonded_outtype,
               })(
                 <RadioGroup>

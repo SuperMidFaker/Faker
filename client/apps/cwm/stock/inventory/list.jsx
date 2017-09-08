@@ -11,7 +11,7 @@ import { createFilename } from 'client/util/dataTransform';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import QueryForm from './queryForm';
-import PackagePopover from '../../common/popover/packagePopover';
+import SKUPopover from '../../common/popover/skuPopover';
 import { formatMsg } from '../message.i18n';
 import { CWM_STOCK_SEARCH_TYPE } from 'common/constants';
 import PageHeader from 'client/components/PageHeader';
@@ -73,7 +73,7 @@ export default class StockInventoryList extends React.Component {
     dataIndex: 'product_sku',
     width: 180,
     sorter: true,
-    render: (o, row) => o && (<PackagePopover ownerPartnerId={row.owner_partner_id} sku={o} />),
+    render: (o, row) => o && (<SKUPopover ownerPartnerId={row.owner_partner_id} sku={o} />),
   }, {
     title: this.msg('descCN'),
     dataIndex: 'name',

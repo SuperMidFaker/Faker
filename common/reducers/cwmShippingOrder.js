@@ -138,7 +138,7 @@ export function showDock(soNo, outboundNo) {
   };
 }
 
-export function addSo(data) {
+export function createSO(data) {
   return {
     [CLIENT_API]: {
       types: [
