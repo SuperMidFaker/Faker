@@ -19,7 +19,7 @@ const formatMsg = format(messages);
 export default class allocatedPopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    text: PropTypes.string.isRequired,
+    text: PropTypes.number.isRequired,
     traceId: PropTypes.string.isRequired,
   }
   state = {

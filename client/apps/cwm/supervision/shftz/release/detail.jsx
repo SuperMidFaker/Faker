@@ -301,10 +301,27 @@ export default class SHFTZRelDetail extends Component {
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
     let queryable = false;
-    let sendable = relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
-    const whyunsent = !sendable ? '出库单配货未完成' : '';
-    relRegs.forEach((relReg) => { sendable = sendable && relReg.details.length > 0; });
+    let sendable = true;
+    let whyunsent = '';
+    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
+      sendable = false;
+      whyunsent = '出库单配货未完成';
+    }
     const columns = [...this.columns];
+    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
+      if (sendable) {
+        const nonOutDates = [];
+        relRegs.forEach((reg) => {
+          if (!reg.ftz_rel_date) {
+            nonOutDates.push(reg.pre_entry_seq_no);
+          }
+        });
+        if (nonOutDates.length > 0) {
+          sendable = false;
+          whyunsent = `${nonOutDates.join(',')}预计出区日期未填`;
+        }
+      }
+    }
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
       queryable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
         relRegs.filter(er => !er.ftz_rel_no).length === 0;
