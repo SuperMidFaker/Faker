@@ -418,7 +418,7 @@ export default class SHFTZEntryDetail extends Component {
                 {entryRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
                     total_qty: acc.total_qty + regd.qty,
-                    total_amount: acc.total_amount + regd.amount_usd,
+                    total_amount: acc.total_amount + regd.amount,
                     total_net_wt: acc.total_net_wt + regd.net_wt,
                   }), {
                     total_qty: 0,
@@ -458,7 +458,7 @@ export default class SHFTZEntryDetail extends Component {
                             <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
                           </Col>
                           <Col sm={8} lg={3}>
-                            <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(3)} addonAfter="美元" />
+                            <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(3)} />
                           </Col>
                         </Row>
                       </div>

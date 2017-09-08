@@ -30,6 +30,7 @@ module.exports = (serverPort, dirName, appName) => {
   config.set('webpack_dist', 'dist');
   config.set('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__', config.get('__PRODUCTIONS_ROOT_GROUP__'));
   config.set('CDN_URL', '');
+  config.set('XLSX_CDN', 'https://welogix-cdn.b0.upaiyun.com/xlsx');
   if (__DEV__) {
     config.set('webpack_public_path', `${config.get('webpack_dev_path')}${config.get('webpack_dist')}/`);
     // todo how to make the port configurable

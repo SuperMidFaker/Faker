@@ -81,7 +81,7 @@ export default class DetailsPane extends Component {
     });
   }
   handleTemplateDownload = () => {
-    window.open(`${__CDN__}/assets/template/ASN_details_import.xlsx`);
+    window.open(`${XLSX_CDN}/ASN明细导入模板_20170901.xlsx`);
   }
   render() {
     const { editable, temporaryDetails, detailEnable, form, units, currencies } = this.props;

@@ -65,6 +65,7 @@ const wpConfig = {
     new webpack.DefinePlugin({
       __CLIENT__: true,
       __CDN__: JSON.stringify(config.get('CDN_URL')),
+      XLSX_CDN: JSON.stringify(config.get('XLSX_CDN')),
       API_ROOTS: JSON.stringify(config.get('API_ROOTS')),
       __DEVTOOLS__: config.get('__DEVTOOLS__'),
       __DEV__: config.get('__DEV__'),
