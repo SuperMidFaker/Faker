@@ -400,6 +400,8 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     } else if (e.key === 'exportEditable') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/edited/tradeitems/export/${createFilename('editedCmsItems')}.xlsx?repoId=${this.props.repoId}&tenantId=${this.props.tenantId}`);
+    } else if (e.key === 'expDeclChange') {
+      window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/declhscode/changed/tradeitems/export/${createFilename('declChangedCmsItems')}.xlsx?repoId=${this.props.repoId}&tenantId=${this.props.tenantId}`);
     }
   }
   handleUploaded = (data) => {
@@ -690,6 +692,7 @@ export default class TradeItemList extends Component {
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
         <Menu.Item key="exportEditable"><Icon type="export" /> 导出可编辑物料</Menu.Item>
+        <Menu.Item key="expDeclChange"><Icon type="export" /> 导出税则改变物料</Menu.Item>
       </Menu>);
     let mode = null;
     if (repo.mode !== 'slave' && repo.owner_tenant_id !== -1) {
@@ -766,6 +769,10 @@ export default class TradeItemList extends Component {
                 <RadioButton value="stage"><Icon type="plus-circle-o" /> {this.msg('stageClassified')}</RadioButton>
               </RadioGroup>
             }
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioButton value="useless"><Icon type="close-circle-o" /> 税则改变归类区</RadioButton>
+            </RadioGroup>
             {repoId &&
               <div className="page-header-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
