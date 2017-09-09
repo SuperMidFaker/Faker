@@ -300,7 +300,7 @@ export default class SHFTZTransferSelfList extends React.Component {
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateTransIn}>新建同库转移</Button>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateTransIn}>新建监管库存转移</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="main-content" key="main">

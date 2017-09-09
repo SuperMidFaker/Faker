@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   billNo: {
     id: 'cwm.supervision.shftz.stock.billNo',
-    defaultMessage: '海关入库单',
+    defaultMessage: '海关进库单',
   },
   detailId: {
     id: 'cwm.supervision.shftz.stock.detailid',
@@ -52,7 +52,7 @@ const messages = defineMessages({
   },
   orgCargoId: {
     id: 'cwm.supervision.shftz.stock.orgCargoId',
-    defaultMessage: '原始货物备件号',
+    defaultMessage: '备件号',
   },
   hsCode: {
     id: 'cwm.supervision.shftz.stock.hsCode',

@@ -48,13 +48,13 @@ export default class QueryForm extends React.Component {
   render() {
     const { form: { getFieldDecorator }, owners, filter } = this.props;
     const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 18 },
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 },
     };
     return (
       <Form className="form-layout-compact">
         <Row gutter={16}>
-          <Col span={6}>
+          <Col span={5}>
             <FormItem {...formItemLayout} label={this.msg('owner')}>
               {getFieldDecorator('ownerCode', {
                 initialValue: filter.ownerCode,
@@ -64,13 +64,25 @@ export default class QueryForm extends React.Component {
               </Select>)}
             </FormItem>
           </Col>
-          <Col span={6}>
-            <FormItem {...formItemLayout} label={this.msg('cusNo')}>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label={this.msg('billNo')}>
               {getFieldDecorator('entNo', {
               })(<Input />)}
             </FormItem>
           </Col>
-          <Col span={4} offset={8}>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label={this.msg('orgCargoId')}>
+              {getFieldDecorator('orgCargoId', {
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label={this.msg('hsCode')}>
+              {getFieldDecorator('hsCode', {
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={4}>
             <FormItem>
               <Button type="primary" size="large" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>{this.msg('reset')}</Button>

@@ -22,25 +22,20 @@ export default class ModuleMenu extends React.Component {
         defaultSelectedKeys={[currentKey]}
         mode="inline"
       >
-        <Menu.ItemGroup key="g0" title="入库">
+        <Menu.ItemGroup key="g_in" title="入库">
           <Menu.Item key="entry">
             <NavLink to="/cwm/supervision/shftz/entry">{this.msg('ftzEntryReg')}</NavLink>
           </Menu.Item>
-        </Menu.ItemGroup>
-        <Menu.ItemGroup key="g1" title="移库">
           <Menu.Item key="transferin">
             <NavLink to="/cwm/supervision/shftz/transfer/in">{this.msg('ftzTransferIn')}</NavLink>
           </Menu.Item>
-          <Menu.Item key="transferout">
-            <NavLink to="/cwm/supervision/shftz/transfer/out">{this.msg('ftzTransferOut')}</NavLink>
-          </Menu.Item>
-          <Menu.Item key="transferself">
-            <NavLink to="/cwm/supervision/shftz/transfer/self">{this.msg('ftzTransferSelf')}</NavLink>
-          </Menu.Item>
         </Menu.ItemGroup>
-        <Menu.ItemGroup key="g2" title="出库">
+        <Menu.ItemGroup key="g_out" title="出库">
           <Menu.Item key="release">
             <NavLink to="/cwm/supervision/shftz/release">{this.msg('ftzReleaseReg')}</NavLink>
+          </Menu.Item>
+          <Menu.Item key="transferout">
+            <NavLink to="/cwm/supervision/shftz/transfer/out">{this.msg('ftzTransferOut')}</NavLink>
           </Menu.Item>
           <Menu.Item key="clearance">
             <NavLink to="/cwm/supervision/shftz/clearance">{this.msg('ftzClearance')}</NavLink>
@@ -49,12 +44,15 @@ export default class ModuleMenu extends React.Component {
             <NavLink to="/cwm/supervision/shftz/batch">{this.msg('ftzBatchDecl')}</NavLink>
           </Menu.Item>
         </Menu.ItemGroup>
-        <Menu.ItemGroup key="g3" title="库存">
+        <Menu.ItemGroup key="g_stock" title="库存">
           <Menu.Item key="stock">
             <NavLink to="/cwm/supervision/shftz/stock">{this.msg('ftzStock')}</NavLink>
           </Menu.Item>
+          <Menu.Item key="transferself">
+            <NavLink to="/cwm/supervision/shftz/transfer/self">{this.msg('ftzTransferSelf')}</NavLink>
+          </Menu.Item>
         </Menu.ItemGroup>
-        <Menu.ItemGroup key="g4" title="货物监管">
+        <Menu.ItemGroup key="g_cargo" title="货物监管">
           <Menu.Item key="cargo">
             <NavLink to="/cwm/supervision/shftz/cargo">{this.msg('ftzCargoReg')}</NavLink>
           </Menu.Item>

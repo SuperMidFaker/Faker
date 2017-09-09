@@ -271,7 +271,7 @@ export default class TransferSelfModal extends Component {
         <Button type="primary" ghost size="large" onClick={this.handleFilterQuery}>查找</Button>
       </Form>);
     const title = (<div>
-      <span>转移入分拨</span>
+      <span>新建监管库存转移</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleSaveTrans}>保存</Button>

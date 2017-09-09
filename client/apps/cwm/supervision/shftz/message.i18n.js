@@ -9,10 +9,6 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.transfer.in',
     defaultMessage: '区内转入',
   },
-  batchImport: {
-    id: 'cwm.supervision.shftz.transfer.batch.import',
-    defaultMessage: '批量导入',
-  },
   ftzReleaseReg: {
     id: 'cwm.supervision.shftz.release.reg',
     defaultMessage: '出区备案',
@@ -20,10 +16,6 @@ const messages = defineMessages({
   ftzTransferOut: {
     id: 'cwm.supervision.shftz.transfer.out',
     defaultMessage: '区内转出',
-  },
-  ftzTransferSelf: {
-    id: 'cwm.supervision.shftz.transfer.self',
-    defaultMessage: '同库转移',
   },
   ftzClearance: {
     id: 'cwm.supervision.shftz.clearance',
@@ -36,6 +28,10 @@ const messages = defineMessages({
   ftzStock: {
     id: 'cwm.supervision.shftz.stock',
     defaultMessage: '监管库存查询',
+  },
+  ftzTransferSelf: {
+    id: 'cwm.supervision.shftz.transfer.self',
+    defaultMessage: '监管库存转移',
   },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',
