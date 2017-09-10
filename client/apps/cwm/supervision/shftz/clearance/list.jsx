@@ -41,7 +41,7 @@ const OptGroup = Select.OptGroup;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZClearanceList extends React.Component {
+export default class NormalDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -70,8 +70,8 @@ export default class SHFTZClearanceList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '报关委托编号',
-    dataIndex: 'delg_no',
+    title: '出库报关编号',
+    dataIndex: 'normal_decl_no',
     width: 150,
     fixed: 'left',
   }, {
@@ -79,26 +79,30 @@ export default class SHFTZClearanceList extends React.Component {
     dataIndex: 'ftz_rel_no',
     width: 150,
   }, {
-    title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
-    width: 150,
-  }, {
     title: '提货单位(货主)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 80,
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '报关委托编号',
+    dataIndex: 'delg_no',
+    width: 150,
+  }, {
+    title: '报关单号',
+    dataIndex: 'pre_entry_seq_no',
+    width: 150,
+  }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
-    width: 80,
-  }, {
-    title: '状态',
-    dataIndex: 'status',
     width: 80,
   }, {
     title: '委托时间',
@@ -147,7 +151,7 @@ export default class SHFTZClearanceList extends React.Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleDetail} label="委托明细" row={record} />
+        <RowUpdater onHit={this.handleDetail} label="报关明细" row={record} />
         <span className="ant-divider" />
         <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
         <span className="ant-divider" />
@@ -296,7 +300,7 @@ export default class SHFTZClearanceList extends React.Component {
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="manifesting">委托制单</RadioButton>
-                <RadioButton value="sent">海关申报</RadioButton>
+                <RadioButton value="sent">已申报</RadioButton>
                 <RadioButton value="cleared">报关放行</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>

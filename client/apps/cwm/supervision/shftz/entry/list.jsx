@@ -110,7 +110,7 @@ export default class SHFTZEntryList extends React.Component {
       if (o === 0) {
         return (<Badge status="default" text="待备案" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="已发送" />);
+        return (<Badge status="processing" text="终端处理" />);
       } else if (o === 2) {
         return (<Badge status="success" text="备案完成" />);
       }
@@ -144,11 +144,24 @@ export default class SHFTZEntryList extends React.Component {
       }
     },
   }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_time',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="进库明细" row={record} />,
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -286,7 +299,7 @@ export default class SHFTZEntryList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部状态</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="sent">已发送</RadioButton>
+                <RadioButton value="sent">终端处理</RadioButton>
                 <RadioButton value="completed">备案完成</RadioButton>
               </RadioGroup>
               <span />

@@ -348,7 +348,7 @@ export default class BatchDeclModal extends Component {
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="报关申请明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />

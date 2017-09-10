@@ -89,6 +89,7 @@ export default class SHFTZTransferInList extends React.Component {
   }, {
     title: '监管类型',
     dataIndex: 'ftz_ent_type',
+    width: 80,
     render: (enttype) => {
       const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
       return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
@@ -99,7 +100,7 @@ export default class SHFTZTransferInList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="未接收" />);
+        return (<Badge status="default" text="待转入" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已接收" />);
       } else if (o === 2) {
@@ -112,14 +113,14 @@ export default class SHFTZTransferInList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '发货单位',
-    width: 180,
-    dataIndex: 'sender_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
     title: '收货仓库',
     width: 180,
     dataIndex: 'wh_ent_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '发货单位',
+    width: 180,
+    dataIndex: 'sender_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '发货仓库',
@@ -135,6 +136,19 @@ export default class SHFTZTransferInList extends React.Component {
         return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_time',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -294,7 +308,7 @@ export default class SHFTZTransferInList extends React.Component {
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">未接收</RadioButton>
+                <RadioButton value="pending">待转入</RadioButton>
                 <RadioButton value="received">已接收</RadioButton>
                 <RadioButton value="verified">已核对</RadioButton>
               </RadioGroup>

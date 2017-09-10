@@ -313,7 +313,7 @@ export default class SHFTZTransferInDetail extends Component {
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
+            {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>明细匹配核对</Button>}
             {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>转移入分拨</Button>}
             {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取分拨明细ID</Button>}
           </PageHeader.Actions>
@@ -344,7 +344,7 @@ export default class SHFTZTransferInDetail extends Component {
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="未接收" />
+                  <Step description="待转入" />
                   <Step description="已接收" />
                   <Step description="已核对" />
                 </Steps>

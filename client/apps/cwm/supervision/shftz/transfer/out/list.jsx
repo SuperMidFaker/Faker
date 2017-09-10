@@ -87,6 +87,7 @@ export default class SHFTZTransferOutList extends React.Component {
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
+    width: 80,
     render: (reltype) => {
       const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
       if (regtype) {
@@ -99,11 +100,11 @@ export default class SHFTZTransferOutList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
+        return (<Badge status="default" text="待转出" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="已发送" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+        return (<Badge status="success" text="已转出" />);
       }
     },
   }, {
@@ -112,14 +113,14 @@ export default class SHFTZTransferOutList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货单位',
-    width: 180,
-    dataIndex: 'receiver_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
     title: '发货仓库',
     width: 180,
     dataIndex: 'wh_ent_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '收货单位',
+    width: 180,
+    dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '收货仓库',
@@ -131,6 +132,19 @@ export default class SHFTZTransferOutList extends React.Component {
     width: 120,
     dataIndex: 'ftz_rel_date',
     render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_time',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -261,9 +275,9 @@ export default class SHFTZTransferOutList extends React.Component {
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">待备案</RadioButton>
+                <RadioButton value="pending">待转出</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>
-                <RadioButton value="completed">备案完成</RadioButton>
+                <RadioButton value="completed">已转出</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>

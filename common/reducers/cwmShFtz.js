@@ -119,6 +119,7 @@ const initialState = {
   transRegs: [],
   stockDatas: [],
   billTemplates: [],
+  normalDecl: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -691,7 +692,7 @@ export function batchDelgCancel(data) {
         actionTypes.CANCEL_BD_SUCCEED,
         actionTypes.CANCEL_BD_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/batch/delg/cancel',
+      endpoint: 'v1/cwm/shftz/batch/decl/cancel',
       method: 'post',
       data,
     },
@@ -706,7 +707,7 @@ export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, l
         actionTypes.BEGIN_NC_SUCCEED,
         actionTypes.BEGIN_NC_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/batch/normal/clear/begin',
+      endpoint: 'v1/cwm/shftz/normal/decl/begin',
       method: 'post',
       data: { ietype, template, detailIds, relCounts, owner, loginId, loginName, broker, trxnMode },
     },
@@ -721,7 +722,7 @@ export function cancelBatchNormalClear(data) {
         actionTypes.CANCEL_NC_SUCCEED,
         actionTypes.CANCEL_NC_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/batch/normal/clear/cancel',
+      endpoint: 'v1/cwm/shftz/normal/decl/cancel',
       method: 'post',
       data,
     },

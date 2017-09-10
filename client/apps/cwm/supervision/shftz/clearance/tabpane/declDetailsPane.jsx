@@ -18,7 +18,7 @@ const Search = Input.Search;
   }),
   { openAllocatingModal, loadWaveDetails }
 )
-export default class DelgDetailsPane extends React.Component {
+export default class DeclDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     waveNo: PropType.string.isRequired,

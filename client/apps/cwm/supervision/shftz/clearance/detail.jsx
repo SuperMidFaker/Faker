@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag } from 'antd';
+import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied } from 'common/reducers/cwmShFtz';
+import { loadParams } from 'common/reducers/cwmShFtz';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -32,8 +32,7 @@ function fetchData({ dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
-    batchDecl: state.cwmShFtz.batch_decl,
-    batchApplies: state.cwmShFtz.batch_applies,
+    normalDecl: state.cwmShFtz.normalDecl,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -49,13 +48,14 @@ function fetchData({ dispatch }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadApplyDetails, fileBatchApply, makeBatchApplied }
+  { }
 )
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
+  jumpOut: true,
 })
-export default class SHFTZClearanceDetail extends Component {
+export default class NormalDeclDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -70,13 +70,6 @@ export default class SHFTZClearanceDetail extends Component {
       this.setState({
         scrollY: window.innerHeight - 460,
       });
-    }
-  }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.batchApplies !== this.props.batchApplies && nextProps.batchApplies.length > 0) {
-      if (this.state.tabKey === '') {
-        this.setState({ tabKey: nextProps.batchApplies[0].pre_entry_seq_no });
-      }
     }
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -155,8 +148,12 @@ export default class SHFTZClearanceDetail extends Component {
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateRelReg(preRegNo, field, value);
   }
+  handleDelgManifest = (row) => {
+    const link = `/clearance/${row.i_e_type}/manifest/`;
+    this.context.router.push(`${link}${row.delg_no}`);
+  }
   render() {
-    const { batchDecl, whse } = this.props;
+    const { normalDecl, whse } = this.props;
 
     return (
       <div>
@@ -177,6 +174,11 @@ export default class SHFTZClearanceDetail extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
+          <PageHeader.Nav>
+            <Tooltip title="报关清单" placement="bottom">
+              <Button size="large" icon="link" onClick={this.handleDelgManifest}><Badge status="default" text="制单中" /></Button>
+            </Tooltip>
+          </PageHeader.Nav>
           <PageHeader.Actions />
         </PageHeader>
         <Content className="main-content">
@@ -184,30 +186,30 @@ export default class SHFTZClearanceDetail extends Component {
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
               <Row className="info-group-inline">
                 <Col sm={24} lg={6}>
-                  <InfoItem label="提货单位" field={batchDecl.owner_name} />
+                  <InfoItem label="提货单位" field={normalDecl.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="报关代理" field={batchDecl.receiver_name} />
+                  <InfoItem label="报关代理" field={normalDecl.receiver_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="成交方式" field={batchDecl.receiver_name} />
+                  <InfoItem label="成交方式" field={normalDecl.receiver_name} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="备案时间" field={batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY-MM-DD HH:mm')} />
+                  <InfoItem label="备案时间" field={normalDecl.reg_date && moment(normalDecl.reg_date).format('YYYY-MM-DD HH:mm')} />
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={batchDecl.status}>
+                <Steps progressDot current={normalDecl.status}>
                   <Step description="委托制单" />
-                  <Step description="海关申报" />
-                  <Step description="清关放行" />
+                  <Step description="已申报" />
+                  <Step description="报关放行" />
                 </Steps>
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="details" onChange={this.handleTabChange}>
                 <TabPane tab="提货单列表" key="list" />
-                <TabPane tab="委托清关明细" key="details">
+                <TabPane tab="出库报关明细" key="details">
                   <div className="panel-header">
                     <Row>
                       <Col sm={24} lg={6}>

@@ -9,7 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 // separate owntransfer transferin
@@ -278,7 +278,6 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
-    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     return (
       <div>
         <Header className="page-header">
@@ -297,18 +296,14 @@ export default class SHFTZTransferSelfDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>货号明细ID配对</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>转移入分拨</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取分拨明细ID</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
+            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.sent && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取分拨明细ID</Button>}
           </div>
         </Header>
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={6}>
-                  <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
-                </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="收货单位" field={entryAsn.owner_name} />
                 </Col>

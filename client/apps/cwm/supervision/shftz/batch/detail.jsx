@@ -4,11 +4,10 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
+import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tooltip, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
-import NavLink from 'client/components/NavLink';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -55,8 +54,9 @@ function fetchData({ dispatch, params }) {
 @connectNav({
   depth: 3,
   moduleName: 'cwm',
+  jumpOut: true,
 })
-export default class SHFTZBatchDeclDetail extends Component {
+export default class BatchDeclDetail extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -184,6 +184,9 @@ export default class SHFTZBatchDeclDetail extends Component {
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateRelReg(preRegNo, field, value);
   }
+  handleDelgManifest = () => {
+    this.context.router.push(`/clearance/${this.props.batchDecl.i_e_type === 0 ? 'import' : 'export'}/manifest/${this.props.batchDecl.delg_no}`);
+  }
   render() {
     const { batchDecl, batchApplies, whse, submitting } = this.props;
     const relEditable = batchDecl.status < CWM_SHFTZ_APIREG_STATUS.completed;
@@ -208,6 +211,11 @@ export default class SHFTZBatchDeclDetail extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
+          <PageHeader.Nav>
+            <Tooltip title="报关清单" placement="bottom">
+              <Button size="large" icon="link" onClick={this.handleDelgManifest}>{batchDecl.delg_no}<Badge status="default" text="制单中" /></Button>
+            </Tooltip>
+          </PageHeader.Nav>
           <PageHeader.Actions>
             {sent && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
             {relEditable &&
@@ -219,16 +227,13 @@ export default class SHFTZBatchDeclDetail extends Component {
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
               <Row className="info-group-inline">
                 <Col sm={24} lg={6}>
-                  <InfoItem label="清单委托" field={
-                    <NavLink to={`/clearance/${batchDecl.i_e_type === 0 ? 'import' : 'export'}/manifest/${batchDecl.delg_no}`}>{batchDecl.delg_no}</NavLink>
-                  }
-                  />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="提货单位" field={batchDecl.owner_name} />
+                  <InfoItem label="货主" field={batchDecl.owner_name} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="收货单位" field={batchDecl.receiver_name} />
+                </Col>
+                <Col sm={24} lg={6}>
+                  <InfoItem label="报关代理" field={batchDecl.broker_name} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="备案时间" field={batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY-MM-DD HH:mm')} />
@@ -236,20 +241,27 @@ export default class SHFTZBatchDeclDetail extends Component {
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={batchDecl.status}>
-                  <Step description="待备案" />
+                  <Step description="委托制单" />
+                  <Step description="报关申请" />
                   <Step description="已发送" />
-                  <Step description="备案完成" />
+                  <Step description="申请通过" />
+                  <Step description="报关放行" />
                 </Steps>
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
+                <TabPane tab="分拨出库单列表" key="list" />
+                <TabPane tab="集中报关明细" key="details" />
                 {batchApplies.map(reg => (
-                  <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                  <TabPane tab="报关申请单" key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
                       <Row>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore="申请单号" field={reg.ftz_apply_no} />
+                        </Col>
+                        <Col sm={24} lg={6}>
+                          <InfoItem size="small" addonBefore="报关单号" field={reg.cus_decl_no} />
                         </Col>
                         <Col sm={24} lg={6}>
                           <InfoItem size="small" addonBefore="总毛重" field={reg.gross_wt} />

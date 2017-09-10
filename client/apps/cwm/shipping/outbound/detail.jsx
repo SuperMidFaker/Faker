@@ -232,7 +232,7 @@ export default class OutboundDetail extends Component {
             {!!(outboundHead.bonded > 0) && <Tooltip title="海关监管" placement="bottom">
               <Button size="large" icon="link" onClick={this.handleRegPage}><Badge status={regStatus.badge} text={regStatus.text} /></Button>
             </Tooltip>
-        }
+            }
           </PageHeader.Nav>
           <PageHeader.Actions>
             {this.state.tabKey === 'pickingDetails' && <Dropdown overlay={printMenu}>

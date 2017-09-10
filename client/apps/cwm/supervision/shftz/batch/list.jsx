@@ -41,7 +41,7 @@ const OptGroup = Select.OptGroup;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZBatchDeclList extends React.Component {
+export default class BatchDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -107,16 +107,13 @@ export default class SHFTZBatchDeclList extends React.Component {
   }
   */
   columns = [{
-    title: '报关委托编号',
+    title: '集中报关编号',
+    dataIndex: 'batch_decl_no',
     width: 150,
-    dataIndex: 'delg_no',
+    fixed: 'left',
   }, {
     title: '报关申请单号',
     dataIndex: 'ftz_apply_no',
-    width: 150,
-  }, {
-    title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
     width: 150,
   }, {
     title: '货主',
@@ -129,10 +126,32 @@ export default class SHFTZBatchDeclList extends React.Component {
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 120,
+    render: (o) => {
+      if (o === 0) {
+        return (<Badge status="default" />);
+      } else if (o === 1) {
+        return (<Badge status="processing" text="已发送" />);
+      } else if (o === 2) {
+        return (<Badge status="success" text="备案完成" />);
+      }
+    },
+
+  }, {
     title: '报关代理',
     dataIndex: 'broker_name',
     width: 150,
     render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '报关委托编号',
+    width: 150,
+    dataIndex: 'delg_no',
+  }, {
+    title: '报关单号',
+    dataIndex: 'pre_entry_seq_no',
+    width: 150,
   }, {
     title: '供应商',
     dataIndex: 'supplier',
@@ -188,29 +207,29 @@ export default class SHFTZBatchDeclList extends React.Component {
       }
     },
   }, {
-    title: '状态',
-    dataIndex: 'status',
+    title: '创建时间',
     width: 120,
+    dataIndex: 'created_time',
     render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="已发送" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 200,
     fixed: 'right',
     render: (o, record) => {
       if (record.status < 2) {
-        return <RowUpdater onHit={this.handleDetail} label="报关申请明细" row={record} />;
+        return <RowUpdater onHit={this.handleDetail} label="报关明细" row={record} />;
       } else if (record.manifested === 0) {
         return (<span>
-          <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
+          <RowUpdater onHit={this.handleDetail} label="报关明细" row={record} />
           <span className="ant-divider" />
           <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
             <a>取消委托</a>

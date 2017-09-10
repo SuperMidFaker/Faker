@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, Icon, Tag, message, Button, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, Icon, message, Button, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -17,7 +17,6 @@ import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import TransferSelfModal from './modal/transferSelfModal';
@@ -77,22 +76,19 @@ export default class SHFTZTransferSelfList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'ASN编号',
+    title: '转移编号',
     dataIndex: 'asn_no',
     width: 180,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '海关进库单号',
+    title: '转出出库单号',
+    width: 200,
+    dataIndex: 'ftz_rel_no',
+  }, {
+    title: '转入进库单号',
     width: 200,
     dataIndex: 'ftz_ent_no',
-  }, {
-    title: '监管类型',
-    dataIndex: 'ftz_ent_type',
-    render: (enttype) => {
-      const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === enttype)[0];
-      return entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>;
-    },
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -107,34 +103,42 @@ export default class SHFTZTransferSelfList extends React.Component {
       }
     },
   }, {
-    title: '收货单位(货主)',
+    title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '发货单位',
+    title: '转移方向',
     width: 180,
     dataIndex: 'sender_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货仓库',
-    width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '转出时间',
+    width: 150,
+    dataIndex: 'ftz_rel_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD HH:mm'),
   }, {
-    title: '发货仓库',
-    width: 180,
-    dataIndex: 'send_wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '进库日期',
-    width: 120,
+    title: '转入时间',
+    width: 150,
     dataIndex: 'ftz_ent_date',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
+        return `${moment(o).format('YYYY.MM.DD HH:mm')}`;
       }
     },
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_time',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -144,7 +148,7 @@ export default class SHFTZTransferSelfList extends React.Component {
       if (record.virtual_transfer) {
         return (
           <span>
-            <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />
+            <RowUpdater onHit={this.handleDetail} label="转移明细" row={record} />
             <span className="ant-divider" />
             <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
               <a> <Icon type="delete" /></a>
@@ -152,7 +156,7 @@ export default class SHFTZTransferSelfList extends React.Component {
           </span>
         );
       } else {
-        return <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />;
+        return <RowUpdater onHit={this.handleDetail} label="转移明细" row={record} />;
       }
     },
   }]
@@ -212,11 +216,8 @@ export default class SHFTZTransferSelfList extends React.Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleEntryListLoad(1, this.props.whse.code, filter);
   }
-  handleCreateBtnClick = () => {
-    this.context.router.push('/cwm/ftz/receive/reg');
-  }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/transfer/in/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/transfer/self/${row.asn_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
@@ -235,7 +236,7 @@ export default class SHFTZTransferSelfList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleCreateTransIn = () => {
+  handleCreateTransSelf = () => {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
     this.props.showTransferInModal({ visible: true, ownerCusCode });
@@ -294,13 +295,13 @@ export default class SHFTZTransferSelfList extends React.Component {
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">未发送</RadioButton>
-                <RadioButton value="received">终端处理</RadioButton>
-                <RadioButton value="verified">已接收</RadioButton>
+                <RadioButton value="pending">待转出</RadioButton>
+                <RadioButton value="processing">终端处理</RadioButton>
+                <RadioButton value="completed">已转入</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateTransIn}>新建监管库存转移</Button>
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateTransSelf}>新建监管库存转移</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="main-content" key="main">
