@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Table, Input, Tag } from 'antd';
+import { Modal, Button, Table, Input, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
@@ -245,13 +245,15 @@ export default class ReceiveDetailsPane extends React.Component {
               <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
             </div>
           </div>
-          {/* <div className="toolbar-right">
-            {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
+          <div className="toolbar-right">
+            <Tooltip title="导出收货明细" placement="bottom"><Button icon="download" onClick={this.handleDownloadReceiving}>导出</Button></Tooltip>
+            <Tooltip title="导入收货确认" placement="bottom"><Button icon="upload" onClick={this.handleUploadPutaway}>导入</Button></Tooltip>
+            {/* inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Button icon="check" onClick={this.handleExpressReceived}>
               快捷收货
             </Button>
-            }
-          </div> */}
+            */}
+          </div>
         </div>
         <Table size="middle" columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}

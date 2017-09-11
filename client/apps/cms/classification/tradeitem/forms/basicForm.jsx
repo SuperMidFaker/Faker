@@ -156,7 +156,7 @@ export default class BasicForm extends Component {
                 {getFieldDecorator('hscode', {
                   rules: [{ required: true, message: '商品编码必填' }],
                   initialValue: fieldInits.hscode,
-                })(<Select combobox optionFilterProp="search" onChange={this.handleSearch} >
+                })(<Select mode="combobox" optionFilterProp="search" onChange={this.handleSearch} >
                   { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
                     search={data.hscode}
                   >{data.hscode}</Option>)

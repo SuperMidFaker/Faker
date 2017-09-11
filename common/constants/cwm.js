@@ -249,6 +249,9 @@ exports.CWM_LOCATION_TYPES = [{
 }];
 
 exports.CWM_LOCATION_STATUS = [{
+  value: 5,
+  text: '优先出库',
+}, {
   value: 1,
   text: '正常',
 }, {

@@ -143,7 +143,7 @@ export default class BasicForm extends Component {
               <FormItem label={this.msg('hscode')}>
                 {getFieldDecorator('hscode', {
                   initialValue: fieldInits.hscode,
-                })(<Select combobox optionFilterProp="search" onChange={this.handleSearch} >
+                })(<Select mode="combobox" optionFilterProp="search" onChange={this.handleSearch} >
                   { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
                     search={data.hscode}
                   >{data.hscode}</Option>))

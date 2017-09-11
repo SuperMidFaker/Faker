@@ -184,7 +184,7 @@ export default class EditBodyForm extends Component {
               {getFieldDecorator('codes', {
                 rules: [{ required: true, message: '商品编码必填' }],
                 initialValue: editBody.codes,
-              })(<Select combobox optionFilterProp="search" onChange={this.handleSearch} style={{ width: '100%' }}>
+              })(<Select mode="combobox" optionFilterProp="search" onChange={this.handleSearch} style={{ width: '100%' }}>
                 {
                   hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
                     search={data.hscode}
