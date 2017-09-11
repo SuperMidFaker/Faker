@@ -309,7 +309,7 @@ export default class BatchDeclModal extends Component {
     const { template, groupVals } = this.state;
     this.props.form.validateFields((errors, values) => {
       const broker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      this.props.beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, values.apply_type, values.ietype).then((result) => {
+      this.props.beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker.partner_id, values.apply_type, values.ietype).then((result) => {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();

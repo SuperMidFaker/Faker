@@ -270,7 +270,7 @@ export default class NormalDeclModal extends Component {
     const { loginId, loginName } = this.props;
     this.props.form.validateFields((errors, values) => {
       const broker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      this.props.beginNormalDecl(values.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName, broker, values.trxn_mode).then((result) => {
+      this.props.beginNormalDecl(values.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName, broker.partner_id, values.trxn_mode).then((result) => {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();
