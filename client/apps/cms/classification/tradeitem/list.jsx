@@ -778,14 +778,12 @@ export default class TradeItemList extends Component {
               <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
             </RadioGroup>
             <span />
-            {repo.mode === 'slave' &&
-              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-                <RadioButton value="stage"><Icon type="plus-circle-o" /> {this.msg('stageClassified')}</RadioButton>
-              </RadioGroup>
-            }
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioButton value="stage">{this.msg('stageClassified')}</RadioButton>
+            </RadioGroup>
             <span />
             <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="uselessHs"><Icon type="close-circle-o" /> 税则改变归类区</RadioButton>
+              <RadioButton value="uselessHs">税则改变归类区</RadioButton>
             </RadioGroup>
             {repoId &&
               <div className="page-header-tools">

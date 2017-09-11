@@ -166,7 +166,7 @@ export default class SHFTZTransferInList extends React.Component {
           </span>
         );
       } else {
-        return <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />;
+        return <RowUpdater onHit={this.handleDetail} label="转入详情" row={record} />;
       }
     },
   }]

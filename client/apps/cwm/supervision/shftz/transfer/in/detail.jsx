@@ -363,7 +363,7 @@ export default class SHFTZTransferInDetail extends Component {
                     total_net_wt: 0,
                   });
                   return (
-                    <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                    <TabPane tab="转入明细" key={reg.pre_entry_seq_no}>
                       <div className="panel-header">
                         <Row>
                           <Col sm={12} lg={5}>

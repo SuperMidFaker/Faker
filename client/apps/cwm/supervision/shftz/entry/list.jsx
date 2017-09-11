@@ -161,7 +161,8 @@ export default class SHFTZEntryList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案明细" row={record} />,
+    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
+      : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);

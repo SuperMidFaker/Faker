@@ -426,7 +426,7 @@ export default class SHFTZEntryDetail extends Component {
                     total_net_wt: 0,
                   });
                   return (
-                    <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                    <TabPane tab="备案明细" key={reg.pre_entry_seq_no}>
                       <div className="panel-header">
                         <Row>
                           <Col sm={12} lg={5}>

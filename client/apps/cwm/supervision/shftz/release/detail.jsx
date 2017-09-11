@@ -443,8 +443,9 @@ export default class SHFTZRelDetail extends Component {
                       </Col>
                     </div>
                   );
+                  const countTag = <span>备案明细 <Tag>{reg.details.length}</Tag></span>;
                   return (
-                    <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                    <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
                       <div className="panel-header">
                         {// 普通出库
                         relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&

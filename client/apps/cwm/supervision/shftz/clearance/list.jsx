@@ -151,7 +151,7 @@ export default class NormalDeclList extends React.Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleDetail} label="报关明细" row={record} />
+        <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
         <span className="ant-divider" />
         <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
         <span className="ant-divider" />

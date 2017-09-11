@@ -308,7 +308,7 @@ export default class SHFTZTransferOutDetail extends Component {
             <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map(reg => (
-                  <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
+                  <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
                       <Row>
                         <Col sm={24} lg={6}>
