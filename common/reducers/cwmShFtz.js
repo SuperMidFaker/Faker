@@ -30,6 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'BEGIN_BD', 'BEGIN_BD_SUCCEED', 'BEGIN_BD_FAIL',
   'BEGIN_NC', 'BEGIN_NC_SUCCEED', 'BEGIN_NC_FAIL',
   'LOAD_NDLIST', 'LOAD_NDLIST_SUCCEED', 'LOAD_NDLIST_FAIL',
+  'LOAD_DRDETAILS', 'LOAD_DRDETAILS_SUCCEED', 'LOAD_DRDETAILS_FAIL',
   'APPLY_DETAILS_LOAD', 'APPLY_DETAILS_LOAD_SUCCEED', 'APPLY_DETAILS_LOAD_FAIL',
   'FILE_BA', 'FILE_BA_SUCCEED', 'FILE_BA_FAIL',
   'MAKE_BAL', 'MAKE_BAL_SUCCEED', 'MAKE_BAL_FAIL',
@@ -89,6 +90,8 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  declRelReg: [],
+  declRelDetails: [],
   cargolist: {
     totalCount: 0,
     current: 1,
@@ -252,6 +255,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false };
     case actionTypes.LOAD_PORS_SUCCEED:
       return { ...state, batchout_regs: action.result.data };
+    case actionTypes.LOAD_DRDETAILS_SUCCEED:
+      return { ...state, declRelReg: action.result.data.rel_regs, declRelDetails: action.result.data.details };
     case actionTypes.APPLY_DETAILS_LOAD_SUCCEED:
       return { ...state, ...action.result.data };
     case actionTypes.FILE_BA_SUCCEED:
@@ -740,6 +745,21 @@ export function loadNormalDelgList(params) {
       endpoint: 'v1/cwm/shftz/normal/delegations',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadDeclRelDetails(batchNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_DRDETAILS,
+        actionTypes.LOAD_DRDETAILS_SUCCEED,
+        actionTypes.LOAD_DRDETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/decl/release/details',
+      method: 'get',
+      params: { batchNo },
     },
   };
 }
