@@ -62,6 +62,7 @@ export default class ReceivingModal extends Component {
                 damage_level: 0,
                 avail: true,
                 received_by: nextProps.username,
+                priority: null,
               }];
             } else {
               dataSource = result.data.map(data => ({
@@ -185,6 +186,7 @@ export default class ReceivingModal extends Component {
       inbound_qty: 0,
       inbound_pack_qty: 0,
       location: '',
+      priority: null,
       damage_level: 0,
       avail: this.props.inboundProduct.expect_qty > this.state.receivedQty,
       received_by: this.props.username,
