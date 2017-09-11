@@ -169,6 +169,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.items.import',
     defaultMessage: '对比导入',
   },
+  imptNewHsItems: {
+    id: 'cms.classificagtion.tradeitem.newHs.import',
+    defaultMessage: '导入税则改变物料',
+  },
   importHsunit: {
     id: 'cms.classificagtion.hscode.gunit.import',
     defaultMessage: '导入申报单位',

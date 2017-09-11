@@ -187,7 +187,7 @@ export default class ImportComparisonModal extends React.Component {
             <Tag color="red">{o}</Tag>
           </Tooltip>
         );
-      } else if (record.feedback === 'newhscode' || record.feedback === 'wrongpreHscode') {
+      } else if (record.feedback === 'newHsName' || record.feedback === 'wrongpreHscode') {
         return (
           <Tooltip title="使用该商品编码">
             <Tag color="green">{o}</Tag>
@@ -284,7 +284,7 @@ export default class ImportComparisonModal extends React.Component {
         if (record.feedback === 'newUpdate') {
           return (
             <span>
-              <a onClick={() => this.handleUpdate(record, index, 'newhscode')} role="presentation">更新</a>
+              <a onClick={() => this.handleUpdate(record, index, 'newHsName')} role="presentation">更新</a>
               <span className="ant-divider" />
               <a onClick={() => this.handleUpdate(record, index, 'newSrc')} role="presentation">添加新来源</a>
               <span className="ant-divider" />

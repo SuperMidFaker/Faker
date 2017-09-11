@@ -144,6 +144,10 @@ export default class TradeItemList extends Component {
       }
     },
   }, {
+    title: this.msg('srcProductNo'),
+    dataIndex: 'src_product_no',
+    width: 200,
+  }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
     width: 150,
@@ -400,13 +404,20 @@ export default class TradeItemList extends Component {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/model/download/${createFilename('tradeItemModel')}.xlsx`);
     } else if (e.key === 'exportEditable') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/edited/tradeitems/export/${createFilename('editedCmsItems')}.xlsx?repoId=${this.props.repoId}&tenantId=${this.props.tenantId}`);
-    } else if (e.key === 'expDeclChange') {
+    }
+  }
+  handleHsMenuClick = (e) => {
+    if (e.key === 'expDeclChange') {
       window.open(`${API_ROOTS.default}v1/cms/cmsTradeitem/declhscode/changed/tradeitems/export/${createFilename('declChangedCmsItems')}.xlsx?repoId=${this.props.repoId}&tenantId=${this.props.tenantId}`);
     }
   }
   handleUploaded = (data) => {
     this.setState({ compareduuid: data });
     this.props.setCompareVisible(true);
+  }
+  handleNewhsUploaded = () => {
+    const filter = { ...this.props.listFilter, status: 'uselessHs' };
+    this.handleItemListLoad(this.props.repoId, 1, filter);
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -692,6 +703,9 @@ export default class TradeItemList extends Component {
         <Menu.Item key="export"><Icon type="export" /> 导出物料表</Menu.Item>
         <Menu.Item key="model"><Icon type="download" /> 下载模板</Menu.Item>
         <Menu.Item key="exportEditable"><Icon type="export" /> 导出可编辑物料</Menu.Item>
+      </Menu>);
+    const imptHsMenu = (
+      <Menu onClick={this.handleHsMenuClick}>
         <Menu.Item key="expDeclChange"><Icon type="export" /> 导出税则改变物料</Menu.Item>
       </Menu>);
     let mode = null;
@@ -771,11 +785,12 @@ export default class TradeItemList extends Component {
             }
             <span />
             <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="useless"><Icon type="close-circle-o" /> 税则改变归类区</RadioButton>
+              <RadioButton value="uselessHs"><Icon type="close-circle-o" /> 税则改变归类区</RadioButton>
             </RadioGroup>
             {repoId &&
               <div className="page-header-tools">
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                  listFilter.status !== 'uselessHs' &&
                   (
                     <Dropdown.Button size="large" overlay={importMenu}>
                       <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
@@ -787,6 +802,23 @@ export default class TradeItemList extends Component {
                         }} onUploaded={this.handleUploaded}
                       >
                         <Icon type="upload" /> {this.msg('importItems')}
+                      </ExcelUploader>
+                    </Dropdown.Button>
+                  )
+                }
+                { repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                  listFilter.status === 'uselessHs' &&
+                  (
+                    <Dropdown.Button size="large" overlay={imptHsMenu}>
+                      <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/newHscode/import`}
+                        formData={{
+                          data: JSON.stringify({
+                            repo_id: this.props.repoId,
+                            tenantId,
+                          }),
+                        }} onUploaded={this.handleNewhsUploaded}
+                      >
+                        <Icon type="upload" /> {this.msg('imptNewHsItems')}
                       </ExcelUploader>
                     </Dropdown.Button>
                   )
