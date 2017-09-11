@@ -9,6 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import HeadForm from '../form/headForm';
 import messages from '../../message.i18n';
 import { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
+import { getSuppliers } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -44,8 +45,10 @@ const Option = Select.Option;
       value: tx.trx_mode,
       text: tx.trx_spec,
     })),
+    suppliers: state.cwmReceive.suppliers,
+    brokers: state.cwmWarehouse.brokers,
   }),
-  { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl }
+  { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers }
 )
 @Form.create()
 export default class BatchDeclModal extends Component {
@@ -59,8 +62,13 @@ export default class BatchDeclModal extends Component {
     relNo: '',
     portionRegs: [],
     regDetails: [],
+    supplier: '',
+    currency: '',
+    trxMode: '',
     template: undefined,
     groupVals: ['supplier', 'trxn_mode', 'currency'],
+    ftzRelNo: '',
+    selectedRowKeys: [],
   }
   componentWillMount() {
     this.props.loadParams();
@@ -73,23 +81,6 @@ export default class BatchDeclModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.portionRegs !== this.props.portionRegs) {
       this.setState({ portionRegs: nextProps.portionRegs });
-    }
-    if (nextProps.visible && nextProps.ownerCusCode && nextProps.visible !== this.props.visible) {
-      this.props.loadBatchOutRegs({
-        tenantId: this.props.tenantId,
-        owner_cus_code: nextProps.ownerCusCode,
-        whse_code: nextProps.defaultWhse.code,
-        rel_type: 'portion',
-      });
-      const owner = nextProps.owners.filter(own => own.customs_code === nextProps.ownerCusCode)[0];
-      if (owner) {
-        this.props.loadManifestTemplates({
-          owner_partner_id: owner.id,
-          tenant_id: nextProps.tenantId,
-          ietype: 0,
-        });
-      }
-      this.setState({ ownerCusCode: nextProps.ownerCusCode });
     }
   }
 
@@ -219,18 +210,54 @@ export default class BatchDeclModal extends Component {
     const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
     this.setState({ regDetails, portionRegs });
   }
+  batchDelete = () => {
+    const { selectedRowKeys, regDetails } = this.state;
+    const portionRegs = [...this.state.portionRegs];
+    const newRegDetails = [];
+    for (let i = 0; i < regDetails.length; i++) {
+      const detail = regDetails[i];
+      if (!selectedRowKeys.find(key => key === detail.id)) {
+        newRegDetails.push(detail);
+      } else {
+        portionRegs.find(pr => pr.ftz_rel_no === detail.ftz_rel_no).added = false;
+      }
+    }
+    this.setState({
+      portionRegs,
+      regDetails: newRegDetails,
+      selectedRowKeys: [],
+    });
+  }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '', portionRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
+    this.setState({ ownerCusCode: '', portionRegs: [], regDetails: [], relNo: '', relDateRange: [], template: undefined });
     this.props.closeBatchDeclModal();
   }
   handleOwnerChange = (ownerCusCode) => {
-    this.setState({ ownerCusCode });
-    const owner = this.props.owners.filter(own => own.customs_code === ownerCusCode)[0];
-    this.props.loadManifestTemplates({
-      owner_partner_id: owner.id,
-      tenant_id: this.props.tenantId,
-      ietype: 0,
+    this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      rel_type: 'portion',
     });
+    this.setState({
+      ownerCusCode,
+      relDateRange: [],
+      relNo: '',
+      portionRegs: [],
+      regDetails: [],
+      template: undefined,
+      groupVals: ['supplier', 'trxn_mode', 'currency'],
+      ftzRelNo: '',
+    });
+    const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
+    if (owner) {
+      this.props.loadManifestTemplates({
+        owner_partner_id: owner.id,
+        tenant_id: this.props.tenantId,
+        ietype: 0,
+      });
+    }
+    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
   }
   handleTemplateChange = (template) => {
     this.setState({ template });
@@ -280,25 +307,45 @@ export default class BatchDeclModal extends Component {
     }))[0];
     const { loginId, loginName } = this.props;
     const { template, groupVals } = this.state;
-    this.props.beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals).then((result) => {
-      if (!result.error) {
-        this.handleCancel();
-        this.props.reload();
-      } else {
-        message.error(result.error.message);
-      }
+    this.props.form.validateFields((errors, values) => {
+      const broker = this.props.brokers.find(bk => bk.customs_code === values.broker);
+      this.props.beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker.partner_id, values.apply_type, values.ietype).then((result) => {
+        if (!result.error) {
+          this.handleCancel();
+          this.props.reload();
+        } else {
+          message.error(result.error.message);
+        }
+      });
     });
   }
   handleCheckChange = (checkedValues) => {
     this.setState({ groupVals: checkedValues });
   }
+  handleFtzRelNoChange = (ev) => {
+    this.setState({ ftzRelNo: ev.target.value });
+  }
   render() {
     const { submitting, billTemplates } = this.props;
-    const { relNo, ownerCusCode, template } = this.state;
+    const { relNo, ownerCusCode, template, regDetails } = this.state;
+    const dataSource = regDetails.filter((item) => {
+      if (this.state.ftzRelNo) {
+        const reg = new RegExp(this.state.ftzRelNo);
+        return reg.test(item.ftz_rel_no);
+      } else {
+        return true;
+      }
+    });
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const extraForm = (
       <div>
         <FormItem label="货主">
-          <Select onChange={this.handleOwnerChange} placeholder="请选择货主" style={{ width: 200 }} value={ownerCusCode}>
+          <Select placeholder="请选择货主" style={{ width: 200 }} disabled value={ownerCusCode}>
             {this.props.owners.map(data => (
               <Option key={data.customs_code} value={data.customs_code}>
                 {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
@@ -330,10 +377,10 @@ export default class BatchDeclModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
+        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+          <HeadForm form={this.props.form} ownerCusCode={ownerCusCode} handleOwnerChange={this.handleOwnerChange} />
+        </Card>
         <Form layout="inline">
-          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
-            <HeadForm form={this.props.form} />
-          </Card>
           <Row gutter={16}>
             <Col span={12}>
               <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering>
@@ -341,7 +388,7 @@ export default class BatchDeclModal extends Component {
                   <div className="toolbar">
                     {extraForm}
                   </div>
-                  <Table size="middle" columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
                     scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
@@ -351,7 +398,10 @@ export default class BatchDeclModal extends Component {
               <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
+                      onSearch={this.handleSearch} value={this.state.ftzRelNo}
+                    />
+                    {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
                     <div className="toolbar-right">
                       <FormItem label="制单规则">
                         <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
@@ -360,7 +410,7 @@ export default class BatchDeclModal extends Component {
                       </FormItem>
                     </div>
                   </div>
-                  <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+                  <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
                     scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>

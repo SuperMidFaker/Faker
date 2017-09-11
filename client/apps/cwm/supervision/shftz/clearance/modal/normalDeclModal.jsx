@@ -67,6 +67,8 @@ export default class NormalDeclModal extends Component {
     currency: '',
     trxMode: '',
     template: undefined,
+    ftzRelNo: '',
+    searchText: '',
   }
   componentWillMount() {
     this.props.loadParams();
@@ -80,80 +82,9 @@ export default class NormalDeclModal extends Component {
     if (nextProps.normalRegs !== this.props.normalRegs) {
       this.setState({ normalRegs: nextProps.normalRegs });
     }
-    if (nextProps.visible && nextProps.ownerCusCode && nextProps.visible !== this.props.visible) {
-      this.props.loadBatchOutRegs({
-        tenantId: this.props.tenantId,
-        owner_cus_code: nextProps.ownerCusCode,
-        whse_code: nextProps.defaultWhse.code,
-        rel_type: 'normal',
-      });
-      const owner = nextProps.owners.filter(own => own.customs_code === nextProps.ownerCusCode)[0];
-      if (owner) {
-        this.props.loadManifestTemplates({
-          owner_partner_id: owner.id,
-          tenant_id: nextProps.tenantId,
-          ietype: 0,
-        });
-        this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
-      }
-      this.setState({ ownerCusCode: nextProps.ownerCusCode });
-    }
   }
 
   msg = key => formatMsg(this.props.intl, key);
-  normalRegColumns = [{
-    title: '出库单号',
-    dataIndex: 'ftz_rel_no',
-  }, {
-    title: '供应商',
-    dataIndex: 'supplier',
-    width: 150,
-    filterDropdown: (
-      <div className="filter-dropdown">
-        <Select allowClear onChange={this.handleSupplierChange} style={{ width: 150 }} value={this.state.supplier}>
-          {this.props.suppliers.map(data => (
-            <Option key={data.code} value={data.code}>
-              {data.name}
-            </Option>))}
-        </Select>
-      </div>
-      ),
-  }, {
-    title: '币制',
-    dataIndex: 'currency',
-    width: 80,
-    render: o => o && this.props.currencies.find(currency => currency.value === o).text,
-    filterDropdown: (
-      <div className="filter-dropdown">
-        <Select allowClear placeholder="币制" onChange={this.handleCurrencyChange} style={{ width: 80 }} value={this.state.currency}>
-          {this.props.currencies.map(data => (
-            <Option key={data.value} value={data.value}>
-              {data.text}
-            </Option>))}
-        </Select>
-      </div>
-    ),
-  }, {
-    title: '货主',
-    dataIndex: 'owner_name',
-    width: 150,
-  }, {
-    title: '成交方式',
-    dataIndex: 'trxn_mode',
-    width: 100,
-    render: o => o && this.props.trxModes.find(trx => trx.value === o).text,
-  }, {
-    title: '出库日期',
-    width: 150,
-    dataIndex: 'ftz_rel_date',
-    render: o => o && moment(o).format('YYYY.MM.DD'),
-  }, {
-    title: '添加',
-    width: 80,
-    fixed: 'right',
-    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddReg(record)} />,
-  }]
-
   regDetailColumns = [{
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
@@ -244,8 +175,37 @@ export default class NormalDeclModal extends Component {
     const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
     this.setState({ regDetails, normalRegs });
   }
+  batchDelete = () => {
+    const { selectedRowKeys, regDetails } = this.state;
+    const normalRegs = [...this.state.normalRegs];
+    const newRegDetails = [];
+    for (let i = 0; i < regDetails.length; i++) {
+      const detail = regDetails[i];
+      if (!selectedRowKeys.find(key => key === detail.id)) {
+        newRegDetails.push(detail);
+      } else {
+        normalRegs.find(pr => pr.ftz_rel_no === detail.ftz_rel_no).added = false;
+      }
+    }
+    this.setState({
+      normalRegs,
+      regDetails: newRegDetails,
+      selectedRowKeys: [],
+    });
+  }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '', normalRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
+    this.setState({ ownerCusCode: '',
+      normalRegs: [],
+      regDetails: [],
+      relNo: '',
+      relDateRange: [],
+      ftzRelNo: '',
+      supplier: '',
+      currency: '',
+      template: undefined });
+    this.props.form.setFieldsValue({
+      broker: '',
+    });
     this.props.closeNormalDeclModal();
   }
   handleTemplateChange = (template) => {
@@ -262,6 +222,9 @@ export default class NormalDeclModal extends Component {
   }
   handleRelRangeChange = (relDateRange) => {
     this.setState({ relDateRange });
+  }
+  handleFtzRelNoChange = (ev) => {
+    this.setState({ ftzRelNo: ev.target.value });
   }
   handleNormalOutsQuery = () => {
     const { ownerCusCode, relNo, relDateRange, currency, supplier } = this.state;
@@ -307,7 +270,7 @@ export default class NormalDeclModal extends Component {
     const { loginId, loginName } = this.props;
     this.props.form.validateFields((errors, values) => {
       const broker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      this.props.beginNormalDecl(values.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName, broker, values.trxn_mode).then((result) => {
+      this.props.beginNormalDecl(values.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName, broker.partner_id, values.trxn_mode).then((result) => {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();
@@ -318,8 +281,21 @@ export default class NormalDeclModal extends Component {
     });
   }
   handleOwnerChange = (ownerCusCode) => {
+    this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      rel_type: 'normal',
+    });
     const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
-    this.setState({ ownerCusCode });
+    this.setState({
+      ownerCusCode,
+      regDetails: [],
+      relNo: '',
+      relDateRange: [],
+      ftzRelNo: '',
+      template: undefined,
+    });
     if (owner) {
       this.props.loadManifestTemplates({
         owner_partner_id: owner.id,
@@ -329,9 +305,72 @@ export default class NormalDeclModal extends Component {
       this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
     }
   }
+  handleSearch = (searchText) => {
+    this.setState({ searchText });
+  }
   render() {
     const { submitting, billTemplates } = this.props;
-    const { relNo, ownerCusCode, template } = this.state;
+    const { relNo, ownerCusCode, template, regDetails } = this.state;
+    const dataSource = regDetails.filter((item) => {
+      if (this.state.ftzRelNo) {
+        const reg = new RegExp(this.state.ftzRelNo);
+        return reg.test(item.ftz_rel_no);
+      } else {
+        return true;
+      }
+    });
+    const normalRegColumns = [{
+      title: '出库单号',
+      dataIndex: 'ftz_rel_no',
+    }, {
+      title: '供应商',
+      dataIndex: 'supplier',
+      width: 150,
+      filterDropdown: (
+        <div className="filter-dropdown">
+          <Select allowClear onChange={this.handleSupplierChange} style={{ width: 150 }} value={this.state.supplier}>
+            {this.props.suppliers.map(data => (
+              <Option key={data.code} value={data.code}>
+                {data.name}
+              </Option>))}
+          </Select>
+        </div>
+      ),
+    }, {
+      title: '币制',
+      dataIndex: 'currency',
+      width: 80,
+      render: o => o && this.props.currencies.find(currency => currency.value === o).text,
+      filterDropdown: (
+        <div className="filter-dropdown">
+          <Select allowClear placeholder="币制" onChange={this.handleCurrencyChange} style={{ width: 80 }} value={this.state.currency}>
+            {this.props.currencies.map(data => (
+              <Option key={data.value} value={data.value}>
+                {data.text}
+              </Option>))}
+          </Select>
+        </div>
+      ),
+    }, {
+      title: '货主',
+      dataIndex: 'owner_name',
+      width: 150,
+    }, {
+      title: '成交方式',
+      dataIndex: 'trxn_mode',
+      width: 100,
+      render: o => o && this.props.trxModes.find(trx => trx.value === o).text,
+    }, {
+      title: '出库日期',
+      width: 150,
+      dataIndex: 'ftz_rel_date',
+      render: o => o && moment(o).format('YYYY.MM.DD'),
+    }, {
+      title: '添加',
+      width: 80,
+      fixed: 'right',
+      render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddReg(record)} />,
+    }];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -341,7 +380,7 @@ export default class NormalDeclModal extends Component {
     const extraForm = (
       <div>
         <FormItem label="货主">
-          <Select onChange={this.handleOwnerChange} style={{ width: 150 }} disabled placeholder="请选择货主" value={ownerCusCode}>
+          <Select style={{ width: 150 }} disabled placeholder="请选择货主" value={ownerCusCode}>
             {this.props.owners.map(data => (
               <Option key={data.customs_code} value={data.customs_code}>
                 {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
@@ -364,10 +403,10 @@ export default class NormalDeclModal extends Component {
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
+        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+          <HeadForm ownerCusCode={this.state.ownerCusCode} handleOwnerChange={this.handleOwnerChange} form={this.props.form} />
+        </Card>
         <Form layout="inline">
-          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
-            <HeadForm ownerCusCode={this.state.ownerCusCode} handleOwnerChange={this.handleOwnerChange} form={this.props.form} />
-          </Card>
           <Row gutter={16}>
             <Col span={12}>
               <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
@@ -375,8 +414,8 @@ export default class NormalDeclModal extends Component {
                   <div className="toolbar">
                     {extraForm}
                   </div>
-                  <Table size="middle" columns={this.normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
-                    scroll={{ x: this.normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                  <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
+                    scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
               </Card>
@@ -385,9 +424,10 @@ export default class NormalDeclModal extends Component {
               <Card title="出库报关明细" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onSearch={this.handleSearch} />
+                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} onSearch={this.handleSearch} />
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                      {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
                     </div>
                     <div className="toolbar-right">
                       <FormItem label="制单规则">
@@ -397,7 +437,7 @@ export default class NormalDeclModal extends Component {
                       </FormItem>
                     </div>
                   </div>
-                  <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowSelection={rowSelection} rowKey="id"
+                  <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
                     scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
