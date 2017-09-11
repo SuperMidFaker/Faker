@@ -28,6 +28,7 @@ const Option = Select.Option;
     inboundNo: state.cwmReceive.receiveModal.inboundNo,
     inboundProduct: state.cwmReceive.receiveModal.inboundProduct,
     saveLoading: state.cwmReceive.submitting,
+    locations: state.cwmWarehouse.locations,
   }),
   { hideReceiveModal, loadProductDetails, receiveProduct }
 )
@@ -96,8 +97,12 @@ export default class ReceivingModal extends Component {
     this.props.hideReceiveModal();
   }
   handleProductPutAway = (index, value) => {
+    const location = this.props.locations.find(item => item.location === value);
     const dataSource = [...this.state.dataSource];
     dataSource[index].location = value;
+    if (location) {
+      dataSource[index].priority = location.status;
+    }
     this.setState({ dataSource });
   }
   handleConveyChange = (index, value) => {
@@ -244,6 +249,7 @@ export default class ReceivingModal extends Component {
       attrib_2_string: data.attrib_2_string,
       attrib_3_string: data.attrib_3_string,
       attrib_4_string: data.attrib_4_string,
+      priority: data.priority,
     })), inboundNo, inboundProduct.asn_seq_no, inboundHead.asn_no, loginId, this.state.receivedDate).then((result) => {
       if (!result.error) {
         message.success('收货确认成功');
