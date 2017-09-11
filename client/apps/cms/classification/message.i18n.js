@@ -53,6 +53,10 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.g.name',
     defaultMessage: '中文品名',
   },
+  preGname: {
+    id: 'cms.classificagtion.tradeitem.pre.gname',
+    defaultMessage: '中文品名(已有)',
+  },
   enName: {
     id: 'cms.classificagtion.tradeitem.en.description',
     defaultMessage: '英文描述',
@@ -164,6 +168,10 @@ const messages = defineMessages({
   importItems: {
     id: 'cms.classificagtion.tradeitem.items.import',
     defaultMessage: '对比导入',
+  },
+  imptNewHsItems: {
+    id: 'cms.classificagtion.tradeitem.newHs.import',
+    defaultMessage: '导入税则改变物料',
   },
   importHsunit: {
     id: 'cms.classificagtion.hscode.gunit.import',
