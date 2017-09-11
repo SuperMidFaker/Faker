@@ -34,7 +34,7 @@ export default class AddLocationModal extends Component {
     location: '',
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.record.id && nextProps.record.id !== this.props.record.id) {
+    if (!this.props.visible && nextProps.visible) {
       const { location, type, status } = nextProps.record;
       this.setState({
         location,
