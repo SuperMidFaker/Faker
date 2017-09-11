@@ -55,6 +55,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'UPDATE_BROKER_STATUS', 'UPDATE_BROKER_STATUS_SUCCEED', 'UPDATE_BROKER_STATUS_FAIL',
   'DELETE_BROKER', 'DELETE_BROKER_SUCCEED', 'DELETE_BROKER_FAIL',
   'UPDATE_BROKER', 'UPDATE_BROKER_SUCCEED', 'UPDATE_BROKER_FAIL',
+  'LOAD_CCBS', 'LOAD_CCBS_SUCCEED', 'LOAD_CCBS_FAIL',
 ]);
 
 const initialState = {
@@ -108,6 +109,7 @@ const initialState = {
     visible: false,
     broker: {},
   },
+  CCBs: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -168,6 +170,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, brokers: action.result.data };
     case actionTypes.TOGGLE_BROKER_MODAL:
       return { ...state, brokerModal: { ...state.brokerModal, ...action.data } };
+    case actionTypes.LOAD_CCBS_SUCCEED:
+      return { ...state, CCBs: action.result.data };
     default:
       return state;
   }
@@ -920,6 +924,21 @@ export function updateBroker(data, id, loginId) {
       endpoint: 'v1/cwm/warehouse/broker/update',
       method: 'post',
       data: { data, id, loginId },
+    },
+  };
+}
+
+export function loadCCBs(tenantId, role, businessType, business) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CCBS,
+        actionTypes.LOAD_CCBS_SUCCEED,
+        actionTypes.LOAD_CCBS_FAIL,
+      ],
+      endpoint: 'v1/cwm/ccbs/load',
+      method: 'get',
+      params: { tenantId, role, businessType, business },
     },
   };
 }
