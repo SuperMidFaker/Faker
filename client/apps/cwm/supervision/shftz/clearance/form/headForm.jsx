@@ -69,10 +69,8 @@ export default class HeadForm extends React.Component {
           </Col>
           <Col span={5} offset={1}>
             <FormItem label="成交方式">
-              {getFieldDecorator('trxn_mode', {
-                rules: [{ required: true, message: '成交方式必选' }],
-              })(
-                <Select placeholder="请选择成交方式" style={{ width: 200 }}>
+              {getFieldDecorator('trxn_mode')(
+                <Select placeholder="请选择成交方式" allowClear style={{ width: 200 }}>
                   {this.props.trxModes.map(data => (
                     <Option key={data.value} value={data.value}>
                       {data.text}
