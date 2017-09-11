@@ -669,7 +669,7 @@ export function loadBatchRegDetails(relNo) {
   };
 }
 
-export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals) {
+export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, applyType, ietype) {
   return {
     [CLIENT_API]: {
       types: [
@@ -679,7 +679,7 @@ export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, l
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
-      data: { template, detailIds, relCounts, owner, loginId, loginName, groupVals },
+      data: { template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, applyType, ietype },
     },
   };
 }

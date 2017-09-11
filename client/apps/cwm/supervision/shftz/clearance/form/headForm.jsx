@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Select, Row, Col, Radio } from 'antd';
-import { getSuppliers } from 'common/reducers/cwmReceive';
 import { loadBrokers } from 'common/reducers/cwmWarehouse';
 
 const FormItem = Form.Item;
@@ -23,7 +22,7 @@ const RadioButton = Radio.Button;
       text: tm.trx_spec,
     })),
   }),
-  { getSuppliers, loadBrokers }
+  { loadBrokers }
 )
 export default class HeadForm extends React.Component {
   static propTypes = {
@@ -46,46 +45,52 @@ export default class HeadForm extends React.Component {
   render() {
     const { form: { getFieldDecorator }, owners, ownerCusCode, brokers } = this.props;
     return (
-      <Row gutter={16}>
-        <Col span={5}>
-          <FormItem label="提货单位">
-            {getFieldDecorator('owner', { initialValue: ownerCusCode,
-              rules: [{ required: true, message: '提货单位必选' }],
-            })(
-              <Select placeholder="请选择提货单位" showSearch optionFilterProp="children" allowClear onChange={this.handleOwnerChange} style={{ width: 200 }}>
-                {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
-              </Select>)}
-          </FormItem>
-        </Col>
-        <Col span={5} offset={1}>
-          <FormItem label="报关代理">
-            {getFieldDecorator('broker')(
-              <Select placeholder="请选择报关代理" style={{ width: 200 }} >
-                {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>))}
-              </Select>)}
-          </FormItem>
-        </Col>
-        <Col span={5} offset={1}>
-          <FormItem label="成交方式">
-            {getFieldDecorator('trxn_mode')(
-              <Select placeholder="请选择成交方式" style={{ width: 200 }}>
-                {this.props.trxModes.map(data => (
-                  <Option key={data.value} value={data.value}>
-                    {data.text}
-                  </Option>))}
-              </Select>)}
-          </FormItem>
-        </Col>
-        <Col span={5} offset={1}>
-          <FormItem label="类型">
-            {getFieldDecorator('ietype', { initialValue: 'import' })(
-              <RadioGroup onChange={this.handleIetypeChange} >
-                <RadioButton value="import">进口</RadioButton>
-                <RadioButton value="export">出口</RadioButton>
-              </RadioGroup>)}
-          </FormItem>
-        </Col>
-      </Row>
+      <Form className="form-layout-compact">
+        <Row gutter={16}>
+          <Col span={5}>
+            <FormItem label="提货单位">
+              {getFieldDecorator('owner', { initialValue: ownerCusCode,
+                rules: [{ required: true, message: '提货单位必选' }],
+              })(
+                <Select placeholder="请选择提货单位" showSearch optionFilterProp="children" onChange={this.handleOwnerChange} style={{ width: 200 }}>
+                  {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                </Select>)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem label="报关代理">
+              {getFieldDecorator('broker', {
+                rules: [{ required: true, message: '报关代理必选' }],
+              })(
+                <Select placeholder="请选择报关代理" style={{ width: 200 }} >
+                  {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>))}
+                </Select>)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem label="成交方式">
+              {getFieldDecorator('trxn_mode', {
+                rules: [{ required: true, message: '成交方式必选' }],
+              })(
+                <Select placeholder="请选择成交方式" style={{ width: 200 }}>
+                  {this.props.trxModes.map(data => (
+                    <Option key={data.value} value={data.value}>
+                      {data.text}
+                    </Option>))}
+                </Select>)}
+            </FormItem>
+          </Col>
+          <Col span={5} offset={1}>
+            <FormItem label="类型">
+              {getFieldDecorator('ietype', { initialValue: 'import' })(
+                <RadioGroup onChange={this.handleIetypeChange} >
+                  <RadioButton value="import">进口</RadioButton>
+                  <RadioButton value="export">出口</RadioButton>
+                </RadioGroup>)}
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
     );
   }
 }
