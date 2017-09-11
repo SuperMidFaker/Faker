@@ -22,6 +22,7 @@ import UnfreezePopover from '../../common/popover/unfreezePopover';
 import QtyChangePopover from '../../common/popover/qtyChangePopover';
 import AllocatedPopover from '../../common/popover/allocatedPopover';
 import PageHeader from 'client/components/PageHeader';
+import { createFilename } from 'client/util/dataTransform';
 import { formatMsg } from '../message.i18n';
 
 const RadioGroup = Radio.Group;
@@ -290,6 +291,11 @@ export default class StockTransitionList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [] });
   }
+  handleExportExcel = () => {
+    const { tenantId, listFilter, sortFilter } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?tenantId=${tenantId}&filters=${
+      JSON.stringify(listFilter)}&sorter=${JSON.stringify(sortFilter)}`);
+  }
   toggleTableSetting = () => {
     this.setState({ showTableSetting: !this.state.showTableSetting });
   }
@@ -390,6 +396,11 @@ export default class StockTransitionList extends React.Component {
               <RadioButton value="frozen">冻结库存</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button size="large" icon="export" onClick={this.handleExportExcel}>
+              {this.msg('export')}
+            </Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="main-content" key="main">
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>

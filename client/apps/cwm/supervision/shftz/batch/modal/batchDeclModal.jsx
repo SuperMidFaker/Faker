@@ -231,6 +231,7 @@ export default class BatchDeclModal extends Component {
   handleCancel = () => {
     this.setState({ ownerCusCode: '', portionRegs: [], regDetails: [], relNo: '', relDateRange: [], template: undefined });
     this.props.closeBatchDeclModal();
+    this.props.form.resetFields();
   }
   handleOwnerChange = (ownerCusCode) => {
     this.props.loadBatchOutRegs({
@@ -313,6 +314,7 @@ export default class BatchDeclModal extends Component {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();
+          this.props.form.resetFields();
         } else {
           message.error(result.error.message);
         }
