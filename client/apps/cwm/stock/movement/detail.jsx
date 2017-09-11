@@ -50,7 +50,13 @@ export default class MovementDetail extends Component {
     mode: 'scan',
   }
   componentWillMount() {
-    this.props.loadMovementHead(this.props.params.movementNo);
+    this.props.loadMovementHead(this.props.params.movementNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          mode: result.data.moving_mode,
+        });
+      }
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {

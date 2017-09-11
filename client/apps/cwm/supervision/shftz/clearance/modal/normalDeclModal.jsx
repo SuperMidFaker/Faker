@@ -203,9 +203,7 @@ export default class NormalDeclModal extends Component {
       supplier: '',
       currency: '',
       template: undefined });
-    this.props.form.setFieldsValue({
-      broker: '',
-    });
+    this.props.form.resetFields();
     this.props.closeNormalDeclModal();
   }
   handleTemplateChange = (template) => {
