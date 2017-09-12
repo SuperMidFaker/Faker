@@ -270,7 +270,7 @@ export default class BatchDeclDetail extends Component {
     const { batchDecl, batchApplies, regs, details, whse, submitting } = this.props;
     const relEditable = batchDecl.status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = batchDecl.status === CWM_SHFTZ_APIREG_STATUS.processing;
-    const sendText = sent ? '重新发送' : '发送备案';
+    const sendText = sent ? '重新发送' : '发送报关申请';
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
       gross_wt: acc.gross_wt + det.gross_wt,

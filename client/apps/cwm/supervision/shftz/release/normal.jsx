@@ -302,7 +302,7 @@ export default class SHFTZRelDetail extends Component {
     const sendText = sent ? '重新发送' : '发送备案';
     let sendable = true;
     let whyunsent = '';
-    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
+    if (relSo.outbound_status < CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
       sendable = false;
       whyunsent = '出库单配货未完成';
     }
