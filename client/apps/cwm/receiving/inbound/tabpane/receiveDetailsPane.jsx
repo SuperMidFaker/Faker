@@ -8,6 +8,8 @@ import RowUpdater from 'client/components/rowUpdater';
 import SKUPopover from '../../../common/popover/skuPopover';
 import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
+import { createFilename } from 'client/util/dataTransform';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
 import moment from 'moment';
@@ -200,6 +202,13 @@ export default class ReceiveDetailsPane extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleDownloadReceiving = () => {
+    const { inboundNo } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/export/receiving/details/${createFilename('receiving')}.xlsx?inboundNo=${inboundNo}`);
+  }
+  handleUploadPutaway = () => {
+    this.handleReload();
+  }
   render() {
     const { inboundHead, inboundProducts } = this.props;
     const dataSource = inboundProducts.filter((item) => {
@@ -247,7 +256,20 @@ export default class ReceiveDetailsPane extends React.Component {
           </div>
           <div className="toolbar-right">
             <Tooltip title="导出收货明细" placement="bottom"><Button icon="download" onClick={this.handleDownloadReceiving}>导出</Button></Tooltip>
-            <Tooltip title="导入收货确认" placement="bottom"><Button icon="upload" onClick={this.handleUploadPutaway}>导入</Button></Tooltip>
+            <Tooltip title="导入收货确认" placement="bottom">
+              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/details/import`}
+                formData={{
+                  data: JSON.stringify({
+                    loginId: this.props.loginId,
+                    loginName: this.props.username,
+                    receiveDate: new Date(),
+                    inboundNo: this.props.inboundNo,
+                  }),
+                }} onUploaded={this.handleUploadPutaway}
+              >
+                <Button icon="upload">导入</Button>
+              </ExcelUploader>
+            </Tooltip>
             {/* inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Button icon="check" onClick={this.handleExpressReceived}>
               快捷收货
