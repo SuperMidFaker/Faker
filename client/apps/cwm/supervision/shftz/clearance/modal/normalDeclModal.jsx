@@ -20,6 +20,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     visible: state.cwmShFtz.clearanceModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
@@ -211,9 +212,37 @@ export default class NormalDeclModal extends Component {
   }
   handleSupplierChange = (supplier) => {
     this.setState({ supplier });
+    const { ownerCusCode, relNo, relDateRange, currency } = this.state;
+    const trxMode = this.props.form.getFieldValue('trxn_mode');
+    this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      rel_type: 'normal',
+      rel_no: relNo,
+      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
+      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
+      currency,
+      supplier,
+      trxMode,
+    });
   }
   handleCurrencyChange = (currency) => {
     this.setState({ currency });
+    const { ownerCusCode, relNo, relDateRange, supplier } = this.state;
+    const trxMode = this.props.form.getFieldValue('trxn_mode');
+    this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      rel_type: 'normal',
+      rel_no: relNo,
+      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
+      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
+      currency,
+      supplier,
+      trxMode,
+    });
   }
   handleRelNoChange = (ev) => {
     this.setState({ relNo: ev.target.value });
@@ -265,17 +294,20 @@ export default class NormalDeclModal extends Component {
       customs_code: own.customs_code,
       name: own.name,
     }))[0];
-    const { loginId, loginName } = this.props;
+    const { loginId, loginName, tenantName } = this.props;
     this.props.form.validateFields((errors, values) => {
-      const broker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      this.props.beginNormalDecl(values.ietype, this.state.template, detailIds, relCounts, owner, loginId, loginName, broker.partner_id, values.trxn_mode).then((result) => {
-        if (!result.error) {
-          this.handleCancel();
-          this.props.reload();
-        } else {
-          message.error(result.error.message);
-        }
-      });
+      const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
+        // tenant_id customs_code todo
+      const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id } : { name: tenantName };
+      this.props.beginNormalDecl(values.ietype, this.state.template, detailIds, relCounts, owner,
+        loginId, loginName, broker, values.trxn_mode).then((result) => {
+          if (!result.error) {
+            this.handleCancel();
+            this.props.reload();
+          } else {
+            message.error(result.error.message);
+          }
+        });
     });
   }
   handleOwnerChange = (ownerCusCode) => {
@@ -436,7 +468,7 @@ export default class NormalDeclModal extends Component {
                     </div>
                   </div>
                   <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
-                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
+                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 500), 0), y: this.state.scrollY }}
                   />
                 </div>
               </Card>

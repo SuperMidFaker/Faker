@@ -227,7 +227,7 @@ class DataTable extends Component {
         onChange={this.handleCheckBoxChange} onFixed={this.fixedColumns} fixed={column.fixed}
       />));
     content.push(
-      <div className="col-selection-actions">
+      <div className="col-selection-actions" key="col-sel-buttons">
         <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>确定</Button>
         <Button onClick={this.hidePopover}>取消</Button>
       </div>
@@ -237,7 +237,9 @@ class DataTable extends Component {
         <div className="welo-data-table-toolbar">
           {this.props.toolbarActions}
           <div className="welo-data-table-toolbar-right">
-            <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>} visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
+            <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>}
+              visible={this.state.visible} onVisibleChange={this.handleVisibleChange}
+            >
               <Tooltip title="显示字段设置">
                 <Button shape="circle" icon="layout" />
               </Tooltip>

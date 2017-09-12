@@ -30,8 +30,9 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'BEGIN_BD', 'BEGIN_BD_SUCCEED', 'BEGIN_BD_FAIL',
   'BEGIN_NC', 'BEGIN_NC_SUCCEED', 'BEGIN_NC_FAIL',
   'LOAD_NDLIST', 'LOAD_NDLIST_SUCCEED', 'LOAD_NDLIST_FAIL',
+  'LOAD_NDELG', 'LOAD_NDELG_SUCCEED', 'LOAD_NDELG_FAIL',
   'LOAD_DRDETAILS', 'LOAD_DRDETAILS_SUCCEED', 'LOAD_DRDETAILS_FAIL',
-  'APPLY_DETAILS_LOAD', 'APPLY_DETAILS_LOAD_SUCCEED', 'APPLY_DETAILS_LOAD_FAIL',
+  'LOAD_APPLD', 'LOAD_APPLD_SUCCEED', 'LOAD_APPLD_FAIL',
   'FILE_BA', 'FILE_BA_SUCCEED', 'FILE_BA_FAIL',
   'MAKE_BAL', 'MAKE_BAL_SUCCEED', 'MAKE_BAL_FAIL',
   'CANCEL_ENR', 'CANCEL_ENR_SUCCEED', 'CANCEL_ENR_FAIL',
@@ -90,7 +91,8 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
-  declRelReg: [],
+  normalDecl: {},
+  declRelRegs: [],
   declRelDetails: [],
   cargolist: {
     totalCount: 0,
@@ -122,7 +124,6 @@ const initialState = {
   transRegs: [],
   stockDatas: [],
   billTemplates: [],
-  normalDecl: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -199,8 +200,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUERY_OWNTRANF:
     case actionTypes.VIRTUAL_TRANS_SAVE:
       return { ...state, submitting: true };
-    case actionTypes.FILE_RSO_SUCCEED:
-    case actionTypes.FILE_RTS_SUCCEED:
     case actionTypes.FILE_RSO_FAIL:
     case actionTypes.FILE_RTS_FAIL:
     case actionTypes.FILE_BA_FAIL:
@@ -235,6 +234,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
     case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
       return { ...state, submitting: false };
+    case actionTypes.FILE_RSO_SUCCEED:
+    case actionTypes.FILE_RTS_SUCCEED:
     case actionTypes.FILE_RPO_SUCCEED:
       return { ...state,
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
@@ -255,10 +256,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false };
     case actionTypes.LOAD_PORS_SUCCEED:
       return { ...state, batchout_regs: action.result.data };
+    case actionTypes.LOAD_NDELG_SUCCEED:
+      return { ...state, normalDecl: action.result.data };
     case actionTypes.LOAD_DRDETAILS_SUCCEED:
-      return { ...state, declRelReg: action.result.data.rel_regs, declRelDetails: action.result.data.details };
-    case actionTypes.APPLY_DETAILS_LOAD_SUCCEED:
-      return { ...state, ...action.result.data };
+      return { ...state, declRelRegs: action.result.data.rel_regs, declRelDetails: action.result.data.details };
+    case actionTypes.LOAD_APPLD_SUCCEED:
+      return { ...state, batch_decl: action.result.data.batch_decl, batch_applies: action.result.data.batch_applies };
     case actionTypes.FILE_BA_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
     case actionTypes.MAKE_BAL_SUCCEED:
@@ -674,7 +677,7 @@ export function loadBatchRegDetails(relNo) {
   };
 }
 
-export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, brokerPartnerId, applyType, ietype) {
+export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, applyType, ietype) {
   return {
     [CLIENT_API]: {
       types: [
@@ -684,7 +687,7 @@ export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, l
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
-      data: { template, detailIds, relCounts, owner, loginId, loginName, groupVals, brokerPartnerId, applyType, ietype },
+      data: { template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, applyType, ietype },
     },
   };
 }
@@ -704,7 +707,7 @@ export function batchDelgCancel(data) {
   };
 }
 
-export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, loginId, loginName, brokerPartnerId, trxnMode) {
+export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, loginId, loginName, broker, trxnMode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -714,7 +717,7 @@ export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, l
       ],
       endpoint: 'v1/cwm/shftz/normal/decl/begin',
       method: 'post',
-      data: { ietype, template, detailIds, relCounts, owner, loginId, loginName, brokerPartnerId, trxnMode },
+      data: { ietype, template, detailIds, relCounts, owner, loginId, loginName, broker, trxnMode },
     },
   };
 }
@@ -749,6 +752,21 @@ export function loadNormalDelgList(params) {
   };
 }
 
+export function loadNormalDelg(batchNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NDELG,
+        actionTypes.LOAD_NDELG_SUCCEED,
+        actionTypes.LOAD_NDELG_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/decl',
+      method: 'get',
+      params: { batchNo },
+    },
+  };
+}
+
 export function loadDeclRelDetails(batchNo) {
   return {
     [CLIENT_API]: {
@@ -768,9 +786,9 @@ export function loadApplyDetails(batchNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.APPLY_DETAILS_LOAD,
-        actionTypes.APPLY_DETAILS_LOAD_SUCCEED,
-        actionTypes.APPLY_DETAILS_LOAD_FAIL,
+        actionTypes.LOAD_APPLD,
+        actionTypes.LOAD_APPLD_SUCCEED,
+        actionTypes.LOAD_APPLD_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/batch/apply/details',
       method: 'get',

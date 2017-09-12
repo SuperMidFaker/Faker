@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tooltip, notification } from 'antd';
+import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tooltip, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
-import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied } from 'common/reducers/cwmShFtz';
+import TrimSpan from 'client/components/trimSpan';
+import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -21,6 +22,7 @@ const Step = Steps.Step;
 function fetchData({ dispatch, params }) {
   const promises = [];
   promises.push(dispatch(loadApplyDetails(params.batchNo)));
+  promises.push(dispatch(loadDeclRelDetails(params.batchNo)));
   promises.push(dispatch(loadParams()));
   return Promise.all(promises);
 }
@@ -34,6 +36,8 @@ function fetchData({ dispatch, params }) {
     username: state.account.username,
     batchDecl: state.cwmShFtz.batch_decl,
     batchApplies: state.cwmShFtz.batch_applies,
+    regs: state.cwmShFtz.declRelRegs,
+    details: state.cwmShFtz.declRelDetails,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -45,6 +49,10 @@ function fetchData({ dispatch, params }) {
     tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
+    })),
+    trxModes: state.cwmShFtz.params.trxModes.map(tx => ({
+      value: tx.trx_mode,
+      text: tx.trx_spec,
     })),
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
@@ -64,7 +72,7 @@ export default class BatchDeclDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    tabKey: '',
+    tabKey: 'details',
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -75,7 +83,7 @@ export default class BatchDeclDetail extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.batchApplies !== this.props.batchApplies && nextProps.batchApplies.length > 0) {
-      if (this.state.tabKey === '') {
+      if (this.state.tabKey === 'details') {
         this.setState({ tabKey: nextProps.batchApplies[0].pre_entry_seq_no });
       }
     }
@@ -127,17 +135,56 @@ export default class BatchDeclDetail extends Component {
       }
     });
   }
-  columns = [{
+  regColumns = [{
+    title: '出库单号',
+    dataIndex: 'ftz_rel_no',
+  }, {
+    title: 'SO单号',
+    dataIndex: 'so_no',
+    width: 250,
+  }, {
+    title: '供货商',
+    width: 200,
+    dataIndex: 'supplier',
+  }, {
+    title: '成交方式',
+    width: 100,
+    dataIndex: 'trxn_mode',
+    render: (o) => {
+      const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
+      const text = mode ? `${mode.value}|${mode.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
+    title: '币制',
+    width: 100,
+    dataIndex: 'currency',
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }]
+  relColumns = [{
+    title: '出库单号',
+    dataIndex: 'ftz_rel_no',
+  }, {
     title: '出库明细ID',
     dataIndex: 'ftz_rel_detail_id',
-    /* }, {
+    width: 150,
+  }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
+    render: (o) => {
+      if (o) {
+        return <Button>{o}</Button>;
+      }
+    },
   }, {
     title: 'HS编码',
     dataIndex: 'hscode',
-    width: 90,
+    width: 120,
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -145,53 +192,99 @@ export default class BatchDeclDetail extends Component {
   }, {
     title: '规格型号',
     dataIndex: 'model',
-    width: 250,
-    render: o => <TrimSpan text={o} maxLen={20} />,
+    render: o => <TrimSpan text={o} maxLen={30} />,
+    width: 240,
+  }, {
+    title: '原产国',
+    dataIndex: 'country',
+    width: 150,
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      const text = country ? `${country.value}| ${country.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
+    title: '单位',
+    dataIndex: 'out_unit',
+    width: 100,
+    render: (o) => {
+      const unit = this.props.units.filter(cur => cur.value === o)[0];
+      const text = unit ? `${unit.value}| ${unit.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
   }, {
     title: '数量',
+    width: 100,
     dataIndex: 'qty',
-    render: o => (<b>{o}</b>),
   }, {
     title: '毛重',
+    width: 100,
     dataIndex: 'gross_wt',
   }, {
     title: '净重',
-    dataIndex: 'net_wt', */
+    width: 100,
+    dataIndex: 'net_wt',
   }, {
     title: '金额',
+    width: 100,
     dataIndex: 'amount',
-    width: 200,
-    /* }, {
+  }, {
+    title: '供货商',
+    width: 100,
+    dataIndex: 'supplier',
+  }, {
+    title: '成交方式',
+    width: 100,
+    dataIndex: 'trxn_mode',
+    render: (o) => {
+      const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
+      const text = mode ? `${mode.value}|${mode.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
     title: '币制',
+    width: 100,
     dataIndex: 'currency',
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  }]
+  columns = [{
+    title: '出库明细ID',
+    dataIndex: 'ftz_rel_detail_id',
   }, {
-    title: '原产国',
-    dataIndex: 'country',
-    render: (o) => {
-      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
-      const text = country ? `${country.value}| ${country.text}` : o;
-      return text && text.length > 0 && <Tag>{text}</Tag>;
-    }, */
+    title: '金额',
+    dataIndex: 'amount',
+    width: 200,
   }]
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
   }
-  handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateRelReg(preRegNo, field, value);
-  }
   handleDelgManifest = () => {
-    this.context.router.push(`/clearance/${this.props.batchDecl.i_e_type === 0 ? 'import' : 'export'}/manifest/${this.props.batchDecl.delg_no}`);
+    const ietype = this.props.batchDecl.i_e_type === 0 ? 'import' : 'export';
+    this.context.router.push(`/clearance/${ietype}/manifest/${this.props.batchDecl.delg_no}`);
   }
   render() {
-    const { batchDecl, batchApplies, whse, submitting } = this.props;
+    const { batchDecl, batchApplies, regs, details, whse, submitting } = this.props;
     const relEditable = batchDecl.status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = batchDecl.status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
+    const statWt = details.reduce((acc, det) => ({
+      net_wt: acc.net_wt + det.net_wt,
+      gross_wt: acc.gross_wt + det.gross_wt,
+    }), { net_wt: 0, gross_wt: 0 });
+    let applyStep = 0;
+    if (batchDecl.status < CWM_SHFTZ_APIREG_STATUS.processing && batchApplies.length > 0) {
+      applyStep = 1;
+    } else if (batchDecl.status === CWM_SHFTZ_APIREG_STATUS.processing) {
+      applyStep = 2;
+    } else if (batchDecl.status === CWM_SHFTZ_APIREG_STATUS.completed && batchApplies.filter(ba => ba.cus_decl_no).length === 0) {
+      applyStep = 3;
+    } else if (batchDecl.status === CWM_SHFTZ_APIREG_STATUS.completed && batchApplies.filter(ba => ba.cus_decl_no).length > 0) {
+      applyStep = 4;
+    }
     return (
       <div>
         <PageHeader>
@@ -240,7 +333,7 @@ export default class BatchDeclDetail extends Component {
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={batchDecl.status}>
+                <Steps progressDot current={applyStep}>
                   <Step description="委托制单" />
                   <Step description="报关申请" />
                   <Step description="已发送" />
@@ -251,10 +344,28 @@ export default class BatchDeclDetail extends Component {
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                <TabPane tab="分拨出库单列表" key="list" />
-                <TabPane tab="集中报关明细" key="details" />
+                <TabPane tab="分拨出库单列表" key="list">
+                  <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
+                </TabPane>
+                <TabPane tab="集中报关明细" key="details">
+                  <div className="panel-header">
+                    <Row>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore="总毛重" field={statWt.gross_wt.toFixed(2)} />
+                      </Col>
+                      <Col sm={24} lg={6}>
+                        <InfoItem size="small" addonBefore="总净重" field={statWt.net_wt.toFixed(6)} />
+                      </Col>
+                    </Row>
+                  </div>
+                  <div className="table-panel table-fixed-layout">
+                    <Table size="middle" columns={this.relColumns} dataSource={details} indentSize={8} rowKey="id"
+                      scroll={{ x: this.relColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                    />
+                  </div>
+                </TabPane>
                 {batchApplies.map(reg => (
-                  <TabPane tab="报关申请单" key={reg.pre_entry_seq_no}>
+                  <TabPane tab={`申请单${reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
                     <div className="panel-header">
                       <Row>
                         <Col sm={24} lg={6}>

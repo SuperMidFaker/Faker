@@ -68,12 +68,13 @@ export default class MovementDetail extends Component {
     this.setState({
       mode: ev.target.value,
     });
+    this.props.updateMovingMode(this.props.params.movementNo, ev.target.value);
   }
   render() {
     const { defaultWhse, movementHead } = this.props;
     const movingStep = movementHead.isdone ? 1 : 0;
-    const scanLabel = movementHead.moving_mode === 'scan' ? ' 扫码模式' : '';
-    const manualLabel = movementHead.moving_mode === 'manual' ? ' 手动模式' : '';
+    const scanLabel = this.state.mode === 'scan' ? ' 扫码模式' : '';
+    const manualLabel = this.state.mode === 'manual' ? ' 手动模式' : '';
     return (
       <div>
         <Header className="page-header">
