@@ -200,8 +200,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUERY_OWNTRANF:
     case actionTypes.VIRTUAL_TRANS_SAVE:
       return { ...state, submitting: true };
-    case actionTypes.FILE_RSO_SUCCEED:
-    case actionTypes.FILE_RTS_SUCCEED:
     case actionTypes.FILE_RSO_FAIL:
     case actionTypes.FILE_RTS_FAIL:
     case actionTypes.FILE_BA_FAIL:
@@ -236,6 +234,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
     case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
       return { ...state, submitting: false };
+    case actionTypes.FILE_RSO_SUCCEED:
+    case actionTypes.FILE_RTS_SUCCEED:
     case actionTypes.FILE_RPO_SUCCEED:
       return { ...state,
         rel_so: { ...state.rel_so, reg_status: action.result.data.status },
