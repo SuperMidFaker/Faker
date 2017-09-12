@@ -137,7 +137,7 @@ export default class OutboundDetail extends Component {
     });
   }
   handleRegPage = () => {
-    this.context.router.push(`/cwm/supervision/shftz/release/${this.props.outboundHead.so_no}`);
+    this.context.router.push(`/cwm/supervision/shftz/release/${this.props.outboundHead.bonded_outtype}/${this.props.outboundHead.so_no}`);
   }
   showExpressModal = () => {
     this.props.loadShunfengConfig(this.props.tenantId).then((result) => {
