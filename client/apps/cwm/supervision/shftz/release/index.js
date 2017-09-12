@@ -1,2 +1,3 @@
 export List from './list';
-export Detail from './detail';
+export Normal from './normal';
+export Portion from './portion';

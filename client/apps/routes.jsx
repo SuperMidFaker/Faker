@@ -492,7 +492,8 @@ export default(store, cookie) => {
                 </Route>
                 <Route path="release" >
                   <IndexRoute component={CWMSupSHFTZRelease.List} />
-                  <Route path=":soNo" component={CWMSupSHFTZRelease.Detail} />
+                  <Route path="normal/:soNo" component={CWMSupSHFTZRelease.Normal} />
+                  <Route path="portion/:soNo" component={CWMSupSHFTZRelease.Portion} />
                 </Route>
                 <Route path="transfer/out" >
                   <IndexRoute component={CWMSupSHFTZTransferOut.List} />

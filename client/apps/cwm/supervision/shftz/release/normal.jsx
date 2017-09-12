@@ -300,14 +300,12 @@ export default class SHFTZRelDetail extends Component {
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
-    let queryable = false;
     let sendable = true;
     let whyunsent = '';
     if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
       sendable = false;
       whyunsent = '出库单配货未完成';
     }
-    const columns = [...this.columns];
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
       if (sendable) {
         const nonOutDates = [];
@@ -321,15 +319,6 @@ export default class SHFTZRelDetail extends Component {
           whyunsent = `${nonOutDates.join(',')}预计出区日期未填`;
         }
       }
-    }
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
-      queryable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
-        relRegs.filter(er => !er.ftz_rel_no).length === 0;
-      columns.unshift({
-        title: '出库明细ID',
-        dataIndex: 'ftz_rel_detail_id',
-        width: 100,
-      });
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     let splitExtra = null;
@@ -362,7 +351,7 @@ export default class SHFTZRelDetail extends Component {
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzReleaseReg')}
+                普通出库备案
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.soNo}
@@ -377,10 +366,6 @@ export default class SHFTZRelDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {queryable && <Tooltip title="向监管系统接口查询并同步分拨出库单明细数据" placement="bottom">
-              <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
-            </Tooltip>
-            }
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
             {relEditable && whyunsent && <Tooltip title={whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
@@ -447,8 +432,6 @@ export default class SHFTZRelDetail extends Component {
                   return (
                     <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
                       <div className="panel-header">
-                        {// 普通出库
-                        relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value &&
                         <Row>
                           <Col sm={12} lg={6}>
                             <InfoItem size="small" addonBefore="普通出库单号" field={reg.ftz_rel_no} />
@@ -460,20 +443,10 @@ export default class SHFTZRelDetail extends Component {
                             />
                           </Col>
                           {totCol}
-                        </Row>}
-                        {// 分拨出库
-                        relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value &&
-                        <Row>
-                          <Col sm={12} lg={6}>
-                            <InfoItem size="small" addonBefore="分拨出库单号" field={reg.ftz_rel_no} editable={relEditable}
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                            />
-                          </Col>
-                          {totCol}
-                        </Row>}
+                        </Row>
                       </div>
                       <div className="table-panel table-fixed-layout">
-                        <Table size="middle" columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
+                        <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
                           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                         />
                       </div>
