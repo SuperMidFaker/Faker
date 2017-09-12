@@ -224,7 +224,7 @@ export default class SHFTZReleaseList extends React.Component {
     this.handleReleaseListLoad(1, this.props.whse.code, filter);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/release/${row.so_no}`;
+    const link = `/cwm/supervision/shftz/release/${row.ftz_rel_type}/${row.so_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
@@ -320,6 +320,7 @@ export default class SHFTZReleaseList extends React.Component {
               dataSource={this.dataSource}
               rowKey="id"
               loading={this.props.loading}
+              indentSize={0}
             />
             <ShippingDockPanel />
             <OrderDockPanel />
