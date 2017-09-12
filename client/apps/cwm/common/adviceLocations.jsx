@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { loadLimitLocations } from 'common/reducers/cwmWarehouse';
+import { loadLimitLocations, loadLocations } from 'common/reducers/cwmWarehouse';
 import { loadAdviceLocations } from 'common/reducers/cwmReceive';
 const Option = Select.Option;
 
@@ -13,7 +13,7 @@ const Option = Select.Option;
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadLimitLocations, loadAdviceLocations }
+  { loadLimitLocations, loadAdviceLocations, loadLocations }
 )
 export default class AdviceLocations extends React.Component {
   static propTypes = {
@@ -45,6 +45,9 @@ export default class AdviceLocations extends React.Component {
         }
       }
     });
+    if (this.props.locations.length === 0) {
+      this.props.loadLocations(this.props.defaultWhse.code, '', this.props.tenantId, '');
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.productNo !== this.props.productNo) {
