@@ -184,10 +184,22 @@ export default class PutawayDetailsPane extends React.Component {
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
-          const selectedRowKeys = dataSource.filter(item => !(item.result === 1)).map(item => item.id);
+          const fDataSource = dataSource.filter(item => !(item.result === 1));
+          const selectedRowKeys = fDataSource.map(item => item.id);
           this.setState({
             selectedRowKeys,  // TODO
-            selectedRows: dataSource,
+            selectedRows: fDataSource,
+          });
+        },
+      }, {
+        key: 'opposite-data',
+        text: '反选全部项',
+        onSelect: () => {
+          const fDataSource = dataSource.filter(item => !(item.result === 1) && !this.state.selectedRowKeys.find(item1 => item1 === item.id));
+          const selectedRowKeys = fDataSource.map(item => item.id);
+          this.setState({
+            selectedRowKeys,  // TODO
+            selectedRows: fDataSource,
           });
         },
       }],

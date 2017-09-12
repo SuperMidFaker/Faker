@@ -259,6 +259,25 @@ export default class OrderDetailsPane extends React.Component {
             ButtonStatus: status,
           });
         },
+      }, {
+        key: 'opposite-data',
+        text: '反选全部项',
+        onSelect: () => {
+          const fDataSource = dataSource.filter(item => !this.state.selectedRowKeys.find(item1 => item1 === item.id));
+          const selectedRowKeys = fDataSource.map(item => item.id);
+          let status = null;
+          const unallocated = fDataSource.find(item => item.alloc_qty < item.order_qty);
+          const allocated = fDataSource.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
+          if (unallocated && !allocated) {
+            status = 'alloc';
+          } else if (!unallocated && allocated) {
+            status = 'unalloc';
+          }
+          this.setState({
+            selectedRowKeys,  // TODO
+            ButtonStatus: status,
+          });
+        },
       }],
     };
     return (

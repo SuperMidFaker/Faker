@@ -331,6 +331,26 @@ export default class PickingDetailsPane extends React.Component {
             currentStep: status,
           });
         },
+      }, {
+        key: 'opposite-data',
+        text: '反选全部项',
+        onSelect: () => {
+          const fDataSource = dataSource.filter(item => !this.state.selectedRowKeys.find(item1 => item1 === item.id));
+          const selectedRowKeys = fDataSource.map(item => item.id);
+          let status = null;
+          const allocated = fDataSource.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_ALLOC.value);
+          const picked = fDataSource.filter(item => item.status === CWM_OUTBOUND_STATUS.ALL_PICKED.value);
+          if (allocated && allocated.length === fDataSource.length) {
+            status = 'allAllocated';
+          } else if (picked && picked.length === fDataSource.length) {
+            status = 'allPicked';
+          }
+          this.setState({
+            selectedRowKeys,
+            selectedRows: fDataSource,
+            currentStep: status,
+          });
+        },
       }],
     };
     return (
