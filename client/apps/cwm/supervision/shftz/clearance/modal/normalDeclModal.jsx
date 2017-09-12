@@ -211,9 +211,37 @@ export default class NormalDeclModal extends Component {
   }
   handleSupplierChange = (supplier) => {
     this.setState({ supplier });
+    const { ownerCusCode, relNo, relDateRange, currency } = this.state;
+    const trxMode = this.props.form.getFieldValue('trxn_mode');
+    this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      rel_type: 'normal',
+      rel_no: relNo,
+      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
+      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
+      currency,
+      supplier,
+      trxMode,
+    });
   }
   handleCurrencyChange = (currency) => {
     this.setState({ currency });
+    const { ownerCusCode, relNo, relDateRange, supplier } = this.state;
+    const trxMode = this.props.form.getFieldValue('trxn_mode');
+    this.props.loadBatchOutRegs({
+      tenantId: this.props.tenantId,
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      rel_type: 'normal',
+      rel_no: relNo,
+      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
+      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
+      currency,
+      supplier,
+      trxMode,
+    });
   }
   handleRelNoChange = (ev) => {
     this.setState({ relNo: ev.target.value });
