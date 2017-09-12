@@ -14,6 +14,8 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    customsCode: state.account.customsCode,
+    tenantName: state.account.tenantName,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
     brokers: state.cwmWarehouse.brokers,
@@ -43,7 +45,7 @@ export default class HeadForm extends React.Component {
     this.setState({ ietype: ev.target.value });
   }
   render() {
-    const { form: { getFieldDecorator }, owners, ownerCusCode, brokers } = this.props;
+    const { form: { getFieldDecorator }, owners, ownerCusCode, brokers, customsCode, tenantName } = this.props;
     return (
       <Form className="form-layout-compact">
         <Row gutter={16}>
@@ -63,7 +65,9 @@ export default class HeadForm extends React.Component {
                 rules: [{ required: true, message: '报关代理必选' }],
               })(
                 <Select placeholder="请选择报关代理" style={{ width: 200 }} >
-                  {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>))}
+                  {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(
+                    <Option value={customsCode} key={customsCode}>{tenantName}</Option>
+                  )}
                 </Select>)}
             </FormItem>
           </Col>

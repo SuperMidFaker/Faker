@@ -11,6 +11,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { DELG_STATUS } from 'common/constants';
 import ModuleMenu from '../menu';
 import NormalDeclModal from './modal/normalDeclModal';
 import PageHeader from 'client/components/PageHeader';
@@ -86,7 +87,7 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '状态',
     dataIndex: 'status',
-    width: 80,
+    width: 120,
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
@@ -103,7 +104,7 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
-    width: 80,
+    width: 140,
   }, {
     title: '委托时间',
     width: 120,
@@ -134,12 +135,7 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '创建时间',
     width: 120,
-    dataIndex: 'created_time',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
+    render: (o, record) => record.delg_time && moment(record.delg_time).format('MM.DD HH:mm'),
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
@@ -152,12 +148,11 @@ export default class NormalDeclList extends React.Component {
     render: (o, record) => (
       <span>
         <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
-        <span className="ant-divider" />
-        <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
-        <span className="ant-divider" />
+        {record.status <= DELG_STATUS.undeclared && <span className="ant-divider" />}
+        {record.status <= DELG_STATUS.undeclared &&
         <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
           <a>取消委托</a>
-        </Popconfirm>
+        </Popconfirm>}
       </span>
     ),
   }]
@@ -220,10 +215,6 @@ export default class NormalDeclList extends React.Component {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
     this.props.openNormalDeclModal({ ownerCusCode });
-  }
-  handleDelgManifest = (row) => {
-    const link = `/clearance/${row.i_e_type}/manifest/`;
-    this.context.router.push(`${link}${row.delg_no}`);
   }
   handleDetail = (row) => {
     const link = `/cwm/supervision/shftz/clearance/${row.normal_decl_no}`;

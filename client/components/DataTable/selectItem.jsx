@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { findDOMNode } from 'react-dom';
 import { Checkbox, Button, Icon } from 'antd';
 import { DragSource, DropTarget } from 'react-dnd';
+
 const ItemTypes = {
   CARD: 'card',
 };

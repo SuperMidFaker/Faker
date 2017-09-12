@@ -166,14 +166,14 @@ export default class BatchDeclList extends React.Component {
     width: 80,
   }, {
     title: '申请类型',
-    dataIndex: 'type',
+    dataIndex: 'apply_type',
     render: (o) => {
       switch (o) {
-        case 0:
+        case '0':
           return <Tag>普通报关申请单</Tag>;
-        case 1:
+        case '1':
           return <Tag>跨关区报关申请单</Tag>;
-        case 2:
+        case '2':
           return <Tag>保展报关申请单</Tag>;
         default:
           break;
@@ -224,18 +224,13 @@ export default class BatchDeclList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 200,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.status < 2) {
-        return <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />;
-      } else if (record.manifested === 0) {
-        return (<span>
-          <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
-          <span className="ant-divider" />
-          <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
-            <a>取消委托</a>
-          </Popconfirm></span>);
-      }
-    },
+    render: (o, record) => (<span>
+      <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
+      {record.manifested === 0 && <span className="ant-divider" />}
+      {record.manifested === 0 &&
+      <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
+        <a>取消委托</a>
+      </Popconfirm>}</span>),
   }]
 
   dataSource = new DataTable.DataSource({

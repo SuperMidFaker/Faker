@@ -20,6 +20,7 @@ const Option = Select.Option;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
     visible: state.cwmShFtz.batchDeclModal.visible,
     submitting: state.cwmShFtz.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -306,11 +307,12 @@ export default class BatchDeclModal extends Component {
       customs_code: own.customs_code,
       name: own.name,
     }))[0];
-    const { loginId, loginName } = this.props;
+    const { loginId, loginName, tenantName } = this.props;
     const { template, groupVals } = this.state;
     this.props.form.validateFields((errors, values) => {
-      const broker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      this.props.beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker.partner_id, values.apply_type, values.ietype).then((result) => {
+      const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
+      const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id } : { name: tenantName };
+      this.props.beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, values.apply_type, values.ietype).then((result) => {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();
