@@ -277,21 +277,33 @@ export default class SHFTZTransferOutDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={6}>
+                <Col sm={24} lg={4}>
                   <InfoItem label="发货单位" field={relSo.owner_name} />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem label="发货单位海关编码" field={relSo.owner_cus_code} />
                 </Col>
                 <Col sm={24} lg={2}>
                   <InfoItem label="发货仓库号" field={relSo.sender_ftz_whse_code} />
                 </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={relSo.receiver_name} />
-                </Col>
-                <Col sm={24} lg={2}>
-                  <InfoItem label="收货仓库号" field={relSo.receiver_ftz_whse_code} />
+                <Col sm={24} lg={4}>
+                  <InfoItem label="收货单位" field={relRegs[0] && relRegs[0].receiver_name} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_name', value)}
+                  />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={relSo.created_date && moment(relSo.created_date).format('YYYY-MM-DD HH:mm')}
+                  <InfoItem label="收货单位海关编码" field={relRegs[0] && relRegs[0].receiver_cus_code} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_cus_code', value)}
+                  />
+                </Col>
+                <Col sm={24} lg={2}>
+                  <InfoItem label="收货仓库号" field={relRegs[0] && relRegs[0].receiver_ftz_whse_code} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0] && relRegs[0].pre_entry_seq_no, 'receiver_ftz_whse_code', value)}
+                  />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem label="出库日期" field={relRegs[0] && relRegs[0].ftz_rel_date} editable={relEditable} type="date"
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'ftz_rel_date', value)}
                   />
                 </Col>
                 <Col sm={24} lg={3}>

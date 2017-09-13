@@ -70,7 +70,7 @@ export default class SHFTZTransferOutList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, transType: 'transfer', ownerView };
+    const filter = { ...listFilter, status, type: 'transfer', ownerView };
     this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -178,7 +178,7 @@ export default class SHFTZTransferOutList extends React.Component {
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
       };
-      const filter = { ...this.props.listFilter, transType: 'transfer' };
+      const filter = { ...this.props.listFilter };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -186,8 +186,7 @@ export default class SHFTZTransferOutList extends React.Component {
   })
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
     const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
-    let newfilter = filter || listFilter;
-    newfilter = { ...newfilter, transType: 'transfer' };
+    const newfilter = filter || listFilter;
     this.props.loadReleaseRegDatas({
       tenantId,
       filter: JSON.stringify(newfilter),
