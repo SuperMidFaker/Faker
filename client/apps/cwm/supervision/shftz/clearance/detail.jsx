@@ -265,10 +265,10 @@ export default class NormalDeclDetail extends Component {
                   <div className="panel-header">
                     <Row>
                       <Col sm={24} lg={6}>
-                        <InfoItem size="small" addonBefore="总毛重" field={statWt.gross_wt.toFixed(2)} />
+                        <InfoItem size="small" addonBefore="总毛重" field={statWt.gross_wt.toFixed(2)} addonAfter="KG" />
                       </Col>
                       <Col sm={24} lg={6}>
-                        <InfoItem size="small" addonBefore="总净重" field={statWt.net_wt.toFixed(6)} />
+                        <InfoItem size="small" addonBefore="总净重" field={statWt.net_wt.toFixed(6)} addonAfter="KG" />
                       </Col>
                     </Row>
                   </div>

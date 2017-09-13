@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'OPEN_CLEARANCE_MODAL', 'CLOSE_CLEARANCE_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
+  'LOAD_VTDETAILS', 'LOAD_VTDETAILS_SUCCEED', 'LOAD_VTDETAILS_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
   'PARAMS_LOAD', 'PARAMS_LOAD_SUCCEED', 'PARAMS_LOAD_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
@@ -145,7 +146,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ENTRY_REG_LOAD_FAIL:
       return { ...state, loading: false };
     case actionTypes.ENTRY_DETAILS_LOAD_SUCCEED:
-      return { ...state, ...action.result.data };
+      return { ...state, entry_asn: action.result.data.entry_asn, entry_regs: action.result.data.entry_regs };
+    case actionTypes.LOAD_VTDETAILS_SUCCEED:
+      return { ...state, entry_asn: action.result.data };
     case actionTypes.PARAMS_LOAD_SUCCEED:
       return { ...state, params: action.result.data };
     case actionTypes.RELEASE_REG_LOAD:
@@ -359,6 +362,21 @@ export function loadEntryDetails(params) {
       endpoint: 'v1/cwm/shftz/entryreg/details/load',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadVirtualTransferDetails(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_VTDETAILS,
+        actionTypes.LOAD_VTDETAILS_SUCCEED,
+        actionTypes.LOAD_VTDETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entryreg/virtual/details',
+      method: 'get',
+      params: { asnNo },
     },
   };
 }
@@ -797,7 +815,7 @@ export function loadApplyDetails(batchNo) {
   };
 }
 
-export function fileBatchApply(batchNo, whseCode, loginId, tenantId) {
+export function fileBatchApply(batchNo, whseCode, customsWhseCode, loginId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -807,7 +825,7 @@ export function fileBatchApply(batchNo, whseCode, loginId, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/file',
       method: 'post',
-      data: { batchNo, whseCode, loginId, tenantId },
+      data: { batchNo, whseCode, customsWhseCode, loginId, tenantId },
     },
   };
 }
@@ -857,35 +875,6 @@ export function editReleaseWt(data) {
   };
 }
 
-export function transferToOwnWhse(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.TRANSFER_TO_OWN,
-        actionTypes.TRANSFER_TO_OWN_SUCCEED,
-        actionTypes.TRANSFER_TO_OWN_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/transfer/to/ownwhse',
-      method: 'post',
-      data,
-    },
-  };
-}
-
-export function queryOwnTransferOutIn(query) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.QUERY_OWNTRANF,
-        actionTypes.QUERY_OWNTRANF_SUCCEED,
-        actionTypes.QUERY_OWNTRANF_FAIL,
-      ],
-      endpoint: 'v1/cwm/shftz/transfer/ownwhse/query',
-      method: 'post',
-      data: query,
-    },
-  };
-}
 export function loadEntryTransRegs(params) {
   return {
     [CLIENT_API]: {
@@ -901,7 +890,7 @@ export function loadEntryTransRegs(params) {
   };
 }
 
-export function loadEntryTransInDetails(params) {
+export function loadRegDetails(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -909,7 +898,7 @@ export function loadEntryTransInDetails(params) {
         actionTypes.LOAD_ETIDS_SUCCEED,
         actionTypes.LOAD_ETIDS_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/entry/transfer/in/reg/details',
+      endpoint: 'v1/cwm/shftz/entry/reg/details',
       method: 'get',
       params,
     },
@@ -942,6 +931,36 @@ export function deleteVirtualTransfer(data) {
       endpoint: 'v1/cwm/shftz/virtual/transfer/delete',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function transferToOwnWhse(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.TRANSFER_TO_OWN,
+        actionTypes.TRANSFER_TO_OWN_SUCCEED,
+        actionTypes.TRANSFER_TO_OWN_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/transfer/to/ownwhse',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function queryOwnTransferOutIn(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.QUERY_OWNTRANF,
+        actionTypes.QUERY_OWNTRANF_SUCCEED,
+        actionTypes.QUERY_OWNTRANF_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/transfer/ownwhse/query',
+      method: 'post',
+      data: query,
     },
   };
 }

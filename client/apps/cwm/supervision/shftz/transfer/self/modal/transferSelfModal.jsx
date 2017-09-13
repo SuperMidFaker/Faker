@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
-import { loadParams, showTransferInModal, loadEntryTransRegs, loadEntryTransInDetails, saveVirtualTransfer } from 'common/reducers/cwmShFtz';
+import { loadParams, showTransferInModal, loadEntryTransRegs, loadRegDetails, saveVirtualTransfer } from 'common/reducers/cwmShFtz';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -37,7 +37,7 @@ const Option = Select.Option;
     })),
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadParams, showTransferInModal, loadEntryTransRegs, loadEntryTransInDetails, saveVirtualTransfer }
+  { loadParams, showTransferInModal, loadEntryTransRegs, loadRegDetails, saveVirtualTransfer }
 )
 export default class TransferSelfModal extends Component {
   static propTypes = {
@@ -181,7 +181,7 @@ export default class TransferSelfModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddReg = (row) => {
-    this.props.loadEntryTransInDetails({ preEntrySeqNo: row.pre_entry_seq_no, tenantId: this.props.tenantId }).then((result) => {
+    this.props.loadRegDetails({ preEntrySeqNo: row.pre_entry_seq_no, tenantId: this.props.tenantId }).then((result) => {
       if (!result.error) {
         const entNo = row.ftz_ent_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(
