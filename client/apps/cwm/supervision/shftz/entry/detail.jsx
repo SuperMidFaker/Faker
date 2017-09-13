@@ -174,9 +174,9 @@ export default class SHFTZEntryDetail extends Component {
   }
   handleQuery = () => {
     const asnNo = this.props.params.asnNo;
-    const customsWhseCode = this.props.whse.customs_whse_code;
+    const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
-    this.props.queryEntryRegInfos(asnNo, whseCode, customsWhseCode, this.props.tenantId).then((result) => {
+    this.props.queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, this.props.tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({

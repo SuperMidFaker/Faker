@@ -204,7 +204,7 @@ export default class SHFTZStockList extends React.Component {
   }
   handleStockQuery = (filters) => {
     const filter = { ...filters,
-      cus_whse_code: this.props.defaultWhse.customs_whse_code,
+      cus_whse_code: this.props.defaultWhse.ftz_whse_code,
       whse_code: this.props.defaultWhse.code,
       tenantId: this.props.tenantId };
     this.props.loadFtzStocks(filter);

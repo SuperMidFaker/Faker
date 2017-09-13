@@ -92,8 +92,8 @@ export default class SHFTZTransferInDetail extends Component {
     const asnNo = this.props.params.asnNo;
     const tenantId = this.props.tenantId;
     const loginName = this.props.username;
-    const customsWhseCode = this.props.whse.customs_whse_code;
-    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, customsWhseCode, tenantId, loginName).then((result) => {
+    const ftzWhseCode = this.props.whse.ftz_whse_code;
+    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, ftzWhseCode, tenantId, loginName).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>

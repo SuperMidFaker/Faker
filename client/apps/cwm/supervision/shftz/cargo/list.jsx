@@ -249,7 +249,7 @@ export default class SHFTZCargoList extends React.Component {
   handleCargoSend = () => {
     const tenantId = this.props.tenantId;
     const whse = this.props.whse;
-    this.props.fileCargos(this.state.owner.customs_code, whse.code, whse.customs_whse_code, tenantId).then((result) => {
+    this.props.fileCargos(this.state.owner.customs_code, whse.code, whse.ftz_whse_code, tenantId).then((result) => {
       if (!result.error) {
         const filter = { ...this.props.listFilter, status: 'sent' };
         this.handleCargoLoad(1, filter);

@@ -470,7 +470,7 @@ export function fileEntryRegs(asnNo, whseCode, tenantId) {
   };
 }
 
-export function queryEntryRegInfos(asnNo, whseCode, customsWhseCode, tenantId) {
+export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -480,7 +480,7 @@ export function queryEntryRegInfos(asnNo, whseCode, customsWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/query',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, customsWhseCode, tenantId },
+      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, tenantId },
     },
   };
 }
@@ -500,7 +500,7 @@ export function cancelEntryReg(asnNo) {
   };
 }
 
-export function pairEntryRegProducts(asnNo, whseCode, customsWhseCode, tenantId, loginName) {
+export function pairEntryRegProducts(asnNo, whseCode, ftzWhseCode, tenantId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -510,7 +510,7 @@ export function pairEntryRegProducts(asnNo, whseCode, customsWhseCode, tenantId,
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/matchpair',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, customsWhseCode, tenantId, loginName },
+      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, tenantId, loginName },
     },
   };
 }
@@ -545,7 +545,7 @@ export function updateRelReg(preRegNo, field, value) {
   };
 }
 
-export function fileRelStockouts(soNo, whseCode, customsWhseCode, tenantId) {
+export function fileRelStockouts(soNo, whseCode, ftzWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -555,12 +555,12 @@ export function fileRelStockouts(soNo, whseCode, customsWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/stockouts',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode, customsWhseCode, tenantId },
+      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode, tenantId },
     },
   };
 }
 
-export function fileRelTransfers(soNo, whseCode, customsWhseCode, tenantId) {
+export function fileRelTransfers(soNo, whseCode, ftzWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -570,12 +570,12 @@ export function fileRelTransfers(soNo, whseCode, customsWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/transfers',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode, customsWhseCode, tenantId },
+      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode, tenantId },
     },
   };
 }
 
-export function fileRelPortionouts(soNo, whseCode, customsWhseCode, tenantId) {
+export function fileRelPortionouts(soNo, whseCode, ftzWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -585,12 +585,12 @@ export function fileRelPortionouts(soNo, whseCode, customsWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/portionouts',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode, customsWhseCode, tenantId },
+      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode, tenantId },
     },
   };
 }
 
-export function queryPortionoutInfos(soNo, whseCode, customsWhseCode, tenantId) {
+export function queryPortionoutInfos(soNo, whseCode, ftzWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -600,7 +600,7 @@ export function queryPortionoutInfos(soNo, whseCode, customsWhseCode, tenantId) 
       ],
       endpoint: 'v1/cwm/shftz/release/portionouts/query',
       method: 'post',
-      data: { so_no: soNo, whse: whseCode, customsWhseCode, tenantId },
+      data: { so_no: soNo, whse: whseCode, ftzWhseCode, tenantId },
     },
   };
 }
@@ -620,7 +620,7 @@ export function cancelRelReg(soNo) {
   };
 }
 
-export function fileCargos(ownerCusCode, whse, customsWhseCode, tenantId) {
+export function fileCargos(ownerCusCode, whse, ftzWhseCode, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -630,7 +630,7 @@ export function fileCargos(ownerCusCode, whse, customsWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/product/file/cargos',
       method: 'post',
-      data: { owner_cus_code: ownerCusCode, whse, customsWhseCode, tenantId },
+      data: { owner_cus_code: ownerCusCode, whse, ftzWhseCode, tenantId },
     },
   };
 }
@@ -815,7 +815,7 @@ export function loadApplyDetails(batchNo) {
   };
 }
 
-export function fileBatchApply(batchNo, whseCode, customsWhseCode, loginId, tenantId) {
+export function fileBatchApply(batchNo, whseCode, ftzWhseCode, loginId, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -825,7 +825,7 @@ export function fileBatchApply(batchNo, whseCode, customsWhseCode, loginId, tena
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/file',
       method: 'post',
-      data: { batchNo, whseCode, customsWhseCode, loginId, tenantId },
+      data: { batchNo, whseCode, ftzWhseCode, loginId, tenantId },
     },
   };
 }

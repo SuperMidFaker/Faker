@@ -149,7 +149,7 @@ export default class SHFTZTransferSelfDetail extends Component {
     this.props.transferToOwnWhse({
       asnNo: params.asnNo,
       whseCode: entryAsn.whse_code,
-      customsWhseCode: whse.customs_whse_code,
+      ftzWhseCode: whse.ftz_whse_code,
       tenantId,
       owner,
     }).then((result) => {
@@ -186,7 +186,7 @@ export default class SHFTZTransferSelfDetail extends Component {
     this.props.queryOwnTransferOutIn({
       asn_no: asnNo,
       whse: entryAsn.whse_code,
-      customsWhseCode: this.props.whse.customs_whse_code,
+      ftzWhseCode: this.props.whse.ftz_whse_code,
       username,
       tenantId: this.props.tenantId,
     }).then((result) => {

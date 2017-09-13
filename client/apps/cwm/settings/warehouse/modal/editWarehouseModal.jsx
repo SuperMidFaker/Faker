@@ -70,7 +70,7 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseCode, whseName, whseAddress, whseTel, customsWhseCode } = values;
+        const { whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
         const { tenantId, loginId } = this.props;
         const { bonded, province, city, district, street, regionCode } = this.state;
         this.props.editWarehouse({
@@ -86,7 +86,7 @@ export default class WareHouseModal extends Component {
           street,
           regionCode,
           whseTel,
-          customsWhseCode,
+          ftzWhseCode,
         }).then(
           (result) => {
             if (!result.error) {
@@ -136,8 +136,8 @@ export default class WareHouseModal extends Component {
             }
           </FormItem>
           {this.state.bonded === 1 && <FormItem {...formItemLayout} label="自贸区仓库号" >
-            {getFieldDecorator('customsWhseCode', {
-              initialValue: warehouse.customs_whse_code,
+            {getFieldDecorator('ftzWhseCode', {
+              initialValue: warehouse.ftz_whse_code,
             })(<Input />)}
           </FormItem>}
           <FormItem {...formItemLayout} label="仓库地址" >

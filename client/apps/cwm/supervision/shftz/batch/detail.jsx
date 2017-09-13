@@ -92,10 +92,10 @@ export default class BatchDeclDetail extends Component {
   handleSend = () => {
     const batchNo = this.props.params.batchNo;
     const batchDecl = this.props.batchDecl;
-    const customsWhseCode = this.props.whse.customs_whse_code;
+    const ftzWhseCode = this.props.whse.ftz_whse_code;
     const tenantId = this.props.tenantId;
     const loginId = this.props.loginId;
-    this.props.fileBatchApply(batchNo, batchDecl.whse_code, customsWhseCode, loginId, tenantId).then((result) => {
+    this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId, tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({

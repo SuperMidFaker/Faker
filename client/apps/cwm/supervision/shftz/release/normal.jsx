@@ -104,15 +104,15 @@ export default class SHFTZRelDetail extends Component {
     const soNo = this.props.params.soNo;
     const relSo = this.props.relSo;
     const tenantId = this.props.tenantId;
-    const customsWhseCode = this.props.whse.customs_whse_code;
+    const ftzWhseCode = this.props.whse.ftz_whse_code;
     let fileOp;
     let entType;
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
-      fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code, customsWhseCode, tenantId);
+      fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code, ftzWhseCode, tenantId);
       entType = CWM_SO_BONDED_REGTYPES[0].text;
     }
     if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
-      fileOp = this.props.fileRelPortionouts(soNo, relSo.whse_code, customsWhseCode, tenantId);
+      fileOp = this.props.fileRelPortionouts(soNo, relSo.whse_code, ftzWhseCode, tenantId);
       entType = CWM_SO_BONDED_REGTYPES[1].text;
     }
     if (fileOp) {
@@ -149,9 +149,9 @@ export default class SHFTZRelDetail extends Component {
   handleQuery = () => {
     const soNo = this.props.params.soNo;
     const tenantId = this.props.tenantId;
-    const customsWhseCode = this.props.whse.customs_whse_code;
+    const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
-    this.props.queryPortionoutInfos(soNo, whseCode, customsWhseCode, tenantId).then((result) => {
+    this.props.queryPortionoutInfos(soNo, whseCode, ftzWhseCode, tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
