@@ -26,6 +26,7 @@ const Search = Input.Search;
     inboundHead: state.cwmReceive.inboundFormHead,
     inboundProducts: state.cwmReceive.inboundProducts,
     reload: state.cwmReceive.inboundReload,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
   { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive }
 )
@@ -81,7 +82,7 @@ export default class ReceiveDetailsPane extends React.Component {
       title: '是否确认收货完成?',
       content: '默认按预期数量收货，确认收货后可以取消收货退回',
       onOk() {
-        return self.props.expressReceive(self.props.inboundNo, self.props.loginId, self.props.username);
+        return self.props.expressReceive(self.props.inboundNo, self.props.loginId, self.props.username, new Date());
       },
       onCancel() {},
       okText: '确认收货',
@@ -276,6 +277,7 @@ export default class ReceiveDetailsPane extends React.Component {
                     loginName: this.props.username,
                     receiveDate: new Date(),
                     inboundNo: this.props.inboundNo,
+                    whseCode: this.props.defaultWhse.code,
                   }),
                 }} onUploaded={this.handleUploadPutaway}
               >

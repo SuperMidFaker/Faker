@@ -564,7 +564,7 @@ export function receiveProduct(dataSource, inboundNo, seqNo, asnNo, loginId, rec
   };
 }
 
-export function expressReceive(inboundNo, loginId, loginName) {
+export function expressReceive(inboundNo, loginId, loginName, receivedDate) {
   return {
     [CLIENT_API]: {
       types: [
@@ -574,7 +574,7 @@ export function expressReceive(inboundNo, loginId, loginName) {
       ],
       endpoint: 'v1/cwm/inbound/receipt/express',
       method: 'post',
-      data: { loginId, inboundNo, loginName },
+      data: { loginId, inboundNo, loginName, receivedDate },
     },
   };
 }
