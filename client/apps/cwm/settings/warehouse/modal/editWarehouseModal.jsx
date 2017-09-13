@@ -135,7 +135,7 @@ export default class WareHouseModal extends Component {
               })(<Input />)
             }
           </FormItem>
-          {this.state.bonded === 1 && <FormItem {...formItemLayout} label="海关编号" >
+          {this.state.bonded === 1 && <FormItem {...formItemLayout} label="自贸区仓库号" >
             {getFieldDecorator('customsWhseCode', {
               initialValue: warehouse.customs_whse_code,
             })(<Input />)}

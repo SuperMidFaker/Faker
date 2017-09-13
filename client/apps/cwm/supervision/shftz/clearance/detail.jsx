@@ -162,6 +162,15 @@ export default class NormalDeclDetail extends Component {
     width: 100,
     dataIndex: 'amount',
   }, {
+    title: '币制',
+    width: 100,
+    dataIndex: 'currency',
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
     title: '供货商',
     width: 100,
     dataIndex: 'supplier',
@@ -172,15 +181,6 @@ export default class NormalDeclDetail extends Component {
     render: (o) => {
       const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
       const text = mode ? `${mode.value}|${mode.text}` : o;
-      return text && text.length > 0 && <Tag>{text}</Tag>;
-    },
-  }, {
-    title: '币制',
-    width: 100,
-    dataIndex: 'currency',
-    render: (o) => {
-      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
@@ -265,10 +265,10 @@ export default class NormalDeclDetail extends Component {
                   <div className="panel-header">
                     <Row>
                       <Col sm={24} lg={6}>
-                        <InfoItem size="small" addonBefore="总毛重" field={statWt.gross_wt.toFixed(2)} />
+                        <InfoItem size="small" addonBefore="总毛重" field={statWt.gross_wt.toFixed(2)} addonAfter="KG" />
                       </Col>
                       <Col sm={24} lg={6}>
-                        <InfoItem size="small" addonBefore="总净重" field={statWt.net_wt.toFixed(6)} />
+                        <InfoItem size="small" addonBefore="总净重" field={statWt.net_wt.toFixed(6)} addonAfter="KG" />
                       </Col>
                     </Row>
                   </div>

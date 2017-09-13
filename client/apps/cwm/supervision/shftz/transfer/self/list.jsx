@@ -17,10 +17,11 @@ import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import TransferSelfModal from './modal/transferSelfModal';
 import PageHeader from 'client/components/PageHeader';
+import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
@@ -64,14 +65,14 @@ export default class SHFTZTransferSelfList extends React.Component {
   componentDidMount() {
     const listFilter = this.props.listFilter;
     let status = listFilter.status;
-    if (['all', 'pending', 'received', 'verified'].filter(stkey => stkey === status).length === 0) {
+    if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
     let ownerView = listFilter.ownerView;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, transType: 'transfer', ownerView };
+    const filter = { ...listFilter, status, type: 'vtransfer', ownerView };
     this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -95,11 +96,11 @@ export default class SHFTZTransferSelfList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="未接收" />);
+        return (<Badge status="default" text="待转出" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="已接收" />);
+        return (<Badge status="processing" text="终端中" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已核对" />);
+        return (<Badge status="success" text="已转入" />);
       }
     },
   }, {
@@ -144,21 +145,17 @@ export default class SHFTZTransferSelfList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.virtual_transfer) {
-        return (
+    render: (o, record) =>
+        (
           <span>
             <RowUpdater onHit={this.handleDetail} label="转移明细" row={record} />
-            <span className="ant-divider" />
-            <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
-              <a> <Icon type="delete" /></a>
-            </Popconfirm>
+            {record.status === CWM_SHFTZ_APIREG_STATUS.pending && <span className="ant-divider" />}
+            {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
+              <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
+                <a><Icon type="delete" /></a>
+              </Popconfirm>}
           </span>
-        );
-      } else {
-        return <RowUpdater onHit={this.handleDetail} label="转移明细" row={record} />;
-      }
-    },
+        ),
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -180,7 +177,7 @@ export default class SHFTZTransferSelfList extends React.Component {
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
       };
-      const filter = { ...this.props.listFilter, transType: 'transfer' };
+      const filter = { ...this.props.listFilter };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -188,8 +185,7 @@ export default class SHFTZTransferSelfList extends React.Component {
   })
   handleEntryListLoad = (currentPage, whsecode, filter) => {
     const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
-    let newfilter = filter || listFilter;
-    newfilter = { ...newfilter, transType: 'transfer' };
+    const newfilter = filter || listFilter;
     this.props.loadEntryRegDatas({
       tenantId,
       filter: JSON.stringify(newfilter),

@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, Icon, Tag, message, Button, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
+import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
 import ModuleMenu from '../../menu';
+import PageHeader from 'client/components/PageHeader';
 import ReceivingDockPanel from '../../../../receiving/dock/receivingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
@@ -20,8 +21,6 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_ASN_BONDED_REGTYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import TransferInModal from './modal/transferInModal';
-import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
@@ -41,7 +40,7 @@ const OptGroup = Select.OptGroup;
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
   }),
-  { loadEntryRegDatas, switchDefaultWhse, showDock, showTransferInModal, deleteVirtualTransfer }
+  { loadEntryRegDatas, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
@@ -65,14 +64,14 @@ export default class SHFTZTransferInList extends React.Component {
   componentDidMount() {
     const listFilter = this.props.listFilter;
     let status = listFilter.status;
-    if (['all', 'pending', 'received', 'verified'].filter(stkey => stkey === status).length === 0) {
+    if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
     let ownerView = listFilter.ownerView;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, transType: 'transfer', ownerView };
+    const filter = { ...listFilter, status, type: 'transfer', ownerView };
     this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -108,25 +107,31 @@ export default class SHFTZTransferInList extends React.Component {
       }
     },
   }, {
-    title: '收货单位(货主)',
+    title: '收货单位海关编码',
+    width: 150,
+    dataIndex: 'owner_cus_code',
+  }, {
+    title: '收货单位',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货仓库',
+    title: '收货仓库号',
     width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    dataIndex: 'owner_ftz_whse_code',
+  }, {
+    title: '发货单位海关编码',
+    width: 150,
+    dataIndex: 'sender_cus_code',
   }, {
     title: '发货单位',
     width: 180,
     dataIndex: 'sender_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '发货仓库',
-    width: 180,
-    dataIndex: 'send_wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '发货仓库号',
+    width: 100,
+    dataIndex: 'sender_ftz_whse_code',
   }, {
     title: '进库日期',
     width: 120,
@@ -154,21 +159,7 @@ export default class SHFTZTransferInList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      if (record.virtual_transfer) {
-        return (
-          <span>
-            <RowUpdater onHit={this.handleDetail} label="转入明细" row={record} />
-            <span className="ant-divider" />
-            <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
-              <a> <Icon type="delete" /></a>
-            </Popconfirm>
-          </span>
-        );
-      } else {
-        return <RowUpdater onHit={this.handleDetail} label="转入详情" row={record} />;
-      }
-    },
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="转入详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -190,7 +181,7 @@ export default class SHFTZTransferInList extends React.Component {
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
       };
-      const filter = { ...this.props.listFilter, transType: 'transfer' };
+      const filter = { ...this.props.listFilter };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -198,8 +189,7 @@ export default class SHFTZTransferInList extends React.Component {
   })
   handleEntryListLoad = (currentPage, whsecode, filter) => {
     const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
-    let newfilter = filter || listFilter;
-    newfilter = { ...newfilter, transType: 'transfer' };
+    const newfilter = filter || listFilter;
     this.props.loadEntryRegDatas({
       tenantId,
       filter: JSON.stringify(newfilter),
@@ -209,13 +199,6 @@ export default class SHFTZTransferInList extends React.Component {
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
-      }
-    });
-  }
-  handleVTransDel = (asnNo) => {
-    this.props.deleteVirtualTransfer({ asnNo }).then((result) => {
-      if (!result.error) {
-        this.handleEntryListLoad();
       }
     });
   }
@@ -248,11 +231,6 @@ export default class SHFTZTransferInList extends React.Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
-  }
-  handleCreateTransIn = () => {
-    const { listFilter, owners } = this.props;
-    const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
-    this.props.showTransferInModal({ visible: true, ownerCusCode });
   }
   render() {
     const { entryList, listFilter, whses, whse, owners } = this.props;
@@ -309,13 +287,10 @@ export default class SHFTZTransferInList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部状态</RadioButton>
                 <RadioButton value="pending">待转入</RadioButton>
-                <RadioButton value="received">已接收</RadioButton>
-                <RadioButton value="verified">已核对</RadioButton>
+                <RadioButton value="processing">已接收</RadioButton>
+                <RadioButton value="completed">已核对</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
-            <PageHeader.Actions>
-              <Button size="large" icon="plus" onClick={this.handleCreateTransIn}>转移入分拨</Button>
-            </PageHeader.Actions>
           </PageHeader>
           <Content className="main-content" key="main">
             <DataTable
@@ -334,7 +309,6 @@ export default class SHFTZTransferInList extends React.Component {
             <OrderDockPanel />
             <DelegationDockPanel />
             <ShipmentDockPanel />
-            <TransferInModal reload={this.handleEntryListLoad} />
           </Content>
         </Layout>
       </Layout>

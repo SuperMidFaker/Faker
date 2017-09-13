@@ -4,7 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Breadcrumb, Layout, Select, message } from 'antd';
+import { Button, Breadcrumb, Layout, Select, Icon, Tooltip, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -102,12 +102,26 @@ export default class MovementList extends React.Component {
       }
     },
   }, {
+    title: '操作模式',
+    dataIndex: 'moving_mode',
+    width: 80,
+    className: 'cell-align-center',
+    render: (o) => {
+      if (o === 'scan') {
+        return (<Tooltip title="扫码移动"><Icon type="scan" /></Tooltip>);
+      } else if (o === 'manual') {
+        return (<Tooltip title="人工移动"><Icon type="solution" /></Tooltip>);
+      } else {
+        return <span />;
+      }
+    },
+  }, {
     title: '创建时间',
     dataIndex: 'created_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
   }, {
-    title: '移库时间',
+    title: '移动时间',
     dataIndex: 'completed_date',
     width: 120,
     render: completeddate => completeddate && moment(completeddate).format('MM.DD HH:mm'),

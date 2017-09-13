@@ -70,7 +70,7 @@ export default class SHFTZTransferOutList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, transType: 'transfer', ownerView };
+    const filter = { ...listFilter, status, type: 'transfer', ownerView };
     this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -108,25 +108,31 @@ export default class SHFTZTransferOutList extends React.Component {
       }
     },
   }, {
-    title: '发货单位(货主)',
+    title: '发货单位海关编码',
+    width: 150,
+    dataIndex: 'owner_cus_code',
+  }, {
+    title: '发货单位',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '发货仓库',
-    width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '发货仓库号',
+    width: 100,
+    dataIndex: 'sender_ftz_whse_code',
+  }, {
+    title: '收货单位海关编码',
+    width: 150,
+    dataIndex: 'receiver_cus_code',
   }, {
     title: '收货单位',
     width: 180,
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货仓库',
-    width: 180,
-    dataIndex: 'receive_wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '收货仓库号',
+    width: 100,
+    dataIndex: 'receiver_ftz_whse_code',
   }, {
     title: '出库日期',
     width: 120,
@@ -172,7 +178,7 @@ export default class SHFTZTransferOutList extends React.Component {
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
       };
-      const filter = { ...this.props.listFilter, transType: 'transfer' };
+      const filter = { ...this.props.listFilter };
       params.filter = JSON.stringify(filter);
       return params;
     },
@@ -180,8 +186,7 @@ export default class SHFTZTransferOutList extends React.Component {
   })
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
     const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
-    let newfilter = filter || listFilter;
-    newfilter = { ...newfilter, transType: 'transfer' };
+    const newfilter = filter || listFilter;
     this.props.loadReleaseRegDatas({
       tenantId,
       filter: JSON.stringify(newfilter),

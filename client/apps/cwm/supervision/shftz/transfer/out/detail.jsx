@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
@@ -232,7 +232,7 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
+    // const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
@@ -270,25 +270,40 @@ export default class SHFTZTransferOutDetail extends Component {
             {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
-            {relEditable && whyunsent && <Tooltip title={whyunsent} placement="left"><Icon type="question-circle-o" /></Tooltip>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="main-content">
+          {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={6}>
-                  <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={relSo.receiver_name} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="收货仓库号" field={relSo.receiver_whse_code} />
+                <Col sm={24} lg={4}>
+                  <InfoItem label="发货单位" field={relSo.owner_name} />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={relSo.created_date && moment(relSo.created_date).format('YYYY-MM-DD HH:mm')}
+                  <InfoItem label="发货单位海关编码" field={relSo.owner_cus_code} />
+                </Col>
+                <Col sm={24} lg={2}>
+                  <InfoItem label="发货仓库号" field={relSo.sender_ftz_whse_code} />
+                </Col>
+                <Col sm={24} lg={4}>
+                  <InfoItem label="收货单位" field={relRegs[0] && relRegs[0].receiver_name} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_name', value)}
+                  />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem label="收货单位海关编码" field={relRegs[0] && relRegs[0].receiver_cus_code} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_cus_code', value)}
+                  />
+                </Col>
+                <Col sm={24} lg={2}>
+                  <InfoItem label="收货仓库号" field={relRegs[0] && relRegs[0].receiver_ftz_whse_code} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0] && relRegs[0].pre_entry_seq_no, 'receiver_ftz_whse_code', value)}
+                  />
+                </Col>
+                <Col sm={24} lg={3}>
+                  <InfoItem label="出库日期" field={relRegs[0] && relRegs[0].ftz_rel_date} editable={relEditable} type="date"
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'ftz_rel_date', value)}
                   />
                 </Col>
                 <Col sm={24} lg={3}>

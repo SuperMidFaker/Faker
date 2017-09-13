@@ -9,6 +9,7 @@ import { MdIcon } from 'client/components/FontIcon';
 import RowUpdater from 'client/components/rowUpdater';
 import ExcelUploader from 'client/components/ExcelUploader';
 import ZoneEditModal from '../modal/zoneEditModal';
+import { createFilename } from 'client/util/dataTransform';
 import { addZone, loadZones, showLocationModal, loadLocations, deleteLocation,
   editLocation, deleteZone, batchDeleteLocations, clearLocations, showZoneModal } from 'common/reducers/cwmWarehouse';
 import { formatMsg } from '../message.i18n';
@@ -225,6 +226,10 @@ export default class ZoneLocationPane extends Component {
       }
     });
   }
+  exportLocations = () => {
+    const whseCode = this.props.warehouse.code;
+    window.open(`${API_ROOTS.default}v1/cwm/export/locations/${createFilename('locations')}.xlsx?whseCode=${whseCode}`);
+  }
   locationColumns = [{
     title: '库位编号',
     dataIndex: 'location',
@@ -338,6 +343,9 @@ export default class ZoneLocationPane extends Component {
           <div className="toolbar">
             {zoneList.length > 0 && <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
               新增库位
+            </Button>}
+            {zoneList.length > 0 && <Button type="primary" ghost icon="export" onClick={this.exportLocations}>
+              导出库位
             </Button>}
             {this.state.selectedRowKeys.length > 0 &&
             <Popconfirm title="确定要删除?" onConfirm={this.batchDeleteLocations} okText="是" cancelText="否">
