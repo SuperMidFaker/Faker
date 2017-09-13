@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Input, Checkbox, Select, message } from 'antd';
+import { Modal, Form, Input, Checkbox, Select, Row, Col, Button, Icon, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/crmCustomers';
@@ -175,6 +175,7 @@ export default class CustomerModal extends React.Component {
     });
   }
   handleNameChange = (value) => {
+    console.log(value);
     const company = this.state.companies.find(item => item.Name === value);
     this.setState({ name: value, partnerUniqueCode: company.CreditCode });
   }
@@ -201,16 +202,26 @@ export default class CustomerModal extends React.Component {
             hasFeedback
             required
           >
-            <Select
-              value={this.state.name}
-              showSearch
-              placeholder="输入企业名称搜索"
-              optionFilterProp="children"
-              onSelect={value => this.handleNameChange(value)}
-              onSearch={this.handleSearchCompany}
-            >
-              {this.state.companies.map(item => <Option value={item.Name}>{item.Name}</Option>)}
-            </Select>
+            <Row gutter={5}>
+              <Col span={20}>
+                <Select
+                  mode="combobox"
+                  value={this.state.name}
+                  showSearch
+                  placeholder="输入企业名称搜索"
+                  optionFilterProp="children"
+                  onSelect={value => this.handleNameChange(value)}
+                  onChange={value => this.setState({ name: value })}
+                >
+                  {this.state.companies.map(item => <Option value={item.Name}>{item.Name}</Option>)}
+                </Select>
+              </Col>
+              <Col span={2}>
+                <Button size="default" onClick={() => this.handleSearchCompany(this.state.name)}>
+                  <Icon type="search" />
+                </Button>
+              </Col>
+            </Row>
           </FormItem>
           <FormItem
             {...formItemLayout}
