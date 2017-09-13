@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/inventory/movement/', [
   'REMOVE_MOVEMENT_DETAIL', 'REMOVE_MOVEMENT_DETAIL_SUCCESS', 'REMOVE_MOVEMENT_DETAIL_FAIL',
   'LOAD_OWNUNDONEMM', 'LOAD_OWNUNDONEMM_SUCCESS', 'LOAD_OWNUNDONEMM_FAIL',
   'UPDATE_MOVING_MODE', 'UPDATE_MOVING_MODE_SUCCESS', 'UPDATE_MOVING_MODE_FAIL',
+  'UPDATE_MOVEMENT_DETAIL', 'UPDATE_MOVEMENT_DETAIL_SUCCESS', 'UPDATE_MOVEMENT_DETAIL_FAIL',
 ]);
 
 const initialState = {
@@ -230,6 +231,21 @@ export function updateMovingMode(movementNo, value) {
       endpoint: 'v1/cwm/update/moving/mode',
       method: 'post',
       data: { movementNo, value },
+    },
+  };
+}
+
+export function updateMovementDetail(id, set) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_MOVEMENT_DETAIL,
+        actionTypes.UPDATE_MOVEMENT_DETAIL_SUCCESS,
+        actionTypes.UPDATE_MOVEMENT_DETAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/update/movement/detail',
+      method: 'post',
+      data: { id, set },
     },
   };
 }

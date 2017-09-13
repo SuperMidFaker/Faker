@@ -375,10 +375,10 @@ export default class BatchDeclDetail extends Component {
                           <InfoItem size="small" addonBefore="报关单号" field={reg.cus_decl_no} />
                         </Col>
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="总毛重" field={reg.gross_wt} />
+                          <InfoItem size="small" addonBefore="总毛重" field={reg.gross_wt} addonAfter="KG" />
                         </Col>
                         <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="总净重" field={reg.net_wt} />
+                          <InfoItem size="small" addonBefore="总净重" field={reg.net_wt} addonAfter="KG" />
                         </Col>
                       </Row>
                     </div>

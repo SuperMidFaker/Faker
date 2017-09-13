@@ -4,23 +4,22 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
-import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
+import { loadVirtualTransferDetails, loadParams, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-// separate owntransfer transferin
+
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
-const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
-  promises.push(dispatch(loadEntryDetails({ asnNo: params.asnNo })));
+  promises.push(dispatch(loadVirtualTransferDetails(params.asnNo)));
   promises.push(dispatch(loadParams()));
   return Promise.all(promises);
 }
@@ -33,7 +32,6 @@ function fetchData({ dispatch, params }) {
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
-    entryRegs: state.cwmShFtz.entry_regs,
     owners: state.cwmContext.whseAttrs.owners,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
@@ -50,7 +48,7 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, pairEntryRegProducts, transferToOwnWhse, queryOwnTransferOutIn }
+  { updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn }
 )
 @connectNav({
   depth: 3,
@@ -64,8 +62,6 @@ export default class SHFTZTransferSelfDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    comparable: false,
-    tabKey: '',
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -74,68 +70,8 @@ export default class SHFTZTransferSelfDetail extends Component {
       });
     }
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
-      const comparable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
-        nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      const newState = { comparable };
-      if (this.state.tabKey === '') {
-        newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
-      }
-      this.setState(newState);
-    }
-  }
   msg = key => formatMsg(this.props.intl, key)
-  handleEnqueryPairing = () => {
-    const asnNo = this.props.params.asnNo;
-    const tenantId = this.props.tenantId;
-    const loginName = this.props.username;
-    const customsWhseCode = this.props.whse.customs_whse_code;
-    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, customsWhseCode, tenantId, loginName).then((result) => {
-      if (!result.error) {
-        if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
-          let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
-              `${rfs.ftz_ent_detail_id}-${rfs.hscode}-${rfs.name} 净重: ${rfs.stock_wt} 数量: ${rfs.stock_qty}`).join('\n');
-          if (remainFtzMsg) {
-            remainFtzMsg = `东方支付入库单剩余以下未配: ${remainFtzMsg}`;
-          }
-          let remainPrdtMsg = result.data.remainProducts.map(rps =>
-              `${rps.product_no}-${rps.hscode}-${rps.name} 数量: ${rps.expect_qty}`).join('\n');
-          if (remainPrdtMsg) {
-            remainPrdtMsg = `订单剩余以下未配: ${remainPrdtMsg}`;
-          }
-          notification.warn({
-            message: '未完全匹配',
-            description: `${remainFtzMsg}\n${remainPrdtMsg}`,
-            duration: 0,
-            placement: 'topLeft',
-          });
-        } else {
-          notification.success({
-            message: '操作成功',
-            description: '货号明细ID配对完成',
-          });
-        }
-        this.props.loadEntryDetails({ asnNo });
-      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-        notification.error({
-          message: '操作失败',
-          description: '仓库监管系统未配置',
-        });
-      } else {
-        notification.error({
-          message: '操作失败',
-          description: result.error.message,
-          duration: 15,
-        });
-      }
-    });
-  }
   columns = [{
-    title: '行号',
-    dataIndex: 'asn_seq_no',
-    width: 60,
-  }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
     width: 160,
@@ -204,9 +140,6 @@ export default class SHFTZTransferSelfDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
-  handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
-  }
   handleInfoSave = (preRegNo, field, value, virtualTransfer) => {
     this.props.updateEntryReg(preRegNo, field, value, virtualTransfer);
   }
@@ -277,7 +210,16 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   render() {
-    const { entryAsn, entryRegs, whse, submitting } = this.props;
+    const { entryAsn, whse, submitting } = this.props;
+    const stat = entryAsn.details.reduce((acc, regd) => ({
+      total_qty: acc.total_qty + regd.stock_qty,
+      total_amount: acc.total_amount + regd.stock_amount,
+      total_net_wt: acc.total_net_wt + regd.stock_netwt,
+    }), {
+      total_qty: 0,
+      total_amount: 0,
+      total_net_wt: 0,
+    });
     return (
       <div>
         <Header className="page-header">
@@ -296,8 +238,10 @@ export default class SHFTZTransferSelfDetail extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.pending && <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
-            {entryAsn.reg_status > CWM_SHFTZ_APIREG_STATUS.sent && <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取分拨明细ID</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
+              <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent && entryAsn.ftz_ent_no &&
+              <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
           </div>
         </Header>
         <Content className="main-content">
@@ -316,65 +260,49 @@ export default class SHFTZTransferSelfDetail extends Component {
                   />
                 </Col>
                 <Col sm={24} lg={3}>
-                  <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')} format="YYYY.MM.DD HH:mm"
+                  <InfoItem label="转出时间" addonBefore={<Icon type="clock-circle-o" />}
+                    field={entryAsn.ftz_rel_date && moment(entryAsn.ftz_rel_date).format('YYYY.MM.DD HH:mm')} format="YYYY.MM.DD HH:mm"
+                  />
+                </Col>
+                <Col sm={12} lg={5}>
+                  <InfoItem size="small" addonBefore="转入单号" field={entryAsn.ftz_ent_no} editable
+                    onEdit={value => this.handleInfoSave(entryAsn.pre_entry_seq_no, 'ftz_ent_no', value, entryAsn.virtual_transfer)}
+                  />
+                </Col>
+                <Col sm={12} lg={3}>
+                  <InfoItem size="small" addonBefore={<span><Icon type="calendar" />转入日期</span>}
+                    type="date" field={entryAsn.ftz_ent_date} editable
+                    onEdit={value => this.handleInfoSave(entryAsn.pre_entry_seq_no, 'ftz_ent_date', new Date(value), entryAsn.virtual_transfer)}
                   />
                 </Col>
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="未接收" />
-                  <Step description="已接收" />
-                  <Step description="已核对" />
+                  <Step description="待转出" />
+                  <Step description="终端处理" />
+                  <Step description="已转入" />
                 </Steps>
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                {entryRegs.map((reg) => {
-                  const stat = reg.details.reduce((acc, regd) => ({
-                    total_qty: acc.total_qty + regd.stock_qty,
-                    total_amount: acc.total_amount + regd.stock_amountusd,
-                    total_net_wt: acc.total_net_wt + regd.stock_netwt,
-                  }), {
-                    total_qty: 0,
-                    total_amount: 0,
-                    total_net_wt: 0,
-                  });
-                  return (
-                    <TabPane tab={reg.pre_entry_seq_no} key={reg.pre_entry_seq_no}>
-                      <div className="panel-header">
-                        <Row>
-                          <Col sm={12} lg={5}>
-                            <InfoItem size="small" addonBefore="海关进库单号" field={reg.ftz_ent_no} editable
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value, reg.virtual_transfer)}
-                            />
-                          </Col>
-                          <Col sm={12} lg={3}>
-                            <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                              type="date" field={reg.ftz_ent_date} editable
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value), reg.virtual_transfer)}
-                            />
-                          </Col>
-                          <Col sm={8} lg={2}>
-                            <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
-                          </Col>
-                          <Col sm={8} lg={3}>
-                            <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
-                          </Col>
-                          <Col sm={8} lg={3}>
-                            <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(3)} addonAfter="美元" />
-                          </Col>
-                        </Row>
-                      </div>
-                      <div className="table-panel table-fixed-layout">
-                        <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                        />
-                      </div>
-                    </TabPane>);
-                })}
-              </Tabs>
+              <div className="panel-header">
+                <Row>
+                  <Col sm={8} lg={2}>
+                    <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
+                  </Col>
+                  <Col sm={8} lg={3}>
+                    <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
+                  </Col>
+                  <Col sm={8} lg={3}>
+                    <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(2)} />
+                  </Col>
+                </Row>
+              </div>
+              <div className="table-panel table-fixed-layout">
+                <Table size="middle" columns={this.columns} dataSource={entryAsn.details} indentSize={8} rowKey="id"
+                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                />
+              </div>
             </Card>
           </Form>
         </Content>

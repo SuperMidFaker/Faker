@@ -64,7 +64,7 @@ export default class SHFTZEntryList extends React.Component {
   componentDidMount() {
     const listFilter = this.props.listFilter;
     let status = listFilter.status;
-    if (['all', 'pending', 'sent', 'completed'].filter(stkey => stkey === status).length === 0) {
+    if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
     let type = listFilter.type;
@@ -300,7 +300,7 @@ export default class SHFTZEntryList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部状态</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="sent">终端处理</RadioButton>
+                <RadioButton value="processing">终端处理</RadioButton>
                 <RadioButton value="completed">备案完成</RadioButton>
               </RadioGroup>
               <span />

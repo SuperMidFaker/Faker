@@ -125,7 +125,7 @@ export default class MovementDetail extends Component {
           <Card bodyStyle={{ padding: 0 }} noHovering>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
-                <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} />
+                <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} movementHead={movementHead} />
               </TabPane>
             </Tabs>
           </Card>

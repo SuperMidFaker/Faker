@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import RowUpdater from 'client/components/rowUpdater';
-import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement } from 'common/reducers/cwmMovement';
+import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail } from 'common/reducers/cwmMovement';
 
 const Search = Input.Search;
 
@@ -23,7 +23,7 @@ const Search = Input.Search;
     reload: state.cwmMovement.movementReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement }
+  { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail }
 )
 @connectNav({
   depth: 3,
@@ -34,6 +34,7 @@ export default class MovementDetailsPane extends React.Component {
     intl: intlShape.isRequired,
     movementNo: PropTypes.string.isRequired,
     movementHead: PropTypes.object.isRequired,
+    updateMovementDetail: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -95,6 +96,11 @@ export default class MovementDetailsPane extends React.Component {
       });
     }
   }
+  handleUpdateToLocation = (id, value) => {
+    this.props.updateMovementDetail(id, { to_location: value }).then(() => {
+      this.props.loadMovementDetails(this.props.movementNo);
+    });
+  }
   handleExecuteMovement = () => {
     const props = this.props;
     const toTraceIds = props.movementDetails.map(md => md.to_trace_id);
@@ -148,6 +154,13 @@ export default class MovementDetailsPane extends React.Component {
     title: '目的库位',
     dataIndex: 'to_location',
     width: 180,
+    render: (o, row) => {
+      if (this.props.movementHead.isdone) {
+        return o;
+      } else {
+        return <Input defaultValue={o} onBlur={e => this.handleUpdateToLocation(row.id, e.target.value)} />;
+      }
+    },
   }, {
     title: '操作',
     width: 80,
