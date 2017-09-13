@@ -193,7 +193,8 @@ export default class ShippingOrderList extends React.Component {
     },
   }]
   handleSupervision = (row) => {
-    const link = row.bonded_outtype === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${row.so_no}` : `/cwm/supervision/shftz/release/${row.bonded_outtype}/${row.so_no}`;
+    const link = row.bonded_outtype === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${row.so_no}`
+      : `/cwm/supervision/shftz/release/${row.bonded_outtype}/${row.so_no}`;
     this.context.router.push(link);
   }
   handlePreview = (soNo, outboundNo) => {

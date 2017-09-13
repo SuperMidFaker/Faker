@@ -81,13 +81,13 @@ export default class SHFTZReleaseList extends React.Component {
   columns = [{
     title: 'SO编号',
     dataIndex: 'so_no',
-    width: 180,
+    width: 160,
     fixed: 'left',
     render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
   }, {
     title: '海关出库单号',
     dataIndex: 'ftz_rel_no',
-    width: 200,
+    width: 180,
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -120,11 +120,6 @@ export default class SHFTZReleaseList extends React.Component {
     title: '仓储企业',
     width: 180,
     dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '提货单位',
-    width: 180,
-    dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '运输单位',

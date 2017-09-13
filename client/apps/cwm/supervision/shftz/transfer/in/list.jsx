@@ -78,12 +78,12 @@ export default class SHFTZTransferInList extends React.Component {
   columns = [{
     title: 'ASN编号',
     dataIndex: 'asn_no',
-    width: 180,
+    width: 160,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '海关进库单号',
-    width: 200,
+    width: 180,
     dataIndex: 'ftz_ent_no',
   }, {
     title: '监管类型',
@@ -107,27 +107,19 @@ export default class SHFTZTransferInList extends React.Component {
       }
     },
   }, {
-    title: '收货单位海关编码',
-    width: 150,
-    dataIndex: 'owner_cus_code',
-  }, {
     title: '收货单位',
-    width: 180,
+    width: 280,
     dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: (o, record) => record.owner_cus_code ? <TrimSpan text={`${record.owner_cus_code}|${o}`} maxLen={30} /> : o,
   }, {
     title: '收货仓库号',
-    width: 180,
+    width: 100,
     dataIndex: 'owner_ftz_whse_code',
   }, {
-    title: '发货单位海关编码',
-    width: 150,
-    dataIndex: 'sender_cus_code',
-  }, {
     title: '发货单位',
-    width: 180,
+    width: 280,
     dataIndex: 'sender_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    render: (o, record) => record.sender_cus_code ? <TrimSpan text={`${record.sender_cus_code}|${o}`} maxLen={30} /> : o,
   }, {
     title: '发货仓库号',
     width: 100,

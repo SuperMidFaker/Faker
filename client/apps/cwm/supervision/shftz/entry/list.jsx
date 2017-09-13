@@ -82,7 +82,7 @@ export default class SHFTZEntryList extends React.Component {
   columns = [{
     title: 'ASN编号',
     dataIndex: 'asn_no',
-    width: 180,
+    width: 160,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
@@ -92,7 +92,7 @@ export default class SHFTZEntryList extends React.Component {
     render: (preno, row) => row.cus_decl_no || preno,
   }, {
     title: '海关进库单号',
-    width: 200,
+    width: 180,
     dataIndex: 'ftz_ent_no',
   }, {
     title: '监管类型',

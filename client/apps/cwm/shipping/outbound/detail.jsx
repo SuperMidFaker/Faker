@@ -137,7 +137,9 @@ export default class OutboundDetail extends Component {
     });
   }
   handleRegPage = () => {
-    this.context.router.push(`/cwm/supervision/shftz/release/${this.props.outboundHead.bonded_outtype}/${this.props.outboundHead.so_no}`);
+    const link = this.props.outboundHead.bonded_outtype === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${this.props.outboundHead.so_no}`
+      : `/cwm/supervision/shftz/release/${this.props.outboundHead.bonded_outtype}/${this.props.outboundHead.so_no}`;
+    this.context.router.push(link);
   }
   showExpressModal = () => {
     this.props.loadShunfengConfig(this.props.tenantId).then((result) => {

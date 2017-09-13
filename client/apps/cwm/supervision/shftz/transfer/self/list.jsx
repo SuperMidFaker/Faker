@@ -79,16 +79,16 @@ export default class SHFTZTransferSelfList extends React.Component {
   columns = [{
     title: '转移编号',
     dataIndex: 'asn_no',
-    width: 180,
+    width: 160,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '转出出库单号',
-    width: 200,
+    width: 180,
     dataIndex: 'ftz_rel_no',
   }, {
     title: '转入进库单号',
-    width: 200,
+    width: 180,
     dataIndex: 'ftz_ent_no',
   }, {
     title: '状态',
