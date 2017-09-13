@@ -154,10 +154,18 @@ export default class SHFTZTransferSelfDetail extends Component {
       owner,
     }).then((result) => {
       if (!result.error) {
-        notification.success({
-          message: '操作成功',
-          placement: 'topLeft',
-        });
+        if (result.data.errorMsg) {
+          notification.warn({
+            message: '结果异常',
+            description: result.data.errorMsg,
+            duration: 15,
+          });
+        } else {
+          notification.success({
+            message: '操作成功',
+            placement: 'topLeft',
+          });
+        }
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
