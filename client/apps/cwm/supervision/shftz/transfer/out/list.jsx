@@ -108,25 +108,23 @@ export default class SHFTZTransferOutList extends React.Component {
       }
     },
   }, {
-    title: '发货单位(货主)',
+    title: '发货单位',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '发货仓库',
-    width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '发货仓库号',
+    width: 100,
+    dataIndex: 'sender_ftz_whse_code',
   }, {
     title: '收货单位',
     width: 180,
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货仓库',
-    width: 180,
-    dataIndex: 'receive_wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '收货仓库号',
+    width: 100,
+    dataIndex: 'receiver_ftz_whse_code',
   }, {
     title: '出库日期',
     width: 120,
