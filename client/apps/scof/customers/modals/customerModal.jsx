@@ -2,14 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Input, Checkbox, message } from 'antd';
+import { Modal, Form, Input, Checkbox, Select, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/crmCustomers';
+import { getCompanyInfo } from 'common/reducers/common';
 import { checkPartner } from 'common/reducers/partner';
 import { CUSTOMER_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const Option = Select.Option;
 const formatMsg = format(messages);
 
 @injectIntl
@@ -20,7 +22,7 @@ const formatMsg = format(messages);
     customer: state.crmCustomers.customerModal.customer,
     operation: state.crmCustomers.customerModal.operation,
   }),
-  { addCustomer, editCustomer, checkPartner, hideCustomerModal }
+  { addCustomer, editCustomer, checkPartner, hideCustomerModal, getCompanyInfo }
 )
 
 export default class CustomerModal extends React.Component {
@@ -35,6 +37,7 @@ export default class CustomerModal extends React.Component {
     editCustomer: PropTypes.func.isRequired,
     customer: PropTypes.object.isRequired,
     onOk: PropTypes.func,
+    getCompanyInfo: PropTypes.func.isRequired,
   }
   state = {
     id: -1,
@@ -46,6 +49,8 @@ export default class CustomerModal extends React.Component {
     phone: '',
     email: '',
     businessType: '',
+
+    companies: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
@@ -160,6 +165,15 @@ export default class CustomerModal extends React.Component {
       this.setState({ businessType: value.join(',') });
     }
   }
+  handleSearchCompany = (value) => {
+    this.props.getCompanyInfo(value).then((result) => {
+      this.setState({ companies: result.data.Result || [] });
+    });
+  }
+  handleNameChange = (value) => {
+    const company = this.state.companies.find(item => item.Name === value);
+    this.setState({ name: value, partnerUniqueCode: company.CreditCode });
+  }
   render() {
     const { visible, operation } = this.props;
     const { businessType } = this.state;
@@ -183,7 +197,16 @@ export default class CustomerModal extends React.Component {
             hasFeedback
             required
           >
-            <Input value={this.state.name} onChange={(e) => { this.setState({ name: e.target.value }); }} />
+            <Select
+              value={this.state.name}
+              showSearch
+              placeholder="输入企业名称搜索"
+              optionFilterProp="children"
+              onSelect={value => this.handleNameChange(value)}
+              onSearch={this.handleSearchCompany}
+            >
+              {this.state.companies.map(item => <Option value={item.Name}>{item.Name}</Option>)}
+            </Select>
           </FormItem>
           <FormItem
             {...formItemLayout}
