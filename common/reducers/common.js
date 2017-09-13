@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/common/', [
   'MAKE_EXCEL', 'MAKE_EXCEL_SUCCEED', 'MAKE_EXCEL_FAIL',
+  'GET_COMPANY_INFO', 'GET_COMPANY_INFO_SUCCEED', 'GET_COMPANY_INFO_FAIL',
 ]);
 
 const initialState = {
@@ -32,6 +33,21 @@ export function makeExcel(sheets, filename) {
       endpoint: 'v1/common/make/excel',
       method: 'post',
       data: { sheets, filename },
+    },
+  };
+}
+
+export function getCompanyInfo(text) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_COMPANY_INFO,
+        actionTypes.GET_COMPANY_INFO_SUCCEED,
+        actionTypes.GET_COMPANY_INFO_FAIL,
+      ],
+      endpoint: 'v1/qichacha/company',
+      method: 'get',
+      params: { text },
     },
   };
 }

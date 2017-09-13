@@ -219,7 +219,7 @@ export default class SHFTZTransferSelfDetail extends Component {
   }
   render() {
     const { entryAsn, whse, submitting } = this.props;
-    const stat = entryAsn.details.reduce((acc, regd) => ({
+    const stat = entryAsn.details ? entryAsn.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
       total_net_wt: acc.total_net_wt + regd.stock_netwt,
@@ -227,7 +227,11 @@ export default class SHFTZTransferSelfDetail extends Component {
       total_qty: 0,
       total_amount: 0,
       total_net_wt: 0,
-    });
+    }) : {
+      total_qty: 0,
+      total_amount: 0,
+      total_net_wt: 0,
+    };
     return (
       <div>
         <Header className="page-header">

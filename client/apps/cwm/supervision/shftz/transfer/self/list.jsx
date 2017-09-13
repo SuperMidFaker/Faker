@@ -10,12 +10,7 @@ import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
-import { showDock } from 'common/reducers/cwmReceive';
 import ModuleMenu from '../../menu';
-import ReceivingDockPanel from '../../../../receiving/dock/receivingDockPanel';
-import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import TransferSelfModal from './modal/transferSelfModal';
 import PageHeader from 'client/components/PageHeader';
@@ -41,7 +36,7 @@ const OptGroup = Select.OptGroup;
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
   }),
-  { loadEntryRegDatas, switchDefaultWhse, showDock, showTransferInModal, deleteVirtualTransfer }
+  { loadEntryRegDatas, switchDefaultWhse, showTransferInModal, deleteVirtualTransfer }
 )
 @connectNav({
   depth: 2,
@@ -81,7 +76,6 @@ export default class SHFTZTransferSelfList extends React.Component {
     dataIndex: 'asn_no',
     width: 160,
     fixed: 'left',
-    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
     title: '转出出库单号',
     width: 180,
@@ -157,9 +151,6 @@ export default class SHFTZTransferSelfList extends React.Component {
           </span>
         ),
   }]
-  handlePreview = (asnNo) => {
-    this.props.showDock(asnNo);
-  }
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadEntryRegDatas(params),
     resolve: result => result.data,
@@ -313,10 +304,6 @@ export default class SHFTZTransferSelfList extends React.Component {
               handleDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}
             />
-            <ReceivingDockPanel />
-            <OrderDockPanel />
-            <DelegationDockPanel />
-            <ShipmentDockPanel />
             <TransferSelfModal reload={this.handleEntryListLoad} />
           </Content>
         </Layout>
