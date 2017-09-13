@@ -108,6 +108,10 @@ export default class SHFTZTransferOutList extends React.Component {
       }
     },
   }, {
+    title: '发货单位海关编码',
+    width: 150,
+    dataIndex: 'owner_cus_code',
+  }, {
     title: '发货单位',
     width: 180,
     dataIndex: 'owner_name',
@@ -116,6 +120,10 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '发货仓库号',
     width: 100,
     dataIndex: 'sender_ftz_whse_code',
+  }, {
+    title: '收货单位海关编码',
+    width: 150,
+    dataIndex: 'receiver_cus_code',
   }, {
     title: '收货单位',
     width: 180,

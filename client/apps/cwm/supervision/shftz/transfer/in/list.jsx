@@ -107,25 +107,31 @@ export default class SHFTZTransferInList extends React.Component {
       }
     },
   }, {
-    title: '收货单位(货主)',
+    title: '收货单位海关编码',
+    width: 150,
+    dataIndex: 'owner_cus_code',
+  }, {
+    title: '收货单位',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货仓库',
+    title: '收货仓库号',
     width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    dataIndex: 'owner_ftz_whse_code',
+  }, {
+    title: '发货单位海关编码',
+    width: 150,
+    dataIndex: 'sender_cus_code',
   }, {
     title: '发货单位',
     width: 180,
     dataIndex: 'sender_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '发货仓库',
-    width: 180,
-    dataIndex: 'send_wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '发货仓库号',
+    width: 100,
+    dataIndex: 'sender_ftz_whse_code',
   }, {
     title: '进库日期',
     width: 120,

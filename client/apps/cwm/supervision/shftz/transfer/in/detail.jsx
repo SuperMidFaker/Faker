@@ -10,7 +10,7 @@ import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -217,7 +217,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
-    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
+    // const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const inbStatus = entryAsn.inbound_status && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     return (
       <div>
@@ -255,13 +255,16 @@ export default class SHFTZTransferInDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={24} lg={6}>
-                  <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
+                  <InfoItem label="发货单位" field={entryAsn.sender_name} />
+                </Col>
+                <Col sm={24} lg={2}>
+                  <InfoItem label="发货仓库号" field={entryAsn.sender_ftz_whse_code} />
                 </Col>
                 <Col sm={24} lg={6}>
                   <InfoItem label="收货单位" field={entryAsn.owner_name} />
                 </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="收货仓库" field={entryAsn.wh_ent_tenant_name} />
+                <Col sm={24} lg={2}>
+                  <InfoItem label="收货仓库号" field={entryAsn.owner_ftz_whse_code} />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
