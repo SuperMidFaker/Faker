@@ -281,22 +281,22 @@ export default class SHFTZTransferOutDetail extends Component {
                   <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={relRegs[0].receiver_name} editable={relEditable}
+                  <InfoItem label="收货单位" field={relRegs[0] && relRegs[0].receiver_name} editable={relEditable}
                     onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_name', value)}
                   />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位十位编码" field={relRegs[0].receiver_cus_code} editable={relEditable}
+                  <InfoItem label="收货单位十位编码" field={relRegs[0] && relRegs[0].receiver_cus_code} editable={relEditable}
                     onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_cus_code', value)}
                   />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="收货仓库号" field={relRegs[0].receiver_ftz_whse_code} editable={relEditable}
-                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_ftz_whse_code', value)}
+                  <InfoItem label="收货仓库号" field={relRegs[0] && relRegs[0].receiver_ftz_whse_code} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0] && relRegs[0].pre_entry_seq_no, 'receiver_ftz_whse_code', value)}
                   />
                 </Col>
                 <Col sm={24} lg={6}>
-                  <InfoItem label="出库日期" field={relRegs[0].ftz_rel_date} editable={relEditable} type="date"
+                  <InfoItem label="出库日期" field={relRegs[0] && relRegs[0].ftz_rel_date} editable={relEditable} type="date"
                     onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'ftz_rel_date', value)}
                   />
                 </Col>
