@@ -167,7 +167,11 @@ export default class CustomerModal extends React.Component {
   }
   handleSearchCompany = (value) => {
     this.props.getCompanyInfo(value).then((result) => {
-      this.setState({ companies: result.data.Result || [] });
+      if (result.data.Result) {
+        this.setState({ companies: result.data.Result });
+      } else {
+        message.warning(`企查查：${result.data.Message}`, 5);
+      }
     });
   }
   handleNameChange = (value) => {
