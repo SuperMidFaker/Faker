@@ -37,8 +37,6 @@ export default class OrderDetailsPane extends React.Component {
     ButtonStatus: null,
     detailEditable: false,
     searchValue: '',
-    cancelAllocDisabled: false,
-    autoAllocDisabled: false,
     loading: false,
   }
   componentWillMount() {
@@ -137,7 +135,7 @@ export default class OrderDetailsPane extends React.Component {
     render: (o, record) => {
       if (record.alloc_qty < record.order_qty) {
         return (<span>
-          <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} disabled={this.state.autoAllocDisabled} />
+          <RowUpdater onHit={this.handleSKUAutoAllocate} label="自动分配" row={record} disabled={this.props.submitting} />
           <span className="ant-divider" />
           <RowUpdater onHit={this.handleManualAlloc} label="手动分配" row={record} />
         </span>);
@@ -146,15 +144,13 @@ export default class OrderDetailsPane extends React.Component {
           <RowUpdater onHit={this.handleAllocDetails} label="分配明细" row={record} />
           {record.picked_qty < record.alloc_qty && <span className="ant-divider" />}
           {record.picked_qty < record.alloc_qty &&
-            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} disabled={this.state.cancelAllocDisabled} />}
+            <RowUpdater onHit={this.handleSKUCancelAllocate} label="取消分配" row={record} disabled={this.props.submitting} />}
         </span>);
       }
     },
   }]
   handleSKUAutoAllocate = (row) => {
-    this.setState({ autoAllocDisabled: true });
     this.props.batchAutoAlloc(row.outbound_no, [row.seq_no], this.props.loginId, this.props.loginName).then((result) => {
-      this.setState({ autoAllocDisabled: false });
       if (!result.error) {
         if (result.data.length > 0) {
           const seqNos = result.data.join(',');
@@ -217,9 +213,7 @@ export default class OrderDetailsPane extends React.Component {
     this.props.openAllocatingModal({ outboundNo: row.outbound_no, outboundProduct: row });
   }
   handleSKUCancelAllocate = (row) => {
-    this.setState({ cancelAllocDisabled: true });
     this.props.cancelProductsAlloc(row.outbound_no, [row.seq_no], this.props.loginId).then((result) => {
-      this.setState({ cancelAllocDisabled: false });
       if (result.error) {
         notification.error({
           message: result.error.message,
