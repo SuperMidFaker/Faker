@@ -130,19 +130,19 @@ export default function reducer(state = initialState, action) {
     case actionTypes.MANUAL_ALLOC_SUCCEED:
       return { ...state, submitting: false, outboundReload: true };
     case actionTypes.MANUAL_ALLOC_FAIL:
-      return { ...state, submitting: false, outboundReload: true };
+      return { ...state, submitting: false };
     case actionTypes.AUTO_ALLOC:
       return { ...state, submitting: true };
     case actionTypes.AUTO_ALLOC_SUCCEED:
       return { ...state, submitting: false, outboundReload: true };
     case actionTypes.AUTO_ALLOC_FAIL:
-      return { ...state, submitting: false, outboundReload: true };
+      return { ...state, submitting: false };
     case actionTypes.CANCEL_PRDALLOC:
       return { ...state, submitting: true };
     case actionTypes.CANCEL_PRDALLOC_SUCCEED:
       return { ...state, submitting: false, outboundReload: true };
     case actionTypes.CANCEL_PRDALLOC_FAIL:
-      return { ...state, submitting: false, outboundReload: true };
+      return { ...state, submitting: false };
     case actionTypes.CANCEL_TRACE_ALLOC_SUCCEED:
     case actionTypes.OUTBOUNDS_PICK:
       return { ...state, submitting: true };

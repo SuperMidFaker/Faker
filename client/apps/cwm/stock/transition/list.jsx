@@ -341,6 +341,7 @@ export default class StockTransitionList extends React.Component {
         this.setState({ selectedRowKeys, enableBatchTransit, batchTransitDetail, totalQty: total.stock_qty, allSelectedRows });
       },
     };
+    const rowKey = 'trace_id'; // selectedRowKeys 有影响
     const dataSource = new DataTable.DataSource({
       fetcher: (params) => { this.props.loadTransitions(params); },
       resolve: result => result.data,
@@ -408,7 +409,7 @@ export default class StockTransitionList extends React.Component {
           </Card>
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey="id" scrollOffset={390}
+            columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey={rowKey} scrollOffset={390}
           />
           <TransitionModal />
           <BatchTransitModal />
