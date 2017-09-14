@@ -8,13 +8,15 @@ import { Breadcrumb, Icon, Form, Layout, Steps, Button, Card, Col, Row, Tag, Tab
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
+import PageHeader from 'client/components/PageHeader';
+import Summary from 'client/components/Summary';
 import { loadVirtualTransferDetails, loadParams, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Step = Steps.Step;
 
 function fetchData({ dispatch, params }) {
@@ -232,30 +234,39 @@ export default class SHFTZTransferSelfDetail extends Component {
       total_amount: 0,
       total_net_wt: 0,
     };
+    const totCol = (
+      <Summary>
+        <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+        <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+      </Summary>
+    );
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              上海自贸区监管
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {whse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('ftzTransferSelf')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.asnNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                上海自贸区监管
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {whse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('ftzTransferSelf')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.asnNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent && entryAsn.ftz_ent_no &&
               <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="main-content">
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
@@ -292,19 +303,12 @@ export default class SHFTZTransferSelfDetail extends Component {
               </div>
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
-              <div className="panel-header">
-                <Row>
-                  <Col sm={8} lg={2}>
-                    <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
-                  </Col>
-                  <Col sm={8} lg={3}>
-                    <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
-                  </Col>
-                  <Col sm={8} lg={3}>
-                    <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(2)} />
-                  </Col>
-                </Row>
-              </div>
+              <Row type="flex" className="panel-header">
+                <Col className="col-flex-primary info-group-inline" />
+                <Col className="col-flex-secondary">
+                  {totCol}
+                </Col>
+              </Row>
               <div className="table-panel table-fixed-layout">
                 <Table size="middle" columns={this.columns} dataSource={entryAsn.details} indentSize={8} rowKey="id"
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}

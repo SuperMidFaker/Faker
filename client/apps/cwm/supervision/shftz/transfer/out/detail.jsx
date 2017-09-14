@@ -9,6 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg, fileRelTransfers,
   cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
@@ -322,24 +323,42 @@ export default class SHFTZTransferOutDetail extends Component {
             </Card>
             <Card bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                {relRegs.map(reg => (
-                  <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
-                    <div className="panel-header">
-                      <Row>
-                        <Col sm={24} lg={6}>
-                          <InfoItem size="small" addonBefore="海关出库单号" field={reg.ftz_rel_no} editable={relEditable}
+                {relRegs.map((reg) => {
+                  const stat = reg.details.reduce((acc, regd) => ({
+                    total_qty: acc.total_qty + regd.qty,
+                    total_amount: acc.total_amount + regd.amount,
+                    total_net_wt: acc.total_net_wt + regd.net_wt,
+                  }), {
+                    total_qty: 0,
+                    total_amount: 0,
+                    total_net_wt: 0,
+                  });
+                  const totCol = (
+                    <Summary>
+                      <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+                      <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+                      <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+                    </Summary>
+                  );
+                  return (
+                    <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
+                      <Row type="flex" className="panel-header">
+                        <Col className="col-flex-primary info-group-inline">
+                          <InfoItem label="海关出库单号" field={reg.ftz_ent_no} width={320} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>
+                        <Col className="col-flex-secondary">
+                          {totCol}
+                        </Col>
                       </Row>
-                    </div>
-                    <div className="table-panel table-fixed-layout">
-                      <Table size="middle" columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                        scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                      />
-                    </div>
-                  </TabPane>)
-                )}
+                      <div className="table-panel table-fixed-layout">
+                        <Table size="middle" columns={columns} dataSource={reg.details} indentSize={8} rowKey="id"
+                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                        />
+                      </div>
+                    </TabPane>);
+                })}
               </Tabs>
             </Card>
           </Form>

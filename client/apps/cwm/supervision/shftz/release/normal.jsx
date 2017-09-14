@@ -9,6 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
@@ -263,6 +264,15 @@ export default class SHFTZRelDetail extends Component {
     dataIndex: 'amount',
     width: 100,
   }, {
+    title: '币制',
+    dataIndex: 'currency',
+    width: 100,
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
     title: '供货商',
     width: 100,
     dataIndex: 'supplier',
@@ -273,15 +283,6 @@ export default class SHFTZRelDetail extends Component {
     render: (o) => {
       const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
       const text = mode ? `${mode.value}| ${mode.text}` : o;
-      return text && text.length > 0 && <Tag>{text}</Tag>;
-    },
-  }, {
-    title: '币制',
-    dataIndex: 'currency',
-    width: 100,
-    render: (o) => {
-      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
-      const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
@@ -416,35 +417,27 @@ export default class SHFTZRelDetail extends Component {
                     total_net_wt: 0,
                   });
                   const totCol = (
-                    <div>
-                      <Col sm={8} lg={2} offset={4}>
-                        <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
-                      </Col>
-                      <Col sm={8} lg={3}>
-                        <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
-                      </Col>
-                      <Col sm={8} lg={3}>
-                        <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(3)} />
-                      </Col>
-                    </div>
+                    <Summary>
+                      <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+                      <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+                      <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+                    </Summary>
                   );
                   const countTag = <span>备案明细 <Tag>{reg.details.length}</Tag></span>;
                   return (
                     <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
-                      <div className="panel-header">
-                        <Row>
-                          <Col sm={12} lg={6}>
-                            <InfoItem size="small" addonBefore="普通出库单号" field={reg.ftz_rel_no} />
-                          </Col>
-                          <Col sm={12} lg={6}>
-                            <InfoItem size="small" addonBefore={<span><Icon type="calendar" />预计出区日期</span>}
-                              type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
-                            />
-                          </Col>
+                      <Row type="flex" className="panel-header">
+                        <Col className="col-flex-primary info-group-inline">
+                          <InfoItem label="普通出库单号" field={reg.ftz_rel_no} width={320} />
+                          <InfoItem label="预计出区日期"
+                            type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))} width={320}
+                          />
+                        </Col>
+                        <Col className="col-flex-secondary">
                           {totCol}
-                        </Row>
-                      </div>
+                        </Col>
+                      </Row>
                       <div className="table-panel table-fixed-layout">
                         <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
                           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}

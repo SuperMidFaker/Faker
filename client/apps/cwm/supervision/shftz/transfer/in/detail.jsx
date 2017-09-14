@@ -9,6 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import Summary from 'client/components/Summary';
 import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -309,32 +310,29 @@ export default class SHFTZTransferInDetail extends Component {
                     total_amount: 0,
                     total_net_wt: 0,
                   });
+                  const totCol = (
+                    <Summary>
+                      <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+                      <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+                      <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+                    </Summary>
+                  );
                   return (
                     <TabPane tab="转入明细" key={reg.pre_entry_seq_no}>
-                      <div className="panel-header">
-                        <Row>
-                          <Col sm={12} lg={5}>
-                            <InfoItem size="small" addonBefore="海关进库单号" field={reg.ftz_ent_no} editable
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value, reg.virtual_transfer)}
-                            />
-                          </Col>
-                          <Col sm={12} lg={3}>
-                            <InfoItem size="small" addonBefore={<span><Icon type="calendar" />进库日期</span>}
-                              type="date" field={reg.ftz_ent_date} editable
-                              onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value), reg.virtual_transfer)}
-                            />
-                          </Col>
-                          <Col sm={8} lg={2}>
-                            <InfoItem size="small" addonBefore="总数量" field={stat.total_qty} />
-                          </Col>
-                          <Col sm={8} lg={3}>
-                            <InfoItem size="small" addonBefore="总净重" field={stat.total_net_wt.toFixed(3)} addonAfter="KG" />
-                          </Col>
-                          <Col sm={8} lg={3}>
-                            <InfoItem size="small" addonBefore="总金额" field={stat.total_amount.toFixed(3)} />
-                          </Col>
-                        </Row>
-                      </div>
+                      <Row type="flex" className="panel-header">
+                        <Col className="col-flex-primary info-group-inline">
+                          <InfoItem label="海关进库单号" field={reg.ftz_ent_no} width={320} editable
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value, reg.virtual_transfer)}
+                          />
+                          <InfoItem label="进库日期"
+                            type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD')} editable
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value), reg.virtual_transfer)} width={320}
+                          />
+                        </Col>
+                        <Col className="col-flex-secondary">
+                          {totCol}
+                        </Col>
+                      </Row>
                       <div className="table-panel table-fixed-layout">
                         <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
                           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
