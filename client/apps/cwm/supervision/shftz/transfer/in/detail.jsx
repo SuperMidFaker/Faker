@@ -254,17 +254,29 @@ export default class SHFTZTransferInDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={6}>
-                  <InfoItem label="发货单位" field={entryAsn.sender_name} />
+                <Col sm={24} lg={3}>
+                  <InfoItem label="发货单位海关编码" field={entryRegs[0] && entryRegs[0].sender_cus_code} editable
+                    onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'sender_cus_code', value)}
+                  />
+                </Col>
+                <Col sm={24} lg={4}>
+                  <InfoItem label="发货单位" field={entryRegs[0] && entryRegs[0].sender_name}
+                    onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'sender_name', value)}
+                  />
                 </Col>
                 <Col sm={24} lg={2}>
-                  <InfoItem label="发货仓库号" field={entryAsn.sender_ftz_whse_code} />
+                  <InfoItem label="发货仓库号" field={entryRegs[0] && entryRegs[0].sender_ftz_whse_code} editable
+                    onEdit={value => this.handleInfoSave(entryRegs[0] && entryRegs[0].pre_entry_seq_no, 'sender_ftz_whse_code', value)}
+                  />
                 </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={entryAsn.owner_name} />
+                <Col sm={24} lg={3}>
+                  <InfoItem label="收货单位海关编码" field={entryRegs[0] && entryRegs[0].owner_cus_code} />
+                </Col>
+                <Col sm={24} lg={4}>
+                  <InfoItem label="收货单位" field={entryRegs[0] && entryRegs[0].owner_name} />
                 </Col>
                 <Col sm={24} lg={2}>
-                  <InfoItem label="收货仓库号" field={entryAsn.owner_ftz_whse_code} />
+                  <InfoItem label="收货仓库号" field={entryRegs[0] && entryRegs[0].receiver_ftz_whse_code} />
                 </Col>
                 <Col sm={24} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}

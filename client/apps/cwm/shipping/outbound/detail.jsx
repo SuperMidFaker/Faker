@@ -18,7 +18,7 @@ loadShunfengConfig } from 'common/reducers/cwmOutbound';
 import PrintPickList from './billsPrint/printPIckList';
 import PrintShippingList from './billsPrint/printShippingList';
 import PrintShippingConfirm from './billsPrint/printShippingConfirm';
-import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR } from 'common/constants';
+import { CWM_OUTBOUND_STATUS, CWM_SO_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR } from 'common/constants';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import ShunfengExpressModal from './modal/shunfengExpressModal';
@@ -196,7 +196,10 @@ export default class OutboundDetail extends Component {
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];
     const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
-    const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0];
+    // const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0];
+    const regStatus = outboundHead.bonded_outtype === 'transfer' ?
+      CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0] :
+      CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0];
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
     const scanLabel = outboundHead.shipping_mode === 'scan' ? ' 扫码模式' : '';
     const manualLabel = outboundHead.shipping_mode === 'manual' ? ' 手动模式' : '';

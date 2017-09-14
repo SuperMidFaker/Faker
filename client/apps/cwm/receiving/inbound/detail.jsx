@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import PageHeader from 'client/components/PageHeader';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
-import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_STATUS_INDICATOR } from 'common/constants';
+import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import ReceiveDetailsPane from './tabpane/receiveDetailsPane';
 import Print from './printInboundList';
@@ -104,7 +104,7 @@ export default class ReceiveInbound extends Component {
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
     const regStatus = inboundHead.bonded_intype === 'transfer' ?
-      CWM_SHFTZ_TRANSFER_STATUS_INDICATOR.filter(status => status.value === inboundHead.reg_status)[0] :
+      CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR.filter(status => status.value === inboundHead.reg_status)[0] :
       CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === inboundHead.reg_status)[0];
     const scanLabel = inboundHead.rec_mode === 'scan' ? ' 扫码模式' : '';
     const manualLabel = inboundHead.rec_mode === 'manual' ? ' 手动模式' : '';
