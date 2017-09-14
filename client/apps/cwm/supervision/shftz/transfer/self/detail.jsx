@@ -63,8 +63,6 @@ export default class SHFTZTransferSelfDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  state = {
-  }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
@@ -142,8 +140,9 @@ export default class SHFTZTransferSelfDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
-  handleInfoSave = (preRegNo, field, value, virtualTransfer) => {
-    this.props.updateEntryReg(preRegNo, field, value, virtualTransfer);
+  handleInfoSave = (field, value) => {
+    const entryAsn = this.props.entryAsn;
+    this.props.updateEntryReg(entryAsn.pre_entry_seq_no, field, value, entryAsn.virtual_transfer);
   }
   handleTransToWhs = () => {
     const { params, entryAsn, tenantId, owners, whse } = this.props;
@@ -284,13 +283,13 @@ export default class SHFTZTransferSelfDetail extends Component {
                 </Col>
                 <Col sm={12} lg={4}>
                   <InfoItem label="入库单号" field={entryAsn.ftz_ent_no} editable
-                    onEdit={value => this.handleInfoSave(entryAsn.pre_entry_seq_no, 'ftz_ent_no', value, entryAsn.virtual_transfer)}
+                    onEdit={value => this.handleInfoSave('ftz_ent_no', value)}
                   />
                 </Col>
                 <Col sm={12} lg={3}>
                   <InfoItem label="转入时间" addonBefore={<Icon type="clock-circle-o" />}
                     type="date" field={entryAsn.ftz_ent_date} editable
-                    onEdit={value => this.handleInfoSave(entryAsn.pre_entry_seq_no, 'ftz_ent_date', new Date(value), entryAsn.virtual_transfer)}
+                    onEdit={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
                   />
                 </Col>
               </Row>

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Modal, Card, Radio, Checkbox, Select, message, notification, Row, Col, Form } from 'antd';
+import { Alert, Modal, Card, Radio, Checkbox, Select, message, notification, Row, Col, Form } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { closeMergeSplitModal, submitBillMegeSplit, loadBillBody } from 'common/reducers/cmsManifest';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
@@ -92,6 +92,8 @@ export default class MergeSplitModal extends React.Component {
     mergeOptArr: [],
     splitCategories: [],
     mergeCategories: [],
+    alertTitle: '',
+    alertMsg: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billRule !== this.props.billRule) {
@@ -186,6 +188,7 @@ export default class MergeSplitModal extends React.Component {
   handleCancel = () => {
     this.props.closeMergeSplitModal();
     this.props.loadBillBody(this.props.billSeqNo);
+    this.setState({ alertMsg: '', alertTitle: '' });
   }
   handleMergeRadioChange = () => {
     this.setState({
@@ -254,7 +257,14 @@ export default class MergeSplitModal extends React.Component {
     }
     this.props.submitBillMegeSplit({ billSeqNo, splitOpt, mergeOpt, sortOpt }).then((result) => {
       if (result.error) {
-        message.error(result.error.message, 10);
+        if (result.error.message.key === 'ftz-detail-splited') {
+          const ids = result.error.message.details;
+          const title = '以下相同分拨出库明细会被拆分至不同报关单,将导致报关单与集中申报单内容不一致:';
+          const msg = <span>{ids.join(',')} <br />请考虑去掉货号归并或者重新选择分拨出库项</span>;
+          this.setState({ alertMsg: msg, alertTitle: title });
+        } else {
+          message.error(result.error.message, 10);
+        }
       } else {
         notification.success({
           message: '操作成功',
@@ -266,7 +276,7 @@ export default class MergeSplitModal extends React.Component {
     });
   }
   render() {
-    const { mergeOpt, splitOpt, splitCategories, mergeCategories } = this.state;
+    const { alertMsg, alertTitle, mergeOpt, splitOpt, splitCategories, mergeCategories } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     let mergeConditions = this.mergeConditions;
     if (this.props.isCustomRegisted) {
@@ -277,6 +287,7 @@ export default class MergeSplitModal extends React.Component {
         visible={this.props.visible}
       >
         <Form>
+          {alertMsg && <Alert message={alertTitle} description={alertMsg} type="error" showIcon />}
           <Row gutter={16}>
             <Col span="24">
               <Card title={this.msg('mergePrinciple')}>
