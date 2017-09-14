@@ -349,19 +349,36 @@ exports.CWM_SHFTZ_REG_STATUS_INDICATOR = [{
   badge: 'success',
 }];
 
-exports.CWM_SHFTZ_TRANSFER_STATUS_INDICATOR = [{
+exports.CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR = [{
   value: 0,
-  text: '未接收',
+  text: '待转入',
   tagcolor: 'blue',
   badge: 'warning',
 }, {
   value: 1,
-  text: '数据比对',
+  text: '已接收',
   tagcolor: 'green',
   badge: 'processing',
 }, {
   value: 2,
-  text: '接收完成',
+  text: '已核对',
+  tagcolor: 'cyan',
+  badge: 'success',
+}];
+
+exports.CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR = [{
+  value: 0,
+  text: '待转出',
+  tagcolor: 'blue',
+  badge: 'warning',
+}, {
+  value: 1,
+  text: '已发送',
+  tagcolor: 'green',
+  badge: 'processing',
+}, {
+  value: 2,
+  text: '已转出',
   tagcolor: 'cyan',
   badge: 'success',
 }];

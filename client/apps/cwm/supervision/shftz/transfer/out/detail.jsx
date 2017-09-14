@@ -235,7 +235,7 @@ export default class SHFTZTransferOutDetail extends Component {
     // const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
-    const sendText = sent ? '重新发送' : '发送备案';
+    const sendText = sent ? '重新发送' : '发送转出';
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     let sendable = relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
     const whyunsent = !sendable ? '出库单配货未完成' : '';
@@ -314,9 +314,9 @@ export default class SHFTZTransferOutDetail extends Component {
               </Row>
               <div className="card-footer">
                 <Steps progressDot current={relSo.reg_status}>
-                  <Step description="待备案" />
+                  <Step description="待转出" />
                   <Step description="已发送" />
-                  <Step description="备案完成" />
+                  <Step description="已转出" />
                 </Steps>
               </div>
             </Card>

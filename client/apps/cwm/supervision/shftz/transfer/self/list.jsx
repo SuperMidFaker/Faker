@@ -92,7 +92,7 @@ export default class SHFTZTransferSelfList extends React.Component {
       if (o === 0) {
         return (<Badge status="default" text="待转出" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="终端中" />);
+        return (<Badge status="processing" text="终端处理" />);
       } else if (o === 2) {
         return (<Badge status="success" text="已转入" />);
       }
@@ -142,7 +142,7 @@ export default class SHFTZTransferSelfList extends React.Component {
     render: (o, record) =>
         (
           <span>
-            <RowUpdater onHit={this.handleDetail} label="转移明细" row={record} />
+            <RowUpdater onHit={this.handleDetail} label="转移详情" row={record} />
             {record.status === CWM_SHFTZ_APIREG_STATUS.pending && <span className="ant-divider" />}
             {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>

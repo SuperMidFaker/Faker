@@ -232,7 +232,7 @@ export default class ReceiveDetailsPane extends React.Component {
           const fDataSource = dataSource.filter(item => !(item.trace_id.length >= 1));
           const selectedRowKeys = fDataSource.map(item => item.id);
           this.setState({
-            selectedRowKeys,  // TODO
+            selectedRowKeys,
             selectedRows: fDataSource,
           });
         },
@@ -243,7 +243,7 @@ export default class ReceiveDetailsPane extends React.Component {
           const fDataSource = dataSource.filter(item => !(item.trace_id.length >= 1) && !this.state.selectedRowKeys.find(item1 => item1 === item.id));
           const selectedRowKeys = fDataSource.map(item => item.id);
           this.setState({
-            selectedRowKeys,  // TODO
+            selectedRowKeys,
             selectedRows: fDataSource,
           });
         },
