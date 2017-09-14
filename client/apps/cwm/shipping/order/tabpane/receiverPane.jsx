@@ -82,7 +82,7 @@ export default class ReceiverPane extends Component {
                 rules: [{ message: 'Please select customer!' }],
                 initialValue: soHead && soHead.receiver_name,
               })(
-                <Select placeholder="选择收货人" onSelect={this.handleSelect}>
+                <Select mode="combobox" placeholder="选择收货人" onSelect={this.handleSelect}>
                   {rcvs.map(item => (<Option value={item.code}>{item.name}</Option>))}
                 </Select>
                 )}

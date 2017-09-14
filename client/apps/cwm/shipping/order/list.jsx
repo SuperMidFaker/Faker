@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, DatePicker, Popover, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
+import { Breadcrumb, Popover, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
@@ -28,7 +28,6 @@ const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
-const { RangePicker } = DatePicker;
 
 function fetchData({ state, dispatch }) {
   dispatch(loadSos({
@@ -151,7 +150,7 @@ export default class ShippingOrderList extends React.Component {
     width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD'),
   }, {
-    title: '出库时间',
+    title: '实际出库时间',
     dataIndex: 'shipped_date',
     width: 120,
     render: o => o && moment(o).format('MM.DD HH:mm'),
@@ -411,8 +410,6 @@ export default class ShippingOrderList extends React.Component {
             owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
           }
       </Select>
-      <span />
-      <RangePicker allowClear size="large" ranges={{ Today: [moment(), moment()], 'This Month': [moment(), moment().endOf('month')] }} onChange={this.handleDateRangeChange} />
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}

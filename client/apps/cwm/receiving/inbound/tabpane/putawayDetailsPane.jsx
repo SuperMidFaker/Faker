@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Tag, Table, Button, Modal, Input, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import SKUPopover from '../../../common/popover/skuPopover';
+import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
 import { CWM_INBOUND_STATUS } from 'common/constants';
@@ -62,16 +63,12 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '追踪ID',
     dataIndex: 'trace_id',
-    width: 160,
-    fixed: 'left',
+    width: 180,
+    render: o => o && <TraceIdPopover traceId={o} />,
   }, {
-    title: '商品货号',
-    dataIndex: 'product_no',
-    width: 160,
-  }, {
-    title: 'SKU',
+    title: '货品',
     dataIndex: 'product_sku',
-    width: 160,
+    width: 200,
     render: o => (<SKUPopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {
     title: '收货数量',

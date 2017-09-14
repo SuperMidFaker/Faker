@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag } from 'antd';
+import { Button, Icon, Table, Tag } from 'antd';
 import { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import SuppliersModal from '../modal/whseSuppliersModal';
@@ -38,9 +38,9 @@ export default class SuppliersPane extends Component {
     }
   }
   columns = [{
-    title: '供应商代码',
+    title: '代码',
     dataIndex: 'code',
-    width: 150,
+    width: 100,
   }, {
     title: '供应商名称',
     dataIndex: 'name',
@@ -89,9 +89,9 @@ export default class SuppliersPane extends Component {
         {record.active === 0 ? <RowUpdater onHit={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditSupplier(record)} label="修改" row={record} />
+        <RowUpdater onHit={() => this.handleEditSupplier(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.deleteSupplier(record.id)} label="删除" row={record} />
+        <RowUpdater onHit={() => this.handleDeleteSupplier(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]
@@ -103,7 +103,7 @@ export default class SuppliersPane extends Component {
       }
     });
   }
-  deleteSupplier = (id) => {
+  handleDeleteSupplier = (id) => {
     this.props.deleteSupplier(id).then((result) => {
       if (!result.error) {
         this.props.loadSuppliers(this.props.whseCode, this.props.tenantId);

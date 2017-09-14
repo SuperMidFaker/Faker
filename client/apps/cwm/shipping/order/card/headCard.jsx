@@ -142,7 +142,7 @@ export default class HeadCard extends Component {
                 )}
             </FormItem>
           </Col>
-          {bonded &&
+          {bonded > 0 &&
           <Col span={6}>
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {

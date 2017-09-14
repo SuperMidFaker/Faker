@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag } from 'antd';
+import { Button, Icon, Table, Tag } from 'antd';
 import { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import BrokerModal from '../modal/whseBrokersModal';
@@ -44,7 +44,7 @@ export default class BrokersPane extends Component {
   }, {
     title: '统一社会信用代码',
     dataIndex: 'uscc_code',
-    width: 150,
+    width: 200,
   }, {
     title: '海关编码',
     dataIndex: 'customs_code',
@@ -78,9 +78,9 @@ export default class BrokersPane extends Component {
         {record.active === 0 ? <RowUpdater onHit={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditCarrier(record)} label="修改" row={record} />
+        <RowUpdater onHit={() => this.handleEditCarrier(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.deleteBroker(record.id)} label="删除" row={record} />
+        <RowUpdater onHit={() => this.handleDeleteBroker(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]
@@ -92,7 +92,7 @@ export default class BrokersPane extends Component {
       }
     });
   }
-  deleteBroker = (id) => {
+  handleDeleteBroker = (id) => {
     this.props.deleteBroker(id).then((result) => {
       if (!result.error) {
         this.props.loadBrokers(this.props.whseCode, this.props.tenantId);

@@ -42,30 +42,26 @@ export default class ReceiversPane extends Component {
     }
   }
   columns = [{
-    title: '收货人代码',
+    title: '代码',
     dataIndex: 'code',
     width: 100,
   }, {
-    title: '名称',
+    title: '收货人名称',
     dataIndex: 'name',
-    width: 120,
+    width: 250,
   }, {
     title: '海关编码',
     dataIndex: 'customs_code',
+    width: 150,
+  }, {
+    title: '收货仓库号',
+    dataIndex: 'ftz_whse_code',
     width: 100,
   }, {
     title: '地区',
     dataIndex: 'province',
     width: 150,
     rencer: (col, row) => Location.renderLocation(row),
-  }, {
-    title: '详细地址',
-    dataIndex: 'address',
-    width: 100,
-  }, {
-    title: '收货仓库号',
-    dataIndex: 'ftz_whse_code',
-    width: 100,
   }, {
     title: '状态',
     dataIndex: 'active',
@@ -133,7 +129,7 @@ export default class ReceiversPane extends Component {
   render() {
     const { whseCode, whseTenantId, whseOwners, receivers } = this.props;
     return (
-      <div className="table-panel">
+      <div className="table-panel table-fixed-layout">
         <div className="toolbar">
           <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleReceiverModal(true)}>添加收货人</Button>
         </div>

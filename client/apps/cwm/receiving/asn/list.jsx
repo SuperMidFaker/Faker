@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Popover, Badge, Button, Breadcrumb, Icon, Layout, Radio, Select, Tag, notification, message } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
-import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -154,7 +153,7 @@ export default class ReceivingASNList extends React.Component {
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
   }, {
-    title: '入库时间',
+    title: '实际入库时间',
     dataIndex: 'received_date',
     width: 120,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
@@ -380,10 +379,19 @@ export default class ReceivingASNList extends React.Component {
         {
           owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
         }
+      </Select>
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={filters.ownerCode}
+        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all" key="all">全部供应商</Option>
+        {
+          owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+        }
       </Select></span>);
     const bulkActions = filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>;
-    const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
+    /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
       : <a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>;
+      */
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>
@@ -411,7 +419,7 @@ export default class ReceivingASNList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Popover content={popContent}>
+            {/* <Popover content={popContent}>
               <Button size="large" disabled={filters.ownerCode === 'all'}>
                 <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
                   formData={{
@@ -431,6 +439,7 @@ export default class ReceivingASNList extends React.Component {
                 </ExcelUploader>
               </Button>
             </Popover>
+            */}
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>

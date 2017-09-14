@@ -73,6 +73,7 @@ export default class WhseOwnersModal extends Component {
   columns = [{
     title: '货主代码',
     dataIndex: 'partner_code',
+    width: 120,
     render: (o, record, index) => <Input onChange={e => this.setOwnerCode(index, e.target.value)} value={o} />,
   },
   {
@@ -130,7 +131,7 @@ export default class WhseOwnersModal extends Component {
     return (
       <Modal title="添加货主" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Alert message="请确认在客户管理中已加入该货主，并开通了仓储业务" type="info" showIcon />
-        <Table size="middle" columns={this.columns} dataSource={filterPartners} rowKey="id" rowSelection={rowSelection} pagination={false} />
+        <Table size="small" columns={this.columns} dataSource={filterPartners} rowKey="id" rowSelection={rowSelection} pagination={false} />
       </Modal>
     );
   }

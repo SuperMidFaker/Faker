@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag } from 'antd';
+import { Button, Icon, Table, Tag } from 'antd';
 import { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import CarrierModal from '../modal/whseCarrierModal';
@@ -38,9 +38,9 @@ export default class CarriersPane extends Component {
     }
   }
   columns = [{
-    title: '承运人代码',
+    title: '代码',
     dataIndex: 'code',
-    width: 150,
+    width: 100,
   }, {
     title: '承运人名称',
     dataIndex: 'name',
@@ -85,9 +85,9 @@ export default class CarriersPane extends Component {
         {record.active === 0 ? <RowUpdater onHit={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditCarrier(record)} label="修改" row={record} />
+        <RowUpdater onHit={() => this.handleEditCarrier(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.deleteCarrier(record.id)} label="删除" row={record} />
+        <RowUpdater onHit={() => this.handleDeleteCarrier(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]
@@ -99,7 +99,7 @@ export default class CarriersPane extends Component {
       }
     });
   }
-  deleteCarrier = (id) => {
+  handleDeleteCarrier = (id) => {
     this.props.deleteCarrier(id).then((result) => {
       if (!result.error) {
         this.props.loadCarriers(this.props.whseCode, this.props.tenantId);

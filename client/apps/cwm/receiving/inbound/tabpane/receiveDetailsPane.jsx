@@ -268,7 +268,10 @@ export default class ReceiveDetailsPane extends React.Component {
             </div>
           </div>
           <div className="toolbar-right">
+            {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Tooltip title="导出收货明细" placement="bottom"><Button icon="download" onClick={this.handleDownloadReceiving}>导出</Button></Tooltip>
+            }
+            {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Tooltip title="导入收货确认" placement="bottom">
               <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/details/import`}
                 formData={{
@@ -284,6 +287,7 @@ export default class ReceiveDetailsPane extends React.Component {
                 <Button icon="upload">导入</Button>
               </ExcelUploader>
             </Tooltip>
+            }
             {/* inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Button icon="check" onClick={this.handleExpressReceived}>
               快捷收货
