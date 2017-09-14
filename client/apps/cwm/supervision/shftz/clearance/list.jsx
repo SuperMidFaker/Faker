@@ -290,6 +290,7 @@ export default class NormalDeclList extends React.Component {
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+                <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="sent">已申报</RadioButton>
                 <RadioButton value="cleared">报关放行</RadioButton>
