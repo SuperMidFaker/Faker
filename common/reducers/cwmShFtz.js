@@ -695,7 +695,7 @@ export function loadBatchRegDetails(relNo) {
   };
 }
 
-export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, applyType, ietype) {
+export function beginBatchDecl(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -705,7 +705,7 @@ export function beginBatchDecl(template, detailIds, relCounts, owner, loginId, l
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/begin',
       method: 'post',
-      data: { template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, applyType, ietype },
+      data,
     },
   };
 }
@@ -725,7 +725,7 @@ export function batchDelgCancel(data) {
   };
 }
 
-export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, loginId, loginName, broker, trxnMode) {
+export function beginNormalDecl(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -735,7 +735,7 @@ export function beginNormalDecl(ietype, template, detailIds, relCounts, owner, l
       ],
       endpoint: 'v1/cwm/shftz/normal/decl/begin',
       method: 'post',
-      data: { ietype, template, detailIds, relCounts, owner, loginId, loginName, broker, trxnMode },
+      data,
     },
   };
 }

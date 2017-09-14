@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
+import { Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
   deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal } from 'common/reducers/cmsManifest';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUploader from 'client/components/ExcelUploader';
+import Summary from 'client/components/Summary';
 import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
 import RowUpdater from 'client/components/rowUpdater';
@@ -852,10 +853,14 @@ export default class ManifestBodyPane extends React.Component {
       getCheckboxProps: () => ({ disabled }),
     };
     const columns = this.getColumns();
-    const stats = (<div><span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
-      <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-      <span style={{ marginLeft: 8 }}>总金额(元): </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span>
-      <span style={{ marginLeft: 8 }}>总个数: </span><span style={{ color: '#FF9933' }}>{totPcs.toFixed(3)}</span></div>);
+    const stats = (
+      <Summary>
+        <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
+        <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
+        <Summary.Item label="总个数">{totPcs.toFixed(3)}</Summary.Item>
+      </Summary>
+      );
     return (
       <div className="pane">
         <div className="panel-header">
@@ -869,7 +874,7 @@ export default class ManifestBodyPane extends React.Component {
             </Popconfirm>
           </div>
           <div className="toolbar-right">
-            <Alert message={stats} type="info" />
+            {stats}
           </div>
         </div>
         <div className="panel-body table-panel table-fixed-layout">

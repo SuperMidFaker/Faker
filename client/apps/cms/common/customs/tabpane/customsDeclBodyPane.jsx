@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Button, Table, Tag, Input, Select } from 'antd';
+import { Button, Table, Tag, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
+import Summary from 'client/components/Summary';
 import messages from '../../form/message.i18n';
 import { buildTipItems } from 'client/common/customs';
 
@@ -465,15 +466,19 @@ export default class CustomsDeclBodyPane extends React.Component {
   render() {
     const { totGrossWt, totWetWt, totTrade } = this.state;
     const columns = this.getColumns();
-    const stats = (<div><span style={{ marginLeft: 8 }}>总毛重: </span><span style={{ color: '#FF9933' }}>{totGrossWt.toFixed(3)}</span>
-      <span style={{ marginLeft: 8 }}>总净重: </span><span style={{ color: '#FF9933' }}>{totWetWt.toFixed(3)}</span>
-      <span style={{ marginLeft: 8 }}>总金额(元): </span><span style={{ color: '#FF9933' }}>{totTrade.toFixed(3)}</span></div>);
+    const stats = (
+      <Summary>
+        <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
+        <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
+      </Summary>
+      );
     return (
       <div className="pane">
         <div className="panel-header">
           <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
           <div className="toolbar-right">
-            <Alert message={stats} type="info" />
+            {stats}
           </div>
         </div>
         <div className="panel-body table-panel table-fixed-layout">
