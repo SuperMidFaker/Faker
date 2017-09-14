@@ -76,6 +76,7 @@ export default class BatchDeclModal extends Component {
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     ftzRelNo: '',
     selectedRowKeys: [],
+    selectedRows: [],
     destCountry: '',
     dutyMode: '',
   }
@@ -215,17 +216,18 @@ export default class BatchDeclModal extends Component {
     });
   }
   handleDelDetail = (detail) => {
-    const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
+    const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_detail_id !== detail.ftz_rel_detail_id);
     const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
     this.setState({ regDetails, portionRegs });
+    message.info(`出库明细ID${detail.ftz_rel_detail_id}已删除`);
   }
   batchDelete = () => {
-    const { selectedRowKeys, regDetails } = this.state;
+    const { selectedRows, regDetails } = this.state;
     const portionRegs = [...this.state.portionRegs];
     const newRegDetails = [];
     for (let i = 0; i < regDetails.length; i++) {
       const detail = regDetails[i];
-      if (!selectedRowKeys.find(key => key === detail.id)) {
+      if (!selectedRows.find(seldetail => seldetail.ftz_rel_detail_id === detail.ftz_rel_detail_id)) {
         newRegDetails.push(detail);
       } else {
         portionRegs.find(pr => pr.ftz_rel_no === detail.ftz_rel_no).added = false;
@@ -235,6 +237,7 @@ export default class BatchDeclModal extends Component {
       portionRegs,
       regDetails: newRegDetails,
       selectedRowKeys: [],
+      selectedRows: [],
     });
   }
   handleCancel = () => {
@@ -378,8 +381,9 @@ export default class BatchDeclModal extends Component {
     });
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+      selectedRows: this.state.selectedRows,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys, selectedRows });
       },
     };
     const extraForm = (
