@@ -50,6 +50,10 @@ export default class SuppliersPane extends Component {
     dataIndex: 'customs_code',
     width: 150,
   }, {
+    title: '发货仓库号',
+    dataIndex: 'ftz_whse_code',
+    width: 100,
+  }, {
     title: '状态',
     dataIndex: 'active',
     render: (o) => {

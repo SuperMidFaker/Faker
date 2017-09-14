@@ -35,28 +35,41 @@ export default class WhseReceiversModal extends Component {
       city: '',
       district: '',
       street: '',
-      region_code: '',
+      region_code: null,
     },
   }
   componentWillReceiveProps(nextProps) {
-    if (!this.props.visible && nextProps.visible && nextProps.receiver.id) {
-      const { receiver: {
-        province,
-        city,
-        district,
-        street,
-        region_code,
-      } } = nextProps;
-      this.setState({
-        region: {
+    if (!this.props.visible && nextProps.visible) {
+      if (nextProps.receiver.id) {
+        const { receiver: {
           province,
           city,
           district,
           street,
           region_code,
-        },
-      });
-      this.props.form.setFieldsValue(nextProps.receiver);
+        } } = nextProps;
+        this.setState({
+          region: {
+            province,
+            city,
+            district,
+            street,
+            region_code,
+          },
+        });
+        this.props.form.setFieldsValue(nextProps.receiver);
+      } else {
+        this.setState({
+          region: {
+            province: '',
+            city: '',
+            district: '',
+            street: '',
+            region_code: null,
+          },
+        });
+        this.props.form.setFieldsValue({});
+      }
     }
   }
 
@@ -112,9 +125,11 @@ export default class WhseReceiversModal extends Component {
           <FormItem label="名称" required {...formItemLayout}>
             {getFieldDecorator('name')(<Input required />)}
           </FormItem>
-
           <FormItem label="海关编码" {...formItemLayout}>
             {getFieldDecorator('customs_code')(<Input />)}
+          </FormItem>
+          <FormItem label="收货仓库号" {...formItemLayout}>
+            {getFieldDecorator('ftz_whse_code')(<Input />)}
           </FormItem>
           <FormItem label="关联货主" required {...formItemLayout}>
             {getFieldDecorator('owner_partner_id')(

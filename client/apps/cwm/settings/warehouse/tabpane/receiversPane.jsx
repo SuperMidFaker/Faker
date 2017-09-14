@@ -63,6 +63,10 @@ export default class ReceiversPane extends Component {
     dataIndex: 'address',
     width: 100,
   }, {
+    title: '收货仓库号',
+    dataIndex: 'ftz_whse_code',
+    width: 100,
+  }, {
     title: '状态',
     dataIndex: 'active',
     render: (o) => {
@@ -94,7 +98,7 @@ export default class ReceiversPane extends Component {
     title: '操作',
     width: 140,
     dataIndex: 'id',
-    render: record => (
+    render: (o, record) => (
       <span>
         {record.active === 0 ? <RowUpdater onHit={() => this.changeReceiverStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeReceiverStatus(record.id, false)} label="停用" row={record} />}

@@ -84,6 +84,9 @@ export default class SuppliersModal extends Component {
           <FormItem label="海关编码:" {...formItemLayout}>
             {getFieldDecorator('customs_code')(<Input />)}
           </FormItem>
+          <FormItem label="发货仓库号:" {...formItemLayout}>
+            {getFieldDecorator('ftz_whse_code')(<Input />)}
+          </FormItem>
           <FormItem label="关联货主:" required {...formItemLayout}>
             {getFieldDecorator('owner_partner_id', {
               initialValue: ownerPartnerId,
