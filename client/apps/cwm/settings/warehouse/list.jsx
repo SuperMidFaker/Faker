@@ -13,7 +13,6 @@ import StaffsPane from './tabpane/staffsPane';
 import ZoneLocationPane from './tabpane/zoneLocationPane';
 import BrokersPane from './tabpane/brokersPane';
 import SupervisionPane from './tabpane/supervisionPane';
-import BackupRestorePane from './tabpane/backupRestorePane';
 import EditWhseModal from './modal/editWarehouseModal';
 import { showWarehouseModal, loadZones, loadLocations, showEditWhseModal, clearLocations } from 'common/reducers/cwmWarehouse';
 import { searchWhse, loadWhseContext } from 'common/reducers/cwmContext';
@@ -148,10 +147,6 @@ export default class WarehouseList extends Component {
           <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} />
         </TabPane>);
     }
-    tabs.push(
-      <TabPane tab="备份与恢复" key="backup">
-        <BackupRestorePane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
-      </TabPane>);
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}

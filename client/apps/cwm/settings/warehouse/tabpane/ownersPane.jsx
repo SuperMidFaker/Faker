@@ -81,6 +81,18 @@ export default class OwnersPane extends Component {
     width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
+    title: '库存备份',
+    dataIndex: 'backup',
+    width: 80,
+    className: 'cell-align-center',
+    render: () => <Button icon="download" />,
+  }, {
+    title: '库存导入',
+    dataIndex: 'restore',
+    width: 80,
+    className: 'cell-align-center',
+    render: () => <Button icon="upload" />,
+  }, {
     title: '操作',
     width: 150,
     render: record => (
