@@ -155,7 +155,16 @@ export default class OrderDetailsPane extends React.Component {
     this.setState({ autoAllocDisabled: true });
     this.props.batchAutoAlloc(row.outbound_no, [row.seq_no], this.props.loginId, this.props.loginName).then((result) => {
       this.setState({ autoAllocDisabled: false });
-      if (result.error) {
+      if (!result.error) {
+        if (result.data.length > 0) {
+          const seqNos = result.data.join(',');
+          const args = {
+            message: `行号${seqNos}货品数量不足`,
+            duration: 0,
+          };
+          notification.open(args);
+        }
+      } else {
         notification.error({
           message: result.error.message,
         });
@@ -164,7 +173,22 @@ export default class OrderDetailsPane extends React.Component {
   }
   handleBatchAutoAlloc = () => {
     this.props.batchAutoAlloc(this.props.outboundNo, this.state.selectedRowKeys,
-      this.props.loginId, this.props.loginName);
+      this.props.loginId, this.props.loginName).then((result) => {
+        if (!result.error) {
+          if (result.data.length > 0) {
+            const seqNos = result.data.join(',');
+            const args = {
+              message: `行号${seqNos}货品数量不足`,
+              duration: 0,
+            };
+            notification.open(args);
+          }
+        } else {
+          notification.error({
+            message: result.error.message,
+          });
+        }
+      });
   }
   handleOutboundAutoAlloc = () => {
     this.props.batchAutoAlloc(this.props.outboundNo, null, this.props.loginId, this.props.loginName).then((result) => {
@@ -177,6 +201,10 @@ export default class OrderDetailsPane extends React.Component {
           };
           notification.open(args);
         }
+      } else {
+        notification.error({
+          message: result.error.message,
+        });
       }
     });
   }
@@ -225,6 +253,7 @@ export default class OrderDetailsPane extends React.Component {
         return true;
       }
     });
+    const rowKey = 'seq_no';
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
@@ -245,7 +274,7 @@ export default class OrderDetailsPane extends React.Component {
         key: 'all-data',
         text: '选择全部项',
         onSelect: () => {
-          const selectedRowKeys = dataSource.map(item => item.id);
+          const selectedRowKeys = dataSource.map(item => item[rowKey]);
           let status = null;
           const unallocated = dataSource.find(item => item.alloc_qty < item.order_qty);
           const allocated = dataSource.find(item => item.alloc_qty === item.order_qty && item.alloc_qty > item.picked_qty);
@@ -255,7 +284,7 @@ export default class OrderDetailsPane extends React.Component {
             status = 'unalloc';
           }
           this.setState({
-            selectedRowKeys,  // TODO
+            selectedRowKeys,
             ButtonStatus: status,
           });
         },
@@ -274,7 +303,7 @@ export default class OrderDetailsPane extends React.Component {
             status = 'unalloc';
           }
           this.setState({
-            selectedRowKeys,  // TODO
+            selectedRowKeys,
             ButtonStatus: status,
           });
         },
@@ -301,7 +330,7 @@ export default class OrderDetailsPane extends React.Component {
               <Button loading={submitting} type="primary" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
           </div>
         </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="id"
+        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey={rowKey}
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
           loading={this.state.loading}
         />
