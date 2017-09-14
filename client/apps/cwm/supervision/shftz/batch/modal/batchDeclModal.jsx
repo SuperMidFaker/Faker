@@ -41,10 +41,16 @@ const Option = Select.Option;
     tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
+      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
     })),
     trxModes: state.cwmShFtz.params.trxModes.map(tx => ({
       value: tx.trx_mode,
       text: tx.trx_spec,
+    })),
+    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+      value: ep.value,
+      text: ep.text,
+      search: `${ep.value}${ep.text}`,
     })),
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
@@ -70,6 +76,8 @@ export default class BatchDeclModal extends Component {
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     ftzRelNo: '',
     selectedRowKeys: [],
+    destCountry: '',
+    dutyMode: '',
   }
   componentWillMount() {
     this.props.loadParams();
@@ -230,7 +238,16 @@ export default class BatchDeclModal extends Component {
     });
   }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '', portionRegs: [], regDetails: [], relNo: '', relDateRange: [], template: undefined });
+    this.setState({
+      ownerCusCode: '',
+      portionRegs: [],
+      regDetails: [],
+      relNo: '',
+      relDateRange: [],
+      template: undefined,
+      destCountry: '',
+      dutyMode: '',
+    });
     this.props.closeBatchDeclModal();
     this.props.form.resetFields();
   }
@@ -308,11 +325,24 @@ export default class BatchDeclModal extends Component {
       name: own.name,
     }))[0];
     const { loginId, loginName, tenantName } = this.props;
-    const { template, groupVals } = this.state;
+    const { template, groupVals, destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
       const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id } : { name: tenantName };
-      this.props.beginBatchDecl(template, detailIds, relCounts, owner, loginId, loginName, groupVals, broker, values.apply_type, values.ietype).then((result) => {
+      this.props.beginBatchDecl({
+        template,
+        detailIds,
+        relCounts,
+        owner,
+        loginId,
+        loginName,
+        groupVals,
+        broker,
+        applyType: values.apply_type,
+        ietype: values.ietype,
+        destCountry,
+        dutyMode,
+      }).then((result) => {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();
@@ -329,9 +359,15 @@ export default class BatchDeclModal extends Component {
   handleFtzRelNoChange = (ev) => {
     this.setState({ ftzRelNo: ev.target.value });
   }
+  handleDutyModeChange = (dutyMode) => {
+    this.setState({ dutyMode });
+  }
+  handleDestCountryChange = (destCountry) => {
+    this.setState({ destCountry });
+  }
   render() {
-    const { submitting, billTemplates } = this.props;
-    const { relNo, ownerCusCode, template, regDetails } = this.state;
+    const { submitting, billTemplates, exemptions, tradeCountries } = this.props;
+    const { relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
@@ -407,6 +443,26 @@ export default class BatchDeclModal extends Component {
                     />
                     {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
                     <div className="toolbar-right">
+                      <FormItem label="征免方式">
+                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100 }} >
+                          {
+                            exemptions.map(data => (
+                              <Option key={data.value} search={`${data.search}`} >
+                                {`${data.value}|${data.text}`}
+                              </Option>)
+                            )}
+                        </Select>
+                      </FormItem>
+                      <FormItem label="最终目的国">
+                        <Select showSearch showArrow optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100 }}>
+                          {
+                            tradeCountries.map(data => (
+                              <Option key={data.value} search={`${data.search}`} >
+                                {`${data.value}|${data.text}`}
+                              </Option>)
+                            )}
+                        </Select>
+                      </FormItem>
                       <FormItem label="制单规则">
                         <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
                           {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}

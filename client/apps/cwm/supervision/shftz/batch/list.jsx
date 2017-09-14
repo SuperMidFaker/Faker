@@ -378,6 +378,7 @@ export default class BatchDeclList extends React.Component {
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+                <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="pending">报关申请</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>
