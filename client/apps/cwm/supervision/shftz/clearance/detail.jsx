@@ -49,6 +49,10 @@ function fetchData({ dispatch, params }) {
       value: tx.trx_mode,
       text: tx.trx_spec,
     })),
+    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+      value: ep.value,
+      text: ep.text,
+    })),
     whse: state.cwmContext.defaultWhse,
   })
 )
@@ -182,6 +186,22 @@ export default class NormalDeclDetail extends Component {
       const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
       const text = mode ? `${mode.value}|${mode.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
+    title: '征免性质',
+    dataIndex: 'duty_mode',
+    width: 150,
+    render: (mode) => {
+      const exemp = this.props.exemptions.filter(cur => cur.value === mode)[0];
+      return exemp ? <Tag>{`${exemp.value}| ${exemp.text}`}</Tag> : mode;
+    },
+  }, {
+    title: '目的国',
+    dataIndex: 'dest_country',
+    width: 150,
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      return country ? <Tag>{`${country.value}| ${country.text}`}</Tag> : o;
     },
   }]
   handleDelgManifest = () => {

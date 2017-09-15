@@ -199,6 +199,22 @@ export default class BatchDeclModal extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
+    title: '征免性质',
+    dataIndex: 'duty_mode',
+    width: 150,
+    render: (mode) => {
+      const exemp = this.props.exemptions.filter(cur => cur.value === mode)[0];
+      return exemp ? <Tag>{`${exemp.value}| ${exemp.text}`}</Tag> : mode;
+    },
+  }, {
+    title: '目的国',
+    dataIndex: 'dest_country',
+    width: 150,
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      return country ? <Tag>{`${country.value}| ${country.text}`}</Tag> : o;
+    },
+  }, {
     title: '删除',
     width: 80,
     fixed: 'right',
