@@ -36,7 +36,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_APPLD', 'LOAD_APPLD_SUCCEED', 'LOAD_APPLD_FAIL',
   'FILE_BA', 'FILE_BA_SUCCEED', 'FILE_BA_FAIL',
   'MAKE_BAL', 'MAKE_BAL_SUCCEED', 'MAKE_BAL_FAIL',
-  'CANCEL_ENR', 'CANCEL_ENR_SUCCEED', 'CANCEL_ENR_FAIL',
+  'CHECK_ENRSTU', 'CHECK_ENRSTU_SUCCEED', 'CHECK_ENRSTU_FAIL',
   'CANCEL_RER', 'CANCEL_RER_SUCCEED', 'CANCEL_RER_FAIL',
   'EDIT_GNAME', 'EDIT_GNAME_SUCCEED', 'EDIT_GNAME_FAIL',
   'EDIT_REL_WT', 'EDIT_REL_WT_SUCCEED', 'EDIT_REL_WT_FAIL',
@@ -186,7 +186,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.FILE_RTS:
     case actionTypes.FILE_BA:
     case actionTypes.MAKE_BAL:
-    case actionTypes.CANCEL_ENR:
+    case actionTypes.CHECK_ENRSTU:
     case actionTypes.CANCEL_RER:
     case actionTypes.SYNC_SKU:
     case actionTypes.FILE_RPO:
@@ -207,7 +207,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.FILE_RTS_FAIL:
     case actionTypes.FILE_BA_FAIL:
     case actionTypes.MAKE_BAL_FAIL:
-    case actionTypes.CANCEL_ENR_FAIL:
+    case actionTypes.CHECK_ENRSTU_FAIL:
     case actionTypes.CANCEL_RER_FAIL:
     case actionTypes.SYNC_SKU_SUCCESS:
     case actionTypes.SYNC_SKU_FAIL:
@@ -266,13 +266,16 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_APPLD_SUCCEED:
       return { ...state, batch_decl: action.result.data.batch_decl, batch_applies: action.result.data.batch_applies };
     case actionTypes.FILE_BA_SUCCEED:
-      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
+      return { ...state,
+        batch_decl: { ...state.batch_decl, status: action.result.data.status },
+        batch_applies: state.batch_applies.map(ba => ({ ...ba, ftz_apply_no: action.result.data.preEntApplyMap[ba.pre_entry_seq_no] })),
+        submitting: false };
     case actionTypes.MAKE_BAL_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
-    case actionTypes.CANCEL_ENR_SUCCEED:
-      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status }, submitting: false };
-    case actionTypes.CANCEL_RER_SUCCEED:
+    case actionTypes.CHECK_ENRSTU_SUCCEED:
       return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status }, submitting: false };
+    case actionTypes.CANCEL_RER_SUCCEED:
+      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status }, submitting: false };
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
     case actionTypes.LOAD_STOCKS:
@@ -485,17 +488,17 @@ export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, tenantId) {
   };
 }
 
-export function cancelEntryReg(asnNo) {
+export function checkEntryRegStatus(asnNo, status) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.CANCEL_ENR,
-        actionTypes.CANCEL_ENR_SUCCEED,
-        actionTypes.CANCEL_ENR_FAIL,
+        actionTypes.CHECK_ENRSTU,
+        actionTypes.CHECK_ENRSTU_SUCCEED,
+        actionTypes.CHECK_ENRSTU_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/entry/reg/cancel',
+      endpoint: 'v1/cwm/shftz/entry/reg/put/status',
       method: 'post',
-      data: { asnNo },
+      data: { asnNo, status },
     },
   };
 }

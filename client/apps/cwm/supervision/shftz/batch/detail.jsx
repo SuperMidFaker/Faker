@@ -54,6 +54,10 @@ function fetchData({ dispatch, params }) {
       value: tx.trx_mode,
       text: tx.trx_spec,
     })),
+    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+      value: ep.value,
+      text: ep.text,
+    })),
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
@@ -89,52 +93,6 @@ export default class BatchDeclDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleSend = () => {
-    const batchNo = this.props.params.batchNo;
-    const batchDecl = this.props.batchDecl;
-    const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const tenantId = this.props.tenantId;
-    const loginId = this.props.loginId;
-    this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId, tenantId).then((result) => {
-      if (!result.error) {
-        if (result.data.errorMsg) {
-          notification.warn({
-            message: '结果异常',
-            description: result.data.errorMsg,
-          });
-        } else {
-          notification.success({
-            message: '操作成功',
-            description: `${batchNo} 已发送至 上海自贸区海关监管系统 出区备案申请`,
-            placement: 'topLeft',
-          });
-        }
-      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-        notification.error({
-          message: '操作失败',
-          description: '仓库监管系统未配置',
-        });
-      } else {
-        notification.error({
-          message: '操作失败',
-          description: result.error.message,
-        });
-      }
-    });
-  }
-  handleQuery = () => {
-    const batchNo = this.props.params.batchNo;
-    this.props.makeBatchApplied(batchNo, this.props.tenantId).then((result) => {
-      if (!result.error) {
-        this.props.loadApplyDetails(batchNo);
-      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-        notification.error({
-          message: '操作失败',
-          description: '仓库监管系统未配置',
-        });
-      }
-    });
-  }
   regColumns = [{
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
@@ -250,15 +208,106 @@ export default class BatchDeclDetail extends Component {
       const text = mode ? `${mode.value}|${mode.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  }, {
+    title: '征免性质',
+    dataIndex: 'duty_mode',
+    width: 150,
+    render: (mode) => {
+      const exemp = this.props.exemptions.filter(cur => cur.value === mode)[0];
+      return exemp ? <Tag>{`${exemp.value}| ${exemp.text}`}</Tag> : mode;
+    },
+  }, {
+    title: '目的国',
+    dataIndex: 'dest_country',
+    width: 150,
+    render: (o) => {
+      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
+      return country ? <Tag>{`${country.value}| ${country.text}`}</Tag> : o;
+    },
   }]
   columns = [{
     title: '出库明细ID',
     dataIndex: 'ftz_rel_detail_id',
   }, {
+    title: '项号',
+    dataIndex: 'decl_g_no',
+    width: 70,
+  }, {
+    title: '商品货号',
+    dataIndex: 'product_no',
+    width: 150,
+    render: (o) => {
+      if (o) {
+        return <Button>{o}</Button>;
+      }
+    },
+  }, {
+    title: '中文品名',
+    dataIndex: 'g_name',
+    width: 150,
+  }, {
+    title: '数量',
+    width: 100,
+    dataIndex: 'qty',
+  }, {
+    title: '毛重',
+    width: 100,
+    dataIndex: 'gross_wt',
+  }, {
+    title: '净重',
+    width: 100,
+    dataIndex: 'net_wt',
+  }, {
     title: '金额',
     dataIndex: 'amount',
     width: 200,
   }]
+  handleSend = () => {
+    const batchNo = this.props.params.batchNo;
+    const batchDecl = this.props.batchDecl;
+    const ftzWhseCode = this.props.whse.ftz_whse_code;
+    const tenantId = this.props.tenantId;
+    const loginId = this.props.loginId;
+    this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId, tenantId).then((result) => {
+      if (!result.error) {
+        if (result.data.errorMsg) {
+          notification.warn({
+            message: '结果异常',
+            description: result.data.errorMsg,
+          });
+        } else {
+          notification.success({
+            message: '操作成功',
+            description: `${batchNo} 已发送至 上海自贸区海关监管系统 集中报关申请`,
+            placement: 'topLeft',
+          });
+        }
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.error({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+        });
+      }
+    });
+  }
+  handleQuery = () => {
+    const batchNo = this.props.params.batchNo;
+    this.props.makeBatchApplied(batchNo, this.props.tenantId).then((result) => {
+      if (!result.error) {
+        this.props.loadApplyDetails(batchNo);
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.error({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
+      }
+    });
+  }
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
   }

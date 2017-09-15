@@ -10,7 +10,7 @@ import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -52,7 +52,7 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, pairEntryRegProducts }
+  { loadEntryDetails, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus }
 )
 @connectNav({
   depth: 3,
@@ -79,7 +79,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
-      const comparable = nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed &&
+      const comparable = nextProps.entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
       const newState = { comparable };
       if (this.state.tabKey === '') {
@@ -210,16 +210,28 @@ export default class SHFTZTransferInDetail extends Component {
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
   }
-  handleInfoSave = (preRegNo, field, value, virtualTransfer) => {
-    this.props.updateEntryReg(preRegNo, field, value, virtualTransfer);
+  handleInfoSave = (preRegNo, field, value) => {
+    this.props.updateEntryReg(preRegNo, field, value);
   }
   handleInboundPage = () => {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
   }
+  handlePairingConfirmed = () => {
+    const asnNo = this.props.params.asnNo;
+    this.props.checkEntryRegStatus(asnNo, CWM_SHFTZ_APIREG_STATUS.completed).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      }
+    });
+  }
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
-    const inbStatus = entryAsn.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
+    const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     return (
       <div>
         <PageHeader>
@@ -242,13 +254,15 @@ export default class SHFTZTransferInDetail extends Component {
           <PageHeader.Nav>
             {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
               <Button size="large" icon="link" onClick={this.handleInboundPage}>
-                <Badge status={inbStatus.badge} text={inbStatus.text} />
+                {inbStatus && <Badge status={inbStatus.badge} text={inbStatus.text} />}
               </Button>
             </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
             {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>明细匹配核对</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing &&
+              <Button type="primary" size="large" loading={submitting} onClick={this.handlePairingConfirmed}>核对通过</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="main-content">
