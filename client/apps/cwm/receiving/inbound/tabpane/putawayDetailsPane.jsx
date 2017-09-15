@@ -148,7 +148,7 @@ export default class PutawayDetailsPane extends React.Component {
     });
   }
   handleBatchUndoReceives = () => {
-    this.props.undoReceives(this.props.inboundNo, this.props.loginId, this.state.selectedRowKeys).then((result) => {
+    this.props.undoReceives(this.props.inboundNo, this.props.loginId, this.state.selectedRows.map(sr => sr.trace_id)).then((result) => {
       if (!result.error) {
         message.success('操作成功');
       } else {
@@ -184,7 +184,7 @@ export default class PutawayDetailsPane extends React.Component {
           const fDataSource = dataSource.filter(item => !(item.result === 1));
           const selectedRowKeys = fDataSource.map(item => item.id);
           this.setState({
-            selectedRowKeys,  // TODO
+            selectedRowKeys,
             selectedRows: fDataSource,
           });
         },
@@ -195,7 +195,7 @@ export default class PutawayDetailsPane extends React.Component {
           const fDataSource = dataSource.filter(item => !(item.result === 1) && !this.state.selectedRowKeys.find(item1 => item1 === item.id));
           const selectedRowKeys = fDataSource.map(item => item.id);
           this.setState({
-            selectedRowKeys,  // TODO
+            selectedRowKeys,
             selectedRows: fDataSource,
           });
         },
