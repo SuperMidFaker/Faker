@@ -25,6 +25,7 @@ export default class LocationSelect extends React.Component {
   }
   state = {
     options: [],
+    location: '',
   }
   componentWillMount() {
     this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId).then((result) => {
@@ -35,6 +36,9 @@ export default class LocationSelect extends React.Component {
       }
     });
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ location: nextProps.value });
+  }
   handleSearch = (value) => {
     this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId, value).then((result) => {
       if (!result.error) {
@@ -44,9 +48,17 @@ export default class LocationSelect extends React.Component {
       }
     });
   }
+  handleChange = (value) => {
+    this.setState({ location: value });
+    this.props.onChange(value);
+  }
+  handleSelect = (value) => {
+    this.setState({ location: value });
+    this.props.onSelect(value);
+  }
   render() {
     return (
-      <Select showSearch allowClear onSearch={this.handleSearch} value={this.props.value} disabled={this.props.disabled} size={this.props.size}
+      <Select showSearch allowClear onSearch={this.handleSearch} value={this.state.location} disabled={this.props.disabled} size={this.props.size}
         onChange={this.props.onChange} onSelect={this.props.onSelect} optionFilterProp="children" style={this.props.style || {}}
       >
         {
