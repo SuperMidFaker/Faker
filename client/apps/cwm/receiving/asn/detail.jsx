@@ -83,7 +83,7 @@ export default class ReceivingASNDetail extends Component {
         data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
-        data.sellerCode = supplier && supplier.code;
+        data.supplierCode = supplier && supplier.code;
         this.props.updateASN(data).then(
           (result) => {
             if (!result.error) {
