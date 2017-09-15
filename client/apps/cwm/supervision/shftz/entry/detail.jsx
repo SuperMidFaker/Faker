@@ -10,7 +10,7 @@ import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -52,7 +52,7 @@ function fetchData({ dispatch, params }) {
     owners: state.cwmContext.whseAttrs.owners,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, cancelEntryReg }
+  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
 )
 @connectNav({
   depth: 3,
@@ -208,15 +208,13 @@ export default class SHFTZEntryDetail extends Component {
   }
   handleCancelReg = () => {
     const asnNo = this.props.params.asnNo;
-    this.props.cancelEntryReg(asnNo, this.props.entryAsn.whse_code).then((result) => {
+    this.props.checkEntryRegStatus(asnNo, CWM_SHFTZ_APIREG_STATUS.pending).then((result) => {
       if (result.error) {
         notification.error({
           message: '操作失败',
           description: result.error.message,
           duration: 15,
         });
-      } else {
-        this.props.loadEntryDetails({ asnNo });
       }
     });
   }
