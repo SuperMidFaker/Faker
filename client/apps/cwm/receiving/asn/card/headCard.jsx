@@ -35,7 +35,7 @@ export default class HeadCard extends Component {
     handleOwnerChange: PropTypes.func,
   }
   componentWillMount() {
-    if (this.props.asnHead.owner_partner_id) {
+    if (this.props.asnHead && this.props.asnHead.owner_partner_id) {
       this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, this.props.asnHead.owner_partner_id);
     }
   }
