@@ -284,13 +284,13 @@ export default class SHFTZTransferOutDetail extends Component {
                   />
                 </Col>
                 <Col sm={12} lg={4}>
-                  <InfoItem label="发货单位海关编码" field={relSo.owner_cus_code} />
+                  <InfoItem label="发货单位海关编码" field={relRegs[0] && relRegs[0].owner_cus_code} />
                 </Col>
                 <Col sm={12} lg={6}>
-                  <InfoItem label="发货单位" field={relSo.owner_name} />
+                  <InfoItem label="发货单位" field={relRegs[0] && relRegs[0].owner_name} />
                 </Col>
                 <Col sm={12} lg={4}>
-                  <InfoItem label="发货仓库号" field={relSo.sender_ftz_whse_code} />
+                  <InfoItem label="发货仓库号" field={relRegs[0] && relRegs[0].sender_ftz_whse_code} />
                 </Col>
                 <Col sm={12} lg={4}>
                   <InfoItem label="出库日期" field={relRegs[0] && relRegs[0].ftz_rel_date} editable={relEditable} type="date"
