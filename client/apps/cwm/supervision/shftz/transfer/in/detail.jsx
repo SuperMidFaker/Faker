@@ -256,7 +256,7 @@ export default class SHFTZTransferInDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={12} lg={6}>
-                  <InfoItem label="海关进库单号" field={entryRegs[0].ftz_ent_no} editable
+                  <InfoItem label="海关进库单号" field={entryRegs[0] && entryRegs[0].ftz_ent_no} editable
                     onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'ftz_ent_no', value)}
                   />
                 </Col>
@@ -271,14 +271,14 @@ export default class SHFTZTransferInDetail extends Component {
                 </Col>
                 <Col sm={12} lg={4}>
                   <InfoItem label="进库日期" addonBefore={<Icon type="clock-circle-o" />} type="date"
-                    field={entryRegs[0].ftz_ent_date && moment(entryRegs[0].ftz_ent_date).format('YYYY-MM-DD')} editable
+                    field={entryRegs[0] && entryRegs[0].ftz_ent_date && moment(entryRegs[0].ftz_ent_date).format('YYYY-MM-DD')} editable
                     onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                   />
                 </Col>
               </Row>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={12} lg={6}>
-                  <InfoItem label="海关出库单号" field={entryRegs[0].ftz_rel_no} editable
+                  <InfoItem label="海关出库单号" field={entryRegs[0] && entryRegs[0].ftz_rel_no} editable
                     onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'ftz_rel_no', value)}
                   />
                 </Col>
