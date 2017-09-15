@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tooltip, Button, Popover, message } from 'antd';
+import classNames from 'classnames';
 import update from 'react/lib/update';
 import SelectItem from './selectItem';
 import { DragDropContext } from 'react-dnd';
@@ -30,6 +31,9 @@ class DataSource {
 
 /* eslint react/prefer-es6-class: 0 */
 class DataTable extends Component {
+  static defaultProps = {
+    baseCls: 'welo-data-table',
+  }
   static propTypes = {
     scrollOffset: PropTypes.number,
     dataSource: PropTypes.oneOfType([
@@ -41,6 +45,7 @@ class DataTable extends Component {
     bulkActions: PropTypes.node,
     selectedRowKeys: PropTypes.array,
     handleDeselectRows: PropTypes.func,
+    noBorder: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -207,6 +212,7 @@ class DataTable extends Component {
     this.setState({ popoverColumns });
   }
   render() {
+    const { baseCls, noBorder } = this.props;
     let dataSource = this.props.dataSource;
     let pagination = this.props.pagination;
     if (dataSource && !this.isLocalDataSource(dataSource)) {
@@ -232,11 +238,14 @@ class DataTable extends Component {
         <Button onClick={this.hidePopover}>取消</Button>
       </div>
     );
+    const classes = classNames(baseCls, {
+      [`${baseCls}-no-border`]: noBorder,
+    });
     return (
-      <div className="welo-data-table">
-        <div className="welo-data-table-toolbar">
+      <div className={classes}>
+        <div className={`${baseCls}-toolbar`}>
           {this.props.toolbarActions}
-          <div className="welo-data-table-toolbar-right">
+          <div className={`${baseCls}-toolbar-right`}>
             <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>}
               visible={this.state.visible} onVisibleChange={this.handleVisibleChange}
             >
@@ -246,17 +255,17 @@ class DataTable extends Component {
             </Popover>
           </div>
           {this.props.selectedRowKeys &&
-          <div className={`welo-data-table-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+          <div className={`${baseCls}-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.props.selectedRowKeys.length}项</h3>
             {this.props.bulkActions}
-            <div className="welo-data-table-toolbar-right">
+            <div className={`${baseCls}-toolbar-right`}>
               <Tooltip title="取消选择" placement="left">
                 <Button type="primary" ghost shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
               </Tooltip>
             </div>
           </div>}
         </div>
-        <div className="welo-data-table-body welo-data-table-body-fixed">
+        <div className={`${baseCls}-body ${baseCls}-body-fixed`}>
           <Table {...this.props} dataSource={dataSource} pagination={pagination}
             onChange={this.handleTableChange} scroll={scrollProp} columns={this.state.tableColumns}
           />
