@@ -49,7 +49,7 @@ export default class ReceiverPane extends Component {
     });
   }
   handleSelect = (value) => {
-    const receiver = this.props.receivers.find(item => item.code === value);
+    const receiver = this.props.receivers.find(item => item.name === value);
     if (receiver) {
       this.props.form.setFieldsValue({
         receiver_code: receiver.code,
@@ -84,7 +84,7 @@ export default class ReceiverPane extends Component {
                   initialValue: soHead && soHead.receiver_name,
                 })(
                   <Select mode="combobox" placeholder="选择收货人" onSelect={this.handleSelect} style={{ width: '50%' }}>
-                    {rcvs.map(item => (<Option value={item.code}>{item.name}</Option>))}
+                    {rcvs.map(item => (<Option value={item.name}>{item.name}</Option>))}
                   </Select>
                 )}
                 {getFieldDecorator('receiver_code', {
