@@ -52,7 +52,7 @@ export default class ReceiverPane extends Component {
     const receiver = this.props.receivers.find(item => item.code === value);
     if (receiver) {
       this.props.form.setFieldsValue({
-        // receiver_code: receiver.code,
+        receiver_code: receiver.code,
         receiver_name: receiver.name,
         receiver_contact: receiver.contact,
         receiver_address: receiver.address,
@@ -77,15 +77,22 @@ export default class ReceiverPane extends Component {
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={6}>
-            <FormItem label="收货人名称">
-              {getFieldDecorator('receiver_name', {
-                rules: [{ message: 'Please select customer!' }],
-                initialValue: soHead && soHead.receiver_name,
-              })(
-                <Select mode="combobox" placeholder="选择收货人" onSelect={this.handleSelect}>
-                  {rcvs.map(item => (<Option value={item.code}>{item.name}</Option>))}
-                </Select>
+            <FormItem label="收货人">
+              <InputGroup compact>
+                {getFieldDecorator('receiver_name', {
+                  rules: [{ message: 'Please select customer!' }],
+                  initialValue: soHead && soHead.receiver_name,
+                })(
+                  <Select mode="combobox" placeholder="选择收货人" onSelect={this.handleSelect} style={{ width: '50%' }}>
+                    {rcvs.map(item => (<Option value={item.code}>{item.name}</Option>))}
+                  </Select>
                 )}
+                {getFieldDecorator('receiver_code', {
+                  initialValue: soHead && soHead.receiver_code,
+                })(
+                  <Input style={{ width: '50%' }} placeholder="代码" />
+                )}
+              </InputGroup>
             </FormItem>
           </Col>
           <Col span={6} offset={2}>
