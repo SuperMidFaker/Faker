@@ -106,16 +106,9 @@ export default class SHFTZRelDetail extends Component {
     const relSo = this.props.relSo;
     const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    let fileOp;
-    let entType;
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
-      fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code, ftzWhseCode, tenantId);
-      entType = CWM_SO_BONDED_REGTYPES[0].text;
-    }
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[1].value) {
-      fileOp = this.props.fileRelPortionouts(soNo, relSo.whse_code, ftzWhseCode, tenantId);
-      entType = CWM_SO_BONDED_REGTYPES[1].text;
-    }
+    const fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code, ftzWhseCode, tenantId);
+    const relType = CWM_SO_BONDED_REGTYPES[0].text;
+
     if (fileOp) {
       fileOp.then((result) => {
         if (!result.error) {
@@ -128,7 +121,7 @@ export default class SHFTZRelDetail extends Component {
           } else {
             notification.success({
               message: '操作成功',
-              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType}`,
+              description: `${soNo} 已发送至 上海自贸区海关监管系统 ${relType}`,
               placement: 'topLeft',
             });
           }
@@ -297,7 +290,7 @@ export default class SHFTZRelDetail extends Component {
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
+    const relType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
@@ -352,7 +345,7 @@ export default class SHFTZRelDetail extends Component {
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                普通出库备案
+                {relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.soNo}
@@ -376,9 +369,6 @@ export default class SHFTZRelDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={12} lg={6}>
-                  <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
-                </Col>
                 <Col sm={12} lg={6}>
                   <InfoItem label="提货单位" field={relSo.owner_name} />
                 </Col>

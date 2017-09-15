@@ -94,7 +94,7 @@ export default class SHFTZTransferOutDetail extends Component {
     const relSo = this.props.relSo;
     const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const entType = CWM_SO_BONDED_REGTYPES[2].text;
+    const relType = CWM_SO_BONDED_REGTYPES[2].text;
     this.props.fileRelTransfers(soNo, relSo.whse_code, ftzWhseCode, tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
@@ -106,7 +106,7 @@ export default class SHFTZTransferOutDetail extends Component {
         } else {
           notification.success({
             message: '操作成功',
-            description: `${soNo} 已发送至 上海自贸区海关监管系统 ${entType}`,
+            description: `${soNo} 已发送至 上海自贸区海关监管系统 ${relType}`,
             placement: 'topLeft',
           });
         }
@@ -233,7 +233,7 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    // const entType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
+    const relType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
     const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送转出';
@@ -254,7 +254,7 @@ export default class SHFTZTransferOutDetail extends Component {
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzTransferOut')}
+                {relType && <Tag color={relType.tagcolor}>{relType.ftztext}</Tag>}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.soNo}
@@ -278,37 +278,49 @@ export default class SHFTZTransferOutDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={4}>
-                  <InfoItem label="发货单位" field={relSo.owner_name} />
+                <Col sm={12} lg={6}>
+                  <InfoItem label="海关出库单号" field={relRegs[0] && relRegs[0].ftz_rel_no} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'ftz_rel_no', value)}
+                  />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={4}>
                   <InfoItem label="发货单位海关编码" field={relSo.owner_cus_code} />
                 </Col>
-                <Col sm={24} lg={2}>
+                <Col sm={12} lg={6}>
+                  <InfoItem label="发货单位" field={relSo.owner_name} />
+                </Col>
+                <Col sm={12} lg={4}>
                   <InfoItem label="发货仓库号" field={relSo.sender_ftz_whse_code} />
                 </Col>
-                <Col sm={24} lg={4}>
-                  <InfoItem label="收货单位" field={relRegs[0] && relRegs[0].receiver_name} editable={relEditable}
-                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_name', value)}
-                  />
-                </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="收货单位海关编码" field={relRegs[0] && relRegs[0].receiver_cus_code} editable={relEditable}
-                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_cus_code', value)}
-                  />
-                </Col>
-                <Col sm={24} lg={2}>
-                  <InfoItem label="收货仓库号" field={relRegs[0] && relRegs[0].receiver_ftz_whse_code} editable={relEditable}
-                    onEdit={value => this.handleInfoSave(relRegs[0] && relRegs[0].pre_entry_seq_no, 'receiver_ftz_whse_code', value)}
-                  />
-                </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={4}>
                   <InfoItem label="出库日期" field={relRegs[0] && relRegs[0].ftz_rel_date} editable={relEditable} type="date"
                     onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'ftz_rel_date', value)}
                   />
                 </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
+              </Row>
+              <Row gutter={16} className="info-group-underline">
+                <Col sm={12} lg={6}>
+                  <InfoItem label="海关入库单号" field={relRegs[0] && relRegs[0].ftz_ent_no} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'ftz_ent_no', value)}
+                  />
+                </Col>
+                <Col sm={12} lg={4}>
+                  <InfoItem label="收货单位海关编码" field={relRegs[0] && relRegs[0].receiver_cus_code} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_cus_code', value)}
+                  />
+                </Col>
+                <Col sm={12} lg={6}>
+                  <InfoItem label="收货单位" field={relRegs[0] && relRegs[0].receiver_name} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0].pre_entry_seq_no, 'receiver_name', value)}
+                  />
+                </Col>
+                <Col sm={12} lg={4}>
+                  <InfoItem label="收货仓库号" field={relRegs[0] && relRegs[0].receiver_ftz_whse_code} editable={relEditable}
+                    onEdit={value => this.handleInfoSave(relRegs[0] && relRegs[0].pre_entry_seq_no, 'receiver_ftz_whse_code', value)}
+                  />
+                </Col>
+                <Col sm={12} lg={4}>
+                  <InfoItem label="转出完成时间" addonBefore={<Icon type="clock-circle-o" />}
                     field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')}
                   />
                 </Col>
@@ -343,11 +355,7 @@ export default class SHFTZTransferOutDetail extends Component {
                   return (
                     <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
                       <Row type="flex" className="panel-header">
-                        <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="海关出库单号" field={reg.ftz_ent_no} width={320} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                          />
-                        </Col>
+                        <Col className="col-flex-primary info-group-inline" />
                         <Col className="col-flex-secondary">
                           {totCol}
                         </Col>

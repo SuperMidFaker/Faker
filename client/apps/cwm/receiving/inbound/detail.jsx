@@ -164,10 +164,10 @@ export default class ReceiveInbound extends Component {
           }
           <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
             <Row gutter={16} className="info-group-underline">
-              <Col sm={24} lg={4}>
+              <Col sm={12} lg={4}>
                 <InfoItem label="货主" field={inboundHead.owner_name} />
               </Col>
-              <Col sm={24} lg={4}>
+              <Col sm={12} lg={4}>
                 <InfoItem label="ASN编号" field={inboundHead.asn_no} />
               </Col>
               <Col sm={12} lg={3}>

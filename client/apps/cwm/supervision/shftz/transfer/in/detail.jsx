@@ -11,7 +11,7 @@ import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import Summary from 'client/components/Summary';
 import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -218,7 +218,7 @@ export default class SHFTZTransferInDetail extends Component {
   }
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
-    // const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
+    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const inbStatus = entryAsn.inbound_status && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     return (
       <div>
@@ -232,7 +232,7 @@ export default class SHFTZTransferInDetail extends Component {
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzTransferIn')}
+                {entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.asnNo}
@@ -255,37 +255,50 @@ export default class SHFTZTransferInDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={6}>
+                  <InfoItem label="海关进库单号" field={entryRegs[0].ftz_ent_no} editable
+                    onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'ftz_ent_no', value)}
+                  />
+                </Col>
+                <Col sm={12} lg={4}>
+                  <InfoItem label="收货单位海关编码" field={entryRegs[0] && entryRegs[0].owner_cus_code} />
+                </Col>
+                <Col sm={12} lg={6}>
+                  <InfoItem label="收货单位" field={entryRegs[0] && entryRegs[0].owner_name} />
+                </Col>
+                <Col sm={12} lg={4}>
+                  <InfoItem label="收货仓库号" field={entryRegs[0] && entryRegs[0].receiver_ftz_whse_code} />
+                </Col>
+                <Col sm={12} lg={4}>
+                  <InfoItem label="进库日期" addonBefore={<Icon type="clock-circle-o" />} type="date"
+                    field={entryRegs[0].ftz_ent_date && moment(entryRegs[0].ftz_ent_date).format('YYYY-MM-DD')} editable
+                    onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={16} className="info-group-underline">
+                <Col sm={12} lg={6}>
+                  <InfoItem label="海关出库单号" field={entryRegs[0].ftz_rel_no} editable
+                    onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'ftz_rel_no', value)}
+                  />
+                </Col>
+                <Col sm={12} lg={4}>
                   <InfoItem label="发货单位海关编码" field={entryRegs[0] && entryRegs[0].sender_cus_code} editable
                     onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'sender_cus_code', value)}
                   />
                 </Col>
-                <Col sm={24} lg={4}>
+                <Col sm={12} lg={6}>
                   <InfoItem label="发货单位" field={entryRegs[0] && entryRegs[0].sender_name}
                     onEdit={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'sender_name', value)}
                   />
                 </Col>
-                <Col sm={24} lg={2}>
+                <Col sm={12} lg={4}>
                   <InfoItem label="发货仓库号" field={entryRegs[0] && entryRegs[0].sender_ftz_whse_code} editable
                     onEdit={value => this.handleInfoSave(entryRegs[0] && entryRegs[0].pre_entry_seq_no, 'sender_ftz_whse_code', value)}
                   />
                 </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="收货单位海关编码" field={entryRegs[0] && entryRegs[0].owner_cus_code} />
-                </Col>
-                <Col sm={24} lg={4}>
-                  <InfoItem label="收货单位" field={entryRegs[0] && entryRegs[0].owner_name} />
-                </Col>
-                <Col sm={24} lg={2}>
-                  <InfoItem label="收货仓库号" field={entryRegs[0] && entryRegs[0].receiver_ftz_whse_code} />
-                </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.created_date && moment(entryAsn.created_date).format('YYYY.MM.DD HH:mm')} format="YYYY.MM.DD HH:mm"
-                  />
-                </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
+                <Col sm={12} lg={4}>
+                  <InfoItem label="转入完成时间" addonBefore={<Icon type="clock-circle-o" />} type="date"
                     field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')} format="YYYY.MM.DD HH:mm"
                   />
                 </Col>
@@ -320,15 +333,7 @@ export default class SHFTZTransferInDetail extends Component {
                   return (
                     <TabPane tab="转入明细" key={reg.pre_entry_seq_no}>
                       <Row type="flex" className="panel-header">
-                        <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="海关进库单号" field={reg.ftz_ent_no} width={320} editable
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value, reg.virtual_transfer)}
-                          />
-                          <InfoItem label="进库日期"
-                            type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD')} editable
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value), reg.virtual_transfer)} width={320}
-                          />
-                        </Col>
+                        <Col className="col-flex-primary info-group-inline" />
                         <Col className="col-flex-secondary">
                           {totCol}
                         </Col>

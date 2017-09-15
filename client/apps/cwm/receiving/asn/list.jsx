@@ -372,7 +372,7 @@ export default class ReceivingASNList extends React.Component {
     }
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={filters.ownerCode}
+      <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
@@ -380,7 +380,7 @@ export default class ReceivingASNList extends React.Component {
           owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
         }
       </Select>
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={filters.ownerCode}
+      <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部供应商</Option>

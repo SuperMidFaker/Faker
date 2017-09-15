@@ -359,7 +359,7 @@ export default class SHFTZEntryDetail extends Component {
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzEntryReg')}
+                {entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.asnNo}
@@ -386,21 +386,18 @@ export default class SHFTZEntryDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={6}>
-                  <InfoItem label="监管类型" field={entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>} />
-                </Col>
-                <Col sm={24} lg={6}>
+                <Col sm={12} lg={6}>
                   <InfoItem label="经营单位" field={entryAsn.owner_name} />
                 </Col>
-                <Col sm={24} lg={6}>
+                <Col sm={12} lg={6}>
                   <InfoItem label="收货单位" field={entryAsn.wh_ent_tenant_name} />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
                     field={entryAsn.created_date && moment(entryAsn.created_date).format('YYYY.MM.DD HH:mm')}
                   />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
                     field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')}
                   />

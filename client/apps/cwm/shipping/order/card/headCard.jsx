@@ -86,7 +86,7 @@ export default class HeadCard extends Component {
     return (
       <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
         <Row gutter={24}>
-          <Col span={6}>
+          <Col sm={24} lg={6}>
             <FormItem label="货主">
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: '请选择货主' }],
@@ -100,14 +100,14 @@ export default class HeadCard extends Component {
                 )}
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col sm={24} lg={6}>
             <FormItem label="要求出货日期" >
               {getFieldDecorator('expect_shipping_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
                 initialValue: soHead ? moment(new Date(soHead.expect_shipping_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col sm={24} lg={6}>
             <FormItem label="客户订单号">
               {getFieldDecorator('cust_order_no', {
                 initialValue: soHead && soHead.cust_order_no,
@@ -118,7 +118,7 @@ export default class HeadCard extends Component {
           </Col>
         </Row>
         <Row gutter={24}>
-          <Col span={6}>
+          <Col sm={24} lg={6}>
             <FormItem label="SO类型">
               {getFieldDecorator('so_type', {
                 initialValue: soHead ? soHead.so_type : CWM_SO_TYPES[0].value,
@@ -129,7 +129,7 @@ export default class HeadCard extends Component {
                     )}
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col sm={24} lg={6}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
                 initialValue: soHead ? soHead.bonded : bonded,
@@ -143,7 +143,7 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
           {bonded > 0 &&
-          <Col span={6}>
+          <Col sm={24} lg={6}>
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
                 initialValue: soHead && soHead.bonded_outtype,

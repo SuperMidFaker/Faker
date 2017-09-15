@@ -270,13 +270,13 @@ export default class SHFTZTransferSelfDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={6}>
+                <Col sm={12} lg={6}>
                   <InfoItem label="货主" field={entryAsn.owner_name} />
                 </Col>
-                <Col sm={24} lg={4}>
+                <Col sm={12} lg={4}>
                   <InfoItem label="出库单号" field={entryAsn.ftz_rel_no} />
                 </Col>
-                <Col sm={24} lg={3}>
+                <Col sm={12} lg={3}>
                   <InfoItem label="转出时间" addonBefore={<Icon type="clock-circle-o" />}
                     field={entryAsn.ftz_rel_date && moment(entryAsn.ftz_rel_date).format('YYYY.MM.DD HH:mm')} format="YYYY.MM.DD HH:mm"
                   />
