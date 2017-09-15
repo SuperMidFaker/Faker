@@ -278,11 +278,8 @@ export default class SHFTZTransferOutDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
-                <Col sm={24} lg={4}>
-                  <InfoItem label="发货单位" field={relSo.owner_name} />
-                </Col>
-                <Col sm={24} lg={3}>
-                  <InfoItem label="发货单位海关编码" field={relSo.owner_cus_code} />
+                <Col sm={24} lg={6}>
+                  <InfoItem label="发货单位" field={`${relSo.owner_cus_code}|${relSo.owner_name}`} />
                 </Col>
                 <Col sm={24} lg={2}>
                   <InfoItem label="发货仓库号" field={relSo.sender_ftz_whse_code} />
