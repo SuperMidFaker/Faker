@@ -249,7 +249,7 @@ export default class ImportComparisonModal extends React.Component {
           <Tooltip title="使用该规格型号">
             <Tag color="green">{o}</Tag>
           </Tooltip>);
-      } else {
+      } else if (o) {
         const spanText = `${o.substring(0, 15)}...`;
         return (<Tooltip title={o}><span>{spanText || ''}</span></Tooltip>);
       }

@@ -266,7 +266,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_APPLD_SUCCEED:
       return { ...state, batch_decl: action.result.data.batch_decl, batch_applies: action.result.data.batch_applies };
     case actionTypes.FILE_BA_SUCCEED:
-      return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
+      return { ...state,
+        batch_decl: { ...state.batch_decl, status: action.result.data.status },
+        batch_applies: state.batch_applies.map(ba => ({ ...ba, ftz_apply_no: action.result.data.preEntApplyMap[ba.pre_entry_seq_no] })),
+        submitting: false };
     case actionTypes.MAKE_BAL_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: action.result.data.status }, submitting: false };
     case actionTypes.CHECK_ENRSTU_SUCCEED:
