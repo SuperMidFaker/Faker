@@ -107,7 +107,7 @@ export default class ReceivingASNList extends React.Component {
       }
     },
   }, {
-    title: '货物属性',
+    title: '保税监管',
     dataIndex: 'bonded',
     width: 100,
     render: (bonded, record) => {
@@ -376,19 +376,15 @@ export default class ReceivingASNList extends React.Component {
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
-        {
-          owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-        }
+        {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
       </Select>
       <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部供应商</Option>
-        {
-          owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
-        }
+        {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
       </Select></span>);
-    const bulkActions = filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>;
+    const bulkActions = filters.status === 'pending' && <Button size="large" icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
     /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
       : <a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>;
       */

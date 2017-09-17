@@ -37,11 +37,11 @@ export default class ModuleMenu extends React.Component {
           <Menu.Item key="transferout">
             <NavLink to="/cwm/supervision/shftz/transfer/out">{this.msg('ftzTransferOut')}</NavLink>
           </Menu.Item>
-          <Menu.Item key="clearance">
-            <NavLink to="/cwm/supervision/shftz/clearance">{this.msg('ftzClearance')}</NavLink>
+          <Menu.Item key="normalDecl">
+            <NavLink to="/cwm/supervision/shftz/decl/normal">{this.msg('ftzNormalDecl')}</NavLink>
           </Menu.Item>
-          <Menu.Item key="batch">
-            <NavLink to="/cwm/supervision/shftz/batch">{this.msg('ftzBatchDecl')}</NavLink>
+          <Menu.Item key="batchDecl">
+            <NavLink to="/cwm/supervision/shftz/decl/batch">{this.msg('ftzBatchDecl')}</NavLink>
           </Menu.Item>
         </Menu.ItemGroup>
         <Menu.ItemGroup key="g_stock" title="库存">

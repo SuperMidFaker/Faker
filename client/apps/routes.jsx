@@ -74,8 +74,8 @@ import * as CWMSupSHFTZTransferIn from './cwm/supervision/shftz/transfer/in';
 import * as CWMSupSHFTZTransferOut from './cwm/supervision/shftz/transfer/out';
 import * as CWMSupSHFTZTransferSelf from './cwm/supervision/shftz/transfer/self';
 import * as CWMSupSHFTZRelease from './cwm/supervision/shftz/release';
-import * as CWMSupSHFTZClearance from './cwm/supervision/shftz/clearance';
-import * as CWMSupSHFTZBatch from './cwm/supervision/shftz/batch';
+import * as CWMSupSHFTZNormalDecl from './cwm/supervision/shftz/decl/normal';
+import * as CWMSupSHFTZBatchDecl from './cwm/supervision/shftz/decl/batch';
 import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
@@ -499,13 +499,13 @@ export default(store, cookie) => {
                   <IndexRoute component={CWMSupSHFTZTransferOut.List} />
                   <Route path=":soNo" component={CWMSupSHFTZTransferOut.Detail} />
                 </Route>
-                <Route path="clearance" >
-                  <IndexRoute component={CWMSupSHFTZClearance.List} />
-                  <Route path=":clearanceNo" component={CWMSupSHFTZClearance.Detail} />
+                <Route path="decl/normal" >
+                  <IndexRoute component={CWMSupSHFTZNormalDecl.List} />
+                  <Route path=":clearanceNo" component={CWMSupSHFTZNormalDecl.Detail} />
                 </Route>
-                <Route path="batch" >
-                  <IndexRoute component={CWMSupSHFTZBatch.List} />
-                  <Route path=":batchNo" component={CWMSupSHFTZBatch.Detail} />
+                <Route path="decl/batch" >
+                  <IndexRoute component={CWMSupSHFTZBatchDecl.List} />
+                  <Route path=":batchNo" component={CWMSupSHFTZBatchDecl.Detail} />
                 </Route>
                 <Route path="stock" >
                   <IndexRoute component={CWMSupSHFTZStock.List} />

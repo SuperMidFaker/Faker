@@ -11,7 +11,7 @@ import TrimSpan from 'client/components/trimSpan';
 import { loadParams, loadNormalDelg, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { DELG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -240,7 +240,7 @@ export default class NormalDeclDetail extends Component {
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('ftzClearance')}
+                {this.msg('ftzNormalDecl')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.clearanceNo}

@@ -3,20 +3,19 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm, Tooltip, Icon } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
+import { openBatchDeclModal, loadBatchApplyList, batchDelgCancel } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { DELG_STATUS } from 'common/constants';
-import ModuleMenu from '../menu';
-import NormalDeclModal from './modal/normalDeclModal';
+import ModuleMenu from '../../menu';
+import BatchDeclModal from './modal/batchDeclModal';
 import PageHeader from 'client/components/PageHeader';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
@@ -29,20 +28,20 @@ const OptGroup = Select.OptGroup;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    delglist: state.cwmShFtz.normalDelgList,
+    batchlist: state.cwmShFtz.batchApplyList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners,
+    owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
     loading: state.cwmShFtz.loading,
   }),
-  { openNormalDeclModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
+  { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList, batchDelgCancel }
 )
 @connectNav({
   depth: 2,
   moduleName: 'cwm',
 })
-export default class NormalDeclList extends React.Component {
+export default class BatchDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -59,7 +58,7 @@ export default class NormalDeclList extends React.Component {
   componentDidMount() {
     const listFilter = this.props.listFilter;
     let status = listFilter.status;
-    if (['manifesting', 'sent', 'cleared'].filter(stkey => stkey === status).length === 0) {
+    if (['manifesting', 'pending', 'sent', 'applied', 'cleared'].filter(stkey => stkey === status).length === 0) {
       status = 'manifesting';
     }
     let ownerView = listFilter.ownerView;
@@ -67,75 +66,155 @@ export default class NormalDeclList extends React.Component {
       ownerView = 'all';
     }
     const filter = { ...listFilter, status, ownerView };
-    this.handleNormalDelgLoad(1, null, filter);
+    this.handleBatchApplyLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
-  columns = [{
-    title: '出库报关编号',
-    dataIndex: 'normal_decl_no',
+  /* manifColumns = [{
+    title: '集中报关编号',
+    dataIndex: 'batch_decl_no',
     width: 150,
     fixed: 'left',
   }, {
-    title: <Tooltip title="普通出库的海关出库单号">提货单号 <small><Icon type="question-circle-o" /></small></Tooltip>,
-    dataIndex: 'ftz_rel_no',
-    width: 150,
-  }, {
-    title: '提货单位(货主)',
+    title: '货主',
     width: 180,
     dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '收货单位',
+    dataIndex: 'receiver_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '操作',
+    dataIndex: 'OPS_COL',
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => (
+      <span>
+        <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
+        <span className="ant-divider" />
+        <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
+          <a>取消委托</a>
+        </Popconfirm>
+      </span>
+    ),
+  }]
+  */
+  /* {
+    title: '集中报关编号',
+    dataIndex: 'batch_decl_no',
+    width: 150,
+    fixed: 'left',
+  }
+  */
+  columns = [{
+    title: '集中报关编号',
+    dataIndex: 'batch_decl_no',
+    width: 150,
+    fixed: 'left',
+  }, {
+    title: '报关申请单号',
+    dataIndex: 'ftz_apply_no',
+    width: 150,
+  }, {
+    title: '货主',
+    width: 180,
+    dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '收货单位',
+    width: 180,
+    dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '状态',
     dataIndex: 'status',
     width: 120,
+    render: (o) => {
+      if (o === 0) {
+        return (<Badge status="default" />);
+      } else if (o === 1) {
+        return (<Badge status="processing" text="已发送" />);
+      } else if (o === 2) {
+        return (<Badge status="success" text="备案完成" />);
+      }
+    },
+
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
-    width: 180,
+    width: 150,
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '报关委托编号',
-    dataIndex: 'delg_no',
     width: 150,
+    dataIndex: 'delg_no',
   }, {
     title: '报关单号',
     dataIndex: 'pre_entry_seq_no',
     width: 150,
   }, {
+    title: '供应商',
+    dataIndex: 'supplier',
+    width: 100,
+  }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
-    width: 140,
+    width: 80,
   }, {
-    title: '委托时间',
-    width: 120,
-    dataIndex: 'delg_time',
+    title: '币制',
+    dataIndex: 'currency',
+    width: 80,
+  }, {
+    title: '申请类型',
+    dataIndex: 'apply_type',
     render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
+      switch (o) {
+        case '0':
+          return <Tag>普通报关申请单</Tag>;
+        case '1':
+          return <Tag>跨关区报关申请单</Tag>;
+        case '2':
+          return <Tag>保展报关申请单</Tag>;
+        default:
+          break;
       }
     },
   }, {
-    title: '申报日期',
+    title: '申请日期',
     width: 120,
-    dataIndex: 'decl_time',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
+        return `${moment(o).format('YYYY.MM.DD')}`;
+      }
+    },
+  }, {
+    title: '报关日期',
+    width: 120,
+    dataIndex: 'decl_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
     title: '放行日期',
     width: 120,
-    dataIndex: 'clean_time',
+    dataIndex: 'clear_date',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
+        return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
     title: '创建时间',
     width: 120,
-    render: (o, record) => record.delg_time && moment(record.delg_time).format('MM.DD HH:mm'),
+    dataIndex: 'created_time',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
@@ -145,20 +224,17 @@ export default class NormalDeclList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 200,
     fixed: 'right',
-    render: (o, record) => (
-      <span>
-        <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
-        {record.status <= DELG_STATUS.undeclared && <span className="ant-divider" />}
-        {record.status <= DELG_STATUS.undeclared &&
-        <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
-          <a>取消委托</a>
-        </Popconfirm>}
-      </span>
-    ),
+    render: (o, record) => (<span>
+      <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
+      {record.manifested === 0 && <span className="ant-divider" />}
+      {record.manifested === 0 &&
+      <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
+        <a>取消委托</a>
+      </Popconfirm>}</span>),
   }]
 
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadNormalDelgList(params),
+    fetcher: params => this.props.loadBatchApplyList(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -178,11 +254,11 @@ export default class NormalDeclList extends React.Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.delglist,
+    remotes: this.props.batchlist,
   })
-  handleNormalDelgLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, delglist: { pageSize, current } } = this.props;
-    this.props.loadNormalDelgList({
+  handleBatchApplyLoad = (currentPage, whsecode, filter) => {
+    const { tenantId, listFilter, whse, batchlist: { pageSize, current } } = this.props;
+    this.props.loadBatchApplyList({
       tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
@@ -194,50 +270,55 @@ export default class NormalDeclList extends React.Component {
       }
     });
   }
-  handleNewNormalDelgLoad = () => {
-    this.handleNormalDelgLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
-  }
-  handleDelgCancel = (row) => {
-    this.props.cancelBatchNormalClear({ normal_decl_no: row.normal_decl_no, delg_no: row.delg_no }).then((result) => {
-      if (!result.error) {
-        this.handleNewNormalDelgLoad();
-      }
-    });
+  handleBatchDeclLoad = () => {
+    this.handleBatchApplyLoad(1, null, { ...this.props.listFilter, status: 'manifesting' });
   }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleNormalDelgLoad(1, this.props.whse.code, filter);
+    this.handleBatchApplyLoad(1, this.props.whse.code, filter);
   }
-  handleCreateNormalDecl = () => {
+  handleCreateBatchDecl = () => {
     const { listFilter, owners } = this.props;
     const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
-    this.props.openNormalDeclModal({ ownerCusCode });
+    this.props.openBatchDeclModal({ ownerCusCode });
+  }
+  handleDelgCancel = (row) => {
+    this.props.batchDelgCancel(row).then((result) => {
+      if (!result.error) {
+        this.handleBatchApplyLoad();
+      }
+    });
+  }
+  handleDelgManifest = (row) => {
+    const ietype = row.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${ietype}/manifest/`;
+    this.context.router.push(`${link}${row.delg_no}`);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/clearance/${row.normal_decl_no}`;
+    const link = `/cwm/supervision/shftz/decl/batch/${row.batch_decl_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    this.handleNormalDelgLoad(1, value);
+    this.handleBatchApplyLoad(1, value);
   }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
-    this.handleNormalDelgLoad(1, this.props.whse.code, filters);
+    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
   }
   handleOwnerSelectChange = (value) => {
     const filters = { ...this.props.listFilter, ownerView: value };
-    this.handleNormalDelgLoad(1, this.props.whse.code, filters);
+    this.handleBatchApplyLoad(1, this.props.whse.code, filters);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { listFilter, whses, whse, owners, delglist } = this.props;
+    const { listFilter, whses, whse, owners, batchlist } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -245,7 +326,12 @@ export default class NormalDeclList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    this.dataSource.remotes = delglist;
+    /* let columns = this.columns;
+    if (listFilter.status === 'manifesting') {
+      columns = this.manifColumns;
+    }
+    */
+    this.dataSource.remotes = batchlist;
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
@@ -254,9 +340,11 @@ export default class NormalDeclList extends React.Component {
       >
         <OptGroup>
           <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}
+          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+            search={`${data.partner_code}${data.name}`}
+          >{data.name}
           </Option>)
-            )}
+          )}
         </OptGroup>
       </Select>
     </span>);
@@ -271,7 +359,7 @@ export default class NormalDeclList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="clearance" />
+            <ModuleMenu currentKey="batchDecl" />
           </div>
         </Sider>
         <Layout>
@@ -284,7 +372,7 @@ export default class NormalDeclList extends React.Component {
                   </Select>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  {this.msg('ftzClearance')}
+                  {this.msg('ftzBatchDecl')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
@@ -292,13 +380,15 @@ export default class NormalDeclList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
-                <RadioButton value="sent">已申报</RadioButton>
+                <RadioButton value="pending">报关申请</RadioButton>
+                <RadioButton value="sent">已发送</RadioButton>
+                <RadioButton value="applied">申请通过</RadioButton>
                 <RadioButton value="cleared">报关放行</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNormalDecl}>
-                {this.msg('createClearance')}
+              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBatchDecl}>
+                {this.msg('createBatchDecl')}
               </Button>
             </PageHeader.Actions>
           </PageHeader>
@@ -309,7 +399,7 @@ export default class NormalDeclList extends React.Component {
             />
           </Content>
         </Layout>
-        <NormalDeclModal reload={this.handleNewNormalDelgLoad} />
+        <BatchDeclModal reload={this.handleBatchDeclLoad} />
       </Layout>
     );
   }

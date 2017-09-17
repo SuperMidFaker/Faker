@@ -4,50 +4,37 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Card, Select, Layout, Tabs, Tag, message } from 'antd';
-import connectNav from 'client/common/decorators/connect-nav';
+import { Tag } from 'antd';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
-import PageHeader from 'client/components/PageHeader';
-import ModuleMenu from '../menu';
-import QueryForm from './queryForm';
-import { formatMsg } from './message.i18n';
-
-const { Sider, Content } = Layout;
-const Option = Select.Option;
-const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
-  state => ({
-    whses: state.cwmContext.whses,
-    defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
-    owners: state.cwmContext.whseAttrs.owners,
-    stockDatas: state.cwmShFtz.stockDatas,
-    units: state.cwmShFtz.params.units.map(un => ({
-      value: un.unit_code,
-      text: un.unit_name,
-    })),
-    currencies: state.cwmShFtz.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-    })),
-    tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
-    loading: state.cwmShFtz.loading,
-  }),
-  { loadFtzStocks, loadParams, switchDefaultWhse }
-)
-@connectNav({
-  depth: 2,
-  moduleName: 'cwm',
-})
-export default class SHFTZStockList extends React.Component {
+    state => ({
+      whses: state.cwmContext.whses,
+      defaultWhse: state.cwmContext.defaultWhse,
+      tenantId: state.account.tenantId,
+      owners: state.cwmContext.whseAttrs.owners,
+      stockDatas: state.cwmShFtz.stockDatas,
+      units: state.cwmShFtz.params.units.map(un => ({
+        value: un.unit_code,
+        text: un.unit_name,
+      })),
+      currencies: state.cwmShFtz.params.currencies.map(cr => ({
+        value: cr.curr_code,
+        text: cr.curr_name,
+      })),
+      tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
+        value: tc.cntry_co,
+        text: tc.cntry_name_cn,
+      })),
+      loading: state.cwmShFtz.loading,
+    }),
+    { loadFtzStocks, loadParams, switchDefaultWhse }
+  )
+export default class FTZStockPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -60,7 +47,6 @@ export default class SHFTZStockList extends React.Component {
   componentWillMount() {
     this.props.loadParams();
   }
-  msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('owner'),
     dataIndex: 'owner_name',
@@ -198,11 +184,6 @@ export default class SHFTZStockList extends React.Component {
     width: 120,
     dataIndex: 'amount_usd',
   }]
-
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-  }
   handleStockQuery = (filters) => {
     const filter = { ...filters,
       cus_whse_code: this.props.defaultWhse.ftz_whse_code,
@@ -241,81 +222,18 @@ export default class SHFTZStockList extends React.Component {
     FileSaver.saveAs(new window.Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'shftzStocks.xlsx');
   }
   render() {
-    const { defaultWhse, whses } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
-    const columns = this.columns;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-
     return (
-      <Layout>
-        <Sider width={200} className="menu-sider" key="sider">
-          <div className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                  上海自贸区监管
-                </Breadcrumb.Item>
-            </Breadcrumb>
-          </div>
-          <div className="left-sider-panel">
-            <ModuleMenu currentKey="stock" />
-          </div>
-        </Sider>
-        <Layout>
-          <PageHeader>
-            <PageHeader.Title>
-              <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                    {bondedWhses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  监管库存查询
-                </Breadcrumb.Item>
-              </Breadcrumb>
-            </PageHeader.Title>
-            <PageHeader.Actions>
-              <Button size="large" icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
-                {this.msg('export')}
-              </Button>
-            </PageHeader.Actions>
-          </PageHeader>
-          <Content className="main-content" key="main">
-            <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
-              <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
-            </Card>
-            <Card noHovering bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="comparison">
-                <TabPane tab="对比视图" key="comparison">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id" noBorder
-                  />
-                </TabPane>
-                <TabPane tab={<Badge count={5}>差异视图</Badge>} key="discrepancy">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
-                  />
-                </TabPane>
-                <TabPane tab="海关库存数据" key="ftz">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
-                  />
-                </TabPane>
-                <TabPane tab="仓库库存数据" key="wms">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
-                  />
-                </TabPane>
-              </Tabs>
-            </Card>
-          </Content>
-        </Layout>
-      </Layout>
+      <div className="table-panel table-fixed-layout">
+        <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
+          columns={this.columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
+        />
+      </div>
     );
   }
 }

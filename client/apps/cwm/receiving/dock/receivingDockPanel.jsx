@@ -99,7 +99,7 @@ export default class ReceivingDockPanel extends React.Component {
     if (e.key === 'cancel') {
       Modal.confirm({
         title: '确认取消ASN?',
-        content: '确认后此ANSN的相关信息将会被删除',
+        content: '确认后此ASN的相关信息将会被删除',
         onOk: () => {
           this.handleDeleteASN(asnHead.asn_no);
         },
@@ -108,7 +108,7 @@ export default class ReceivingDockPanel extends React.Component {
     } else if (e.key === 'close') {
       Modal.confirm({
         title: '确认关闭ASN?',
-        content: '确认后此ANSN将会被提前完成',
+        content: '确认后此ASN将会被提前完成',
         onOk: () => {
           this.handleComplete(asnHead.asn_no);
         },
