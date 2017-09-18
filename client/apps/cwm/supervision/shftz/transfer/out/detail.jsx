@@ -24,7 +24,7 @@ const Step = Steps.Step;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
-  promises.push(dispatch(loadRelDetails(params.soNo)));
+  promises.push(dispatch(loadRelDetails(params.soNo, 'transfer')));
   promises.push(dispatch(loadParams()));
   return Promise.all(promises);
 }
@@ -91,11 +91,11 @@ export default class SHFTZTransferOutDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
-    const relSo = this.props.relSo;
     const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
+    const whseCode = this.props.whse.code;
     const relType = CWM_SO_BONDED_REGTYPES[2].text;
-    this.props.fileRelTransfers(soNo, relSo.whse_code, ftzWhseCode, tenantId).then((result) => {
+    this.props.fileRelTransfers(soNo, whseCode, ftzWhseCode, tenantId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -218,7 +218,7 @@ export default class SHFTZTransferOutDetail extends Component {
     const change = { gross_wt: val };
     this.props.editReleaseWt({ change, id }).then((result) => {
       if (!result.error) {
-        this.props.loadRelDetails(this.props.params.soNo);
+        this.props.loadRelDetails(this.props.params.soNo, 'transfer');
       }
     });
   }
@@ -233,9 +233,13 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const relType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
-    const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
+    if (relRegs.length === 0) {
+      return null;
+    }
+    const relType = CWM_SO_BONDED_REGTYPES[2];
+    const regStatus = relRegs[0].status;
+    const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
+    const sent = regStatus === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送转出';
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     let sendable = relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
@@ -268,7 +272,7 @@ export default class SHFTZTransferOutDetail extends Component {
         }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
+            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
@@ -321,12 +325,12 @@ export default class SHFTZTransferOutDetail extends Component {
                 </Col>
                 <Col sm={12} lg={4}>
                   <InfoItem label="转出完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')}
+                    field={relRegs[0].ftz_reg_date && moment(relRegs[0].ftz_reg_date).format('YYYY-MM-DD HH:mm')}
                   />
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={relSo.reg_status}>
+                <Steps progressDot current={regStatus}>
                   <Step description="待转出" />
                   <Step description="已发送" />
                   <Step description="已转出" />

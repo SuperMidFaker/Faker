@@ -112,7 +112,7 @@ const initialState = {
   },
   entry_asn: {},
   entry_regs: [],
-  rel_so: {},
+  rel_so: { outbound_no: '', outbound_status: -1 },
   rel_regs: [],
   batch_decl: {},
   batch_applies: [],
@@ -172,7 +172,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, entry_regs: regs };
     }
     case actionTypes.REL_DETAILS_LOAD_SUCCEED:
-      return { ...state, ...action.result.data };
+      return { ...state, rel_so: action.result.data.rel_so, rel_regs: action.result.data.rel_regs };
     case actionTypes.UPDATE_RRFIELD_SUCCEED:
       return { ...state,
         rel_regs: state.rel_regs.map((rr) => {
@@ -241,9 +241,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.FILE_RTS_SUCCEED:
     case actionTypes.FILE_RPO_SUCCEED:
       return { ...state,
-        rel_so: { ...state.rel_so, reg_status: action.result.data.status },
         submitting: false,
-        rel_regs: state.rel_regs.map(rr => ({ ...rr, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
+        rel_regs: state.rel_regs.map(rr => ({ ...rr, status: action.result.data.status, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
       };
     case actionTypes.LOAD_NDLIST:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
@@ -275,7 +274,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CHECK_ENRSTU_SUCCEED:
       return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status }, submitting: false };
     case actionTypes.CANCEL_RER_SUCCEED:
-      return { ...state, rel_so: { ...state.rel_so, reg_status: action.result.data.status }, submitting: false };
+      return { ...state,
+        submitting: false,
+        rel_regs: state.rel_regs.map(rr => ({ ...rr, status: action.result.data.status })),
+      };
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
     case actionTypes.LOAD_STOCKS:
@@ -518,7 +520,7 @@ export function pairEntryRegProducts(asnNo, whseCode, ftzWhseCode, tenantId, log
   };
 }
 
-export function loadRelDetails(soNo) {
+export function loadRelDetails(soNo, relType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -528,7 +530,7 @@ export function loadRelDetails(soNo) {
       ],
       endpoint: 'v1/cwm/shftz/rel/reg/details',
       method: 'get',
-      params: { so_no: soNo },
+      params: { so_no: soNo, rel_type: relType },
     },
   };
 }

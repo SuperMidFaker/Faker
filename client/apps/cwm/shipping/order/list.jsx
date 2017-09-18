@@ -122,11 +122,13 @@ export default class ShippingOrderList extends React.Component {
     width: 100,
     dataIndex: 'bonded',
     render: (bonded, record) => {
-      if (bonded) {
+      if (bonded === 1) {
         const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === record.bonded_outtype)[0];
         if (regtype) {
           return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
         }
+      } else if (bonded === -1) {
+        return (<Tag>不限</Tag>);
       } else {
         return (<Tag>非保税</Tag>);
       }
