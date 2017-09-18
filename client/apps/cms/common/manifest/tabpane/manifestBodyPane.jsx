@@ -828,7 +828,7 @@ export default class ManifestBodyPane extends React.Component {
           }} onUploaded={this.handleUploaded}
         >
           <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
-            <Icon type="link" /> {this.msg('relatedImport')}
+            <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
         <Dropdown overlay={handlemenu}>
