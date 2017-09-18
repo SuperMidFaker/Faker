@@ -135,7 +135,7 @@ export default class HeadCard extends Component {
                 initialValue: soHead ? soHead.bonded : bonded,
               })(
                 <RadioGroup onChange={this.handleBondedChange}>
-                  <RadioButton value={-1}>不限</RadioButton>
+                  { !!defaultWhse.bonded && <RadioButton value={-1}>不限</RadioButton>}
                   <RadioButton value={0}>非保税</RadioButton>
                   { !!defaultWhse.bonded && <RadioButton value={1}>保税</RadioButton> }
                 </RadioGroup>
