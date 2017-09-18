@@ -307,6 +307,13 @@ export default class ManifestBodyPane extends React.Component {
           onChange={this.handleEditChange} edit={editBody}
         />),
     }, {
+      title: this.msg('enName'),
+      width: 200,
+      render: (o, record, index) =>
+        (<ColumnInput field="en_name" inEdit={index === editIndex} record={record}
+          onChange={this.handleEditChange} edit={editBody}
+        />),
+    }, {
       title: this.msg('gModel'),
       width: 400,
       render: (o, record, index) =>

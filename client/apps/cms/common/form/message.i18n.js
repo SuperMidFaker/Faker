@@ -337,6 +337,10 @@ export default defineMessages({
     id: 'cms.forms.table.gname',
     defaultMessage: '商品名称',
   },
+  enName: {
+    id: 'cms.forms.table.en.name',
+    defaultMessage: '英文描述',
+  },
   gModel: {
     id: 'cms.forms.table.gmodel',
     defaultMessage: '规格型号',

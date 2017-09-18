@@ -88,7 +88,7 @@ export default class SHFTZEntryDetail extends Component {
       let regDetailExist = true;
       nextProps.entryRegs.forEach((entReg) => { regDetailExist = regDetailExist && entReg.details.length > 0; });
       let sendable = nextProps.entryAsn.inbound_no && regDetailExist && nextProps.entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-      let unsentReason = !nextProps.entryAsn.inbound_no ? '入库通知未释放' : '';
+      let unsentReason = !nextProps.entryAsn.inbound_no ? '收货通知ASN尚未释放' : '';
       if (sendable) {
         const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
         if (nonCusDeclRegs.length === 0) {

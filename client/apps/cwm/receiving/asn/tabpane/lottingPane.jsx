@@ -42,8 +42,8 @@ export default class LottingPane extends Component {
     const { lotInfo } = this.state;
     return (
       <div style={{ padding: 24 }}>
-        <Row>
-          <Col sm={24} lg={6}>
+        <Row gutter={16}>
+          <Col lg={6} md={12} sm={24}>
             <FormItem label="外部批次">
               {getFieldDecorator('external_lot_no', {
                 initialValue: lotInfo.external_lot_no,
@@ -52,7 +52,7 @@ export default class LottingPane extends Component {
                 )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={6} offset={2}>
+          <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
             <FormItem label="扩展属性1">
               {getFieldDecorator('attrib_1_string', {
                 initialValue: lotInfo.attrib_1_string,
@@ -61,7 +61,7 @@ export default class LottingPane extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={6} offset={2}>
+          <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
             <FormItem label="扩展属性2">
               {getFieldDecorator('attrib_2_string', {
                 initialValue: lotInfo.attrib_2_string,
@@ -71,8 +71,8 @@ export default class LottingPane extends Component {
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col sm={24} lg={6} offset={8}>
+        <Row gutter={16}>
+          <Col xl={{ span: 6, offset: 8 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
             <FormItem label="扩展属性3">
               {getFieldDecorator('attrib_3_string', {
                 initialValue: lotInfo.attrib_3_string,
@@ -81,7 +81,7 @@ export default class LottingPane extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={6} offset={2}>
+          <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
             <FormItem label="扩展属性4">
               {getFieldDecorator('attrib_4_string', {
                 initialValue: lotInfo.attrib_4_string,
@@ -91,8 +91,8 @@ export default class LottingPane extends Component {
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col sm={24} lg={6} offset={8}>
+        <Row gutter={16}>
+          <Col xl={{ span: 6, offset: 8 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
             <FormItem label="扩展属性5">
               {getFieldDecorator('attrib_5_string', {
                 initialValue: lotInfo.attrib_5_string,
@@ -101,7 +101,7 @@ export default class LottingPane extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={6} offset={2}>
+          <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
             <FormItem label="扩展属性6">
               {getFieldDecorator('attrib_6_string', {
                 initialValue: lotInfo.attrib_6_string,
@@ -111,8 +111,8 @@ export default class LottingPane extends Component {
             </FormItem>
           </Col>
         </Row>
-        <Row>
-          <Col sm={24} lg={6} offset={8}>
+        <Row gutter={16}>
+          <Col xl={{ span: 6, offset: 8 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
             <FormItem label="扩展属性7">
               {getFieldDecorator('attrib_7_date', {
                 initialValue: lotInfo.attrib_7_date && moment(lotInfo.attrib_7_date),
@@ -121,7 +121,7 @@ export default class LottingPane extends Component {
               )}
             </FormItem>
           </Col>
-          <Col sm={24} lg={6} offset={2}>
+          <Col xl={{ span: 8, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
             <FormItem label="扩展属性8">
               {getFieldDecorator('attrib_8_date', {
                 initialValue: lotInfo.attrib_8_date && moment(lotInfo.attrib_8_date),

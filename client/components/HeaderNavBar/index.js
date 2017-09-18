@@ -10,8 +10,8 @@ import { loadTranslation, changeUserLocale, showPreferenceDock } from 'common/re
 import { showActivitiesDock } from 'common/reducers/activities';
 import { logout } from 'common/reducers/account';
 import { goBackNav } from 'common/reducers/navbar';
-import NotificationPopover from './NotificationPopover';
-import HelpcenterPopover from './HelpcenterPopover';
+import NotificationPopover from './notificationPopover';
+import HelpCenterPopover from './helpCenterPopover';
 import ModuleMenu from 'client/components/ModuleMenu';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -133,7 +133,7 @@ export default class HeaderNavBar extends React.Component {
         </Menu>
       </div>
     );
-    const helpcenterContent = (<HelpcenterPopover />);
+    const helpcenterContent = (<HelpCenterPopover />);
 
     let moduleName = navTitle.moduleName;
     let navMenu = null;
