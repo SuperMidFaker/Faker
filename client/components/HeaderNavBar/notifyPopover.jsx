@@ -37,7 +37,7 @@ function fetchData({ state, dispatch, cookie }) {
 }), {
   messageBadgeNum, prompt, showNotificationDock, loadMessages, markMessages, markMessage
 })
-export default class NotificationPopover extends React.Component {
+export default class NotifyPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

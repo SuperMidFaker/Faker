@@ -15,7 +15,7 @@ const formatMsg = format(messages);
 @connect(state => ({
   tenantId: state.account.tenantId,
 }))
-export default class HelpcenterPopover extends React.Component {
+export default class HelpPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
