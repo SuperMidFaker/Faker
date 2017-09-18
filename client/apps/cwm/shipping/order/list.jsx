@@ -453,21 +453,19 @@ export default class ShippingOrderList extends React.Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             <Popover content={importMenu}>
-              <Button size="large">
-                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
-                  formData={{
-                    data: JSON.stringify({
-                      tenantId: this.props.tenantId,
-                      tenantName: this.props.tenantName,
-                      loginId: this.props.loginId,
-                      whseCode: defaultWhse.code,
-                      whseName: defaultWhse.name,
-                    }),
-                  }} onUploaded={this.handleSoStockImport}
-                >
-                  <Icon type="upload" /> {this.msg('batchImport')}
-                </ExcelUploader>
-              </Button>
+              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
+                formData={{
+                  data: JSON.stringify({
+                    tenantId: this.props.tenantId,
+                    tenantName: this.props.tenantName,
+                    loginId: this.props.loginId,
+                    whseCode: defaultWhse.code,
+                    whseName: defaultWhse.name,
+                  }),
+                }} onUploaded={this.handleSoStockImport}
+              >
+                <Button size="large"><Icon type="upload" /> {this.msg('batchImport')}</Button>
+              </ExcelUploader>
             </Popover>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}

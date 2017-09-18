@@ -790,35 +790,39 @@ export default class TradeItemList extends Component {
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   listFilter.status !== 'uselessHs' &&
                   (
+
+                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
+                    formData={{
+                      data: JSON.stringify({
+                        repo_id: this.props.repoId,
+                        tenantId,
+                      }),
+                    }} onUploaded={this.handleUploaded}
+                  >
                     <Dropdown.Button size="large" overlay={importMenu}>
-                      <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
-                        formData={{
-                          data: JSON.stringify({
-                            repo_id: this.props.repoId,
-                            tenantId,
-                          }),
-                        }} onUploaded={this.handleUploaded}
-                      >
-                        <Icon type="upload" /> {this.msg('importItems')}
-                      </ExcelUploader>
+                      <Icon type="upload" /> {this.msg('importItems')}
                     </Dropdown.Button>
+                  </ExcelUploader>
+
                   )
                 }
                 { repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
                   listFilter.status === 'uselessHs' &&
                   (
+
+                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/newHscode/import`}
+                    formData={{
+                      data: JSON.stringify({
+                        repo_id: this.props.repoId,
+                        tenantId,
+                      }),
+                    }} onUploaded={this.handleNewhsUploaded}
+                  >
                     <Dropdown.Button size="large" overlay={imptHsMenu}>
-                      <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/newHscode/import`}
-                        formData={{
-                          data: JSON.stringify({
-                            repo_id: this.props.repoId,
-                            tenantId,
-                          }),
-                        }} onUploaded={this.handleNewhsUploaded}
-                      >
-                        <Icon type="upload" /> {this.msg('imptNewHsItems')}
-                      </ExcelUploader>
+                      <Icon type="upload" /> {this.msg('imptNewHsItems')}
                     </Dropdown.Button>
+                  </ExcelUploader>
+
                   )
                 }
                 {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
