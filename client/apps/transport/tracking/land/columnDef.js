@@ -3,7 +3,8 @@ import moment from 'moment';
 import { Badge, Icon, Tooltip } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from
+import { Logixon } from 'client/components/FontIcon';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES, TRANS_MODE_INDICATOR } from
   'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 import AddressColumn from '../../common/addressColumn';
@@ -297,8 +298,12 @@ export default function makeColumns(type, handlers, msg) {
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: msg('shipmtMode'),
-    dataIndex: 'transport_mode',
-    width: 80,
+    dataIndex: 'transport_mode_code',
+    width: 100,
+    render: (o, record) => {
+      const mode = TRANS_MODE_INDICATOR.filter(ts => ts.value === o)[0];
+      return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span> : <span>{record.transport_mode}</span>;
+    },
   });
 
   if (type === 'pod') { // 回单处理

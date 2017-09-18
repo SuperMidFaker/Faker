@@ -22,6 +22,8 @@ import { loadTable,
          removeGroupedSubShipmt,
          changeDockStatus } from 'common/reducers/transportDispatch';
 import { format } from 'client/common/i18n/helpers';
+import { Logixon } from 'client/components/FontIcon';
+import { TRANS_MODE_INDICATOR } from 'common/constants';
 import messages from './message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
@@ -251,8 +253,12 @@ export default class DispatchList extends React.Component {
         render: o => <TrimSpan text={o} maxLen={15} />,
       }, {
         title: this.msg('shipMode'),
-        dataIndex: 'transport_mode',
-        width: 80,
+        dataIndex: 'transport_mode_code',
+        width: 100,
+        render: (o, record) => {
+          const mode = TRANS_MODE_INDICATOR.filter(ts => ts.value === o)[0];
+          return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span> : <span>{record.transport_mode}</span>;
+        },
       });
       cols = cols.concat(this.commonCols);
       cols.push({

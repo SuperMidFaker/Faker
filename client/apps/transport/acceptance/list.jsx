@@ -12,10 +12,11 @@ import SearchBar from 'client/components/SearchBar';
 // import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import { Logixon } from 'client/components/FontIcon';
 import { loadTable, revokeOrReject, delDraft, acceptDispShipment, returnShipment } from
 'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES, SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES, SHIPMENT_TRACK_STATUS, TRANS_MODE_INDICATOR } from 'common/constants';
 import RevokejectModal from '../shipment/dock/revoke-reject';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
@@ -177,8 +178,12 @@ export default class AcceptList extends React.Component {
     render: o => <TrimSpan text={o} />,
   }, {
     title: this.msg('shipMode'),
-    dataIndex: 'transport_mode',
-    width: 80,
+    dataIndex: 'transport_mode_code',
+    width: 100,
+    render: (o, record) => {
+      const mode = TRANS_MODE_INDICATOR.filter(ts => ts.value === o)[0];
+      return mode ? <span><Logixon type={mode.icon} /> {mode.text}</span> : <span>{record.transport_mode}</span>;
+    },
   }, {
     title: this.msg('shipPickupDate'),
     dataIndex: 'pickup_est_date',

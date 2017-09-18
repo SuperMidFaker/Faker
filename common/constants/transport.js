@@ -254,6 +254,14 @@ export const PRESET_TRANSMODES = {
   ctn: 'CTN', // 集装箱
 };
 
+export const TRANS_MODE_INDICATOR = [
+  { value: 'EXP', text: '快递快运', icon: 'courier-o', desc: '' },
+  { value: 'LTL', text: '公路零担', icon: 'packing-o', desc: '' },
+  { value: 'FTL', text: '公路整车', icon: 'truck-o', desc: '' },
+  { value: 'CTN', text: '集卡拖车', icon: 'sku-o', desc: '' },
+  { value: 'AIR', text: '空运', icon: 'departure', desc: '' },
+];
+
 export const SHIPMENT_BILLING_STATUS = {
   1: '创建未发送',
   2: '已发送,待对方对账',
@@ -283,13 +291,14 @@ export const SHIPMENT_LOG_CATEGORY = {
   fee: 'fee',
 };
 export const COURIERS = [
-  { name: '圆通', code: 'yuantong' },
-  { name: '天天快递', code: 'tiantian' },
+  { name: '顺丰速运', code: 'sfexpress' },
+  { name: '圆通', code: 'yto' },
+  { name: '申通', code: 'sto' },
+  { name: '中通', code: 'zto' },
   { name: '韵达', code: 'yunda' },
-  { name: '中通', code: 'zhongtong' },
-  { name: '宅急送', code: 'zhaijisong' },
-  { name: '顺丰', code: 'shunfeng' },
-  { name: '申通', code: 'shentong' },
+  { name: '百世快递', code: 'bestexpress' },
+  { name: '天天快递', code: 'ttkdex' },
   { name: 'EMS', code: 'ems' },
-  { name: '德邦物流', code: 'debangwuliu' },
+  { name: '宅急送', code: 'zjs' },
+  { name: '德邦物流', code: 'deppon' },
 ];
