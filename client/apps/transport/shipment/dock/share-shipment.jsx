@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Modal, Input, message, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { sendTrackingDetailSMSMessage } from 'common/reducers/shipment';
+import { sendTrackingDetailSMSMessage, toggleShareShipmentModal } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import qrcode from 'client/common/qrcode';
@@ -17,8 +17,9 @@ const InputGroup = Input.Group;
 @connect(
   state => ({
     subdomain: state.account.subdomain,
+    visible: state.shipment.shareShipmentModal.visible,
   }),
-  { sendTrackingDetailSMSMessage }
+  { sendTrackingDetailSMSMessage, toggleShareShipmentModal }
 )
 export default class ShareShipmentModal extends React.Component {
   static propTypes = {
@@ -26,6 +27,8 @@ export default class ShareShipmentModal extends React.Component {
     subdomain: PropTypes.string.isRequired,
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
+    visible: PropTypes.bool.isRequired,
+    toggleShareShipmentModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -33,7 +36,6 @@ export default class ShareShipmentModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
       publicUrlPath: '',
       publicQRcodeUrl: '',
       publicUrl: '',
@@ -43,16 +45,13 @@ export default class ShareShipmentModal extends React.Component {
   }
   componentDidMount() {
     document.addEventListener('copy', (ev) => {
-      if (this.state.visible) {
-        ev.preventDefault();
-        ev.clipboardData.setData('text/plain', this.state.publicUrl);
-        message.info('复制成功', 3);
-      }
+      ev.preventDefault();
+      ev.clipboardData.setData('text/plain', this.state.publicUrl);
+      message.info('复制成功', 3);
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { shipmt, visible, subdomain } = nextProps;
-    const show = visible || this.state.visible;
+    const { shipmt, subdomain } = nextProps;
     const publicUrlPath = `/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.publicUrlKey}`;
     const publicUrl = `https://${subdomain}.welogix.cn${publicUrlPath}`;
     const qr = qrcode.qrcode(6, 'M');
@@ -64,7 +63,6 @@ export default class ShareShipmentModal extends React.Component {
     // base64 = new Buffer(base64, 'base64');  // 新建base64图片缓存
     const publicQRcodeUrl = base64;
     this.setState({
-      visible: show,
       publicUrlPath,
       publicUrl,
       publicQRcodeUrl,
@@ -72,17 +70,15 @@ export default class ShareShipmentModal extends React.Component {
     });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  handleClose = () => {
-    this.props.hidePreviewer();
-  }
   handleOk = () => {
     this.setState({ loading: true });
     setTimeout(() => {
-      this.setState({ loading: false, visible: false });
+      this.setState({ loading: false });
     }, 3000);
   }
   handleCancel = () => {
-    this.setState({ visible: false, publicQRcodeUrl: '' });
+    this.props.toggleShareShipmentModal(false);
+    this.setState({ publicQRcodeUrl: '' });
   }
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
@@ -126,43 +122,41 @@ export default class ShareShipmentModal extends React.Component {
     const { shipmt } = this.props;
     const shipmtNo = shipmt.shipmt_no;
     return (
-      <div>
-        <Modal style={{ width: '680px' }} visible={this.state.visible}
-          title={`分享运单 ${shipmtNo}`} onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={[
-            <Button key="back" type="ghost" size="large" onClick={this.handleCancel}>关 闭</Button>,
-          ]}
-        >
-          <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
-            <a href={this.state.publicUrlPath} target="_blank" rel="noopener noreferrer">
-              <img style={{ width: '100%', height: '100%' }} src={this.state.publicQRcodeUrl} alt="二维码加载中..." />
-            </a>
-          </div>
+      <Modal style={{ width: '680px' }} visible={this.props.visible}
+        title={`分享运单 ${shipmtNo}`} onOk={this.handleOk}
+        onCancel={this.handleCancel}
+        footer={[
+          <Button key="back" type="ghost" size="large" onClick={this.handleCancel}>关 闭</Button>,
+        ]}
+      >
+        <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>
+          <a href={this.state.publicUrlPath} target="_blank" rel="noopener noreferrer">
+            <img style={{ width: '100%', height: '100%' }} src={this.state.publicQRcodeUrl} alt="二维码加载中..." />
+          </a>
+        </div>
+        <br />
+        <div style={{ width: '90%', margin: '0 auto' }}>
+          <InputGroup>
+            <Col span="18">
+              <Input placeholder="" value={this.state.publicUrl} />
+            </Col>
+            <Col span="6">
+              <Button onClick={() => this.handleCopyClick()} icon="copy">复制链接</Button>
+            </Col>
+          </InputGroup>
           <br />
-          <div style={{ width: '90%', margin: '0 auto' }}>
-            <InputGroup>
-              <Col span="18">
-                <Input placeholder="" value={this.state.publicUrl} />
-              </Col>
-              <Col span="6">
-                <Button onClick={() => this.handleCopyClick()} icon="copy">复制链接</Button>
-              </Col>
-            </InputGroup>
-            <br />
-            <InputGroup>
-              <Col span="18">
-                <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput} />
-              </Col>
-              <Col span="6">
-                <Button type="primary" icon="message" onClick={this.handleSMSSend} loading={this.state.SMSSendLoding}>
-                  发送短信
-                </Button>
-              </Col>
-            </InputGroup>
-          </div>
-        </Modal>
-      </div>
+          <InputGroup>
+            <Col span="18">
+              <Input placeholder="填写手机号" value={this.state.tel} onChange={this.handleTelInput} />
+            </Col>
+            <Col span="6">
+              <Button type="primary" icon="message" onClick={this.handleSMSSend} loading={this.state.SMSSendLoding}>
+                发送短信
+              </Button>
+            </Col>
+          </InputGroup>
+        </div>
+      </Modal>
     );
   }
 }

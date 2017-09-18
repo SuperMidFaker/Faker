@@ -46,6 +46,7 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'TOGGLE_RECALCULATE_CHARGE',
   'LOAD_TARIFF_BY_QUOTENO', 'LOAD_TARIFF_BY_QUOTENO_SUCCEED', 'LOAD_TARIFF_BY_QUOTENO_FAIL',
   'LOAD_PUB_POD', 'LOAD_PUB_POD_SUCCEED', 'LOAD_PUB_POD_FAIL',
+  'TOGGLE_SHARE_SHIPMENT',
 ]);
 appendFormAcitonTypes('@@welogix/transport/shipment/', actionTypes);
 
@@ -175,6 +176,9 @@ const initialState = {
   recalculateChargeModal: {
     visible: false,
     shipmtNo: '',
+  },
+  shareShipmentModal: {
+    visible: false,
   },
 };
 
@@ -421,6 +425,9 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.TOGGLE_RECALCULATE_CHARGE: {
       return { ...state, recalculateChargeModal: action.data };
+    }
+    case actionTypes.TOGGLE_SHARE_SHIPMENT: {
+      return { ...state, shareShipmentModal: action.data };
     }
     default:
       return formReducer(actionTypes, state, action, { key: null }, 'shipmentlist')
@@ -922,5 +929,12 @@ export function toggleRecalculateChargeModal(visible, shipmtNo = '') {
   return {
     type: actionTypes.TOGGLE_RECALCULATE_CHARGE,
     data: { visible, shipmtNo },
+  };
+}
+
+export function toggleShareShipmentModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_SHARE_SHIPMENT,
+    data: { visible },
   };
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Col, Row, Tabs, Button, Modal, Tooltip, message } from 'antd';
+import { Col, Row, Tabs, Button, Modal, Tooltip, Menu, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import moment from 'moment';
@@ -12,7 +12,7 @@ import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from 'common/constants';
 import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm,
-  getShipmtOrderNo, toggleRecalculateChargeModal } from 'common/reducers/shipment';
+  getShipmtOrderNo, toggleRecalculateChargeModal, toggleShareShipmentModal } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
@@ -22,7 +22,7 @@ import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import RecalculateChargeModal from '../../tracking/land/modals/recalculateChargeModal';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
-import { returnShipment, acceptDispShipment } from 'common/reducers/transport-acceptance';
+import { returnShipment, acceptDispShipment, revokeOrReject } from 'common/reducers/transport-acceptance';
 import { doSend,
          doReturn,
          changeDockStatus,
@@ -97,7 +97,9 @@ function getTrackStatusMsg(status, eff) {
     passAudit,
     returnAudit,
     sendMessage,
-    acceptDispShipment }
+    acceptDispShipment,
+    revokeOrReject,
+    toggleShareShipmentModal }
 )
 export default class PreviewPanel extends React.Component {
   static propTypes = {
@@ -137,6 +139,8 @@ export default class PreviewPanel extends React.Component {
     passAudit: PropTypes.func.isRequired,
     returnAudit: PropTypes.func.isRequired,
     sendMessage: PropTypes.func.isRequired,
+    revokeOrReject: PropTypes.func.isRequired,
+    toggleShareShipmentModal: PropTypes.func.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -343,6 +347,14 @@ export default class PreviewPanel extends React.Component {
         this.props.hidePreviewer();
       }
     );
+  }
+  handleMenuClick = (e) => {
+    const { shipmt, dispatch } = this.props;
+    if (e.key === 'terminate') {
+      this.props.revokeOrReject('revoke', shipmt.shipmt_no, dispatch.id);
+    } else if (e.key === 'shareShipment') {
+      this.props.toggleShareShipmentModal(true);
+    }
   }
   renderButtons = () => {
     const { tenantId, previewer: { shipmt, dispatch, upstream, downstream, params: { sourceType } }, charges } = this.props;
@@ -686,6 +698,16 @@ export default class PreviewPanel extends React.Component {
       <span>{button}<span>{shipmtNo}</span></span>
     );
   }
+  renderMenu() {
+    const { shipmt, dispatch, tenantId } = this.props;
+    const menuItems = [];
+    const terminable = tenantId === shipmt.tenant_id && dispatch.status < SHIPMENT_TRACK_STATUS.intransit;
+    if (terminable) {
+      menuItems.push(<Menu.Item key="terminate"><Icon type="delete" />终止运单</Menu.Item>);
+    }
+    menuItems.push(<Menu.Item key="shareShipment"><Icon type="share-alt" />共享运单</Menu.Item>);
+    return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
+  }
   render() {
     const { shipmt, visible, shipmtNo, dispatch, effective, previewer: { params: { sourceType } } } = this.props;
     return (
@@ -693,6 +715,7 @@ export default class PreviewPanel extends React.Component {
         <DockPanel size="large" visible={visible} onClose={this.handleClose}
           title={this.renderTitle()}
           status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
+          overlay={this.renderMenu()}
           extra={this.renderExtra()}
           alert={this.renderButtons()}
         >
