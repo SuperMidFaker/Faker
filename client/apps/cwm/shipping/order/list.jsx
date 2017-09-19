@@ -176,17 +176,16 @@ export default class ShippingOrderList extends React.Component {
           <span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /></span>);
       } else {
         const outbndActions = (<span>
-          {record.status === CWM_SO_STATUS.OUTBOUND.value && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
-          {record.status === CWM_SO_STATUS.PARTIAL.value && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
+          {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
+            && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
           {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />}</span>);
-        if (record.bonded) {
+        if (record.bonded_outtype) {
           return (<span>
             {outbndActions}
             <span className="ant-divider" />
             {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleSupervision} label="海关备案" row={record} />
               : <RowUpdater onHit={this.handleSupervision} label="备案详情" row={record} />}
-          </span>
-          );
+          </span>);
         } else {
           return (<span>{outbndActions}</span>);
         }
