@@ -10,6 +10,7 @@ import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
+import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
 import ButtonToggle from 'client/components/ButtonToggle';
 import ModuleMenu from '../menu';
@@ -257,7 +258,9 @@ export default class SHFTZStockList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-
+    const toolbarActions = (<span>
+      <SearchBar placeholder="搜索备件号/商品编码" size="large" onInputSearch={this.handleSearch} />
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -302,7 +305,7 @@ export default class SHFTZStockList extends React.Component {
             <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
             </Card>
-            <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
+            <DataTable toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
               columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
             />
           </Content>
