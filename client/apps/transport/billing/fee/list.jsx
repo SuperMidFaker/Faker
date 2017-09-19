@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Tag, Layout, Icon, DatePicker, Select, Radio, Breadcrumb } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import Table from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';

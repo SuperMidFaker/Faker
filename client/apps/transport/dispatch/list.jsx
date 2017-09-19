@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Button, Radio, Icon, Layout, message, Select, Modal, Alert } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/remoteAntTable';
+import Table from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';

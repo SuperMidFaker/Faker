@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tag } from 'antd';
 import moment from 'moment';
-import Table from 'client/components/remoteAntTable';
+import Table from 'client/components/DataTable';
 import { loadExceptions, showDealExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../..//message.i18n';

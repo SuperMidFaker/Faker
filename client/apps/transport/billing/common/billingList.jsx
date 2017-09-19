@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { Breadcrumb, Button, message, Layout, Popconfirm } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import Table from 'client/components/DataTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';

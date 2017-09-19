@@ -5,7 +5,7 @@ import update from 'react/lib/update';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Tag, Button, Popover, message, Row, Col, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
-import Table from 'client/components/remoteAntTable';
+import Table from 'client/components/DataTable';
 import InfoItem from 'client/components/InfoItem';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Tooltip, Popconfirm, Radio, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import Table from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
 import { loadPodTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';

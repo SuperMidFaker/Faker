@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Modal, Input, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import Table from 'client/components/DataTable';
 import RegionCascader from 'client/components/RegionCascader';
 import { submitRateSource, loadRatesSources, updateRateSource,
   delRateSource, loadRateEnds } from 'common/reducers/transportTariff';

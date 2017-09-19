@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Breadcrumb, Menu, Table, Layout, Button, Popconfirm } from 'antd';
+import { Breadcrumb, Menu, Layout, Button, Popconfirm } from 'antd';
+import Table from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import NavLink from 'client/components/NavLink';
