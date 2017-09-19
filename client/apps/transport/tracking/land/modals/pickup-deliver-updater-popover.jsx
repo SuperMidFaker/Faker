@@ -128,7 +128,6 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   render() {
     const { shipmtNo, form: { getFieldDecorator }, status } = this.props;
     const { warningMessage } = this.state;
-    const colSpan = 8;
     let title;
     let ruleMsg;
     let label;
@@ -157,18 +156,18 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
       }
     }
     const content = (
-      <Form className="row" style={{ width: '300px' }}>
+      <Form layout="vertical">
         <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }} />
-        <FormItem label={label} labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} required >
+        <FormItem label={label}>
           {getFieldDecorator('actDate', {
             rules: [{
               type: 'object', required: true, message: ruleMsg,
             }],
-          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange} allowClear={false} />)}
+          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange} allowClear={false} style={{ width: 180 }} />)}
         </FormItem>
-        <FormItem wrapperCol={{ span: 16, offset: 8 }}>
+        <FormItem>
           <Button type="primary" htmlType="submit" onClick={this.handleOk} disabled={okButtonDisabled}>确定</Button>
-          <Button type="ghost" onClick={this.handleCancel} style={{ marginLeft: 16 }} disabled={cancelButtonDisabled}>取消{typeText}</Button>
+          <Button onClick={this.handleCancel} style={{ marginLeft: 8 }} disabled={cancelButtonDisabled}>取消{typeText}</Button>
         </FormItem>
       </Form>
     );

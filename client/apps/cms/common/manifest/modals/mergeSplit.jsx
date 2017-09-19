@@ -9,6 +9,7 @@ import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { CMS_SPLIT_COUNT, SPECIAL_COPNO_TERM } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
 
 const FormItem = Form.Item;

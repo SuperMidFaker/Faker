@@ -54,7 +54,7 @@ export default class QueryForm extends React.Component {
     return (
       <Form className="form-layout-compact">
         <Row gutter={16}>
-          <Col span={5}>
+          <Col span={8}>
             <FormItem {...formItemLayout} label={this.msg('owner')}>
               {getFieldDecorator('ownerCode', {
                 initialValue: filter.ownerCode,
@@ -64,28 +64,17 @@ export default class QueryForm extends React.Component {
               </Select>)}
             </FormItem>
           </Col>
-          <Col span={5}>
+          <Col span={8}>
             <FormItem {...formItemLayout} label={this.msg('billNo')}>
               {getFieldDecorator('entNo', {
               })(<Input />)}
             </FormItem>
           </Col>
-          <Col span={5}>
-            <FormItem {...formItemLayout} label={this.msg('orgCargoId')}>
-              {getFieldDecorator('orgCargoId', {
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span={5}>
-            <FormItem {...formItemLayout} label={this.msg('hsCode')}>
-              {getFieldDecorator('hsCode', {
-              })(<Input />)}
-            </FormItem>
-          </Col>
-          <Col span={4}>
+          <Col span={8}>
             <FormItem>
-              <Button type="primary" size="large" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
+              <Button type="primary" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>{this.msg('reset')}</Button>
+              <Button type="primary" ghost icon="plus" style={{ marginLeft: 8 }}>发起库存对比</Button>
             </FormItem>
           </Col>
         </Row>

@@ -4,20 +4,21 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Card, Select, Layout, Tabs, Tag, message } from 'antd';
+import { Badge, Breadcrumb, Button, Card, Select, Layout, message, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import ButtonToggle from 'client/components/ButtonToggle';
 import ModuleMenu from '../menu';
 import QueryForm from './queryForm';
+import TasksPane from './tabpane/tasksPane';
 import { formatMsg } from './message.i18n';
 
 const { Sider, Content } = Layout;
 const Option = Select.Option;
-const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -56,6 +57,7 @@ export default class SHFTZStockList extends React.Component {
   state = {
     filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
+    rightSiderCollapsed: true,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -240,6 +242,11 @@ export default class SHFTZStockList extends React.Component {
     wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
     FileSaver.saveAs(new window.Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'shftzStocks.xlsx');
   }
+  toggleRightSider = () => {
+    this.setState({
+      rightSiderCollapsed: !this.state.rightSiderCollapsed,
+    });
+  }
   render() {
     const { defaultWhse, whses } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded);
@@ -283,38 +290,39 @@ export default class SHFTZStockList extends React.Component {
               <Button size="large" icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
                 {this.msg('export')}
               </Button>
+              <Badge dot style={{ backgroundColor: '#87d068' }}>
+                <ButtonToggle size="large"
+                  iconOn="hourglass" iconOff="hourglass"
+                  onClick={this.toggleRightSider}
+                />
+              </Badge>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="main-content" key="main">
             <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
             </Card>
-            <Card noHovering bodyStyle={{ padding: 0 }}>
-              <Tabs defaultActiveKey="comparison">
-                <TabPane tab="对比视图" key="comparison">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id" noBorder
-                  />
-                </TabPane>
-                <TabPane tab={<Badge count={5}>差异视图</Badge>} key="discrepancy">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
-                  />
-                </TabPane>
-                <TabPane tab="海关库存数据" key="ftz">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
-                  />
-                </TabPane>
-                <TabPane tab="仓库库存数据" key="wms">
-                  <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-                    columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
-                  />
-                </TabPane>
-              </Tabs>
-            </Card>
+            <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
+              columns={columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
+            />
           </Content>
         </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSiderCollapsed}
+          width={480}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <div className="right-sider-panel">
+            <div className="panel-header">
+              <h3>库存对比任务</h3>
+            </div>
+            <TasksPane />
+          </div>
+        </Sider>
       </Layout>
     );
   }

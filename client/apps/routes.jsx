@@ -509,6 +509,7 @@ export default(store, cookie) => {
                 </Route>
                 <Route path="stock" >
                   <IndexRoute component={CWMSupSHFTZStock.List} />
+                  <Route path="task/:taskId" component={CWMSupSHFTZStock.Task} />
                 </Route>
                 <Route path="cargo" >
                   <IndexRoute component={CWMSupSHFTZCargo.List} />

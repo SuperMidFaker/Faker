@@ -136,9 +136,9 @@ export default class OutboundDetail extends Component {
       tabKey,
     });
   }
-  handleRegPage = () => {
-    const link = this.props.outboundHead.bonded_outtype === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${this.props.outboundHead.so_no}`
-      : `/cwm/supervision/shftz/release/${this.props.outboundHead.bonded_outtype}/${this.props.outboundHead.so_no}`;
+  handleRegPage = (type) => {
+    const link = type === 'transfer' ? `/cwm/supervision/shftz/transfer/out/${this.props.outboundHead.so_no}`
+      : `/cwm/supervision/shftz/release/${type}/${this.props.outboundHead.so_no}`;
     this.context.router.push(link);
   }
   showExpressModal = () => {
@@ -195,11 +195,21 @@ export default class OutboundDetail extends Component {
     const outbStatus = Object.keys(CWM_OUTBOUND_STATUS).filter(
       cis => CWM_OUTBOUND_STATUS[cis].value === outboundHead.status
     )[0];
-    const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
-    // const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0];
-    const regStatus = outboundHead.bonded_outtype === 'transfer' ?
-      CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0] :
-      CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === outboundHead.reg_status)[0];
+    let regTag;
+    let regTypes = [];
+    if (outboundHead.bonded === 1) {
+      regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
+      regTypes = [{
+        tooltip: '海关监管',
+        type: outboundHead.bonded_outtype,
+        status: outboundHead.reg_status,
+      }];
+    } else if (outboundHead.bonded === -1 && outboundHead.bonded_outtype.length > 0) {
+      regTypes = outboundHead.bonded_outtype.map((type, index) => {
+        const sreg = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === type)[0];
+        return { type, tooltip: sreg && sreg.ftztext, status: outboundHead.reg_status[index] };
+      });
+    }
     const outboundStep = outbStatus ? CWM_OUTBOUND_STATUS[outbStatus].step : 0;
     const scanLabel = outboundHead.shipping_mode === 'scan' ? ' 扫码模式' : '';
     const manualLabel = outboundHead.shipping_mode === 'manual' ? ' 手动模式' : '';
@@ -231,12 +241,23 @@ export default class OutboundDetail extends Component {
                 {this.props.params.outboundNo}
               </Breadcrumb.Item>
             </Breadcrumb>
-            {!!(outboundHead.bonded > 0) && <Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>}
+            {regTag && <Tag color={regTag.tagcolor}>{regTag.ftztext}</Tag>}
           </PageHeader.Title>
           <PageHeader.Nav>
-            {!!(outboundHead.bonded > 0) && <Tooltip title="海关监管" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleRegPage}><Badge status={regStatus.badge} text={regStatus.text} /></Button>
-            </Tooltip>
+            {regTypes.map((reg) => {
+              const regStatus = reg.type === 'transfer' ?
+                CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR.filter(status => status.value === reg.status)[0] :
+                CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === reg.status)[0];
+              if (regStatus) {
+                return (<Tooltip title={reg.tooltip} placement="bottom">
+                  <Button size="large" icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
+                    <Badge status={regStatus.badge} text={regStatus.text} />
+                  </Button>
+                </Tooltip>);
+              } else {
+                return null;
+              }
+            })
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
