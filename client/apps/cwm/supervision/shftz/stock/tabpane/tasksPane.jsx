@@ -38,6 +38,9 @@ export default class TasksPane extends React.Component {
     tenantId: PropTypes.number.isRequired,
     stockDatas: PropTypes.array.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   state = {
     filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
@@ -64,12 +67,21 @@ export default class TasksPane extends React.Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => <RowUpdater onHit={this.handleDetail} label="对比详情" row={record} />,
   }]
-
+  handleDetail = (row) => {
+    const link = `/cwm/supervision/shftz/stock/task/${row.task_id}`;
+    this.context.router.push(link);
+  }
   render() {
+    const mockData = [{
+      task_id: '1',
+      owner: '马瑞利',
+      progress: 100,
+      created_date: '2017-09-19 14:15',
+    }];
     return (
       <div className="table-panel table-fixed-layout">
         <Table loading={this.props.loading}
-          columns={this.columns} dataSource={this.props.stockDatas} rowKey="id"
+          columns={this.columns} dataSource={mockData} rowKey="task_id"
         />
       </div>
     );
