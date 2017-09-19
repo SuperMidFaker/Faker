@@ -203,6 +203,13 @@ export default class EditBodyForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={24}>
+            <FormItem label={this.msg('enName')}>
+              {getFieldDecorator('en_name', {
+                initialValue: editBody.en_name,
+              })(<Input />)}
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={24}>
             <FormItem label={this.msg('gModel')}>
               {getFieldDecorator('g_model', {
                 initialValue: editBody.g_model,

@@ -803,34 +803,34 @@ export default class ManifestBodyPane extends React.Component {
         </Dropdown.Button>);
     } else {
       return (<span>
-        <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
-          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
-            formData={{
-              data: JSON.stringify({
-                bill_seq_no: this.props.billSeqNo,
-                tenant_id: this.props.tenantId,
-                creater_login_id: this.props.loginId,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
+        <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
+          formData={{
+            data: JSON.stringify({
+              bill_seq_no: this.props.billSeqNo,
+              tenant_id: this.props.tenantId,
+              creater_login_id: this.props.loginId,
+            }),
+          }} onUploaded={this.handleUploaded}
+        >
+          <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
             <Icon type="upload" /> {this.msg('unrelatedImport')}
-          </ExcelUploader>
-        </Dropdown.Button>
-        <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
-          <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
-            formData={{
-              data: JSON.stringify({
-                bill_seq_no: this.props.billHead.bill_seq_no,
-                tenant_id: this.props.tenantId,
-                creater_login_id: this.props.loginId,
-                delgNo: this.props.billHead.delg_no,
-                tradeCode: this.props.billHead.trade_co,
-              }),
-            }} onUploaded={this.handleUploaded}
-          >
-            <Icon type="link" /> {this.msg('relatedImport')}
-          </ExcelUploader>
-        </Dropdown.Button>
+          </Dropdown.Button>
+        </ExcelUploader>
+        <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
+          formData={{
+            data: JSON.stringify({
+              bill_seq_no: this.props.billHead.bill_seq_no,
+              tenant_id: this.props.tenantId,
+              creater_login_id: this.props.loginId,
+              delgNo: this.props.billHead.delg_no,
+              tradeCode: this.props.billHead.trade_co,
+            }),
+          }} onUploaded={this.handleUploaded}
+        >
+          <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
+            <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
+          </Dropdown.Button>
+        </ExcelUploader>
         <Dropdown overlay={handlemenu}>
           <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
             {this.msg('handle')} <Icon type="down" />

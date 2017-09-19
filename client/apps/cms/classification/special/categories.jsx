@@ -240,18 +240,16 @@ export default class SpecialCategories extends React.Component {
             </Breadcrumb>
             <div className="page-header-tools">
               <Popover title="导入数据表格式如下" content={content}>
-                <Button type="primary" size="large" ghost>
-                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
-                    formData={{
-                      data: JSON.stringify({
-                        categoryId: hscodeCategory.id,
-                        tenantId: this.props.tenantId,
-                      }),
-                    }} onUploaded={this.handleUploaded}
-                  >
-                    <Icon type="upload" /> 导入
-                  </ExcelUploader>
-                </Button>
+                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
+                  formData={{
+                    data: JSON.stringify({
+                      categoryId: hscodeCategory.id,
+                      tenantId: this.props.tenantId,
+                    }),
+                  }} onUploaded={this.handleUploaded}
+                >
+                  <Button type="primary" size="large" ghost><Icon type="upload" /> 导入</Button>
+                </ExcelUploader>
               </Popover>
             </div>
           </Header>

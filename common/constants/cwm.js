@@ -248,7 +248,7 @@ exports.CWM_LOCATION_TYPES = [{
   text: '地面平仓',
 }];
 
-exports.CWM_LOCATION_STATUS = [{
+exports.CWM_LOCATION_STATUS = [{ // todo STRING
   value: 5,
   text: '优先出库',
 }, {

@@ -359,21 +359,19 @@ export default class SHFTZCargoList extends React.Component {
                 </Button>
                 }
               <Popover content={<a href={`${XLSX_CDN}/分拨货物备案料号模板.xlsx`}><Icon type="file-excel" />下载导入模板</a>}>
-                <Button size="large">
-                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
-                    formData={{
-                      data: JSON.stringify({
-                        tenantId,
-                        loginId,
-                        whseCode: whse.code,
-                        ownerCusCode: owner.customs_code,
-                        ruleType: rule,
-                      }),
-                    }} onUploaded={this.handleFiledCargoImport}
-                  >
-                    <Icon type="upload" /> 导入备案料号
-              </ExcelUploader>
-                </Button>
+                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
+                  formData={{
+                    data: JSON.stringify({
+                      tenantId,
+                      loginId,
+                      whseCode: whse.code,
+                      ownerCusCode: owner.customs_code,
+                      ruleType: rule,
+                    }),
+                  }} onUploaded={this.handleFiledCargoImport}
+                >
+                  <Button size="large"><Icon type="upload" /> 导入备案料号</Button>
+                </ExcelUploader>
               </Popover>
               <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
             </div>

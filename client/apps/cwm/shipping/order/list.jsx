@@ -122,11 +122,13 @@ export default class ShippingOrderList extends React.Component {
     width: 100,
     dataIndex: 'bonded',
     render: (bonded, record) => {
-      if (bonded) {
+      if (bonded === 1) {
         const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === record.bonded_outtype)[0];
         if (regtype) {
           return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
         }
+      } else if (bonded === -1) {
+        return (<Tag>不限</Tag>);
       } else {
         return (<Tag>非保税</Tag>);
       }
@@ -453,21 +455,19 @@ export default class ShippingOrderList extends React.Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             <Popover content={importMenu}>
-              <Button size="large">
-                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
-                  formData={{
-                    data: JSON.stringify({
-                      tenantId: this.props.tenantId,
-                      tenantName: this.props.tenantName,
-                      loginId: this.props.loginId,
-                      whseCode: defaultWhse.code,
-                      whseName: defaultWhse.name,
-                    }),
-                  }} onUploaded={this.handleSoStockImport}
-                >
-                  <Icon type="upload" /> {this.msg('batchImport')}
-                </ExcelUploader>
-              </Button>
+              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
+                formData={{
+                  data: JSON.stringify({
+                    tenantId: this.props.tenantId,
+                    tenantName: this.props.tenantName,
+                    loginId: this.props.loginId,
+                    whseCode: defaultWhse.code,
+                    whseName: defaultWhse.name,
+                  }),
+                }} onUploaded={this.handleSoStockImport}
+              >
+                <Button size="large"><Icon type="upload" /> {this.msg('batchImport')}</Button>
+              </ExcelUploader>
             </Popover>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}

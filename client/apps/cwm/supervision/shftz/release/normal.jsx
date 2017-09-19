@@ -24,7 +24,7 @@ const Step = Steps.Step;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
-  promises.push(dispatch(loadRelDetails(params.soNo)));
+  promises.push(dispatch(loadRelDetails(params.soNo, 'normal')));
   promises.push(dispatch(loadParams()));
   return Promise.all(promises);
 }
@@ -103,12 +103,11 @@ export default class SHFTZRelDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
-    const relSo = this.props.relSo;
     const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const fileOp = this.props.fileRelStockouts(soNo, relSo.whse_code, ftzWhseCode, tenantId);
+    const whseCode = this.props.whse.code;
+    const fileOp = this.props.fileRelStockouts(soNo, whseCode, ftzWhseCode, tenantId);
     const relType = CWM_SO_BONDED_REGTYPES[0].text;
-
     if (fileOp) {
       fileOp.then((result) => {
         if (!result.error) {
@@ -140,30 +139,6 @@ export default class SHFTZRelDetail extends Component {
       });
     }
   }
-  handleQuery = () => {
-    const soNo = this.props.params.soNo;
-    const tenantId = this.props.tenantId;
-    const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const whseCode = this.props.whse.code;
-    this.props.queryPortionoutInfos(soNo, whseCode, ftzWhseCode, tenantId).then((result) => {
-      if (!result.error) {
-        if (result.data.errorMsg) {
-          notification.warn({
-            message: '结果异常',
-            description: result.data.errorMsg,
-            duration: 15,
-          });
-        } else {
-          this.props.loadRelDetails(soNo);
-        }
-      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-        notification.error({
-          message: '操作失败',
-          description: '仓库监管系统未配置',
-        });
-      }
-    });
-  }
   handleCancelReg = () => {
     const soNo = this.props.params.soNo;
     this.props.cancelRelReg(soNo).then((result) => {
@@ -180,7 +155,7 @@ export default class SHFTZRelDetail extends Component {
     const change = { gross_wt: val };
     this.props.editReleaseWt({ change, id }).then((result) => {
       if (!result.error) {
-        this.props.loadRelDetails(this.props.params.soNo);
+        this.props.loadRelDetails(this.props.params.soNo, 'normal');
       }
     });
   }
@@ -201,7 +176,7 @@ export default class SHFTZRelDetail extends Component {
     this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals, loginId: this.props.loginId }).then((result) => {
       if (!result.error) {
         message.success('明细已拆分');
-        this.props.loadRelDetails(soNo);
+        this.props.loadRelDetails(soNo, 'normal');
       }
     });
   }
@@ -290,9 +265,13 @@ export default class SHFTZRelDetail extends Component {
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const relType = CWM_SO_BONDED_REGTYPES.filter(regtype => regtype.value === relSo.bonded_outtype)[0];
-    const relEditable = relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
+    if (relRegs.length === 0) {
+      return null;
+    }
+    const relType = CWM_SO_BONDED_REGTYPES[0];
+    const regStatus = relRegs[0].status;
+    const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
+    const sent = regStatus === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
     let sendable = true;
     let whyunsent = '';
@@ -300,25 +279,21 @@ export default class SHFTZRelDetail extends Component {
       sendable = false;
       whyunsent = '出库单配货未完成';
     }
-    if (relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value) {
-      if (sendable) {
-        const nonOutDates = [];
-        relRegs.forEach((reg) => {
-          if (!reg.ftz_rel_date) {
-            nonOutDates.push(reg.pre_entry_seq_no);
-          }
-        });
-        if (nonOutDates.length > 0) {
-          sendable = false;
-          whyunsent = `${nonOutDates.join(',')}预计出区日期未填`;
+    if (sendable) {
+      const nonOutDates = [];
+      relRegs.forEach((reg) => {
+        if (!reg.ftz_rel_date) {
+          nonOutDates.push(reg.pre_entry_seq_no);
         }
+      });
+      if (nonOutDates.length > 0) {
+        sendable = false;
+        whyunsent = `${nonOutDates.join(',')}预计出区日期未填`;
       }
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     let splitExtra = null;
-    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value
-        && relSo.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value
-        && relSo.reg_status < CWM_SHFTZ_APIREG_STATUS.processing) {
+    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value && regStatus < CWM_SHFTZ_APIREG_STATUS.processing) {
       splitExtra = (<Form layout="inline">
         <Form.Item label="拆分选项: ">
           <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
@@ -359,7 +334,7 @@ export default class SHFTZRelDetail extends Component {
         }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {relSo.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
+            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
@@ -370,24 +345,24 @@ export default class SHFTZRelDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
                 <Col sm={12} lg={6}>
-                  <InfoItem label="提货单位" field={relSo.owner_name} />
+                  <InfoItem label="提货单位" field={relRegs[0].owner_name} />
                 </Col>
                 <Col sm={12} lg={6}>
-                  <InfoItem label="收货单位" field={relSo.receiver_name} />
+                  <InfoItem label="收货单位" field={relRegs[0].receiver_name} />
                 </Col>
                 <Col sm={12} lg={3}>
                   <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={relSo.created_date && moment(relSo.created_date).format('YYYY-MM-DD HH:mm')}
+                    field={relRegs[0].created_date && moment(relRegs[0].created_date).format('YYYY-MM-DD HH:mm')}
                   />
                 </Col>
                 <Col sm={12} lg={3}>
                   <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={relSo.reg_date && moment(relSo.reg_date).format('YYYY-MM-DD HH:mm')}
+                    field={relRegs[0].ftz_reg_date && moment(relRegs[0].ftz_reg_date).format('YYYY-MM-DD HH:mm')}
                   />
                 </Col>
               </Row>
               <div className="card-footer">
-                <Steps progressDot current={relSo.reg_status}>
+                <Steps progressDot current={regStatus}>
                   <Step description="待备案" />
                   <Step description="已发送" />
                   <Step description="备案完成" />
