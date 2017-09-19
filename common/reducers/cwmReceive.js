@@ -171,30 +171,29 @@ export default function reducer(state = initialState, action) {
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true, details: action.data } };
     case actionTypes.HIDE_PUTTING_AWAY_MODAL:
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: false } };
-    case actionTypes.RECEIVE_EXPRESS_SUCCEED:
+    case actionTypes.RELEASE_ASN:
+    case actionTypes.BATCH_RELEASE:
     case actionTypes.RECEIVE_BATCH:
-      return { ...state, submitting: true };
-    case actionTypes.RECEIVE_BATCH_SUCCEED:
-      return { ...state, submitting: false, inboundReload: true };
-    case actionTypes.RECEIVE_BATCH_FAIL:
-      return { ...state, submitting: false, inboundReload: true };
     case actionTypes.RECEIVES_UNDO:
-      return { ...state, submitting: true, inboundPutaways: { ...state.inboundPutaways, loading: true } };
-    case actionTypes.RECEIVES_UNDO_SUCCEED:
-      return { ...state, submitting: false, inboundReload: true };
-    case actionTypes.RECEIVES_UNDO_FAIL:
-      return { ...state, submitting: false, inboundReload: true };
     case actionTypes.PUTAWAY_BATCH:
-      return { ...state, submitting: true };
-    case actionTypes.PUTAWAY_BATCH_SUCCEED:
-      return { ...state, submitting: false, inboundReload: true };
-    case actionTypes.PUTAWAY_BATCH_FAIL:
-      return { ...state, submitting: false, inboundReload: true };
     case actionTypes.PUTAWAY_EXPRESS:
+    case actionTypes.RECEIVE_EXPRESS:
       return { ...state, submitting: true };
-    case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
-      return { ...state, inboundReload: true, submitting: false };
+    case actionTypes.RECEIVE_BATCH_FAIL:
+    case actionTypes.RECEIVES_UNDO_FAIL:
+    case actionTypes.PUTAWAY_BATCH_FAIL:
     case actionTypes.PUTAWAY_EXPRESS_FAIL:
+    case actionTypes.RECEIVE_EXPRESS_FAIL:
+    case actionTypes.RELEASE_ASN_SUCCEED:
+    case actionTypes.RELEASE_ASN_FAIL:
+    case actionTypes.BATCH_RELEASE_SUCCEED:
+    case actionTypes.BATCH_RELEASE_FAIL:
+      return { ...state, submitting: false };
+    case actionTypes.PUTAWAY_BATCH_SUCCEED:
+    case actionTypes.RECEIVES_UNDO_SUCCEED:
+    case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
+    case actionTypes.RECEIVE_BATCH_SUCCEED:
+    case actionTypes.RECEIVE_EXPRESS_SUCCEED:
       return { ...state, submitting: false, inboundReload: true };
     case actionTypes.GET_ASN_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };

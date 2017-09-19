@@ -21,7 +21,6 @@ const FormItem = Form.Item;
     visible: state.cwmReceive.batchReceivingModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,
     submitting: state.cwmReceive.submitting,
-    locations: state.cwmWarehouse.locations,
   }),
   { hideBatchReceivingModal, batchReceive }
 )
@@ -48,10 +47,11 @@ export default class BatchReceivingModal extends Component {
       location: '',
     });
   }
-  handleLocationChange = (value) => {
-    const location = this.props.locations.find(item => item.location === value);
+  handleLocationChange = (value, location) => {
     let priority = null;
-    if (location) priority = location.priority;
+    if (location) {
+      priority = Number(location.status);
+    }
     this.setState({
       location: value,
       priority,

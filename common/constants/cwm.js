@@ -235,30 +235,30 @@ exports.CWM_OUTBOUND_STATUS = {
 };
 
 exports.CWM_LOCATION_TYPES = [{
-  value: 1,
+  value: '1',
   text: '货架',
 }, {
-  value: 2,
+  value: '2',
   text: '窄巷道货架',
 }, {
-  value: 3,
+  value: '3',
   text: '重力式货架',
 }, {
-  value: 4,
+  value: '4',
   text: '地面平仓',
 }];
 
-exports.CWM_LOCATION_STATUS = [{ // todo STRING
-  value: 5,
+exports.CWM_LOCATION_STATUS = [{
+  value: '5',
   text: '优先出库',
 }, {
-  value: 1,
+  value: '1',
   text: '正常',
 }, {
-  value: 0,
+  value: '0',
   text: '封存',
 }, {
-  value: -1,
+  value: '-1',
   text: '禁用',
 }];
 

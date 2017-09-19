@@ -18,7 +18,6 @@ const FormItem = Form.Item;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    locations: state.cwmWarehouse.locations,
     visible: state.cwmReceive.puttingAwayModal.visible,
     details: state.cwmReceive.puttingAwayModal.details,
     submitting: state.cwmReceive.submitting,
@@ -84,7 +83,7 @@ export default class PuttingAwayModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
-    let recLocation = '';
+    let recLocation = ''; // todo 没用逻辑
     let targetLocation = '';
     for (let i = 0; i < this.props.details.length; i++) {
       const detail = this.props.details[i];
