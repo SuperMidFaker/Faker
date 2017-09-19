@@ -98,13 +98,13 @@ export default class OwnersPane extends Component {
     dataIndex: 'receiving_mode',
     width: 80,
     className: 'cell-align-center',
-    render: o => o ? WHSE_OPERATION_MODES[o].text : '',
+    render: o => o ? `${WHSE_OPERATION_MODES[o].text}收货` : '',
   }, {
     title: '默认发货模式',
     dataIndex: 'shipping_mode',
     width: 80,
     className: 'cell-align-center',
-    render: o => o ? WHSE_OPERATION_MODES[o].text : '',
+    render: o => o ? `${WHSE_OPERATION_MODES[o].text}发货` : '',
   }, {
     title: '操作',
     width: 150,

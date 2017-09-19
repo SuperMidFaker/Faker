@@ -466,6 +466,6 @@ exports.DELIVER_TYPES = [{
 }];
 
 exports.WHSE_OPERATION_MODES = {
-  scan: { value: 'scan', text: '扫描收货' },
-  manual: { value: 'manual', text: '手动收货' },
+  scan: { value: 'scan', text: '扫描' },
+  manual: { value: 'manual', text: '手动' },
 };
