@@ -290,7 +290,6 @@ export default class SHFTZStockList extends React.Component {
               <Button size="large" icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
                 {this.msg('export')}
               </Button>
-              <Button size="large" type="primary">新建库存对比任务</Button>
               <Badge dot style={{ backgroundColor: '#87d068' }}>
                 <ButtonToggle size="large"
                   iconOn="hourglass" iconOff="hourglass"
