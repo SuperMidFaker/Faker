@@ -29,23 +29,19 @@ export default class AddLocationModal extends Component {
     zoneCode: PropTypes.string,
   }
   state = {
-    type: 1,
-    status: 1,
+    type: '1',
+    status: '1',
     location: '',
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible) {
       const { location, type, status } = nextProps.record;
-      this.setState({
-        location,
-        type: Number(type),
-        status: Number(status),
-      });
+      this.setState({ location, type, status });
     } else {
       this.setState({
         location: nextProps.record.location ? nextProps.record.location : '',
-        type: 1,
-        status: 1,
+        type: '1',
+        status: '1',
       });
     }
   }

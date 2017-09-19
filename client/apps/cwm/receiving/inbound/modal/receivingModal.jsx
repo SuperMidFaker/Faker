@@ -28,7 +28,6 @@ const Option = Select.Option;
     inboundNo: state.cwmReceive.receiveModal.inboundNo,
     inboundProduct: state.cwmReceive.receiveModal.inboundProduct,
     saveLoading: state.cwmReceive.submitting,
-    locations: state.cwmWarehouse.locations,
   }),
   { hideReceiveModal, loadProductDetails, receiveProduct }
 )
@@ -97,12 +96,11 @@ export default class ReceivingModal extends Component {
   handleCancel = () => {
     this.props.hideReceiveModal();
   }
-  handleProductPutAway = (index, value) => {
-    const location = this.props.locations.find(item => item.location === value);
+  handleProductPutAway = (index, value, location) => {
     const dataSource = [...this.state.dataSource];
     dataSource[index].location = value;
     if (location) {
-      dataSource[index].priority = location.status;
+      dataSource[index].priority = Number(location.status);
     }
     this.setState({ dataSource });
   }
@@ -359,8 +357,8 @@ export default class ReceivingModal extends Component {
     dataIndex: 'location',
     width: 150,
     render: (o, record, index) => (
-      <AdviceLocations value={o} style={{ width: 140 }} productNo={this.props.inboundProduct.product_no} onChange={value => this.handleProductPutAway(index, value)}
-        disabled={!!record.trace_id}
+      <AdviceLocations value={o} style={{ width: 140 }} productNo={this.props.inboundProduct.product_no}
+        onChange={(value, location) => this.handleProductPutAway(index, value, location)} disabled={!!record.trace_id}
       />),
   }, {
     title: '库存状态',

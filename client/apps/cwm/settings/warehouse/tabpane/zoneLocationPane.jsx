@@ -93,8 +93,8 @@ export default class ZoneLocationPane extends Component {
       zones: data,
     });
   }
-  createZone = (e) => {
-    e.preventDefault();
+  createZone = (ev) => {
+    ev.preventDefault();
     const { tenantId, loginId } = this.props;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -106,31 +106,27 @@ export default class ZoneLocationPane extends Component {
           whseCode,
           tenantId,
           loginId,
-        }).then(
-          (result) => {
-            if (!result.error) {
-              message.info('添加库区成功');
+        }).then((result) => {
+          if (!result.error) {
+            message.info('添加库区成功');
+            this.setState({
+              visible: false,
+            });
+            this.props.form.setFieldsValue({
+              zoneCode: '',
+              zoneName: '',
+            });
+          }
+          this.props.loadZones(whseCode, tenantId).then((data) => {
+            if (!data.error) {
               this.setState({
-                visible: false,
-              });
-              this.props.form.setFieldsValue({
-                zoneCode: '',
-                zoneName: '',
+                zones: data.data,
+                zone: data.data[0],
+                selectKeys: [data.data[0].zone_code],
               });
             }
-            this.props.loadZones(whseCode, tenantId).then(
-              (data) => {
-                if (!data.error) {
-                  this.setState({
-                    zones: data.data,
-                    zone: data.data[0],
-                    selectKeys: [data.data[0].zone_code],
-                  });
-                }
-              }
-            );
-          }
-        );
+          });
+        });
       }
     });
   }
@@ -238,12 +234,12 @@ export default class ZoneLocationPane extends Component {
     title: '库位类型',
     dataIndex: 'type',
     key: 'type',
-    render: o => CWM_LOCATION_TYPES.find(item => item.value === Number(o)) ? CWM_LOCATION_TYPES.find(item => item.value === Number(o)).text : '',
+    render: o => CWM_LOCATION_TYPES.find(item => item.value === o) ? CWM_LOCATION_TYPES.find(item => item.value === o).text : '',
   }, {
     title: '库位状态',
     dataIndex: 'status',
     key: 'status',
-    render: o => CWM_LOCATION_STATUS.find(item => item.value === Number(o)) ? CWM_LOCATION_STATUS.find(item => item.value === Number(o)).text : '',
+    render: o => CWM_LOCATION_STATUS.find(item => item.value === o) ? CWM_LOCATION_STATUS.find(item => item.value === o).text : '',
   }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
