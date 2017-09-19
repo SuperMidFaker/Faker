@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/NavLink';
@@ -123,7 +123,7 @@ export default class AcceptList extends React.Component {
       this.handleTableLoad();
     }
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadTable(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -397,6 +397,9 @@ export default class AcceptList extends React.Component {
       }
     });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   mergeFilters(curFilters, name, value) {
     const merged = curFilters.filter(flt => flt.name !== name);
     if (value !== null && value !== undefined && value !== '') {
@@ -425,7 +428,6 @@ export default class AcceptList extends React.Component {
       },
     };
     let columns = this.columns;
-    let bulkBtns = '';
     columns = [...columns, {
       title: formatContainerMsg(intl, 'opColumn'),
       fixed: 'right',
@@ -485,13 +487,21 @@ export default class AcceptList extends React.Component {
         }
       },
     }];
-    bulkBtns = (
+    const bulkActions = (
       <PrivilegeCover module="transport" feature="shipment" action="edit">
         <Button type="default" onClick={this.handleShipmtsAccept}>
           批量接单
         </Button>
       </PrivilegeCover>
     );
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
+      <span />
+      <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+      <span />
+      <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
+    </span>);
+
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -508,23 +518,11 @@ export default class AcceptList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
-              <span />
-              <CustomerSelect onChange={this.handleCustomerChange} size="large" />
-              <span />
-              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} columns={columns} loading={loading}
-                dataSource={this.dataSource} scroll={{ x: 2660 }}
-              />
-            </div>
-          </div>
+          <DataTable
+            toolbarActions={toolbarActions} bulkActions={bulkActions}
+            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={columns} loading={loading} dataSource={this.dataSource}
+          />
         </Content>
         <RevokejectModal reload={this.handleTableLoad} />
         <ShipmentDockPanel reload={this.handleTableLoad} />
