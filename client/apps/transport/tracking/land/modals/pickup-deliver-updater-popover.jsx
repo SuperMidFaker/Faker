@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Form, DatePicker, message, Popover, Button, Alert } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { savePickOrDeliverDate, reportLoc } from 'common/reducers/trackingLandStatus';
-import { TRACKING_POINT_FROM_TYPE } from 'common/constants';
+import { savePickOrDeliverDate, reportLoc, cancelPickup, cancelDeliver } from 'common/reducers/trackingLandStatus';
+import { TRACKING_POINT_FROM_TYPE, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
@@ -19,7 +19,7 @@ const FormItem = Form.Item;
     loginName: state.account.username,
     tenantName: state.account.tenantName,
   }),
-  { savePickOrDeliverDate, reportLoc }
+  { savePickOrDeliverDate, reportLoc, cancelPickup, cancelDeliver }
 )
 @Form.create()
 export default class PickupDeliverUpdaterPopover extends React.Component {
@@ -29,12 +29,16 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     shipmtNo: PropTypes.string.isRequired,
     parentNo: PropTypes.string,
     estDate: PropTypes.string.isRequired,
+    actDate: PropTypes.string,
     type: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
     onOK: PropTypes.func,
     savePickOrDeliverDate: PropTypes.func.isRequired,
     reportLoc: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
+    cancelPickup: PropTypes.func.isRequired,
+    cancelDeliver: PropTypes.func.isRequired,
+    status: PropTypes.number.isRequired,
   }
   state = {
     visible: false,
@@ -77,9 +81,36 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
   handleClose = () => {
     this.setState({ visible: false });
   }
+  handleCancel = () => {
+    const { shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName } = this.props;
+    const body = {
+      shipmtNo,
+      tenantId,
+      tenantName,
+      loginId,
+      loginName,
+      dispId,
+    };
+    if (this.props.type === 'pickup') {
+      this.props.cancelPickup(body).then(() => {
+        onOK();
+      });
+    } else if (this.props.type === 'deliver') {
+      this.props.cancelDeliver(body).then(() => {
+        onOK();
+      });
+    }
+    this.setState({ visible: false });
+  }
   handleShowPopover = (visible) => {
     if (visible) {
-      this.setState({ visible });
+      this.setState({ visible }, () => {
+        if (this.props.actDate) {
+          this.props.form.setFieldsValue({ actDate: moment(this.props.actDate) });
+        } else {
+          this.props.form.setFieldsValue({ actDate: null });
+        }
+      });
     }
   }
   handleDateChange = (date) => {
@@ -95,20 +126,35 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
     }
   }
   render() {
-    const { shipmtNo, form: { getFieldDecorator } } = this.props;
+    const { shipmtNo, form: { getFieldDecorator }, status } = this.props;
     const { warningMessage } = this.state;
     const colSpan = 8;
     let title;
     let ruleMsg;
     let label;
+    let typeText = '';
+    let okButtonDisabled = false;
+    let cancelButtonDisabled = false;
     if (this.props.type === 'pickup') {
       title = this.msg('pickupModalTitle');
       ruleMsg = this.msg('pickupTimeMust');
       label = this.msg('pickupActDate');
+      typeText = '提货';
+      if (status === SHIPMENT_TRACK_STATUS.intransit) {
+        okButtonDisabled = true;
+      } else if (status === SHIPMENT_TRACK_STATUS.dispatched) {
+        cancelButtonDisabled = true;
+      }
     } else {
       title = this.msg('deliverModalTitle');
       ruleMsg = this.msg('deliverTimeMust');
       label = this.msg('deliverActDate');
+      typeText = '送货';
+      if (status === SHIPMENT_TRACK_STATUS.delivered) {
+        okButtonDisabled = true;
+      } else if (status === SHIPMENT_TRACK_STATUS.intransit) {
+        cancelButtonDisabled = true;
+      }
     }
     const content = (
       <Form className="row" style={{ width: '300px' }}>
@@ -118,11 +164,11 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
             rules: [{
               type: 'object', required: true, message: ruleMsg,
             }],
-          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange} />)}
+          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange} allowClear={false} />)}
         </FormItem>
         <FormItem wrapperCol={{ span: 16, offset: 8 }}>
-          <Button type="primary" htmlType="submit" onClick={this.handleOk}>确定</Button>
-          <Button type="ghost" onClick={this.handleClose} style={{ marginLeft: 16 }}>取消</Button>
+          <Button type="primary" htmlType="submit" onClick={this.handleOk} disabled={okButtonDisabled}>确定</Button>
+          <Button type="ghost" onClick={this.handleCancel} style={{ marginLeft: 16 }} disabled={cancelButtonDisabled}>取消{typeText}</Button>
         </FormItem>
       </Form>
     );

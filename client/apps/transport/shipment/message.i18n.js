@@ -321,9 +321,17 @@ export default defineMessages({
     id: 'transport.shipment.log.pickedup',
     defaultMessage: '提货',
   },
+  cancelPickup: {
+    id: 'transport.shipment.log.cancelPickup',
+    defaultMessage: '取消提货',
+  },
   delivered: {
     id: 'transport.shipment.log.delivered',
     defaultMessage: '送货',
+  },
+  cancelDeliver: {
+    id: 'transport.shipment.log.cancelDeliver',
+    defaultMessage: '取消送货',
   },
   completed: {
     id: 'transport.shipment.log.completed',

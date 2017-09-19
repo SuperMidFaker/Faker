@@ -74,7 +74,13 @@ export default function makeColumns(type, handlers, msg) {
         district: record.consigner_district,
         address: record.consigner_addr,
       };
-      if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.dispatched) {
+      if (type === 'status' && (record.status === SHIPMENT_TRACK_STATUS.dispatched || record.status === SHIPMENT_TRACK_STATUS.intransit)) {
+        let showData = null;
+        if (record.status === SHIPMENT_TRACK_STATUS.dispatched) {
+          showData = msg('updatePickup');
+        } else if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+          showData = renderActDate(record.pickup_act_date, record.pickup_est_date);
+        }
         if (record.sp_tenant_id === -1) {
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
@@ -84,10 +90,12 @@ export default function makeColumns(type, handlers, msg) {
                 parentNo={record.parent_no}
                 dispId={record.disp_id}
                 estDate={record.pickup_est_date}
+                actDate={record.pickup_act_date}
                 onOK={handlers.onTableLoad}
                 location={location}
+                status={record.status}
               >
-                <Icon type="edit" />{msg('updatePickup')}
+                <Icon type="edit" />{showData}
               </PickupDeliverUpdaterPopover>
             </PrivilegeCover>
           );
@@ -103,10 +111,12 @@ export default function makeColumns(type, handlers, msg) {
                   parentNo={record.parent_no}
                   dispId={record.disp_id}
                   estDate={record.pickup_est_date}
+                  actDate={record.pickup_act_date}
                   onOK={handlers.onTableLoad}
                   location={location}
+                  status={record.status}
                 >
-                  <Icon type="edit" />{msg('updatePickup')}
+                  <Icon type="edit" />{showData}
                 </PickupDeliverUpdaterPopover>
               </PrivilegeCover>
             );
@@ -141,7 +151,13 @@ export default function makeColumns(type, handlers, msg) {
         district: record.consignee_district,
         address: record.consignee_addr,
       };
-      if (type !== 'pod' && type === 'status' && record.status === SHIPMENT_TRACK_STATUS.intransit) {
+      if (type === 'status' && (record.status === SHIPMENT_TRACK_STATUS.intransit || record.status === SHIPMENT_TRACK_STATUS.delivered)) {
+        let showData = null;
+        if (record.status === SHIPMENT_TRACK_STATUS.intransit) {
+          showData = msg('updateDelivery');
+        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {
+          showData = renderActDate(record.deliver_act_date, record.deliver_est_date);
+        }
         if (record.sp_tenant_id === -1) {
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
@@ -151,10 +167,12 @@ export default function makeColumns(type, handlers, msg) {
                 parentNo={record.parent_no}
                 dispId={record.disp_id}
                 estDate={record.deliver_est_date}
+                actDate={record.deliver_act_date}
                 onOK={handlers.onTableLoad}
                 location={location}
+                status={record.status}
               >
-                <Icon type="edit" />{msg('updateDelivery')}
+                <Icon type="edit" />{showData}
               </PickupDeliverUpdaterPopover>
             </PrivilegeCover>
           );
@@ -168,10 +186,12 @@ export default function makeColumns(type, handlers, msg) {
                   parentNo={record.parent_no}
                   dispId={record.disp_id}
                   estDate={record.deliver_est_date}
+                  actDate={record.deliver_act_date}
                   onOK={handlers.onTableLoad}
                   location={location}
+                  status={record.status}
                 >
-                  <Icon type="edit" />{msg('updateDelivery')}
+                  <Icon type="edit" />{showData}
                 </PickupDeliverUpdaterPopover>
               </PrivilegeCover>
             );

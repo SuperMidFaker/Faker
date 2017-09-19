@@ -16,6 +16,8 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/status/
   'CHANGE_ACT_DATE', 'CHANGE_ACT_DATE_SUCCEED', 'CHANGE_ACT_DATE_FAIL',
   'LOAD_SHIPMT_DISPATCH', 'LOAD_SHIPMT_DISPATCH_SUCCEED', 'LOAD_SHIPMT_DISPATCH_FAIL',
   'CHANGE_DELIVER_PRM_DATE', 'CHANGE_DELIVER_PRM_DATE_SUCCEED', 'CHANGE_DELIVER_PRM_DATE_FAIL',
+  'CANCEL_PICKUP', 'CANCEL_PICKUP_SUCCEED', 'CANCEL_PICKUP_FAIL',
+  'CANCEL_DELIVER', 'CANCEL_DELIVER_SUCCEED', 'CANCEL_DELIVER_FAIL',
 ]);
 
 const initialState = {
@@ -337,6 +339,36 @@ export function loadShipmtDispatch(dispId) {
       endpoint: 'v1/transport/shipment/dispatch',
       method: 'get',
       params: { dispId },
+    },
+  };
+}
+
+export function cancelPickup(body) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_PICKUP,
+        actionTypes.CANCEL_PICKUP_SUCCEED,
+        actionTypes.CANCEL_PICKUP_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/cancel/pickup',
+      method: 'post',
+      data: body,
+    },
+  };
+}
+
+export function cancelDeliver(body) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CANCEL_DELIVER,
+        actionTypes.CANCEL_DELIVER_SUCCEED,
+        actionTypes.CANCEL_DELIVER_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/cancel/deliver',
+      method: 'post',
+      data: body,
     },
   };
 }
