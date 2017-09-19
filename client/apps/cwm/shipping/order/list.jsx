@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Popover, Icon, Layout, Menu, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
+import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
-import ExcelUploader from 'client/components/ExcelUploader';
 import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
@@ -21,6 +20,7 @@ import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease }
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import PageHeader from 'client/components/PageHeader';
 
 const formatMsg = format(messages);
@@ -71,6 +71,7 @@ export default class ShippingOrderList extends React.Component {
     selectedRows: [],
     searchInput: '',
     createWaveEnable: true,
+    importPanelVisible: false,
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.solist.loaded && !nextProps.solist.loading) {
@@ -303,7 +304,7 @@ export default class ShippingOrderList extends React.Component {
       filters,
     });
   }
-  createWave = () => {
+  handleCreateWave = () => {
     const { tenantId, tenantName, defaultWhse, loginId } = this.props;
     const { selectedRowKeys } = this.state;
     this.props.createWave(selectedRowKeys, tenantId, tenantName, defaultWhse.code, loginId).then((result) => {
@@ -316,14 +317,8 @@ export default class ShippingOrderList extends React.Component {
     const { selectedRows } = this.state;
     this.props.showAddToWave(selectedRows[0].owner_partner_id);
   }
-  handleSoStockImport = () => {
-    this.handleReload();
-  }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
-  }
-  handleMenuClick = () => {
-    window.open(`${XLSX_CDN}/SO批量导入模板.xlsx`);
   }
   render() {
     const { whses, defaultWhse, owners, filters, loading } = this.props;
@@ -414,14 +409,10 @@ export default class ShippingOrderList extends React.Component {
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
-      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.createWave}>创建波次计划</Button>}
+      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.handleCreateWave}>创建波次计划</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
     </span>
     );
-    const importMenu = (
-      <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="model"><Icon type="file-excel" />下载导入模板</Menu.Item>
-      </Menu>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>
@@ -453,21 +444,7 @@ export default class ShippingOrderList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Popover content={importMenu}>
-              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
-                formData={{
-                  data: JSON.stringify({
-                    tenantId: this.props.tenantId,
-                    tenantName: this.props.tenantName,
-                    loginId: this.props.loginId,
-                    whseCode: defaultWhse.code,
-                    whseName: defaultWhse.name,
-                  }),
-                }} onUploaded={this.handleSoStockImport}
-              >
-                <Button size="large"><Icon type="upload" /> {this.msg('batchImport')}</Button>
-              </ExcelUploader>
-            </Popover>
+            <Button size="large" onClick={() => { this.setState({ importPanelVisible: true }); }}>{this.msg('batchImport')}</Button>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>
@@ -483,6 +460,22 @@ export default class ShippingOrderList extends React.Component {
         <OrderDockPanel />
         <DelegationDockPanel />
         <ShipmentDockPanel />
+        <ImportDataPanel
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
+          formData={{
+            data: JSON.stringify({
+              tenantId: this.props.tenantId,
+              tenantName: this.props.tenantName,
+              loginId: this.props.loginId,
+              whseCode: defaultWhse.code,
+              whseName: defaultWhse.name,
+            }),
+          }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.handleReload}
+          template={`${XLSX_CDN}/SO批量导入模板.xlsx`}
+        />
         <AddToWaveModal reload={this.handleReload} selectedRowKeys={this.state.selectedRowKeys} />
       </QueueAnim>
     );
