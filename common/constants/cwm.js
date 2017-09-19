@@ -464,3 +464,8 @@ exports.DELIVER_TYPES = [{
 }, {
   name: '第三方配送', value: 3,
 }];
+
+exports.WHSE_OPERATION_MODES = {
+  scan: { value: 'scan', text: '扫描收货' },
+  manual: { value: 'manual', text: '手动收货' },
+};

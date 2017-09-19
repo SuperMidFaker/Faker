@@ -6,7 +6,7 @@ import { Alert, Modal, Table, message, Input } from 'antd';
 import { loadwhseOwners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode } from 'common/reducers/cwmWarehouse';
 import { loadWhse } from 'common/reducers/cwmContext';
 import { loadPartners } from 'common/reducers/partner';
-import { PARTNER_BUSINESSE_TYPES, PARTNER_ROLES } from 'common/constants';
+import { PARTNER_BUSINESSE_TYPES, PARTNER_ROLES, WHSE_OPERATION_MODES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -101,6 +101,8 @@ export default class WhseOwnersModal extends Component {
       whseCode,
       tenantId: obj.partner_tenant_id,
       whseTenantId: this.props.whseTenantId,
+      receivingMode: WHSE_OPERATION_MODES.manual.value,
+      shippingMode: WHSE_OPERATION_MODES.manual.value,
     }));
     this.props.addWhseOwners(data, this.props.loginId).then(
       (result) => {

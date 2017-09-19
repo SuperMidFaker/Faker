@@ -9,6 +9,7 @@ import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
+import { WHSE_OPERATION_MODES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -92,6 +93,18 @@ export default class OwnersPane extends Component {
     width: 80,
     className: 'cell-align-center',
     render: () => <Button icon="upload" />,
+  }, {
+    title: '默认收货模式',
+    dataIndex: 'receiving_mode',
+    width: 80,
+    className: 'cell-align-center',
+    render: o => o ? WHSE_OPERATION_MODES[o].text : '',
+  }, {
+    title: '默认发货模式',
+    dataIndex: 'shipping_mode',
+    width: 80,
+    className: 'cell-align-center',
+    render: o => o ? WHSE_OPERATION_MODES[o].text : '',
   }, {
     title: '操作',
     width: 150,
