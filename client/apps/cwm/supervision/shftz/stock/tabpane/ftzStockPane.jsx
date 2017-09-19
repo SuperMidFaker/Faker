@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import FileSaver from 'file-saver';
-import XLSX from 'xlsx';
 import { Tag } from 'antd';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
+import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
@@ -47,6 +46,7 @@ export default class FTZStockPane extends React.Component {
   componentWillMount() {
     this.props.loadParams();
   }
+  msg = formatMsg(this.props.intl);
   columns = [{
     title: this.msg('owner'),
     dataIndex: 'owner_name',
@@ -184,43 +184,7 @@ export default class FTZStockPane extends React.Component {
     width: 120,
     dataIndex: 'amount_usd',
   }]
-  handleStockQuery = (filters) => {
-    const filter = { ...filters,
-      cus_whse_code: this.props.defaultWhse.ftz_whse_code,
-      whse_code: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId };
-    this.props.loadFtzStocks(filter);
-    this.setState({ selectedRowKeys: [], filter });
-  }
-  handleSearch = (searchForm) => {
-    const filter = { ...this.state.filter, ...searchForm };
-    this.handleStockQuery(filter);
-  }
-  s2ab = (s) => {
-    if (typeof ArrayBuffer !== 'undefined') {
-      const buf = new ArrayBuffer(s.length);
-      const view = new Uint8Array(buf);
-      for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
-    } else {
-      const buf = new Array(s.length);
-      for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
-    }
-  }
 
-  handleExportExcel = () => {
-    const csvData = [];
-    this.props.stockDatas.forEach((dt) => {
-      const out = {};
-      this.columns.forEach((col) => { out[col.title] = dt[col.dataIndex]; });
-      csvData.push(out);
-    });
-    const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
-    const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-    wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
-    FileSaver.saveAs(new window.Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'shftzStocks.xlsx');
-  }
   render() {
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -231,7 +195,7 @@ export default class FTZStockPane extends React.Component {
     return (
       <div className="table-panel table-fixed-layout">
         <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-          columns={this.columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id"
+          columns={this.columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id" noBorder
         />
       </div>
     );

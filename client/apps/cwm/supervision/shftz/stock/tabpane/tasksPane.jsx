@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import { Table } from 'antd';
+import RowUpdater from 'client/components/rowUpdater';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import DataTable from 'client/components/DataTable';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -31,7 +32,7 @@ import { formatMsg } from '../message.i18n';
     }),
     { loadFtzStocks, loadParams, switchDefaultWhse }
   )
-export default class FTZComparisonPane extends React.Component {
+export default class TasksPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -46,50 +47,29 @@ export default class FTZComparisonPane extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   columns = [{
-    title: this.msg('billNo'),
-    dataIndex: 'ftz_ent_no',
-    width: 200,
+    title: this.msg('taskId'),
+    dataIndex: 'task_id',
+    width: 60,
   }, {
-    title: this.msg('detailId'),
-    dataIndex: 'ftz_ent_detail_id',
-    width: 100,
+    title: this.msg('owner'),
+    dataIndex: 'owner',
   }, {
-    title: this.msg('ftzStockQty'),
-    dataIndex: 'ftz_stock_qty',
-    width: 150,
+    title: this.msg('progress'),
+    dataIndex: 'progress',
   }, {
-    title: this.msg('whseStockqty'),
-    width: 120,
-    dataIndex: 'whse_stock_qty',
+    title: this.msg('createdDate'),
+    dataIndex: 'created_date',
   }, {
-    title: this.msg('ftzNetWt'),
-    width: 120,
-    dataIndex: 'ftz_net_wt',
-  }, {
-    title: this.msg('whseNetWt'),
-    width: 120,
-    dataIndex: 'whse_net_wt',
-  }, {
-    title: this.msg('ftzAmount'),
-    width: 120,
-    dataIndex: 'ftz_amount',
-  }, {
-    title: this.msg('whseAmount'),
-    width: 120,
-    dataIndex: 'whse_amount',
+    title: this.msg('ops'),
+    dataIndex: 'OPS_COL',
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="对比详情" row={record} />,
   }]
 
   render() {
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
-      },
-    };
     return (
       <div className="table-panel table-fixed-layout">
-        <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-          columns={this.columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id" noBorder
+        <Table loading={this.props.loading}
+          columns={this.columns} dataSource={this.props.stockDatas} rowKey="id"
         />
       </div>
     );

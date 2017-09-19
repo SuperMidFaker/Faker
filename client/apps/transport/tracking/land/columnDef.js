@@ -66,7 +66,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtActPickupDate'),
     dataIndex: 'pickup_act_date',
-    width: 100,
+    width: 120,
     render: (o, record) => {
       const location = {
         province: record.consigner_province,
@@ -95,7 +95,7 @@ export default function makeColumns(type, handlers, msg) {
                 location={location}
                 status={record.status}
               >
-                <Icon type="edit" />{showData}
+                {showData} <Icon type="edit" />
               </PickupDeliverUpdaterPopover>
             </PrivilegeCover>
           );
@@ -116,7 +116,7 @@ export default function makeColumns(type, handlers, msg) {
                   location={location}
                   status={record.status}
                 >
-                  <Icon type="edit" />{showData}
+                  {showData} <Icon type="edit" />
                 </PickupDeliverUpdaterPopover>
               </PrivilegeCover>
             );
@@ -143,7 +143,7 @@ export default function makeColumns(type, handlers, msg) {
   }, {
     title: msg('shipmtActDeliveryDate'),
     dataIndex: 'deliver_act_date',
-    width: 100,
+    width: 120,
     render: (o, record) => {
       const location = {
         province: record.consignee_province,
@@ -172,7 +172,7 @@ export default function makeColumns(type, handlers, msg) {
                 location={location}
                 status={record.status}
               >
-                <Icon type="edit" />{showData}
+                {showData} <Icon type="edit" />
               </PickupDeliverUpdaterPopover>
             </PrivilegeCover>
           );
@@ -191,7 +191,7 @@ export default function makeColumns(type, handlers, msg) {
                   location={location}
                   status={record.status}
                 >
-                  <Icon type="edit" />{showData}
+                  {showData} <Icon type="edit" />
                 </PickupDeliverUpdaterPopover>
               </PrivilegeCover>
             );
