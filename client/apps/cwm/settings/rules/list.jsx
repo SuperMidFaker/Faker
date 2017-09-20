@@ -132,7 +132,7 @@ export default class RulesList extends Component {
               <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="main-content">
+          <Content className="page-content">
             <div className="page-body">
               <Layout className="main-wrapper">
                 <Sider className="nav-sider" width={280}>

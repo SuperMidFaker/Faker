@@ -22,7 +22,7 @@ export default class DataHubPack extends React.Component {
   }
   render() {
     return (
-      <Layout className="layout-wrapper">
+      <Layout className="welo-layout-wrapper">
         <Header>
           <CorpHeaderBar title="协作平台" />
         </Header>

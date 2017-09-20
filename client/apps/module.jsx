@@ -25,7 +25,7 @@ export default class Module extends React.Component {
   render() {
     const { alert } = this.props;
     return (
-      <Layout className="layout-wrapper">
+      <Layout className="welo-layout-wrapper">
         {alert && <Alert message={alert} banner />}
         <Header>
           <HeaderNavBar />

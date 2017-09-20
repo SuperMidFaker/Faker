@@ -379,7 +379,7 @@ export default class SHFTZEntryDetail extends Component {
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           {entryEditable && !this.state.sendable && <Alert message={this.state.whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>

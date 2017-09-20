@@ -194,7 +194,7 @@ export default class WarehouseList extends Component {
               <a onClick={this.handleEditWarehouse}><Icon type="edit" /></a>
             </PageHeader.Title>
           </PageHeader>
-          <Content className="main-content">
+          <Content className="page-content">
             <div className="page-body tabbed">
               <Tabs defaultActiveKey="owners">
                 {tabs}

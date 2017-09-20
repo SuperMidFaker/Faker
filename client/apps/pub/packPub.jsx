@@ -20,7 +20,7 @@ export default class PubPack extends React.Component {
   }
   render() {
     return (
-      <Layout className="layout-wrapper">
+      <Layout className="welo-layout-wrapper">
         <Header>
           <PubHeaderBar title="运单查询" />
         </Header>

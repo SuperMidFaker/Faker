@@ -251,7 +251,7 @@ export default class WaveList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
         </PageHeader>
-        <Content className="main-content" key="main">
+        <Content className="page-content" key="main">
           <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id" scroll={{ x: 1400 }} loading={loading}
             toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
           />

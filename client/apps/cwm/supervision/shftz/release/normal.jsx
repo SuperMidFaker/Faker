@@ -339,7 +339,7 @@ export default class SHFTZRelDetail extends Component {
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>

@@ -167,7 +167,7 @@ export default class StockTransactionsList extends React.Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content" key="main">
+        <Content className="page-content" key="main">
           <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>

@@ -311,7 +311,7 @@ export default class SHFTZEntryList extends React.Component {
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>
-          <Content className="main-content" key="main">
+          <Content className="page-content" key="main">
             <DataTable
               toolbarActions={toolbarActions}
               rowSelection={rowSelection}

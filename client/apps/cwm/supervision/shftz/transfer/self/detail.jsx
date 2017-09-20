@@ -266,7 +266,7 @@ export default class SHFTZTransferSelfDetail extends Component {
               <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">

@@ -310,7 +310,7 @@ export default class OutboundList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
         </PageHeader>
-        <Content className="main-content" key="main">
+        <Content className="page-content" key="main">
           <DataTable columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" scroll={{ x: 1300 }} loading={loading}
             toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
           />

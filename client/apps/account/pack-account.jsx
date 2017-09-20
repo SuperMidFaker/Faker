@@ -21,7 +21,7 @@ export default class AccountPack extends React.Component {
   }
   render() {
     return (
-      <Layout className="layout-wrapper">
+      <Layout className="welo-layout-wrapper">
         <Header>
           <HeaderNavBar title="帐号设置" compact />
         </Header>

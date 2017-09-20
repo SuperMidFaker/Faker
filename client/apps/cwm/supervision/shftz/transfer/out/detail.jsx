@@ -277,7 +277,7 @@ export default class SHFTZTransferOutDetail extends Component {
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>

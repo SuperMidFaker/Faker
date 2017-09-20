@@ -254,7 +254,7 @@ export default class NormalDeclDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions />
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
               <Row className="info-group-inline">

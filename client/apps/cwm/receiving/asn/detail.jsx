@@ -141,7 +141,7 @@ export default class ReceivingASNDetail extends Component {
             </Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           <Form layout="vertical">
             <HeadCard asnHead={asnHead} form={form} editable={this.state.editable} />
             <Card bodyStyle={{ padding: 0 }} noHovering>

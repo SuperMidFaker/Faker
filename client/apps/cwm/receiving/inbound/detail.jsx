@@ -152,7 +152,7 @@ export default class ReceiveInbound extends Component {
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           {currentStatus >= CWM_INBOUND_STATUS.ALL_RECEIVED.value &&
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             inboundHead.total_received_qty < inboundHead.total_expect_qty &&
