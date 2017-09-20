@@ -46,7 +46,7 @@ const initialState = {
     loading: true,
     loaded: true,
   },
-  soFilters: { status: 'all', ownerCode: 'all' },
+  soFilters: { status: 'all', ownerCode: 'all', receiverCode: 'all', carrierCode: 'all' },
   wave: {
     totalCount: 0,
     pageSize: 20,
