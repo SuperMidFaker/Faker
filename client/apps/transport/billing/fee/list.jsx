@@ -524,14 +524,10 @@ export default class FeesList extends React.Component {
           </div>
         </Header>
         <Content className="main-content">
-          <div className="page-body">
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection}
-                dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: tableWidth }} loading={loading}
-                selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleSelectionClear}
-              />
-            </div>
-          </div>
+          <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection}
+            dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: tableWidth }} loading={loading}
+            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleSelectionClear}
+          />
         </Content>
         <ShipmentDockPanel />
         <OrderDockPanel />

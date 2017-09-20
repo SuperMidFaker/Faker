@@ -470,15 +470,11 @@ export default class LandStatusList extends React.Component {
     </span>);
     return (
       <div>
-        <div className="page-body">
-          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-          <div className="panel-body table-panel table-fixed-layout">
-            <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2780 }} selectedRowKeys={this.state.selectedRowKeys}
-              handleDeselectRows={this.handleSelectionClear}
-            />
-          </div>
-        </div>
+        <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+        <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
+          dataSource={this.dataSource} scroll={{ x: 2780 }} selectedRowKeys={this.state.selectedRowKeys}
+          handleDeselectRows={this.handleSelectionClear}
+        />
       </div>
     );
   }
