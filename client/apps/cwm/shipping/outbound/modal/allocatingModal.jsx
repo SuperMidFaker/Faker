@@ -400,8 +400,8 @@ export default class AllocatingModal extends Component {
     outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / deleteOne.sku_pack_qty;
     const idx = inventoryData.findIndex(item => item.trace_id === deleteOne.trace_id);
     if (idx >= 0) {
-      inventoryData[index].alloc_qty -= deleteOne.allocated_qty;
-      inventoryData[index].avail_qty += deleteOne.allocated_qty;
+      inventoryData[idx].alloc_qty -= deleteOne.allocated_qty;
+      inventoryData[idx].avail_qty += deleteOne.allocated_qty;
     } else {
       deleteOne.avail_qty = deleteOne.allocated_qty;
       deleteOne.alloc_qty = 0;
