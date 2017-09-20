@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Menu, Icon, Popconfirm, Input, Select, message } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { format } from 'client/common/i18n/helpers';
 import NavLink from 'client/components/NavLink';
 import messages from './message.i18n';
@@ -207,7 +207,7 @@ export default class ParamVehicles extends Component {
                 </Menu>
               </Sider>
               <Content className="nav-content">
-                <Table columns={columns} dataSource={this.state.paramVehicles} rowKey="id" />
+                <DataTable columns={columns} dataSource={this.state.paramVehicles} rowKey="id" />
               </Content>
             </Layout>
           </div>

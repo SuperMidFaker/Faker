@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Tooltip, Tag, Radio } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import * as Location from 'client/util/location';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
@@ -72,7 +72,7 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadTransitTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -221,24 +221,21 @@ export default class TodoAcceptPane extends Component {
         );
       },
     }]);
+    const toolbarActions = (<span>
+      <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
+        <RadioButton value="dispatchedOrIntransit">{this.msg('all')}</RadioButton>
+        <RadioButton value="toPickup">{this.msg('dispatchedShipmt')}</RadioButton>
+        <RadioButton value="toLocate">{this.msg('toLocateShipmt')}</RadioButton>
+        <RadioButton value="toDeliver">{this.msg('toDeliverShipmt')}</RadioButton>
+      </RadioGroup>
+    </span>);
     return (
       <div>
-        <div className="pane-header">
-          <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
-            <RadioButton value="dispatchedOrIntransit">{this.msg('all')}</RadioButton>
-            <RadioButton value="toPickup">{this.msg('dispatchedShipmt')}</RadioButton>
-            <RadioButton value="toLocate">{this.msg('toLocateShipmt')}</RadioButton>
-            <RadioButton value="toDeliver">{this.msg('toDeliverShipmt')}</RadioButton>
-          </RadioGroup>
-        </div>
-        <div>
-          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.trackingList.loading}
-          />
-          <RevokejectModal reload={this.handleTableReload} />
-        </div>
+        <DataTable toolbarActions={toolbarActions} size="middle" dataSource={dataSource} columns={columns} showHeader={false}
+          locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.trackingList.loading}
+        />
+        <RevokejectModal reload={this.handleTableReload} />
       </div>
-
     );
   }
 }

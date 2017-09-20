@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { Tag, Layout, Radio, Button } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { loadShipmentEvents, loadShipmtDetail } from 'common/reducers/shipment';
 import TrimSpan from 'client/components/trimSpan';
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
@@ -187,7 +187,7 @@ export default class Dashboard extends React.Component {
       dataIndex: 'transport_mode',
       width: 80,
     }];
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadShipmentEvents(null, params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -234,7 +234,7 @@ export default class Dashboard extends React.Component {
         <Content className="main-content">
           <div className="page-body">
             <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1700 }} />
+              <DataTable columns={columns} dataSource={dataSource} rowKey="id" scroll={{ x: 1700 }} />
             </div>
           </div>
         </Content>

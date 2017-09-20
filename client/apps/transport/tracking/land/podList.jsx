@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { message } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadShipmtDetail } from 'common/reducers/shipment';
@@ -128,7 +128,7 @@ export default class LandStatusList extends React.Component {
       });
     }
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadPodTable(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -264,27 +264,25 @@ export default class LandStatusList extends React.Component {
       deliverConfirm: this.handleDeliverConfirm,
       carriers: this.props.carriers,
     }, this.msg);
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
+        value={this.state.searchInput} size="large"
+      />
+      <span />
+      <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+      <span />
+      <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
+      <span />
+      <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
+    </span>);
     return (
       <div>
         <div className="page-body">
-          <div className="toolbar">
-            <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-              value={this.state.searchInput} size="large"
-            />
-            <span />
-            <CustomerSelect onChange={this.handleCustomerChange} size="large" />
-            <span />
-            <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
-            <span />
-            <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
-            <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-              <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            </div>
-          </div>
           <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
           <div className="panel-body table-panel table-fixed-layout">
-            <Table rowSelection={rowSelection} columns={columns} loading={loading}
-              dataSource={this.dataSource} scroll={{ x: 2770 }}
+            <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
+              dataSource={this.dataSource} scroll={{ x: 2770 }} selectedRowKeys={this.state.selectedRowKeys}
+              handleDeselectRows={this.handleSelectionClear}
             />
           </div>
         </div>

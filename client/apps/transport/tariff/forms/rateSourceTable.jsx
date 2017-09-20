@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Modal, Input, message } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import RegionCascader from 'client/components/RegionCascader';
 import { submitRateSource, loadRatesSources, updateRateSource,
   delRateSource, loadRateEnds } from 'common/reducers/transportTariff';
@@ -56,7 +56,7 @@ export default class RateSourceTable extends React.Component {
       this.setState({ selectedRowKeys: [nextProps.rateId] });
     }
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadRatesSources(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -228,7 +228,7 @@ export default class RateSourceTable extends React.Component {
     }
     return (
       <div>
-        <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
+        <DataTable size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource} onRowClick={this.handleRowClick} rowKey={getRowKey}
         />
         <Modal visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}

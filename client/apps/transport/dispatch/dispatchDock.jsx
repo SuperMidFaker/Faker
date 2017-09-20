@@ -5,7 +5,7 @@ import update from 'react/lib/update';
 import { intlShape, injectIntl } from 'react-intl';
 import { Badge, Tag, Button, Popover, message, Row, Col, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import InfoItem from 'client/components/InfoItem';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -293,7 +293,7 @@ export default class DispatchDock extends Component {
     }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
-  lspsds = new Table.DataSource({
+  lspsds = new DataTable.DataSource({
     fetcher: params => this.props.loadLsps(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -318,7 +318,7 @@ export default class DispatchDock extends Component {
     remotes: this.props.lsps,
   })
 
-  vesds = new Table.DataSource({
+  vesds = new DataTable.DataSource({
     fetcher: (params) => {
       this.setState({
         newVehicleVisible: false,
@@ -553,27 +553,31 @@ export default class DispatchDock extends Component {
     const { vehicles } = this.props;
     this.lspsds.remotes = this.state.lspsVar;
     this.vesds.remotes = vehicles;
+    const toolbarActionsConsignee = (
+      <span>
+        <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
+          onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
+        />
+        <Button onClick={this.handleNewCarrierClick}>新增承运商</Button>
+      </span>
+    );
+    const toolbarActionsVehicle = (
+      <span>
+        <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
+          onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
+        />
+        <Button onClick={this.handleNewVehicleClick}>新增车辆</Button>
+      </span>
+    );
     return (<Tabs defaultActiveKey="carrier" onChange={this.handleTabChange}>
       <TabPane tab={this.msg('tabTextCarrier')} key="carrier">
-        <div className="pane-header">
-          <div className="toolbar-right"><Button onClick={this.handleNewCarrierClick}>新增承运商</Button></div>
-          <SearchBar placeholder={this.msg('carrierSearchPlaceholder')}
-            onInputSearch={this.handleCarrierSearch} value={this.state.carrierSearch}
-          />
-        </div>
         <div className="pane-content tab-pane">
-          <Table size="middle" columns={this.consigneeCols} dataSource={this.lspsds} loading={this.state.lspLoading} />
+          <DataTable toolbarActions={toolbarActionsConsignee} size="middle" columns={this.consigneeCols} dataSource={this.lspsds} loading={this.state.lspLoading} />
         </div>
       </TabPane>
       <TabPane tab={this.msg('tabTextVehicle')} key="vehicle">
-        <div className="pane-header">
-          <div className="toolbar-right"><Button onClick={this.handleNewVehicleClick}>新增车辆</Button></div>
-          <SearchBar placeholder={this.msg('vehicleSearchPlaceholder')}
-            onInputSearch={this.handlePlateSearch} value={this.state.plateSearch}
-          />
-        </div>
         <div className="pane-content tab-pane">
-          <Table size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
+          <DataTable toolbarActions={toolbarActionsVehicle} size="middle" columns={this.vehicleCols} dataSource={this.vesds} />
         </div>
         <VehicleFormMini visible={this.state.newVehicleVisible} />
       </TabPane>

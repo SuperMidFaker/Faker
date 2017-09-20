@@ -121,6 +121,8 @@ export default function makeColumns(type, handlers, msg) {
               </PrivilegeCover>
             );
           }
+        } else {
+          return renderActDate(record.pickup_act_date, record.pickup_est_date);
         }
       } else {
         return renderActDate(record.pickup_act_date, record.pickup_est_date);
@@ -196,6 +198,8 @@ export default function makeColumns(type, handlers, msg) {
               </PrivilegeCover>
             );
           }
+        } else {
+          return renderActDate(record.deliver_act_date, record.deliver_est_date);
         }
       } else {
         return renderActDate(record.deliver_act_date, record.deliver_est_date);

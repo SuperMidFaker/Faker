@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Tooltip, Tag, Radio } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
@@ -77,7 +77,7 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadDispatchTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -147,22 +147,20 @@ export default class TodoAcceptPane extends Component {
         );
       },
     }]);
+    const toolbarActions = (<span>
+      <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
+        <RadioButton value="all">{this.msg('all')}</RadioButton>
+        <RadioButton value="toAccept">{this.msg('toAccept')}</RadioButton>
+        <RadioButton value="toDispatch">{this.msg('toDispatch')}</RadioButton>
+        <RadioButton value="prompt">{this.msg('prompt')}</RadioButton>
+      </RadioGroup>
+    </span>);
     return (
       <div>
-        <div className="pane-header">
-          <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="toAccept">{this.msg('toAccept')}</RadioButton>
-            <RadioButton value="toDispatch">{this.msg('toDispatch')}</RadioButton>
-            <RadioButton value="prompt">{this.msg('prompt')}</RadioButton>
-          </RadioGroup>
-        </div>
-        <div>
-          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.acceptanceList.loading}
-          />
-          <RevokejectModal reload={this.handleTableReload} />
-        </div>
+        <DataTable toolbarActions={toolbarActions} size="middle" dataSource={dataSource} columns={columns} showHeader={false}
+          locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.acceptanceList.loading}
+        />
+        <RevokejectModal reload={this.handleTableReload} />
       </div>
     );
   }

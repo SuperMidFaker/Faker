@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { Breadcrumb, Button, message, Layout, Popconfirm } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -141,7 +141,7 @@ export default class BillingList extends React.Component {
     const { customers, carriers } = this.state;
     const { tenantId, type, loading } = this.props;
     const { searchValue } = this.props.billings;
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadBillings(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -301,6 +301,11 @@ export default class BillingList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const toolbarActions = (<span>
+      <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
+        value={this.props.billings.searchValue} size="large"
+      />
+    </span>);
     return (
       <div>
         <Header className="page-header">
@@ -319,16 +324,11 @@ export default class BillingList extends React.Component {
         </Header>
         <Content className="main-content">
           <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-                value={this.props.billings.searchValue} size="large"
-              />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="id" loading={loading} scroll={{ x: 1500 }} />
+              <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} dataSource={dataSource}
+                columns={columns} rowKey="id"
+                loading={loading} scroll={{ x: 1500 }} selectedRowKeys={this.state.selectedRowKeys}
+              />
             </div>
             <BillingForm type={type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
             <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
