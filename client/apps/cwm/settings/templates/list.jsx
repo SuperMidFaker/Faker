@@ -126,7 +126,7 @@ export default class TemplatesList extends Component {
               <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="main-content">
+          <Content className="page-content">
             <div className="page-body" />
           </Content>
         </Layout>

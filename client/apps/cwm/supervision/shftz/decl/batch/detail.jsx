@@ -364,7 +364,7 @@ export default class BatchDeclDetail extends Component {
             <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} loading={submitting} disabled={!relEditable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
               <Row className="info-group-inline">

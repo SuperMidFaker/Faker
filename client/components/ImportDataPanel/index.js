@@ -29,7 +29,7 @@ export default class ImportDataPanel extends React.Component {
     uploadStatus: 'active',
     fileList: [],
   }
-  handleImport = (info) => {
+  handleUploadFile = (info) => {
     if (this.state.uploadChangeCount === 0) {
       this.state.uploadChangeCount++;
       this.setState({ uploading: true, uploadStatus: 'active', uploadPercent: 10 });
@@ -43,9 +43,6 @@ export default class ImportDataPanel extends React.Component {
       this.state.uploadChangeCount = 0;
       if (this.props.onUploaded) {
         this.props.onUploaded(reponseData);
-      }
-      if (this.props.onClose) {
-        this.props.onClose();
       }
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
@@ -65,7 +62,7 @@ export default class ImportDataPanel extends React.Component {
       <DockPanel title={title || '导入'} size="small" visible={visible} onClose={onClose}>
         <div style={{ height: 300, marginBottom: 24 }}>
           <Dragger accept=".xls,.xlsx" action={endpoint} showUploadList={false}
-            data={formData} onChange={this.handleImport} withCredentials
+            data={formData} onChange={this.handleUploadFile} withCredentials
           >
             <p className="ant-upload-drag-icon">
               <Icon type="inbox" />

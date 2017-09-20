@@ -33,7 +33,7 @@ export default class NotFound extends React.Component {
   render() {
     const { intl } = this.props;
     return (
-      <div className="layout-wrapper">
+      <div className="welo-layout-wrapper">
         <HeaderNavBar />
         <div className="layout-content">
           <div className="centered-card">

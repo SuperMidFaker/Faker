@@ -275,7 +275,7 @@ export default class OutboundDetail extends Component {
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={4}>

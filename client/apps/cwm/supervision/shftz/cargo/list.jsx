@@ -376,7 +376,7 @@ export default class SHFTZCargoList extends React.Component {
               <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
             </div>
           </Header>
-          <Content className="main-content" key="main">
+          <Content className="page-content" key="main">
             <DataTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
               toolbarActions={toolbarActions} scroll={{ x: 1400 }} loading={loading}
             />

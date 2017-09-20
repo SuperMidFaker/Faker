@@ -265,7 +265,7 @@ export default class MovementList extends React.Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content" key="main">
+        <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions} selectedRowKeys={this.state.selectedRowKeys}
             columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
           />

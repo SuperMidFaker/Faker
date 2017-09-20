@@ -96,7 +96,7 @@ export default class MovementDetail extends Component {
             </RadioGroup>
           </div>
         </Header>
-        <Content className="main-content">
+        <Content className="page-content">
           <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
             <Row>
               <Col sm={24} lg={6}>

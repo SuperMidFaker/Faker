@@ -190,7 +190,7 @@ export default class SHFTZStockTask extends Component {
             </Breadcrumb>
           </PageHeader.Title>
         </PageHeader>
-        <Content className="main-content" key="main">
+        <Content className="page-content" key="main">
           <Card noHovering bodyStyle={{ paddingBottom: 8 }} />
           <Card noHovering bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="comparison">

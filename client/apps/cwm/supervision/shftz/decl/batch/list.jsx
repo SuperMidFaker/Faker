@@ -392,7 +392,7 @@ export default class BatchDeclList extends React.Component {
               </Button>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="main-content" key="main">
+          <Content className="page-content" key="main">
             <DataTable columns={this.columns} rowSelection={rowSelection} dataSource={this.dataSource} rowKey="id"
               toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
               loading={this.props.loading}

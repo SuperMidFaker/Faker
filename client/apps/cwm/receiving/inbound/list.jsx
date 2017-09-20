@@ -296,7 +296,7 @@ export default class ReceivingInboundList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
         </PageHeader>
-        <Content className="main-content" key="main">
+        <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}

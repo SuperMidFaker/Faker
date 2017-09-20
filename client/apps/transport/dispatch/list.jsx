@@ -1062,14 +1062,8 @@ export default class DispatchList extends React.Component {
           </RadioGroup>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
-            <div className="panel-body table-panel table-fixed-layout">
-              <div className="dispatch-table">
-                {tb}
-              </div>
-            </div>
-          </div>
+          <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
+          {tb}
         </Content>
         <ShipmentDockPanel />
         <OrderDockPanel />

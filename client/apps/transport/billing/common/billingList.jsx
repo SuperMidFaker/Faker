@@ -323,18 +323,14 @@ export default class BillingList extends React.Component {
           </div>
         </Header>
         <Content className="main-content">
-          <div className="page-body">
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} dataSource={dataSource}
-                columns={columns} rowKey="id"
-                loading={loading} scroll={{ x: 1500 }} selectedRowKeys={this.state.selectedRowKeys}
-              />
-            </div>
-            <BillingForm type={type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
-            <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
-              billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
-            />
-          </div>
+          <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} dataSource={dataSource}
+            columns={columns} rowKey="id"
+            loading={loading} scroll={{ x: 1500 }} selectedRowKeys={this.state.selectedRowKeys}
+          />
+          <BillingForm type={type} visible={this.state.billingFormVisible} toggle={this.toggleBillingForm} />
+          <CancelChargeModal visible={this.state.cancelChargeModalVisible} toggle={this.toggleCancelChargeModal}
+            billingId={this.state.billingId} fromId={this.state.fromId} totalCharge={this.state.totalCharge} handleOk={this.handleTableLoad}
+          />
         </Content>
       </div>
 

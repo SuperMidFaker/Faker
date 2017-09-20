@@ -12,7 +12,7 @@ export default class PageHeader extends Component {
   render() {
     const { children } = this.props;
     return (
-      <Header className="page-header">
+      <Header className="welo-page-header">
         {children}
       </Header>
     );

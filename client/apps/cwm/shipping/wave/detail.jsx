@@ -75,7 +75,7 @@ export default class WaveDetail extends Component {
             <Button size="large" onClick={this.handleRelease}>释放</Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           <Card bodyStyle={{ padding: 16 }} noHovering>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={6}>

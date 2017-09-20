@@ -84,7 +84,7 @@ export default class CorpPack extends React.Component {
         </NavLink>
       </Menu.Item>);
     return (
-      <Layout className="layout-wrapper">
+      <Layout className="welo-layout-wrapper">
         <Header>
           <CorpHeaderBar title="管理后台" />
         </Header>

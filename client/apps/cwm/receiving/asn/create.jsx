@@ -138,7 +138,7 @@ export default class CreateReceivingASN extends Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content">
+        <Content className="page-content">
           <Form layout="vertical">
             <HeadCard form={form} handleOwnerChange={this.handleOwnerChange} />
             <Card bodyStyle={{ padding: 0 }} noHovering>

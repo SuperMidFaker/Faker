@@ -403,7 +403,7 @@ export default class StockTransitionList extends React.Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content" key="main">
+        <Content className="page-content" key="main">
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>

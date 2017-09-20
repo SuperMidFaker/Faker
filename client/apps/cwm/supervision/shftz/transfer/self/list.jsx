@@ -291,7 +291,7 @@ export default class SHFTZTransferSelfList extends React.Component {
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateTransSelf}>新建监管库存转移</Button>
             </PageHeader.Actions>
           </PageHeader>
-          <Content className="main-content" key="main">
+          <Content className="page-content" key="main">
             <DataTable
               columns={this.columns}
               rowSelection={rowSelection}

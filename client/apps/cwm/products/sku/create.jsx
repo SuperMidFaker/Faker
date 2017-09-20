@@ -103,7 +103,7 @@ export default class CreateProductSku extends Component {
             </Button>
           </PageHeader.Actions>
         </PageHeader>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+        <Content className="page-content layout-fixed-width layout-fixed-width-lg">
           <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>

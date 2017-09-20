@@ -322,7 +322,7 @@ export default class CWMSkuList extends React.Component {
               <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider} />
             </PageHeader.Actions>}
           </PageHeader>
-          <Content className="main-content" key="main">
+          <Content className="page-content" key="main">
             <DataTable columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
               scroll={{ x: 1400 }} loading={loading} toolbarActions={toolbarActions} bulkActions={bulkActions}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}

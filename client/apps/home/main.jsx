@@ -87,7 +87,7 @@ export default class Home extends React.Component {
       );
     }
     return (
-      <Layout className="layout-wrapper">
+      <Layout className="welo-layout-wrapper">
         <Header>
           <HeaderNavBar />
         </Header>
