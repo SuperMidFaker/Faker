@@ -217,6 +217,7 @@ export default class RateSourceTable extends React.Component {
       columns.push({
         title: '操作',
         width: 80,
+        dataIndex: 'OPS_COL',
         render: (o, record) => (
           <span>
             <RowClick text="编辑" onHit={this.handleEdit} row={record} />

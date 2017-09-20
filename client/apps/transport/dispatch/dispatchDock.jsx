@@ -151,6 +151,7 @@ export default class DispatchDock extends Component {
     }, {
       title: this.msg('shipmtOP'),
       width: 60,
+      dataIndex: 'OPS_COL',
       render: (o, record) => (
         <span>
           <a role="presentation" onClick={() => this.showConfirm('tenant', record)}>
@@ -206,6 +207,7 @@ export default class DispatchDock extends Component {
     }, {
       title: this.msg('shipmtOP'),
       width: 50,
+      dataIndex: 'OPS_COL',
       render: (o, record) => (
         <span>
           <a role="presentation" onClick={() => this.showConfirm('vehicle', record)}>

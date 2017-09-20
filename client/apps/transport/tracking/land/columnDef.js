@@ -498,6 +498,7 @@ export default function makeColumns(type, handlers, msg) {
       title: msg('shipmtNextUpdate'),
       width: 100,
       fixed: 'right',
+      dataIndex: 'OPS_COL',
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {   // 待接单
           return (

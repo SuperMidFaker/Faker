@@ -259,6 +259,7 @@ export default class RateEndTable extends React.Component {
       columns.push({
         title: '操作',
         width: 120,
+        dataIndex: 'OPS_COL',
         render: (o, record) => (
           <span>
             <RowClick text="编辑" onHit={this.handleEdit} row={record} />

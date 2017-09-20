@@ -128,7 +128,7 @@ export default class NodeUserList extends Component {
       render: (o, record) => this.renderColumnText(record.disabled, o),
     }, {
       title: '操作',
-      dataIndex: 'disabled',
+      dataIndex: 'OPS_COL',
       key: 'disabled',
       render: (text, record) => {
         if (text === 0) {

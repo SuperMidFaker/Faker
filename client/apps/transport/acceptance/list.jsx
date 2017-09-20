@@ -432,6 +432,7 @@ export default class AcceptList extends React.Component {
       title: formatContainerMsg(intl, 'opColumn'),
       fixed: 'right',
       width: 100,
+      dataIndex: 'OPS_COL',
       render: (o, record) => {
         if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
           if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {

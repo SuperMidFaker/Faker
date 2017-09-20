@@ -364,12 +364,24 @@ export default class AllocatingModal extends Component {
       message.info('分配数量不能大于订单总数');
       return;
     }
-    inventoryData.splice(index, 1);
-    allocatedData.push({
-      ...allocatedOne,
-      allocated_qty: allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty,
-      allocated_pack_qty: allocatedOne.allocated_pack_qty ? Number(allocatedOne.allocated_pack_qty) : allocatedOne.avail_pack_qty,
-    });
+    inventoryData[index].alloc_qty += allocatedOne.allocated_qty;
+    inventoryData[index].avail_qty -= allocatedOne.allocated_qty;
+    if (inventoryData[index].avail_qty === 0) {
+      inventoryData.splice(index, 1);
+    }
+    const idx = allocatedData.findIndex(item => item.trace_id === allocatedOne.trace_id);
+    if (idx >= 0) {
+      allocatedData[idx].allocated_qty += allocatedOne.allocated_qty;
+      allocatedData[idx].allocated_pack_qty += Number(allocatedOne.allocated_pack_qty);
+      allocatedData[idx].avail_qty = allocatedOne.allocated_qty;
+    } else {
+      allocatedData.push({
+        ...allocatedOne,
+        alloc_qty: 0,
+        allocated_qty: allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty,
+        allocated_pack_qty: allocatedOne.allocated_pack_qty ? Number(allocatedOne.allocated_pack_qty) : allocatedOne.avail_pack_qty,
+      });
+    }
     outboundProduct.alloc_qty += allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty;
     outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / allocatedOne.sku_pack_qty;
     this.setState({
@@ -386,7 +398,15 @@ export default class AllocatingModal extends Component {
     allocatedData.splice(index, 1);
     outboundProduct.alloc_qty -= deleteOne.allocated_qty;
     outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / deleteOne.sku_pack_qty;
-    inventoryData.push(deleteOne);
+    const idx = inventoryData.findIndex(item => item.trace_id === deleteOne.trace_id);
+    if (idx >= 0) {
+      inventoryData[index].alloc_qty -= deleteOne.allocated_qty;
+      inventoryData[index].avail_qty += deleteOne.allocated_qty;
+    } else {
+      deleteOne.avail_qty = deleteOne.allocated_qty;
+      deleteOne.alloc_qty = 0;
+      inventoryData.push(deleteOne);
+    }
     this.setState({
       inventoryData,
       allocatedData,

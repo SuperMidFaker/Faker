@@ -275,6 +275,7 @@ export default class DispatchList extends React.Component {
         title: this.msg('shipmtOP'),
         width: 100,
         fixed: fixedRight,
+        dataIndex: 'OPS_COL',
         render: (o, record) => {
           if (sub === 'merge') {
             return (<span><a role="presentation" onClick={() => this.handleRemoveShipmt(record)}>
@@ -385,6 +386,7 @@ export default class DispatchList extends React.Component {
           title: this.msg('shipmtOP'),
           width: 100,
           fixed: fixedRight,
+          dataIndex: 'OPS_COL',
           render: (o, record) => {
             if (s === 'dispatched') {
               if (record.disp_status === 2) {
@@ -452,6 +454,7 @@ export default class DispatchList extends React.Component {
     }, {
       title: this.msg('shipmtOP'),
       width: 100,
+      dataIndex: 'OPS_COL',
       render: (o, record) => (
         <PrivilegeCover module="transport" feature="dispatch" action="create">
           <span>

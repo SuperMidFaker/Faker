@@ -318,6 +318,7 @@ export default class TariffList extends React.Component {
     }, {
       title: formatContainerMsg(this.props.intl, 'opColumn'),
       width: 160,
+      dataIndex: 'OPS_COL',
       render: (o, record) => {
         if (record.createdTenantId === this.props.tenantId || record.createdTenantId !== this.props.tenantId && record.partnerPermission === TARIFF_PARTNER_PERMISSION.editable) {
           if (record.valid) {
@@ -441,6 +442,7 @@ export default class TariffList extends React.Component {
       }, {
         title: formatContainerMsg(this.props.intl, 'opColumn'),
         width: 140,
+        dataIndex: 'OPS_COL',
         render: (o, record) => {
           if (record.createdTenantId === this.props.tenantId || record.createdTenantId !== this.props.tenantId && record.partnerPermission === TARIFF_PARTNER_PERMISSION.editable) {
             return (
@@ -463,6 +465,9 @@ export default class TariffList extends React.Component {
         },
       }];
     }
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+    </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -493,14 +498,8 @@ export default class TariffList extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <DataTable rowSelection={rowSelection} columns={columns} loading={loading}
+              <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
                 dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
               />
               <CreateTariffModal />

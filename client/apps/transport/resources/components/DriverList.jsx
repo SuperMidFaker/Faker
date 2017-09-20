@@ -105,7 +105,7 @@ function DriverList(props) {
     },
     {
       title: '操作',
-      dataIndex: 'operations',
+      dataIndex: 'OPS_COL',
       key: 'operations',
       render: (_, record) => {
         if (record.status === '不可用') {

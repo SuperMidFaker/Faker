@@ -77,7 +77,7 @@ export default class DriverList extends Component {
         },
       }, {
         title: '操作',
-        dataIndex: 'status',
+        dataIndex: 'OPS_COL',
         key: 'status',
         render: (_, record, index) => {
           if (record.status === 1) {

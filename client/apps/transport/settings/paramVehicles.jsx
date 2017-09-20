@@ -145,7 +145,7 @@ export default class ParamVehicles extends Component {
         },
       }, {
         title: '操作',
-        dataIndex: 'enabled',
+        dataIndex: 'OPS_COL',
         key: 'enabled',
         render: (_, row) => {
           if (this.state.editId === row.id) {

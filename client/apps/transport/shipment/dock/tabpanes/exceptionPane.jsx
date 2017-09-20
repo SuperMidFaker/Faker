@@ -120,7 +120,7 @@ export default class ExceptionPane extends React.Component {
     width: 70,
   }, {
     title: this.msg('operation'),
-    dataIndex: 'id',
+    dataIndex: 'OPS_COL',
     width: 50,
     render: (o, record) => (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>),
   }]

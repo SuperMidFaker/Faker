@@ -136,7 +136,7 @@ export default class TransportModes extends Component {
         },
       }, {
         title: '操作',
-        dataIndex: 'enabled',
+        dataIndex: 'OPS_COL',
         key: 'enabled',
         render: (_, row) => {
           if (row.mode_code !== PRESET_TRANSMODES.ftl && row.mode_code !== PRESET_TRANSMODES.exp &&

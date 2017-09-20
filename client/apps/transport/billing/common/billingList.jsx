@@ -243,7 +243,7 @@ export default class BillingList extends React.Component {
       },
     }, {
       title: '操作',
-      dataIndex: 'id',
+      dataIndex: 'OPS_COL',
       fixed: 'right',
       width: 80,
       render: (o, record) => {
@@ -254,7 +254,7 @@ export default class BillingList extends React.Component {
                 <a>发送</a>
               </Popconfirm>
               <span className="ant-divider" />
-              <Link to={`/transport/billing/${type}/edit/${o}`}>修改</Link>
+              <Link to={`/transport/billing/${type}/edit/${record.id}`}>修改</Link>
               <span className="ant-divider" />
               <Popconfirm title="确定删除？" onConfirm={() => this.handleRemoveBilling(record.id)}>
                 <a>删除</a>
@@ -264,19 +264,19 @@ export default class BillingList extends React.Component {
         } else if (record.status === 2) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/transport/billing/${type}/view/${record.id}`}>查看</Link>
             </div>
           );
         } else if (record.status === 3) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/check/${o}`}>{this.msg('checkBilling')}</Link>
+              <Link to={`/transport/billing/${type}/check/${record.id}`}>{this.msg('checkBilling')}</Link>
             </div>
           );
         } else if (record.status === 4) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/transport/billing/${type}/view/${record.id}`}>查看</Link>
             </div>
           );
         } else if (record.status === 5) {
@@ -288,7 +288,7 @@ export default class BillingList extends React.Component {
         } else if (record.status === 6) {
           return (
             <div>
-              <Link to={`/transport/billing/${type}/view/${o}`}>查看</Link>
+              <Link to={`/transport/billing/${type}/view/${record.id}`}>查看</Link>
             </div>
           );
         }
