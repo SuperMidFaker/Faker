@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Card, Select, Layout, message, Tag } from 'antd';
+import { Badge, Breadcrumb, Button, Card, Select, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -27,7 +27,6 @@ const Option = Select.Option;
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     tenantId: state.account.tenantId,
-    owners: state.cwmContext.whseAttrs.owners,
     stockDatas: state.cwmShFtz.stockDatas,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
@@ -83,25 +82,61 @@ export default class SHFTZStockList extends React.Component {
     dataIndex: 'ftz_ent_detail_id',
     width: 100,
   }, {
-    title: this.msg('stockQty'),
-    dataIndex: 'stock_qty',
-    width: 150,
-  }, {
     title: this.msg('qty'),
     width: 120,
     dataIndex: 'qty',
   }, {
-    title: this.msg('money'),
+    title: this.msg('stockQty'),
+    dataIndex: 'stock_qty',
+    width: 150,
+  }, {
+    title: this.msg('cQty'),
     width: 120,
-    dataIndex: 'amount',
+    dataIndex: 'outbound_qty',
+  }, {
+    title: this.msg('sQty'),
+    width: 120,
+    dataIndex: 'locked_qty',
+  }, {
+    title: this.msg('nWeight'),
+    width: 120,
+    dataIndex: 'net_wt',
+  }, {
+    title: this.msg('stockWeight'),
+    width: 120,
+    dataIndex: 'stock_wt',
+  }, {
+    title: this.msg('cWeight'),
+    width: 120,
+    dataIndex: 'outbound_wt',
+  }, {
+    title: this.msg('sWeight'),
+    width: 120,
+    dataIndex: 'locked_wt',
   }, {
     title: this.msg('gWeight'),
     width: 120,
     dataIndex: 'gross_wt',
   }, {
-    title: this.msg('nWeight'),
+    title: this.msg('money'),
     width: 120,
-    dataIndex: 'net_wt',
+    dataIndex: 'amount',
+  }, {
+    title: this.msg('stockMoney'),
+    width: 120,
+    dataIndex: 'stock_amount',
+  }, {
+    title: this.msg('cMoney'),
+    width: 120,
+    dataIndex: 'outbound_amount',
+  }, {
+    title: this.msg('sMoney'),
+    width: 120,
+    dataIndex: 'locked_amount',
+  }, {
+    title: this.msg('usdMoney'),
+    width: 120,
+    dataIndex: 'amount_usd',
   }, {
     title: this.msg('location'),
     width: 120,
@@ -114,6 +149,17 @@ export default class SHFTZStockList extends React.Component {
     title: this.msg('orgCargoId'),
     width: 120,
     dataIndex: 'ftz_cargo_no',
+  }, {
+    title: this.msg('cargoType'),
+    width: 120,
+    dataIndex: 'cargo_type',
+    render: (type) => {
+      let text = '';
+      if (type) {
+        text = type === '13' ? '非分拨货物' : '分拨货物';
+      }
+      return <Tag>{text}</Tag>;
+    },
   }, {
     title: this.msg('hsCode'),
     width: 120,
@@ -153,65 +199,33 @@ export default class SHFTZStockList extends React.Component {
       const text = country ? `${country.value}| ${country.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
-  }, {
-    title: this.msg('cargoType'),
-    width: 120,
-    dataIndex: 'cargo_type',
-    render: (type) => {
-      let text = '';
-      if (type) {
-        text = type === '13' ? '非分拨货物' : '分拨货物';
-      }
-      return <Tag>{text}</Tag>;
-    },
-  }, {
-    title: this.msg('cQty'),
-    width: 120,
-    dataIndex: 'outbound_qty',
-  }, {
-    title: this.msg('sQty'),
-    width: 120,
-    dataIndex: 'locked_qty',
-  }, {
-    title: this.msg('stockWeight'),
-    width: 120,
-    dataIndex: 'stock_wt',
-  }, {
-    title: this.msg('cWeight'),
-    width: 120,
-    dataIndex: 'outbound_wt',
-  }, {
-    title: this.msg('sWeight'),
-    width: 120,
-    dataIndex: 'locked_wt',
-  }, {
-    title: this.msg('stockMoney'),
-    width: 120,
-    dataIndex: 'stock_amount',
-  }, {
-    title: this.msg('cMoney'),
-    width: 120,
-    dataIndex: 'outbound_amount',
-  }, {
-    title: this.msg('sMoney'),
-    width: 120,
-    dataIndex: 'locked_amount',
-  }, {
-    title: this.msg('usdMoney'),
-    width: 120,
-    dataIndex: 'amount_usd',
   }]
 
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
+    notification.info({ message: '当前仓库已切换' });
   }
   handleStockQuery = (filters) => {
     const filter = { ...filters,
       cus_whse_code: this.props.defaultWhse.ftz_whse_code,
       whse_code: this.props.defaultWhse.code,
       tenantId: this.props.tenantId };
-    this.props.loadFtzStocks(filter);
+    this.props.loadFtzStocks(filter).then((result) => {
+      if (result.error) {
+        if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+          notification.error({
+            message: '操作失败',
+            description: '仓库监管系统未配置',
+          });
+        } else {
+          notification.error({
+            message: '操作失败',
+            description: result.error.message,
+            duration: 15,
+          });
+        }
+      }
+    });
     this.setState({ selectedRowKeys: [], filter });
   }
   handleSearch = (searchForm) => {
@@ -310,20 +324,14 @@ export default class SHFTZStockList extends React.Component {
             />
           </Content>
         </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSiderCollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
+        <Sider trigger={null} defaultCollapsed collapsible collapsed={this.state.rightSiderCollapsed}
+          width={480} collapsedWidth={0} className="right-sider"
         >
           <div className="right-sider-panel">
             <div className="panel-header">
               <h3>库存对比任务</h3>
             </div>
-            <TasksPane />
+            <TasksPane collapsed={this.state.rightSiderCollapsed} />
           </div>
         </Sider>
       </Layout>

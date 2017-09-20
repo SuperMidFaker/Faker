@@ -2,87 +2,78 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import { Table } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
-import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { loadStockTasks } from 'common/reducers/cwmShFtz';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
     state => ({
-      whses: state.cwmContext.whses,
       defaultWhse: state.cwmContext.defaultWhse,
       tenantId: state.account.tenantId,
-      owners: state.cwmContext.whseAttrs.owners,
-      stockDatas: state.cwmShFtz.stockDatas,
-      units: state.cwmShFtz.params.units.map(un => ({
-        value: un.unit_code,
-        text: un.unit_name,
-      })),
-      currencies: state.cwmShFtz.params.currencies.map(cr => ({
-        value: cr.curr_code,
-        text: cr.curr_name,
-      })),
-      tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
-        value: tc.cntry_co,
-        text: tc.cntry_name_cn,
-      })),
-      loading: state.cwmShFtz.loading,
+      ftzTaskList: state.cwmShFtz.ftzTaskList,
     }),
-    { loadFtzStocks, loadParams, switchDefaultWhse }
+    { loadStockTasks }
   )
 export default class TasksPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    stockDatas: PropTypes.array.isRequired,
+    collapsed: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
   }
-  componentWillMount() {
-    this.props.loadParams();
+  componentWillReceiveProps(nextProps) {
+    if ((nextProps.collapsed !== this.props.collapsed && nextProps.collapsed)
+      || nextProps.ftzTaskList.reload) {
+      this.props.loadStockTasks(nextProps.defaultWhse.code, nextProps.tenantId);
+    }
   }
-  msg = formatMsg(this.props.intl);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('taskId'),
-    dataIndex: 'task_id',
+    dataIndex: 'id',
     width: 60,
   }, {
     title: this.msg('owner'),
-    dataIndex: 'owner',
+    dataIndex: 'owner_name',
   }, {
     title: this.msg('progress'),
     dataIndex: 'progress',
+    width: 60,
   }, {
     title: this.msg('createdDate'),
     dataIndex: 'created_date',
+    render: cdate => cdate && moment(cdate).format('MM.DD'),
+    width: 100,
   }, {
     title: this.msg('ops'),
     dataIndex: 'OPS_COL',
-    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="对比详情" row={record} />,
+    render: (o, record) => {
+      if (record.progress === 100) {
+        return (<span>
+          <RowUpdater onHit={this.handleDetail} label="对比详情" row={record} />
+          {record.progress === -1 && <span className="ant-divider" />}
+        </span>);
+      }
+    },
+    width: 100,
   }]
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/stock/task/${row.task_id}`;
+    const link = `/cwm/supervision/shftz/stock/task/${row.id}`;
     this.context.router.push(link);
   }
   render() {
-    const mockData = [{
-      task_id: '1',
-      owner: '马瑞利',
-      progress: 100,
-      created_date: '2017-09-19 14:15',
-    }];
+    const { ftzTaskList } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
-        <Table loading={this.props.loading}
-          columns={this.columns} dataSource={mockData} rowKey="task_id"
-        />
+        <Table loading={ftzTaskList.loading} columns={this.columns} dataSource={ftzTaskList.data} rowKey="id" />
       </div>
     );
   }

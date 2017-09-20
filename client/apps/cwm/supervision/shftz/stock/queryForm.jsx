@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Select, Row, Col } from 'antd';
+import { Button, Form, Input, Select, Row, Col, notification } from 'antd';
+import { compareFtzStocks } from 'common/reducers/cwmShFtz';
 import { formatMsg } from './message.i18n';
 
 const FormItem = Form.Item;
@@ -13,8 +14,9 @@ const Option = Select.Option;
   state => ({
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
+    tenantId: state.account.tenantId,
   }),
-  { }
+  { compareFtzStocks }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -32,6 +34,7 @@ export default class QueryForm extends React.Component {
       this.props.form.resetFields();
     }
   }
+  msg = formatMsg(this.props.intl);
   handleFormReset = () => {
     this.props.form.resetFields();
   }
@@ -44,7 +47,37 @@ export default class QueryForm extends React.Component {
       }
     });
   }
-  msg = formatMsg(this.props.intl);
+  handleCompareTask = (ev) => {
+    ev.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const owner = this.props.owners.filter(own => own.customs_code === values.ownerCode)[0];
+        const formData = {
+          ftz_ent_no: values.entNo,
+          owner: { name: owner.name, customs_code: owner.customs_code },
+          ftz_whse_code: this.props.defaultWhse.ftz_whse_code,
+          whse_code: this.props.defaultWhse.code,
+          tenant_id: this.props.tenantId,
+        };
+        this.props.compareFtzStocks(formData).then((result) => {
+          if (result.error) {
+            if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+              notification.error({
+                message: '操作失败',
+                description: '仓库监管系统未配置',
+              });
+            } else {
+              notification.error({
+                message: '操作失败',
+                description: result.error.message,
+                duration: 15,
+              });
+            }
+          }
+        });
+      }
+    });
+  }
   render() {
     const { form: { getFieldDecorator }, owners, filter } = this.props;
     const formItemLayout = {
@@ -66,15 +99,14 @@ export default class QueryForm extends React.Component {
           </Col>
           <Col span={8}>
             <FormItem {...formItemLayout} label={this.msg('billNo')}>
-              {getFieldDecorator('entNo', {
-              })(<Input />)}
+              {getFieldDecorator('entNo')(<Input />)}
             </FormItem>
           </Col>
           <Col span={8}>
             <FormItem>
               <Button type="primary" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>{this.msg('reset')}</Button>
-              <Button type="primary" ghost icon="plus" style={{ marginLeft: 8 }}>发起库存对比</Button>
+              <Button type="primary" ghost icon="plus" style={{ marginLeft: 8 }} onClick={this.handleCompareTask}>发起库存对比</Button>
             </FormItem>
           </Col>
         </Row>

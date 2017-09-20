@@ -10,8 +10,8 @@ import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
+import { loadRelDetails, loadParams, updateRelReg,
+  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
@@ -59,12 +59,10 @@ function fetchData({ dispatch, params }) {
   }),
   { loadRelDetails,
     updateRelReg,
-    fileRelStockouts,
     fileRelPortionouts,
     queryPortionoutInfos,
     cancelRelReg,
-    editReleaseWt,
-    splitRelDetails }
+    editReleaseWt }
 )
 @connectNav({
   depth: 3,

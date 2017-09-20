@@ -1,50 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
     state => ({
-      whses: state.cwmContext.whses,
-      defaultWhse: state.cwmContext.defaultWhse,
-      tenantId: state.account.tenantId,
-      owners: state.cwmContext.whseAttrs.owners,
-      stockDatas: state.cwmShFtz.stockDatas,
-      units: state.cwmShFtz.params.units.map(un => ({
-        value: un.unit_code,
-        text: un.unit_name,
-      })),
-      currencies: state.cwmShFtz.params.currencies.map(cr => ({
-        value: cr.curr_code,
-        text: cr.curr_name,
-      })),
-      tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
-        value: tc.cntry_co,
-        text: tc.cntry_name_cn,
-      })),
-      loading: state.cwmShFtz.loading,
-    }),
-    { loadFtzStocks, loadParams, switchDefaultWhse }
-  )
+      diffviews: state.cwmShFtz.compareTask.views.filter(vw => vw.diff_qty !== 0 || vw.diff_net_wt !== 0),
+      entrydiffs: state.cwmShFtz.compareTask.entrydiffs,
+      inbounddiffs: state.cwmShFtz.compareTask.inbounddiffs,
+    }))
 export default class FTZDiscrepancyPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    stockDatas: PropTypes.array.isRequired,
   }
   state = {
-    filter: { ownerCode: '', entNo: '', whse_code: '' },
-    selectedRowKeys: [],
   }
-  componentWillMount() {
-    this.props.loadParams();
-  }
-  msg = formatMsg(this.props.intl);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('billNo'),
     dataIndex: 'ftz_ent_no',
@@ -55,12 +29,12 @@ export default class FTZDiscrepancyPane extends React.Component {
     width: 100,
   }, {
     title: this.msg('ftzStockQty'),
-    dataIndex: 'ftz_stock_qty',
+    dataIndex: 'ftz_qty',
     width: 150,
   }, {
     title: this.msg('whseStockqty'),
     width: 120,
-    dataIndex: 'whse_stock_qty',
+    dataIndex: 'whse_qty',
   }, {
     title: this.msg('ftzNetWt'),
     width: 120,
@@ -78,19 +52,53 @@ export default class FTZDiscrepancyPane extends React.Component {
     width: 120,
     dataIndex: 'whse_amount',
   }]
-
-
+  expColumns = [{
+    title: this.msg('asnNo'),
+    dataIndex: 'asn_no',
+    width: 200,
+  }, {
+    title: this.msg('productNo'),
+    dataIndex: 'product_no',
+    width: 100,
+  }, {
+    title: this.msg('whseStockQty'),
+    dataIndex: 'stock_qty',
+    width: 100,
+  }, {
+    title: this.msg('whseNetWt'),
+    dataIndex: 'stock_netwt',
+    width: 100,
+  }, {
+    title: this.msg('whseAmount'),
+    dataIndex: 'stock_amount',
+    width: 100,
+  }, {
+    title: this.msg('traceId'),
+    dataIndex: 'trace_id',
+    width: 100,
+  }, {
+    title: this.msg('location'),
+    dataIndex: 'location',
+    width: 100,
+  }, {
+    title: this.msg('serialNo'),
+    dataIndex: 'serial_no',
+    width: 100,
+  }]
+  expandedRowRender = (row) => {
+    const entrylist = this.props.entrydiffs.filter(erd => erd.ftz_ent_detail_id === row.ftz_ent_detail_id);
+    for (let i = 0; i < entrylist.length; i++) {
+      const el = entrylist[i];
+      el.key = `${el.asn_no}${el.asn_seq_no}`;
+      el.children = this.props.inbounddiffs.filter(ibd => ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
+    }
+    return <DataTable scrollOffset={390} columns={this.expColumns} dataSource={entrylist} rowKey="key" noBorder />;
+  }
   render() {
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
-      },
-    };
     return (
       <div className="table-panel table-fixed-layout">
-        <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}
-          columns={this.columns} dataSource={this.props.stockDatas} rowSelection={rowSelection} rowKey="id" noBorder
+        <DataTable scrollOffset={390} rowKey="id" noBorder expandedRowRender={this.expandedRowRender}
+          columns={this.columns} dataSource={this.props.diffviews}
         />
       </div>
     );
