@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Button, Radio, Icon, Layout, message, Select, Modal, Alert } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import TrimSpan from 'client/components/trimSpan';
@@ -129,7 +129,7 @@ export default class DispatchList extends React.Component {
       this.handleStatusChange({ target: { value: filters.status } });
     }
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadTable(null, params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -849,7 +849,7 @@ export default class DispatchList extends React.Component {
     }
     const ccols = this.buildCols('sub');
 
-    return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
+    return (<DataTable columns={ccols} pagination={false} dataSource={this.props.expandList[row.shipmt_no] || []}
       size="small"
     />);
   }
@@ -976,7 +976,7 @@ export default class DispatchList extends React.Component {
     }
     const ccols = this.buildCols('merge');
 
-    return (<Table columns={ccols} pagination={false} dataSource={this.props.expandList[row.key] || []}
+    return (<DataTable columns={ccols} pagination={false} dataSource={this.props.expandList[row.key] || []}
       size="small"
     />);
   }
@@ -1001,21 +1001,16 @@ export default class DispatchList extends React.Component {
     const { type } = this.props.cond;
     let cols = this.buildCols();
 
-    let tb = (<Table rowSelection={rowSelection} columns={cols} loading={loading}
-      dataSource={this.dataSource} scroll={{ x: 2300 }}
-    />);
-    if (origin) {
-      tb = (<Table expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2300 }}
-      />);
-    }
-    if (type !== 'none') {
-      cols = this.buildConditionCols();
-      tb = (<Table expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
-        dataSource={this.dataSource} scroll={{ x: 2300 }}
-      />);
-    }
-    let bulkBtns = '';
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
+      <span />
+      <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+      <span />
+      <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
+      <span />
+      <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
+    </span>);
+    let bulkBtns = null;
     if (status === 'waiting') {
       bulkBtns = (
         <span>
@@ -1034,6 +1029,20 @@ export default class DispatchList extends React.Component {
         </Button>
       );
     }
+    let tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} rowSelection={rowSelection} columns={cols} loading={loading}
+      dataSource={this.dataSource} scroll={{ x: 2300 }}
+    />);
+    if (origin) {
+      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
+        dataSource={this.dataSource} scroll={{ x: 2300 }}
+      />);
+    }
+    if (type !== 'none') {
+      cols = this.buildConditionCols();
+      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
+        dataSource={this.dataSource} scroll={{ x: 2300 }}
+      />);
+    }
 
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -1051,18 +1060,6 @@ export default class DispatchList extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
-              <span />
-              <CustomerSelect onChange={this.handleCustomerChange} size="large" />
-              <span />
-              <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
-              <span />
-              <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3> {bulkBtns}
-              </div>
-            </div>
             <AdvancedSearchBar visible={this.state.advancedSearchVisible} onSearch={this.handleAdvancedSearch} toggle={this.toggleAdvancedSearch} />
             <div className="panel-body table-panel table-fixed-layout">
               <div className="dispatch-table">

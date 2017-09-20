@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Radio, Button, Popconfirm, message, Layout, Breadcrumb } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import NavLink from 'client/components/NavLink';
@@ -100,7 +100,7 @@ export default class TariffList extends React.Component {
       this.handleTableLoad(filters, 1);
     }
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadTable(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -500,7 +500,7 @@ export default class TariffList extends React.Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} columns={columns} loading={loading}
+              <DataTable rowSelection={rowSelection} columns={columns} loading={loading}
                 dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
               />
               <CreateTariffModal />

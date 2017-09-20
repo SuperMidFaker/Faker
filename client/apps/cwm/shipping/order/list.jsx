@@ -46,6 +46,8 @@ function fetchData({ state, dispatch }) {
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
+    receivers: state.cwmContext.whseAttrs.receivers,
+    carriers: state.cwmContext.whseAttrs.carriers,
     loginId: state.account.loginId,
     filters: state.cwmShippingOrder.soFilters,
     solist: state.cwmShippingOrder.solist,
@@ -281,6 +283,28 @@ export default class ShippingOrderList extends React.Component {
       filters,
     });
   }
+  handleReceiverChange = (value) => {
+    const filters = { ...this.props.filters, receiverCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
+  }
+  handleCarrierChange = (value) => {
+    const filters = { ...this.props.filters, carrierCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadSos({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.solist.pageSize,
+      current: this.props.solist.current,
+      filters,
+    });
+  }
   handleSearch = (value) => {
     const filters = { ...this.props.filters, name: value };
     const whseCode = this.props.defaultWhse.code;
@@ -321,7 +345,7 @@ export default class ShippingOrderList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, owners, filters, loading } = this.props;
+    const { whses, defaultWhse, owners, receivers, carriers, filters, loading } = this.props;
     let columns = this.columns;
     if (filters.status === 'inWave') {
       columns = [...columns];
@@ -381,7 +405,7 @@ export default class ShippingOrderList extends React.Component {
       <SearchBar placeholder={this.msg('soPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
       <span />
       <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
-        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+        onChange={this.handleOwnerChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {
@@ -389,21 +413,23 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" size="large"
-        onChange={this.handleReceiverChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select showSearch optionFilterProp="children" size="large" value={filters.receiverCode}
+        onChange={this.handleReceiverChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部收货人</Option>
         {
-            owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+            receivers.filter(receiver => filters.ownerCode !== 'all' ? filters.ownerCode === receiver.owner_partner_id : true)
+            .map(receiver => (<Option key={receiver.code} value={receiver.code}>{receiver.name}</Option>))
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" size="large"
-        onChange={this.handleCarrierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select showSearch optionFilterProp="children" size="large" value={filters.carrierCode}
+        onChange={this.handleCarrierChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部承运人</Option>
         {
-            owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))
+            carriers.filter(carrier => filters.ownerCode !== 'all' ? filters.ownerCode === carrier.owner_partner_id : true)
+            .map(carrier => (<Option key={carrier.code} value={carrier.code}>{carrier.name}</Option>))
           }
       </Select>
     </span>);

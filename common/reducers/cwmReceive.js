@@ -72,7 +72,7 @@ const initialState = {
     loading: true,
     loaded: true,
   },
-  asnFilters: { status: 'all', ownerCode: 'all' },
+  asnFilters: { status: 'all', ownerCode: 'all', supplierCode: 'all' },
   inbound: {
     totalCount: 0,
     pageSize: 20,

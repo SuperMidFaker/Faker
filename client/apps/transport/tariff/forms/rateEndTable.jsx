@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import update from 'react/lib/update';
 import { connect } from 'react-redux';
 import { Form, Modal, Input, message } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import RegionCascader from 'client/components/RegionCascader';
 import { getEndTableVarColumns, renderRegion, RowClick, ConfirmDel } from './commodity';
 import { submitRateEnd, updateRateEnd, delRateEnd,
@@ -57,7 +57,7 @@ export default class RateEndTable extends React.Component {
     editRegionCode: '',
     editRegion: [],
   }
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadRateEnds(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -269,7 +269,7 @@ export default class RateEndTable extends React.Component {
     }
     return (
       <div>
-        <Table size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
+        <DataTable size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource}
         />
         <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>

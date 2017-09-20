@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Tag, Layout, Icon, DatePicker, Select, Radio, Breadcrumb } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -456,7 +456,7 @@ export default class FeesList extends React.Component {
         return <Icon type="link" />;
       },
     });
-    const dataSource = new Table.DataSource({
+    const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadFees(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -489,6 +489,19 @@ export default class FeesList extends React.Component {
       },
     };
     const { startDate, endDate, filters } = this.props.fees;
+    const toolbarActions = (<span>
+      <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
+        value={this.props.fees.searchValue} size="large"
+      />
+      <Select value={billingType} style={{ width: 120 }} onChange={this.handleBillingTypeChange}>
+        <Option value="cost">显示成本</Option>
+        <Option value="revenue">显示收入</Option>
+        <Option value="costAndRevenue">显示成本与收入</Option>
+      </Select>
+      <RangePicker size="large" style={{ width: 200, marginLeft: 20 }} value={[moment(startDate), moment(endDate)]}
+        onChange={this.onDateChange}
+      />
+    </span>);
     return (
       <div>
         <Header className="page-header">
@@ -512,26 +525,11 @@ export default class FeesList extends React.Component {
         </Header>
         <Content className="main-content">
           <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
-                value={this.props.fees.searchValue} size="large"
-              />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-              <div className="toolbar-right">
-                <Select value={billingType} style={{ width: 120 }} onChange={this.handleBillingTypeChange}>
-                  <Option value="cost">显示成本</Option>
-                  <Option value="revenue">显示收入</Option>
-                  <Option value="costAndRevenue">显示成本与收入</Option>
-                </Select>
-                <RangePicker size="large" style={{ width: 200, marginLeft: 20 }} value={[moment(startDate), moment(endDate)]}
-                  onChange={this.onDateChange}
-                />
-              </div>
-            </div>
             <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: tableWidth }} loading={loading} />
+              <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection}
+                dataSource={dataSource} columns={columns} rowKey="shipmt_no" scroll={{ x: tableWidth }} loading={loading}
+                selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleSelectionClear}
+              />
             </div>
           </div>
         </Content>

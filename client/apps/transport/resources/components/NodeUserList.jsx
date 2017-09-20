@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Card, Form, Input } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import { validatePhone } from 'common/validater';
 const FormItem = Form.Item;
 
@@ -160,7 +160,7 @@ export default class NodeUserList extends Component {
     }];
     return (
       <Card title="联系人" extra={<a onClick={() => this.showModal()}>添加</a>} style={{ margin: '0 24px 24px 12px' }}>
-        <Table columns={columns} dataSource={nodeUsers} rowKey="id" pagination={false} />
+        <DataTable columns={columns} dataSource={nodeUsers} rowKey="id" pagination={false} />
         <Modal title="联系人"
           visible={this.state.visible}
           onOk={this.handleOk}

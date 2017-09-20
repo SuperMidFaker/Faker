@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Breadcrumb, Menu, Button, Layout, Radio, Popconfirm } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import { Link } from 'react-router';
 import NavLink from 'client/components/NavLink';
@@ -105,6 +105,11 @@ export default function NodeList(props) {
         ),
     },
   ];
+  const toolbarActions = (<span>
+    <PrivilegeCover module="transport" feature="resources" action="create">
+      <Button type="primary" size="large" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+    </PrivilegeCover>
+  </span>);
   return (
     <QueueAnim type={['bottom', 'up']}>
       <Header className="page-header">
@@ -142,13 +147,8 @@ export default function NodeList(props) {
               </Menu>
             </Sider>
             <Content className="nav-content">
-              <div className="toolbar">
-                <PrivilegeCover module="transport" feature="resources" action="create">
-                  <Button type="primary" size="large" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
-                </PrivilegeCover>
-              </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} onChange={props.handleTableChange} />
+                <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} dataSource={addUniqueKeys(dataSource)} onChange={props.handleTableChange} />
                 <NodeModal />
               </div>
             </Content>

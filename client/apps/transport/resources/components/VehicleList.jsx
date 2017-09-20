@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Breadcrumb, Menu, Layout, Button, Popconfirm } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/NavLink';
 import SearchBar from 'client/components/SearchBar';
@@ -110,6 +110,11 @@ export default function VehicleList(props) {
       },
     },
   ];
+  const toolbarActions = (<span>
+    <PrivilegeCover module="transport" feature="resources" action="create">
+      <Button type="primary" size="large" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
+    </PrivilegeCover>
+  </span>);
   return (
     <QueueAnim type={['bottom', 'up']}>
       <Header className="page-header">
@@ -142,13 +147,8 @@ export default function VehicleList(props) {
               </Menu>
             </Sider>
             <Content className="nav-content">
-              <div className="toolbar">
-                <PrivilegeCover module="transport" feature="resources" action="create">
-                  <Button type="primary" size="large" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
-                </PrivilegeCover>
-              </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
+                <DataTable toolbarActions={toolbarActions} columns={columns} dataSource={addUniqueKeys(dataSource)} rowSelection={rowSelection} />
               </div>
               <VehicleModal />
             </Content>

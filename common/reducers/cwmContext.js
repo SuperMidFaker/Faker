@@ -14,6 +14,9 @@ const initialState = {
   defaultWhse: {},
   whseAttrs: {
     owners: [],
+    receivers: [],
+    suppliers: [],
+    carriers: [],
   },
 };
 

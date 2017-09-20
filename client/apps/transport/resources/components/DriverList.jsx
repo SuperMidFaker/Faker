@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Breadcrumb, Menu, Layout, Button, Popconfirm } from 'antd';
-import Table from 'client/components/DataTable';
+import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import NavLink from 'client/components/NavLink';
 import SearchBar from 'client/components/SearchBar';
@@ -116,6 +116,11 @@ function DriverList(props) {
       },
     },
   ];
+  const toolbarActions = (<span>
+    <PrivilegeCover module="transport" feature="resources" action="create">
+      <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
+    </PrivilegeCover>
+  </span>);
   return (
     <QueueAnim type={['bottom', 'up']}>
       <Header className="page-header">
@@ -148,13 +153,8 @@ function DriverList(props) {
               </Menu>
             </Sider>
             <Content className="nav-content">
-              <div className="toolbar">
-                <PrivilegeCover module="transport" feature="resources" action="create">
-                  <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
-                </PrivilegeCover>
-              </div>
               <div className="panel-body table-panel table-fixed-layout">
-                <Table dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
+                <DataTable toolbarActions={toolbarActions} dataSource={addUniqueKeys(dataSource)} columns={columns} rowSelection={rowSelection} />
                 <DriverModal />
               </div>
             </Content>

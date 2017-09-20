@@ -48,6 +48,7 @@ function fetchData({ state, dispatch }) {
     asnlist: state.cwmReceive.asnlist,
     loading: state.cwmReceive.asnlist.loading,
     owners: state.cwmContext.whseAttrs.owners,
+    suppliers: state.cwmContext.whseAttrs.suppliers,
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
@@ -309,6 +310,17 @@ export default class ReceivingASNList extends React.Component {
       filters,
     });
   }
+  handleSupplierChange = (value) => {
+    const filters = { ...this.props.filters, supplierCode: value };
+    const whseCode = this.props.defaultWhse.code;
+    this.props.loadAsnLists({
+      whseCode,
+      tenantId: this.props.tenantId,
+      pageSize: this.props.asnlist.pageSize,
+      current: this.props.asnlist.current,
+      filters,
+    });
+  }
   handleSearch = (value) => {
     const filters = { ...this.props.filters, name: value };
     const whseCode = this.props.defaultWhse.code;
@@ -334,7 +346,7 @@ export default class ReceivingASNList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, owners, filters, loading } = this.props;
+    const { whses, defaultWhse, owners, suppliers, filters, loading } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -378,11 +390,12 @@ export default class ReceivingASNList extends React.Component {
         <Option value="all" key="all">全部货主</Option>
         {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
       </Select>
-      <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
-        onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select showSearch optionFilterProp="children" size="large" value={filters.supplierCode}
+        onChange={this.handleSupplierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部供应商</Option>
-        {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
+        {suppliers.filter(supplier => filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true)
+        .map(supplier => (<Option key={supplier.code} value={supplier.code}>{supplier.name}</Option>))}
       </Select></span>);
     const bulkActions = filters.status === 'pending' && <Button size="large" icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
     /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
