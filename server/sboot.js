@@ -22,6 +22,7 @@ global.__PROD__ = config.get('__PROD__');
 global.__DEVTOOLS__ = config.get('__DEVTOOLS__');
 global.__PORT__ = process.env.PORT || config.get('server_port');
 global.__CDN__ = config.get('CDN_URL');
+global.XLSX_CDN = config.get('XLSX_CDN');
 global.API_ROOTS = {
   default: 'http://localhost:3030/',
   mongo: 'http://localhost:3032/',
