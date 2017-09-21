@@ -61,7 +61,7 @@ export default class TodoAcceptPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleLoadShipmtDetail = (record) => {
-    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'activity');
+    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'tracking');
   }
   handleTodoFilter = (e) => {
     this.setState({ type: e.target.value }, () => {

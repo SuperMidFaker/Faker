@@ -64,7 +64,7 @@ export default class TodoAcceptPane extends Component {
     let sourceType = 'sp';
     if (tenantId === record.sr_tenant_id) sourceType = 'sr';
     else if (tenantId === record.sp_tenant_id) sourceType = 'sp';
-    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, sourceType, 'detail');
+    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, sourceType, 'order');
   }
   handleTableReload = () => {
     this.handleTableLoad(this.props);

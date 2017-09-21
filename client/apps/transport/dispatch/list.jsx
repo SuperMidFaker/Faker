@@ -484,7 +484,7 @@ export default class DispatchList extends React.Component {
     let sourceType = 'sp';
     if (status === 'dispatched') sourceType = 'sr';
     else sourceType = 'sp';
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, sourceType, 'detail', row).then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, sourceType, 'order', row).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

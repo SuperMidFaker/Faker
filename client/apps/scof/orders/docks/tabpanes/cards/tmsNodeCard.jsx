@@ -64,7 +64,7 @@ export default class TMSNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS.tms[0].triggers[5].key]: 4,
   }
   handleShipmtPreview = (No) => {
-    this.props.loadShipmtDetail(No, this.props.tenantId, 'sr', 'detail').then(
+    this.props.loadShipmtDetail(No, this.props.tenantId, 'sr', 'order').then(
       (result) => {
         if (result.error) {
           message.error(result.error.message);

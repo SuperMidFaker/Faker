@@ -391,7 +391,7 @@ export default class AcceptList extends React.Component {
     });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'detail').then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sp', 'order').then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

@@ -94,7 +94,7 @@ export default class Dashboard extends React.Component {
       dataIndex: 'shipmt_no',
       fixed: 'left',
       width: 150,
-      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'detail')}>{record.shipmt_no}</a>),
+      render: (o, record) => (<a onClick={() => this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'order')}>{record.shipmt_no}</a>),
     }, {
       title: this.msg('departurePlace'),
       width: 250,
