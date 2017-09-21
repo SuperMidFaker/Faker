@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Tag } from 'antd';
@@ -29,11 +29,13 @@ import { formatMsg } from '../message.i18n';
 export default class FTZStockPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    taskId: PropTypes.number.isRequired,
   }
   state = {
     selectedRowKeys: [],
   }
   componentWillMount() {
+    this.props.loadCusStockSnapshot(this.props.taskId);
   }
   msg = formatMsg(this.props.intl);
   columns = [{
