@@ -360,7 +360,6 @@ export default class AllocatingModal extends Component {
     const outboundProduct = { ...this.state.outboundProduct };
     const allocatedOne = { ...inventoryData[index] };
     const allocatedAmount = allocatedData.reduce((pre, cur) => (pre + cur.allocated_qty), 0);
-    console.log(inventoryData[index]);
     if (!inventoryData[index].allocated_qty) {
       return;
     }

@@ -159,7 +159,14 @@ export default class OwnersPane extends Component {
     }
   }
   handleInitData = (record) => {
-    this.setState({ seletedOwner: record, importPanelVisible: true });
+    this.setState({
+      seletedOwner: { id: record.owner_partner_id,
+        partner_tenant_id: record.owner_tenant_id,
+        name: record.owner_name,
+        portion_enabled: record.portion_enabled,
+        customs_code: record.customs_code,
+      },
+      importPanelVisible: true });
   }
   handleBackupData = (record) => {
     const { tenantId } = this.props;

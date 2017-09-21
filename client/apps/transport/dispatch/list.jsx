@@ -1032,17 +1032,20 @@ export default class DispatchList extends React.Component {
         </Button>
       );
     }
-    let tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} rowSelection={rowSelection} columns={cols} loading={loading}
+    let tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} selectedRowKeys={this.state.selectedRowKeys}
+      rowSelection={rowSelection} columns={cols} loading={loading}
       dataSource={this.dataSource} scroll={{ x: 2300 }}
     />);
     if (origin) {
-      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
+      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} selectedRowKeys={this.state.selectedRowKeys}
+        expandedRowRender={this.handleExpandList} columns={cols} loading={loading}
         dataSource={this.dataSource} scroll={{ x: 2300 }}
       />);
     }
     if (type !== 'none') {
       cols = this.buildConditionCols();
-      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
+      tb = (<DataTable toolbarActions={toolbarActions} bulkActions={bulkBtns} selectedRowKeys={this.state.selectedRowKeys}
+        expandedRowRender={this.handleConditionExpandList} columns={cols} loading={loading}
         dataSource={this.dataSource} scroll={{ x: 2300 }}
       />);
     }
