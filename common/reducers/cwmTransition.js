@@ -13,6 +13,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/transition/', [
   'FREEZE_TRANSIT', 'FREEZE_TRANSIT_SUCCEED', 'FREEZE_TRANSIT_FAIL',
   'UNFREEZE_TRANSIT', 'UNFREEZE_TRANSIT_SUCCEED', 'UNFREEZE_TRANSIT_FAIL',
   'LOAD_TTDETAIL', 'LOAD_TTDETAIL_SUCCEED', 'LOAD_TTDETAIL_FAIL',
+  'CLEAR_TRANSITION', 'CLEAR_TRANSITION_SUCCEED', 'CLEAR_TRANSITION_FAIL',
 ]);
 
 const initialState = {
@@ -253,6 +254,21 @@ export function loadTransitionTraceDetail(traceId, tenantId) {
       endpoint: 'v1/cwm/inbound/trace/detail',
       method: 'get',
       params: { traceId, tenantId },
+    },
+  };
+}
+
+export function clearTransition(whseCode, ownerPartnerId, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CLEAR_TRANSITION,
+        actionTypes.CLEAR_TRANSITION_SUCCEED,
+        actionTypes.CLEAR_TRANSITION_FAIL,
+      ],
+      endpoint: 'v1/cwm/clear/transition',
+      method: 'post',
+      data: { whseCode, ownerPartnerId, tenantId },
     },
   };
 }
