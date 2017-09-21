@@ -21,6 +21,10 @@ const confirm = Modal.confirm;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
+    customsCode: state.account.customsCode,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -30,6 +34,7 @@ export default class OwnersPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
+    whseName: PropTypes.string.isRequired,
     whseTenantId: PropTypes.number.isRequired,
     whseOwners: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -154,7 +159,7 @@ export default class OwnersPane extends Component {
     }
   }
   handleInitData = (record) => {
-    this.setState({ seletedOwner: record.owner, importPanelVisible: true });
+    this.setState({ seletedOwner: record, importPanelVisible: true });
   }
   handleBackupData = (record) => {
     const { tenantId } = this.props;
@@ -176,7 +181,7 @@ export default class OwnersPane extends Component {
     });
   };
   render() {
-    const { whseCode, whseTenantId, whseOwners, defaultWhse } = this.props;
+    const { whseCode, whseName, whseTenantId, whseOwners } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
@@ -195,8 +200,8 @@ export default class OwnersPane extends Component {
               customsCode: this.props.customsCode,
               loginId: this.props.loginId,
               loginName: this.props.loginName,
-              whseCode: defaultWhse.code,
-              whseName: defaultWhse.name,
+              whseCode,
+              whseName,
               owner: this.state.seletedOwner,
             }),
           }}
