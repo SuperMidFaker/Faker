@@ -2,6 +2,7 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import { Table } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { formatMsg } from '../message.i18n';
 
@@ -32,7 +33,7 @@ export default class FTZDiscrepancyPane extends React.Component {
     dataIndex: 'ftz_qty',
     width: 150,
   }, {
-    title: this.msg('whseStockqty'),
+    title: this.msg('whseStockQty'),
     width: 120,
     dataIndex: 'whse_qty',
   }, {
@@ -90,9 +91,16 @@ export default class FTZDiscrepancyPane extends React.Component {
     for (let i = 0; i < entrylist.length; i++) {
       const el = entrylist[i];
       el.key = `${el.asn_no}${el.asn_seq_no}`;
-      el.children = this.props.inbounddiffs.filter(ibd => ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
+      const ins = this.props.inbounddiffs.filter(ibd => ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
+      if (ins.length > 1) {
+        el.children = ins;
+      } else if (ins.length === 1) {
+        el.trace_id = ins[0].trace_id;
+        el.location = ins[0].location;
+        el.serial_no = ins[0].serial_no;
+      }
     }
-    return <DataTable scrollOffset={390} columns={this.expColumns} dataSource={entrylist} rowKey="key" noBorder />;
+    return <Table columns={this.expColumns} dataSource={entrylist} rowKey="key" noBorder />;
   }
   render() {
     return (

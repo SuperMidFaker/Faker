@@ -30,7 +30,7 @@ export default class TasksPane extends React.Component {
     selectedRowKeys: [],
   }
   componentWillReceiveProps(nextProps) {
-    if ((nextProps.collapsed !== this.props.collapsed && nextProps.collapsed)
+    if ((nextProps.collapsed !== this.props.collapsed && !nextProps.collapsed)
       || nextProps.ftzTaskList.reload) {
       this.props.loadStockTasks(nextProps.defaultWhse.code, nextProps.tenantId);
     }
@@ -53,7 +53,6 @@ export default class TasksPane extends React.Component {
     render: cdate => cdate && moment(cdate).format('MM.DD'),
     width: 100,
   }, {
-    title: this.msg('ops'),
     dataIndex: 'OPS_COL',
     render: (o, record) => {
       if (record.progress === 100) {

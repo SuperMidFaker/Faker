@@ -328,7 +328,7 @@ export default class SHFTZStockList extends React.Component {
           width={480} collapsedWidth={0} className="right-sider"
         >
           <div className="right-sider-panel">
-            <div className="panel-header">
+            <div className="page-header">
               <h3>库存对比任务</h3>
             </div>
             <TasksPane collapsed={this.state.rightSiderCollapsed} />

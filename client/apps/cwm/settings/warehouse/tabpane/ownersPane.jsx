@@ -3,14 +3,19 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag } from 'antd';
+import { Button, Table, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
+import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
+import { createFilename } from 'client/util/dataTransform';
 import { WHSE_OPERATION_MODES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
+
+const confirm = Modal.confirm;
 
 @injectIntl
 @connect(
@@ -19,7 +24,7 @@ import { formatMsg } from '../message.i18n';
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse }
+  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -34,6 +39,8 @@ export default class OwnersPane extends Component {
   }
   state = {
     selectedRowKeys: [],
+    importPanelVisible: false,
+    seletedOwner: {},
   }
   componentWillMount() {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
@@ -72,6 +79,18 @@ export default class OwnersPane extends Component {
       }
     },
   }, {
+    title: '默认收货模式',
+    dataIndex: 'receiving_mode',
+    width: 120,
+    className: 'cell-align-center',
+    render: o => o ? `${WHSE_OPERATION_MODES[o].text}收货` : '',
+  }, {
+    title: '默认发货模式',
+    dataIndex: 'shipping_mode',
+    width: 120,
+    className: 'cell-align-center',
+    render: o => o ? `${WHSE_OPERATION_MODES[o].text}发货` : '',
+  }, {
     title: '最后修改时间',
     dataIndex: 'last_updated_date',
     width: 120,
@@ -82,29 +101,29 @@ export default class OwnersPane extends Component {
     width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
-    title: '库存备份',
+    title: '库存初始化',
+    dataIndex: 'init',
+    width: 100,
+    className: 'cell-align-center',
+    render: (o, record) => <Button icon="upload" onClick={() => this.handleInitData(record)} />,
+  }, {
+    title: '数据备份',
     dataIndex: 'backup',
     width: 80,
     className: 'cell-align-center',
-    render: () => <Button icon="download" />,
+    render: (o, record) => <Button icon="cloud-download-o" onClick={() => this.handleBackupData(record)} />,
   }, {
-    title: '库存导入',
+    title: '数据清空',
+    dataIndex: 'clear',
+    width: 80,
+    className: 'cell-align-center',
+    render: (o, record) => <Button type="danger" icon="delete" onClick={() => this.handleEmptyData(record)} />,
+  }, {
+    title: '数据恢复',
     dataIndex: 'restore',
     width: 80,
     className: 'cell-align-center',
-    render: () => <Button icon="upload" />,
-  }, {
-    title: '默认收货模式',
-    dataIndex: 'receiving_mode',
-    width: 80,
-    className: 'cell-align-center',
-    render: o => o ? `${WHSE_OPERATION_MODES[o].text}收货` : '',
-  }, {
-    title: '默认发货模式',
-    dataIndex: 'shipping_mode',
-    width: 80,
-    className: 'cell-align-center',
-    render: o => o ? `${WHSE_OPERATION_MODES[o].text}发货` : '',
+    render: (o, record) => <Button icon="cloud-upload-o" onClick={() => this.handleRestoreData(record)} />,
   }, {
     title: '操作',
     width: 150,
@@ -134,8 +153,30 @@ export default class OwnersPane extends Component {
       this.props.loadWhse(this.props.whseCode, this.props.tenantId);
     }
   }
+  handleInitData = (record) => {
+    this.setState({ seletedOwner: record.owner, importPanelVisible: true });
+  }
+  handleBackupData = (record) => {
+    const { tenantId } = this.props;
+    const listFilter = { whse_code: this.props.whseCode, owner: record.owner_partner_id };
+    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?tenantId=${tenantId}&filters=${
+      JSON.stringify(listFilter)}`);
+  };
+  handleEmptyData = (record) => {
+    const { tenantId, whseCode } = this.props;
+    confirm({
+      title: '确定要清空数据吗?',
+      content: `一旦你确定清空，所有与「${record.owner_name}」有关的入库、库存、出库数据将会被永久删除。这是一个不可恢复的操作，请谨慎对待！`,
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      onOk() {
+        this.props.clearTransition(whseCode, record.owner_partner_id, tenantId);
+      },
+    });
+  };
   render() {
-    const { whseCode, whseTenantId, whseOwners } = this.props;
+    const { whseCode, whseTenantId, whseOwners, defaultWhse } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
@@ -144,6 +185,25 @@ export default class OwnersPane extends Component {
         <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
+        <ImportDataPanel
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
+          formData={{
+            data: JSON.stringify({
+              tenantId: this.props.tenantId,
+              tenantName: this.props.tenantName,
+              customsCode: this.props.customsCode,
+              loginId: this.props.loginId,
+              loginName: this.props.loginName,
+              whseCode: defaultWhse.code,
+              whseName: defaultWhse.name,
+              owner: this.state.seletedOwner,
+            }),
+          }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.handleReload}
+          template={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}
+        />
       </div>
     );
   }
