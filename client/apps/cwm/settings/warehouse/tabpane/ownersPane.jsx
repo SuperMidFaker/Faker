@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag } from 'antd';
+import { Button, Dropdown, Icon, Menu, Table, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
@@ -11,6 +11,8 @@ import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
 import { WHSE_OPERATION_MODES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
+
+const confirm = Modal.confirm;
 
 @injectIntl
 @connect(
@@ -96,13 +98,13 @@ export default class OwnersPane extends Component {
   }, {
     title: '默认收货模式',
     dataIndex: 'receiving_mode',
-    width: 80,
+    width: 120,
     className: 'cell-align-center',
     render: o => o ? `${WHSE_OPERATION_MODES[o].text}收货` : '',
   }, {
     title: '默认发货模式',
     dataIndex: 'shipping_mode',
-    width: 80,
+    width: 120,
     className: 'cell-align-center',
     render: o => o ? `${WHSE_OPERATION_MODES[o].text}发货` : '',
   }, {
@@ -114,6 +116,16 @@ export default class OwnersPane extends Component {
         <span className="ant-divider" />
         {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
+        <span className="ant-divider" />
+        <Dropdown overlay={(
+          <Menu>
+            <Menu.Item key="empty">
+              <a role="presentation" onClick={() => this.handleEmptyData(record)}><Icon type="delete" /> 清空数据</a>
+            </Menu.Item>
+          </Menu>)}
+        >
+          <a><Icon type="down" /></a>
+        </Dropdown>
       </span>
     ),
   }]
@@ -133,6 +145,21 @@ export default class OwnersPane extends Component {
     if (this.props.whseCode === this.props.defaultWhse.code) {
       this.props.loadWhse(this.props.whseCode, this.props.tenantId);
     }
+  }
+  handleEmptyData = (record) => {
+    confirm({
+      title: '确定要清空数据吗?',
+      content: `一旦你确定清空，所有与「${record.owner_name}」有关的入库、库存、出库数据将会被永久删除。这是一个不可恢复的操作，请谨慎对待！`,
+      okText: '是',
+      okType: 'danger',
+      cancelText: '否',
+      onOk() {
+        console.log('OK');
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   }
   render() {
     const { whseCode, whseTenantId, whseOwners } = this.props;

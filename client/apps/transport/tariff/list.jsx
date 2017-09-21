@@ -497,14 +497,10 @@ export default class TariffList extends React.Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="panel-body table-panel table-fixed-layout">
-              <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
-                dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
-              />
-              <CreateTariffModal />
-            </div>
-          </div>
+          <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
+            dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
+          />
+          <CreateTariffModal />
         </Content>
       </QueueAnim>
     );
