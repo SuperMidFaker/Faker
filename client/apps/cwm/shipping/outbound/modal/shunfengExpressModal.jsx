@@ -269,7 +269,7 @@ export default class ShunfengExpressModal extends Component {
       if (result.error) {
         message.error(result.error.message);
       }
-      this.loadExpressInfo();
+      this.loadExpressInfo(this.props);
     });
   }
   handleReceiverRegionChange = (value) => {
