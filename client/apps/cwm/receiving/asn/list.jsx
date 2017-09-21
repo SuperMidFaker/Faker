@@ -11,6 +11,7 @@ import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import PageHint from 'client/components/PageHint';
 import connectNav from 'client/common/decorators/connect-nav';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_STATUS, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
@@ -449,6 +450,7 @@ export default class ReceivingASNList extends React.Component {
               </Button>
             </Popover>
             */}
+            <PageHint />
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>

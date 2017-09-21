@@ -56,10 +56,11 @@ export default class SOPane extends React.Component {
   }]
   render() {
     const { soHead } = this.props;
+    const contactNumber = `${soHead.receiver_phone || ''} ${soHead.receiver_number || ''}`;
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }} noHovering>
-          <Collapse bordered={false} defaultActiveKey={['main', 'asnDetails']}>
+          <Collapse bordered={false} defaultActiveKey={['main', 'receiver', 'asnDetails']}>
             <Panel header="主信息" key="main">
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
@@ -83,9 +84,26 @@ export default class SOPane extends React.Component {
                 <Col span="8">
                   <InfoItem label="预期发货日期" field={moment(soHead.expect_shipping_date).format('YYYY.MM.DD')} />
                 </Col>
+              </Row>
+            </Panel>
+            <Panel header="收货人" key="receiver">
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label="收货人" field={soHead.receiver_name} />
                 </Col>
+                <Col span="8">
+                  <InfoItem label="联系人" field={soHead.receiver_contact} />
+                </Col>
+                <Col span="8">
+                  <InfoItem label="联系方式" field={contactNumber} />
+                </Col>
+                <Col span="24">
+                  <InfoItem label="地址" field={soHead.receiver_address} />
+                </Col>
+              </Row>
+            </Panel>
+            <Panel header="承运人" key="carrier">
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label="承运人" field={soHead.carrier_name} />
                 </Col>
