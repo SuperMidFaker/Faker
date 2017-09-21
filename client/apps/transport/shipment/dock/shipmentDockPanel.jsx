@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Col, Row, Tabs, Button, Modal, Tooltip, Menu, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import moment from 'moment';
 import DetailPane from './tabpanes/detail-pane';
 import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
 import ChargePane from './tabpanes/chargePane';
@@ -31,6 +30,7 @@ import { showVehicleModal } from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
 import { sendMessage } from 'common/reducers/notification';
+import * as Location from 'client/util/location';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
@@ -675,18 +675,26 @@ export default class PreviewPanel extends React.Component {
         />
       </Col>
       <Col span="6">
-        <InfoItem label="承运商"
-          field={shipmt.lsp_name}
-        />
-      </Col>
-      <Col span="6">
         <InfoItem label="客户单号"
           field={shipmt.ref_external_no}
         />
       </Col>
       <Col span="6">
-        <InfoItem label="创建时间"
-          field={moment(shipmt.created_date).format('YYYY.MM.DD')}
+        <InfoItem label="始发地"
+          field={Location.renderLoc({
+            province: shipmt.consigner_province,
+            city: shipmt.consigner_city,
+            district: shipmt.consigner_district,
+          }, 'province', 'city', 'district')}
+        />
+      </Col>
+      <Col span="6">
+        <InfoItem label="目的地"
+          field={Location.renderLoc({
+            province: shipmt.consignee_province,
+            city: shipmt.consignee_city,
+            district: shipmt.consignee_district,
+          }, 'province', 'city', 'district')}
         />
       </Col>
     </Row>);
@@ -717,7 +725,8 @@ export default class PreviewPanel extends React.Component {
           status={this.transformBadgeColor(dispatch.status)} statusText={this.msg(getTrackStatusMsg(dispatch.status, effective))}
           overlay={this.renderMenu()}
           extra={this.renderExtra()}
-          alert={this.renderButtons()}
+          /* alert={this.renderButtons()}
+          */
         >
           {this.renderTabs(dispatch.status, sourceType)}
           <ShareShipmentModal visible={this.state.shareShipmentModalVisible} shipmt={shipmt} />

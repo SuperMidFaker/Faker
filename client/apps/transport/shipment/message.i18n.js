@@ -459,7 +459,7 @@ export default defineMessages({
   },
   shipmtDetail: {
     id: 'transport.shipment.tab.detail',
-    defaultMessage: '运单',
+    defaultMessage: '运输订单',
   },
   shipmtEvents: {
     id: 'transport.shipment.tab.events',
