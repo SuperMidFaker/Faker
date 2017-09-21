@@ -358,14 +358,20 @@ export default class AllocatingModal extends Component {
     const inventoryData = [...this.state.inventoryData];
     const allocatedData = [...this.state.allocatedData];
     const outboundProduct = { ...this.state.outboundProduct };
-    const allocatedOne = inventoryData[index];
+    const allocatedOne = { ...inventoryData[index] };
     const allocatedAmount = allocatedData.reduce((pre, cur) => (pre + cur.allocated_qty), 0);
+    console.log(inventoryData[index]);
+    if (!inventoryData[index].allocated_qty) {
+      return;
+    }
     if (allocatedAmount + (allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty) > this.props.outboundProduct.order_qty) {
       message.info('分配数量不能大于订单总数');
       return;
     }
     inventoryData[index].alloc_qty += allocatedOne.allocated_qty;
     inventoryData[index].avail_qty -= allocatedOne.allocated_qty;
+    inventoryData[index].allocated_pack_qty = null;
+    inventoryData[index].allocated_qty = null;
     if (inventoryData[index].avail_qty === 0) {
       inventoryData.splice(index, 1);
     }
@@ -405,6 +411,8 @@ export default class AllocatingModal extends Component {
     } else {
       deleteOne.avail_qty = deleteOne.allocated_qty;
       deleteOne.alloc_qty = 0;
+      deleteOne.allocated_qty = null;
+      deleteOne.allocated_pack_qty = null;
       inventoryData.push(deleteOne);
     }
     this.setState({
