@@ -89,7 +89,7 @@ export default class SHFTZStockTask extends Component {
                 <DiscrepancyPane />
               </TabPane>
               <TabPane tab="海关库存数据" key="ftz">
-                <FTZStockPane />
+                <FTZStockPane taskId={this.props.params.taskId} />
               </TabPane>
             </Tabs>
           </Card>
