@@ -29,7 +29,6 @@ class DataSource {
   }
 }
 
-/* eslint react/prefer-es6-class: 0 */
 class DataTable extends Component {
   static defaultProps = {
     baseCls: 'welo-data-table',
@@ -125,8 +124,10 @@ class DataTable extends Component {
   }
   handleTableChange = (pagination, filters, sorter) => {
     const { dataSource } = this.props;
-    const builtinParams = dataSource.getParams.call(this, pagination, filters, sorter);
-    this.fetch(builtinParams);
+    if (!this.isLocalDataSource(dataSource)) {
+      const builtinParams = dataSource.getParams.call(this, pagination, filters, sorter);
+      this.fetch(builtinParams);
+    }
   }
   resolveCurrent(total, current, pageSize) {
     // 删除完一页时返回上一页

@@ -30,7 +30,7 @@ export default class FTZComparisonPane extends React.Component {
     dataIndex: 'ftz_qty',
     width: 150,
   }, {
-    title: this.msg('whseStockqty'),
+    title: this.msg('whseStockQty'),
     width: 120,
     dataIndex: 'whse_qty',
   }, {

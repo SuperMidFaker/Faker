@@ -126,6 +126,58 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.stock.reset',
     defaultMessage: '重置',
   },
+  taskId: {
+    id: 'cwm.supervision.shftz.stock.task.id',
+    defaultMessage: '任务号',
+  },
+  progress: {
+    id: 'cwm.supervision.shftz.stock.task.progress',
+    defaultMessage: '进度',
+  },
+  createdDate: {
+    id: 'cwm.supervision.shftz.stock.task.created.date',
+    defaultMessage: '创建时间',
+  },
+  ftzStockQty: {
+    id: 'cwm.supervision.shftz.stock.ftz.qty',
+    defaultMessage: '海关数量',
+  },
+  whseStockQty: {
+    id: 'cwm.supervision.shftz.stock.whse.qty',
+    defaultMessage: '库存数量',
+  },
+  ftzNetWt: {
+    id: 'cwm.supervision.shftz.stock.ftz.netwt',
+    defaultMessage: '海关净重',
+  },
+  whseNetWt: {
+    id: 'cwm.supervision.shftz.stock.whse.netwt',
+    defaultMessage: '库存净重',
+  },
+  ftzAmount: {
+    id: 'cwm.supervision.shftz.stock.ftz.amount',
+    defaultMessage: '海关金额',
+  },
+  whseAmount: {
+    id: 'cwm.supervision.shftz.stock.whse.amount',
+    defaultMessage: '库存金额',
+  },
+  asnNo: {
+    id: 'cwm.supervision.shftz.stock.asn.no',
+    defaultMessage: 'ASN编号',
+  },
+  productNo: {
+    id: 'cwm.supervision.shftz.stock.product.no',
+    defaultMessage: '货号',
+  },
+  traceId: {
+    id: 'cwm.supervision.shftz.stock.trace.id',
+    defaultMessage: '追踪ID',
+  },
+  serialNo: {
+    id: 'cwm.supervision.shftz.stock.serial',
+    defaultMessage: '序列号',
+  },
 });
 
 export default messages;

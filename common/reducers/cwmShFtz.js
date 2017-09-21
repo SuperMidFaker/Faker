@@ -218,6 +218,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.TRANSFER_TO_OWN:
     case actionTypes.QUERY_OWNTRANF:
     case actionTypes.VIRTUAL_TRANS_SAVE:
+    case actionTypes.COMPARE_FTZST:
       return { ...state, submitting: true };
     case actionTypes.FILE_RSO_FAIL:
     case actionTypes.FILE_RTS_FAIL:
@@ -252,6 +253,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUERY_OWNTRANF_FAIL:
     case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
     case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
+    case actionTypes.COMPARE_FTZST_FAIL:
       return { ...state, submitting: false };
     case actionTypes.FILE_RSO_SUCCEED:
     case actionTypes.FILE_RTS_SUCCEED:
@@ -305,7 +307,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_MANIFTEMP_SUCCEED:
       return { ...state, billTemplates: action.result.data };
     case actionTypes.COMPARE_FTZST_SUCCEED:
-      return { ...state, ftzTaskList: { ...state.ftzTaskList, reload: true } };
+      return { ...state, ftzTaskList: { ...state.ftzTaskList, reload: true }, submitting: false };
     case actionTypes.LOAD_STOTASKS:
       return { ...state, ftzTaskList: { ...state.ftzTaskList, loading: true, reload: false } };
     case actionTypes.LOAD_STOTASKS_SUCCEED:
