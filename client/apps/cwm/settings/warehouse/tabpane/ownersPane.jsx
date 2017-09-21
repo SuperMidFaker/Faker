@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Dropdown, Icon, Menu, Table, Tag, Modal } from 'antd';
+import { Button, Table, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
 import { createFilename } from 'client/util/dataTransform';
@@ -38,6 +39,8 @@ export default class OwnersPane extends Component {
   }
   state = {
     selectedRowKeys: [],
+    importPanelVisible: false,
+    seletedOwner: {},
   }
   componentWillMount() {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
@@ -47,16 +50,6 @@ export default class OwnersPane extends Component {
       this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
-  handleExportExcel = (ownerPartnerId) => {
-    const { tenantId } = this.props;
-    const listFilter = { whse_code: this.props.whseCode, owner: ownerPartnerId };
-    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?tenantId=${tenantId}&filters=${
-      JSON.stringify(listFilter)}`);
-  };
-  handleClearTransition = (ownerPartnerId) => {
-    const { tenantId, whseCode } = this.props;
-    this.props.clearTransition(whseCode, ownerPartnerId, tenantId);
-  };
   columns = [{
     title: '代码',
     dataIndex: 'owner_code',
@@ -86,34 +79,6 @@ export default class OwnersPane extends Component {
       }
     },
   }, {
-    title: '最后修改时间',
-    dataIndex: 'last_updated_date',
-    width: 120,
-    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-  }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
-    width: 120,
-    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-  }, {
-    title: '库存备份',
-    dataIndex: 'backup',
-    width: 80,
-    className: 'cell-align-center',
-    render: (o, record) => <Button icon="download" onClick={() => this.handleExportExcel(record.owner_partner_id)} />,
-  }, {
-    title: '清除库存',
-    dataIndex: 'clear',
-    width: 80,
-    className: 'cell-align-center',
-    render: (o, record) => <Button icon="delete" onClick={() => this.handleClearTransition(record.owner_partner_id)} />,
-  }, {
-    title: '库存导入',
-    dataIndex: 'restore',
-    width: 80,
-    className: 'cell-align-center',
-    render: () => <Button icon="upload" />,
-  }, {
     title: '默认收货模式',
     dataIndex: 'receiving_mode',
     width: 120,
@@ -126,6 +91,40 @@ export default class OwnersPane extends Component {
     className: 'cell-align-center',
     render: o => o ? `${WHSE_OPERATION_MODES[o].text}发货` : '',
   }, {
+    title: '最后修改时间',
+    dataIndex: 'last_updated_date',
+    width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
+    title: '创建时间',
+    dataIndex: 'created_date',
+    width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
+    title: '库存初始化',
+    dataIndex: 'init',
+    width: 100,
+    className: 'cell-align-center',
+    render: (o, record) => <Button icon="upload" onClick={() => this.handleInitData(record)} />,
+  }, {
+    title: '数据备份',
+    dataIndex: 'backup',
+    width: 80,
+    className: 'cell-align-center',
+    render: (o, record) => <Button icon="cloud-download-o" onClick={() => this.handleBackupData(record)} />,
+  }, {
+    title: '数据清空',
+    dataIndex: 'clear',
+    width: 80,
+    className: 'cell-align-center',
+    render: (o, record) => <Button type="danger" icon="delete" onClick={() => this.handleEmptyData(record)} />,
+  }, {
+    title: '数据恢复',
+    dataIndex: 'restore',
+    width: 80,
+    className: 'cell-align-center',
+    render: (o, record) => <Button icon="cloud-upload-o" onClick={() => this.handleRestoreData(record)} />,
+  }, {
     title: '操作',
     width: 150,
     render: record => (
@@ -134,16 +133,6 @@ export default class OwnersPane extends Component {
         <span className="ant-divider" />
         {record.active === 0 ? <RowUpdater onHit={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
-        <span className="ant-divider" />
-        <Dropdown overlay={(
-          <Menu>
-            <Menu.Item key="empty">
-              <a role="presentation" onClick={() => this.handleEmptyData(record)}><Icon type="delete" /> 清空数据</a>
-            </Menu.Item>
-          </Menu>)}
-        >
-          <a><Icon type="down" /></a>
-        </Dropdown>
       </span>
     ),
   }]
@@ -164,7 +153,17 @@ export default class OwnersPane extends Component {
       this.props.loadWhse(this.props.whseCode, this.props.tenantId);
     }
   }
+  handleInitData = (record) => {
+    this.setState({ seletedOwner: record.owner, importPanelVisible: true });
+  }
+  handleBackupData = (record) => {
+    const { tenantId } = this.props;
+    const listFilter = { whse_code: this.props.whseCode, owner: record.owner_partner_id };
+    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?tenantId=${tenantId}&filters=${
+      JSON.stringify(listFilter)}`);
+  };
   handleEmptyData = (record) => {
+    const { tenantId, whseCode } = this.props;
     confirm({
       title: '确定要清空数据吗?',
       content: `一旦你确定清空，所有与「${record.owner_name}」有关的入库、库存、出库数据将会被永久删除。这是一个不可恢复的操作，请谨慎对待！`,
@@ -172,15 +171,12 @@ export default class OwnersPane extends Component {
       okType: 'danger',
       cancelText: '否',
       onOk() {
-        console.log('OK');
-      },
-      onCancel() {
-        console.log('Cancel');
+        this.props.clearTransition(whseCode, record.owner_partner_id, tenantId);
       },
     });
-  }
+  };
   render() {
-    const { whseCode, whseTenantId, whseOwners } = this.props;
+    const { whseCode, whseTenantId, whseOwners, defaultWhse } = this.props;
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
@@ -189,6 +185,25 @@ export default class OwnersPane extends Component {
         <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
+        <ImportDataPanel
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
+          formData={{
+            data: JSON.stringify({
+              tenantId: this.props.tenantId,
+              tenantName: this.props.tenantName,
+              customsCode: this.props.customsCode,
+              loginId: this.props.loginId,
+              loginName: this.props.loginName,
+              whseCode: defaultWhse.code,
+              whseName: defaultWhse.name,
+              owner: this.state.seletedOwner,
+            }),
+          }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.handleReload}
+          template={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}
+        />
       </div>
     );
   }
