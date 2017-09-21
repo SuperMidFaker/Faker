@@ -21,6 +21,10 @@ const confirm = Modal.confirm;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    tenantName: state.account.tenantName,
+    customsCode: state.account.customsCode,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -155,7 +159,6 @@ export default class OwnersPane extends Component {
     }
   }
   handleInitData = (record) => {
-    console.log(record.owner);
     this.setState({ seletedOwner: record, importPanelVisible: true });
   }
   handleBackupData = (record) => {
