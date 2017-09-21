@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Col, Table, Steps, Card, Icon, Dropdown, Menu, Row, Button, message, notification } from 'antd';
+import { Collapse, Col, Table, Steps, Card, Icon, Menu, Row, message, notification } from 'antd';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { format } from 'client/common/i18n/helpers';
-import { PRESET_TRANSMODES, TMS_SHIPMENT_STATUS_DESC, SHIPMENT_TRACK_STATUS, COURIERS } from 'common/constants';
-import ChangeShipment from '../change-shipment';
+import { PRESET_TRANSMODES, SHIPMENT_TRACK_STATUS, COURIERS } from 'common/constants';
+import ChangeShipment from '../../../common/modal/changeShipmentModal';
 import { showChangeShipmentModal, loadForm, computeSaleCharge, updateFee, loadShipmtCharges } from 'common/reducers/shipment';
 import { saveEdit } from 'common/reducers/transport-acceptance';
 import { showChangeActDateModal } from 'common/reducers/trackingLandStatus';
@@ -19,6 +19,7 @@ import './pane.less';
 
 const formatMsg = format(messages);
 const Step = Steps.Step;
+const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
@@ -338,47 +339,20 @@ export default class DetailPane extends React.Component {
     };
     this.handleSave(form, type);
   }
-  // handleSaveConsign = (value, consignType, type = '') => {
-  //   const { formData } = this.props;
-  //   const [code, province, city, district, street] = value;
-  //   if (typeof code === 'number') {
-  //     const changedData = {
-  //       [`${consignType}_region_code`]: code,
-  //       [`${consignType}_province`]: province || '',
-  //       [`${consignType}_city`]: city || '',
-  //       [`${consignType}_district`]: district || '',
-  //       [`${consignType}_street`]: street || '',
-  //     };
-  //     const form = {
-  //       ...formData,
-  //       ...changedData,
-  //     };
-  //     const oldAddr = [];
-  //     if (formData[`${consignType}_province`]) oldAddr.push(formData[`${consignType}_province`]);
-  //     if (formData[`${consignType}_city`]) oldAddr.push(formData[`${consignType}_city`]);
-  //     if (formData[`${consignType}_district`]) oldAddr.push(formData[`${consignType}_district`]);
-  //     if (formData[`${consignType}_street`]) oldAddr.push(formData[`${consignType}_street`]);
-  //     const newAddr = [];
-  //     if (province) newAddr.push(province);
-  //     if (city) newAddr.push(city);
-  //     if (district) newAddr.push(district);
-  //     if (street) newAddr.push(street);
-  //     const msg = `${consignType === 'consigner' ? '发货' : '收货'}地址：${oldAddr.join('-')} 变更为 ${newAddr.join('-')}`;
-  //     this.computeSaleCharge({ [`${consignType}_region_code`]: code }, form, type, msg);
-  //   }
-  // }
+
   handleShowChangeActDateModal = (type) => {
     this.props.showChangeActDateModal(true, type);
   }
   render() {
-    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings, charges, upstream } = this.props;
+    const { tenantId, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, dispatch, transitModes, containerPackagings } = this.props;
     const pckg = packagings.find(item => item.package_code === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
     const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
-    let statusDesc = TMS_SHIPMENT_STATUS_DESC;
-    if (dispatch.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
+    // let statusDesc = TMS_SHIPMENT_STATUS_DESC;
+    // if (dispatch.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
     const editable = tenantId === shipmt.tenant_id && dispatch.status <= SHIPMENT_TRACK_STATUS.delivered;
+    /*
     let shipmtScheduleExtra = (<div />);
     if (tenantId === shipmt.tenant_id) {
       shipmtScheduleExtra = (
@@ -401,157 +375,114 @@ export default class DetailPane extends React.Component {
         </Dropdown>
       );
     }
+    const shipmtModeExtra = (<span>运输时效:{shipmt.transit_time}{this.msg('day')}/公里数:{charges.revenue.miles}</span>);
+    */
     return (
       <div className="pane-content tab-pane">
-        <Card
-          bodyStyle={{ padding: 16 }}
-          title="运单"
-          extra={<span>
-            <Button icon="environment-o"
-              onClick={() => this.context.router.push(`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`)}
-            >地图跟踪</Button>
-          </span>}
-        >
-          <Row>
-            <Col span="5">
-              <InfoItem label="执行者"
-                addonBefore={<Icon type="customer-service" />}
-                field={upstream.sp_disp_login_name}
-              />
-            </Col>
-            <Col span="5">
-              <InfoItem label="接单时间"
-                addonBefore={<Icon type="calendar" />}
-                field={upstream.acpt_time ? moment(upstream.acpt_time).format('YYYY.MM.DD') : ''}
-              />
-            </Col>
-
-            <Col span="5">
-              <InfoItem label="运输时效"
-                addonBefore={<Icon type="clock-circle-o" />}
-                field={`${shipmt.transit_time}${this.msg('day')}`}
-              />
-            </Col>
-            <Col span="5">
-              <InfoItem label="公里数"
-                addonBefore={<Icon type="flag" />}
-                field={charges.revenue.miles}
-              />
-            </Col>
-            <Col span="4">
-              <InfoItem label="基本运费（元）"
-                addonBefore={<Icon type="pay-circle-o" />}
-                field={charges.revenue.total_charge}
-              />
-            </Col>
-          </Row>
-        </Card>
-        <Card
-          title={`${this.msg('shipmtSchedule')}`}
-          bodyStyle={{ padding: 16 }}
-          extra={shipmtScheduleExtra}
-        >
-          <div className="trans_schedule">
-            <div className="schedule">
-              <Steps direction="vertical">
-                <Step key={0} title={shipmt.consigner_name || (<div style={{ height: 26 }} />)} status="process"
-                  icon={<div className="icon">始</div>}
-                  description={
-                    <div>
-                      <Row>
-                        <InfoItem label={this.msg('pickupEstDate')}
-                          type="date"
-                          field={shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : null}
-                          editable={editable}
-                          onEdit={value => this.handleSaveShipment('pickup_est_date', new Date(value), 'timeInfoChanged')}
-                        />
-                      </Row>
-                      <Row gutter={10}>
-                        <Col span={10}>
-                          <InfoItem label="发货地"
-                            field={shipmt.consigner_byname || Location.renderLoc(shipmt, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')}
-                          />
-                        </Col>
-                        <Col span={14}>
-                          <InfoItem label="详细地址"
-                            editable={editable}
-                            field={shipmt.consigner_addr}
-                            onEdit={value => this.handleSaveShipment('consigner_addr', value, 'consignerInfoChanged')}
-                          />
-                        </Col>
-                      </Row>
-                      <Row gutter={10}>
-                        <Col span={10}>
-                          <InfoItem label="联系人"
-                            field={shipmt.consigner_contact}
-                            editable={editable}
-                            onEdit={value => this.handleSaveShipment('consigner_contact', value, 'consignerInfoChanged')}
-                          />
-                        </Col>
-                        <Col span={14}>
-                          <InfoItem label="电话"
-                            field={shipmt.consigner_mobile}
-                            editable={editable}
-                            onEdit={value => this.handleSaveShipment('consigner_mobile', value, 'consignerInfoChanged')}
-                          />
-                        </Col>
-                      </Row>
-                    </div>
+        <Card bodyStyle={{ padding: 0 }} noHovering>
+          <Collapse bordered={false} defaultActiveKey={['main', 'mode', 'cargo']}>
+            <Panel header={this.msg('shipmtSchedule')} key="main">
+              <div className="trans_schedule">
+                <div className="schedule">
+                  <Steps direction="vertical">
+                    <Step key={0} title={shipmt.consigner_name || (<div style={{ height: 26 }} />)} status="process"
+                      icon={<div className="icon">始</div>}
+                      description={
+                        <div>
+                          <Row>
+                            <InfoItem label={this.msg('pickupEstDate')}
+                              type="date"
+                              field={shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : null}
+                              editable={editable}
+                              onEdit={value => this.handleSaveShipment('pickup_est_date', new Date(value), 'timeInfoChanged')}
+                            />
+                          </Row>
+                          <Row gutter={10}>
+                            <Col span={10}>
+                              <InfoItem label="发货地"
+                                field={shipmt.consigner_byname || Location.renderLoc(shipmt, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')}
+                              />
+                            </Col>
+                            <Col span={14}>
+                              <InfoItem label="详细地址"
+                                editable={editable}
+                                field={shipmt.consigner_addr}
+                                onEdit={value => this.handleSaveShipment('consigner_addr', value, 'consignerInfoChanged')}
+                              />
+                            </Col>
+                          </Row>
+                          <Row gutter={10}>
+                            <Col span={10}>
+                              <InfoItem label="联系人"
+                                field={shipmt.consigner_contact}
+                                editable={editable}
+                                onEdit={value => this.handleSaveShipment('consigner_contact', value, 'consignerInfoChanged')}
+                              />
+                            </Col>
+                            <Col span={14}>
+                              <InfoItem label="电话"
+                                field={shipmt.consigner_mobile}
+                                editable={editable}
+                                onEdit={value => this.handleSaveShipment('consigner_mobile', value, 'consignerInfoChanged')}
+                              />
+                            </Col>
+                          </Row>
+                        </div>
                 }
-                />
-              </Steps>
-            </div>
-            <div className="schedule">
-              <Steps direction="vertical">
-                <Step key={0} title={shipmt.consignee_name || (<div style={{ height: 26 }} />)} status="process"
-                  icon={<div className="icon">终</div>}
-                  description={
-                    <div>
-                      <Row>
-                        <InfoItem label={this.msg('deliveryEstDate')}
-                          type="date"
-                          field={shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : null}
-                          editable={editable}
-                          onEdit={value => this.handleSaveShipment('deliver_est_date', new Date(value), 'timeInfoChanged')}
-                        />
-                      </Row>
-                      <Row gutter={10}>
-                        <Col span={10}>
-                          <InfoItem label="收货地"
-                            field={shipmt.consignee_byname || Location.renderLoc(shipmt, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')}
-                          />
-                        </Col>
-                        <Col span={14}>
-                          <InfoItem label="详细地址"
-                            editable={editable}
-                            field={shipmt.consignee_addr}
-                            onEdit={value => this.handleSaveShipment('consignee_addr', value, 'consigneeInfoChanged')}
-                          />
-                        </Col>
-                      </Row>
-                      <Row gutter={10}>
-                        <Col span={10}>
-                          <InfoItem label="联系人"
-                            field={shipmt.consignee_contact}
-                            editable={editable}
-                            onEdit={value => this.handleSaveShipment('consignee_contact', value, 'consigneeInfoChanged')}
-                          />
-                        </Col>
-                        <Col span={14}>
-                          <InfoItem label="电话"
-                            field={shipmt.consignee_mobile}
-                            editable={editable}
-                            onEdit={value => this.handleSaveShipment('consignee_mobile', value, 'consigneeInfoChanged')}
-                          />
-                        </Col>
-                      </Row>
-                    </div>
+                    />
+                  </Steps>
+                </div>
+                <div className="schedule">
+                  <Steps direction="vertical">
+                    <Step key={0} title={shipmt.consignee_name || (<div style={{ height: 26 }} />)} status="process"
+                      icon={<div className="icon">终</div>}
+                      description={
+                        <div>
+                          <Row>
+                            <InfoItem label={this.msg('deliveryEstDate')}
+                              type="date"
+                              field={shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : null}
+                              editable={editable}
+                              onEdit={value => this.handleSaveShipment('deliver_est_date', new Date(value), 'timeInfoChanged')}
+                            />
+                          </Row>
+                          <Row gutter={10}>
+                            <Col span={10}>
+                              <InfoItem label="收货地"
+                                field={shipmt.consignee_byname || Location.renderLoc(shipmt, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')}
+                              />
+                            </Col>
+                            <Col span={14}>
+                              <InfoItem label="详细地址"
+                                editable={editable}
+                                field={shipmt.consignee_addr}
+                                onEdit={value => this.handleSaveShipment('consignee_addr', value, 'consigneeInfoChanged')}
+                              />
+                            </Col>
+                          </Row>
+                          <Row gutter={10}>
+                            <Col span={10}>
+                              <InfoItem label="联系人"
+                                field={shipmt.consignee_contact}
+                                editable={editable}
+                                onEdit={value => this.handleSaveShipment('consignee_contact', value, 'consigneeInfoChanged')}
+                              />
+                            </Col>
+                            <Col span={14}>
+                              <InfoItem label="电话"
+                                field={shipmt.consignee_mobile}
+                                editable={editable}
+                                onEdit={value => this.handleSaveShipment('consignee_mobile', value, 'consigneeInfoChanged')}
+                              />
+                            </Col>
+                          </Row>
+                        </div>
                 }
-                />
-              </Steps>
-            </div>
-          </div>
-          <div className="card-footer">
+                    />
+                  </Steps>
+                </div>
+              </div>
+              {/* <div className="card-footer">
             <Steps progressDot current={dispatch.status - 2}>
               {statusDesc.map((step) => {
                 let desc = step.text;
@@ -592,163 +523,209 @@ export default class DetailPane extends React.Component {
               })}
             </Steps>
           </div>
-        </Card>
-        <Card title={this.msg('transitModeInfo')} bodyStyle={{ padding: 16 }}>
+          */}
+            </Panel>
+            <Panel header={this.msg('transitModeInfo')} key="mode">
+              <Row>
+                <Col span="8">
+                  <InfoItem label={this.msg('transitModeInfo')}
+                    field={shipmt.transport_mode}
+                    editable={editable}
+                    type="dropdown"
+                    overlay={<Menu onClick={e => this.handleSaveTransMode(e.key, 'transitModeChanged')}>
+                      {transitModes.map(tm => (<Menu.Item key={tm.id}>{tm.mode_name}</Menu.Item>))}
+                    </Menu>}
+                  />
+                </Col>
+                {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
+                <Col span="8">
+                  <InfoItem label={this.msg('vehicleType')}
+                    field={vehicleType ? vehicleType.text : ''}
+                    editable={editable}
+                    type="dropdown"
+                    overlay={<Menu onClick={e => this.handleSaveVehicleType(e.key, 'transitModeChanged')}>
+                      {vehicleTypes.map(tm => (<Menu.Item key={tm.value}>{tm.text}</Menu.Item>))}
+                    </Menu>}
+                  />
+                </Col>
+            }
+                {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
+                <Col span="8">
+                  <InfoItem label={this.msg('vehicleLength')}
+                    field={vehicleLength ? vehicleLength.text : ''} addonAfter="米"
+                    editable={editable}
+                    type="dropdown"
+                    overlay={<Menu onClick={e => this.handleSaveVehicleLength(e.key, 'transitModeChanged')}>
+                      {vehicleLengths.map(tm => (<Menu.Item key={tm.value}>{tm.text}</Menu.Item>))}
+                    </Menu>}
+                  />
+                </Col>
+            }
+                {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
+                <Col span="8">
+                  <InfoItem label={this.msg('container')}
+                    field={shipmt.container}
+                    editable={editable}
+                    type="dropdown"
+                    overlay={<Menu onClick={e => this.handleSaveShipment('container', e.key, 'transitModeChanged')}>
+                      {containerPackagings.map(tm => (<Menu.Item key={tm.key}>{tm.value}</Menu.Item>))}
+                    </Menu>}
+                  />
+                </Col>
+            }
+                {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
+                <Col span="8">
+                  <InfoItem label={this.msg('containerNo')}
+                    field={shipmt.container_no}
+                    editable={editable}
+                    onEdit={value => this.handleSaveShipment('container_no', value, 'transitModeChanged')}
+                  />
+                </Col>
+            }
+                {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
+                <Col span="8">
+                  <InfoItem label={this.msg('courierCompany')}
+                    field={shipmt.courier}
+                    editable={editable}
+                    type="dropdown"
+                    overlay={<Menu onClick={e => this.handleSaveCourier(e.key, 'transitModeChanged')}>
+                      {COURIERS.map(c => (<Menu.Item key={c.code}>{c.name}</Menu.Item>))}
+                    </Menu>}
+                  />
+                </Col>
+            }
+                {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
+                <Col span="8">
+                  <InfoItem label={this.msg('courierNo')}
+                    field={shipmt.courier_no}
+                    editable={editable}
+                    onEdit={value => this.handleSaveShipment('courier_no', value, 'transitModeChanged')}
+                  />
+                </Col>
+            }
+              </Row>
+            </Panel>
+            <Panel header="货物信息" key="cargo">
+              <Row>
+                <Col span="8">
+                  <InfoItem label={this.msg('goodsType')}
+                    field={goodsType ? goodsType.text : shipmt.goods_type} editable={editable}
+                    type="dropdown"
+                    overlay={<Menu onClick={e => this.handleSaveShipment('goods_type', e.key, 'goodsInfoChanged')}>
+                      {goodsTypes.map(c => (<Menu.Item key={c.value}>{c.text}</Menu.Item>))}
+                    </Menu>}
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem label={this.msg('goodsPackage')}
+                    field={pckg ? pckg.package_name : shipmt.package} editable={editable}
+                    type="dropdown"
+                    overlay={<Menu onClick={e => this.handleSaveShipment('package', e.key, 'goodsInfoChanged')}>
+                      {packagings.map(c => (<Menu.Item key={c.package_code}>{c.package_name}</Menu.Item>))}
+                    </Menu>}
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem label={this.msg('insuranceValue')}
+                    field={shipmt.insure_value} addonAfter="元" editable={editable}
+                    onEdit={value => this.handleSaveShipment('insure_value', value, 'goodsInfoChanged')}
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem label={this.msg('totalCount')}
+                    field={shipmt.total_count} addonAfter="件" editable={editable}
+                    onEdit={value => this.handleSaveShipment('total_count', value, 'goodsInfoChanged')}
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem label={this.msg('totalWeight')}
+                    field={shipmt.total_weight} addonAfter={this.msg('kilogram')} editable={editable}
+                    onEdit={value => this.handleSaveShipment('total_weight', value, 'goodsInfoChanged')}
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem label={this.msg('totalVolume')}
+                    field={shipmt.total_volume} addonAfter={this.msg('cubicMeter')} editable={editable}
+                    onEdit={value => this.handleSaveShipment('total_volume', value, 'goodsInfoChanged')}
+                  />
+                </Col>
+              </Row>
+              <Table size="small" columns={this.columns} pagination={false}
+                dataSource={shipmt.goodslist}
+              />
+            </Panel>
+            <Panel header="客户信息" key="customer">
+              <Row>
+                <Col span="8">
+                  <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
+                    field={shipmt.ref_external_no} editable={editable}
+                    onEdit={value => this.handleSaveShipment('ref_external_no', value, 'correlInfoChanged')}
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem label={this.msg('refWaybillNo')} addonBefore={<Icon type="tag-o" />}
+                    field={shipmt.ref_waybill_no} editable={editable}
+                    onEdit={value => this.handleSaveShipment('ref_waybill_no', value, 'correlInfoChanged')}
+                  />
+                </Col>
+                <Col span="8">
+                  <InfoItem label={this.msg('refEntryNo')} addonBefore={<Icon type="tag-o" />}
+                    field={shipmt.ref_entry_no} editable={editable}
+                    onEdit={value => this.handleSaveShipment('ref_entry_no', value, 'correlInfoChanged')}
+                  />
+                </Col>
+                <Col span="24">
+                  <InfoItem label={this.msg('remark')}
+                    field={shipmt.remark} editable={editable}
+                    onEdit={value => this.handleSaveShipment('remark', value, 'remarkChanged')}
+                  />
+                </Col>
+              </Row>
+            </Panel>
+          </Collapse>
+          {/* <Card
+          bodyStyle={{ padding: 16 }}
+          title="运单" noHovering
+          extra={<span>
+            <Button icon="environment-o"
+              onClick={() => this.context.router.push(`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`)}
+            >地图跟踪</Button>
+          </span>}
+        >
           <Row>
-            <Col span="8">
-              <InfoItem label={this.msg('transitModeInfo')}
-                field={shipmt.transport_mode}
-                editable={editable}
-                type="dropdown"
-                overlay={<Menu onClick={e => this.handleSaveTransMode(e.key, 'transitModeChanged')}>
-                  {transitModes.map(tm => (<Menu.Item key={tm.id}>{tm.mode_name}</Menu.Item>))}
-                </Menu>}
+            <Col span="5">
+              <InfoItem label="执行者"
+                addonBefore={<Icon type="customer-service" />}
+                field={upstream.sp_disp_login_name}
               />
             </Col>
-            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
-            <Col span="8">
-              <InfoItem label={this.msg('vehicleType')}
-                field={vehicleType ? vehicleType.text : ''}
-                editable={editable}
-                type="dropdown"
-                overlay={<Menu onClick={e => this.handleSaveVehicleType(e.key, 'transitModeChanged')}>
-                  {vehicleTypes.map(tm => (<Menu.Item key={tm.value}>{tm.text}</Menu.Item>))}
-                </Menu>}
+            <Col span="5">
+              <InfoItem label="接单时间"
+                addonBefore={<Icon type="calendar" />}
+                field={upstream.acpt_time ? moment(upstream.acpt_time).format('YYYY.MM.DD') : ''}
               />
             </Col>
-            }
-            {shipmt.transport_mode_code === PRESET_TRANSMODES.ftl &&
-            <Col span="8">
-              <InfoItem label={this.msg('vehicleLength')}
-                field={vehicleLength ? vehicleLength.text : ''} addonAfter="米"
-                editable={editable}
-                type="dropdown"
-                overlay={<Menu onClick={e => this.handleSaveVehicleLength(e.key, 'transitModeChanged')}>
-                  {vehicleLengths.map(tm => (<Menu.Item key={tm.value}>{tm.text}</Menu.Item>))}
-                </Menu>}
+            <Col span="5">
+              <InfoItem label="运输时效"
+                addonBefore={<Icon type="clock-circle-o" />}
+                field={`${shipmt.transit_time}${this.msg('day')}`}
               />
             </Col>
-            }
-            {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
-            <Col span="8">
-              <InfoItem label={this.msg('container')}
-                field={shipmt.container}
-                editable={editable}
-                type="dropdown"
-                overlay={<Menu onClick={e => this.handleSaveShipment('container', e.key, 'transitModeChanged')}>
-                  {containerPackagings.map(tm => (<Menu.Item key={tm.key}>{tm.value}</Menu.Item>))}
-                </Menu>}
+            <Col span="5">
+              <InfoItem label="公里数"
+                addonBefore={<Icon type="flag" />}
+                field={charges.revenue.miles}
               />
             </Col>
-            }
-            {shipmt.transport_mode_code === PRESET_TRANSMODES.ctn &&
-            <Col span="8">
-              <InfoItem label={this.msg('containerNo')}
-                field={shipmt.container_no}
-                editable={editable}
-                onEdit={value => this.handleSaveShipment('container_no', value, 'transitModeChanged')}
+            <Col span="4">
+              <InfoItem label="基本运费（元）"
+                addonBefore={<Icon type="pay-circle-o" />}
+                field={charges.revenue.total_charge}
               />
             </Col>
-            }
-            {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
-            <Col span="8">
-              <InfoItem label={this.msg('courierCompany')}
-                field={shipmt.courier}
-                editable={editable}
-                type="dropdown"
-                overlay={<Menu onClick={e => this.handleSaveCourier(e.key, 'transitModeChanged')}>
-                  {COURIERS.map(c => (<Menu.Item key={c.code}>{c.name}</Menu.Item>))}
-                </Menu>}
-              />
-            </Col>
-            }
-            {shipmt.transport_mode_code === PRESET_TRANSMODES.exp &&
-            <Col span="8">
-              <InfoItem label={this.msg('courierNo')}
-                field={shipmt.courier_no}
-                editable={editable}
-                onEdit={value => this.handleSaveShipment('courier_no', value, 'transitModeChanged')}
-              />
-            </Col>
-            }
           </Row>
         </Card>
-        <Card title={this.msg('goodsInfo')} bodyStyle={{ padding: 16 }}>
-          <Row>
-            <Col span="8">
-              <InfoItem label={this.msg('goodsType')}
-                field={goodsType ? goodsType.text : shipmt.goods_type} editable={editable}
-                type="dropdown"
-                overlay={<Menu onClick={e => this.handleSaveShipment('goods_type', e.key, 'goodsInfoChanged')}>
-                  {goodsTypes.map(c => (<Menu.Item key={c.value}>{c.text}</Menu.Item>))}
-                </Menu>}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('goodsPackage')}
-                field={pckg ? pckg.package_name : shipmt.package} editable={editable}
-                type="dropdown"
-                overlay={<Menu onClick={e => this.handleSaveShipment('package', e.key, 'goodsInfoChanged')}>
-                  {packagings.map(c => (<Menu.Item key={c.package_code}>{c.package_name}</Menu.Item>))}
-                </Menu>}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('insuranceValue')}
-                field={shipmt.insure_value} addonAfter="元" editable={editable}
-                onEdit={value => this.handleSaveShipment('insure_value', value, 'goodsInfoChanged')}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('totalCount')}
-                field={shipmt.total_count} addonAfter="件" editable={editable}
-                onEdit={value => this.handleSaveShipment('total_count', value, 'goodsInfoChanged')}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('totalWeight')}
-                field={shipmt.total_weight} addonAfter={this.msg('kilogram')} editable={editable}
-                onEdit={value => this.handleSaveShipment('total_weight', value, 'goodsInfoChanged')}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('totalVolume')}
-                field={shipmt.total_volume} addonAfter={this.msg('cubicMeter')} editable={editable}
-                onEdit={value => this.handleSaveShipment('total_volume', value, 'goodsInfoChanged')}
-              />
-            </Col>
-          </Row>
-          <Table size="small" columns={this.columns} pagination={false}
-            dataSource={shipmt.goodslist}
-          />
-        </Card>
-        <Card title={this.msg('customerInfo')} bodyStyle={{ padding: 16 }}>
-          <Row>
-            <Col span="8">
-              <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_external_no} editable={editable}
-                onEdit={value => this.handleSaveShipment('ref_external_no', value, 'correlInfoChanged')}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('refWaybillNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_waybill_no} editable={editable}
-                onEdit={value => this.handleSaveShipment('ref_waybill_no', value, 'correlInfoChanged')}
-              />
-            </Col>
-            <Col span="8">
-              <InfoItem label={this.msg('refEntryNo')} addonBefore={<Icon type="tag-o" />}
-                field={shipmt.ref_entry_no} editable={editable}
-                onEdit={value => this.handleSaveShipment('ref_entry_no', value, 'correlInfoChanged')}
-              />
-            </Col>
-            <Col span="24">
-              <InfoItem label={this.msg('remark')}
-                field={shipmt.remark} editable={editable}
-                onEdit={value => this.handleSaveShipment('remark', value, 'remarkChanged')}
-              />
-            </Col>
-          </Row>
+        */}
         </Card>
         <PrivilegeCover module="transport" feature="shipment" action="edit">
           <ChangeShipment />

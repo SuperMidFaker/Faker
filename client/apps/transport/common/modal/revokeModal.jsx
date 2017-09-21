@@ -19,7 +19,7 @@ const formatMsg = format(messages);
   }),
   { closeReModal, revokeShipment, rejectShipment }
 )
-export default class RevokejectModal extends React.Component {
+export default class RevokeModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,

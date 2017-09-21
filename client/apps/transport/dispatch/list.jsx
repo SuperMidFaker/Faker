@@ -32,7 +32,7 @@ import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
-import RevokejectModal from '../shipment/dock/revoke-reject';
+import RevokeModal from '../common/modal/revokeModal';
 import SearchBar from 'client/components/SearchBar';
 import AdvancedSearchBar from '../common/advanced-search-bar';
 import MyShipmentsSelect from '../common/myShipmentsSelect';
@@ -1073,7 +1073,7 @@ export default class DispatchList extends React.Component {
         <DelegationDockPanel />
         <DispatchDock />
         <SegmentDock />
-        <RevokejectModal reload={this.handleTableLoad} />
+        <RevokeModal reload={this.handleTableLoad} />
         <ShipmentAdvanceModal />
         <CreateSpecialCharge />
       </QueueAnim>

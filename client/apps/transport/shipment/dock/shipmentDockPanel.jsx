@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { Col, Row, Tabs, Button, Modal, Tooltip, Menu, Icon, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import DetailPane from './tabpanes/detail-pane';
-import ActivityLoggerPane from './tabpanes/ActivityLoggerPane';
+import DetailPane from './tabpanes/orderPane';
 import ChargePane from './tabpanes/chargePane';
 import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
@@ -15,8 +14,7 @@ import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadSh
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
 import DockPanel from 'client/components/DockPanel';
-import ShareShipmentModal from './share-shipment';
-import ExceptionPane from './tabpanes/exceptionPane';
+import ShareShipmentModal from '../../common/modal/shareShipmentModal';
 import ChangeActDateModal from '../../tracking/land/modals/changeActDateModal';
 import RecalculateChargeModal from '../../tracking/land/modals/recalculateChargeModal';
 import VehicleModal from '../../tracking/land/modals/vehicle-updater';
@@ -101,7 +99,7 @@ function getTrackStatusMsg(status, eff) {
     revokeOrReject,
     toggleShareShipmentModal }
 )
-export default class PreviewPanel extends React.Component {
+export default class ShipmentDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -576,6 +574,52 @@ export default class PreviewPanel extends React.Component {
     return buttons.length > 0 ? (<span>{buttons}</span>) : null;
   }
   renderTabs(status, sourceType) {
+    // let dispatchEnabled = true;
+    let trackingDisabled = true;
+    let chargeDisabled = true;
+    let podDisabled = true;
+    switch (status) {
+      case SHIPMENT_TRACK_STATUS.unaccepted:
+        break;
+      case SHIPMENT_TRACK_STATUS.accepted:
+        // dispatchEnabled = false;
+        break;
+      case SHIPMENT_TRACK_STATUS.dispatched:
+        // dispatchEnabled = false;
+        trackingDisabled = false;
+        break;
+      case SHIPMENT_TRACK_STATUS.intransit:
+        // dispatchEnabled = false;
+        trackingDisabled = false;
+        chargeDisabled = false;
+        break;
+      case SHIPMENT_TRACK_STATUS.delivered:
+        // dispatchEnabled = false;
+        trackingDisabled = false;
+        chargeDisabled = false;
+        podDisabled = false;
+        break;
+      default:
+        break;
+    }
+    return (
+      <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
+        <TabPane tab={this.msg('shipmtOrder')} key="order">
+          <DetailPane />
+        </TabPane>
+        <TabPane tab={this.msg('shipmtTracking')} key="tracking" disabled={trackingDisabled}>
+          <TrackingPane sourceType={sourceType} />
+        </TabPane>
+        <TabPane tab={this.msg('shipmtCharge')} key="charge" disabled={chargeDisabled}>
+          <ChargePane />
+        </TabPane>
+        <TabPane tab={this.msg('shipmtPOD')} key="pod" disabled={podDisabled}>
+          <PodPane />
+        </TabPane>
+      </Tabs>
+    );
+
+    /*
     if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
@@ -622,28 +666,7 @@ export default class PreviewPanel extends React.Component {
         </Tabs>
       );
     } else if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-      return (
-        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane sourceType={sourceType} />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtDetail')} key="detail">
-            <DetailPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
-            <TrackingPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtCharge')} key="charge">
-            <ChargePane />
-          </TabPane>
-          <TabPane tab={this.msg('trackPod')} key="pod">
-            <PodPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtException')} key="exception">
-            <ExceptionPane />
-          </TabPane>
-        </Tabs>
-      );
+
     } else {
       return (
         <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
@@ -665,6 +688,7 @@ export default class PreviewPanel extends React.Component {
         </Tabs>
       );
     }
+    */
   }
   renderExtra() {
     const { shipmt } = this.props;

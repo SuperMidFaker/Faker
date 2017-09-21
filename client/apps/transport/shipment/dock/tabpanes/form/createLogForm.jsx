@@ -5,6 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Input, Row, Button } from 'antd';
 import { createLog } from 'common/reducers/shipment';
 import { SHIPMENT_LOG_CATEGORY } from 'common/constants';
+
 @injectIntl
 @connect(
   state => ({
@@ -18,7 +19,7 @@ import { SHIPMENT_LOG_CATEGORY } from 'common/constants';
   { createLog }
 )
 @Form.create()
-export default class CreateLogPane extends React.Component {
+export default class CreateLogForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,

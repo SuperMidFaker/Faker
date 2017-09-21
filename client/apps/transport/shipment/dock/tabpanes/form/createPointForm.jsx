@@ -21,7 +21,7 @@ import { reportLoc } from 'common/reducers/trackingLandStatus';
   { reportLoc }
 )
 @Form.create()
-export default class CreatePointPane extends React.Component {
+export default class CreatePointForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,

@@ -21,7 +21,7 @@ import SearchBar from 'client/components/SearchBar';
 import makeColumns from './columnDef';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import RevokejectModal from '../../shipment/dock/revoke-reject';
+import RevokeModal from '../../common/modal/revokeModal';
 import { sendMessage } from 'common/reducers/notification';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
@@ -311,7 +311,7 @@ export default class LandStatusList extends React.Component {
     });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'activity').then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'tracking').then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
@@ -469,7 +469,7 @@ export default class LandStatusList extends React.Component {
         <VehicleModal onOK={this.handleTableLoad} />
         <PickupDeliverModal onOK={this.handleTableLoad} />
         <LocationModal onOK={this.handleTableLoad} />
-        <RevokejectModal reload={this.handleTableLoad} />
+        <RevokeModal reload={this.handleTableLoad} />
       </div>
     );
   }

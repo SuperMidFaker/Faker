@@ -5,14 +5,14 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, Modal, message } from 'antd';
 import { loadForm, showChangeShipmentModal } from 'common/reducers/shipment';
 import { saveEdit } from 'common/reducers/transport-acceptance';
-import ConsignInfo from '../forms/consign-info';
-import GoodsInfo from '../forms/goods-info';
-import ModeInfo from '../forms/mode-info';
-import ClientInfo from '../forms/clientInfo';
-import CorrelInfo from '../forms/correlInfo';
-import DistanceInfo from '../forms/distanceInfo';
+import ConsignInfo from '../../shipment/forms/consign-info';
+import GoodsInfo from '../../shipment/forms/goods-info';
+import ModeInfo from '../../shipment/forms/mode-info';
+import ClientInfo from '../../shipment/forms/clientInfo';
+import CorrelInfo from '../../shipment/forms/correlInfo';
+import DistanceInfo from '../../shipment/forms/distanceInfo';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 const formatMsg = format(messages);
 
 @injectIntl
@@ -29,7 +29,7 @@ const formatMsg = format(messages);
   { loadForm, showChangeShipmentModal, saveEdit }
 )
 @Form.create()
-export default class ChangeShipment extends React.Component {
+export default class ChangeShipmentModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,

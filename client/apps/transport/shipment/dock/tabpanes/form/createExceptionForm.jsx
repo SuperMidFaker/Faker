@@ -5,7 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Cascader, Input, Row, Button } from 'antd';
 import { createException } from 'common/reducers/trackingLandException';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
-import '../../../index.less';
 
 @injectIntl
 @connect(
@@ -20,7 +19,7 @@ import '../../../index.less';
   { createException }
 )
 @Form.create()
-export default class CreateExceptionPane extends React.Component {
+export default class CreateExceptionForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,

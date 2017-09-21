@@ -348,7 +348,7 @@ export default class ChargePanel extends React.Component {
     const paramDataSource = [{ key: 0, distance: shipmt.distance, total_weight: shipmt.total_weight, total_volume: shipmt.total_volume }];
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }}>
+        <Card bodyStyle={{ padding: 16 }} noHovering>
           <Row>
             <Col span="8">
               <h5>收入</h5>
@@ -398,8 +398,8 @@ export default class ChargePanel extends React.Component {
             </Dropdown>
           </div>}
         </div>
-        <Card bodyStyle={{ padding: 0 }}>
-          <Collapse defaultActiveKey={['revenue', 'cost']}>
+        <Card bodyStyle={{ padding: 0 }} noHovering>
+          <Collapse bordered={false} defaultActiveKey={['revenue', 'cost']}>
             <Panel header={this.msg('revenueDetail')} key="revenue" className="table-panel">
               <Table size="small" columns={this.feeColumns} pagination={false} dataSource={revenueds} />
             </Panel>

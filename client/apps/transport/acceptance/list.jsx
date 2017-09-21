@@ -17,7 +17,7 @@ import { loadTable, revokeOrReject, delDraft, acceptDispShipment, returnShipment
 'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES, SHIPMENT_TRACK_STATUS, TRANS_MODE_INDICATOR } from 'common/constants';
-import RevokejectModal from '../shipment/dock/revoke-reject';
+import RevokeModal from '../common/modal/revokeModal';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
 import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
@@ -525,7 +525,7 @@ export default class AcceptList extends React.Component {
             columns={columns} loading={loading} dataSource={this.dataSource}
           />
         </Content>
-        <RevokejectModal reload={this.handleTableLoad} />
+        <RevokeModal reload={this.handleTableLoad} />
         <ShipmentDockPanel reload={this.handleTableLoad} />
         <OrderDockPanel />
         <DelegationDockPanel />

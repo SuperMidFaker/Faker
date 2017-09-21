@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tabs } from 'antd';
-import CreateExceptionPane from './CreateExceptionPane';
-import CreatePointPane from './CreatePointPane';
-import CreateLogPane from './CreateLogPane';
-import SubmitPodPane from './submitPodPane';
-import PickupDeliverPane from './pickupDeliverPane';
+import CreateExceptionPane from './form/createExceptionForm';
+import CreatePointPane from './form/createPointForm';
+import CreateLogPane from './form/createLogForm';
+import SubmitPodPane from './form/submitPodForm';
+import PickupDeliverPane from './form/pickupDeliverForm';
 import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -242,13 +242,11 @@ export default class ActivityOperation extends React.Component {
       }
     }
     return (
-      <div className="activity-wrapper">
-        <Card bodyStyle={{ padding: 8 }}>
-          <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
-            {tabs}
-          </Tabs>
-        </Card>
-      </div>
+      <Card bodyStyle={{ padding: 8 }} noHovering>
+        <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
+          {tabs}
+        </Tabs>
+      </Card>
     );
   }
 }

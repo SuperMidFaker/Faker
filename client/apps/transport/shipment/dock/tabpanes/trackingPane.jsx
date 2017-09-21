@@ -2,88 +2,164 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Timeline, Icon, Popconfirm } from 'antd';
 import moment from 'moment';
+import { Button, Card, Collapse, Checkbox, Dropdown, Icon, Menu, Timeline } from 'antd';
+import ActivityOperation from './activityOperation';
+import { SHIPMENT_LOG_CATEGORY } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import * as Location from 'client/util/location';
-import { removeShipmtPoint, loadShipmtPoints } from 'common/reducers/shipment';
-import './pane.less';
 const formatMsg = format(messages);
+const Panel = Collapse.Panel;
+const timeFormat = 'YYYY-MM-DD HH:mm';
 
+const MENUKEYS = ['all', 'operation', 'tracking', 'exception', 'fee', 'message'];
 @injectIntl
 @connect(
   state => ({
-    shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
-    dispatch: state.shipment.previewer.dispatch,
-  }),
-  { removeShipmtPoint, loadShipmtPoints }
+    logs: state.shipment.previewer.logs,
+  })
 )
 export default class TrackingPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    shipmtNo: PropTypes.string,
-    removeShipmtPoint: PropTypes.func.isRequired,
-    loadShipmtPoints: PropTypes.func.isRequired,
-    dispatch: PropTypes.object.isRequired,
+    logs: PropTypes.array.isRequired,
+    sourceType: PropTypes.string.isRequired,
   }
   state = {
-    points: [],
-  }
-  componentDidMount() {
-    this.handleLoad(this.props);
-  }
-  componentWillReceiveProps(nextProps) {
-    if (this.props.shipmtNo !== nextProps.shipmtNo && nextProps.shipmtNo !== '') {
-      this.handleLoad(nextProps);
-    }
-  }
-  handleLoad = (props) => {
-    this.props.loadShipmtPoints(props.shipmtNo).then((result) => {
-      this.setState({ points: result.data.points });
-    });
+    selectedKeys: [...MENUKEYS],
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  handleRemovePoint = (pointId, content) => {
-    this.props.removeShipmtPoint(pointId, content, this.props.dispatch.id);
-  }
-  render() {
-    const points = [];
-    this.state.points.forEach((item) => {
-      points.push({
-        ...item,
-        date: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
-        time: `${moment(item.location_time || item.created_date).format('HH:mm')}`,
-        title: `${Location.renderLocation(item) || ''} ${item.address || ''}`,
-        description: '',
-      });
-    });
-    const trackingSteps = points.map((s, i) => {
-      let color = 'green';
-      let dotType = (<Icon type="environment-o" style={{ fontSize: '14px', backgroundColor: '#fff' }} />);
-      if (i === 0) {
-        color = 'blue';
-        dotType = (<Icon type="environment" style={{ fontSize: '20px', backgroundColor: '#fff' }} />);
+  handleSelect = (item) => {
+    let { selectedKeys } = this.state;
+    const index = selectedKeys.indexOf(item);
+    if (index === -1) {
+      if (item === 'all') {
+        selectedKeys = [...MENUKEYS];
+      } else {
+        selectedKeys.push(item);
+        if (selectedKeys.length === MENUKEYS.length - 1) {
+          selectedKeys.push('all');
+        }
       }
+    } else if (item === 'all') {
+      selectedKeys = [];
+    } else {
+      if (selectedKeys.length === MENUKEYS.length) {
+        selectedKeys.splice(selectedKeys.indexOf('all'), 1);
+      }
+      selectedKeys.splice(selectedKeys.indexOf(item), 1);
+    }
+    this.setState({
+      selectedKeys,
+    });
+  }
+  renderTimeLine = (log, index) => {
+    const style = { backgroundColor: '#fff' };
+    if (log.category === SHIPMENT_LOG_CATEGORY.message) {
       return (
-        <Timeline.Item dot={dotType} key={s.id} color={color}>
-          <span style={{ marginLeft: -100 }}>{s.date}</span>
-          <span style={{ marginLeft: 34 }}>
-            {s.title}
-            <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(s.id, s.title)}>
-              <Icon type="close" className="timeline-remove" />
-            </Popconfirm>
-          </span>
-          <div>{s.time}</div>
+        <Timeline.Item key={index} dot={<Icon type="message" style={style} />}>
+          <p>{this.msg(log.type)} {log.content}</p>
+          <p>{`${log.tenant_name} ${log.login_name}`}</p>
+          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
         </Timeline.Item>
       );
-    });
-
+    } else if (log.category === SHIPMENT_LOG_CATEGORY.operation) {
+      return (
+        <Timeline.Item key={index} dot={<Icon type="retweet" style={style} />}>
+          <p>{this.msg(log.type)} {log.content}</p>
+          <p>{`${log.tenant_name} ${log.login_name}`}</p>
+          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
+        </Timeline.Item>
+      );
+    } else if (log.category === SHIPMENT_LOG_CATEGORY.tracking) {
+      return (
+        <Timeline.Item key={index} dot={<Icon type="environment-o" style={style} />}>
+          <p>{this.msg(log.type)} {log.content}</p>
+          <p>{`${log.tenant_name} ${log.login_name}`}</p>
+          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
+        </Timeline.Item>
+      );
+    } else if (log.category === SHIPMENT_LOG_CATEGORY.exception) {
+      return (
+        <Timeline.Item key={index} color="red" dot={<Icon type="exclamation-circle-o" style={style} />}>
+          <p>{this.msg(log.type)} {log.content}</p>
+          <p>{`${log.tenant_name} ${log.login_name}`}</p>
+          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
+        </Timeline.Item>
+      );
+    } else if (log.category === SHIPMENT_LOG_CATEGORY.fee) {
+      return (
+        <Timeline.Item key={index} dot={<Icon type="pay-circle-o" style={style} />}>
+          <p>{this.msg(log.type)} {log.content}</p>
+          <p>{`${log.tenant_name} ${log.login_name}`}</p>
+          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
+        </Timeline.Item>
+      );
+    } else {
+      return (
+        <Timeline.Item key={index} color="blue">
+          <p>{this.msg(log.type)} {log.content}</p>
+          <p>{`${log.tenant_name} ${log.login_name}`}</p>
+          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
+        </Timeline.Item>
+      );
+    }
+  }
+  render() {
+    const { logs, sourceType } = this.props;
+    const { selectedKeys } = this.state;
+    let filteredLogs = logs;
+    filteredLogs = logs.filter(log => selectedKeys.indexOf(log.category) >= 0);
+    const menu = (
+      <Menu>
+        <Menu.Item key="all">
+          <Checkbox checked={selectedKeys.indexOf('all') >= 0} onChange={() => this.handleSelect('all')}>选择全部</Checkbox>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="operation">
+          <Checkbox checked={selectedKeys.indexOf('operation') >= 0} onChange={() => this.handleSelect('operation')}>操作记录</Checkbox>
+        </Menu.Item>
+        <Menu.Item key="tracking">
+          <Checkbox checked={selectedKeys.indexOf('tracking') >= 0} onChange={() => this.handleSelect('tracking')}>追踪事件</Checkbox>
+        </Menu.Item>
+        <Menu.Item key="exception">
+          <Checkbox checked={selectedKeys.indexOf('exception') >= 0} onChange={() => this.handleSelect('exception')}>异常事件</Checkbox>
+        </Menu.Item>
+        <Menu.Item key="fee">
+          <Checkbox checked={selectedKeys.indexOf('fee') >= 0} onChange={() => this.handleSelect('fee')}>费用事件</Checkbox>
+        </Menu.Item>
+        <Menu.Item key="message">
+          <Checkbox checked={selectedKeys.indexOf('message') >= 0} onChange={() => this.handleSelect('message')}>消息</Checkbox>
+        </Menu.Item>
+      </Menu>
+    );
+    const timelineHeader = (
+      <div>
+        <span>操作记录</span>
+        <div className="toolbar-right">
+          <Dropdown overlay={menu} onClick={e => e.stopPropagation()}>
+            <Button type="ghost">
+              <Icon type="filter" /> ({selectedKeys.indexOf('all') >= 0 ? MENUKEYS.length - 1 : selectedKeys.length }/{MENUKEYS.length - 1})
+            </Button>
+          </Dropdown>
+        </div>
+      </div>
+    );
     return (
-      <Card>
-        {trackingSteps.length > 0 ?
-          (<Timeline style={{ marginLeft: 100 }}>{trackingSteps}</Timeline>) : '暂无追踪信息'}
-      </Card>
+      <div className="pane-content tab-pane">
+        <ActivityOperation sourceType={sourceType} />
+        <Card bodyStyle={{ padding: 0 }} noHovering>
+          <Collapse bordered={false} defaultActiveKey={['timeline']}>
+            <Panel header={timelineHeader} key="timeline">
+              <Timeline>
+                {
+                  filteredLogs.map(this.renderTimeLine)
+                }
+              </Timeline>
+            </Panel>
+          </Collapse>
+        </Card>
+      </div>
     );
   }
 }

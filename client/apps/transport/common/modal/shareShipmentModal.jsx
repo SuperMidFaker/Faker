@@ -5,7 +5,7 @@ import { Button, Modal, Input, message, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { sendTrackingDetailSMSMessage, toggleShareShipmentModal } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import qrcode from 'client/common/qrcode';
 import { validatePhone } from 'common/validater';
 

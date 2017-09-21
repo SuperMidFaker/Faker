@@ -5,7 +5,7 @@ import { Form, Input, Radio, Upload, Button, message, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { saveSubmitPod, loadPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
@@ -23,7 +23,7 @@ const RadioGroup = Radio.Group;
     podId: state.shipment.previewer.dispatch.pod_id || -1,
   }),
   { saveSubmitPod, loadPod })
-export default class SubmitPodPane extends React.Component {
+export default class SubmitPodForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     parentDispId: PropTypes.number,

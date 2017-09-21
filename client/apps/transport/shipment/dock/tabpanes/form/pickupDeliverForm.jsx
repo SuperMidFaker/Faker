@@ -7,7 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { savePickOrDeliverDate, reportLoc } from 'common/reducers/trackingLandStatus';
 import { TRACKING_POINT_FROM_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../../../message.i18n';
 const formatMsg = format(messages);
 
 @injectIntl
@@ -24,7 +24,7 @@ const formatMsg = format(messages);
   { savePickOrDeliverDate, reportLoc }
 )
 @Form.create()
-export default class PickupDeliverPane extends React.Component {
+export default class PickupDeliverForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,

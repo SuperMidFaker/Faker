@@ -67,10 +67,10 @@ export default class PodPanel extends React.Component {
     }
     return (
       <div className="pane-content tab-pane">
-        <Card style={{ width: '100%' }}>
+        <Card noHovering>
           <div><Tag color={tagColor}>{signStatusDescription}</Tag> <span>{pod.sign_remark}</span></div>
         </Card>
-        <Card title="回单照片" style={{ width: '100%' }}>
+        <Card title="回单照片" noHovering>
           {this.renderPhotos()}
         </Card>
       </div>

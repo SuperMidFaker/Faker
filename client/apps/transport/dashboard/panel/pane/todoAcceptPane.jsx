@@ -9,7 +9,7 @@ import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
 import { loadDispatchTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
-import RevokejectModal from '../../../shipment/dock/revoke-reject';
+import RevokeModal from '../../../common/modal/revokeModal';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -160,7 +160,7 @@ export default class TodoAcceptPane extends Component {
         <DataTable toolbarActions={toolbarActions} size="middle" dataSource={dataSource} columns={columns} showHeader={false}
           locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.acceptanceList.loading}
         />
-        <RevokejectModal reload={this.handleTableReload} />
+        <RevokeModal reload={this.handleTableReload} />
       </div>
     );
   }

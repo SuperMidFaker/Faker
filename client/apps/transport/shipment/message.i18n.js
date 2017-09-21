@@ -453,25 +453,25 @@ export default defineMessages({
     id: 'transport.shipment.track.pay',
     defaultMessage: '成本',
   },
-  shipmtActivity: {
-    id: 'transport.shipment.tab.activity',
-    defaultMessage: '操作',
+  shipmtOrder: {
+    id: 'transport.shipment.tab.order',
+    defaultMessage: '订单详情',
   },
-  shipmtDetail: {
-    id: 'transport.shipment.tab.detail',
-    defaultMessage: '运输订单',
+  shipmtDispatch: {
+    id: 'transport.shipment.tab.dispatch',
+    defaultMessage: '调度信息',
   },
-  shipmtEvents: {
-    id: 'transport.shipment.tab.events',
-    defaultMessage: '事件',
+  shipmtTracking: {
+    id: 'transport.shipment.tab.tracking',
+    defaultMessage: '追踪事件',
   },
-  shipmtLogs: {
-    id: 'transport.shipment.tab.logs',
-    defaultMessage: '日志',
+  shipmtCharge: {
+    id: 'transport.shipment.tab.charge',
+    defaultMessage: '费用明细',
   },
-  shipmtException: {
-    id: 'transport.shipment.tab.exception',
-    defaultMessage: '异常',
+  shipmtPOD: {
+    id: 'transport.shipment.tab.pod',
+    defaultMessage: '回单详情',
   },
   exceptionResolved: {
     id: 'transport.tracking.shipmt.exception.exceptionResolved',
@@ -496,14 +496,6 @@ export default defineMessages({
   operation: {
     id: 'transport.tracking.shipmt.exception.operation',
     defaultMessage: '操作',
-  },
-  shipmtTracking: {
-    id: 'transport.shipment.tab.tracking',
-    defaultMessage: '追踪',
-  },
-  shipmtCharge: {
-    id: 'transport.shipment.tab.charge',
-    defaultMessage: '费用',
   },
   shipmtETD: {
     id: 'transport.shipment.pane.detail.etd',
