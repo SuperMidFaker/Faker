@@ -5,10 +5,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Dropdown, Icon, Menu, Table, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
+import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
+import { createFilename } from 'client/util/dataTransform';
 import { WHSE_OPERATION_MODES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -21,7 +23,7 @@ const confirm = Modal.confirm;
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse }
+  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -45,6 +47,16 @@ export default class OwnersPane extends Component {
       this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
+  handleExportExcel = (ownerPartnerId) => {
+    const { tenantId } = this.props;
+    const listFilter = { whse_code: this.props.whseCode, owner: ownerPartnerId };
+    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?tenantId=${tenantId}&filters=${
+      JSON.stringify(listFilter)}`);
+  };
+  handleClearTransition = (ownerPartnerId) => {
+    const { tenantId, whseCode } = this.props;
+    this.props.clearTransition(whseCode, ownerPartnerId, tenantId);
+  };
   columns = [{
     title: '代码',
     dataIndex: 'owner_code',
@@ -88,7 +100,13 @@ export default class OwnersPane extends Component {
     dataIndex: 'backup',
     width: 80,
     className: 'cell-align-center',
-    render: () => <Button icon="download" />,
+    render: (o, record) => <Button icon="download" onClick={() => this.handleExportExcel(record.owner_partner_id)} />,
+  }, {
+    title: '清除库存',
+    dataIndex: 'clear',
+    width: 80,
+    className: 'cell-align-center',
+    render: (o, record) => <Button icon="delete" onClick={() => this.handleClearTransition(record.owner_partner_id)} />,
   }, {
     title: '库存导入',
     dataIndex: 'restore',
