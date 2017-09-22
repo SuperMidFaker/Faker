@@ -154,16 +154,19 @@ export default class ShippingOrderList extends React.Component {
     dataIndex: 'expect_shipping_date',
     width: 120,
     render: o => o && moment(o).format('YYYY.MM.DD'),
+    sorter: (a, b) => new Date(a.expect_shipping_date).getTime() - new Date(b.expect_shipping_date).getTime(),
   }, {
     title: '实际出库时间',
     dataIndex: 'shipped_date',
     width: 120,
     render: o => o && moment(o).format('MM.DD HH:mm'),
+    sorter: (a, b) => new Date(a.shipped_date).getTime() - new Date(b.shipped_date).getTime(),
   }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_date',
     render: o => moment(o).format('MM.DD HH:mm'),
+    sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
     title: '创建人员',
     dataIndex: 'created_by',
