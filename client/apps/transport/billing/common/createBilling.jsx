@@ -10,10 +10,10 @@ import { loadFeesByChooseModal, createBilling, updateBillingFees } from 'common/
 import AddressColumn from '../../common/addressColumn';
 import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
-import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
+import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail } from 'common/reducers/shipment';
-import ActDate from '../../common/actDate';
+import ActualDate from '../../common/actualDate';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 
@@ -227,16 +227,16 @@ export default class CreateBilling extends React.Component {
     }, {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
-      render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
+      render: (o, record) => <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际送货时间',
       dataIndex: 'deliver_act_date',
-      render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
+      render: (o, record) => <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',
       render(o, record) {
-        return (<ExceptionListPopover
+        return (<ExceptionsPopover
           shipmtNo={record.shipmt_no}
           dispId={record.disp_id}
           excpCount={o}

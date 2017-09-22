@@ -16,8 +16,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import '../index.less';
 import ShipmentDockPanel from '../shipment/dock/shipmentDockPanel';
-import ActDate from '../common/actDate';
-import ExceptionListPopover from '../tracking/land/modals/exception-list-popover';
+import ActualDate from '../common/actualDate';
+import ExceptionsPopover from '../common/popover/exceptionsPopover';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import { createFilename } from 'client/util/dataTransform';
@@ -108,7 +108,7 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActPickupDate'),
       dataIndex: 'pickup_act_date',
       width: 100,
-      render: (o, record) => o ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '',
+      render: (o, record) => o ? (<ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />) : '',
     }, {
       title: this.msg('arrivalPlace'),
       width: 250,
@@ -127,7 +127,7 @@ export default class Dashboard extends React.Component {
       title: this.msg('shipmtActDeliveryDate'),
       dataIndex: 'deliver_act_date',
       width: 100,
-      render: (o, record) => o ? (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '',
+      render: (o, record) => o ? (<ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />) : '',
     }, {
       title: this.msg('overtime'),
       key: 'late',
@@ -150,7 +150,7 @@ export default class Dashboard extends React.Component {
       dataIndex: 'excp_count',
       width: 50,
       render(o, record) {
-        return (<ExceptionListPopover
+        return (<ExceptionsPopover
           shipmtNo={record.shipmt_no}
           dispId={record.disp_id}
           excpCount={o}

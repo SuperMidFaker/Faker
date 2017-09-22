@@ -1,4 +1,3 @@
-export Menu from './menuView';
 export LandWrapper from './land/wrapper';
 export LandStatusList from './land/statusList';
 export LandPodList from './land/podList';

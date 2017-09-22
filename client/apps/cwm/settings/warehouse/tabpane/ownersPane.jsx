@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag, Modal } from 'antd';
+import { Button, Table, Tag, Modal, Icon } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
@@ -12,6 +12,7 @@ import ImportDataPanel from 'client/components/ImportDataPanel';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
 import { createFilename } from 'client/util/dataTransform';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { WHSE_OPERATION_MODES } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -21,10 +22,10 @@ const confirm = Modal.confirm;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    tenantName: state.account.tenantName,
-    customsCode: state.account.customsCode,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    tenantName: state.account.tenantName,
+    customsCode: state.account.customsCode,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -45,7 +46,7 @@ export default class OwnersPane extends Component {
   state = {
     selectedRowKeys: [],
     importPanelVisible: false,
-    seletedOwner: {},
+    selectedOwner: {},
   }
   componentWillMount() {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
@@ -62,10 +63,11 @@ export default class OwnersPane extends Component {
   }, {
     title: '货主名称',
     dataIndex: 'owner_name',
-    width: 250,
+    width: 200,
   }, {
     title: '状态',
     dataIndex: 'active',
+    width: 80,
     render: (o) => {
       if (o) {
         return <Tag color="green">正常</Tag>;
@@ -76,6 +78,7 @@ export default class OwnersPane extends Component {
   }, {
     title: '启用分拨',
     dataIndex: 'portion_enabled',
+    width: 80,
     render: (o) => {
       if (o) {
         return <Tag color="blue">已启用</Tag>;
@@ -128,7 +131,11 @@ export default class OwnersPane extends Component {
     dataIndex: 'restore',
     width: 80,
     className: 'cell-align-center',
-    render: (o, record) => <Button icon="cloud-upload-o" onClick={() => this.handleRestoreData(record)} />,
+    render: () => (<Button style={{ padding: '0 8px' }}>
+      <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/stock/restore`}>
+        <Icon type="cloud-upload-o" />
+      </ExcelUploader>
+    </Button>),
   }, {
     title: '操作',
     width: 150,
@@ -169,13 +176,12 @@ export default class OwnersPane extends Component {
       importPanelVisible: true });
   }
   handleBackupData = (record) => {
-    const { tenantId } = this.props;
-    const listFilter = { whse_code: this.props.whseCode, owner: record.owner_partner_id };
-    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?tenantId=${tenantId}&filters=${
-      JSON.stringify(listFilter)}`);
+    const { tenantId, whseCode } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/stock/backup/${createFilename('backup')}.xlsx?tenantId=${tenantId}&whseCode=${whseCode}&ownerPartnerId=${record.owner_partner_id}`);
   };
   handleEmptyData = (record) => {
     const { tenantId, whseCode } = this.props;
+    const self = this;
     confirm({
       title: '确定要清空数据吗?',
       content: `一旦你确定清空，所有与「${record.owner_name}」有关的入库、库存、出库数据将会被永久删除。这是一个不可恢复的操作，请谨慎对待！`,
@@ -183,7 +189,7 @@ export default class OwnersPane extends Component {
       okType: 'danger',
       cancelText: '否',
       onOk() {
-        this.props.clearTransition(whseCode, record.owner_partner_id, tenantId);
+        self.props.clearTransition(whseCode, record.owner_partner_id, tenantId);
       },
     });
   };

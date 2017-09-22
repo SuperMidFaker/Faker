@@ -13,10 +13,10 @@ import { loadFees, changeFeesFilter, loadPartners, showAdvanceModal, showSpecial
 import TrimSpan from 'client/components/trimSpan';
 import AddressColumn from '../../common/addressColumn';
 import { createFilename } from 'client/util/dataTransform';
-import ExceptionListPopover from '../../tracking/land/modals/exception-list-popover';
+import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import ShipmentDockPanel from '../../shipment/dock/shipmentDockPanel';
 import { loadShipmtDetail, loadFormRequire } from 'common/reducers/shipment';
-import ActDate from '../../common/actDate';
+import ActualDate from '../../common/actualDate';
 import SearchBar from 'client/components/SearchBar';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import SpecialChargePopover from './specialChargePopover';
@@ -428,18 +428,18 @@ export default class FeesList extends React.Component {
       title: '实际提货时间',
       dataIndex: 'pickup_act_date',
       width: 100,
-      render: (o, record) => <ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
+      render: (o, record) => <ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} />,
     }, {
       title: '实际送货时间',
       dataIndex: 'deliver_act_date',
       width: 100,
-      render: (o, record) => <ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
+      render: (o, record) => <ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} />,
     }, {
       title: '异常',
       dataIndex: 'excp_count',
       width: 60,
       render(o, record) {
-        return (<ExceptionListPopover
+        return (<ExceptionsPopover
           shipmtNo={record.shipmt_no}
           dispId={record.disp_id}
           excpCount={o}

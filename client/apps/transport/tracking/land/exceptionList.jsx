@@ -11,7 +11,7 @@ import { loadExcpShipments, changeExcpFilter } from 'common/reducers/trackingLan
 import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import AddressColumn from '../../common/addressColumn';
-import ExceptionListPopover from './modals/exception-list-popover';
+import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
@@ -180,11 +180,10 @@ export default class LandStatusList extends React.Component {
     width: 130,
     render: (o, record) => <ShipmtnoColumn shipmtNo={record.shipmt_no} shipment={record} onClick={this.handleShipmtPreview} />,
   }, {
-    title: this.msg('exceptionCount'),
     fixed: 'left',
     dataIndex: 'excp_count',
-    width: 80,
-    render: (o, record) => (<ExceptionListPopover
+    width: 60,
+    render: (o, record) => (<ExceptionsPopover
       shipmtNo={record.shipmt_no}
       dispId={record.disp_id}
       excpCount={o}
@@ -375,7 +374,7 @@ export default class LandStatusList extends React.Component {
   }, {
     title: this.msg('spDispLoginName'),
     dataIndex: 'sp_disp_login_name',
-    width: 60,
+    width: 80,
   }]
   handleTableLoad = (filters, current/* , sortField, sortOrder */) => {
     this.props.loadExcpShipments(null, {

@@ -10,8 +10,8 @@ import RowUpdater from 'client/components/rowUpdater';
 import AddressColumn from '../../common/addressColumn';
 import ShipmtnoColumn from '../../common/shipmtnoColumn';
 import ShipmtLocationColumn from '../../common/shipmtLocationColumn';
-import PickupDeliverUpdaterPopover from './modals/pickup-deliver-updater-popover';
-import ExceptionListPopover from './modals/exception-list-popover';
+import PickupDeliverPopover from '../../common/popover/pickupDeliverPopover';
+import ExceptionsPopover from '../../common/popover/exceptionsPopover';
 
 function renderActDate(recordActDate, recordEstDate) {
   if (recordActDate) {
@@ -84,7 +84,7 @@ export default function makeColumns(type, handlers, msg) {
         if (record.sp_tenant_id === -1) {
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <PickupDeliverUpdaterPopover
+              <PickupDeliverPopover
                 type="pickup"
                 shipmtNo={record.shipmt_no}
                 parentNo={record.parent_no}
@@ -96,7 +96,7 @@ export default function makeColumns(type, handlers, msg) {
                 status={record.status}
               >
                 {showData} <Icon type="edit" />
-              </PickupDeliverUpdaterPopover>
+              </PickupDeliverPopover>
             </PrivilegeCover>
           );
         } else if (record.sp_tenant_id === 0) {
@@ -105,7 +105,7 @@ export default function makeColumns(type, handlers, msg) {
               // 线下司机
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <PickupDeliverUpdaterPopover
+                <PickupDeliverPopover
                   type="pickup"
                   shipmtNo={record.shipmt_no}
                   parentNo={record.parent_no}
@@ -117,7 +117,7 @@ export default function makeColumns(type, handlers, msg) {
                   status={record.status}
                 >
                   {showData} <Icon type="edit" />
-                </PickupDeliverUpdaterPopover>
+                </PickupDeliverPopover>
               </PrivilegeCover>
             );
           }
@@ -163,7 +163,7 @@ export default function makeColumns(type, handlers, msg) {
         if (record.sp_tenant_id === -1) {
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <PickupDeliverUpdaterPopover
+              <PickupDeliverPopover
                 type="deliver"
                 shipmtNo={record.shipmt_no}
                 parentNo={record.parent_no}
@@ -175,14 +175,14 @@ export default function makeColumns(type, handlers, msg) {
                 status={record.status}
               >
                 {showData} <Icon type="edit" />
-              </PickupDeliverUpdaterPopover>
+              </PickupDeliverPopover>
             </PrivilegeCover>
           );
         } else if (record.sp_tenant_id === 0) {
           if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
-                <PickupDeliverUpdaterPopover
+                <PickupDeliverPopover
                   type="deliver"
                   shipmtNo={record.shipmt_no}
                   parentNo={record.parent_no}
@@ -194,7 +194,7 @@ export default function makeColumns(type, handlers, msg) {
                   status={record.status}
                 >
                   {showData} <Icon type="edit" />
-                </PickupDeliverUpdaterPopover>
+                </PickupDeliverPopover>
               </PrivilegeCover>
             );
           }
@@ -248,7 +248,7 @@ export default function makeColumns(type, handlers, msg) {
     dataIndex: 'excp_count',
     width: 50,
     render(o, record) {
-      return (<ExceptionListPopover
+      return (<ExceptionsPopover
         shipmtNo={record.shipmt_no}
         dispId={record.disp_id}
         excpCount={o}

@@ -22,7 +22,7 @@ const FormItem = Form.Item;
   { savePickOrDeliverDate, reportLoc, cancelPickup, cancelDeliver }
 )
 @Form.create()
-export default class PickupDeliverUpdaterPopover extends React.Component {
+export default class PickupDeliverPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     dispId: PropTypes.number.isRequired,
@@ -167,7 +167,7 @@ export default class PickupDeliverUpdaterPopover extends React.Component {
         </FormItem>
         <FormItem>
           <Button type="primary" htmlType="submit" onClick={this.handleOk} disabled={okButtonDisabled}>确定</Button>
-          <Button onClick={this.handleCancel} style={{ marginLeft: 8 }} disabled={cancelButtonDisabled}>取消{typeText}</Button>
+          <Button type="danger" onClick={this.handleCancel} style={{ marginLeft: 8 }} disabled={cancelButtonDisabled}>取消{typeText}</Button>
         </FormItem>
       </Form>
     );
