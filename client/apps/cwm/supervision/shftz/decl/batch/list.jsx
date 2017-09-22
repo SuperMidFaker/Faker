@@ -58,7 +58,7 @@ export default class BatchDeclList extends React.Component {
   componentDidMount() {
     const listFilter = this.props.listFilter;
     let status = listFilter.status;
-    if (['manifesting', 'pending', 'sent', 'applied', 'cleared'].filter(stkey => stkey === status).length === 0) {
+    if (['manifesting', 'pending', 'sent', 'applied', 'cleared', 'all'].filter(stkey => stkey === status).length === 0) {
       status = 'manifesting';
     }
     let ownerView = listFilter.ownerView;

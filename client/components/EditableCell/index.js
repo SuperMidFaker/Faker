@@ -140,7 +140,8 @@ export default class EditableCell extends React.Component {
     const { value } = this.state;
     if (type === 'select' && options) {
       const option = options.filter(opt => opt.key === value)[0];
-      return (option ? <span>{addonBefore}{option.text}{addonAfter}</span> : <span className="editable-cell-placeholder">{placeholder}</span>);
+      return (option ? <span>{addonBefore}{option.text}{addonAfter}</span> :
+      <span style={{ display: 'inline-block' }} className="editable-cell-placeholder">{placeholder}</span>);
     } else if (type === 'regionCascade') {
       return value ?
         <span>{addonBefore}{Location.renderLoc({

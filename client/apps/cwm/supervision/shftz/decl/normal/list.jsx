@@ -59,7 +59,7 @@ export default class NormalDeclList extends React.Component {
   componentDidMount() {
     const listFilter = this.props.listFilter;
     let status = listFilter.status;
-    if (['manifesting', 'sent', 'cleared'].filter(stkey => stkey === status).length === 0) {
+    if (['manifesting', 'sent', 'cleared', 'all'].filter(stkey => stkey === status).length === 0) {
       status = 'manifesting';
     }
     let ownerView = listFilter.ownerView;
