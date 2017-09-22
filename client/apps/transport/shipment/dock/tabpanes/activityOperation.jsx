@@ -5,7 +5,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tabs } from 'antd';
 import CreateExceptionPane from './form/createExceptionForm';
 import CreatePointPane from './form/createPointForm';
-import CreateLogPane from './form/createLogForm';
 import SubmitPodPane from './form/submitPodForm';
 import PickupDeliverPane from './form/pickupDeliverForm';
 import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
@@ -112,7 +111,6 @@ export default class ActivityOperation extends React.Component {
     const { disp, shipmt, sourceType, tenantId } = this.props;
     const { activeKey } = this.state;
     let tabs = [
-      <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
     ];
     if (sourceType === 'sr') {
       if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
@@ -127,7 +125,6 @@ export default class ActivityOperation extends React.Component {
             <TabPane tab={<span><Icon type="environment-o" />提货</span>} key="pickup" >
               <PickupDeliverPane type="pickup" estDate={shipmt.pickup_est_date} location={location} />
             </TabPane>,
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         } else if (disp.sp_tenant_id === 0) {
@@ -138,20 +135,17 @@ export default class ActivityOperation extends React.Component {
               <TabPane tab={<span><Icon type="environment-o" />提货</span>} key="pickup" >
                 <PickupDeliverPane type="pickup" estDate={shipmt.pickup_est_date} location={location} />
               </TabPane>,
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           } else {
             // 司机更新
             tabs = [
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           }
         } else {
           // 催促提货
           tabs = [
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         }
@@ -169,7 +163,6 @@ export default class ActivityOperation extends React.Component {
               <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
             </TabPane>,
             <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         } else if (disp.sp_tenant_id === 0) {
@@ -180,20 +173,17 @@ export default class ActivityOperation extends React.Component {
                 <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
               </TabPane>,
               <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           } else {
             // 司机更新
             tabs = [
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           }
         } else {
           // 承运商更新
           tabs = [
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         }
@@ -202,40 +192,34 @@ export default class ActivityOperation extends React.Component {
           if (disp.sp_tenant_id === -1 || tenantId === shipmt.tenant_id) {
             tabs = [
               <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           } else if (disp.sp_tenant_id === 0) {
             if (disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
               tabs = [
                 <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
-                <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
                 <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
               ];
             } else {
               // 司机上传 催促回单
               tabs = [
-                <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
                 <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
               ];
             }
           } else {
             // 承运商上传 催促回单
             tabs = [
-              <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           }
         } else if (disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
           tabs = [
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             <TabPane tab={<span><Icon type="tags" />回单</span>} key="pod"><SubmitPodPane /></TabPane>,
           ];
         } else {
           tabs = [
-            <TabPane tab={<span><Icon type="message" />备注</span>} key="log" ><CreateLogPane /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         }

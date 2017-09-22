@@ -12,7 +12,7 @@ const formatMsg = format(messages);
 const Panel = Collapse.Panel;
 const timeFormat = 'YYYY-MM-DD HH:mm';
 
-const MENUKEYS = ['all', 'operation', 'tracking', 'exception', 'fee', 'message'];
+const MENUKEYS = ['all', 'operation', 'tracking', 'exception'];
 @injectIntl
 @connect(
   state => ({
@@ -124,12 +124,6 @@ export default class TrackingPane extends React.Component {
         </Menu.Item>
         <Menu.Item key="exception">
           <Checkbox checked={selectedKeys.indexOf('exception') >= 0} onChange={() => this.handleSelect('exception')}>异常事件</Checkbox>
-        </Menu.Item>
-        <Menu.Item key="fee">
-          <Checkbox checked={selectedKeys.indexOf('fee') >= 0} onChange={() => this.handleSelect('fee')}>费用事件</Checkbox>
-        </Menu.Item>
-        <Menu.Item key="message">
-          <Checkbox checked={selectedKeys.indexOf('message') >= 0} onChange={() => this.handleSelect('message')}>消息</Checkbox>
         </Menu.Item>
       </Menu>
     );

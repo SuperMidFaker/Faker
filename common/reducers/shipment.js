@@ -32,7 +32,6 @@ const actionTypes = createActionTypes('@@welogix/transport/shipment/', [
   'COMPUTE_COSTCHARGE', 'COMPUTE_COSTCHARGE_SUCCEED', 'COMPUTE_COSTCHARGE_FAIL',
   'SHOW_CHANGE_SHIPMENT_MODAL',
   'CHANGE_PREVIEWER_TAB',
-  'CREATE_LOG', 'CREATE_LOG_SUCCEED', 'CREATE_LOG_FAIL',
   'UPDATE_FORM_REQUIRE_PARAMS',
   'LOAD_TARIFF_BY_TRANSPORTINFO', 'LOAD_TARIFF_BY_TRANSPORTINFO_SUCCEED', 'LOAD_TARIFF_BY_TRANSPORTINFO_FAIL',
   'LOAD_PARTNERS', 'LOAD_PARTNERS_SUCCEED', 'LOAD_PARTNERS_FAIL',
@@ -272,9 +271,6 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.CHANGE_PREVIEWER_TAB: {
       return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
-    }
-    case actionTypes.CREATE_LOG_SUCCEED: {
-      return { ...state, previewer: { ...state.previewer, loaded: false } };
     }
     case REPORT_LOC_SUCCEED: {
       return { ...state, previewer: { ...state.previewer, loaded: false } };
@@ -748,21 +744,6 @@ export function changePreviewerTab(tabKey) {
   return {
     type: actionTypes.CHANGE_PREVIEWER_TAB,
     data: { tabKey },
-  };
-}
-
-export function createLog(data) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.CREATE_LOG,
-        actionTypes.CREATE_LOG_SUCCEED,
-        actionTypes.CREATE_LOG_FAIL,
-      ],
-      endpoint: 'v1/transport/shipment/log',
-      method: 'post',
-      data,
-    },
   };
 }
 
