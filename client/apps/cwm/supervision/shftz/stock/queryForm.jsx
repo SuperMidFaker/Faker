@@ -73,6 +73,11 @@ export default class QueryForm extends React.Component {
                 duration: 15,
               });
             }
+          } else {
+            notification.success({
+              message: '添加任务成功',
+              description: '请至侧边栏查看任务对比进度',
+            });
           }
         });
       }

@@ -69,43 +69,6 @@ export default class BatchDeclList extends React.Component {
     this.handleBatchApplyLoad(1, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
-  /* manifColumns = [{
-    title: '集中报关编号',
-    dataIndex: 'batch_decl_no',
-    width: 150,
-    fixed: 'left',
-  }, {
-    title: '货主',
-    width: 180,
-    dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '收货单位',
-    dataIndex: 'receiver_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '操作',
-    dataIndex: 'OPS_COL',
-    width: 100,
-    fixed: 'right',
-    render: (o, record) => (
-      <span>
-        <RowUpdater onHit={this.handleDelgManifest} label="报关清单" row={record} />
-        <span className="ant-divider" />
-        <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
-          <a>取消委托</a>
-        </Popconfirm>
-      </span>
-    ),
-  }]
-  */
-  /* {
-    title: '集中报关编号',
-    dataIndex: 'batch_decl_no',
-    width: 150,
-    fixed: 'left',
-  }
-  */
   columns = [{
     title: '集中报关编号',
     dataIndex: 'batch_decl_no',
@@ -129,13 +92,18 @@ export default class BatchDeclList extends React.Component {
     title: '状态',
     dataIndex: 'status',
     width: 120,
-    render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="已发送" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+    render: (st) => {
+      switch (st) {
+        case 'manifest':
+        case 'generated':
+          return (<Badge status="default" />);
+        case 'processing':
+          return (<Badge status="processing" text="已发送" />);
+        case 'applied':
+        case 'cleared':
+          return (<Badge status="success" text="备案完成" />);
+        default:
+          return null;
       }
     },
 
@@ -150,7 +118,7 @@ export default class BatchDeclList extends React.Component {
     dataIndex: 'delg_no',
   }, {
     title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
+    dataIndex: 'cus_decl_no',
     width: 150,
   }, {
     title: '供应商',
@@ -326,11 +294,6 @@ export default class BatchDeclList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    /* let columns = this.columns;
-    if (listFilter.status === 'manifesting') {
-      columns = this.manifColumns;
-    }
-    */
     this.dataSource.remotes = batchlist;
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />

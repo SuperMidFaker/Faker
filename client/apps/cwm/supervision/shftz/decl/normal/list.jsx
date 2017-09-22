@@ -247,7 +247,7 @@ export default class NormalDeclList extends React.Component {
     };
     this.dataSource.remotes = delglist;
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('normalSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
       <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}

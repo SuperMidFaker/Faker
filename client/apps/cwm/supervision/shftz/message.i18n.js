@@ -45,9 +45,13 @@ const messages = defineMessages({
     id: 'cms.supervision.shftz.release.search.placeholder',
     defaultMessage: 'SO编号/报关单号/海关出库单号',
   },
+  normalSearchPlaceholder: {
+    id: 'cms.supervision.shftz.normal.search.placeholder',
+    defaultMessage: '委托单号',
+  },
   batchSearchPlaceholder: {
     id: 'cms.supervision.shftz.batch.search.placeholder',
-    defaultMessage: '报关单号/海关出库单号',
+    defaultMessage: '报关单号/申请单号',
   },
   ownerSearchPlaceholder: {
     id: 'cms.supervision.shftz.owner.search.placeholder',

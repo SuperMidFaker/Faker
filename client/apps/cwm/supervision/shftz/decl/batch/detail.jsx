@@ -10,7 +10,6 @@ import PageHeader from 'client/components/PageHeader';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadApplyDetails, loadParams, fileBatchApply, makeBatchApplied, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
-import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -317,21 +316,22 @@ export default class BatchDeclDetail extends Component {
   }
   render() {
     const { batchDecl, batchApplies, regs, details, whse, submitting } = this.props;
-    const relEditable = batchDecl.status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = batchDecl.status === CWM_SHFTZ_APIREG_STATUS.processing;
-    const sendText = sent ? '重新发送' : '发送报关申请';
     const statWt = details.reduce((acc, det) => ({
       net_wt: acc.net_wt + det.net_wt,
       gross_wt: acc.gross_wt + det.gross_wt,
     }), { net_wt: 0, gross_wt: 0 });
     let applyStep = 0;
-    if (batchDecl.status < CWM_SHFTZ_APIREG_STATUS.processing && batchApplies.length > 0) {
+    let sendText;
+    const sent = batchDecl.status === 'processing';
+    if (batchDecl.status === 'generated') {
       applyStep = 1;
-    } else if (batchDecl.status === CWM_SHFTZ_APIREG_STATUS.processing) {
+      sendText = '发送报关申请';
+    } else if (batchDecl.status === 'processing') {
       applyStep = 2;
-    } else if (batchDecl.status === CWM_SHFTZ_APIREG_STATUS.completed && batchApplies.filter(ba => ba.cus_decl_no).length === 0) {
+      sendText = '重新发送';
+    } else if (batchDecl.status === 'applied') {
       applyStep = 3;
-    } else if (batchDecl.status === CWM_SHFTZ_APIREG_STATUS.completed && batchApplies.filter(ba => ba.cus_decl_no).length > 0) {
+    } else if (batchDecl.status === 'cleared') {
       applyStep = 4;
     }
     return (
@@ -360,8 +360,8 @@ export default class BatchDeclDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {sent && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
-            {relEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} loading={submitting} disabled={!relEditable}>{sendText}</Button>}
+            {sendText &&
+            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
