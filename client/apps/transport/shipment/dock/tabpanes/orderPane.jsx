@@ -388,46 +388,43 @@ export default class DetailPane extends React.Component {
                     <Step key={0} title={shipmt.consigner_name || (<div style={{ height: 26 }} />)} status="process"
                       icon={<div className="icon">始</div>}
                       description={
-                        <div>
-                          <Row>
+
+                        <Row gutter={16} className="info-group-underline">
+                          <Col span={10}>
                             <InfoItem label={this.msg('pickupEstDate')}
                               type="date"
                               field={shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : null}
                               editable={editable}
                               onEdit={value => this.handleSaveShipment('pickup_est_date', new Date(value), 'timeInfoChanged')}
                             />
-                          </Row>
-                          <Row gutter={10}>
-                            <Col span={10}>
-                              <InfoItem label="发货地"
-                                field={shipmt.consigner_byname || Location.renderLoc(shipmt, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')}
-                              />
-                            </Col>
-                            <Col span={14}>
-                              <InfoItem label="详细地址"
-                                editable={editable}
-                                field={shipmt.consigner_addr}
-                                onEdit={value => this.handleSaveShipment('consigner_addr', value, 'consignerInfoChanged')}
-                              />
-                            </Col>
-                          </Row>
-                          <Row gutter={10}>
-                            <Col span={10}>
-                              <InfoItem label="联系人"
-                                field={shipmt.consigner_contact}
-                                editable={editable}
-                                onEdit={value => this.handleSaveShipment('consigner_contact', value, 'consignerInfoChanged')}
-                              />
-                            </Col>
-                            <Col span={14}>
-                              <InfoItem label="电话"
-                                field={shipmt.consigner_mobile}
-                                editable={editable}
-                                onEdit={value => this.handleSaveShipment('consigner_mobile', value, 'consignerInfoChanged')}
-                              />
-                            </Col>
-                          </Row>
-                        </div>
+                          </Col>
+                          <Col span={14}>
+                            <InfoItem label="发货地"
+                              field={shipmt.consigner_byname || Location.renderLoc(shipmt, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')}
+                            />
+                          </Col>
+                          <Col span={24}>
+                            <InfoItem label="详细地址"
+                              editable={editable}
+                              field={shipmt.consigner_addr}
+                              onEdit={value => this.handleSaveShipment('consigner_addr', value, 'consignerInfoChanged')}
+                            />
+                          </Col>
+                          <Col span={10}>
+                            <InfoItem label="联系人"
+                              field={shipmt.consigner_contact}
+                              editable={editable}
+                              onEdit={value => this.handleSaveShipment('consigner_contact', value, 'consignerInfoChanged')}
+                            />
+                          </Col>
+                          <Col span={14}>
+                            <InfoItem label="电话"
+                              field={shipmt.consigner_mobile}
+                              editable={editable}
+                              onEdit={value => this.handleSaveShipment('consigner_mobile', value, 'consignerInfoChanged')}
+                            />
+                          </Col>
+                        </Row>
                 }
                     />
                   </Steps>
@@ -437,46 +434,42 @@ export default class DetailPane extends React.Component {
                     <Step key={0} title={shipmt.consignee_name || (<div style={{ height: 26 }} />)} status="process"
                       icon={<div className="icon">终</div>}
                       description={
-                        <div>
-                          <Row>
+                        <Row gutter={16} className="info-group-underline">
+                          <Col span={10}>
                             <InfoItem label={this.msg('deliveryEstDate')}
                               type="date"
                               field={shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : null}
                               editable={editable}
                               onEdit={value => this.handleSaveShipment('deliver_est_date', new Date(value), 'timeInfoChanged')}
                             />
-                          </Row>
-                          <Row gutter={10}>
-                            <Col span={10}>
-                              <InfoItem label="收货地"
-                                field={shipmt.consignee_byname || Location.renderLoc(shipmt, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')}
-                              />
-                            </Col>
-                            <Col span={14}>
-                              <InfoItem label="详细地址"
-                                editable={editable}
-                                field={shipmt.consignee_addr}
-                                onEdit={value => this.handleSaveShipment('consignee_addr', value, 'consigneeInfoChanged')}
-                              />
-                            </Col>
-                          </Row>
-                          <Row gutter={10}>
-                            <Col span={10}>
-                              <InfoItem label="联系人"
-                                field={shipmt.consignee_contact}
-                                editable={editable}
-                                onEdit={value => this.handleSaveShipment('consignee_contact', value, 'consigneeInfoChanged')}
-                              />
-                            </Col>
-                            <Col span={14}>
-                              <InfoItem label="电话"
-                                field={shipmt.consignee_mobile}
-                                editable={editable}
-                                onEdit={value => this.handleSaveShipment('consignee_mobile', value, 'consigneeInfoChanged')}
-                              />
-                            </Col>
-                          </Row>
-                        </div>
+                          </Col>
+                          <Col span={14}>
+                            <InfoItem label="收货地"
+                              field={shipmt.consignee_byname || Location.renderLoc(shipmt, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')}
+                            />
+                          </Col>
+                          <Col span={24}>
+                            <InfoItem label="详细地址"
+                              editable={editable}
+                              field={shipmt.consignee_addr}
+                              onEdit={value => this.handleSaveShipment('consignee_addr', value, 'consigneeInfoChanged')}
+                            />
+                          </Col>
+                          <Col span={10}>
+                            <InfoItem label="联系人"
+                              field={shipmt.consignee_contact}
+                              editable={editable}
+                              onEdit={value => this.handleSaveShipment('consignee_contact', value, 'consigneeInfoChanged')}
+                            />
+                          </Col>
+                          <Col span={14}>
+                            <InfoItem label="电话"
+                              field={shipmt.consignee_mobile}
+                              editable={editable}
+                              onEdit={value => this.handleSaveShipment('consignee_mobile', value, 'consigneeInfoChanged')}
+                            />
+                          </Col>
+                        </Row>
                 }
                     />
                   </Steps>
@@ -526,7 +519,7 @@ export default class DetailPane extends React.Component {
           */}
             </Panel>
             <Panel header={this.msg('transitModeInfo')} key="mode">
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label={this.msg('transitModeInfo')}
                     field={shipmt.transport_mode}
@@ -606,7 +599,7 @@ export default class DetailPane extends React.Component {
               </Row>
             </Panel>
             <Panel header="货物信息" key="cargo">
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label={this.msg('goodsType')}
                     field={goodsType ? goodsType.text : shipmt.goods_type} editable={editable}
@@ -650,12 +643,12 @@ export default class DetailPane extends React.Component {
                   />
                 </Col>
               </Row>
-              <Table size="small" columns={this.columns} pagination={false}
+              <Table size="middle" columns={this.columns} pagination={false}
                 dataSource={shipmt.goodslist}
               />
             </Panel>
             <Panel header="客户信息" key="customer">
-              <Row>
+              <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label={this.msg('refExternalNo')} addonBefore={<Icon type="tag-o" />}
                     field={shipmt.ref_external_no} editable={editable}

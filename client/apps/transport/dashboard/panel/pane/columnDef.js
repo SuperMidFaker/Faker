@@ -1,7 +1,7 @@
 import React from 'react';
 import ShipmtnoColumn from '../../../common/shipmtnoColumn';
 import AddressColumn from '../../../common/addressColumn';
-import ActDate from '../../../common/actDate';
+import ActualDate from '../../../common/actualDate';
 import TrimSpan from 'client/components/trimSpan';
 import moment from 'moment';
 export const columnDef = handle => [{
@@ -23,7 +23,7 @@ export const columnDef = handle => [{
     <div>
       <strong><AddressColumn shipment={record} consignType="consigner" /></strong>
       <div className="mdc-text-grey dashboard-table-font-small">{handle.msg('shipmtEstPickupDate')}: {moment(record.pickup_est_date).format('YYYY.MM.DD')}</div>
-      <div className="dashboard-table-font-small">{record.pickup_act_date ? (<ActDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} textBefore={`${handle.msg('shipmtActPickupDate')}:`} />) : ''}</div>
+      <div className="dashboard-table-font-small">{record.pickup_act_date ? (<ActualDate actDate={record.pickup_act_date} estDate={record.pickup_est_date} textBefore={`${handle.msg('shipmtActPickupDate')}:`} />) : ''}</div>
     </div>
   ),
 }, {
@@ -33,7 +33,7 @@ export const columnDef = handle => [{
   render: (o, record) => {
     let deliverActDate = null;
     if (record.deliver_act_date) {
-      deliverActDate = (<ActDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} textBefore={`${handle.msg('shipmtActDeliveryDate')}:`} />);
+      deliverActDate = (<ActualDate actDate={record.deliver_act_date} estDate={record.deliver_est_date} textBefore={`${handle.msg('shipmtActDeliveryDate')}:`} />);
     }
     return (
       <div>

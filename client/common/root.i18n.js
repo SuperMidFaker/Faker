@@ -87,7 +87,7 @@ const messages = defineMessages({
   },
   moduleSCOF: {
     id: 'component.module.scof',
-    defaultMessage: '客户订单流',
+    defaultMessage: '订单中心',
   },
   moduleTransport: {
     id: 'component.module.transport',

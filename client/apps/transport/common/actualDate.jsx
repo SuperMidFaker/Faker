@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-export default class ActDate extends React.Component {
+export default class ActualDate extends React.Component {
   static propTypes = {
     actDate: PropTypes.string.isRequired,
     estDate: PropTypes.string.isRequired,

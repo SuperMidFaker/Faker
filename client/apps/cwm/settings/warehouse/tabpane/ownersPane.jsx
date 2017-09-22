@@ -62,10 +62,11 @@ export default class OwnersPane extends Component {
   }, {
     title: '货主名称',
     dataIndex: 'owner_name',
-    width: 250,
+    width: 200,
   }, {
     title: '状态',
     dataIndex: 'active',
+    width: 80,
     render: (o) => {
       if (o) {
         return <Tag color="green">正常</Tag>;
@@ -76,6 +77,7 @@ export default class OwnersPane extends Component {
   }, {
     title: '启用分拨',
     dataIndex: 'portion_enabled',
+    width: 80,
     render: (o) => {
       if (o) {
         return <Tag color="blue">已启用</Tag>;

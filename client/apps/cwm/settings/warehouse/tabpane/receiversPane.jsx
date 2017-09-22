@@ -48,7 +48,7 @@ export default class ReceiversPane extends Component {
   }, {
     title: '收货人名称',
     dataIndex: 'name',
-    width: 250,
+    width: 200,
   }, {
     title: '海关编码',
     dataIndex: 'customs_code',
@@ -65,6 +65,7 @@ export default class ReceiversPane extends Component {
   }, {
     title: '状态',
     dataIndex: 'active',
+    width: 80,
     render: (o) => {
       if (o) {
         return <Tag color="green">正常</Tag>;

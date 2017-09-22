@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Popover, Table, Icon } from 'antd';
+import { Badge, Popover, Table, Icon } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadExceptions } from 'common/reducers/trackingLandException';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
@@ -18,7 +18,7 @@ const formatMsg = format(messages);
   }
 )
 
-export default class ExceptionListPopover extends React.Component {
+export default class ExceptionsPopover extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     excpCount: PropTypes.number,
@@ -71,9 +71,7 @@ export default class ExceptionListPopover extends React.Component {
     );
     return (
       <Popover placement="rightTop" title={`异常 ${shipmtNo}`} content={content} trigger="hover">
-        <a onMouseOver={this.handleMouseOver}>
-          {excpCount || ''}
-        </a>
+        <Badge count={excpCount} onMouseOver={this.handleMouseOver} />
       </Popover>
     );
   }
