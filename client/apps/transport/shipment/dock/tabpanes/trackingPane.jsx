@@ -87,14 +87,6 @@ export default class TrackingPane extends React.Component {
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
         </Timeline.Item>
       );
-    } else if (log.category === SHIPMENT_LOG_CATEGORY.fee) {
-      return (
-        <Timeline.Item key={index} dot={<Icon type="pay-circle-o" style={style} />}>
-          <p>{this.msg(log.type)} {log.content}</p>
-          <p>{`${log.tenant_name} ${log.login_name}`}</p>
-          <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
-        </Timeline.Item>
-      );
     } else {
       return (
         <Timeline.Item key={index} color="blue">

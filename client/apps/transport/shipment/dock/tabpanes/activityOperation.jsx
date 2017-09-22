@@ -30,7 +30,7 @@ export default class ActivityOperation extends React.Component {
     sourceType: PropTypes.string.isRequired,
   }
   state = {
-    activeKey: 'log',
+    activeKey: 'exception',
   }
   componentDidMount() {
     this.initializeActiveKey(this.props);
@@ -43,7 +43,7 @@ export default class ActivityOperation extends React.Component {
     let { activeKey } = this.state;
     if (sourceType === 'sr') {
       if (disp.status === SHIPMENT_TRACK_STATUS.unaccepted || disp.status === SHIPMENT_TRACK_STATUS.accepted) {
-        activeKey = 'log';
+        activeKey = 'exception';
       } else if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (disp.sp_tenant_id === -1) {
           activeKey = 'pickup';
@@ -54,11 +54,11 @@ export default class ActivityOperation extends React.Component {
             activeKey = 'pickup';
           } else {
             // 司机更新
-            activeKey = 'log';
+            activeKey = 'exception';
           }
         } else {
           // 催促提货
-          activeKey = 'log';
+          activeKey = 'exception';
         }
       } else if (disp.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (disp.sp_tenant_id === -1) {
@@ -70,11 +70,11 @@ export default class ActivityOperation extends React.Component {
             activeKey = 'deliver';
           } else {
             // 司机更新
-            activeKey = 'log';
+            activeKey = 'exception';
           }
         } else {
           // 承运商更新
-          activeKey = 'log';
+          activeKey = 'exception';
         }
       } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
         if (disp.pod_type !== 'none' && (disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || !disp.pod_status)) {
@@ -85,21 +85,21 @@ export default class ActivityOperation extends React.Component {
               activeKey = 'pod';
             } else {
               // 司机上传 催促回单
-              activeKey = 'log';
+              activeKey = 'exception';
             }
           } else {
             // 承运商上传 催促回单
-            activeKey = 'log';
+            activeKey = 'exception';
           }
         } else if (disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
           activeKey = 'pod';
         } else {
-          activeKey = 'log';
+          activeKey = 'exception';
         }
       }
     } else if (sourceType === 'sp') {
-      activeKey = 'log';
+      activeKey = 'exception';
     }
     this.setState({ activeKey });
   }
