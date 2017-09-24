@@ -3,10 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tabs } from 'antd';
-import CreateExceptionPane from './form/createExceptionForm';
-import CreatePointPane from './form/createPointForm';
-import SubmitPodPane from './form/submitPodForm';
-import PickupDeliverPane from './form/pickupDeliverForm';
+import { Logixon } from 'client/components/FontIcon';
+// import PickupDeliverForm from './form/pickupDeliverForm';
+import PODForm from './form/podForm';
+import DamageForm from './form/damageForm';
+import RejectionForm from './form/rejectionForm';
+import ComplaintForm from './form/complaintForm';
+import ClaimForm from './form/claimForm';
+import TransitForm from './form/transitForm';
 import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -30,7 +34,7 @@ export default class ActivityOperation extends React.Component {
     sourceType: PropTypes.string.isRequired,
   }
   state = {
-    activeKey: 'exception',
+    activeKey: 'transit',
   }
   componentDidMount() {
     this.initializeActiveKey(this.props);
@@ -43,7 +47,7 @@ export default class ActivityOperation extends React.Component {
     let { activeKey } = this.state;
     if (sourceType === 'sr') {
       if (disp.status === SHIPMENT_TRACK_STATUS.unaccepted || disp.status === SHIPMENT_TRACK_STATUS.accepted) {
-        activeKey = 'exception';
+        activeKey = 'transit';
       } else if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (disp.sp_tenant_id === -1) {
           activeKey = 'pickup';
@@ -54,11 +58,11 @@ export default class ActivityOperation extends React.Component {
             activeKey = 'pickup';
           } else {
             // 司机更新
-            activeKey = 'exception';
+            activeKey = 'transit';
           }
         } else {
           // 催促提货
-          activeKey = 'exception';
+          activeKey = 'transit';
         }
       } else if (disp.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (disp.sp_tenant_id === -1) {
@@ -70,11 +74,11 @@ export default class ActivityOperation extends React.Component {
             activeKey = 'deliver';
           } else {
             // 司机更新
-            activeKey = 'exception';
+            activeKey = 'transit';
           }
         } else {
           // 承运商更新
-          activeKey = 'exception';
+          activeKey = 'transit';
         }
       } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
         if (disp.pod_type !== 'none' && (disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || !disp.pod_status)) {
@@ -85,21 +89,21 @@ export default class ActivityOperation extends React.Component {
               activeKey = 'pod';
             } else {
               // 司机上传 催促回单
-              activeKey = 'exception';
+              activeKey = 'transit';
             }
           } else {
             // 承运商上传 催促回单
-            activeKey = 'exception';
+            activeKey = 'transit';
           }
         } else if (disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
           activeKey = 'pod';
         } else {
-          activeKey = 'exception';
+          activeKey = 'transit';
         }
       }
     } else if (sourceType === 'sp') {
-      activeKey = 'exception';
+      activeKey = 'transit';
     }
     this.setState({ activeKey });
   }
@@ -107,9 +111,32 @@ export default class ActivityOperation extends React.Component {
   handleTabChange = (activeKey) => {
     this.setState({ activeKey });
   }
-  render() {
-    const { disp, shipmt, sourceType, tenantId } = this.props;
+
+  renderTabs() {
     const { activeKey } = this.state;
+    const tabs = [
+      /*
+      <TabPane tab={<span><Logixon type="upload" />提货</span>} key="pickup"><PickupDeliverForm type="pickup" /></TabPane>,
+      */
+      <TabPane tab={<span><Logixon type="tracking" />在途更新</span>} key="transit"><TransitForm /></TabPane>,
+      /*
+      <TabPane tab={<span><Logixon type="download" />送货</span>} key="deliver"><PickupDeliverForm type="deliver" /></TabPane>,
+      */
+      <TabPane tab={<span><Logixon type="pod-accept-o" />回单</span>} key="pod"><PODForm /></TabPane>,
+      <TabPane tab={<span><Icon type="exclamation-circle-o" />货差</span>} key="damage"><DamageForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="pod-reject-o" />拒收</span>} key="reject"><RejectionForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="complain" />投诉</span>} key="complaint"><ComplaintForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="refund" />索赔</span>} key="claim"><ClaimForm /></TabPane>,
+    ];
+    return (
+      <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
+        {tabs}
+      </Tabs>
+    );
+  }
+  render() {
+    // const { disp, shipmt, sourceType, tenantId } = this.props;
+    /*
     let tabs = [
     ];
     if (sourceType === 'sr') {
@@ -162,7 +189,7 @@ export default class ActivityOperation extends React.Component {
             <TabPane tab={<span><Icon type="environment-o" />送货</span>} key="deliver" >
               <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
             </TabPane>,
-            <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
+            <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><RouteForm /></TabPane>,
             <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
           ];
         } else if (disp.sp_tenant_id === 0) {
@@ -172,7 +199,7 @@ export default class ActivityOperation extends React.Component {
               <TabPane tab={<span><Icon type="environment-o" />送货</span>} key="deliver" >
                 <PickupDeliverPane type="deliver" estDate={shipmt.deliver_est_date} location={location} />
               </TabPane>,
-              <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><CreatePointPane /></TabPane>,
+              <TabPane tab={<span><Icon type="environment-o" />追踪</span>} key="location" ><RouteForm /></TabPane>,
               <TabPane tab={<span><Icon type="exception" />异常</span>} key="exception"><CreateExceptionPane /></TabPane>,
             ];
           } else {
@@ -225,11 +252,10 @@ export default class ActivityOperation extends React.Component {
         }
       }
     }
+    */
     return (
       <Card bodyStyle={{ padding: 8 }} noHovering>
-        <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
-          {tabs}
-        </Tabs>
+        {this.renderTabs()}
       </Card>
     );
   }

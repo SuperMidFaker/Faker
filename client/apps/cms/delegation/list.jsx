@@ -5,6 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Badge, Breadcrumb, Button, DatePicker, Layout, Icon, Popconfirm, Radio, Select, Tag, message, Menu, Dropdown } from 'antd';
 import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
+import PageHint from 'client/components/PageHint';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import {
@@ -29,7 +31,7 @@ import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -638,32 +640,37 @@ export default class DelegationList extends Component {
 
     return (
       <Layout>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('delegationManagement')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="import">{this.msg('import')}</RadioButton>
-            <RadioButton value="export">{this.msg('export')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
-            <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
-            <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
-            <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('delegationManagement')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
+              <RadioButton value="all">{this.msg('all')}</RadioButton>
+              <RadioButton value="import">{this.msg('import')}</RadioButton>
+              <RadioButton value="export">{this.msg('export')}</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
+              <RadioButton value="all">{this.msg('all')}</RadioButton>
+              <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
+              <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
+              <RadioButton value="declared">{this.msg('declaring')}</RadioButton>
+              <RadioButton value="finished">{this.msg('releasing')}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <PageHint />
             <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
               {this.msg('createDelegation')}
             </Button>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="delg_no" loading={delegationlist.loading}

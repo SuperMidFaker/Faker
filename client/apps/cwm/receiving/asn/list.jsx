@@ -432,27 +432,6 @@ export default class ReceivingASNList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {/* <Popover content={popContent}>
-              <Button size="large" disabled={filters.ownerCode === 'all'}>
-                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
-                  formData={{
-                    data: JSON.stringify({
-                      tenantId: this.props.tenantId,
-                      tenantName: this.props.tenantName,
-                      customsCode: this.props.customsCode,
-                      loginId: this.props.loginId,
-                      loginName: this.props.loginName,
-                      whseCode: defaultWhse.code,
-                      whseName: defaultWhse.name,
-                      owner: owners.filter(owner => owner.id === filters.ownerCode)[0],
-                    }),
-                  }} onUploaded={this.handleAsnStockImport}
-                >
-                  <Icon type="upload" /> 导入库存ASN
-                </ExcelUploader>
-              </Button>
-            </Popover>
-            */}
             <PageHint />
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}

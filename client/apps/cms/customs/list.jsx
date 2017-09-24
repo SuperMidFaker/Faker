@@ -5,6 +5,8 @@ import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Breadcrumb, DatePicker, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
+import PageHint from 'client/components/PageHint';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -29,7 +31,7 @@ import BatchSendModal from '../common/customs/modals/batchSendModal';
 import { Logixon, Fontello } from 'client/components/FontIcon';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -573,34 +575,40 @@ export default class CustomsList extends Component {
       /></span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('customsDecl')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="import">{this.msg('import')}</RadioButton>
-            <RadioButton value="export">{this.msg('export')}</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            {Object.keys(CMS_DECL_STATUS).map(declkey =>
-              <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
-            )}
-          </RadioGroup>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
-            <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools" />
-        </Header>
-        <Content className="main-content" key="main">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('customsDecl')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
+              <RadioButton value="all">{this.msg('all')}</RadioButton>
+              <RadioButton value="import">{this.msg('import')}</RadioButton>
+              <RadioButton value="export">{this.msg('export')}</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+              <RadioButton value="all">{this.msg('all')}</RadioButton>
+              {Object.keys(CMS_DECL_STATUS).map(declkey =>
+                <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
+              )}
+            </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+              <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <PageHint />
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id" loading={customslist.loading}
+            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
           />
           <FillCustomsNoModal reload={this.handleTableLoad} />
           <DeclReleasedModal reload={this.handleTableLoad} />

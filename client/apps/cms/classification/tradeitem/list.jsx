@@ -6,7 +6,9 @@ import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Alert, Breadcrumb, Button, Collapse, Layout, Radio, Dropdown, Input, Icon, Menu, Popconfirm, Tooltip, Table, message, Checkbox } from 'antd';
-import RemoteTable from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
+import PageHint from 'client/components/PageHint';
 import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -27,7 +29,7 @@ import Strip from 'client/components/Strip';
 import TrimSpan from 'client/components/trimSpan';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Panel = Collapse.Panel;
@@ -308,7 +310,7 @@ export default class TradeItemList extends Component {
     dataIndex: 'remark',
     width: 180,
   }]
-  dataSource = new RemoteTable.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadTradeItems(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -448,6 +450,9 @@ export default class TradeItemList extends Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleItemListLoad(this.props.repoId, 1, filter);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   handleSetItemStatus = (repoId, ids, status) => {
     this.props.setItemStatus({ repoId, ids, status }).then((result) => {
       if (result.error) {
@@ -543,7 +548,7 @@ export default class TradeItemList extends Component {
     window.open(`${API_ROOTS.default}v1/cms/tradeitems/selected/export/${createFilename('selectedItemsExport')}.xlsx?selectedIds=${selectedIds}`);
   }
   render() {
-    const { tradeItemlist, repoId, repo, listFilter, tenantId, auditWay } = this.props;
+    const { tradeItemlist, repo, listFilter, tenantId, auditWay } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -560,11 +565,11 @@ export default class TradeItemList extends Component {
       <Menu onClick={this.handleRefuseMenuClick}>
         <Menu.Item key="allRefuse"><Icon type="close-circle-o" /> 全部拒绝</Menu.Item>
       </Menu>);
-    let batchOperation = null;
+    let bulkActions = null;
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
       if (listFilter.status === 'unclassified' ||
         (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[1].key)) {
-        batchOperation = (<span>
+        bulkActions = (<span>
           <Button size="large" icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
@@ -574,7 +579,7 @@ export default class TradeItemList extends Component {
             </Button>
           </Popconfirm></span>);
       } else if (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[0].key) {
-        batchOperation = (<span>
+        bulkActions = (<span>
           <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
             <Icon type="check-circle-o" /> 批量通过
           </Dropdown.Button>
@@ -718,6 +723,7 @@ export default class TradeItemList extends Component {
         <Button disabled icon="arrow-down" onClick={() => this.handleDegrade(repo)} >切换为单库模式</Button>
       );
     }
+    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />);
     return (
       <Layout className="ant-layout-wrapper">
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
@@ -753,109 +759,91 @@ export default class TradeItemList extends Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('classification')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('tradeItemMaster')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {`${repo.owner_name}`}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          }
-            <ButtonToggle size="large"
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
-              <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
-              <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="stage">{this.msg('stageClassified')}</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
-              <RadioButton value="uselessHs">税则改变归类区</RadioButton>
-            </RadioGroup>
-            {repoId &&
-              <div className="page-header-tools">
-                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
-                  listFilter.status !== 'uselessHs' &&
-                  (
-
-                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
-                    formData={{
-                      data: JSON.stringify({
-                        repo_id: this.props.repoId,
-                        tenantId,
-                      }),
-                    }} onUploaded={this.handleUploaded}
-                  >
-                    <Dropdown.Button size="large" overlay={importMenu}>
-                      <Icon type="upload" /> {this.msg('importItems')}
-                    </Dropdown.Button>
-                  </ExcelUploader>
-
-                  )
-                }
-                { repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
-                  listFilter.status === 'uselessHs' &&
-                  (
-
-                  <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/newHscode/import`}
-                    formData={{
-                      data: JSON.stringify({
-                        repo_id: this.props.repoId,
-                        tenantId,
-                      }),
-                    }} onUploaded={this.handleNewhsUploaded}
-                  >
-                    <Dropdown.Button size="large" overlay={imptHsMenu}>
-                      <Icon type="upload" /> {this.msg('imptNewHsItems')}
-                    </Dropdown.Button>
-                  </ExcelUploader>
-
-                  )
-                }
-                {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
-                  (
-                    <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
-                      {this.msg('addItem')}
-                    </Button>
-                  )
-                }
-                <ButtonToggle size="large"
-                  iconOn="setting" iconOff="setting"
-                  onClick={this.toggleRightSider}
-                />
-              </div>
+          <PageHeader>
+            <PageHeader.Title>
+              { this.state.collapsed && <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('classification')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('tradeItemMaster')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {`${repo.owner_name}`}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            }
+              <ButtonToggle size="large"
+                iconOn="menu-fold" iconOff="menu-unfold"
+                onClick={this.toggle}
+                toggle
+              />
+            </PageHeader.Title>
+            <PageHeader.Nav>
+              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+                <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
+                <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
+                <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
+              </RadioGroup>
+              <span />
+              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+                <RadioButton value="stage"><Tooltip title="新来源归类区" placement="bottom"><Icon type="fork" /></Tooltip></RadioButton>
+              </RadioGroup>
+              <span />
+              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+                <RadioButton value="uselessHs"><Tooltip title="税则改变归类区" placement="bottom"><Icon type="disconnect" /></Tooltip></RadioButton>
+              </RadioGroup>
+            </PageHeader.Nav>
+            <PageHeader.Actions>
+              <PageHint />
+              {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                listFilter.status !== 'uselessHs' &&
+                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/import`}
+                  formData={{
+                    data: JSON.stringify({
+                      repo_id: this.props.repoId,
+                      tenantId,
+                    }),
+                  }} onUploaded={this.handleUploaded}
+                >
+                  <Dropdown.Button size="large" overlay={importMenu}>
+                    <Icon type="upload" /> {this.msg('importItems')}
+                  </Dropdown.Button>
+                </ExcelUploader>
               }
-          </Header>
-          <Content className="main-content layout-min-width layout-min-width-large">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
-                <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                  <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                  {batchOperation}
-                </div>
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <RemoteTable loading={this.props.tradeItemsLoading} rowSelection={rowSelection} rowKey="id" columns={columns} dataSource={this.dataSource} bordered
-                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-                />
-              </div>
-              <AddTradeRepoModal />
-              <ImportComparisonModal data={this.state.compareduuid} />
-            </div>
+              { repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                listFilter.status === 'uselessHs' &&
+                <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/tradeitems/newHscode/import`}
+                  formData={{
+                    data: JSON.stringify({
+                      repo_id: this.props.repoId,
+                      tenantId,
+                    }),
+                  }} onUploaded={this.handleNewhsUploaded}
+                >
+                  <Dropdown.Button size="large" overlay={imptHsMenu}>
+                    <Icon type="upload" /> {this.msg('imptNewHsItems')}
+                  </Dropdown.Button>
+                </ExcelUploader>
+              }
+              {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
+                <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+                  {this.msg('addItem')}
+                </Button>
+              }
+              <ButtonToggle size="large"
+                iconOn="setting" iconOff="setting"
+                onClick={this.toggleRightSider}
+              />
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content">
+            <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
+              rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+              loading={this.props.tradeItemsLoading} rowKey="id" columns={columns} dataSource={this.dataSource} bordered
+            />
+            <AddTradeRepoModal />
+            <ImportComparisonModal data={this.state.compareduuid} />
           </Content>
         </Layout>
         <Sider

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag, Modal, Icon } from 'antd';
+import { Button, Table, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
@@ -131,11 +131,11 @@ export default class OwnersPane extends Component {
     dataIndex: 'restore',
     width: 80,
     className: 'cell-align-center',
-    render: () => (<Button style={{ padding: '0 8px' }}>
+    render: () => (
       <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/stock/restore`}>
-        <Icon type="cloud-upload-o" />
+        <Button icon="cloud-upload-o" />
       </ExcelUploader>
-    </Button>),
+    ),
   }, {
     title: '操作',
     width: 150,

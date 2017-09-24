@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Form, DatePicker, message, Button, Alert, Row } from 'antd';
+import { Form, DatePicker, message, Button, Alert, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { savePickOrDeliverDate, reportLoc } from 'common/reducers/trackingLandStatus';
 import { TRACKING_POINT_FROM_TYPE } from 'common/constants';
@@ -78,18 +78,20 @@ export default class PickupDeliverForm extends React.Component {
     const { form: { getFieldDecorator } } = this.props;
     const { warningMessage } = this.state;
     return (
-      <Form className="row">
+      <Form layout="vertical">
         <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }} />
-        <Row>
-          {getFieldDecorator('actDate', {
-            rules: [{
-              type: 'object',
-            }],
-          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange} style={{ width: '100%' }} />)}
+        <Row gutter={16}>
+          <Col span={6}>
+            <Form.Item label="实际时间">
+              {getFieldDecorator('actDate', {
+                rules: [{
+                  type: 'object',
+                }],
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onChange={this.handleDateChange} style={{ width: '100%' }} />)}
+            </Form.Item>
+          </Col>
         </Row>
-        <Row style={{ marginTop: 20 }}>
-          <Button onClick={this.handleOk}>提交</Button>
-        </Row>
+        <Button type="primary" onClick={this.handleOk}>提交</Button>
       </Form>
     );
   }

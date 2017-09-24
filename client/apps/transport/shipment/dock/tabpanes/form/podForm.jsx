@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Input, Radio, Upload, Button, message, Row } from 'antd';
+import { Col, Form, Input, Radio, Upload, Button, message, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { saveSubmitPod, loadPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
@@ -9,6 +9,7 @@ import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
+const { TextArea } = Input;
 
 @injectIntl
 @connect(
@@ -23,6 +24,7 @@ const RadioGroup = Radio.Group;
     podId: state.shipment.previewer.dispatch.pod_id || -1,
   }),
   { saveSubmitPod, loadPod })
+@Form.create()
 export default class SubmitPodForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -96,32 +98,41 @@ export default class SubmitPodForm extends React.Component {
       });
   }
   render() {
-    const { signStatus, remark, photoList } = this.state;
+    const { form: { getFieldDecorator } } = this.props;
+    const { signStatus, photoList } = this.state;
     return (
-      <Form className="row">
-        <Row>
-          <RadioGroup onChange={this.handleSignRadioChange} value={signStatus}>
-            <Radio key="normal" value={1}>{this.msg('normalSign')}</Radio>
-            <Radio key="abnormal" value={2}>{this.msg('abnormalSign')}</Radio>
-            <Radio key="refused" value={3}>{this.msg('refusedSign')}</Radio>
-          </RadioGroup>
+      <Form layout="vertical">
+        <Row gutter={16}>
+          <Col span={8}>
+            <Form.Item label="签收状态">
+              <RadioGroup onChange={this.handleSignRadioChange} value={signStatus}>
+                <Radio key="normal" value={1}>{this.msg('normalSign')}</Radio>
+                <Radio key="abnormal" value={2}>{this.msg('abnormalSign')}</Radio>
+                <Radio key="refused" value={3}>{this.msg('refusedSign')}</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item label="回单附件">
+              <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
+                onChange={this.handlePhotoUpload} onRemove={this.handlePhotoRemove} fileList={photoList} withCredentials
+              >
+                <Button icon="upload" type="ghost" />
+              </Upload>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="备注">
+              {getFieldDecorator('remark', {
+                rules: [{
+                  type: 'string',
+                  message: '备注',
+                }],
+              })(<TextArea placeholder="请填写备注" autosize />)}
+            </Form.Item>
+          </Col>
         </Row>
-        <Row style={{ marginTop: 20 }}>
-          <Input.TextArea placeholder={this.msg('signRemark')}
-            rows="5" value={remark} onChange={this.handleFieldChange}
-          />
-        </Row>
-        <Row style={{ marginTop: 20 }}>
-          <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
-            onChange={this.handlePhotoUpload} onRemove={this.handlePhotoRemove} fileList={photoList} withCredentials
-          >
-            <Button icon="upload" type="ghost" />
-            {this.msg('photoSubmit')}
-          </Upload>
-        </Row>
-        <Row style={{ marginTop: 20 }}>
-          <Button onClick={this.handleOk}>提交</Button>
-        </Row>
+        <Button type="primary" onClick={this.handleSubmit}>提交</Button>
       </Form>
     );
   }

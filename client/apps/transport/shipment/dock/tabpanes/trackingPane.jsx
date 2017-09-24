@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { Button, Card, Collapse, Checkbox, Dropdown, Icon, Menu, Timeline } from 'antd';
-import ActivityOperation from './activityOperation';
+import EventComposer from './eventComposer';
 import { SHIPMENT_LOG_CATEGORY } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -133,7 +133,7 @@ export default class TrackingPane extends React.Component {
     );
     return (
       <div className="pane-content tab-pane">
-        <ActivityOperation sourceType={sourceType} />
+        <EventComposer sourceType={sourceType} />
         <Card bodyStyle={{ padding: 0 }} noHovering>
           <Collapse bordered={false} defaultActiveKey={['timeline']}>
             <Panel header={timelineHeader} key="timeline">

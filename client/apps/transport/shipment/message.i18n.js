@@ -459,11 +459,11 @@ export default defineMessages({
   },
   shipmtDispatch: {
     id: 'transport.shipment.tab.dispatch',
-    defaultMessage: '调度信息',
+    defaultMessage: '调度记录',
   },
   shipmtTracking: {
     id: 'transport.shipment.tab.tracking',
-    defaultMessage: '追踪事件',
+    defaultMessage: '运输追踪',
   },
   shipmtCharge: {
     id: 'transport.shipment.tab.charge',
@@ -471,7 +471,7 @@ export default defineMessages({
   },
   shipmtPOD: {
     id: 'transport.shipment.tab.pod',
-    defaultMessage: '回单详情',
+    defaultMessage: '回单处理',
   },
   exceptionResolved: {
     id: 'transport.tracking.shipmt.exception.exceptionResolved',

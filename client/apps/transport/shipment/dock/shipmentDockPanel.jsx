@@ -607,14 +607,15 @@ export default class ShipmentDockPanel extends React.Component {
         <TabPane tab={this.msg('shipmtOrder')} key="order">
           <DetailPane />
         </TabPane>
+        <TabPane tab={this.msg('shipmtDispatch')} key="dispatch" disabled />
         <TabPane tab={this.msg('shipmtTracking')} key="tracking" disabled={trackingDisabled}>
           <TrackingPane sourceType={sourceType} />
         </TabPane>
-        <TabPane tab={this.msg('shipmtCharge')} key="charge" disabled={chargeDisabled}>
-          <ChargePane />
-        </TabPane>
         <TabPane tab={this.msg('shipmtPOD')} key="pod" disabled={podDisabled}>
           <PodPane />
+        </TabPane>
+        <TabPane tab={this.msg('shipmtCharge')} key="charge" disabled={chargeDisabled}>
+          <ChargePane />
         </TabPane>
       </Tabs>
     );

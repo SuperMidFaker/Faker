@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Form, message, Input, Row, Button, DatePicker } from 'antd';
+import { Form, message, Input, Select, Row, Col, Button, DatePicker } from 'antd';
 import RegionCascader from 'client/components/RegionCascader';
-
 import { TRACKING_POINT_FROM_TYPE } from 'common/constants';
 import { reportLoc } from 'common/reducers/trackingLandStatus';
+
+const Option = Select.Option;
+
 @injectIntl
 @connect(
   state => ({
@@ -21,7 +24,7 @@ import { reportLoc } from 'common/reducers/trackingLandStatus';
   { reportLoc }
 )
 @Form.create()
-export default class CreatePointForm extends React.Component {
+export default class RouteForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
@@ -40,7 +43,7 @@ export default class CreatePointForm extends React.Component {
     district: '',
     street: '',
   }
-  handleOk = () => {
+  handleSubmit = () => {
     const { dispId, shipmtNo, parentNo, tenantId } = this.props;
     const { province, city, district } = this.state;
     const { locationTime, address } = this.props.form.getFieldsValue();
@@ -60,13 +63,13 @@ export default class CreatePointForm extends React.Component {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
-            this.clearForm();
+            this.handleClear();
           }
         });
     }
   }
-  clearForm = () => {
-    this.props.form.setFieldsValue({ locationTime: '', address: '' });
+  handleClear = () => {
+    this.props.form.resetFields();
     this.setState({
       region_code: '',
       province: '',
@@ -89,30 +92,46 @@ export default class CreatePointForm extends React.Component {
     const { form: { getFieldDecorator } } = this.props;
     const { province, city, district, street } = this.state;
     return (
-      <Form className="row" style={{ width: '100%' }}>
-        <Row >
-          {getFieldDecorator('locationTime', {
-            rules: [{
-              type: 'object',
-              required: true,
-              message: '请选择时间',
-            }],
-          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+      <Form layout="vertical">
+        <Row gutter={16}>
+          <Col span={6}>
+            <Form.Item label="更新时间">
+              {getFieldDecorator('locationTime', {
+                initialValue: moment(new Date(), 'YYYY-MM-DD HH:mm:ss'),
+                rules: [{
+                  type: 'object',
+                  required: true,
+                  message: '请选择时间',
+                }],
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item label="更新地点">
+              <RegionCascader region={[province, city, district, street]} onChange={this.handleRegionChange} />
+            </Form.Item>
+          </Col>
+          <Col span={2}>
+            <Form.Item label="异常级别">
+              <Select defaultValue="normal">
+                <Option key="normal">正常</Option>
+                <Option key="warning">预警</Option>
+                <Option key="excption">异常</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={10}>
+            <Form.Item label="备注">
+              {getFieldDecorator('remark', {
+                rules: [{
+                  type: 'string',
+                  message: '请填写备注',
+                }],
+              })(<Input placeholder="请填写备注" />)}
+            </Form.Item>
+          </Col>
         </Row>
-        <Row style={{ marginTop: 20 }}>
-          <RegionCascader region={[province, city, district, street]} onChange={this.handleRegionChange} />
-        </Row>
-        <Row style={{ marginTop: 20 }}>
-          {getFieldDecorator('address', {
-            rules: [{
-              type: 'string',
-              message: '请填写详细地址',
-            }],
-          })(<Input placeholder="请填写详细地址" />)}
-        </Row>
-        <Row style={{ marginTop: 20 }}>
-          <Button onClick={this.handleOk}>提交</Button>
-        </Row>
+        <Button type="primary" onClick={this.handleSubmit}>提交</Button>
       </Form>
     );
   }
