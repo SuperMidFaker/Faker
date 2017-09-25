@@ -56,7 +56,7 @@ export default class ShipmtLocationColumnRender extends React.Component {
         </Popover>
       );
     } else {
-      return null;
+      return <span />;
     }
   }
 }

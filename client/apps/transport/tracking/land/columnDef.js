@@ -39,20 +39,19 @@ export default function makeColumns(type, handlers, msg) {
     title: msg('shipNo'),
     dataIndex: 'shipmt_no',
     fixed: 'left',
-    width: 130,
+    width: 140,
     render: (o, record) => (
       <ShipmtnoColumn shipmtNo={record.shipmt_no}
         shipment={record} onClick={handlers.onShipmtPreview}
       />),
   }, {
+    title: '',
     dataIndex: 'location',
-    fixed: 'left',
-    width: 10,
-    render: (o, record) => <div style={{ marginLeft: -10 }}><ShipmtLocationColumn shipment={record} publicKey={record.public_key} /></div>,
+    width: 30,
+    render: (o, record) => <ShipmtLocationColumn shipment={record} publicKey={record.public_key} />,
   }, {
     title: msg('refCustomerNo'),
     dataIndex: 'ref_external_no',
-    fixed: 'left',
     width: 140,
   }, {
     title: msg('departurePlace'),

@@ -11,7 +11,7 @@ import RejectionForm from './form/rejectionForm';
 import ComplaintForm from './form/complaintForm';
 import ClaimForm from './form/claimForm';
 import TransitForm from './form/transitForm';
-import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -43,8 +43,21 @@ export default class ActivityOperation extends React.Component {
     this.initializeActiveKey(nextProps);
   }
   initializeActiveKey = (props) => {
-    const { disp, sourceType } = props;
+    const { disp } = props;
+    const isOfflineSP = (disp.sp_tenant_id === -1) || (disp.sp_tenant_id === 0 && disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected);
     let { activeKey } = this.state;
+    if (isOfflineSP) {
+      if (disp.status === SHIPMENT_TRACK_STATUS.dispatched) {
+        activeKey = 'pickup';
+      } else if (disp.status === SHIPMENT_TRACK_STATUS.intransit) {
+        activeKey = 'transit';
+      } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
+        activeKey = 'pod';
+      }
+    } else {
+      activeKey = 'transit';
+    }
+    /*
     if (sourceType === 'sr') {
       if (disp.status === SHIPMENT_TRACK_STATUS.unaccepted || disp.status === SHIPMENT_TRACK_STATUS.accepted) {
         activeKey = 'transit';
@@ -105,6 +118,7 @@ export default class ActivityOperation extends React.Component {
     } else if (sourceType === 'sp') {
       activeKey = 'transit';
     }
+    */
     this.setState({ activeKey });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
@@ -116,10 +130,10 @@ export default class ActivityOperation extends React.Component {
     const { disp, shipmt } = this.props;
     const { activeKey } = this.state;
     const originlocation = {
-      province: shipmt.consignee_province,
-      city: shipmt.consignee_city,
-      district: shipmt.consignee_district,
-      address: shipmt.consignee_addr,
+      province: shipmt.consigner_province,
+      city: shipmt.consigner_city,
+      district: shipmt.consigner_district,
+      address: shipmt.consigner_addr,
     };
     const destLocation = {
       province: shipmt.consignee_province,
@@ -136,7 +150,7 @@ export default class ActivityOperation extends React.Component {
       <TabPane tab={<span><Logixon type="upload" />提货</span>} key="pickup" disabled={!pickupEnabled}>
         <PickupDeliverForm type="pickup" estDate={shipmt.pickup_est_date} location={originlocation} />
       </TabPane>,
-      <TabPane tab={<span><Logixon type="tracking" />在途更新</span>} key="transit" disabled={!transitEnabled}><TransitForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="tracking" />在途事件</span>} key="transit" disabled={!transitEnabled}><TransitForm /></TabPane>,
       <TabPane tab={<span><Logixon type="download" />送货</span>} key="deliver" disabled={!deliverEnabled}>
         <PickupDeliverForm type="deliver" estDate={shipmt.deliver_est_date} location={destLocation} />
       </TabPane>,

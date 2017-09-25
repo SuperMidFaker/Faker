@@ -26,7 +26,7 @@ import { sendMessage } from 'common/reducers/notification';
 import AdvancedSearchBar from '../../common/advanced-search-bar';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
-import { SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
+import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -311,7 +311,8 @@ export default class LandStatusList extends React.Component {
     });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'tracking').then((result) => {
+    const tab = row.status < SHIPMENT_TRACK_STATUS.dispatched ? 'order' : 'tracking';
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', tab).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
