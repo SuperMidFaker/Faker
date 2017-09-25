@@ -9,7 +9,6 @@ import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
 import PuttingAwayModal from '../modal/puttingAwayModal';
-import { CWM_INBOUND_STATUS } from 'common/constants';
 
 const Search = Input.Search;
 
@@ -227,8 +226,8 @@ export default class PutawayDetailsPane extends React.Component {
             </div>
           </div>
           <div className="toolbar-right">
-            {inboundHead.rec_mode === 'manual' && inboundHead.status < CWM_INBOUND_STATUS.PARTIAL_PUTAWAY.value &&
-              dataSource.filter(ds => !ds.receive_location).length === 0 &&
+            {inboundHead.rec_mode === 'manual' &&
+              dataSource.filter(ds => ds.receive_location && ds.result === 0).length > 0 &&
               <Button loading={submitting} type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
             </Button>
