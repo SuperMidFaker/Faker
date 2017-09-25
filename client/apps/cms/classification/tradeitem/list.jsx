@@ -309,6 +309,88 @@ export default class TradeItemList extends Component {
     title: this.msg('remark'),
     dataIndex: 'remark',
     width: 180,
+  }, {
+    title: this.msg('opColumn'),
+    dataIndex: 'OPS_COL',
+    width: 150,
+    fixed: 'right',
+    render: (o, record) => {
+      if (this.props.repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
+        if (record.status === TRADE_ITEM_STATUS.unclassified) {
+          return (<span>
+            <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+              <Icon type="edit" /> {this.msg('modify')}
+            </NavLink>
+            <span className="ant-divider" />
+            <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+              <a role="presentation"><Icon type="delete" /></a>
+            </Popconfirm>
+          </span>);
+        } else if (record.status === TRADE_ITEM_STATUS.pending) {
+          if (this.props.auditWay === SYNC_AUDIT_METHODS[1].key) {
+            const options = record.master_rejected ?
+              (<span>
+                <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                  <Icon type="edit" /> {this.msg('modify')}
+                </NavLink>
+                <span className="ant-divider" />
+                <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                  <a role="presentation"><Icon type="delete" /></a>
+                </Popconfirm>
+              </span>)
+              : '';
+            return (
+              <span>
+                {options}
+              </span>
+            );
+          } else {
+            return (
+              <span>
+                <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                <span className="ant-divider" />
+                <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <span className="ant-divider" />
+                <Dropdown overlay={(
+                  <Menu>
+                    <Menu.Item key="edit">
+                      <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                        <Icon type="edit" /> {this.msg('modify')}
+                      </NavLink>
+                    </Menu.Item>
+                    <Menu.Item key="delete">
+                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
+                        <a role="presentation"><Icon type="delete" /> {this.msg('delete')}</a>
+                      </Popconfirm>
+                    </Menu.Item>
+                  </Menu>)}
+                >
+                  <a><Icon type="down" /></a>
+                </Dropdown>
+              </span>
+            );
+          }
+        } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id === this.props.tenantId) {
+          return (
+            <span>
+              <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                <Icon type="edit" /> {this.msg('modify')}
+              </NavLink>
+              <span className="ant-divider" />
+              <NavLink to={`/clearance/classification/tradeitem/newSrc/${record.id}`}>
+                <Tooltip title={this.msg('addNewSrc')} placement="bottom"><Icon type="file-add" /></Tooltip>
+              </NavLink>
+            </span>
+          );
+        } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== this.props.tenantId) {
+          return (
+            <NavLink to={`/clearance/classification/tradeitem/newSrc/${record.id}`}>
+              <Tooltip title={this.msg('addNewSrc')} placement="bottom"><Icon type="file-add" /></Tooltip>
+            </NavLink>
+          );
+        }
+      }
+    },
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadTradeItems(params),
@@ -598,6 +680,7 @@ export default class TradeItemList extends Component {
       }
     }
     this.dataSource.remotes = tradeItemlist;
+    /*
     const columns = [...this.columns];
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
       columns.push({
@@ -682,6 +765,7 @@ export default class TradeItemList extends Component {
         },
       });
     }
+    */
     const repoColumns = [{
       dataIndex: 'owner_name',
       key: 'owner_name',
@@ -773,6 +857,7 @@ export default class TradeItemList extends Component {
                 </Breadcrumb.Item>
               </Breadcrumb>
             }
+              <span />
               <ButtonToggle size="large"
                 iconOn="menu-fold" iconOff="menu-unfold"
                 onClick={this.toggle}
@@ -840,7 +925,7 @@ export default class TradeItemList extends Component {
           <Content className="page-content">
             <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
               rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              loading={this.props.tradeItemsLoading} rowKey="id" columns={columns} dataSource={this.dataSource} bordered
+              loading={this.props.tradeItemsLoading} rowKey="id" columns={this.columns} dataSource={this.dataSource} bordered
             />
             <AddTradeRepoModal />
             <ImportComparisonModal data={this.state.compareduuid} />
@@ -851,7 +936,7 @@ export default class TradeItemList extends Component {
           defaultCollapsed
           collapsible
           collapsed={this.state.rightSiderCollapsed}
-          width={480}
+          width={320}
           collapsedWidth={0}
           className="right-sider"
         >
