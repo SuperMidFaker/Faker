@@ -48,7 +48,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'UPDATE_CARRIER_STATUS', 'UPDATE_CARRIER_STATUS_SUCCEED', 'UPDATE_CARRIER_STATUS_FAIL',
   'DELETE_CARRIER', 'DELETE_CARRIER_SUCCEED', 'DELETE_CARRIER_FAIL',
   'UPDATE_CARRIER', 'UPDATE_CARRIER_SUCCEED', 'UPDATE_CARRIER_FAIL',
-  'LOAD_LIMIT_LOCATIONS', 'LOAD_LIMIT_LOCATIONS_SUCCEED', 'LOAD_LIMIT_LOCATIONS_FAIL',
   'LOAD_BROKERS', 'LOAD_BROKERS_SUCCEED', 'LOAD_BROKERS_FAIL',
   'TOGGLE_BROKER_MODAL',
   'ADD_BROKER', 'ADD_BROKER_SUCCEED', 'ADD_BROKER_FAIL',
@@ -301,21 +300,6 @@ export function loadLocations(whseCode, zoneCode, tenantId, text) {
         actionTypes.LOAD_LOCATIONS_FAIL,
       ],
       endpoint: 'v1/cwm/warehouse/location/load',
-      method: 'get',
-      params: { whseCode, zoneCode, tenantId, text },
-    },
-  };
-}
-
-export function loadLimitLocations(whseCode, zoneCode, tenantId, text) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_LIMIT_LOCATIONS,
-        actionTypes.LOAD_LIMIT_LOCATIONS_SUCCEED,
-        actionTypes.LOAD_LIMIT_LOCATIONS_FAIL,
-      ],
-      endpoint: 'v1/cwm/warehouse/limit/location/load',
       method: 'get',
       params: { whseCode, zoneCode, tenantId, text },
     },

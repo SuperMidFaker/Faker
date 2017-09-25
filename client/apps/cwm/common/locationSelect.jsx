@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
 import { connect } from 'react-redux';
-import { loadLimitLocations } from 'common/reducers/cwmWarehouse';
+import { loadLimitLocations } from 'common/reducers/cwmWhseLocation';
 const Option = Select.Option;
 
 @connect(
