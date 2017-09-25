@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { Popover, Input, Tabs, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { loadLimitLocations } from 'common/reducers/cwmWarehouse';
-import { loadAdviceLocations } from 'common/reducers/cwmReceive';
+import { loadLimitLocations, loadAdviceLocations } from 'common/reducers/cwmWhseLocation';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 
@@ -19,7 +18,7 @@ const Search = Input.Search;
   }),
   { loadLimitLocations, loadAdviceLocations }
 )
-export default class TraceIdPopover extends Component {
+export default class LocationPopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,

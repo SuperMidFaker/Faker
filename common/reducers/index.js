@@ -55,6 +55,7 @@ import cwmOutbound from './cwmOutbound';
 import cwmInventoryStock from './cwmInventoryStock';
 import cwmMovement from './cwmMovement';
 import cwmWarehouse from './cwmWarehouse';
+import cwmWhseLocation from './cwmWhseLocation';
 import cwmShFtz from './cwmShFtz';
 import cwmShippingOrder from './cwmShippingOrder';
 import cwmDashboard from './cwmDashboard';
@@ -118,6 +119,7 @@ export default combineReducers({
   cwmReceive,
   cwmOutbound,
   cwmWarehouse,
+  cwmWhseLocation,
   cwmContext,
   cwmTransaction,
   cwmSku,
