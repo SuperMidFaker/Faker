@@ -44,11 +44,7 @@ export default class ShareShipmentModal extends React.Component {
     };
   }
   componentDidMount() {
-    document.addEventListener('copy', (ev) => {
-      ev.preventDefault();
-      ev.clipboardData.setData('text/plain', this.state.publicUrl);
-      message.info('复制成功', 3);
-    });
+    document.addEventListener('copy', this.handlePublicUrlCopy);
   }
   componentWillReceiveProps(nextProps) {
     const { shipmt, subdomain } = nextProps;
@@ -69,7 +65,15 @@ export default class ShareShipmentModal extends React.Component {
       tel: shipmt.consignee_mobile,
     });
   }
+  componentWillUnmount() {
+    document.removeEventListener('copy', this.handlePublicUrlCopy);
+  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
+  handlePublicUrlCopy = (ev) => {
+    ev.preventDefault();
+    ev.clipboardData.setData('text/plain', this.state.publicUrl);
+    message.info('复制成功', 3);
+  }
   handleOk = () => {
     this.setState({ loading: true });
     setTimeout(() => {
