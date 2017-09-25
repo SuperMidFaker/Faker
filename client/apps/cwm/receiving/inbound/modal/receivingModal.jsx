@@ -7,7 +7,7 @@ import InfoItem from 'client/components/InfoItem';
 import RowUpdater from 'client/components/rowUpdater';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
-import AdviceLocations from 'client/apps/cwm/common/adviceLocations';
+import LocationPopover from '../../../common/popover/locationPopover';
 import messages from '../../message.i18n';
 import { hideReceiveModal, loadProductDetails, receiveProduct } from 'common/reducers/cwmReceive';
 import { CWM_DAMAGE_LEVEL } from 'common/constants';
@@ -28,6 +28,7 @@ const Option = Select.Option;
     inboundNo: state.cwmReceive.receiveModal.inboundNo,
     inboundProduct: state.cwmReceive.receiveModal.inboundProduct,
     saveLoading: state.cwmReceive.submitting,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
   { hideReceiveModal, loadProductDetails, receiveProduct }
 )
@@ -213,7 +214,7 @@ export default class ReceivingModal extends Component {
         this.handleConfirmReceive();
       }}
       >
-       确定
+        确定
       </Button>
     );
     if (this.state.receivedQty > this.props.inboundProduct.expect_qty) {
@@ -357,8 +358,9 @@ export default class ReceivingModal extends Component {
     dataIndex: 'location',
     width: 150,
     render: (o, record, index) => (
-      <AdviceLocations value={o} style={{ width: 140 }} productNo={this.props.inboundProduct.product_no}
-        onChange={(value, location) => this.handleProductPutAway(index, value, location)} disabled={!!record.trace_id}
+      <LocationPopover value={o} style={{ width: 140 }} productNo={this.props.inboundProduct.product_no}
+        whseCode={this.props.defaultWhse.code} disabled={!!record.trace_id} index={index}
+        onChange={this.handleProductPutAway}
       />),
   }, {
     title: '库存状态',
