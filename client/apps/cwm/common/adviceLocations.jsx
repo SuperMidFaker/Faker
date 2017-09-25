@@ -43,6 +43,9 @@ export default class AdviceLocations extends React.Component {
         }
       });
     }
+    if (nextProps.value) {
+      this.setState({ location: nextProps.value });
+    }
   }
   handleSearch = (value) => {
     this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId, value).then((result) => {

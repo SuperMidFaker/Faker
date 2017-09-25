@@ -112,21 +112,29 @@ export default class AllocatingModal extends Component {
       let reason = '';
       if (!disabled) {
         const outboundHead = this.props.outboundHead;
-        if (outboundHead.bonded && outboundHead.bonded_outtype === 'normal') {
-          disabled = !record.ftz_ent_filed_id;                  // 没有明细ID时disable
-          reason = '海关入库明细ID为空';
+        if (outboundHead.bonded === 0) {
+          disabled = record.bonded;
+          reason = disabled ? '保税库存' : '';
         }
-        if (outboundHead.bonded && outboundHead.bonded_outtype === 'portion') {
+        if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'normal') {
+          disabled = !record.ftz_ent_filed_id;                  // 没有明细ID时disable
+          reason = disabled ? '海关入库明细ID为空' : '';
+        }
+        if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'portion') {
           disabled = !(record.ftz_ent_filed_id && record.portion); // 有明细ID 且 是分拨库存时不disable
-          reason = '货物不可分拨';
+          reason = disabled ? '货物不可分拨' : '';
         }
         if (!record.avail_qty || record.avail_qty === 0) {  // 可用库存为空或等于0时disable
           disabled = true;
           reason = '库存数量不足';
         }
       }
-      return this.props.editable && disabled ? <Popover placement="right" title="原因" content={reason}><Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled /></Popover> :
-      <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled={disabled} />;
+      if (reason) {
+        return (<Popover placement="right" title="原因" content={reason}>
+          <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled />
+        </Popover>);
+      }
+      return <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled={disabled} />;
     },
   }, {
     title: '现分配数量',
@@ -331,15 +339,18 @@ export default class AllocatingModal extends Component {
     dataIndex: 'spacer',
   }]
   handleAllocChange = (value, index) => {
-    const inventoryData = [...this.state.inventoryData];
-    if (value > inventoryData[index].avail_pack_qty) {
-      message.info('分配数量不能大于可用数量');
-    } else {
-      inventoryData[index].allocated_pack_qty = value;
-      inventoryData[index].allocated_qty = value * inventoryData[index].sku_pack_qty;
-      this.setState({
-        inventoryData,
-      });
+    const allocValue = parseFloat(value);
+    if (!isNaN(allocValue)) {
+      if (allocValue > this.state.inventoryData[index].avail_pack_qty) {
+        message.info('分配数量不能大于可用数量');
+      } else {
+        const inventoryData = [...this.state.inventoryData];
+        inventoryData[index].allocated_pack_qty = allocValue;
+        inventoryData[index].allocated_qty = allocValue * inventoryData[index].sku_pack_qty;
+        this.setState({
+          inventoryData,
+        });
+      }
     }
   }
   handleLocationChange = (value) => {
@@ -360,15 +371,13 @@ export default class AllocatingModal extends Component {
     const outboundProduct = { ...this.state.outboundProduct };
     const allocatedOne = { ...inventoryData[index] };
     const allocatedAmount = allocatedData.reduce((pre, cur) => (pre + cur.allocated_qty), 0);
-    if (!inventoryData[index].allocated_qty) {
-      return;
-    }
-    if (allocatedAmount + (allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty) > this.props.outboundProduct.order_qty) {
+    const currAlloc = allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty;
+    if (allocatedAmount + currAlloc > this.props.outboundProduct.order_qty) {
       message.info('分配数量不能大于订单总数');
       return;
     }
-    inventoryData[index].alloc_qty += allocatedOne.allocated_qty;
-    inventoryData[index].avail_qty -= allocatedOne.allocated_qty;
+    inventoryData[index].alloc_qty += currAlloc;
+    inventoryData[index].avail_qty -= currAlloc;
     inventoryData[index].allocated_pack_qty = null;
     inventoryData[index].allocated_qty = null;
     if (inventoryData[index].avail_qty === 0) {
@@ -376,18 +385,18 @@ export default class AllocatingModal extends Component {
     }
     const idx = allocatedData.findIndex(item => item.trace_id === allocatedOne.trace_id);
     if (idx >= 0) {
-      allocatedData[idx].allocated_qty += allocatedOne.allocated_qty;
-      allocatedData[idx].allocated_pack_qty += Number(allocatedOne.allocated_pack_qty);
-      allocatedData[idx].avail_qty = allocatedOne.allocated_qty;
+      allocatedData[idx].allocated_qty += currAlloc;
+      allocatedData[idx].allocated_pack_qty += currAlloc / allocatedOne.sku_pack_qty;
+      // allocatedData[idx].avail_qty = allocatedOne.allocated_qty;
     } else {
       allocatedData.push({
         ...allocatedOne,
-        alloc_qty: 0,
-        allocated_qty: allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty,
-        allocated_pack_qty: allocatedOne.allocated_pack_qty ? Number(allocatedOne.allocated_pack_qty) : allocatedOne.avail_pack_qty,
+        // alloc_qty: 0,
+        allocated_qty: currAlloc,
+        allocated_pack_qty: currAlloc / allocatedOne.sku_pack_qty,
       });
     }
-    outboundProduct.alloc_qty += allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty;
+    outboundProduct.alloc_qty += currAlloc;
     outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / allocatedOne.sku_pack_qty;
     this.setState({
       inventoryData,
