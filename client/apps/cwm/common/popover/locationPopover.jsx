@@ -85,10 +85,10 @@ export default class TraceIdPopover extends Component {
       <div>
         <Tabs defaultActiveKey="1" >
           <TabPane tab="全部库位" key="1">
-            <Search style={{ width: 248, marginBottom: 8 }} value={this.state.searchText} onChange={this.handleChange} />
+            <Search style={{ width: 216, marginBottom: 8 }} value={this.state.searchText} onChange={this.handleChange} />
             <Menu
-              style={{ width: 248 }}
-              mode="inline"
+              style={{ width: 216 }}
+              mode="vertical"
               onClick={this.handleMenuClick}
             >
               {locations.map(option =>
@@ -98,7 +98,7 @@ export default class TraceIdPopover extends Component {
           </TabPane>
           <TabPane tab="推荐库位" key="2">
             <Menu
-              style={{ width: 248 }}
+              style={{ width: 216 }}
               mode="inline"
               onClick={this.handleMenuClick}
             >
@@ -111,8 +111,8 @@ export default class TraceIdPopover extends Component {
       </div>
     );
     return (
-      <Popover content={content} trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Input value={this.props.value} placeHolder="请选择库位" />
+      <Popover content={content} trigger="click" placement="bottom" visible={this.state.visible} onVisibleChange={this.handleVisibleChange} overlayStyle={{ width: 248 }}>
+        <Input {...this.props} value={this.props.value} placeHolder="请选择库位" />
       </Popover>
     );
   }
