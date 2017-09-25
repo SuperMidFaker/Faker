@@ -42,7 +42,7 @@ export default class PickupDeliverForm extends React.Component {
   }
 
   msg = descriptor => formatMsg(this.props.intl, descriptor)
-  handleOk = () => {
+  handleSubmit = () => {
     const { form, type, shipmtNo, parentNo, dispId, loginId, loginName, tenantId, tenantName, location } = this.props;
     const { actDate } = form.getFieldsValue();
     if (actDate) {
@@ -91,7 +91,7 @@ export default class PickupDeliverForm extends React.Component {
             </Form.Item>
           </Col>
         </Row>
-        <Button type="primary" onClick={this.handleOk}>提交</Button>
+        <Button type="primary" onClick={this.handleSubmit}>提交</Button>
       </Form>
     );
   }

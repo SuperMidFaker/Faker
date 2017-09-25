@@ -83,7 +83,7 @@ export default class SubmitPodForm extends React.Component {
     fileList[index].url = info.file.response ? info.file.response.data : '';
     this.setState({ photoList: fileList });
   }
-  handleOk = () => {
+  handleSubmit = () => {
     const { shipmtNo, submitter, dispId, parentDispId, loginId, tenantId, tenantName } = this.props;
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
@@ -113,11 +113,11 @@ export default class SubmitPodForm extends React.Component {
             </Form.Item>
           </Col>
           <Col span={4}>
-            <Form.Item label="回单附件">
+            <Form.Item label="回单照片">
               <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
                 onChange={this.handlePhotoUpload} onRemove={this.handlePhotoRemove} fileList={photoList} withCredentials
               >
-                <Button icon="upload" type="ghost" />
+                <Button icon="upload">点击上传</Button>
               </Upload>
             </Form.Item>
           </Col>

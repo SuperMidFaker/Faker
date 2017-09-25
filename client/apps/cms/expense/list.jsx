@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Radio, Select, Tooltip, message } from 'antd';
+import { Badge, Breadcrumb, Button, DatePicker, Icon, Layout, Radio, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
-import Table from 'client/components/remoteAntTable';
+// import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadExpense, loadCurrencies, loadAdvanceParties, loadPartnersForFilter, showAdvModelModal } from 'common/reducers/cmsExpense';
@@ -29,8 +30,6 @@ const { Header, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const RangePicker = DatePicker.RangePicker;
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
 
 function fetchData({ state, dispatch }) {
   const promises = [];
@@ -129,7 +128,211 @@ export default class ExpenseList extends Component {
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor);
-  dataSource = new Table.DataSource({
+  columns = [
+    {
+      title: this.msg('delgNo'),
+      dataIndex: 'delg_no',
+      width: 120,
+      fixed: 'left',
+      render: o => (
+        <a onClick={() => this.handlePreview(o)}>
+          {o}
+        </a>),
+    }, {
+      title: this.msg('custName'),
+      dataIndex: 'send_name',
+      width: 200,
+      filters: this.state.custFilter,
+      render: o => <TrimSpan text={o} maxLen={12} />,
+    }, {
+      title: this.msg('revenue'),
+      dataIndex: 'revenue',
+      children: [
+        {
+          title: this.msg('serviceRevenue'),
+          dataIndex: 'serv_bill',
+          key: 'serv_bill',
+          width: 80,
+          className: 'cell-align-right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('cushBill'),
+          dataIndex: 'cush_bill',
+          key: 'cush_bill',
+          width: 80,
+          className: 'cell-align-right',
+          render: (o, row) => {
+            if (!isNaN(o)) {
+              const labelElem = (
+                <span>{o.toFixed(2)}<Icon type="edit" /></span>
+              );
+              return (
+                <RowUpdater onHit={this.handleAddAdvanceIncome} field="cush_bill"
+                  row={{ delg_no: row.delg_no }} label={labelElem}
+                />);
+            }
+          },
+        }, {
+          title: this.msg('allBill'),
+          dataIndex: 'all_bill',
+          key: 'all_bill',
+          width: 80,
+          className: 'cell-align-right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return (<b>{o.toFixed(2)}</b>);
+            }
+          },
+        }, {
+          title: this.msg('status'),
+          width: 60,
+          dataIndex: 'bill_status',
+          key: 'revenue_status',
+          className: 'status-indicator',
+          render: (status) => {
+            if (status === 0) {
+              return <Badge status="default" />;
+            } else if (status === 1) {
+              return <Badge status="warning" />;
+            } else if (status === 2) {
+              return <Badge status="success" />;
+            }
+          },
+        },
+      ],
+    }, {
+      title: this.msg('agentName'),
+      dataIndex: 'agent_name',
+      width: 200,
+      filters: this.state.supeFilter,
+      render: o => <TrimSpan text={o} maxLen={12} />,
+    }, {
+      title: this.msg('cost'),
+      dataIndex: 'cost',
+      children: [
+        {
+          title: this.msg('servCost'),
+          dataIndex: 'serv_cost',
+          key: 'serv_cost',
+          width: 80,
+          className: 'cell-align-right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return o.toFixed(2);
+            }
+          },
+        }, {
+          title: this.msg('cushCost'),
+          dataIndex: 'cush_cost',
+          key: 'cush_cost',
+          width: 80,
+          className: 'cell-align-right',
+          render: (o, row) => {
+            if (!isNaN(o)) {
+              const labelElem = (
+                <span>{o.toFixed(2)}<Icon type="edit" /></span>
+              );
+              return (
+                <RowUpdater onHit={this.handleAddAdvancePayment} field="cush_cost"
+                  row={{ delg_no: row.delg_no }} label={labelElem}
+                />);
+            }
+          },
+        }, {
+          title: this.msg('allCost'),
+          dataIndex: 'all_cost',
+          width: 80,
+          className: 'cell-align-right',
+          render: (o) => {
+            if (!isNaN(o)) {
+              return (<b>{o.toFixed(2)}</b>);
+            }
+          },
+        }, {
+          title: this.msg('status'),
+          width: 60,
+          dataIndex: 'cost_status',
+          key: 'cost_status',
+          className: 'status-indicator',
+          render: (status) => {
+            if (status === 0) {
+              return <Badge status="default" />;
+            } else if (status === 1) {
+              return <Badge status="warning" />;
+            } else if (status === 2) {
+              return <Badge status="success" />;
+            }
+          },
+        },
+      ],
+    }, {
+      title: this.msg('profit'),
+      width: 80,
+      dataIndex: 'profit',
+      className: 'cell-align-right',
+      render: (o, record) => {
+        const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
+        const cost = isNaN(record.all_cost) ? 0 : record.all_cost;
+        if (bill < cost) {
+          return (<span className="mdc-text-red">{-(cost - bill).toFixed(2)}</span>);
+        } else if (bill > cost) {
+          return (<span className="mdc-text-green">{(bill - cost).toFixed(2)}</span>);
+        } else {
+          return (<span className="mdc-text-grey">0.00</span>);
+        }
+      },
+    }, {
+      title: this.msg('invoiceNo'),
+      dataIndex: 'invoice_no',
+      width: 180,
+    }, {
+      title: this.msg('acptTime'),
+      dataIndex: 'acpt_time',
+      width: 120,
+      filterDropdown: (
+        <RangePicker value={[moment(this.props.listFilter.acptDate.firstDay), moment(this.props.listFilter.acptDate.endDay)]} onChange={this.handleAcptDateChange} />
+      ),
+      filterDropdownVisible: this.state.filterAcptVisible,
+      onFilterDropdownVisibleChange: visible => this.setState({ filterAcptVisible: visible }),
+      render: o => `${moment(o).format('MM.DD HH:mm')}`,
+    }, {
+      title: this.msg('cleanDate'),
+      dataIndex: 'clean_time',
+      width: 120,
+      filterDropdown: (
+        <RangePicker value={[moment(this.props.listFilter.cleanDate.firstDay), moment(this.props.listFilter.cleanDate.endDay)]} onChange={this.handleCleanDateChange} />
+      ),
+      filterDropdownVisible: this.state.filterCleanVisible,
+      onFilterDropdownVisibleChange: visible => this.setState({ filterCleanVisible: visible }),
+      render: (o) => {
+        if (o) {
+          return <span>{moment(o).format('MM.DD HH:mm')}</span>;
+        }
+      },
+    }, {
+      title: this.msg('lastActT'),
+      dataIndex: 'last_charge_time',
+      width: 120,
+      render: (o) => {
+        if (o) {
+          return <span>{moment(o).format('MM.DD HH:mm')}</span>;
+        } else {
+          return <span>{'--:--'}</span>;
+        }
+      },
+    }, {
+      title: this.msg('opCol'),
+      dataIndex: 'OPS_COL',
+      width: 120,
+      fixed: 'right',
+      render: record => <RowUpdater onHit={this.handleInbound} label="费用明细" row={record} />,
+    },
+  ];
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadExpense(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -266,236 +469,18 @@ export default class ExpenseList extends Component {
     this.props.showAdvModelModal(true);
     this.props.loadQuoteModel(this.props.tenantId);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   render() {
     const { expslist, listFilter } = this.props;
-    const { acptDate, cleanDate } = listFilter;
-    const { sortedInfo } = this.state;
-    const sorted = sortedInfo || {};
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-    const columns = [
-      {
-        title: this.msg('delgNo'),
-        dataIndex: 'delg_no',
-        width: 120,
-        fixed: 'left',
-        render: o => (
-          <a onClick={() => this.handlePreview(o)}>
-            {o}
-          </a>),
-      }, {
-        title: this.msg('custName'),
-        dataIndex: 'send_name',
-        width: 200,
-        filters: this.state.custFilter,
-        render: o => <TrimSpan text={o} maxLen={12} />,
-      }, {
-        title: this.msg('agentName'),
-        dataIndex: 'agent_name',
-        width: 200,
-        filters: this.state.supeFilter,
-        render: o => <TrimSpan text={o} maxLen={12} />,
-      }, {
-        title: this.msg('revenue'),
-        dataIndex: 'revenue',
-        children: [
-          {
-            title: this.msg('serviceRevenue'),
-            dataIndex: 'serv_bill',
-            key: 'serv_bill',
-            width: 80,
-            className: 'cell-align-right',
-            render: (o) => {
-              if (!isNaN(o)) {
-                return o.toFixed(2);
-              }
-            },
-          }, {
-            title: this.msg('cushBill'),
-            dataIndex: 'cush_bill',
-            key: 'cush_bill',
-            width: 80,
-            className: 'cell-align-right',
-            render: (o, row) => {
-              if (!isNaN(o)) {
-                const labelElem = (
-                  <span>{o.toFixed(2)}<Icon type="edit" /></span>
-                );
-                return (
-                  <RowUpdater onHit={this.handleAddAdvanceIncome} field="cush_bill"
-                    row={{ delg_no: row.delg_no }} label={labelElem}
-                  />);
-              }
-            },
-          }, {
-            title: this.msg('allBill'),
-            dataIndex: 'all_bill',
-            key: 'all_bill',
-            width: 80,
-            className: 'cell-align-right',
-            render: (o) => {
-              if (!isNaN(o)) {
-                return (<b>{o.toFixed(2)}</b>);
-              }
-            },
-          }, {
-            title: this.msg('status'),
-            width: 60,
-            dataIndex: 'bill_status',
-            key: 'revenue_status',
-            className: 'status-indicator',
-            render: (status) => {
-              if (status === 0) {
-                return <Badge status="default" />;
-              } else if (status === 1) {
-                return <Badge status="warning" />;
-              } else if (status === 2) {
-                return <Badge status="success" />;
-              }
-            },
-          },
-        ],
-      }, {
-        title: this.msg('cost'),
-        dataIndex: 'cost',
-        children: [
-          {
-            title: this.msg('servCost'),
-            dataIndex: 'serv_cost',
-            key: 'serv_cost',
-            width: 80,
-            className: 'cell-align-right',
-            render: (o) => {
-              if (!isNaN(o)) {
-                return o.toFixed(2);
-              }
-            },
-          }, {
-            title: this.msg('cushCost'),
-            dataIndex: 'cush_cost',
-            key: 'cush_cost',
-            width: 80,
-            className: 'cell-align-right',
-            render: (o, row) => {
-              if (!isNaN(o)) {
-                const labelElem = (
-                  <span>{o.toFixed(2)}<Icon type="edit" /></span>
-                );
-                return (
-                  <RowUpdater onHit={this.handleAddAdvancePayment} field="cush_cost"
-                    row={{ delg_no: row.delg_no }} label={labelElem}
-                  />);
-              }
-            },
-          }, {
-            title: this.msg('allCost'),
-            dataIndex: 'all_cost',
-            width: 80,
-            className: 'cell-align-right',
-            render: (o) => {
-              if (!isNaN(o)) {
-                return (<b>{o.toFixed(2)}</b>);
-              }
-            },
-          }, {
-            title: this.msg('status'),
-            width: 60,
-            dataIndex: 'cost_status',
-            key: 'cost_status',
-            className: 'status-indicator',
-            render: (status) => {
-              if (status === 0) {
-                return <Badge status="default" />;
-              } else if (status === 1) {
-                return <Badge status="warning" />;
-              } else if (status === 2) {
-                return <Badge status="success" />;
-              }
-            },
-          },
-        ],
-      }, {
-        title: this.msg('profit'),
-        width: 80,
-        dataIndex: 'profit',
-        className: 'cell-align-right',
-        render: (o, record) => {
-          const bill = isNaN(record.all_bill) ? 0 : record.all_bill;
-          const cost = isNaN(record.all_cost) ? 0 : record.all_cost;
-          if (bill < cost) {
-            return (<span className="mdc-text-red">{-(cost - bill).toFixed(2)}</span>);
-          } else if (bill > cost) {
-            return (<span className="mdc-text-green">{(bill - cost).toFixed(2)}</span>);
-          } else {
-            return (<span className="mdc-text-grey">0.00</span>);
-          }
-        },
-      }, {
-        title: this.msg('invoiceNo'),
-        dataIndex: 'invoice_no',
-        width: 180,
-      }, {
-        title: this.msg('acptTime'),
-        dataIndex: 'acpt_time',
-        width: 120,
-        sorter: (a, b) => a.acpt_time - b.acpt_time,
-        sortOrder: sorted.columnKey === 'acpt_time' && sorted.order,
-        filterDropdown: (
-          <RangePicker value={[moment(acptDate.firstDay), moment(acptDate.endDay)]} onChange={this.handleAcptDateChange} />
-        ),
-        filterDropdownVisible: this.state.filterAcptVisible,
-        onFilterDropdownVisibleChange: visible => this.setState({ filterAcptVisible: visible }),
-        render: o => `${moment(o).format('MM.DD HH:mm')}`,
-      }, {
-        title: this.msg('cleanDate'),
-        dataIndex: 'clean_time',
-        width: 120,
-        sorter: (a, b) => a.clean_time - b.clean_time,
-        sortOrder: sorted.columnKey === 'clean_time' && sorted.order,
-        filterDropdown: (
-          <RangePicker value={[moment(cleanDate.firstDay), moment(cleanDate.endDay)]} onChange={this.handleCleanDateChange} />
-        ),
-        filterDropdownVisible: this.state.filterCleanVisible,
-        onFilterDropdownVisibleChange: visible => this.setState({ filterCleanVisible: visible }),
-        render: (o) => {
-          if (o) {
-            return <span>{moment(o).format('MM.DD HH:mm')}</span>;
-          }
-        },
-      }, {
-        title: this.msg('lastActT'),
-        dataIndex: 'last_charge_time',
-        width: 120,
-        sorter: (a, b) => a.last_charge_time - b.last_charge_time,
-        sortOrder: sorted.columnKey === 'last_charge_time' && sorted.order,
-        render: (o) => {
-          if (o) {
-            return <span>{moment(o).format('MM.DD HH:mm')}</span>;
-          } else {
-            return <span>{'--:--'}</span>;
-          }
-        },
-      }, {
-        title: this.msg('opCol'),
-        dataIndex: 'OPS_COL',
-        width: 120,
-        fixed: 'right',
-        render: record => <RowUpdater onHit={this.handleInbound} label="费用明细" row={record} />,
-      },
-    ];
-    let curColumns = columns;
-    let tableWidth = 2020;
-    if (listFilter.viewStatus === 'revenueOnly') {
-      curColumns = columns.filter(colm => colm.dataIndex !== 'cost' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'agent_name');
-      tableWidth = 1400;
-    } else if (listFilter.viewStatus === 'costOnly') {
-      curColumns = columns.filter(colm => colm.dataIndex !== 'revenue' && colm.dataIndex !== 'profit' && colm.dataIndex !== 'send_name');
-      tableWidth = 1400;
-    }
+    const toolbarActions = (<SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />);
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -534,36 +519,10 @@ export default class ExpenseList extends Component {
           </div>
         </Header>
         <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
-              <div className="toolbar-right">
-                <Select value={listFilter.viewStatus}
-                  style={{ width: 120 }}
-                  showSearch={false}
-                  onChange={this.handleViewChange}
-                  size="large"
-                >
-                  <OptGroup label="常用视图">
-                    <Option value="both">显示收入与支出</Option>
-                    <Option value="revenueOnly">仅显示收入</Option>
-                    <Option value="costOnly">仅显示支出</Option>
-                  </OptGroup>
-                </Select>
-                <Tooltip title="费用与计费设置">
-                  <Button size="large" icon="setting" />
-                </Tooltip>
-              </div>
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout group-header">
-              <Table rowSelection={rowSelection} columns={curColumns} dataSource={this.dataSource} loading={expslist.loading}
-                bordered scroll={{ x: tableWidth }} rowKey="delg_no"
-              />
-            </div>
-          </div>
+          <DataTable toolbarActions={toolbarActions} scrollOffset={360}
+            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns} dataSource={this.dataSource} rowKey="delg_no" loading={expslist.loading} bordered
+          />
         </Content>
         <DelegationDockPanel />
         <DelgAdvanceExpenseModal />

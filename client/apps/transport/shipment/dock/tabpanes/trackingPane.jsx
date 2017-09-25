@@ -121,7 +121,7 @@ export default class TrackingPane extends React.Component {
     );
     const timelineHeader = (
       <div>
-        <span>操作记录</span>
+        <span>追踪记录</span>
         <div className="toolbar-right">
           <Dropdown overlay={menu} onClick={e => e.stopPropagation()}>
             <Button type="ghost">

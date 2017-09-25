@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Badge, Tooltip, Popconfirm, Radio, message } from 'antd';
-import DataTable from 'client/components/DataTable';
+import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
 import { loadPodTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
@@ -21,7 +21,7 @@ const RadioGroup = Radio.Group;
     podList: state.shipment.statistics.todos.podList,
   }), { loadPodTable, loadShipmtDetail, deliverConfirm, hidePreviewer }
 )
-export default class TodoAcceptPane extends Component {
+export default class TodoPODPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -80,7 +80,7 @@ export default class TodoAcceptPane extends Component {
   }
   render() {
     const { tenantId } = this.props;
-    const dataSource = new DataTable.DataSource({
+    const dataSource = new Table.DataSource({
       fetcher: params => this.props.loadPodTable(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
@@ -158,20 +158,23 @@ export default class TodoAcceptPane extends Component {
         );
       },
     }]);
-    const toolbarActions = (<span>
-      <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
-        <RadioButton value="todoAll">{this.msg('all')}</RadioButton>
-        <RadioButton value="toUploadPod">{this.msg('toUploadPod')}</RadioButton>
-        <RadioButton value="toAuditPod">{this.msg('toAuditPod')}</RadioButton>
-        <RadioButton value="toConfirm">{this.msg('toConfirm')}</RadioButton>
-      </RadioGroup>
-    </span>);
     return (
       <div>
-        <DataTable toolbarActions={toolbarActions} size="middle" dataSource={dataSource} columns={columns} showHeader={false}
-          locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.podList.loading}
-        />
+        <div className="pane-header">
+          <RadioGroup onChange={this.handleTodoFilter} value={this.state.type}>
+            <RadioButton value="todoAll">{this.msg('all')}</RadioButton>
+            <RadioButton value="toUploadPod">{this.msg('toUploadPod')}</RadioButton>
+            <RadioButton value="toAuditPod">{this.msg('toAuditPod')}</RadioButton>
+            <RadioButton value="toConfirm">{this.msg('toConfirm')}</RadioButton>
+          </RadioGroup>
+        </div>
+        <div>
+          <Table size="middle" dataSource={dataSource} columns={columns} showHeader={false}
+            locale={{ emptyText: '没有待办事项' }} rowKey="id" loading={this.props.podList.loading}
+          />
+        </div>
       </div>
+
     );
   }
 }

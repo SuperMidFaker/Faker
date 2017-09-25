@@ -672,8 +672,8 @@ export default class DelegationList extends Component {
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}
-            selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="delg_no" loading={delegationlist.loading}
+            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={columns} dataSource={dataSource} rowKey="delg_no" loading={delegationlist.loading}
           />
         </Content>
         <DelegationDockPanel />

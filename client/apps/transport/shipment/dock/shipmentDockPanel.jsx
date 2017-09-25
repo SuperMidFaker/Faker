@@ -594,6 +594,8 @@ export default class ShipmentDockPanel extends React.Component {
         chargeDisabled = false;
         break;
       case SHIPMENT_TRACK_STATUS.delivered:
+      case SHIPMENT_TRACK_STATUS.podsubmit:
+      case SHIPMENT_TRACK_STATUS.podaccept:
         // dispatchEnabled = false;
         trackingDisabled = false;
         chargeDisabled = false;

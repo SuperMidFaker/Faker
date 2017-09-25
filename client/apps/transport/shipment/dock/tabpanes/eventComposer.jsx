@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Icon, Tabs } from 'antd';
 import { Logixon } from 'client/components/FontIcon';
-// import PickupDeliverForm from './form/pickupDeliverForm';
+import PickupDeliverForm from './form/pickupDeliverForm';
 import PODForm from './form/podForm';
 import DamageForm from './form/damageForm';
 import RejectionForm from './form/rejectionForm';
@@ -113,18 +113,36 @@ export default class ActivityOperation extends React.Component {
   }
 
   renderTabs() {
+    const { disp, shipmt } = this.props;
     const { activeKey } = this.state;
+    const originlocation = {
+      province: shipmt.consignee_province,
+      city: shipmt.consignee_city,
+      district: shipmt.consignee_district,
+      address: shipmt.consignee_addr,
+    };
+    const destLocation = {
+      province: shipmt.consignee_province,
+      city: shipmt.consignee_city,
+      district: shipmt.consignee_district,
+      address: shipmt.consignee_addr,
+    };
+    const isOfflineSP = (disp.sp_tenant_id === -1) || (disp.sp_tenant_id === 0 && disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected);
+    const pickupEnabled = disp.status === SHIPMENT_TRACK_STATUS.dispatched && isOfflineSP;
+    const transitEnabled = disp.status === SHIPMENT_TRACK_STATUS.intransit;
+    const deliverEnabled = disp.status === SHIPMENT_TRACK_STATUS.intransit && isOfflineSP;
+    const delivered = disp.status > SHIPMENT_TRACK_STATUS.intransit;
     const tabs = [
-      /*
-      <TabPane tab={<span><Logixon type="upload" />提货</span>} key="pickup"><PickupDeliverForm type="pickup" /></TabPane>,
-      */
-      <TabPane tab={<span><Logixon type="tracking" />在途更新</span>} key="transit"><TransitForm /></TabPane>,
-      /*
-      <TabPane tab={<span><Logixon type="download" />送货</span>} key="deliver"><PickupDeliverForm type="deliver" /></TabPane>,
-      */
-      <TabPane tab={<span><Logixon type="pod-accept-o" />回单</span>} key="pod"><PODForm /></TabPane>,
-      <TabPane tab={<span><Icon type="exclamation-circle-o" />货差</span>} key="damage"><DamageForm /></TabPane>,
-      <TabPane tab={<span><Logixon type="pod-reject-o" />拒收</span>} key="reject"><RejectionForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="upload" />提货</span>} key="pickup" disabled={!pickupEnabled}>
+        <PickupDeliverForm type="pickup" estDate={shipmt.pickup_est_date} location={originlocation} />
+      </TabPane>,
+      <TabPane tab={<span><Logixon type="tracking" />在途更新</span>} key="transit" disabled={!transitEnabled}><TransitForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="download" />送货</span>} key="deliver" disabled={!deliverEnabled}>
+        <PickupDeliverForm type="deliver" estDate={shipmt.deliver_est_date} location={destLocation} />
+      </TabPane>,
+      <TabPane tab={<span><Logixon type="pod-accept-o" />回单</span>} key="pod" disabled={!delivered}><PODForm /></TabPane>,
+      <TabPane tab={<span><Icon type="exclamation-circle-o" />货差</span>} key="damage" disabled={!delivered}><DamageForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="pod-reject-o" />拒收</span>} key="reject" disabled={!delivered}><RejectionForm /></TabPane>,
       <TabPane tab={<span><Logixon type="complain" />投诉</span>} key="complaint"><ComplaintForm /></TabPane>,
       <TabPane tab={<span><Logixon type="refund" />索赔</span>} key="claim"><ClaimForm /></TabPane>,
     ];
