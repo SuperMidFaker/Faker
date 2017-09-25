@@ -86,6 +86,10 @@ export default class SHFTZEntryList extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
+    title: '客户订单号',
+    dataIndex: 'po_no',
+    width: 160,
+  }, {
     title: '报关单号',
     dataIndex: 'pre_entry_seq_no',
     width: 180,

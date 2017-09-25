@@ -81,6 +81,10 @@ export default class SHFTZTransferOutList extends React.Component {
     fixed: 'left',
     render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
   }, {
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
+    width: 180,
+  }, {
     title: '海关出库单号',
     width: 180,
     dataIndex: 'ftz_rel_no',
