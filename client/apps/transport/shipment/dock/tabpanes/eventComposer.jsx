@@ -131,7 +131,7 @@ export default class ActivityOperation extends React.Component {
     const pickupEnabled = disp.status === SHIPMENT_TRACK_STATUS.dispatched && isOfflineSP;
     const transitEnabled = disp.status === SHIPMENT_TRACK_STATUS.intransit;
     const deliverEnabled = disp.status === SHIPMENT_TRACK_STATUS.intransit && isOfflineSP;
-    const delivered = disp.status > SHIPMENT_TRACK_STATUS.intransit;
+    const isDelivered = disp.status > SHIPMENT_TRACK_STATUS.intransit;
     const tabs = [
       <TabPane tab={<span><Logixon type="upload" />提货</span>} key="pickup" disabled={!pickupEnabled}>
         <PickupDeliverForm type="pickup" estDate={shipmt.pickup_est_date} location={originlocation} />
@@ -140,9 +140,9 @@ export default class ActivityOperation extends React.Component {
       <TabPane tab={<span><Logixon type="download" />送货</span>} key="deliver" disabled={!deliverEnabled}>
         <PickupDeliverForm type="deliver" estDate={shipmt.deliver_est_date} location={destLocation} />
       </TabPane>,
-      <TabPane tab={<span><Logixon type="pod-accept-o" />回单</span>} key="pod" disabled={!delivered}><PODForm /></TabPane>,
-      <TabPane tab={<span><Icon type="exclamation-circle-o" />货差</span>} key="damage" disabled={!delivered}><DamageForm /></TabPane>,
-      <TabPane tab={<span><Logixon type="pod-reject-o" />拒收</span>} key="reject" disabled={!delivered}><RejectionForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="pod-accept-o" />回单</span>} key="pod" disabled={!isDelivered}><PODForm /></TabPane>,
+      <TabPane tab={<span><Icon type="exclamation-circle-o" />货差</span>} key="damage" disabled={!isDelivered}><DamageForm /></TabPane>,
+      <TabPane tab={<span><Logixon type="pod-reject-o" />拒收</span>} key="reject" disabled={!isDelivered}><RejectionForm /></TabPane>,
       <TabPane tab={<span><Logixon type="complain" />投诉</span>} key="complaint"><ComplaintForm /></TabPane>,
       <TabPane tab={<span><Logixon type="refund" />索赔</span>} key="claim"><ClaimForm /></TabPane>,
     ];
