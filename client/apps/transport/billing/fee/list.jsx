@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Tag, Layout, Icon, DatePicker, Select, Radio, Breadcrumb } from 'antd';
+import { Button, Tag, Layout, Icon, DatePicker, Radio, Breadcrumb } from 'antd';
 import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
@@ -28,7 +28,6 @@ import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const RangePicker = DatePicker.RangePicker;
-const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -493,12 +492,7 @@ export default class FeesList extends React.Component {
       <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
         value={this.props.fees.searchValue} size="large"
       />
-      <Select value={billingType} style={{ width: 120 }} onChange={this.handleBillingTypeChange}>
-        <Option value="cost">显示成本</Option>
-        <Option value="revenue">显示收入</Option>
-        <Option value="costAndRevenue">显示成本与收入</Option>
-      </Select>
-      <RangePicker size="large" style={{ width: 200, marginLeft: 20 }} value={[moment(startDate), moment(endDate)]}
+      <RangePicker size="large" value={[moment(startDate), moment(endDate)]}
         onChange={this.onDateChange}
       />
     </span>);

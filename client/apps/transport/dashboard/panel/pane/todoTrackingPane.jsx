@@ -8,7 +8,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import * as Location from 'client/util/location';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
-import { loadTransitTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
+import { loadTransitTable, loadShipmtDetail, hideDock } from 'common/reducers/shipment';
 import RevokeModal from '../../../common/modal/revokeModal';
 import { columnDef } from './columnDef';
 const RadioButton = Radio.Button;
@@ -20,7 +20,7 @@ const RadioGroup = Radio.Group;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     trackingList: state.shipment.statistics.todos.trackingList,
-  }), { loadTransitTable, loadShipmtDetail, hidePreviewer }
+  }), { loadTransitTable, loadShipmtDetail, hideDock }
 )
 export default class TodoTrackingPane extends Component {
   static propTypes = {
@@ -31,7 +31,7 @@ export default class TodoTrackingPane extends Component {
     trackingList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    hidePreviewer: PropTypes.func.isRequired,
+    hideDock: PropTypes.func.isRequired,
   }
   state = {
     type: 'dispatchedOrIntransit',
@@ -68,7 +68,7 @@ export default class TodoTrackingPane extends Component {
     this.setState({ type: e.target.value }, () => {
       this.handleTableLoad(this.props);
     });
-    this.props.hidePreviewer();
+    this.props.hideDock();
   }
   render() {
     const { tenantId } = this.props;

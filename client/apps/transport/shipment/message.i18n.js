@@ -473,6 +473,10 @@ export default defineMessages({
     id: 'transport.shipment.tab.pod',
     defaultMessage: '回单处理',
   },
+  shipmtException: {
+    id: 'transport.shipment.tab.exception',
+    defaultMessage: '异常处理',
+  },
   exceptionResolved: {
     id: 'transport.tracking.shipmt.exception.exceptionResolved',
     defaultMessage: '异常状态',

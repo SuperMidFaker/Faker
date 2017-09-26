@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Icon, Tabs } from 'antd';
+import moment from 'moment';
+import { Card, Icon, Tabs, Steps } from 'antd';
 import { Logixon } from 'client/components/FontIcon';
 import PickupDeliverForm from './form/pickupDeliverForm';
 import PODForm from './form/podForm';
@@ -11,11 +12,14 @@ import RejectionForm from './form/rejectionForm';
 import ComplaintForm from './form/complaintForm';
 import ClaimForm from './form/claimForm';
 import TransitForm from './form/transitForm';
-import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constants';
+import { showChangeActDateModal } from 'common/reducers/trackingLandStatus';
+import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS, TMS_SHIPMENT_STATUS_DESC } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+
 const formatMsg = format(messages);
 const TabPane = Tabs.TabPane;
+const Step = Steps.Step;
 
 @injectIntl
 @connect(
@@ -23,9 +27,10 @@ const TabPane = Tabs.TabPane;
     tenantId: state.account.tenantId,
     disp: state.shipment.previewer.dispatch,
     shipmt: state.shipment.previewer.shipmt,
-  })
+  }),
+  { showChangeActDateModal }
 )
-export default class ActivityOperation extends React.Component {
+export default class EventComposer extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -54,6 +59,8 @@ export default class ActivityOperation extends React.Component {
       } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
         activeKey = 'pod';
       }
+    } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
+      activeKey = 'complaint';
     } else {
       activeKey = 'transit';
     }
@@ -125,7 +132,9 @@ export default class ActivityOperation extends React.Component {
   handleTabChange = (activeKey) => {
     this.setState({ activeKey });
   }
-
+  handleShowChangeActDateModal = (type) => {
+    this.props.showChangeActDateModal(true, type);
+  }
   renderTabs() {
     const { disp, shipmt } = this.props;
     const { activeKey } = this.state;
@@ -167,7 +176,7 @@ export default class ActivityOperation extends React.Component {
     );
   }
   render() {
-    // const { disp, shipmt, sourceType, tenantId } = this.props;
+    const { disp, shipmt } = this.props;
     /*
     let tabs = [
     ];
@@ -285,9 +294,52 @@ export default class ActivityOperation extends React.Component {
       }
     }
     */
+    let statusDesc = TMS_SHIPMENT_STATUS_DESC;
+    if (disp.pod_type === 'none') statusDesc = TMS_SHIPMENT_STATUS_DESC.filter(item => item.status <= 5);
     return (
-      <Card bodyStyle={{ padding: 8 }} noHovering>
+      <Card bodyStyle={{ padding: 8, paddingBottom: 48 }} noHovering>
         {this.renderTabs()}
+        <div className="card-footer">
+          <Steps progressDot current={disp.status - 2}>
+            {statusDesc.map((step) => {
+              let desc = step.text;
+              if (step.status <= disp.status) {
+                if (step.status === SHIPMENT_TRACK_STATUS.intransit) {
+                  const act = new Date(disp[step.date]);
+                  act.setHours(0, 0, 0, 0);
+                  const est = new Date(shipmt.pickup_est_date);
+                  est.setHours(0, 0, 0, 0);
+                  if (act.getTime() > est.getTime()) {
+                    desc = (
+                      <span className="mdc-text-red">
+                        {step.text} {moment(disp[step.date]).format('YYYY.MM.DD')}
+                      </span>);
+                  } else {
+                    desc = disp[step.date] ? `${step.text} ${moment(disp[step.date]).format('YYYY.MM.DD')}` : step.text;
+                  }
+                  desc = <span>{desc} <a><Icon type="edit" onClick={() => this.handleShowChangeActDateModal('pickupActDate')} /></a></span>;
+                } else if (step.status === SHIPMENT_TRACK_STATUS.delivered) {
+                  const act = new Date(disp[step.date]);
+                  act.setHours(0, 0, 0, 0);
+                  const est = new Date(shipmt.deliver_est_date);
+                  est.setHours(0, 0, 0, 0);
+                  if (act.getTime() > est.getTime()) {
+                    desc = (
+                      <span className="mdc-text-red">
+                        {step.text} {moment(disp[step.date]).format('YYYY.MM.DD')}
+                      </span>);
+                  } else {
+                    desc = disp[step.date] ? `${step.text} ${moment(disp[step.date]).format('YYYY.MM.DD')}` : step.text;
+                  }
+                  desc = <span>{desc} <a><Icon type="edit" onClick={() => this.handleShowChangeActDateModal('deliverActDate')} /></a></span>;
+                } else {
+                  desc = disp[step.date] ? `${step.text} ${moment(disp[step.date]).format('YYYY.MM.DD')}` : step.text;
+                }
+              }
+              return (<Step description={desc} key={step.status} />);
+            })}
+          </Steps>
+        </div>
       </Card>
     );
   }

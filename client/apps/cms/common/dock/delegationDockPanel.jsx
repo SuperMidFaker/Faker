@@ -15,7 +15,7 @@ import ExpensePane from './tabpanes/expensePane';
 import DelegationPane from './tabpanes/delegationPane';
 import DelgDispModal from './delgDispModal';
 import { showDispModal, acceptDelg, reloadDelegationList } from 'common/reducers/cmsDelegation';
-import { setPreviewStatus, hidePreviewer, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelgInfoHub';
+import { setPreviewStatus, hideDock, setPreviewTabkey, loadBasicInfo, getShipmtOrderNo } from 'common/reducers/cmsDelgInfoHub';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import OperatorsPopover from 'client/common/operatorsPopover';
 
@@ -34,7 +34,7 @@ const TabPane = Tabs.TabPane;
     operators: state.crmCustomers.operators,
     partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
   }),
-  { hidePreviewer, setPreviewStatus, setPreviewTabkey, showDispModal, loadBasicInfo, loadOrderDetail, getShipmtOrderNo, acceptDelg, reloadDelegationList }
+  { hideDock, setPreviewStatus, setPreviewTabkey, showDispModal, loadBasicInfo, loadOrderDetail, getShipmtOrderNo, acceptDelg, reloadDelegationList }
 )
 export default class DelegationDockPanel extends React.Component {
   static propTypes = {
@@ -42,7 +42,7 @@ export default class DelegationDockPanel extends React.Component {
     tenantId: PropTypes.number.isRequired,
     tabKey: PropTypes.string,
     previewKey: PropTypes.string,
-    hidePreviewer: PropTypes.func.isRequired,
+    hideDock: PropTypes.func.isRequired,
     previewer: PropTypes.object.isRequired,
     delegateListFilter: PropTypes.object.isRequired,
     setPreviewStatus: PropTypes.func.isRequired,
@@ -53,7 +53,7 @@ export default class DelegationDockPanel extends React.Component {
     }
   }
   componentWillUnmount() {
-    this.props.hidePreviewer();
+    this.props.hideDock();
   }
   handleTabChange = (tabKey) => {
     this.props.setPreviewTabkey(tabKey);
@@ -136,7 +136,7 @@ export default class DelegationDockPanel extends React.Component {
     this.props.getShipmtOrderNo(previewer.delegation.instance_uuid).then(
       (result) => {
         this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
-        this.props.hidePreviewer();
+        this.props.hideDock();
       }
     );
   }
@@ -253,7 +253,7 @@ export default class DelegationDockPanel extends React.Component {
   render() {
     const { visible, previewLoading } = this.props;
     return (
-      <DockPanel size="large" visible={visible} onClose={this.props.hidePreviewer}
+      <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
         title={this.renderTitle()}
         extra={this.renderExtra()}
         alert={this.renderBtns()}

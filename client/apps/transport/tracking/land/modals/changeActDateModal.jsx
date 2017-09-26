@@ -86,18 +86,19 @@ export default class ChangeActDateModal extends React.Component {
     this.props.showChangeActDateModal(false);
   }
   render() {
-    const colSpan = 10;
     return (
       <Modal title="纠正节点时间" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
       >
-        {this.props.type === 'pickupActDate' && <FormItem label="实际提货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
-          <DatePicker value={this.state.pickupActDate} onChange={this.handlePickupActDateChange} />
-        </FormItem>}
-        {this.props.type === 'deliverActDate' && (
-          <FormItem label="实际送货时间" labelCol={{ span: colSpan }} wrapperCol={{ span: 24 - colSpan }} >
+        <Form layout="vertical">
+          {this.props.type === 'pickupActDate' && <FormItem label="实际提货时间" >
+            <DatePicker value={this.state.pickupActDate} onChange={this.handlePickupActDateChange} />
+          </FormItem>}
+          {this.props.type === 'deliverActDate' && (
+          <FormItem label="实际送货时间" >
             <DatePicker value={this.state.deliverActDate} onChange={this.handleDeliverActDateChange} />
           </FormItem>)}
+        </Form>
       </Modal>
     );
   }

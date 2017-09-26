@@ -5,11 +5,12 @@ import { Col, Row, Tabs, Button, Modal, Tooltip, Menu, Icon, message } from 'ant
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import DetailPane from './tabpanes/orderPane';
-import ChargePane from './tabpanes/chargePane';
-import PodPane from './tabpanes/podPane';
 import TrackingPane from './tabpanes/trackingPane';
+import ExceptionPane from './tabpanes/exceptionPane';
+import PodPane from './tabpanes/podPane';
+import ExpensePane from './tabpanes/expensePane';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_EFFECTIVES, SHIPMENT_POD_STATUS, SHIPMENT_SOURCE, SHIPMENT_VEHICLE_CONNECT, PROMPT_TYPES } from 'common/constants';
-import { hidePreviewer, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm,
+import { hideDock, sendTrackingDetailSMSMessage, changePreviewerTab, loadShipmtDetail, loadForm,
   getShipmtOrderNo, toggleRecalculateChargeModal, toggleShareShipmentModal } from 'common/reducers/shipment';
 import { format } from 'client/common/i18n/helpers';
 import InfoItem from 'client/components/InfoItem';
@@ -78,7 +79,7 @@ function getTrackStatusMsg(status, eff) {
     expandList: state.transportDispatch.expandList,
     charges: state.shipment.charges,
   }),
-  { hidePreviewer,
+  { hideDock,
     sendTrackingDetailSMSMessage,
     changePreviewerTab,
     loadShipmtDetail,
@@ -117,7 +118,7 @@ export default class ShipmentDockPanel extends React.Component {
     shipmtNo: PropTypes.string,
     dispatch: PropTypes.object,
     effective: PropTypes.number,
-    hidePreviewer: PropTypes.func.isRequired,
+    hideDock: PropTypes.func.isRequired,
     sendTrackingDetailSMSMessage: PropTypes.func.isRequired,
     changePreviewerTab: PropTypes.func.isRequired,
     shipmt: PropTypes.object.isRequired,
@@ -160,7 +161,7 @@ export default class ShipmentDockPanel extends React.Component {
     }
   }
   componentWillUnmount() {
-    this.props.hidePreviewer();
+    this.props.hideDock();
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
 
@@ -266,7 +267,7 @@ export default class ShipmentDockPanel extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.hidePreviewer();
+        this.props.hideDock();
       }
     });
   }
@@ -275,7 +276,7 @@ export default class ShipmentDockPanel extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.hidePreviewer();
+        this.props.hideDock();
       }
     });
   }
@@ -286,7 +287,7 @@ export default class ShipmentDockPanel extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.hidePreviewer();
+        this.props.hideDock();
       }
     });
   }
@@ -297,7 +298,7 @@ export default class ShipmentDockPanel extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.hidePreviewer();
+        this.props.hideDock();
       }
     });
   }
@@ -316,7 +317,7 @@ export default class ShipmentDockPanel extends React.Component {
     this.props.changePreviewerTab(tabKey);
   }
   handleClose = () => {
-    this.props.hidePreviewer();
+    this.props.hideDock();
   }
   handleShowShareShipmentModal = () => {
     this.setState({
@@ -342,7 +343,7 @@ export default class ShipmentDockPanel extends React.Component {
     this.props.getShipmtOrderNo(shipmt.flow_instance_uuid).then(
       (result) => {
         this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
-        this.props.hidePreviewer();
+        this.props.hideDock();
       }
     );
   }
@@ -576,7 +577,7 @@ export default class ShipmentDockPanel extends React.Component {
   renderTabs(status, sourceType) {
     // let dispatchEnabled = true;
     let trackingDisabled = true;
-    let chargeDisabled = true;
+    let expenseDisabled = true;
     let podDisabled = true;
     switch (status) {
       case SHIPMENT_TRACK_STATUS.unaccepted:
@@ -591,14 +592,14 @@ export default class ShipmentDockPanel extends React.Component {
       case SHIPMENT_TRACK_STATUS.intransit:
         // dispatchEnabled = false;
         trackingDisabled = false;
-        chargeDisabled = false;
+        expenseDisabled = false;
         break;
       case SHIPMENT_TRACK_STATUS.delivered:
       case SHIPMENT_TRACK_STATUS.podsubmit:
       case SHIPMENT_TRACK_STATUS.podaccept:
         // dispatchEnabled = false;
         trackingDisabled = false;
-        chargeDisabled = false;
+        expenseDisabled = false;
         podDisabled = false;
         break;
       default:
@@ -616,82 +617,14 @@ export default class ShipmentDockPanel extends React.Component {
         <TabPane tab={this.msg('shipmtPOD')} key="pod" disabled={podDisabled}>
           <PodPane />
         </TabPane>
-        <TabPane tab={this.msg('shipmtCharge')} key="charge" disabled={chargeDisabled}>
-          <ChargePane />
+        <TabPane tab={this.msg('shipmtException')} key="exception">
+          <ExceptionPane />
+        </TabPane>
+        <TabPane tab={this.msg('shipmtCharge')} key="charge" disabled={expenseDisabled}>
+          <ExpensePane />
         </TabPane>
       </Tabs>
     );
-
-    /*
-    if (status === SHIPMENT_TRACK_STATUS.unaccepted) {
-      return (
-        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('shipmtDetail')} key="detail">
-            <DetailPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane sourceType={sourceType} />
-          </TabPane>
-        </Tabs>
-      );
-    } else if (status === SHIPMENT_TRACK_STATUS.accepted) {
-      return (
-        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('shipmtDetail')} key="detail">
-            <DetailPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane sourceType={sourceType} />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtCharge')} key="charge">
-            <ChargePane />
-          </TabPane>
-        </Tabs>
-      );
-    } else if (status === SHIPMENT_TRACK_STATUS.dispatched || status === SHIPMENT_TRACK_STATUS.intransit || status === SHIPMENT_TRACK_STATUS.delivered) {
-      return (
-        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane sourceType={sourceType} />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtDetail')} key="detail">
-            <DetailPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
-            <TrackingPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtCharge')} key="charge">
-            <ChargePane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtException')} key="exception">
-            <ExceptionPane />
-          </TabPane>
-        </Tabs>
-      );
-    } else if (status >= SHIPMENT_TRACK_STATUS.podsubmit) {
-
-    } else {
-      return (
-        <Tabs activeKey={this.props.tabKey} onChange={this.handleTabChange}>
-          <TabPane tab={this.msg('shipmtActivity')} key="activity">
-            <ActivityLoggerPane sourceType={sourceType} />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtDetail')} key="detail">
-            <DetailPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtTracking')} key="tracking">
-            <TrackingPane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtCharge')} key="charge">
-            <ChargePane />
-          </TabPane>
-          <TabPane tab={this.msg('shipmtException')} key="exception">
-            <ExceptionPane />
-          </TabPane>
-        </Tabs>
-      );
-    }
-    */
   }
   renderExtra() {
     const { shipmt } = this.props;

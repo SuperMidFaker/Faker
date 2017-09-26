@@ -260,7 +260,7 @@ export function showPreviewer(params) {
   };
 }
 
-export function hidePreviewer(delgNo) {
+export function hideDock(delgNo) {
   return {
     type: actionTypes.HIDE_PREVIEWER,
     delgNo,

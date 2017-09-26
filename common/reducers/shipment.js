@@ -555,7 +555,7 @@ export function loadShipmtCharges(dispId, tenantId) {
   };
 }
 
-export function hidePreviewer() {
+export function hideDock() {
   return {
     type: actionTypes.HIDE_PREVIWER,
   };

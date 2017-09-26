@@ -6,7 +6,7 @@ import { Badge, Tooltip, Popconfirm, Radio, message } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
-import { loadPodTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
+import { loadPodTable, loadShipmtDetail, hideDock } from 'common/reducers/shipment';
 import { deliverConfirm } from 'common/reducers/trackingLandStatus';
 import { columnDef } from './columnDef';
 import { SHIPMENT_POD_STATUS, SHIPMENT_VEHICLE_CONNECT } from 'common/constants';
@@ -19,7 +19,7 @@ const RadioGroup = Radio.Group;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     podList: state.shipment.statistics.todos.podList,
-  }), { loadPodTable, loadShipmtDetail, deliverConfirm, hidePreviewer }
+  }), { loadPodTable, loadShipmtDetail, deliverConfirm, hideDock }
 )
 export default class TodoPODPane extends Component {
   static propTypes = {
@@ -31,7 +31,7 @@ export default class TodoPODPane extends Component {
     filter: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
     deliverConfirm: PropTypes.func.isRequired,
-    hidePreviewer: PropTypes.func.isRequired,
+    hideDock: PropTypes.func.isRequired,
   }
   state = {
     type: 'todoAll',
@@ -67,7 +67,7 @@ export default class TodoPODPane extends Component {
     this.setState({ type: e.target.value }, () => {
       this.handleTableLoad(this.props);
     });
-    this.props.hidePreviewer();
+    this.props.hideDock();
   }
   handleDeliverConfirm = (shipmtNo, dispId) => {
     this.props.deliverConfirm(shipmtNo, dispId).then((result) => {

@@ -33,7 +33,7 @@ const typeKeys = TMS_EXPENSE_TYPES.map(ec => ec.key);
     loadShipmtCharges,
   }
 )
-export default class ChargePanel extends React.Component {
+export default class ExpensePanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -382,7 +382,7 @@ export default class ChargePanel extends React.Component {
             }
             >
               <a >
-                <Icon type="plus-circle-o" /> 收入 <Icon type="down" />
+                <Icon type="down-circle-o" /> 记录应收 <Icon type="down" />
               </a>
             </Dropdown>
             <Dropdown overlay={
@@ -393,7 +393,7 @@ export default class ChargePanel extends React.Component {
             }
             >
               <a style={{ marginLeft: 30 }}>
-                <Icon type="plus-circle-o" /> 成本 <Icon type="down" />
+                <Icon type="up-circle-o" /> 记录应付 <Icon type="down" />
               </a>
             </Dropdown>
           </div>}

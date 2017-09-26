@@ -51,19 +51,7 @@ const messages = defineMessages({
   },
   billing: {
     id: 'cms.module.billing',
-    defaultMessage: '账务中心',
-  },
-  groupBilling: {
-    id: 'cms.module.group.billing',
     defaultMessage: '计费',
-  },
-  groupInvoice: {
-    id: 'cms.module.group.invouce',
-    defaultMessage: '对账',
-  },
-  groupQuote: {
-    id: 'cms.module.group.quote',
-    defaultMessage: '报价',
   },
   expense: {
     id: 'cms.module.billing.expense',

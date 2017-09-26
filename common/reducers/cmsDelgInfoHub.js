@@ -130,7 +130,7 @@ export function setPreviewTabkey(tabkey) {
   };
 }
 
-export function hidePreviewer() {
+export function hideDock() {
   return {
     type: actionTypes.HIDE_PREVIEWER,
   };

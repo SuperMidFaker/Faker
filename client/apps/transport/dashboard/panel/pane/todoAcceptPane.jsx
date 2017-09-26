@@ -7,7 +7,7 @@ import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import { SHIPMENT_TRACK_STATUS, PROMPT_TYPES } from 'common/constants';
 import { formatMsg } from '../../message.i18n';
-import { loadDispatchTable, loadShipmtDetail, hidePreviewer } from 'common/reducers/shipment';
+import { loadDispatchTable, loadShipmtDetail, hideDock } from 'common/reducers/shipment';
 import { columnDef } from './columnDef';
 import RevokeModal from '../../../common/modal/revokeModal';
 const RadioButton = Radio.Button;
@@ -19,7 +19,7 @@ const RadioGroup = Radio.Group;
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     acceptanceList: state.shipment.statistics.todos.acceptanceList,
-  }), { loadDispatchTable, loadShipmtDetail, hidePreviewer }
+  }), { loadDispatchTable, loadShipmtDetail, hideDock }
 )
 export default class TodoAcceptPane extends Component {
   static propTypes = {
@@ -30,7 +30,7 @@ export default class TodoAcceptPane extends Component {
     acceptanceList: PropTypes.object.isRequired,
     filter: PropTypes.object.isRequired,
     loadShipmtDetail: PropTypes.func.isRequired,
-    hidePreviewer: PropTypes.func.isRequired,
+    hideDock: PropTypes.func.isRequired,
   }
   state = {
     type: 'all',
@@ -73,7 +73,7 @@ export default class TodoAcceptPane extends Component {
     this.setState({ type: e.target.value }, () => {
       this.handleTableLoad(this.props);
     });
-    this.props.hidePreviewer();
+    this.props.hideDock();
   }
   render() {
     const { tenantId } = this.props;

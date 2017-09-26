@@ -157,14 +157,6 @@ export default class Clearance extends React.Component {
           path: '/clearance/billing/expense',
           text: formatMsg(intl, 'expense'),
         }, {
-          key: 'cms-billing-1',
-          path: '/clearance/billing/receivable',
-          text: formatMsg(intl, 'billingReceivable'),
-        }, {
-          key: 'cms-billing-2',
-          path: '/clearance/billing/payable',
-          text: formatMsg(intl, 'billingPayable'),
-        }, {
           key: 'cms-billing-3',
           path: '/clearance/billing/quote',
           text: formatMsg(intl, 'quote'),

@@ -19,7 +19,7 @@ export default defineMessages({
   },
   billing: {
     id: 'tms.module.billing',
-    defaultMessage: '账务中心',
+    defaultMessage: '计费',
   },
   billingExpense: {
     id: 'tms.module.billing.expense',
@@ -35,11 +35,11 @@ export default defineMessages({
   },
   billingTariff: {
     id: 'tms.module.billing.tariff',
-    defaultMessage: '价格管理',
+    defaultMessage: '费率设置',
   },
   analytics: {
     id: 'tms.module.analytics',
-    defaultMessage: '报表中心',
+    defaultMessage: '报表',
   },
   analyticsKPI: {
     id: 'tms.module.analytics.kpi',
