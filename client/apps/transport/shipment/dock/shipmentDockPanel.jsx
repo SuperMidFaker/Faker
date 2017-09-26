@@ -575,31 +575,34 @@ export default class ShipmentDockPanel extends React.Component {
     return buttons.length > 0 ? (<span>{buttons}</span>) : null;
   }
   renderTabs(status, sourceType) {
-    // let dispatchEnabled = true;
+    const dispatchDisabled = true;
     let trackingDisabled = true;
     let expenseDisabled = true;
+    let exceptionDisabled = true;
     let podDisabled = true;
     switch (status) {
       case SHIPMENT_TRACK_STATUS.unaccepted:
         break;
       case SHIPMENT_TRACK_STATUS.accepted:
-        // dispatchEnabled = false;
+        // dispatchDisabled = false;
         break;
       case SHIPMENT_TRACK_STATUS.dispatched:
-        // dispatchEnabled = false;
+        // dispatchDisabled = false;
         trackingDisabled = false;
         break;
       case SHIPMENT_TRACK_STATUS.intransit:
-        // dispatchEnabled = false;
+        // dispatchDisabled = false;
         trackingDisabled = false;
+        exceptionDisabled = false;
         expenseDisabled = false;
         break;
       case SHIPMENT_TRACK_STATUS.delivered:
       case SHIPMENT_TRACK_STATUS.podsubmit:
       case SHIPMENT_TRACK_STATUS.podaccept:
-        // dispatchEnabled = false;
+        // dispatchDisabled = false;
         trackingDisabled = false;
         expenseDisabled = false;
+        exceptionDisabled = false;
         podDisabled = false;
         break;
       default:
@@ -610,14 +613,14 @@ export default class ShipmentDockPanel extends React.Component {
         <TabPane tab={this.msg('shipmtOrder')} key="order">
           <DetailPane />
         </TabPane>
-        <TabPane tab={this.msg('shipmtDispatch')} key="dispatch" disabled />
+        <TabPane tab={this.msg('shipmtDispatch')} key="dispatch" disabled={dispatchDisabled} />
         <TabPane tab={this.msg('shipmtTracking')} key="tracking" disabled={trackingDisabled}>
           <TrackingPane sourceType={sourceType} />
         </TabPane>
         <TabPane tab={this.msg('shipmtPOD')} key="pod" disabled={podDisabled}>
           <PodPane />
         </TabPane>
-        <TabPane tab={this.msg('shipmtException')} key="exception">
+        <TabPane tab={this.msg('shipmtException')} key="exception" disabled={exceptionDisabled}>
           <ExceptionPane />
         </TabPane>
         <TabPane tab={this.msg('shipmtCharge')} key="charge" disabled={expenseDisabled}>

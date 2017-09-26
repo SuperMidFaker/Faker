@@ -11,7 +11,6 @@ import { loadPodTable, showAuditModal, changePodFilter } from
 import { deliverConfirm } from 'common/reducers/trackingLandStatus';
 import PodAuditModal from './modals/pod-audit';
 import makeColumns from './columnDef';
-import { SHIPMENT_TRACK_STATUS } from 'common/constants';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
 import CustomerSelect from '../../common/customerSelect';
 import SearchBar from 'client/components/SearchBar';
@@ -63,7 +62,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     sendMessage,
     changePodFilter,
     deliverConfirm })
-export default class LandStatusList extends React.Component {
+export default class TrackingPODList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -193,11 +192,7 @@ export default class LandStatusList extends React.Component {
     this.props.showAuditModal(row.disp_id, row.parent_id, row.pod_id);
   }
   handleShipmtPreview = (row) => {
-    let tabKey = 'detail';
-    if (row.status === SHIPMENT_TRACK_STATUS.podsubmit || row.status === SHIPMENT_TRACK_STATUS.podaccept) {
-      tabKey = 'pod';
-    }
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', tabKey).then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'pod').then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

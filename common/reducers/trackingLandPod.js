@@ -29,6 +29,7 @@ const initialState = {
     current: 1,
     data: [],
   },
+  pod: {},
   auditModal: {
     readonly: true,
     visible: false,
@@ -57,6 +58,8 @@ export default function reducer(state = initialState, action) {
         loaded: true,
         shipmentlist: action.result.data,
       };
+    case actionTypes.LOAD_POD_SUCCEED:
+      return { ...state, pod: action.result.data };
     case actionTypes.SHOW_AUDIT_MODAL_SUCCEED:
       return { ...state,
         auditModal: {

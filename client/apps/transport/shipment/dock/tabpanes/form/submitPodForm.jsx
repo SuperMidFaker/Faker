@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Col, Form, Input, Radio, Upload, Button, message, Row } from 'antd';
+import { Alert, Col, Form, Input, Radio, Upload, Button, message, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { saveSubmitPod, loadPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
@@ -29,6 +29,7 @@ export default class SubmitPodForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     parentDispId: PropTypes.number,
+    rejected: PropTypes.bool,
     shipmtNo: PropTypes.string.isRequired,
     saveSubmitPod: PropTypes.func.isRequired,
     dispId: PropTypes.number.isRequired,
@@ -98,10 +99,11 @@ export default class SubmitPodForm extends React.Component {
       });
   }
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { rejected, form: { getFieldDecorator } } = this.props;
     const { signStatus, photoList } = this.state;
     return (
       <Form layout="vertical">
+        {rejected && <Alert message="客户拒绝接受此回单，建议重新上传提交" type="error" showIcon />}
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item label="签收状态">

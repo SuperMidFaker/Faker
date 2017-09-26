@@ -79,7 +79,7 @@ function fetchData({ state, dispatch, params, cookie }) {
     changeStatusFilter,
   }
 )
-export default class LandStatusList extends React.Component {
+export default class TrackingStatusList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

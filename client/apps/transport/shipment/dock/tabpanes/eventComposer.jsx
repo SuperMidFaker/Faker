@@ -6,7 +6,6 @@ import moment from 'moment';
 import { Card, Icon, Tabs, Steps } from 'antd';
 import { Logixon } from 'client/components/FontIcon';
 import PickupDeliverForm from './form/pickupDeliverForm';
-import PODForm from './form/podForm';
 import DamageForm from './form/damageForm';
 import RejectionForm from './form/rejectionForm';
 import ComplaintForm from './form/complaintForm';
@@ -57,7 +56,7 @@ export default class EventComposer extends React.Component {
       } else if (disp.status === SHIPMENT_TRACK_STATUS.intransit) {
         activeKey = 'transit';
       } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
-        activeKey = 'pod';
+        activeKey = 'damage';
       }
     } else if (disp.status >= SHIPMENT_TRACK_STATUS.delivered) {
       activeKey = 'complaint';
@@ -163,7 +162,8 @@ export default class EventComposer extends React.Component {
       <TabPane tab={<span><Logixon type="download" />送货</span>} key="deliver" disabled={!deliverEnabled}>
         <PickupDeliverForm type="deliver" estDate={shipmt.deliver_est_date} location={destLocation} />
       </TabPane>,
-      <TabPane tab={<span><Logixon type="pod-accept-o" />回单</span>} key="pod" disabled={!isDelivered}><PODForm /></TabPane>,
+      /* <TabPane tab={<span><Logixon type="pod-accept-o" />回单</span>} key="pod" disabled={!isDelivered}><PODForm /></TabPane>,
+      */
       <TabPane tab={<span><Icon type="exclamation-circle-o" />货差</span>} key="damage" disabled={!isDelivered}><DamageForm /></TabPane>,
       <TabPane tab={<span><Logixon type="pod-reject-o" />拒收</span>} key="reject" disabled={!isDelivered}><RejectionForm /></TabPane>,
       <TabPane tab={<span><Logixon type="complain" />投诉</span>} key="complaint"><ComplaintForm /></TabPane>,

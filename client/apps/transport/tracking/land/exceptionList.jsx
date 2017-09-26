@@ -79,7 +79,7 @@ function renderActDate(recordActDate, recordEstDate) {
     carriers: state.shipment.partners,
   }),
   { loadExcpShipments, loadShipmtDetail, changeExcpFilter })
-export default class LandStatusList extends React.Component {
+export default class TrackingExceptionList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -396,7 +396,7 @@ export default class LandStatusList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleShipmtPreview = (row) => {
-    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'track').then((result) => {
+    this.props.loadShipmtDetail(row.shipmt_no, this.props.tenantId, 'sr', 'exception').then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }

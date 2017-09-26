@@ -61,7 +61,7 @@ export default class TodoPODPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   handleLoadShipmtDetail = (record) => {
-    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'tracking');
+    this.props.loadShipmtDetail(record.shipmt_no, this.props.tenantId, 'sr', 'pod');
   }
   handleTodoFilter = (e) => {
     this.setState({ type: e.target.value }, () => {

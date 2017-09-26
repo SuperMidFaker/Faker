@@ -74,7 +74,7 @@ export default class ExceptionPane extends React.Component {
   })
   columns = [{
     dataIndex: 'excp_level',
-    width: 40,
+    width: 30,
     render: (o) => {
       if (o === 'INFO') {
         return (<Icon type="info-circle" className="sign-info" />);
@@ -88,7 +88,7 @@ export default class ExceptionPane extends React.Component {
   }, {
     title: this.msg('exceptionType'),
     dataIndex: 'type',
-    width: 100,
+    width: 80,
     render: (o) => {
       const t = TRANSPORT_EXCEPTIONS.find(item => item.code === o);
       return t ? t.name : '';
@@ -96,7 +96,6 @@ export default class ExceptionPane extends React.Component {
   }, {
     title: this.msg('exceptionDescription'),
     dataIndex: 'excp_event',
-    width: 200,
   }, {
     title: this.msg('exceptionResolved'),
     dataIndex: 'resolved',
@@ -105,7 +104,7 @@ export default class ExceptionPane extends React.Component {
       if (o === 1) {
         return (<Tag color="green">已解决</Tag>);
       } else if (o === 0) {
-        return '未解决';
+        return <Tag>未解决</Tag>;
       }
       return o;
     },
@@ -113,11 +112,11 @@ export default class ExceptionPane extends React.Component {
     title: this.msg('submitDate'),
     dataIndex: 'submit_date',
     width: 120,
-    render: o => moment(o).format('YYYY-MM-DD HH:mm:ss'),
+    render: o => moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: this.msg('submitter'),
     dataIndex: 'submitter',
-    width: 70,
+    width: 60,
   }, {
     title: this.msg('operation'),
     dataIndex: 'OPS_COL',
@@ -134,8 +133,8 @@ export default class ExceptionPane extends React.Component {
 
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 8 }}>
-          <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" size="small" pagination={false} />
+        <Card bodyStyle={{ padding: 0 }} noHovering>
+          <Table size="middle" columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
           <DealException />
         </Card>
       </div>
