@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Col, Form, Input, Radio, Upload, Button, message, Row } from 'antd';
+import { Alert, Col, Icon, Form, Input, Radio, Upload, Button, message, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { saveSubmitPod, loadPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
@@ -101,26 +101,23 @@ export default class SubmitPodForm extends React.Component {
   render() {
     const { rejected, form: { getFieldDecorator } } = this.props;
     const { signStatus, photoList } = this.state;
+    const uploadButton = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
     return (
       <Form layout="vertical">
         {rejected && <Alert message="客户拒绝接受此回单，建议重新上传提交" type="error" showIcon />}
         <Row gutter={16}>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item label="签收状态">
               <RadioGroup onChange={this.handleSignRadioChange} value={signStatus}>
                 <Radio key="normal" value={1}>{this.msg('normalSign')}</Radio>
                 <Radio key="abnormal" value={2}>{this.msg('abnormalSign')}</Radio>
                 <Radio key="refused" value={3}>{this.msg('refusedSign')}</Radio>
               </RadioGroup>
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Form.Item label="回单照片">
-              <Upload action={`${API_ROOTS.default}v1/upload/img/`} listType="picture"
-                onChange={this.handlePhotoUpload} onRemove={this.handlePhotoRemove} fileList={photoList} withCredentials
-              >
-                <Button icon="upload">点击上传</Button>
-              </Upload>
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -132,6 +129,18 @@ export default class SubmitPodForm extends React.Component {
                 }],
               })(<TextArea placeholder="请填写备注" autosize />)}
             </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Upload
+              action={`${API_ROOTS.default}v1/upload/img/`}
+              listType="picture-card"
+              fileList={photoList}
+              onChange={this.handlePhotoUpload}
+              onRemove={this.handlePhotoRemove}
+              withCredentials
+            >
+              {photoList.length >= 3 ? null : uploadButton}
+            </Upload>
           </Col>
         </Row>
         <Button type="primary" onClick={this.handleSubmit}>提交</Button>

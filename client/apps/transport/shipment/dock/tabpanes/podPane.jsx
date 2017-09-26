@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Card, Carousel, Tag } from 'antd';
+import { Alert, Card, Carousel } from 'antd';
 import { loadPod } from 'common/reducers/trackingLandPod';
 import { format } from 'client/common/i18n/helpers';
 import SubmitPODForm from './form/submitPodForm';
@@ -18,7 +18,6 @@ const formatMsg = format(messages);
     podId: state.shipment.previewer.dispatch.pod_id,
     shipmt: state.shipment.previewer.shipmt,
     disp: state.shipment.previewer.dispatch,
-    pod: state.trackingLandPod.pod,
   }), { loadPod }
 )
 export default class PodPanel extends React.Component {
@@ -27,20 +26,26 @@ export default class PodPanel extends React.Component {
     podId: PropTypes.number.isRequired,
     loadPod: PropTypes.func.isRequired,
   }
-
+  state = {
+    pod: {},
+  }
   componentDidMount() {
     if (this.props.podId) {
-      this.props.loadPod(this.props.podId);
+      this.props.loadPod(this.props.podId).then((result) => {
+        this.setState({ pod: result.data });
+      });
     }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.podId !== nextProps.podId && nextProps.podId) {
-      this.props.loadPod(nextProps.podId);
+      this.props.loadPod(nextProps.podId).then((result) => {
+        this.setState({ pod: result.data });
+      });
     }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   renderPhotos() {
-    const pod = this.props.pod;
+    const pod = this.state.pod;
     if (pod.photos && pod.photos !== '') {
       return (
         <Carousel autoplay>
@@ -52,20 +57,8 @@ export default class PodPanel extends React.Component {
     }
   }
   render() {
-    const { disp, pod } = this.props;
+    const { disp } = this.props;
     // const isOfflineSP = (disp.sp_tenant_id === -1) || (disp.sp_tenant_id === 0 && disp.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected);
-    let tagColor = '';
-    let signStatusDescription = '状态未知';
-    if (pod.sign_status === 1) {
-      signStatusDescription = '正常签收';
-      tagColor = 'green';
-    } else if (pod.sign_status === 2) {
-      signStatusDescription = '异常签收';
-      tagColor = 'yellow';
-    } else if (pod.sign_status === 3) {
-      signStatusDescription = '拒绝签收';
-      tagColor = 'red';
-    }
     let podStatus = '';
     let podStatusDesc = '';
     switch (disp.pod_status) {
@@ -97,14 +90,7 @@ export default class PodPanel extends React.Component {
     const rejectedByClient = disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient;
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 16 }} noHovering>
-          {
-            (disp.pod_status === '' || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || rejectedByClient) && <SubmitPODForm rejected={rejectedByClient} />
-          }
-          {
-            (disp.pod_status === SHIPMENT_POD_STATUS.pending) && <AuditPODForm pod={pod} />
-          }
-          {
+        {
             (disp.pod_status === SHIPMENT_POD_STATUS.rejectByUs) && <Alert
               message={podStatus}
               description={podStatusDesc}
@@ -112,7 +98,7 @@ export default class PodPanel extends React.Component {
               showIcon
             />
           }
-          {
+        {
             (disp.pod_status === SHIPMENT_POD_STATUS.acceptByUs || disp.pod_status === SHIPMENT_POD_STATUS.acceptByClient) && <Alert
               message={podStatus}
               description={podStatusDesc}
@@ -120,13 +106,18 @@ export default class PodPanel extends React.Component {
               showIcon
             />
           }
-        </Card>
-        <Card
-          title={<Tag color={tagColor}>{signStatusDescription}</Tag>}
-          extra={pod.sign_remark}
-          noHovering
-        >
-          {this.renderPhotos()}
+        <Card bodyStyle={{ padding: 16 }} noHovering>
+          {
+            (disp.pod_status === '' || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || rejectedByClient) && <SubmitPODForm rejected={rejectedByClient} />
+          }
+          {
+            (disp.pod_status === SHIPMENT_POD_STATUS.pending) && <AuditPODForm pod={this.state.pod} auditable />
+          }
+          {
+            (disp.pod_status === SHIPMENT_POD_STATUS.rejectByUs ||
+            disp.pod_status === SHIPMENT_POD_STATUS.acceptByUs ||
+            disp.pod_status === SHIPMENT_POD_STATUS.acceptByClient) && <AuditPODForm pod={this.state.pod} />
+          }
         </Card>
       </div>
     );
