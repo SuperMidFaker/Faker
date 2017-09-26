@@ -232,7 +232,7 @@ export default class SHFTZStockList extends React.Component {
     const filter = { ...this.state.filter, ...searchForm };
     this.handleStockQuery(filter);
   }
-  s2ab = (s) => {
+  s2ab = (s) => { // todo
     if (typeof ArrayBuffer !== 'undefined') {
       const buf = new ArrayBuffer(s.length);
       const view = new Uint8Array(buf);

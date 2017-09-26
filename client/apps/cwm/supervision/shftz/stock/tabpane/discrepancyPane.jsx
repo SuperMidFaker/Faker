@@ -1,9 +1,12 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table } from 'antd';
+import { Table, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
+import { string2Bytes } from 'client/util/dataTransform';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -28,6 +31,19 @@ export default class FTZDiscrepancyPane extends React.Component {
     title: this.msg('detailId'),
     dataIndex: 'ftz_ent_detail_id',
     width: 100,
+  }, {
+    title: this.msg('hsCode'),
+    width: 120,
+    dataIndex: 'hscode',
+  }, {
+    title: this.msg('gName'),
+    width: 120,
+    dataIndex: 'name',
+  }, {
+    title: this.msg('cargoType'),
+    width: 150,
+    dataIndex: 'portion',
+    render: por => por ? '可分拨' : '非分拨',
   }, {
     title: this.msg('ftzStockQty'),
     dataIndex: 'ftz_qty',
@@ -102,11 +118,49 @@ export default class FTZDiscrepancyPane extends React.Component {
     }
     return <Table columns={this.expColumns} dataSource={entrylist} rowKey="key" noBorder />;
   }
+  handleExportExcel = () => {
+    const csvData = [];
+    this.props.diffviews.forEach((dv) => {
+      const out = {};
+      const entrylist = this.props.entrydiffs.filter(erd => erd.ftz_ent_detail_id === dv.ftz_ent_detail_id);
+      for (let i = 0; i < entrylist.length; i++) {
+        const el = entrylist[i];
+        const ins = this.props.inbounddiffs.filter(ibd => ibd.asn_no === el.asn_no && ibd.asn_seq_no === el.asn_seq_no);
+        for (let j = 0; j < ins.length; j++) {
+          const inb = ins[j];
+          out[this.msg('billNo')] = dv.ftz_ent_no;
+          out[this.msg('detailId')] = dv.ftz_ent_detail_id;
+          out[this.msg('hsCode')] = dv.hscode;
+          out[this.msg('gName')] = dv.name;
+          out[this.msg('cargoType')] = this.columns[4].render(dv.portion);
+          out[this.msg('ftzStockQty')] = dv.ftz_qty;
+          out[this.msg('ftzNetWt')] = dv.ftz_net_wt;
+          out[this.msg('ftzAmount')] = dv.ftz_amount;
+          out[this.msg('productNo')] = el.product_no;
+          out[this.msg('whseStockQty')] = el.stock_qty;
+          out[this.msg('whseNetWt')] = el.stock_netwt;
+          out[this.msg('whseAmount')] = el.stock_amount;
+          out['库位数量'] = inb.stock_qty;
+          out[this.msg('location')] = inb.location;
+          csvData.push(out);
+        }
+      }
+    });
+    const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+    const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+    wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
+    FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
+      'shftz_stock_compare.xlsx');
+  }
   render() {
     return (
       <div className="table-panel table-fixed-layout">
         <DataTable scrollOffset={390} rowKey="id" noBorder expandedRowRender={this.expandedRowRender}
-          columns={this.columns} dataSource={this.props.diffviews}
+          columns={this.columns} dataSource={this.props.diffviews} toolbarActions={[
+            <Button size="large" icon="export" disabled={!this.props.diffviews.length > 0} onClick={this.handleExportExcel}>
+              {this.msg('export')}
+            </Button>,
+          ]}
         />
       </div>
     );
