@@ -90,33 +90,33 @@ export default class PodPanel extends React.Component {
     const rejectedByClient = disp.pod_status === SHIPMENT_POD_STATUS.rejectByClient;
     return (
       <div className="pane-content tab-pane">
-        {
-            (disp.pod_status === SHIPMENT_POD_STATUS.rejectByUs) && <Alert
-              message={podStatus}
-              description={podStatusDesc}
-              type="error"
-              showIcon
-            />
-          }
-        {
-            (disp.pod_status === SHIPMENT_POD_STATUS.acceptByUs || disp.pod_status === SHIPMENT_POD_STATUS.acceptByClient) && <Alert
-              message={podStatus}
-              description={podStatusDesc}
-              type="success"
-              showIcon
-            />
-          }
+        {(disp.pod_status === SHIPMENT_POD_STATUS.rejectByUs) &&
+        <Alert
+          message={podStatus}
+          description={podStatusDesc}
+          type="error"
+          showIcon
+        />
+        }
+        {(disp.pod_status === SHIPMENT_POD_STATUS.acceptByUs || disp.pod_status === SHIPMENT_POD_STATUS.acceptByClient) &&
+        <Alert
+          message={podStatus}
+          description={podStatusDesc}
+          type="success"
+          showIcon
+        />
+        }
         <Card bodyStyle={{ padding: 16 }} noHovering>
-          {
-            (disp.pod_status === '' || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || rejectedByClient) && <SubmitPODForm rejected={rejectedByClient} />
+          {(disp.pod_status === '' || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || rejectedByClient) &&
+          <SubmitPODForm rejected={rejectedByClient} />
           }
-          {
-            (disp.pod_status === SHIPMENT_POD_STATUS.pending) && <AuditPODForm pod={this.state.pod} auditable />
+          {(disp.pod_status === SHIPMENT_POD_STATUS.pending) &&
+          <AuditPODForm pod={this.state.pod} auditable />
           }
-          {
-            (disp.pod_status === SHIPMENT_POD_STATUS.rejectByUs ||
+          {(disp.pod_status === SHIPMENT_POD_STATUS.rejectByUs ||
             disp.pod_status === SHIPMENT_POD_STATUS.acceptByUs ||
-            disp.pod_status === SHIPMENT_POD_STATUS.acceptByClient) && <AuditPODForm pod={this.state.pod} />
+            disp.pod_status === SHIPMENT_POD_STATUS.acceptByClient) &&
+            <AuditPODForm pod={this.state.pod} />
           }
         </Card>
       </div>

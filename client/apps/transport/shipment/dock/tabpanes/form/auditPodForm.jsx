@@ -106,8 +106,12 @@ export default class AuditPodForm extends React.Component {
             </Modal>
           </Col>
         </Row>
-        {auditable && <Button type="primary" icon="check-circle-o" onClick={this.handleAcceptPOD} disabled={this.state.done}>接受</Button>}
-        {auditable && <Button type="danger" icon="close-circle-o" onClick={this.handleRejectPOD} style={{ marginLeft: 8 }} disabled={this.state.done}>拒绝</Button>}
+        {auditable &&
+        <Button type="primary" icon="check-circle-o" onClick={this.handleAcceptPOD} disabled={this.state.done}>接受</Button>
+        }
+        {auditable &&
+        <Button type="danger" icon="close-circle-o" onClick={this.handleRejectPOD} style={{ marginLeft: 8 }} disabled={this.state.done}>拒绝</Button>
+        }
       </Form>
     );
   }
