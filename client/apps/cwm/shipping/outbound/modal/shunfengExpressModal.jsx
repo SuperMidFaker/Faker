@@ -8,7 +8,7 @@ import { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, to
 loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
 import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import { WaybillDef } from '../billsPrint/docDef';
+import { WaybillDef, TrigeminyListDef } from '../billsPrint/docDef';
 import Cascader from 'client/components/RegionCascader';
 
 const formatMsg = format(messages);
@@ -160,7 +160,7 @@ export default class ShunfengExpressModal extends Component {
     });
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleWaybillPrint = (courierNo, courierNoSon, seq) => {
+  handleWaybillPrint = (courierNo, courierNoSon, seq, type) => {
     const expressType = EXPRESS_TYPES.find(item => item.value === this.state.express_type).text;
     const payMethod = PAY_METHODS.find(item => item.value === this.state.pay_method).text;
     const expressInfo = {
@@ -212,20 +212,39 @@ export default class ShunfengExpressModal extends Component {
     //   seq,
     //   whseInfo,
     // });
-    const docDefinition = WaybillDef({
-      ...this.props.waybill,
-      courierNo,
-      courierNoSon,
-      seq,
-      expressInfo,
-    });
-    window.pdfMake.fonts = {
-      selfFont: {
-        normal: 'msyh.ttf',
-        bold: 'msyh.ttf',
-        italics: 'frutigel.ttf',
-      },
-    };
+    let docDefinition = null;
+    if (type === 2) {
+      docDefinition = WaybillDef({
+        ...this.props.waybill,
+        courierNo,
+        courierNoSon,
+        seq,
+        expressInfo,
+      });
+      window.pdfMake.fonts = {
+        selfFont: {
+          normal: 'msyh.ttf',
+          bold: 'msyh.ttf',
+          italics: 'frutigel.ttf',
+        },
+      };
+    } else {
+      docDefinition = TrigeminyListDef({
+        ...this.props.waybill,
+        courierNo,
+        courierNoSon,
+        seq,
+        expressInfo,
+      });
+      window.pdfMake.fonts = {
+        selfFont: {
+          normal: 'msyh.ttf',
+          bold: 'msyh.ttf',
+          italics: 'frutigel.ttf',
+        },
+      };
+    }
+
     window.pdfMake.createPdf(docDefinition).open();
   }
   orderExpress = () => {
@@ -318,7 +337,12 @@ export default class ShunfengExpressModal extends Component {
       },
     }, {
       width: 80,
-      render: (col, row, index) => (<a onClick={() => this.handleWaybillPrint(courierNo[0], row.courier_no, index + 1)}><Icon type="printer" /></a>),
+      render: (col, row, index) => (
+        <span>
+          <Tooltip title="二联单"><a onClick={() => this.handleWaybillPrint(courierNo[0], row.courier_no, index + 1, 2)}><Icon type="printer" /></a></Tooltip>
+          <span className="ant-divider" />
+          <Tooltip title="三联单"><a onClick={() => this.handleWaybillPrint(courierNo[0], row.courier_no, index + 1, 3)}><Icon type="printer" /></a></Tooltip>
+        </span>),
     }];
     const receiverRegionValues = [this.state.receiver_province, this.state.receiver_city,
       this.state.receiver_district, this.state.receiver_street];

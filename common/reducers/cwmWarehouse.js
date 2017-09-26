@@ -55,6 +55,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'DELETE_BROKER', 'DELETE_BROKER_SUCCEED', 'DELETE_BROKER_FAIL',
   'UPDATE_BROKER', 'UPDATE_BROKER_SUCCEED', 'UPDATE_BROKER_FAIL',
   'LOAD_CCBS', 'LOAD_CCBS_SUCCEED', 'LOAD_CCBS_FAIL',
+  'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
 ]);
 
 const initialState = {
@@ -923,6 +924,21 @@ export function loadCCBs(tenantId, role, businessType, business) {
       endpoint: 'v1/cwm/ccbs/load',
       method: 'get',
       params: { tenantId, role, businessType, business },
+    },
+  };
+}
+
+export function loadAdviceLocations(productNo, tenantId, whseCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ADVICE_LOCATIONS,
+        actionTypes.LOAD_ADVICE_LOCATIONS_SUCCEED,
+        actionTypes.LOAD_ADVICE_LOCATIONS_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/advice/locations',
+      method: 'get',
+      params: { productNo, tenantId, whseCode },
     },
   };
 }
