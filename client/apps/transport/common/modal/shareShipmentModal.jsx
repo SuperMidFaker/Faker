@@ -43,9 +43,6 @@ export default class ShareShipmentModal extends React.Component {
       SMSSendLoding: false,
     };
   }
-  componentDidMount() {
-    document.addEventListener('copy', this.handlePublicUrlCopy);
-  }
   componentWillReceiveProps(nextProps) {
     const { shipmt, subdomain } = nextProps;
     const publicUrlPath = `/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.publicUrlKey}`;
@@ -64,9 +61,9 @@ export default class ShareShipmentModal extends React.Component {
       publicQRcodeUrl,
       tel: shipmt.consignee_mobile,
     });
-  }
-  componentWillUnmount() {
-    document.removeEventListener('copy', this.handlePublicUrlCopy);
+    if (nextProps.visible && !this.props.visible) {
+      document.addEventListener('copy', this.handlePublicUrlCopy);
+    }
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handlePublicUrlCopy = (ev) => {
@@ -79,10 +76,12 @@ export default class ShareShipmentModal extends React.Component {
     setTimeout(() => {
       this.setState({ loading: false });
     }, 3000);
+    document.removeEventListener('copy', this.handlePublicUrlCopy);
   }
   handleCancel = () => {
     this.props.toggleShareShipmentModal(false);
     this.setState({ publicQRcodeUrl: '' });
+    document.removeEventListener('copy', this.handlePublicUrlCopy);
   }
   handleNavigationTo = (to, query) => {
     this.context.router.push({ pathname: to, query });
