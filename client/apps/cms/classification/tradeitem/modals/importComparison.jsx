@@ -169,13 +169,17 @@ export default class ImportComparisonModal extends React.Component {
           </Tooltip>);
       } else if (record.feedback === 'newSrc') {
         return (
-          <Tooltip title="添加新来源">
+          <Tooltip title="标志为新来源">
             <Tag color="green">{o}</Tag>
           </Tooltip>);
       } else {
         return <span>{o}</span>;
       }
     },
+  }, {
+    title: this.msg('srcProductNo'),
+    dataIndex: 'src_product_no',
+    width: 200,
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
@@ -286,7 +290,7 @@ export default class ImportComparisonModal extends React.Component {
             <span>
               <a onClick={() => this.handleUpdate(record, index, 'newHsName')} role="presentation">更新</a>
               <span className="ant-divider" />
-              <a onClick={() => this.handleUpdate(record, index, 'newSrc')} role="presentation">添加新来源</a>
+              <a onClick={() => this.handleUpdate(record, index, 'newSrc')} role="presentation">标志为新来源</a>
               <span className="ant-divider" />
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleRowDel(record.id)}>
                 <a role="presentation"><Icon type="delete" /></a>
