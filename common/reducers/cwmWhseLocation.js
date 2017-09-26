@@ -6,6 +6,16 @@ const actionTypes = createActionTypes('@@welogix/cwm/whselocation/', [
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
 ]);
 
+const initialState = {
+};
+
+export default function reducer(state = initialState, action) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
 export function loadLimitLocations(whseCode, zoneCode, tenantId, text) {
   return {
     [CLIENT_API]: {

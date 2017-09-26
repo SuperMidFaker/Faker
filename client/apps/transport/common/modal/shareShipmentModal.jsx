@@ -41,6 +41,7 @@ export default class ShareShipmentModal extends React.Component {
       publicUrl: '',
       tel: '',
       SMSSendLoding: false,
+      publicUrlCopy: '',
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -67,9 +68,12 @@ export default class ShareShipmentModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handlePublicUrlCopy = (ev) => {
-    ev.preventDefault();
-    ev.clipboardData.setData('text/plain', this.state.publicUrl);
-    message.info('复制成功', 3);
+    if (this.state.publicUrlCopy) {
+      ev.preventDefault();
+      ev.clipboardData.setData('text/plain', this.state.publicUrlCopy);
+      message.info('复制成功', 3);
+      this.state.publicUrlCopy = '';
+    }
   }
   handleOk = () => {
     this.setState({ loading: true });
@@ -87,6 +91,7 @@ export default class ShareShipmentModal extends React.Component {
     this.context.router.push({ pathname: to, query });
   }
   handleCopyClick() {
+    this.state.publicUrlCopy = this.state.publicUrl;
     document.execCommand('copy');
   }
   handleTelInput = (e) => {

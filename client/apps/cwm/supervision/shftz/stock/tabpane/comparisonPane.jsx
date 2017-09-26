@@ -26,6 +26,19 @@ export default class FTZComparisonPane extends React.Component {
     dataIndex: 'ftz_ent_detail_id',
     width: 100,
   }, {
+    title: this.msg('hsCode'),
+    width: 120,
+    dataIndex: 'hscode',
+  }, {
+    title: this.msg('gName'),
+    width: 120,
+    dataIndex: 'name',
+  }, {
+    title: this.msg('cargoType'),
+    width: 150,
+    dataIndex: 'portion',
+    render: por => por ? '可分拨' : '非分拨',
+  }, {
     title: this.msg('ftzStockQty'),
     dataIndex: 'ftz_qty',
     width: 150,
