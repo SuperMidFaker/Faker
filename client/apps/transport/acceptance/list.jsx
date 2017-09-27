@@ -249,9 +249,8 @@ export default class AcceptList extends React.Component {
       }
     },
   }, {
-    title: this.msg('effective'),
     dataIndex: 'effective',
-    width: 60,
+    width: 80,
     render: (o) => {
       switch (o) {
         case 0:

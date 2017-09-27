@@ -72,6 +72,8 @@ function getTrackStatusMsg(status, eff) {
     tabKey: state.shipment.previewer.tabKey,
     shipmtNo: state.shipment.previewer.shipmt.shipmt_no,
     dispatch: state.shipment.previewer.dispatch,
+    upstream: state.shipment.previewer.upstream,
+    downstream: state.shipment.previewer.downstream,
     effective: state.shipment.previewer.shipmt.effective,
     shipmt: state.shipment.previewer.shipmt,
     previewer: state.shipment.previewer,
@@ -349,7 +351,9 @@ export default class ShipmentDockPanel extends React.Component {
   }
   handleMenuClick = (e) => {
     const { shipmt, dispatch } = this.props;
-    if (e.key === 'terminate') {
+    if (e.key === 'cancel') { // TODO 取消运单
+      this.props.revokeOrReject('revoke', shipmt.shipmt_no, dispatch.id);
+    } else if (e.key === 'close') { // TODO 关闭运单
       this.props.revokeOrReject('revoke', shipmt.shipmt_no, dispatch.id);
     } else if (e.key === 'shareShipment') {
       this.props.toggleShareShipmentModal(true);
@@ -671,11 +675,15 @@ export default class ShipmentDockPanel extends React.Component {
     );
   }
   renderMenu() {
-    const { shipmt, dispatch, tenantId } = this.props;
+    const { upstream } = this.props;
     const menuItems = [];
-    const terminable = tenantId === shipmt.tenant_id && dispatch.status < SHIPMENT_TRACK_STATUS.intransit;
-    if (terminable) {
-      menuItems.push(<Menu.Item key="terminate"><Icon type="delete" />终止运单</Menu.Item>);
+    const cancelable = !upstream.parent_id && upstream.status > SHIPMENT_TRACK_STATUS.unaccepted && upstream.status < SHIPMENT_TRACK_STATUS.intransit;
+    const closeable = !upstream.parent_id && upstream.status === SHIPMENT_TRACK_STATUS.intransit;
+    if (cancelable) {
+      menuItems.push(<Menu.Item key="cancel"><Icon type="close-circle-o" />取消运单</Menu.Item>);
+    }
+    if (closeable) {
+      menuItems.push(<Menu.Item key="close"><Icon type="flag" />关闭运单</Menu.Item>);
     }
     menuItems.push(<Menu.Item key="shareShipment"><Icon type="share-alt" />共享运单</Menu.Item>);
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
