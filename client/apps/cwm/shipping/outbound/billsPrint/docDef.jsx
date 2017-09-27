@@ -395,7 +395,7 @@ function TrigeminyList(data) {
 
 export function TrigeminyListDef(data) {
   const docDefinition = {
-    pageSize: { width: 400, height: 800 },
+    pageSize: { width: 400, height: 840 },
     pageMargins: [20, 6],
     content: [],
     styles: {
