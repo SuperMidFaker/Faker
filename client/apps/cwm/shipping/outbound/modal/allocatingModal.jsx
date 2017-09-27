@@ -440,15 +440,16 @@ export default class AllocatingModal extends Component {
     if (this.state.allocatedData.length === 0) {
       message.info('请分配数量');
     } else {
-      this.props.manualAlloc(this.props.outboundNo, this.props.outboundProduct.seq_no, this.state.allocatedData.map(ad => ({
-        trace_id: ad.trace_id,
-        allocated_qty: ad.allocated_qty,
-        allocated_pack_qty: ad.allocated_pack_qty,
-      })), this.props.loginId, this.props.loginName).then((result) => {
-        if (!result.error) {
-          this.handleCancel();
-        }
-      });
+      this.props.manualAlloc(this.props.outboundNo, this.props.outboundProduct.seq_no,
+        this.state.allocatedData.filter(ad => !ad.deleteDisabled).map(ad => ({
+          trace_id: ad.trace_id,
+          allocated_qty: ad.allocated_qty,
+          allocated_pack_qty: ad.allocated_pack_qty,
+        })), this.props.loginId, this.props.loginName).then((result) => {
+          if (!result.error) {
+            this.handleCancel();
+          }
+        });
     }
   }
   handleSelectChangeType = (value) => {
