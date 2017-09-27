@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Form, message, Card, Input, Modal, Icon, DatePicker } from 'antd';
+import { Form, message, Alert, Input, Modal, DatePicker } from 'antd';
 import { showDealExcpModal, loadExceptions, dealException } from 'common/reducers/trackingLandException';
 import { changeDeliverPrmDate } from 'common/reducers/trackingLandStatus';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
@@ -26,7 +26,7 @@ const delay = TRANSPORT_EXCEPTIONS.find(item => item.key === 'SHIPMENT_EXCEPTION
   { showDealExcpModal, loadExceptions, dealException, changeDeliverPrmDate }
 )
 @Form.create()
-export default class DealException extends React.Component {
+export default class ResolveExceptionModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
@@ -91,11 +91,11 @@ export default class DealException extends React.Component {
     const type = t ? t.name : '';
     const description = exception.excp_event;
     if (exception.excp_level === 'INFO') {
-      return (<div><Icon type="info-circle" className="sign-info" /> {type} : {description}</div>);
+      return (<Alert showIcon type="info" message={`${type}: ${description}`} />);
     } else if (exception.excp_level === 'WARN') {
-      return (<div><Icon type="exclamation-circle" className="sign-warning" /> {type} : {description}</div>);
+      return (<Alert showIcon type="warning" message={`${type}: ${description}`} />);
     } else if (exception.excp_level === 'ERROR') {
-      return (<div><Icon type="cross-circle" className="sign-error" /> {type} : {description}</div>);
+      return (<Alert showIcon type="error" message={`${type}: ${description}`} />);
     }
     return (<span />);
   }
@@ -105,19 +105,16 @@ export default class DealException extends React.Component {
       <Modal title="处理异常" onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible} maskClosable={false}
       >
-        <Card>
-          {this.renderException()}
-        </Card>
+        {this.renderException()}
         <Form className="row">
           <FormItem label="备注">
             {getFieldDecorator('solution', {
               initialValue: '',
               rules: [{ type: 'string', message: '请填写异常原因或解决方案' }],
             })(
-              <Input.TextArea id="control-textarea" rows="5" placeholder="请填写异常原因或解决方案" />
+              <Input.TextArea id="control-textarea" autosize placeholder="请说明异常原因或解决方案" />
             )}
           </FormItem>
-
           {exception.type === delay.code && (
             <FormItem label="承诺送货时间">
               {getFieldDecorator('deliver_prm_date', {
@@ -130,7 +127,6 @@ export default class DealException extends React.Component {
         </Form>
         {exception.resolved === 1 ? (<div style={{ marginTop: 15 }}>上次处理时间：<span>{moment(exception.solve_date).format('YYYY-MM-DD HH:mm')}</span> 处理人: <span>{exception.solver}</span></div>) : (<span />)}
       </Modal>
-
     );
   }
 }

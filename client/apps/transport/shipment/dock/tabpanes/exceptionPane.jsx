@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Card, Icon, Tag } from 'antd';
+import { Button, Card, Alert } from 'antd';
 import moment from 'moment';
 import Table from 'client/components/remoteAntTable';
 import { loadExceptions, showDealExcpModal } from 'common/reducers/trackingLandException';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../..//message.i18n';
-import DealException from '../../../tracking/land/modals/deal-exception';
+import ResolveExceptionModal from '../../../tracking/land/modals/resolveExceptionModal';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 const formatMsg = format(messages);
 
@@ -74,6 +74,28 @@ export default class ExceptionPane extends React.Component {
   })
   columns = [{
     dataIndex: 'excp_level',
+    render: (o, record) => {
+      const excpType = TRANSPORT_EXCEPTIONS.find(item => item.code === record.type);
+      const excpMsg = (<div>{excpType ? excpType.name : ''}
+        <span className="pull-right"><Button type="primary" size="small" ghost onClick={() => this.handleShowDealExcpModal(record)}>处理</Button></span>
+      </div>);
+      const excpDesc = (<div>
+        {record.excp_event}
+        <span className="pull-right text-normal">{moment(record.submit_date).format('YYYY.MM.DD HH:mm')}</span>
+      </div>);
+      if (o === 'INFO') {
+        return (<Alert showIcon type="info" message={excpMsg} description={excpDesc} />);
+      } else if (o === 'WARN') {
+        return (<Alert showIcon type="warning" message={excpMsg} description={excpDesc} />);
+      } else if (o === 'ERROR') {
+        return (<Alert showIcon type="error" message={excpMsg} description={excpDesc} />);
+      }
+      return o;
+    },
+  }]
+  /*
+  columns = [{
+    dataIndex: 'excp_level',
     width: 30,
     render: (o) => {
       if (o === 'INFO') {
@@ -123,6 +145,7 @@ export default class ExceptionPane extends React.Component {
     width: 50,
     render: (o, record) => (<a onClick={() => this.handleShowDealExcpModal(record)}>处理</a>),
   }]
+  */
   handleShowDealExcpModal = (exception) => {
     const { shipmtNo } = this.props;
     this.props.showDealExcpModal({ visible: true, shipmtNo, exception });
@@ -132,10 +155,10 @@ export default class ExceptionPane extends React.Component {
     this.dataSource.remotes = exceptions;
 
     return (
-      <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }} noHovering>
-          <Table size="middle" columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
-          <DealException />
+      <div className="pane-content tab-pane table-list">
+        <Card bodyStyle={{ padding: 16 }} noHovering>
+          <Table size="middle" showHeader={false} columns={this.columns} dataSource={this.dataSource} rowKey="id" pagination={false} />
+          <ResolveExceptionModal />
         </Card>
       </div>
     );
