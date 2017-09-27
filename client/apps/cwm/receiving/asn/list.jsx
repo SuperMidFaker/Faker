@@ -332,16 +332,6 @@ export default class ReceivingASNList extends React.Component {
       whseCode,
       tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
-      filters,
-    });
-  }
-  handleAsnStockImport = () => {
-    const filters = { ...this.props.filters, status: 'completed' };
-    this.props.loadAsnLists({
-      whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
       current: 1,
       filters,
     });

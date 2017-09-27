@@ -11,7 +11,6 @@ import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { DELG_STATUS } from 'common/constants';
 import ModuleMenu from '../../menu';
 import NormalDeclModal from './modal/normalDeclModal';
 import PageHeader from 'client/components/PageHeader';
@@ -148,8 +147,8 @@ export default class NormalDeclList extends React.Component {
     render: (o, record) => (
       <span>
         <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
-        {record.status <= DELG_STATUS.undeclared && <span className="ant-divider" />}
-        {record.status <= DELG_STATUS.undeclared &&
+        {record.manifested < 2 && <span className="ant-divider" />}
+        {record.manifested < 2 &&
         <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
           <a>取消委托</a>
         </Popconfirm>}

@@ -39,7 +39,6 @@ export default class OwnerControlModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible) {
-      console.log('receive', nextProps.ownerAuth);
       this.setState({ ownerAuth: nextProps.ownerAuth });
     }
   }
@@ -81,7 +80,6 @@ export default class OwnerControlModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     };
-    console.log('render', ownerAuth);
     return (
       <Modal title="控制属性" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Form>

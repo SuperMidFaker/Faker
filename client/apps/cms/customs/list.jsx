@@ -112,7 +112,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 180,
+    width: 200,
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
       const preEntryLink = (

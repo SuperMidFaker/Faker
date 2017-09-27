@@ -392,6 +392,11 @@ export default class DetailPane extends React.Component {
                             />
                           </Col>
                           <Col span={12}>
+                            <InfoItem label={this.msg('pickupActDate')}
+                              field={upstream.pickup_act_date && moment(upstream.pickup_act_date).format('YYYY.MM.DD')}
+                            />
+                          </Col>
+                          <Col span={24}>
                             <InfoItem label="发货地"
                               field={shipmt.consigner_byname || Location.renderLoc(shipmt, 'consigner_province', 'consigner_city', 'consigner_district', 'consigner_street')}
                             />
@@ -436,6 +441,11 @@ export default class DetailPane extends React.Component {
                             />
                           </Col>
                           <Col span={12}>
+                            <InfoItem label={this.msg('deliverActDate')}
+                              field={upstream.deliver_act_date && moment(upstream.deliver_act_date).format('YYYY.MM.DD')}
+                            />
+                          </Col>
+                          <Col span={24}>
                             <InfoItem label="收货地"
                               field={shipmt.consignee_byname || Location.renderLoc(shipmt, 'consignee_province', 'consignee_city', 'consignee_district', 'consignee_street')}
                             />
