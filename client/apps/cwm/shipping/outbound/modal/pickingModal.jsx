@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { DatePicker, Form, Modal, Input } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closePickingModal, pickConfirm, loadPickDetails, loadOutboundHead } from 'common/reducers/cwmOutbound';
+import { closePickingModal, pickConfirm, loadOutboundHead } from 'common/reducers/cwmOutbound';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -25,7 +25,7 @@ const FormItem = Form.Item;
     username: state.account.username,
     submitting: state.cwmOutbound.submitting,
   }),
-  { closePickingModal, pickConfirm, loadPickDetails, loadOutboundHead }
+  { closePickingModal, pickConfirm, loadOutboundHead }
 )
 @Form.create()
 export default class PickingModal extends Component {

@@ -89,6 +89,7 @@ export default class AddDetailModal extends Component {
             product_sku: product.product_sku,
             currency: product.currency && Number(product.currency),
             amount: this.state.amount,
+            sku_pack_qty: product.sku_pack_qty,
             ...values,
           });
         } else {

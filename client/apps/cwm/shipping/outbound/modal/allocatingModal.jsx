@@ -70,7 +70,7 @@ export default class AllocatingModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_sku, nextProps.defaultWhse.code, nextProps.filters,
+      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_no, nextProps.defaultWhse.code, nextProps.filters,
          nextProps.outboundHead.owner_partner_id);
       this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
       this.setState({
@@ -93,7 +93,7 @@ export default class AllocatingModal extends Component {
     }
   }
   handleReLoad = () => {
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, this.props.filters,
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, this.props.filters,
        this.props.outboundHead.owner_partner_id).then((result) => {
          if (!result.error) {
            this.setState({
@@ -356,13 +356,13 @@ export default class AllocatingModal extends Component {
   handleLocationChange = (value) => {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, location: value };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
        outboundHead.owner_partner_id);
   }
   handleDateChange = (dates, dateString) => {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, startTime: new Date(dateString[0]).setHours(0, 0, 0, 0), endTime: new Date(dateString[1]).setHours(0, 0, 0, 0) };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
        outboundHead.owner_partner_id);
   }
   handleAddAllocate = (index) => {
@@ -464,13 +464,13 @@ export default class AllocatingModal extends Component {
   handleSearchDetails = () => {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, searchContent: this.state.searchContent };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
        outboundHead.owner_partner_id);
   }
   handleVwSearch = (value) => {
     const { outboundHead } = this.props;
     const filters = { ...this.props.filters, virtualWhse: value };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_sku, this.props.defaultWhse.code, filters,
+    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
        outboundHead.owner_partner_id);
   }
   render() {

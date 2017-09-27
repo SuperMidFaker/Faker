@@ -85,6 +85,10 @@ export default defineMessages({
     id: 'transport.shipment.pickup.date.must',
     defaultMessage: '计划提货日期必填',
   },
+  pickupActDate: {
+    id: 'transport.shipment.pickup.act.date',
+    defaultMessage: '实际提货日期',
+  },
   shipmtSchedule: {
     id: 'transport.shipment.schedule',
     defaultMessage: '运输计划',
@@ -108,6 +112,10 @@ export default defineMessages({
   deliveryDateMust: {
     id: 'transport.shipment.delivery.date.must',
     defaultMessage: '计划送货日期必填',
+  },
+  deliverActDate: {
+    id: 'transport.shipment.delivery.act.date',
+    defaultMessage: '实际送货日期',
   },
   vehicleTypeMust: {
     id: 'transport.shipment.vehicle.type.must',

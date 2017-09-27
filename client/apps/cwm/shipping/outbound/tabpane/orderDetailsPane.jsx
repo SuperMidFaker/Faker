@@ -6,7 +6,6 @@ import { Table, Input, Button, notification } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
-import SKUPopover from '../../../common/popover/skuPopover';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
@@ -119,15 +118,6 @@ export default class OrderDetailsPane extends React.Component {
     width: 100,
     className: 'cell-align-center',
     render: o => this.props.units.length > 0 && o ? this.props.units.find(unit => unit.code === o).name : '',
-  }, {
-    title: 'SKU',
-    dataIndex: 'product_sku',
-    width: 160,
-    render: (o) => {
-      if (o) {
-        return <SKUPopover ownerPartnerId={this.props.outboundHead.owner_partner_id} sku={o} />;
-      }
-    },
   }, {
     title: '操作',
     width: 150,

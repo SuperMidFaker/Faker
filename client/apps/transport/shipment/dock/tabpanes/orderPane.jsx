@@ -417,8 +417,7 @@ export default class DetailPane extends React.Component {
                               onEdit={value => this.handleSaveShipment('consigner_mobile', value, 'consignerInfoChanged')}
                             />
                           </Col>
-                        </Row>
-                      }
+                        </Row>}
                     />
                   </Steps>
                 </div>
@@ -462,8 +461,7 @@ export default class DetailPane extends React.Component {
                               onEdit={value => this.handleSaveShipment('consignee_mobile', value, 'consigneeInfoChanged')}
                             />
                           </Col>
-                        </Row>
-                      }
+                        </Row>}
                     />
                   </Steps>
                 </div>
