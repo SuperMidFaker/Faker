@@ -349,7 +349,6 @@ function TrigeminyList(data) {
       },
     }
   );
-  pdfcontent.push({ text: '', margin: [0, 0, 0, 100] });
   pdfcontent.push(
     { table: {
       widths: ['30%', '70%'],
@@ -396,7 +395,7 @@ function TrigeminyList(data) {
 
 export function TrigeminyListDef(data) {
   const docDefinition = {
-    pageSize: 'A5',
+    pageSize: { width: 400, height: 800 },
     pageMargins: [20, 6],
     content: [],
     styles: {
