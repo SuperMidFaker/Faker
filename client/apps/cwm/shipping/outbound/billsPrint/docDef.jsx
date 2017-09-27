@@ -188,7 +188,7 @@ function pdfBody(data) {
 
 export function WaybillDef(data) {
   const docDefinition = {
-    pageSize: 'A5',
+    pageSize: { width: 400, height: 600 },
     pageMargins: [20, 6],
     content: [],
     styles: {
