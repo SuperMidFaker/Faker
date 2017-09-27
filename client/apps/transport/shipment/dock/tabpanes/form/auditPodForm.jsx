@@ -67,6 +67,10 @@ export default class AuditPodForm extends React.Component {
       previewVisible: true,
     });
   }
+  handleRemove = () => {
+    message.warning('无法删除已提交的回单');
+    return false;
+  }
   handleCancel = () => this.setState({ previewVisible: false })
   render() {
     const { form: { getFieldDecorator }, pod, auditable } = this.props;
@@ -100,6 +104,7 @@ export default class AuditPodForm extends React.Component {
               listType="picture-card"
               fileList={photoList}
               onPreview={this.handlePreview}
+              onRemove={this.handleRemove}
             />
             <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
               <img alt="example" style={{ width: '100%' }} src={previewImage} />

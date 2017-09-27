@@ -165,6 +165,9 @@ export default class ShipmentEdit extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
+            <Button size="large" type="ghost" onClick={this.handleCancel}>
+              {this.msg('cancel')}
+            </Button>
             <Button size="large" type="primary" loading={submitting} onClick={this.handleEdit}>
               {this.msg('save')}
             </Button>

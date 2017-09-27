@@ -101,9 +101,9 @@ export default defineMessages({
     id: 'transport.acceptance.shipment.plane',
     defaultMessage: '运输计划',
   },
-  archivedShipmt: {
-    id: 'transport.acceptance.shipment.archived',
-    defaultMessage: '存档',
+  opColumn: {
+    id: 'transport.acceptance.shipment.opColumn',
+    defaultMessage: '操作',
   },
   shipmtCreate: {
     id: 'transport.acceptance.shipment.create',
@@ -149,13 +149,21 @@ export default defineMessages({
     id: 'transport.acceptance.subcontract.source',
     defaultMessage: '分包',
   },
+  shipmtRelease: {
+    id: 'transport.acceptance.shipmt.release',
+    defaultMessage: '释放',
+  },
   shipmtAccept: {
     id: 'transport.acceptance.shipmt.accept',
     defaultMessage: '接单',
   },
-  shipmtRevoke: {
-    id: 'transport.acceptance.shipmt.revoke',
-    defaultMessage: '作废',
+  shipmtModify: {
+    id: 'transport.acceptance.shipmt.modify',
+    defaultMessage: '修改',
+  },
+  shipmtRemove: {
+    id: 'transport.acceptance.shipmt.remove',
+    defaultMessage: '删除',
   },
   shipmtReject: {
     id: 'transport.acceptance.shipmt.reject',

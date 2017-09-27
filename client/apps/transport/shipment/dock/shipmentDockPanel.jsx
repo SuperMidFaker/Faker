@@ -589,6 +589,7 @@ export default class ShipmentDockPanel extends React.Component {
       case SHIPMENT_TRACK_STATUS.dispatched:
         // dispatchDisabled = false;
         trackingDisabled = false;
+        exceptionDisabled = false;
         break;
       case SHIPMENT_TRACK_STATUS.intransit:
         // dispatchDisabled = false;

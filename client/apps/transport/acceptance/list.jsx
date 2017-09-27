@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
@@ -23,8 +23,6 @@ import ShipmtnoColumn from '../common/shipmtnoColumn';
 import AddressColumn from '../common/addressColumn';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import containerMessages from 'client/apps/message.i18n';
-import globalMessages from 'client/common/root.i18n';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../cms/common/dock/delegationDockPanel';
 import ShipmentAdvanceModal from 'client/apps/transport/tracking/land/modals/shipment-advance-modal';
@@ -35,8 +33,6 @@ import CustomerSelect from '../common/customerSelect';
 import CreatorSelect from '../common/creatorSelect';
 
 const formatMsg = format(messages);
-const formatContainerMsg = format(containerMessages);
-const formatGlobalMsg = format(globalMessages);
 const { Header, Content } = Layout;
 
 function TransitTimeLabel(props) {
@@ -253,6 +249,22 @@ export default class AcceptList extends React.Component {
       }
     },
   }, {
+    title: this.msg('effective'),
+    dataIndex: 'effective',
+    width: 60,
+    render: (o) => {
+      switch (o) {
+        case 0:
+          return <Tag>未生效</Tag>;
+        case 1:
+          return <Tag color="green">已释放</Tag>;
+        case -1:
+          return <Tag color="red">已取消</Tag>;
+        default:
+          break;
+      }
+    },
+  }, {
     title: this.msg('shipCreateDate'),
     dataIndex: 'created_date',
     sorter: true,
@@ -265,6 +277,62 @@ export default class AcceptList extends React.Component {
     width: 120,
     render: (text, record) => (record.acpt_time ?
      moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
+  }, {
+    title: this.msg('opColumn'),
+    fixed: 'right',
+    width: 100,
+    dataIndex: 'OPS_COL',
+    render: (o, record) => {
+      if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
+        if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
+          return (<span />);
+        } else if (record.source === SHIPMENT_SOURCE.consigned) {
+          return (
+            <PrivilegeCover module="transport" feature="shipment" action="edit">
+              <span>
+                <a onClick={() => this.handleShipmtAccept(record)}>{this.msg('shipmtRelease')}</a>
+                <span className="ant-divider" />
+                <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>{this.msg('shipmtModify')}</NavLink>
+                <span className="ant-divider" />
+                <Dropdown overlay={(
+                  <Menu onClick={this.handleMenuClick}>
+                    <Menu.Item key="delete">
+                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
+                        <a role="presentation">
+                          {this.msg('shipmtRemove')}
+                        </a>
+                      </Popconfirm>
+                    </Menu.Item>
+                  </Menu>)}
+                >
+                  <a><Icon type="down" /></a>
+                </Dropdown>
+              </span>
+            </PrivilegeCover>
+          );
+        } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
+          return (
+            <span>
+              <PrivilegeCover module="transport" feature="shipment" action="edit">
+                <a onClick={() => this.handleShipmtAccept(record)}>{this.msg('shipmtAccept')}</a>
+              </PrivilegeCover>
+            </span>
+          );
+        }
+      } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
+        return (
+          <span>
+            <PrivilegeCover module="transport" feature="shipment" action="edit">
+              <Popconfirm title="退回至未接单状态" onConfirm={() => this.handleReturn(record.disp_id)}>
+                <a role="presentation">
+                  退回
+                </a>
+              </Popconfirm>
+            </PrivilegeCover>
+          </span>
+        );
+      }
+    },
   }]
   handleTableLoad = (filters, current, sortField, sortOrder) => {
     this.props.loadTable(null, {
@@ -411,7 +479,7 @@ export default class AcceptList extends React.Component {
     return merged;
   }
   render() {
-    const { shipmentlist, loading, intl } = this.props;
+    const { shipmentlist, loading } = this.props;
     this.dataSource.remotes = shipmentlist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -427,67 +495,6 @@ export default class AcceptList extends React.Component {
         });
       },
     };
-    let columns = this.columns;
-    columns = [...columns, {
-      title: formatContainerMsg(intl, 'opColumn'),
-      fixed: 'right',
-      width: 100,
-      dataIndex: 'OPS_COL',
-      render: (o, record) => {
-        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-          if (record.effective === SHIPMENT_EFFECTIVES.cancelled) {
-            return (<span />);
-          } else if (record.source === SHIPMENT_SOURCE.consigned) {
-            return (
-              <PrivilegeCover module="transport" feature="shipment" action="edit">
-                <span>
-                  <a onClick={() => this.handleShipmtAccept(record)}>接单</a>
-                  <span className="ant-divider" />
-                  <Dropdown overlay={(
-                    <Menu onClick={this.handleMenuClick}>
-                      <Menu.Item key="edit">
-                        <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>
-                          {formatGlobalMsg(intl, 'modify')}
-                        </NavLink>
-                      </Menu.Item>
-                      <Menu.Item key="delete">
-                        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
-                          <a role="presentation">
-                            {this.msg('shipmtRevoke')}
-                          </a>
-                        </Popconfirm>
-                      </Menu.Item>
-                    </Menu>)}
-                  >
-                    <a><Icon type="down" /></a>
-                  </Dropdown>
-                </span>
-              </PrivilegeCover>
-            );
-          } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
-            return (
-              <span>
-                <PrivilegeCover module="transport" feature="shipment" action="edit">
-                  <a onClick={() => this.handleShipmtAccept(record)}>接单</a>
-                </PrivilegeCover>
-              </span>
-            );
-          }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
-          return (
-            <span>
-              <PrivilegeCover module="transport" feature="shipment" action="edit">
-                <Popconfirm title="退回至未接单状态" onConfirm={() => this.handleReturn(record.disp_id)}>
-                  <a role="presentation">
-                    退回
-                  </a>
-                </Popconfirm>
-              </PrivilegeCover>
-            </span>
-          );
-        }
-      },
-    }];
     const bulkActions = (
       <PrivilegeCover module="transport" feature="shipment" action="edit">
         <Button type="default" onClick={this.handleShipmtsAccept}>
@@ -522,7 +529,7 @@ export default class AcceptList extends React.Component {
           <DataTable
             toolbarActions={toolbarActions} bulkActions={bulkActions}
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={columns} loading={loading} dataSource={this.dataSource}
+            columns={this.columns} loading={loading} dataSource={this.dataSource}
           />
         </Content>
         <RevokeModal reload={this.handleTableLoad} />
