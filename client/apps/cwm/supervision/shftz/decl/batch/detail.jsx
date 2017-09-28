@@ -208,12 +208,17 @@ export default class BatchDeclDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
-    title: '征免性质',
-    dataIndex: 'duty_mode',
-    width: 150,
-    render: (mode) => {
-      const exemp = this.props.exemptions.filter(cur => cur.value === mode)[0];
-      return exemp ? <Tag>{`${exemp.value}| ${exemp.text}`}</Tag> : mode;
+    title: '运费',
+    dataIndex: 'freight',
+    width: 100,
+  }, {
+    title: '运费币制',
+    dataIndex: 'freight_currency',
+    width: 100,
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
     title: '目的国',

@@ -87,7 +87,7 @@ export default class AllocatingModal extends Component {
         allocatedData: nextProps.allocatedData.map(ad => ({ ...ad,
           allocated_qty: ad.alloc_qty,
           allocated_pack_qty: ad.sku_pack_qty ? ad.alloc_qty / ad.sku_pack_qty : ad.alloc_qty,
-          deleteDisabled: true,
+          alloced: true,
         })),
       });
     }
@@ -262,7 +262,8 @@ export default class AllocatingModal extends Component {
     title: '移出',
     width: 60,
     fixed: 'left',
-    render: (o, record) => (record.deleteDisabled === true ? '' : <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.index)} disabled={!this.props.editable} />),
+    render: (o, record) => (record.alloced ? null :
+    <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.index)} disabled={!this.props.editable} />),
   }, {
     title: '已分配数量',
     width: 200,
@@ -440,16 +441,23 @@ export default class AllocatingModal extends Component {
     if (this.state.allocatedData.length === 0) {
       message.info('请分配数量');
     } else {
-      this.props.manualAlloc(this.props.outboundNo, this.props.outboundProduct.seq_no,
-        this.state.allocatedData.filter(ad => !ad.deleteDisabled).map(ad => ({
+      const allocs = this.state.allocatedData.filter(ad => !ad.alloced);
+      if (allocs.length > 0) {
+        this.props.manualAlloc(this.props.outboundNo, this.props.outboundProduct.seq_no,
+        allocs.map(ad => ({
           trace_id: ad.trace_id,
           allocated_qty: ad.allocated_qty,
           allocated_pack_qty: ad.allocated_pack_qty,
         })), this.props.loginId, this.props.loginName).then((result) => {
-          if (!result.error) {
+          if (result.error) {
+            message.error(result.error.message);
+          } else {
             this.handleCancel();
           }
         });
+      } else {
+        this.handleCancel();
+      }
     }
   }
   handleSelectChangeType = (value) => {
