@@ -504,7 +504,7 @@ export function fileEntryRegs(asnNo, whseCode, tenantId) {
   };
 }
 
-export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, tenantId) {
+export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, tenantId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -514,7 +514,7 @@ export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/query',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, tenantId },
+      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, tenantId, loginName },
     },
   };
 }

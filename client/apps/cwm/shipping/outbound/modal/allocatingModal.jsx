@@ -10,7 +10,7 @@ import TrimSpan from 'client/components/trimSpan';
 import QuantityInput from '../../../common/quantityInput';
 import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import messages from '../../message.i18n';
-import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter, changeColumns } from 'common/reducers/cwmOutbound';
+import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import AllocatedPopover from '../../../common/popover/allocatedPopover';
@@ -35,7 +35,6 @@ const Option = Select.Option;
     loginName: state.account.username,
     outboundHead: state.cwmOutbound.outboundFormHead,
     tenantId: state.account.tenantId,
-    inventoryColumns: state.cwmOutbound.inventoryColumns,
     inventoryDataLoading: state.cwmOutbound.inventoryDataLoading,
     allocatedDataLoading: state.cwmOutbound.allocatedDataLoading,
   }),
@@ -43,8 +42,7 @@ const Option = Select.Option;
     loadProductInboundDetail,
     loadAllocatedDetails,
     manualAlloc,
-    setInventoryFilter,
-    changeColumns }
+    setInventoryFilter }
 )
 export default class AllocatingModal extends Component {
   static propTypes = {
@@ -59,7 +57,8 @@ export default class AllocatingModal extends Component {
     allocatedData: [],
     outboundProduct: {},
     searchContent: '',
-
+    filterInventoryColumns: [],
+    filterAllocatedColumns: [],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -67,6 +66,10 @@ export default class AllocatingModal extends Component {
         scrollY: (window.innerHeight - 460) / 2,
       });
     }
+    this.setState({
+      filterInventoryColumns: this.inventoryColumns,
+      filterAllocatedColumns: this.allocatedColumns,
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
@@ -76,6 +79,11 @@ export default class AllocatingModal extends Component {
       this.setState({
         outboundProduct: nextProps.outboundProduct,
       });
+      if (nextProps.outboundHead.bonded === 0) {
+        const filterInventoryColumns = this.inventoryColumns.filter(col => !this.bondedColumns[col.dataIndex]);
+        const filterAllocatedColumns = this.allocatedColumns.filter(col => !this.bondedColumns[col.dataIndex]);
+        this.setState({ filterInventoryColumns, filterAllocatedColumns });
+      }
     }
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
@@ -91,6 +99,9 @@ export default class AllocatingModal extends Component {
         })),
       });
     }
+  }
+  bondedColumns ={
+    bonded: true, portion: true, ftz_ent_filed_id: true, ftz_ent_no: true, in_cus_decl_no: true,
   }
   handleReLoad = () => {
     this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, this.props.filters,
@@ -232,30 +243,33 @@ export default class AllocatingModal extends Component {
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 200,
+    width: 100,
     render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '产品序列号',
     dataIndex: 'serial_no',
-    width: 200,
+    width: 100,
     render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '采购订单号',
     dataIndex: 'po_no',
-    width: 200,
+    width: 100,
     render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: 'ASN编号',
     dataIndex: 'asn_no',
-    width: 200,
+    width: 100,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '海关进库单号',
     dataIndex: 'ftz_ent_no',
-    width: 200,
+    width: 100,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
     title: '报关单号',
-    dataIndex: 'cus_decl_no',
-    width: 200,
+    dataIndex: 'in_cus_decl_no',
+    width: 100,
+    render: o => <TrimSpan text={o} maxLen={15} />,
   }]
 
   allocatedColumns = [{
@@ -334,7 +348,7 @@ export default class AllocatingModal extends Component {
     width: 150,
   }, {
     title: '报关单号',
-    dataIndex: 'cus_decl_no',
+    dataIndex: 'in_cus_decl_no',
     width: 150,
   }, {
     dataIndex: 'spacer',
@@ -461,9 +475,29 @@ export default class AllocatingModal extends Component {
     }
   }
   handleSelectChangeType = (value) => {
-    const filters = { ...this.props.filters, searchType: value };
+    let muteInvColumns = {};
+    if (value) {
+      muteInvColumns = {
+        external_lot_no: false,
+        serial_no: false,
+        po_no: false,
+        asn_no: false,
+        ftz_ent_no: false,
+        in_cus_decl_no: false,
+      };
+      muteInvColumns[value] = true;
+    }
+    const filters = { ...this.props.filters, searchType: value || 'external_lot_no' };
     this.props.setInventoryFilter(filters);
-    this.props.changeColumns(value);
+    const bonded = this.props.outboundHead.bonded;
+    const filterInventoryColumns = this.inventoryColumns.filter((col) => {
+      let filter = true;
+      if (bonded === 0) {
+        filter = filter && !this.bondedColumns[col.dataIndex];
+      }
+      return filter && (muteInvColumns[col.dataIndex] !== false);
+    });
+    this.setState({ filterInventoryColumns });
   }
   handleSearchContentChange = (e) => {
     this.setState({
@@ -483,35 +517,16 @@ export default class AllocatingModal extends Component {
        outboundHead.owner_partner_id);
   }
   render() {
-    const { filters, outboundHead, inventoryColumns, editable, defaultWhse } = this.props;
-    const { outboundProduct } = this.state;
-    const filterInventoryColumns = this.inventoryColumns.filter((col) => {
-      if (inventoryColumns[col.dataIndex] !== false) {
-        if (defaultWhse.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
-          col.dataIndex === 'ftz_ent_filed_id')) {
-          return false;
-        } else {
-          return true;
-        }
-      }
-      return false;
-    });
-    const filterAllocatedColumns = this.allocatedColumns.filter((col) => {
-      if (defaultWhse.bonded === 0 && (col.dataIndex === 'bonded' || col.dataIndex === 'portion' ||
-        col.dataIndex === 'ftz_ent_no' || col.dataIndex === 'cus_decl_no')) {
-        return false;
-      } else {
-        return true;
-      }
-    });
+    const { filters, outboundHead, editable } = this.props;
+    const { outboundProduct, filterInventoryColumns, filterAllocatedColumns } = this.state;
     const searchOptions = (
-      <Select defaultValue={filters.searchType} style={{ width: 120 }} onSelect={this.handleSelectChangeType}>
+      <Select value={filters.searchType} allowClear style={{ width: 120 }} onSelect={this.handleSelectChangeType} onChange={this.handleSelectChangeType}>
         <Option value="external_lot_no">批次号</Option>
         <Option value="serial_no">序列号</Option>
         <Option value="po_no">采购订单号</Option>
         <Option value="asn_no">ASN编号</Option>
         <Option value="ftz_ent_no">海关进库单号</Option>
-        <Option value="cus_decl_no">报关单号</Option>
+        <Option value="in_cus_decl_no">报关单号</Option>
       </Select>
     );
     const inventoryQueryForm = (
@@ -570,24 +585,24 @@ export default class AllocatingModal extends Component {
                 field={<QuantityInput packQty={outboundProduct.alloc_pack_qty} pcsQty={outboundProduct.alloc_qty} expectQty={outboundProduct.order_qty} />}
               />
             </Col>
-            {outboundHead.bonded > 0 && <Col sm={12} md={8} lg={2}>
+            {outboundHead.bonded === 1 && <Col sm={12} md={8} lg={2}>
               <InfoItem label="监管方式" field={CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0].ftztext} />
             </Col>}
           </Row>
         </Card>
         <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={filterInventoryColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
+            <Table size="middle" columns={filterInventoryColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))}
               scroll={{ x: filterInventoryColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-              loading={this.props.inventoryDataLoading}
+              loading={this.props.inventoryDataLoading} rowKey="trace_id"
             />
           </div>
         </Card>
         <Card title="分配明细" bodyStyle={{ padding: 0 }} noHovering>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={filterAllocatedColumns} dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))} rowKey="trace_id"
+            <Table size="middle" columns={filterAllocatedColumns} dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))}
               scroll={{ x: filterAllocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-              loading={this.props.allocatedDataLoading}
+              loading={this.props.allocatedDataLoading} rowKey="id"
             />
           </div>
         </Card>

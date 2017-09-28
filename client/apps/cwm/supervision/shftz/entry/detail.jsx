@@ -32,7 +32,6 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
     entryRegs: state.cwmShFtz.entry_regs,
@@ -177,7 +176,8 @@ export default class SHFTZEntryDetail extends Component {
     const asnNo = this.props.params.asnNo;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
-    this.props.queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, this.props.tenantId).then((result) => {
+    const loginName = this.props.username;
+    this.props.queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, this.props.tenantId, loginName).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({

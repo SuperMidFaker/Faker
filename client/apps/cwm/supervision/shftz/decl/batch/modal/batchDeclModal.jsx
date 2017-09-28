@@ -71,14 +71,13 @@ export default class BatchDeclModal extends Component {
     regDetails: [],
     supplier: '',
     currency: '',
-    trxMode: '',
     template: undefined,
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     ftzRelNo: '',
     selectedRowKeys: [],
     selectedRows: [],
-    destCountry: '',
-    dutyMode: '',
+    destCountry: '142',
+    dutyMode: '1',
   }
   componentWillMount() {
     this.props.loadParams();

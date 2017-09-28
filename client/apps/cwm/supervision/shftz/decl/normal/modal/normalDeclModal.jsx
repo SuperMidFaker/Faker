@@ -72,12 +72,11 @@ export default class NormalDeclModal extends Component {
     regDetails: [],
     supplier: '',
     currency: '',
-    trxMode: '',
     template: undefined,
     ftzRelNo: '',
     searchText: '',
-    dutyMode: '',
-    destCountry: '',
+    dutyMode: '1',
+    destCountry: '142',
   }
   componentWillMount() {
     this.props.loadParams();

@@ -249,7 +249,7 @@ export default class OutboundDetail extends Component {
                 CWM_SHFTZ_TRANSFER_OUT_STATUS_INDICATOR.filter(status => status.value === reg.status)[0] :
                 CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === reg.status)[0];
               if (regStatus) {
-                return (<Tooltip title={reg.tooltip} placement="bottom">
+                return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
                   <Button size="large" icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>

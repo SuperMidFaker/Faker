@@ -22,7 +22,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
   'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
-  'SET_INVENTORY_FILTER', 'CHANGE_COLUMNS',
+  'SET_INVENTORY_FILTER',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
   'ORDER_EXPRESS', 'ORDER_EXPRESS_SUCCEED', 'ORDER_EXPRESS_FAIL',
   'ORDER_ZD_EXPRESS', 'ORDER_ZD_EXPRESS_SUCCEED', 'ORDER_ZD_EXPRESS_FAIL',
@@ -31,6 +31,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_SHUNFENG_CONFIG', 'LOAD_SHUNFENG_CONFIG_SUCCEED', 'LOAD_SHUNFENG_CONFIG_FAIL',
   'LOAD_TRACEID_OUTBOUND', 'LOAD_TRACEID_OUTBOUND_SUCCEED', 'LOAD_TRACEID_OUTBOUND_FAIL',
 ]);
+
 const initialState = {
   submitting: false,
   listFilter: {
@@ -46,14 +47,6 @@ const initialState = {
   },
   inventoryData: [],
   inventoryFilter: { location: '', startTime: '', endTime: '', searchType: 'external_lot_no' },
-  inventoryColumns: {
-    external_lot_no: true,
-    serial_no: false,
-    po_no: false,
-    asn_no: false,
-    ftz_ent_no: false,
-    cus_decl_no: false,
-  },
   allocatedData: [],
   pickingModal: {
     visible: false,
@@ -163,17 +156,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, shipDetails: action.result.data };
     case actionTypes.SET_INVENTORY_FILTER:
       return { ...state, inventoryFilter: { ...action.filters } };
-    case actionTypes.CHANGE_COLUMNS:
-      return { ...state,
-        inventoryColumns: {
-          external_lot_no: false,
-          serial_no: false,
-          po_no: false,
-          asn_no: false,
-          ftz_ent_no: false,
-          cus_decl_no: false,
-          [action.column]: true,
-        } };
     case CANCEL_OUTBOUND_SUCCEED:
       return { ...state, outbound: { ...state.outbound, loaded: false } };
     case CLOSE_OUTBOUND_SUCCEED:
@@ -489,13 +471,6 @@ export function setInventoryFilter(filters) {
   return {
     type: actionTypes.SET_INVENTORY_FILTER,
     filters,
-  };
-}
-
-export function changeColumns(column) {
-  return {
-    type: actionTypes.CHANGE_COLUMNS,
-    column,
   };
 }
 
