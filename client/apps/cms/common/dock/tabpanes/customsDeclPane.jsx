@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Avatar, Spin, Button, Card, Col, Icon, Progress, Row, Table, message, Menu } from 'antd';
+import { Spin, Button, Card, Col, Icon, Progress, Row, Table, message } from 'antd';
 import moment from 'moment';
 import { ensureManifestMeta } from 'common/reducers/cmsDelegation';
 import { loadCustPanel, setOpetaor } from 'common/reducers/cmsDelgInfoHub';
 import { loadOperators } from 'common/reducers/crmCustomers';
 import CustomsDeclSheetCard from '../card/customsDeclSheetCard';
+import MemberSelect from 'client/components/MemberSelect';
 import InfoItem from 'client/components/InfoItem';
 
 @injectIntl
@@ -21,7 +22,7 @@ import InfoItem from 'client/components/InfoItem';
     loginId: state.account.loginId,
     loginName: state.account.username,
     partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
-    serviceTeamMembers: state.crmCustomers.operators,
+    userMembers: state.account.userMembers,
   }),
   { loadCustPanel, ensureManifestMeta, setOpetaor, loadOperators }
 )
@@ -88,10 +89,10 @@ export default class CustomsDeclPane extends React.Component {
     const link = `/clearance/${clearType}/manifest/`;
     this.context.router.push(`${link}${customsPanel.bill.bill_seq_no}`);
   }
-  handleMenuClick = (e) => {
-    const operator = this.props.serviceTeamMembers.filter(dop => dop.lid === Number(e.key))[0];
+  handleMenuClick = (loginId) => {
+    const operator = this.props.userMembers.filter(dop => dop.login_id === Number(loginId))[0];
     this.props.setOpetaor(
-      operator.lid, operator.name, this.props.delgNo
+      operator.login_id, operator.name, this.props.delgNo
     );
   }
   renderManifestAction() {
@@ -110,7 +111,7 @@ export default class CustomsDeclPane extends React.Component {
     }
   }
   render() {
-    const { customsPanel, customsSpinning, tenantId, serviceTeamMembers } = this.props;
+    const { customsPanel, customsSpinning, tenantId, partnerId } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = customsPanel.decls;
     // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);
@@ -124,19 +125,19 @@ export default class CustomsDeclPane extends React.Component {
       render: (o, record) => <CustomsDeclSheetCard customsDecl={record} manifest={bill} />,
     }];
     const assignable = (customsPanel.customs_tenant_id === tenantId || customsPanel.customs_tenant_id === -1);
-    const filterOperators = serviceTeamMembers.filter(op => op.name !== bill.preparer_name);
     return (
       <div className="pane-content tab-pane table-list">
         <Spin spinning={customsSpinning}>
           <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }} noHovering>
             <Row gutter={16} className="info-group-underline">
               <Col span="6">
-                <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>}
-                  field={bill.preparer_name} placeholder="分配操作人员" editable={assignable}
-                  overlay={<Menu onClick={this.handleMenuClick}>
-                    {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))}
-                  </Menu>}
-                />
+                {/* <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>} */}
+                {/* field={bill.preparer_name} placeholder="分配操作人员" editable={assignable} */}
+                {/* overlay={<Menu onClick={this.handleMenuClick}> */}
+                {/* {filterOperators.map(dg => (<Menu.Item key={dg.lid}>{dg.name}</Menu.Item>))} */}
+                {/* </Menu>} */}
+                {/* /> */}
+                <MemberSelect preparerName={bill.preparer_name} editable={assignable} partnerId={partnerId} onSelect={this.handleMenuClick} />
               </Col>
               <Col span="2">
                 <InfoItem label="清单项数" addonAfter="项" field={bill.g_count} />

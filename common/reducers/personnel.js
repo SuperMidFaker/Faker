@@ -15,6 +15,7 @@ const actionTypes = createActionTypes('@@welogix/personnel/', [
   'SAVE_DEPM', 'SAVE_DEPM_SUCCEED', 'SAVE_DEPM_FAIL',
   'LOAD_NONDEPTM', 'LOAD_NONDEPTM_SUCCEED', 'LOAD_NONDEPTM_FAIL',
   'OPEN_AMM', 'CLOSE_AMM',
+  'LOAD_DEPARTMENT_MEMBERS', 'LOAD_DEPARTMENT_MEMBERS_SUCCEED', 'LOAD_DEPARTMENT_MEMBERS_FAIL',
 ]);
 appendFormAcitonTypes('@@welogix/personnel/', actionTypes);
 
@@ -92,6 +93,17 @@ export function loadDepartments(tenantId) {
       endpoint: 'v1/personnel/departments',
       method: 'get',
       params: { tenantId },
+    },
+  };
+}
+
+export function loadDepartmentMembers(departmentId) {
+  return {
+    [CLIENT_API]: {
+      types: [actionTypes.LOAD_DEPARTMENT_MEMBERS, actionTypes.LOAD_DEPARTMENT_MEMBERS_SUCCEED, actionTypes.LOAD_DEPARTMENT_MEMBERS_FAIL],
+      endpoint: 'v1/personnel/department/members',
+      method: 'get',
+      params: { departmentId },
     },
   };
 }

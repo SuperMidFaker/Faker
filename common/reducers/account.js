@@ -22,6 +22,7 @@ const initialState = {
   },
   modules: [],
   privileges: {}, // module_id: true(全部功能) || { feature_id: true || { action_id: true }}
+  userMembers: [],
 };
 
 const actions = [
