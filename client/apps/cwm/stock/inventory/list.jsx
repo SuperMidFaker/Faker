@@ -57,7 +57,7 @@ export default class StockInventoryList extends React.Component {
   columns = [{
     title: this.msg('owner'),
     dataIndex: 'owner_name',
-    width: 150,
+    width: 180,
     sorter: true,
     fixed: 'left',
     render: o => <TrimSpan text={o} maxLen={10} />,
@@ -71,7 +71,7 @@ export default class StockInventoryList extends React.Component {
   }, {
     title: this.msg('SKU'),
     dataIndex: 'product_sku',
-    width: 180,
+    width: 200,
     sorter: true,
     render: (o, row) => o && (<SKUPopover ownerPartnerId={row.owner_partner_id} sku={o} />),
   }, {

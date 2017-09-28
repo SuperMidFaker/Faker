@@ -81,7 +81,7 @@ export default class OrderDetailsPane extends React.Component {
     width: 120,
   }, {
     title: '入库单号',
-    dataIndex: 'inbound_no',
+    dataIndex: 'po_no',
     width: 120,
   }, {
     title: '批次号',
@@ -90,6 +90,10 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '产品序列号',
     dataIndex: 'serial_no',
+    width: 120,
+  }, {
+    title: '供应商',
+    dataIndex: 'supplier',
     width: 120,
   }, {
     title: '中文品名',
