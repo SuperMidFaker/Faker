@@ -9,7 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 
 @injectIntl
-export default class ModuleSCOF extends React.Component {
+export default class ModuleBMS extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
@@ -23,30 +23,30 @@ export default class ModuleSCOF extends React.Component {
     const linkMenus = [];
     linkMenus.push({
       single: true,
-      key: 'scof-0',
+      key: 'bss-0',
       disabled: true,
-      path: '/scof/dashboard',
+      path: '/bss/dashboard',
       icon: 'logixon icon-apps',
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
       single: true,
-      key: 'scof-1',
-      path: '/scof/orders',
-      icon: 'logixon icon-tasks',
-      text: formatMsg(intl, 'orders'),
+      key: 'bss-2',
+      path: '/bss/billing',
+      icon: 'logixon icon-bill',
+      text: formatMsg(intl, 'billing'),
     });
     linkMenus.push({
       single: true,
-      key: 'scof-4',
-      path: '/scof/customers',
+      key: 'bss-4',
+      path: '/bss/customers',
       icon: 'logixon icon-partner',
       text: formatMsg(intl, 'customers'),
     });
     linkMenus.push({
       single: true,
-      key: 'scof-3',
-      path: '/scof/flow',
+      key: 'bss-3',
+      path: '/bss/flow',
       icon: 'logixon icon-flow',
       text: formatMsg(intl, 'flow'),
     });

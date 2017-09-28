@@ -12,7 +12,7 @@ import messages from './message.i18n';
 import { loadOrders, loadClearanceFees, loadTransportFees, changeFeesFilter, loadPartners } from 'common/reducers/crmBilling';
 import TrimSpan from 'client/components/trimSpan';
 // import { createFilename } from 'client/util/dataTransform';
-import OrderDockPanel from '../orders/docks/orderDockPanel';
+// import OrderDockPanel from '../orders/docks/orderDockPanel';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import SearchBar from 'client/components/SearchBar';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CRM_ORDER_MODE } from 'common/constants';
@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connectNav({
   depth: 2,
-  moduleName: 'scof',
+  moduleName: 'bss',
 })
 @connect(
   state => ({
@@ -285,7 +285,8 @@ export default class FeesList extends React.Component {
             </div>
           </div>
         </Content>
-        <OrderDockPanel stage="billing" />
+        {/* <OrderDockPanel stage="billing" />
+        */}
       </div>
     );
   }

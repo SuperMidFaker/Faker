@@ -32,7 +32,7 @@ function fetchData({ state, dispatch }) {
 @connectFetch()(fetchData)
 @connectNav({
   depth: 2,
-  moduleName: 'scof',
+  moduleName: 'bss',
 })
 @injectIntl
 @connect(

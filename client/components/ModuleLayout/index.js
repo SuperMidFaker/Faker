@@ -33,12 +33,12 @@ export default class ModuleLayout extends React.Component {
           this.props.enabledmods.map((mod) => {
             const emod = DEFAULT_MODULES[mod];
             return (
-              <Col span="6" key={mod}>
+              <Col span="8" key={mod}>
                 <NavLink to={`${emod.url}/`}>
                   <div className={containerCls}>
                     <div className={`module-icon-bg ${emod.cls}`}>
                       <div className="module-icon">
-                        <i className={`zmdi zmdi-${emod.cls}`} />
+                        <i className={`icon logixon icon-${emod.cls}`} />
                       </div>
                     </div>
                     <span className="module-text">

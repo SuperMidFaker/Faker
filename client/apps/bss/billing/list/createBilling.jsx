@@ -9,7 +9,7 @@ import { loadFeesByChooseModal, loadClearanceFeesByChooseModal, loadTransportFee
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import TrimSpan from 'client/components/trimSpan';
 import BeforeFeesModal from './beforeFeesModal';
-import OrderDockPanel from '../../orders/docks/orderDockPanel';
+// import OrderDockPanel from '../../orders/docks/orderDockPanel';
 import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
 import { CRM_ORDER_MODE } from 'common/constants';
@@ -273,7 +273,8 @@ export default class CreateBilling extends React.Component {
             <BeforeFeesModal />
           </div>
         </Content>
-        <OrderDockPanel stage="billing" />
+        {/* <OrderDockPanel stage="billing" />
+        */}
       </div>
     );
   }

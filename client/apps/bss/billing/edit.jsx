@@ -13,12 +13,12 @@ function fetchData({ dispatch, params }) {
 @connectFetch()(fetchData)
 @connectNav({
   depth: 3,
-  moduleName: 'scof',
+  moduleName: 'bss',
 })
-export default class View extends React.Component {
+export default class Check extends React.Component {
   render() {
     return (
-      <BillingFeeList operation="view" />
+      <BillingFeeList operation="edit" />
     );
   }
 }

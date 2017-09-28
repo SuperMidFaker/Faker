@@ -19,7 +19,7 @@ export default defineMessages({
   },
   billing: {
     id: 'tms.module.billing',
-    defaultMessage: '计费',
+    defaultMessage: '费收',
   },
   billingExpense: {
     id: 'tms.module.billing.expense',

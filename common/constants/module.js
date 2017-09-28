@@ -570,6 +570,14 @@ const MODULE_CWM = {
   ],
 };
 
+const MODULE_BSS = {
+  id: 'bss',
+  text: 'moduleBSS',
+  defaultText: '结算中心',
+  status: 'alpha',
+  features: [],
+};
+
 const MODULE_SCV = {
   id: 'scv',
   text: 'moduleSCV',
@@ -583,6 +591,7 @@ const appModules = [
   MODULE_CLEARANCE,
   MODULE_CWM,
   MODULE_TRANSPORT,
+  MODULE_BSS,
   MODULE_SCV,
 ];
 
@@ -591,6 +600,7 @@ const spnModules = [
   MODULE_CLEARANCE,
   MODULE_CWM,
   MODULE_TRANSPORT,
+  MODULE_BSS,
 ];
 
 export const DEFAULT_MODULES = {};
