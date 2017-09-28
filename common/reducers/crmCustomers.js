@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/crm/customers/', [
   'LOAD_TRANSPORT_TRAIFFS', 'LOAD_TRANSPORT_TRAIFFS_SUCCEED', 'LOAD_TRANSPORT_TRAIFFS_FAIL',
   'LOAD_CMS_QUOTES', 'LOAD_CMS_QUOTES_SUCCEED', 'LOAD_CMS_QUOTES_FAIL',
   'LOAD_OPERATORS', 'LOAD_OPERATORS_SUCCEED', 'LOAD_OPERATORS_FAIL',
+  'LOAD_SERVICETEAM_USERIDS', 'LOAD_SERVICETEAM_USERIDS_SUCCEED', 'LOAD_SERVICETEAM_USERIDS_FAIL',
 ]);
 
 const initialState = {
@@ -274,6 +275,21 @@ export function loadServiceTeamMembers(partnerId) {
         actionTypes.LOAD_SERVICETEAM_MEMBERS_FAIL,
       ],
       endpoint: 'v1/scof/customer/load/serviceTeam/members',
+      method: 'get',
+      params: { partnerId },
+    },
+  };
+}
+
+export function loadTeamUserIds(partnerId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SERVICETEAM_USERIDS,
+        actionTypes.LOAD_SERVICETEAM_USERIDS_SUCCEED,
+        actionTypes.LOAD_SERVICETEAM_USERIDS_FAIL,
+      ],
+      endpoint: 'v1/scof/customer/load/serviceTeam/userids',
       method: 'get',
       params: { partnerId },
     },
