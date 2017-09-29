@@ -103,7 +103,7 @@ import * as SCOFOrders from './scof/orders';
 import * as SCOFCustomers from './scof/customers';
 import * as SCOFFlow from './scof/flow';
 import BSS from './bss/module-bss';
-import * as BSSBilling from './bss/billing';
+import * as BSSSettlement from './bss/settlement';
 import { loadAccount } from 'common/reducers/account';
 import { loadWhseContext } from 'common/reducers/cwmContext';
 import { isLoaded } from 'client/common/redux-actions';
@@ -543,14 +543,14 @@ export default(store, cookie) => {
             <Route path="flow" component={SCOFFlow.ListPanel} />
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
-            <IndexRedirect to="/bss/billing/list" />
-            <Route path="billing">
-              <Route path="fees" component={BSSBilling.FeeList} />
-              <Route path="list" component={BSSBilling.List} />
-              <Route path="create" component={BSSBilling.Create} />
-              <Route path="check/:billingId" component={BSSBilling.Check} />
-              <Route path="edit/:billingId" component={BSSBilling.Edit} />
-              <Route path="view/:billingId" component={BSSBilling.View} />
+            <IndexRedirect to="/bss/settlement/list" />
+            <Route path="settlement">
+              <Route path="fees" component={BSSSettlement.FeeList} />
+              <Route path="list" component={BSSSettlement.List} />
+              <Route path="create" component={BSSSettlement.Create} />
+              <Route path="check/:billingId" component={BSSSettlement.Check} />
+              <Route path="edit/:billingId" component={BSSSettlement.Edit} />
+              <Route path="view/:billingId" component={BSSSettlement.View} />
             </Route>
           </Route>
         </Route>

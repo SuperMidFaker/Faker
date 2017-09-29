@@ -146,10 +146,12 @@ export default class ModuleCWM extends React.Component {
         text: formatMsg(intl, 'warehouse'),
       }, {
         key: 'cwm-settings-1',
+        disabled: true,
         path: '/cwm/settings/rules',
         text: formatMsg(intl, 'rules'),
       }, {
         key: 'cwm-settings-2',
+        disabled: true,
         path: '/cwm/settings/templates',
         text: formatMsg(intl, 'templates'),
       }],

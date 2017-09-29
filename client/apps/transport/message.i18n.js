@@ -25,14 +25,6 @@ export default defineMessages({
     id: 'tms.module.billing.expense',
     defaultMessage: '费用管理',
   },
-  billingReceivable: {
-    id: 'tms.module.billing.receivable',
-    defaultMessage: '应收账单',
-  },
-  billingPayable: {
-    id: 'tms.module.billing.payable',
-    defaultMessage: '应付账单',
-  },
   billingTariff: {
     id: 'tms.module.billing.tariff',
     defaultMessage: '费率设置',

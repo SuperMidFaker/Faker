@@ -55,15 +55,7 @@ const messages = defineMessages({
   },
   expense: {
     id: 'cms.module.billing.expense',
-    defaultMessage: '费用结算',
-  },
-  billingReceivable: {
-    id: 'cms.module.billing.receivable',
-    defaultMessage: '应收账单',
-  },
-  billingPayable: {
-    id: 'cms.module.billing.payable',
-    defaultMessage: '应付账单',
+    defaultMessage: '费用管理',
   },
   quote: {
     id: 'cms.module.resources.quote',

@@ -31,24 +31,55 @@ export default class ModuleBMS extends React.Component {
     });
     linkMenus.push({
       single: true,
-      key: 'bss-2',
-      path: '/bss/billing',
+      key: 'bss-settlement',
+      path: '/bss/settlement',
       icon: 'logixon icon-bill',
-      text: formatMsg(intl, 'billing'),
+      text: formatMsg(intl, 'settlement'),
+    });
+    linkMenus.push({
+      single: false,
+      key: 'bss-receivable',
+      icon: 'logixon icon-finance-o',
+      text: formatMsg(intl, 'receivable'),
+      sublinks: [{
+        key: 'bss-receivable-0',
+        path: '/bss/receivable/bill',
+        text: formatMsg(intl, 'receivableBill'),
+      }, {
+        key: 'bss-receivable-1',
+        path: '/bss/receivable/invoice',
+        text: formatMsg(intl, 'receivableInvoice'),
+      }, {
+        key: 'bss-receivable-2',
+        path: '/bss/receivable/payment',
+        text: formatMsg(intl, 'paymentReceived'),
+      }],
+    });
+    linkMenus.push({
+      single: false,
+      key: 'bss-payable',
+      icon: 'logixon icon-refund',
+      text: formatMsg(intl, 'payable'),
+      sublinks: [{
+        key: 'bss-payable-0',
+        path: '/bss/payable/bill',
+        text: formatMsg(intl, 'payableBill'),
+      }, {
+        key: 'bss-payable-1',
+        path: '/bss/payable/invoice',
+        text: formatMsg(intl, 'payableInvoice'),
+      }, {
+        key: 'bss-payable-2',
+        path: '/bss/payable/payment',
+        text: formatMsg(intl, 'paymentMade'),
+      }],
     });
     linkMenus.push({
       single: true,
-      key: 'bss-4',
-      path: '/bss/customers',
-      icon: 'logixon icon-partner',
-      text: formatMsg(intl, 'customers'),
-    });
-    linkMenus.push({
-      single: true,
-      key: 'bss-3',
-      path: '/bss/flow',
-      icon: 'logixon icon-flow',
-      text: formatMsg(intl, 'flow'),
+      key: 'bss-settings',
+      path: '/bss/settings',
+      icon: 'logixon icon-setting-o',
+      text: formatMsg(intl, 'settings'),
     });
     this.setState({ linkMenus });
   }

@@ -80,14 +80,6 @@ export default class Transport extends React.Component {
           path: '/transport/billing/fee',
           text: formatMsg(intl, 'billingExpense'),
         }, {
-          key: 'tms-4-1',
-          path: '/transport/billing/receivable',
-          text: formatMsg(intl, 'billingReceivable'),
-        }, {
-          key: 'tms-4-2',
-          path: '/transport/billing/payable',
-          text: formatMsg(intl, 'billingPayable'),
-        }, {
           key: 'tms-4-3',
           path: '/transport/billing/tariff',
           text: formatMsg(intl, 'billingTariff'),
