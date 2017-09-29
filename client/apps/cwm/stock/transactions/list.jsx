@@ -135,12 +135,20 @@ export default class StockTransactionsList extends React.Component {
           tenantId: this.props.tenantId,
           current: pagination.current,
           pageSize: pagination.pageSize,
-          filter: JSON.stringify(listFilter),
           sorter: JSON.stringify({
             field: sorter.field,
             order: sorter.order === 'descend' ? 'DESC' : 'ASC',
           }),
         };
+        const filter = { ...listFilter };
+        Object.keys(filters).forEach((flt) => {
+          if (filters[flt].length > 0) {
+            filter[flt] = filters[flt][0];
+          } else {
+            delete filter[flt];
+          }
+        });
+        params.filter = JSON.stringify(filter);
         return params;
       },
       remotes: this.props.transactionlist,

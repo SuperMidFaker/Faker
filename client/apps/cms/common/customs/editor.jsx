@@ -258,7 +258,7 @@ export default class CustomsDeclEditor extends React.Component {
               { head.status === CMS_DECL_STATUS.reviewed.value &&
                 <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
               }
-              { (head.status === CMS_DECL_STATUS.entered.value || head.status === CMS_DECL_STATUS.sent.value) &&
+              { (head.status !== CMS_DECL_STATUS.proposed.value && head.status !== CMS_DECL_STATUS.released.value) &&
                 <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
               }
               <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>

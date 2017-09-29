@@ -13,12 +13,16 @@ exports.commonTraceColumns = (intl) => {
     dataIndex: 'bonded',
     className: 'cell-align-center',
     render: bonded => bonded ? <Tag color="blue">保税</Tag> : <Tag>非保税</Tag>,
+    filters: [{ text: '保税', value: 1 }, { text: '非保', value: 0 }], // todo true "true"
+    filterMultiple: false,
   }, {
     title: msg('portion'),
     width: 80,
     dataIndex: 'portion',
     className: 'cell-align-center',
     render: portion => portion ? <Tag color="green">可分拨</Tag> : '/',
+    filters: [{ text: '可分拨', value: 1 }, { text: '非分拨', value: 0 }],
+    filterMultiple: false,
   }, {
     title: msg('SKU'),
     dataIndex: 'product_sku',

@@ -18,10 +18,10 @@ const FormItem = Form.Item;
   }),
   { freezeTransit }
 )
-export default class freezePopover extends Component {
+export default class FreezePopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    text: PropTypes.string.isRequired,
+    availQty: PropTypes.number.isRequired,
     traceId: PropTypes.string.isRequired,
     reload: PropTypes.func.isRequired,
   }
@@ -37,7 +37,7 @@ export default class freezePopover extends Component {
   }
   handleQtyChange = (e) => {
     this.setState({
-      qty: e.target.value > this.props.text ? this.props.text : e.target.value,
+      qty: e.target.value > this.props.availQty ? this.props.availQty : e.target.value,
     });
   }
   handleReasonChange = (e) => {
@@ -64,7 +64,6 @@ export default class freezePopover extends Component {
     });
   }
   render() {
-    const { text } = this.props;
     const { qty, reason } = this.state;
     const content = (
       <div style={{ width: 200 }}>
@@ -83,7 +82,7 @@ export default class freezePopover extends Component {
     );
     return (
       <Popover content={content} title="库存冻结" trigger="click" visible={this.state.visible} onVisibleChange={this.handleVisibleChange}>
-        <Button size="small">{<span className="text-success">{text}</span>}</Button>
+        <Button size="small">{<span className="text-success">{this.props.availQty}</span>}</Button>
       </Popover>
     );
   }

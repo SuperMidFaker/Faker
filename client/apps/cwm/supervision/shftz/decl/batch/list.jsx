@@ -100,8 +100,9 @@ export default class BatchDeclList extends React.Component {
         case 'processing':
           return (<Badge status="processing" text="已发送" />);
         case 'applied':
-        case 'cleared':
           return (<Badge status="success" text="备案完成" />);
+        case 'cleared':
+          return (<Badge status="success" text="已清关" />);
         default:
           return null;
       }
@@ -194,8 +195,8 @@ export default class BatchDeclList extends React.Component {
     fixed: 'right',
     render: (o, record) => (<span>
       <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
-      {record.manifested === 0 && <span className="ant-divider" />}
-      {record.manifested === 0 &&
+      {record.status === 'manifest' && <span className="ant-divider" />}
+      {record.status === 'manifest' &&
       <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
         <a>取消委托</a>
       </Popconfirm>}</span>),
