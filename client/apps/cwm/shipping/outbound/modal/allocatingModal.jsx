@@ -516,7 +516,6 @@ export default class AllocatingModal extends Component {
       muteInvColumns[value] = true;
     }
     const filters = { ...this.props.filters, searchType: value || 'external_lot_no' };
-    this.props.setInventoryFilter(filters);
     const bonded = this.props.outboundHead.bonded;
     const filterInventoryColumns = this.inventoryColumns.filter((col) => {
       let filter = true;

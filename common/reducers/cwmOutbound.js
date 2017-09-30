@@ -22,7 +22,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'UPDATE_OUTBMODE', 'UPDATE_OUTBMODE_SUCCEED', 'UPDATE_OUTBMODE_FAIL',
   'LOAD_PACK_DETAILS', 'LOAD_PACK_DETAILS_SUCCEED', 'LOAD_PACK_DETAILS_FAIL',
   'LOAD_SHIP_DETAILS', 'LOAD_SHIP_DETAILS_SUCCEED', 'LOAD_SHIP_DETAILS_FAIL',
-  'CHANGE_COLUMNS',
   'READ_LOGO', 'READ_LOGO_SUCCEED', 'READ_LOGO_FAIL',
   'ORDER_EXPRESS', 'ORDER_EXPRESS_SUCCEED', 'ORDER_EXPRESS_FAIL',
   'ORDER_ZD_EXPRESS', 'ORDER_ZD_EXPRESS_SUCCEED', 'ORDER_ZD_EXPRESS_FAIL',
@@ -161,17 +160,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, packDetails: action.result.data };
     case actionTypes.LOAD_SHIP_DETAILS_SUCCEED:
       return { ...state, shipDetails: action.result.data };
-    case actionTypes.CHANGE_COLUMNS:
-      return { ...state,
-        inventoryColumns: {
-          external_lot_no: false,
-          serial_no: false,
-          po_no: false,
-          asn_no: false,
-          ftz_ent_no: false,
-          cus_decl_no: false,
-          [action.column]: true,
-        } };
     case CANCEL_OUTBOUND_SUCCEED:
       return { ...state, outbound: { ...state.outbound, loaded: false } };
     case CLOSE_OUTBOUND_SUCCEED:
@@ -480,13 +468,6 @@ export function loadShipDetails(outboundNo) {
       method: 'get',
       params: { outboundNo },
     },
-  };
-}
-
-export function changeColumns(column) {
-  return {
-    type: actionTypes.CHANGE_COLUMNS,
-    column,
   };
 }
 
