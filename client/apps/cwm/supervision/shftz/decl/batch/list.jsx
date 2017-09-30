@@ -77,7 +77,8 @@ export default class BatchDeclList extends React.Component {
   }, {
     title: '报关申请单号',
     dataIndex: 'ftz_apply_no',
-    width: 150,
+    width: 220,
+    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '货主',
     width: 180,
@@ -136,6 +137,7 @@ export default class BatchDeclList extends React.Component {
   }, {
     title: '申请类型',
     dataIndex: 'apply_type',
+    width: 120,
     render: (o) => {
       switch (o) {
         case '0':
