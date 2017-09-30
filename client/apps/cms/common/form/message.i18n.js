@@ -417,6 +417,10 @@ export default defineMessages({
     id: 'cms.forms.table.processing.fees',
     defaultMessage: '工缴费',
   },
+  freightFee: {
+    id: 'cms.forms.table.freight.fees',
+    defaultMessage: '运费',
+  },
   save: {
     id: 'cms.forms.table.save',
     defaultMessage: '保存',

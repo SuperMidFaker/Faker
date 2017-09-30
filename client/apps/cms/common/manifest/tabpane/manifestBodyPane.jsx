@@ -464,6 +464,11 @@ export default class ManifestBodyPane extends React.Component {
           onChange={this.handleEditChange} edit={editBody} decimal={3}
         />),
     }, {
+      title: this.msg('freightFee'),
+      dataIndex: 'freight',
+      width: 100,
+      render: freight => freight > 0 ? freight : null,
+    }, {
       width: 40,
       className: 'cell-align-center',
       fixed: 'right',
