@@ -35,7 +35,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_SHFTZ_ENTRY', 'LOAD_SHFTZ_ENTRY_SUCCEED', 'LOAD_SHFTZ_ENTRY_FAIL',
   'GET_ASN_UUID', 'GET_ASN_UUID_SUCCEED', 'GET_ASN_UUID_FAIL',
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
-  'CLEAR_PRODUCT_NOS',
+  'CLEAR_PRODUCT_NOS', 'MARK_RELOAD_INBOUND',
   'LOAD_LOT_INFO', 'LOAD_LOT_INFO_SUCCEED', 'LOAD_LOT_INFO_FAIL',
   'GET_SUPPLIERS', 'GET_SUPPLIERS_SUCCEED', 'GET_SUPPLIERS_FAIL',
 ]);
@@ -150,10 +150,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, inboundFilters: JSON.parse(action.params.filters), inbound: { ...state.inbound, loading: true }, dock: { ...state.dock, visible: false } };
     case actionTypes.LOAD_INBOUNDS_SUCCEED:
       return { ...state, inbound: { ...action.result.data, loading: false, loaded: true } };
+    case actionTypes.MARK_RELOAD_INBOUND:
+      return { ...state, inboundReload: true };
+    case actionTypes.LOAD_INBOUNDHEAD:
+      return { ...state, inboundReload: false };
     case actionTypes.LOAD_INBOUNDHEAD_SUCCEED:
-      return { ...state, inboundFormHead: action.result.data, inboundReload: false };
+      return { ...state, inboundFormHead: action.result.data };
     case actionTypes.LOAD_INBPRDDETAILS_SUCCEED:
-      return { ...state, inboundProducts: action.result.data, inboundReload: false };
+      return { ...state, inboundProducts: action.result.data };
     case actionTypes.LOAD_INBPUTAWAYS:
       return { ...state, inboundPutaways: { ...state.inboundPutaways, loading: true } };
     case actionTypes.LOAD_INBPUTAWAYS_SUCCEED:
@@ -460,6 +464,10 @@ export function loadInboundPutaways(inboundNo) {
       params: { inboundNo },
     },
   };
+}
+
+export function markReloadInbound() {
+  return { type: actionTypes.MARK_RELOAD_INBOUND };
 }
 
 export function getInboundDetail(inboundNo) {

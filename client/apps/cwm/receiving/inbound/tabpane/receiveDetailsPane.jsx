@@ -10,7 +10,7 @@ import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
 import { createFilename } from 'client/util/dataTransform';
 import ExcelUploader from 'client/components/ExcelUploader';
-import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive } from 'common/reducers/cwmReceive';
+import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
 import moment from 'moment';
 
@@ -28,7 +28,7 @@ const Search = Input.Search;
     reload: state.cwmReceive.inboundReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive }
+  { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound }
 )
 @connectNav({
   depth: 3,
@@ -208,7 +208,7 @@ export default class ReceiveDetailsPane extends React.Component {
     window.open(`${API_ROOTS.default}v1/cwm/export/receiving/details/${createFilename('receiving')}.xlsx?inboundNo=${inboundNo}`);
   }
   handleUploadPutaway = () => {
-    this.handleReload();
+    this.props.markReloadInbound();
   }
   render() {
     const { inboundHead, inboundProducts } = this.props;

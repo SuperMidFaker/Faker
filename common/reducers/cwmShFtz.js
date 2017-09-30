@@ -924,7 +924,7 @@ export function loadEntryTransRegs(params) {
   };
 }
 
-export function loadRegDetails(params) {
+export function loadVtransferRegDetails(params) {
   return {
     [CLIENT_API]: {
       types: [
@@ -932,7 +932,7 @@ export function loadRegDetails(params) {
         actionTypes.LOAD_ETIDS_SUCCEED,
         actionTypes.LOAD_ETIDS_FAIL,
       ],
-      endpoint: 'v1/cwm/shftz/entry/reg/details',
+      endpoint: 'v1/cwm/shftz/entry/reg/vtransf/details',
       method: 'get',
       params,
     },

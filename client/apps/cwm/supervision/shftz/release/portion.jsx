@@ -235,7 +235,7 @@ export default class SHFTZRelDetail extends Component {
   }, {
     title: '毛重',
     dataIndex: 'gross_wt',
-    width: 180,
+    width: 150,
     render: (o, record) => <EditableCell size="small" value={o} onSave={value => this.handleWtChange(value, record.id)} />,
   }, {
     title: '净重',
@@ -265,6 +265,19 @@ export default class SHFTZRelDetail extends Component {
     render: (o) => {
       const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
       const text = mode ? `${mode.value}| ${mode.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
+  }, {
+    title: '运费',
+    width: 100,
+    dataIndex: 'freight',
+  }, {
+    title: '运费币制',
+    width: 100,
+    dataIndex: 'freight_currency',
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }, {
@@ -384,7 +397,7 @@ export default class SHFTZRelDetail extends Component {
                     <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
                       <Row type="flex" className="panel-header">
                         <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={320} editable={relEditable}
+                          <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={380} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>
