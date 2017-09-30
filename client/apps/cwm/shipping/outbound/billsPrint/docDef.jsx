@@ -189,7 +189,7 @@ function pdfBody(data) {
 export function WaybillDef(data) {
   const docDefinition = {
     pageSize: { width: 400, height: 600 },
-    pageMargins: [20, 6],
+    pageMargins: [5, 5],
     content: [],
     styles: {
       table: {
@@ -396,7 +396,7 @@ function TrigeminyList(data) {
 export function TrigeminyListDef(data) {
   const docDefinition = {
     pageSize: { width: 400, height: 840 },
-    pageMargins: [20, 6],
+    pageMargins: [5, 5],
     content: [],
     styles: {
       table: {
