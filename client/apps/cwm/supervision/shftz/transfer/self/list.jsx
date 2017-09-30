@@ -78,11 +78,11 @@ export default class SHFTZTransferSelfList extends React.Component {
     fixed: 'left',
   }, {
     title: '转出出库单号',
-    width: 180,
+    width: 220,
     dataIndex: 'ftz_rel_no',
   }, {
     title: '转入进库单号',
-    width: 180,
+    width: 220,
     dataIndex: 'ftz_ent_no',
   }, {
     title: '状态',

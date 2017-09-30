@@ -99,7 +99,7 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '报关单号',
     dataIndex: 'pre_entry_seq_no',
-    width: 150,
+    width: 180,
   }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',

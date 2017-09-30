@@ -87,7 +87,7 @@ export default class SHFTZTransferInList extends React.Component {
     width: 160,
   }, {
     title: '海关进库单号',
-    width: 180,
+    width: 220,
     dataIndex: 'ftz_ent_no',
   }, {
     title: '监管类型',
