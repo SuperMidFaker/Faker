@@ -221,18 +221,18 @@ function TrigeminyList(data) {
   }
   let pdfcontent = [];
   const imgE = false;
-  const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
+  const titleBody = [{ image: data.sflogo, width: 75, margin: [2, 10], alignment: 'center', border: [true, true, false, false] }];
   if (expressInfo.added_services && expressInfo.added_services.indexOf('COD') >= 0) {
-    titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({ image: data.sfCod, margin: [2, 10], width: 70, alignment: 'center', border: [false, true, false, false] });
   } else {
-    titleBody.push({ text: '', border: [false, true, false, false] });
+    titleBody.push({ text: '', margin: [2, 10], border: [false, true, false, false] });
   }
   if (imgE) {
-    titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({ image: data.sfE, margin: [2, 10], width: 30, alignment: 'center', border: [false, true, false, false] });
   } else {
-    titleBody.push({ text: '', border: [false, true, false, false] });
+    titleBody.push({ text: '', margin: [2, 10], border: [false, true, false, false] });
   }
-  titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
+  titleBody.push({ image: data.sfNum, margin: [2, 10], width: 80, alignment: 'center', border: [false, true, true, false] });
   const receiverAddr = `${expressInfo.receiver_contact} ${expressInfo.receiver_phone}\n${Location.renderConsignLocation(expressInfo, 'receiver', '')}${expressInfo.receiver_address}`;
   const senderAddr = `${expressInfo.sender_contact} ${expressInfo.sender_phone}\n${Location.renderConsignLocation(expressInfo, 'sender', '')}${expressInfo.sender_address}`;
   pdfcontent = [
@@ -246,26 +246,22 @@ function TrigeminyList(data) {
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
-            { text: expressInfo.express_type, fontSize: 12, alignment: 'center' }],
-          ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
-          [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
+          [{ rowSpan: 2, image: barcode0, margin: [2, 10], width: 150, alignment: 'center', border: [true, true, true, false] },
+            { text: expressInfo.express_type, margin: [2, 10], fontSize: 12, alignment: 'center' }],
+          ['', { rowSpan: 2, text: '', fontSize: 11, margin: [2, 10], alignment: 'center', border: [true, true, true, true] }],
+          [{ text: `${bartext}`, margin: [2, 10], fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
       },
     },
     // 代收货款\n卡号：0123456789\n¥3000元
     { style: 'table',
       table: {
-        widths: ['2%', '70%', '28%'],
+        widths: ['3%', '70%', '27%'],
         body: [
           // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
-          [{ text: '目的地', border: [true, false] }, { colSpan: 2, text: expressInfo.destcode, fontSize: 18, border: [true, false, true] }, ''],
-          ['收件人', {
-            colSpan: 2,
-            text: receiverAddr,
-            fontSize: 12,
-          }, ''],
-          ['寄件人', { text: senderAddr, fontSize: 12 }, { text: '定时派送\n自寄自取', alignment: 'center' }],
+          [{ text: '目的地', fontSize: 9, border: [true, false] }, { colSpan: 2, text: expressInfo.destcode, fontSize: 18, border: [true, false, true] }, ''],
+          [{ text: '收件人', fontSize: 9 }, { colSpan: 2, text: receiverAddr, fontSize: 12 }, ''],
+          [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }, { text: '定时派送\n自寄自取', alignment: 'center' }],
         ],
       },
       layout: {
@@ -277,22 +273,22 @@ function TrigeminyList(data) {
     table: {
       widths: ['26%', '26%', '26%', '22%'],
       body: [
-        [{ text: `付款方式：${expressInfo.pay_method}`, border: [true, false, false, false] },
-          { text: '计费重量：', border: [false, false, false, false] },
-          { text: '包装费用：', border: [false, false, false, false] },
-          { rowSpan: 4, text: '签名', border: [true, false, true] }],
-        [{ text: `月结账号：${expressInfo.custid}`, border: [true, false, false, false] },
-          { text: '声明价值：', border: [false, false, false, false] },
-          { text: '运费：', border: [false, false, false, false] },
+        [{ text: `付款方式：${expressInfo.pay_method}`, fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
+          { text: '计费重量：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+          { text: '包装费用：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+          { rowSpan: 4, text: '签名', fontSize: 7, margin: [2, 2], border: [true, false, true] }],
+        [{ text: `月结账号：${expressInfo.custid}`, fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
+          { text: '声明价值：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+          { text: '运费：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
           ''],
-        [{ text: '第三方地区：', border: [true, false, false, false] },
-          { text: '保价费用：', border: [false, false, false, false] },
-          { text: '费用合计', border: [false, false, false, false] },
+        [{ text: '第三方地区：', fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
+          { text: '保价费用：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+          { text: '费用合计', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
           ''],
-        [{ text: '实际重量：', border: [true, false, false, false] },
-          { text: '定时派送：', border: [false, false, false, false] },
-          { text: '', border: [false, false, false, false] },
-          { text: '', border: [false, false, false, false] }],
+        [{ text: '实际重量：', fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
+          { text: '定时派送：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+          { text: '', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+          { text: '', fontSize: 7, margin: [2, 2], border: [false, false, false, false] }],
       ],
     },
   };
@@ -300,9 +296,9 @@ function TrigeminyList(data) {
   pdfcontent.push(
     { style: 'table',
       table: {
-        widths: ['2%', '56%', '20%', '22%'],
+        widths: ['3%', '55%', '20%', '22%'],
         body: [
-          [{ text: '托寄物' }, { text: expressInfo.product_name, alignment: 'center', fontSize: 12 }, { text: '收件员：\n寄件日期：\n派件员：' },
+          [{ text: '托寄物', fontSize: 9 }, { text: expressInfo.product_name, alignment: 'center', fontSize: 12 }, { text: '收件员：\n寄件日期：\n派件员：' },
             { text: '\n\n月     日', alignment: 'right', border: [true, false, true, true] }],
         ],
       },
@@ -321,17 +317,16 @@ function TrigeminyList(data) {
   pdfcontent.push(
     { style: 'table',
       table: {
-        widths: ['2%', '98%'],
+        widths: ['3%', '97%'],
         body: [
           [{
-            text: '收件人',
-            border: [true, false, true, false],
+            text: '收件人', fontSize: 9, border: [true, false, true, false],
           }, {
             text: receiverAddr,
             fontSize: 12,
             border: [true, false, true, false],
           }],
-          ['寄件人', { text: senderAddr, fontSize: 12 }],
+          [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
         ],
       },
       layout: {
@@ -362,17 +357,16 @@ function TrigeminyList(data) {
   pdfcontent.push(
     { style: 'table',
       table: {
-        widths: ['2%', '98%'],
+        widths: ['3%', '97%'],
         body: [
           [{
-            text: '收件人',
-            border: [true, false, true, false],
+            text: '收件人', fontSize: 9, border: [true, false, true, false],
           }, {
             text: receiverAddr,
             fontSize: 12,
             border: [true, false, true, false],
           }],
-          ['寄件人', { text: senderAddr, fontSize: 12 }],
+          [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
         ],
       },
       layout: {

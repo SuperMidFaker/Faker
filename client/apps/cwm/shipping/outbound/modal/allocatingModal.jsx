@@ -10,7 +10,7 @@ import TrimSpan from 'client/components/trimSpan';
 import QuantityInput from '../../../common/quantityInput';
 import UnfreezePopover from '../../../common/popover/unfreezePopover';
 import messages from '../../message.i18n';
-import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc, setInventoryFilter } from 'common/reducers/cwmOutbound';
+import { closeAllocatingModal, loadProductInboundDetail, loadAllocatedDetails, manualAlloc } from 'common/reducers/cwmOutbound';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import LocationSelect from 'client/apps/cwm/common/locationSelect';
 import AllocatedPopover from '../../../common/popover/allocatedPopover';
@@ -27,7 +27,6 @@ const Option = Select.Option;
     submitting: state.cwmOutbound.submitting,
     outboundNo: state.cwmOutbound.allocatingModal.outboundNo,
     outboundProduct: state.cwmOutbound.allocatingModal.outboundProduct,
-    filters: state.cwmOutbound.inventoryFilter,
     inventoryData: state.cwmOutbound.inventoryData,
     allocatedData: state.cwmOutbound.allocatedData,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -42,7 +41,7 @@ const Option = Select.Option;
     loadProductInboundDetail,
     loadAllocatedDetails,
     manualAlloc,
-    setInventoryFilter }
+  }
 )
 export default class AllocatingModal extends Component {
   static propTypes = {
@@ -53,12 +52,14 @@ export default class AllocatingModal extends Component {
     allocatedDataLoading: PropTypes.bool.isRequired,
   }
   state = {
+    originData: [],
     inventoryData: [],
     allocatedData: [],
     outboundProduct: {},
     searchContent: '',
     filterInventoryColumns: [],
     filterAllocatedColumns: [],
+    filters: { location: '', startTime: '', endTime: '', searchType: 'external_lot_no' },
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -73,7 +74,7 @@ export default class AllocatingModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_no, nextProps.defaultWhse.code, nextProps.filters,
+      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_no, nextProps.defaultWhse.code,
          nextProps.outboundHead.owner_partner_id);
       this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
       this.setState({
@@ -87,7 +88,8 @@ export default class AllocatingModal extends Component {
     }
     if (nextProps.inventoryData !== this.props.inventoryData) {
       this.setState({
-        inventoryData: nextProps.inventoryData,
+        inventoryData: nextProps.inventoryData.map(data => ({ ...data })),
+        originData: nextProps.inventoryData.map(data => ({ ...data })),
       });
     }
     if (nextProps.allocatedData !== this.props.allocatedData) {
@@ -103,15 +105,13 @@ export default class AllocatingModal extends Component {
   bondedColumns ={
     bonded: true, portion: true, ftz_ent_filed_id: true, ftz_ent_no: true, in_cus_decl_no: true,
   }
-  handleReLoad = () => {
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, this.props.filters,
-       this.props.outboundHead.owner_partner_id).then((result) => {
-         if (!result.error) {
-           this.setState({
-             inventoryData: result.data,
-           });
-         }
-       });
+  handleReLoad = (traceId, qty) => {
+    const inventoryData = [...this.state.inventoryData];
+    inventoryData.find(data => data.trace_id === traceId).frozen_qty -= qty;
+    inventoryData.find(data => data.trace_id === traceId).avail_qty += qty;
+    this.setState({
+      inventoryData,
+    });
   }
   msg = key => formatMsg(this.props.intl, key);
   inventoryColumns = [{
@@ -142,15 +142,15 @@ export default class AllocatingModal extends Component {
       }
       if (reason) {
         return (<Popover placement="right" title="原因" content={reason}>
-          <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled />
+          <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.trace_id)} disabled />
         </Popover>);
       }
-      return <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.index)} disabled={disabled} />;
+      return <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddAllocate(record.trace_id)} disabled={disabled} />;
     },
   }, {
     title: '现分配数量',
     width: 200,
-    render: (o, record) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, record.index)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
+    render: (o, record) => (<QuantityInput size="small" onChange={e => this.handleAllocChange(e.target.value, record.trace_id)} packQty={record.allocated_pack_qty} pcsQty={record.allocated_qty} />),
   }, {
     title: 'SKU',
     dataIndex: 'product_sku',
@@ -277,7 +277,7 @@ export default class AllocatingModal extends Component {
     width: 60,
     fixed: 'left',
     render: (o, record) => (record.alloced ? null :
-    <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.index)} disabled={!this.props.editable} />),
+    <Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDeleteAllocated(record.trace_id)} disabled={!this.props.editable} />),
   }, {
     title: '已分配数量',
     width: 200,
@@ -353,38 +353,29 @@ export default class AllocatingModal extends Component {
   }, {
     dataIndex: 'spacer',
   }]
-  handleAllocChange = (value, index) => {
+  handleAllocChange = (value, traceId) => {
     const allocValue = parseFloat(value);
     if (!isNaN(allocValue)) {
-      if (allocValue > this.state.inventoryData[index].avail_pack_qty) {
+      if (allocValue > this.state.inventoryData.find(data => data.trace_id === traceId).avail_pack_qty) {
         message.info('分配数量不能大于可用数量');
       } else {
         const inventoryData = [...this.state.inventoryData];
-        inventoryData[index].allocated_pack_qty = allocValue;
-        inventoryData[index].allocated_qty = allocValue * inventoryData[index].sku_pack_qty;
+        const changedOne = inventoryData.find(data => data.trace_id === traceId);
+        changedOne.allocated_pack_qty = allocValue;
+        changedOne.allocated_qty = allocValue * changedOne.sku_pack_qty;
         this.setState({
           inventoryData,
         });
       }
     }
   }
-  handleLocationChange = (value) => {
-    const { outboundHead } = this.props;
-    const filters = { ...this.props.filters, location: value };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
-       outboundHead.owner_partner_id);
-  }
-  handleDateChange = (dates, dateString) => {
-    const { outboundHead } = this.props;
-    const filters = { ...this.props.filters, startTime: new Date(dateString[0]).setHours(0, 0, 0, 0), endTime: new Date(dateString[1]).setHours(0, 0, 0, 0) };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
-       outboundHead.owner_partner_id);
-  }
-  handleAddAllocate = (index) => {
+  handleAddAllocate = (traceId) => {
     const inventoryData = [...this.state.inventoryData];
     const allocatedData = [...this.state.allocatedData];
+    const originData = [...this.state.originData];
     const outboundProduct = { ...this.state.outboundProduct };
-    const allocatedOne = { ...inventoryData[index] };
+    const allocatedOne = { ...inventoryData.find(data => data.trace_id === traceId) };
+    const index = inventoryData.findIndex(data => data.trace_id === traceId);
     const allocatedAmount = allocatedData.reduce((pre, cur) => (pre + cur.allocated_qty), 0);
     const currAlloc = allocatedOne.allocated_qty ? allocatedOne.allocated_qty : allocatedOne.avail_qty;
     if (allocatedAmount + currAlloc > this.props.outboundProduct.order_qty) {
@@ -398,7 +389,7 @@ export default class AllocatingModal extends Component {
     if (inventoryData[index].avail_qty === 0) {
       inventoryData.splice(index, 1);
     }
-    const idx = allocatedData.findIndex(item => item.trace_id === allocatedOne.trace_id);
+    const idx = allocatedData.findIndex(item => item.trace_id === traceId);
     if (idx >= 0) {
       allocatedData[idx].allocated_qty += currAlloc;
       allocatedData[idx].allocated_pack_qty += currAlloc / allocatedOne.sku_pack_qty;
@@ -413,35 +404,72 @@ export default class AllocatingModal extends Component {
     }
     outboundProduct.alloc_qty += currAlloc;
     outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / allocatedOne.sku_pack_qty;
-    this.setState({
-      inventoryData,
-      allocatedData,
-      outboundProduct,
-    });
-  }
-  handleDeleteAllocated = (index) => {
-    const inventoryData = [...this.state.inventoryData];
-    const allocatedData = [...this.state.allocatedData];
-    const outboundProduct = { ...this.state.outboundProduct };
-    const deleteOne = allocatedData[index];
-    allocatedData.splice(index, 1);
-    outboundProduct.alloc_qty -= deleteOne.allocated_qty;
-    outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / deleteOne.sku_pack_qty;
-    const idx = inventoryData.findIndex(item => item.trace_id === deleteOne.trace_id);
-    if (idx >= 0) {
-      inventoryData[idx].alloc_qty -= deleteOne.allocated_qty;
-      inventoryData[idx].avail_qty += deleteOne.allocated_qty;
-    } else {
-      deleteOne.avail_qty = deleteOne.allocated_qty;
-      deleteOne.alloc_qty = 0;
-      deleteOne.allocated_qty = null;
-      deleteOne.allocated_pack_qty = null;
-      inventoryData.push(deleteOne);
+    const originIndex = originData.findIndex(data => data.trace_id === traceId);
+    originData[originIndex].alloc_qty += currAlloc;
+    originData[originIndex].avail_qty -= currAlloc;
+    if (originData[originIndex].avail_qty === 0) {
+      originData.splice(originIndex, 1);
     }
     this.setState({
       inventoryData,
       allocatedData,
       outboundProduct,
+      originData,
+    });
+  }
+  handleDeleteAllocated = (traceId) => {
+    const { filters } = this.state;
+    const inventoryData = [...this.state.inventoryData];
+    const allocatedData = [...this.state.allocatedData];
+    const originData = [...this.state.originData];
+    const outboundProduct = { ...this.state.outboundProduct };
+    const deleteOne = allocatedData.find(data => data.trace_id === traceId);
+    const index = allocatedData.findIndex(data => data.trace_id === traceId);
+    allocatedData.splice(index, 1);
+    outboundProduct.alloc_qty -= deleteOne.allocated_qty;
+    outboundProduct.alloc_pack_qty = outboundProduct.alloc_qty / deleteOne.sku_pack_qty;
+    const originIndex = originData.findIndex(data => data.trace_id === traceId);
+    const idx = inventoryData.findIndex(item => item.trace_id === traceId);
+    if (idx >= 0) {
+      inventoryData[idx].alloc_qty -= deleteOne.allocated_qty;
+      inventoryData[idx].avail_qty += deleteOne.allocated_qty;
+    } else if (idx === -1 && originIndex === -1) {
+      deleteOne.avail_qty = deleteOne.allocated_qty;
+      deleteOne.alloc_qty = 0;
+      deleteOne.allocated_qty = null;
+      deleteOne.allocated_pack_qty = null;
+      if (filters.searchContent) {
+        const reg = new RegExp(filters.searchContent);
+        if (reg.test(deleteOne[filters.searchType])) {
+          inventoryData.push(deleteOne);
+          return;
+        }
+      }
+      if (filters.location && deleteOne.location === filters.location) {
+        inventoryData.push(deleteOne);
+        return;
+      }
+      if (filters.virtualWhse) {
+        const reg = new RegExp(filters.virtualWhse);
+        if (reg.test(deleteOne.virtual_whse)) {
+          inventoryData.push(deleteOne);
+        }
+      }
+      if (filters.endTime) {
+        if (deleteOne.inbound_timestamp >= new Date(`${filters.startTime} 00:00:00`).getTime() && new Date(`${filters.endTime} 00:00:00`).getTime() > deleteOne.inbound_timestamp) {
+          inventoryData.push(deleteOne);
+        }
+      }
+      originData.push(deleteOne);
+    } else {
+      originData[originIndex].alloc_qty -= deleteOne.allocated_qty;
+      originData[originIndex].avail_qty += deleteOne.allocated_qty;
+    }
+    this.setState({
+      inventoryData,
+      allocatedData,
+      outboundProduct,
+      originData,
     });
   }
   handleCancel = () => {
@@ -488,7 +516,6 @@ export default class AllocatingModal extends Component {
       muteInvColumns[value] = true;
     }
     const filters = { ...this.props.filters, searchType: value || 'external_lot_no' };
-    this.props.setInventoryFilter(filters);
     const bonded = this.props.outboundHead.bonded;
     const filterInventoryColumns = this.inventoryColumns.filter((col) => {
       let filter = true;
@@ -497,28 +524,49 @@ export default class AllocatingModal extends Component {
       }
       return filter && (muteInvColumns[col.dataIndex] !== false);
     });
-    this.setState({ filterInventoryColumns });
+    this.setState({
+      filterInventoryColumns,
+      filters,
+    });
   }
   handleSearchContentChange = (e) => {
     this.setState({
       searchContent: e.target.value,
     });
   }
-  handleSearchDetails = () => {
-    const { outboundHead } = this.props;
-    const filters = { ...this.props.filters, searchContent: this.state.searchContent };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
-       outboundHead.owner_partner_id);
-  }
-  handleVwSearch = (value) => {
-    const { outboundHead } = this.props;
-    const filters = { ...this.props.filters, virtualWhse: value };
-    this.props.loadProductInboundDetail(this.props.outboundProduct.product_no, this.props.defaultWhse.code, filters,
-       outboundHead.owner_partner_id);
+  handleSearchDetails = (type, value, dataString) => {
+    let inventoryData = this.state.originData.map(data => ({ ...data }));
+    let filters = {};
+    if (type !== 'time') {
+      filters = { ...this.state.filters, [type]: value };
+    } else {
+      filters = { ...this.state.filters, startTime: dataString[0], endTime: dataString[1] };
+    }
+    if (filters.searchContent) {
+      if (['external_lot_no', 'serial_no', 'asn_no', 'po_no', 'ftz_ent_no', 'in_cus_decl_no'].indexOf(filters.searchType) > 0) {
+        const reg = new RegExp(filters.searchContent);
+        inventoryData = inventoryData.filter(data => reg.test(data[filters.searchType]));
+      }
+    }
+    if (filters.location) {
+      inventoryData = inventoryData.filter(data => data.location === filters.location);
+    }
+    if (filters.virtualWhse) {
+      const reg = new RegExp(filters.virtualWhse);
+      inventoryData = inventoryData.filter(data => reg.test(data.virtual_whse));
+    }
+    if (filters.endTime) {
+      inventoryData = inventoryData.filter(data => data.inbound_timestamp >= new Date(`${dataString[0]} 00:00:00`).getTime() &&
+        new Date(`${dataString[1]} 00:00:00`).getTime() > data.inbound_timestamp);
+    }
+    this.setState({
+      inventoryData,
+      filters,
+    });
   }
   render() {
-    const { filters, outboundHead, editable } = this.props;
-    const { outboundProduct, filterInventoryColumns, filterAllocatedColumns } = this.state;
+    const { outboundHead, editable } = this.props;
+    const { outboundProduct, filterInventoryColumns, filterAllocatedColumns, filters } = this.state;
     const searchOptions = (
       <Select value={filters.searchType} allowClear style={{ width: 120 }} onSelect={this.handleSelectChangeType} onChange={this.handleSelectChangeType}>
         <Option value="external_lot_no">批次号</Option>
@@ -533,17 +581,17 @@ export default class AllocatingModal extends Component {
       <Form layout="inline">
         <FormItem>
           <Input.Search addonBefore={searchOptions} onChange={this.handleSearchContentChange} placeholder="查询条件"
-            value={this.state.searchContent} style={{ width: 380 }} onSearch={this.handleSearchDetails}
+            value={this.state.searchContent} style={{ width: 380 }} onSearch={() => this.handleSearchDetails('searchContent', this.state.searchContent)}
           />
         </FormItem>
         <FormItem label="库位">
-          <LocationSelect showSearch onChange={this.handleLocationChange} value={filters.location} style={{ width: 160 }} />
+          <LocationSelect showSearch onChange={value => this.handleSearchDetails('location', value)} value={filters.location} style={{ width: 160 }} />
         </FormItem>
         <FormItem label="库别">
-          <Input.Search onSearch={this.handleVwSearch} />
+          <Input.Search onSearch={value => this.handleSearchDetails('virtualWhse', value)} />
         </FormItem>
         <FormItem label="入库日期">
-          <RangePicker onChange={this.handleDateChange} />
+          <RangePicker onChange={(data, dataString) => this.handleSearchDetails('time', data, dataString)} />
         </FormItem>
         { outboundHead.bonded === 1 &&
           <FormItem label="已备案">
