@@ -50,7 +50,7 @@ export default class UnfreezePopover extends Component {
     const { qty, reason } = this.state;
     this.props.unfreezeTransit([traceId], { reason }, loginName, tenantId, Number(qty)).then((result) => {
       if (!result.error) {
-        this.props.reload();
+        this.props.reload(traceId, Number(qty));
         this.setState({
           visible: false,
           qty: '',
