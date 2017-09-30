@@ -263,7 +263,7 @@ export function loadOutboundProductDetails(outboundNo) {
   };
 }
 
-export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId) {
+export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId, filters) {
   return {
     [CLIENT_API]: {
       types: [
@@ -273,7 +273,7 @@ export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId) {
       ],
       endpoint: 'v1/cwm/product/inbound/details',
       method: 'get',
-      params: { productNo, whseCode, ownerPartnerId },
+      params: { productNo, whseCode, ownerPartnerId, filters: JSON.stringify(filters) },
     },
   };
 }

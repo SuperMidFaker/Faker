@@ -42,6 +42,8 @@ export default class ShippingModal extends Component {
     if (!nextProps.visible && this.props.visible !== nextProps.visible) {
       this.props.form.setFieldsValue({
         waybill: '',
+        pieces: '',
+        volumes: '',
       });
     }
   }
@@ -65,6 +67,8 @@ export default class ShippingModal extends Component {
           data.drop_id = '';
           data.waybill = values.waybill;
           data.shipped_type = this.state.shippingMode;
+          data.pieces = values.pieces;
+          data.volumes = values.volumes;
           list.push(data);
         } else {
           for (let i = 0; i < selectedRows.length; i++) {
@@ -75,6 +79,8 @@ export default class ShippingModal extends Component {
             data.drop_id = '';
             data.waybill = values.waybill;
             data.shipped_type = this.state.shippingMode;
+            data.pieces = values.pieces;
+            data.volumes = values.volumes;
             list.push(data);
           }
         }
@@ -111,6 +117,18 @@ export default class ShippingModal extends Component {
               getFieldDecorator('waybill', {
                 rules: [{ required: true, messages: 'please input whseName' }],
               })(<Input />)
+            }
+          </FormItem>
+          <FormItem {...formItemLayout} label="箱数">
+            {
+              getFieldDecorator('pieces', {
+              })(<Input type="number" />)
+            }
+          </FormItem>
+          <FormItem {...formItemLayout} label="体积">
+            {
+              getFieldDecorator('volumes', {
+              })(<Input type="number" />)
             }
           </FormItem>
           <FormItem {...formItemLayout} label="发货人员" >
