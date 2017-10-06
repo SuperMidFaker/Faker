@@ -24,7 +24,7 @@ export default class ModuleBMS extends React.Component {
     linkMenus.push({
       single: true,
       key: 'bss-0',
-      disabled: true,
+      disabled: false,
       path: '/bss/dashboard',
       icon: 'logixon icon-apps',
       text: formatMsg(intl, 'dashboard'),
@@ -33,13 +33,13 @@ export default class ModuleBMS extends React.Component {
       single: true,
       key: 'bss-settlement',
       path: '/bss/settlement',
-      icon: 'logixon icon-bill',
+      icon: 'logixon icon-finance-o',
       text: formatMsg(intl, 'settlement'),
     });
     linkMenus.push({
       single: false,
       key: 'bss-receivable',
-      icon: 'logixon icon-finance-o',
+      icon: 'logixon icon-receivable',
       text: formatMsg(intl, 'receivable'),
       sublinks: [{
         key: 'bss-receivable-0',
@@ -58,7 +58,7 @@ export default class ModuleBMS extends React.Component {
     linkMenus.push({
       single: false,
       key: 'bss-payable',
-      icon: 'logixon icon-refund',
+      icon: 'logixon icon-payable',
       text: formatMsg(intl, 'payable'),
       sublinks: [{
         key: 'bss-payable-0',

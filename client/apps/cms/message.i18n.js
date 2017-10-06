@@ -77,6 +77,10 @@ const messages = defineMessages({
     id: 'cms.module.classification.special.category',
     defaultMessage: '特殊商品编码分类',
   },
+  certification: {
+    id: 'cms.module.certification',
+    defaultMessage: '涉证管理',
+  },
   analytics: {
     id: 'cms.module.analytics',
     defaultMessage: '报表中心',

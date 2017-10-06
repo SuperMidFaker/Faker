@@ -61,7 +61,7 @@ export default class Clearance extends React.Component {
           single: true,
           key: 'cms-delegation',
           path: '/clearance/delegation',
-          icon: 'logixon icon-business',
+          icon: 'logixon icon-delegation',
           text: formatMsg(intl, 'delegation'),
         }
       );
@@ -101,7 +101,6 @@ export default class Clearance extends React.Component {
         }, {
           key: 'cms-import-3',
           disabled: true,
-          group: formatMsg(intl, 'import'),
           path: '/clearance/import/ciq',
           text: formatMsg(intl, 'importCiqDecl'),
         }],
@@ -119,7 +118,6 @@ export default class Clearance extends React.Component {
         }, {
           key: 'cms-export-3',
           disabled: true,
-          group: formatMsg(intl, 'export'),
           path: '/clearance/export/ciq',
           text: formatMsg(intl, 'exportCiqDecl'),
         }],
@@ -144,6 +142,15 @@ export default class Clearance extends React.Component {
           path: '/clearance/classification/special',
           text: formatMsg(intl, 'specialCategory'),
         }],
+      });
+    }
+    if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
+      linkMenus.push({
+        single: true,
+        key: 'cms-certification',
+        icon: 'logixon icon-certification',
+        path: '/clearance/certification',
+        text: formatMsg(intl, 'certification'),
       });
     }
     if (hasPermission(privileges, { module: 'clearance', feature: 'billing' })) {
