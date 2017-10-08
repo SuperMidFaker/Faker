@@ -13,8 +13,8 @@ const messages = defineMessages({
     id: 'scop.module.customers',
     defaultMessage: '客户',
   },
-  suppliers: {
-    id: 'scop.module.suppliers',
+  vendors: {
+    id: 'scop.module.vendors',
     defaultMessage: '供应商',
   },
   flow: {

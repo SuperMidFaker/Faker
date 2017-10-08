@@ -14,9 +14,9 @@ const messages = defineMessages({
     id: 'bss.module.receivable',
     defaultMessage: '应收',
   },
-  receivableBill: {
-    id: 'bss.module.receivable.bill',
-    defaultMessage: '应收账单',
+  customerBill: {
+    id: 'bss.module.receivable.customer.bill',
+    defaultMessage: '客户账单',
   },
   receivableInvoice: {
     id: 'bss.module.receivable.invoice',
@@ -30,9 +30,9 @@ const messages = defineMessages({
     id: 'bss.module.payable',
     defaultMessage: '应付',
   },
-  payableBill: {
-    id: 'bss.module.payable.bill',
-    defaultMessage: '应付账单',
+  vendorBill: {
+    id: 'bss.module.payable.vendor.bill',
+    defaultMessage: '供应商账单',
   },
   payableInvoice: {
     id: 'bss.module.payable.invoice',

@@ -52,11 +52,11 @@ export default class ModuleSCOF extends React.Component {
     });
     linkMenus.push({
       single: true,
-      key: 'scof-supplier',
+      key: 'scof-vendor',
       disabled: true,
-      path: '/scof/suppliers',
+      path: '/scof/vendors',
       icon: 'logixon icon-supplier-mng',
-      text: formatMsg(intl, 'suppliers'),
+      text: formatMsg(intl, 'vendors'),
     });
     this.setState({ linkMenus });
   }

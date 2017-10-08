@@ -43,7 +43,7 @@ export default class ModuleCWM extends React.Component {
         single: true,
         key: 'cwm-ftz',
         path: '/cwm/supervision/shftz',
-        icon: 'logixon icon-customs',
+        icon: 'logixon icon-ftz-supervision',
         text: formatMsg(intl, 'supervision'),
       });
     }
@@ -87,7 +87,7 @@ export default class ModuleCWM extends React.Component {
       single: false,
       key: 'cwm-stock',
       path: '/cwm/stock',
-      icon: 'logixon icon-inventory',
+      icon: 'logixon icon-stock',
       text: formatMsg(intl, 'stock'),
       sublinks: [{
         key: 'cwm-stock-0',
@@ -185,7 +185,7 @@ export default class ModuleCWM extends React.Component {
           single: true,
           key: 'cwm-ftz',
           path: '/cwm/supervision/shftz',
-          icon: 'logixon icon-customs',
+          icon: 'logixon icon-ftz-supervision',
           text: formatMsg(nextProps.intl, 'supervision'),
         });
       }

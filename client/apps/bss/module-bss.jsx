@@ -44,7 +44,7 @@ export default class ModuleBMS extends React.Component {
       sublinks: [{
         key: 'bss-receivable-0',
         path: '/bss/receivable/bill',
-        text: formatMsg(intl, 'receivableBill'),
+        text: formatMsg(intl, 'customerBill'),
       }, {
         key: 'bss-receivable-1',
         path: '/bss/receivable/invoice',
@@ -63,7 +63,7 @@ export default class ModuleBMS extends React.Component {
       sublinks: [{
         key: 'bss-payable-0',
         path: '/bss/payable/bill',
-        text: formatMsg(intl, 'payableBill'),
+        text: formatMsg(intl, 'vendorBill'),
       }, {
         key: 'bss-payable-1',
         path: '/bss/payable/invoice',
