@@ -352,8 +352,31 @@ export default class OrderForm extends Component {
                   </FormItem>
                 }
                 </Col>
+                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
                 <Col sm={8}>
-                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+                  <FormItem label="航班号" {...formItemLayout}>
+                    <Input value={formData.cust_shipmt_vessel} onChange={e => this.handleChange('cust_shipmt_vessel', e.target.value)} />
+                  </FormItem>
+                  </Col>
+                }
+              </Row>
+              { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+              <Row gutter={16}>
+                <Col sm={8}>
+                  <FormItem label="船名" {...formItemLayout}>
+                    <Input placeholder="船舶英文名称或编号" value={formData.cust_shipmt_vessel} onChange={e => this.handleChange('cust_shipmt_vessel', e.target.value)} />
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="航次号" {...formItemLayout}>
+                    <Input placeholder="航次号" value={formData.cust_shipmt_voy} onChange={e => this.handleChange('cust_shipmt_voy', e.target.value)} />
+                  </FormItem>
+                </Col>
+              </Row>
+              }
+              { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
+              <Row gutter={16}>
+                <Col sm={8}>
                   <FormItem label="装箱类型" {...formItemLayout}>
                     <RadioGroup value={formData.cust_shipmt_is_container} onChange={ev => this.handleChange('cust_shipmt_is_container', ev.target.value)}>
                       <RadioButton value={SCOF_CONTAINER_TYPE[0].value}>{SCOF_CONTAINER_TYPE[0].text}</RadioButton>
@@ -361,29 +384,9 @@ export default class OrderForm extends Component {
                       <RadioButton value={SCOF_CONTAINER_TYPE[2].value}>{SCOF_CONTAINER_TYPE[2].text}</RadioButton>
                     </RadioGroup>
                   </FormItem>
-                }
                 </Col>
-                <Col sm={8}>
-                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
-                  <FormItem label="船名" {...formItemLayout}>
-                    <Input placeholder="船舶英文名称或编号" value={formData.cust_shipmt_vessel} onChange={e => this.handleChange('cust_shipmt_vessel', e.target.value)} />
-                  </FormItem>
-                }
-                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '5') &&
-                  <FormItem label="航班号" {...formItemLayout}>
-                    <Input value={formData.cust_shipmt_vessel} onChange={e => this.handleChange('cust_shipmt_vessel', e.target.value)} />
-                  </FormItem>
-                }
-                </Col>
-                <Col sm={8}>
-                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') &&
-                  <FormItem label="航次号" {...formItemLayout}>
-                    <Input placeholder="航次号" value={formData.cust_shipmt_voy} onChange={e => this.handleChange('cust_shipmt_voy', e.target.value)} />
-                  </FormItem>
-                }
-                </Col>
-                <Col sm={24}>
-                  { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') && formData.cust_shipmt_is_container === 'FCL' && (
+                { (formData.cust_shipmt_transfer !== 'DOM' && formData.cust_shipmt_trans_mode === '2') && formData.cust_shipmt_is_container === 'FCL' && (
+                <Col sm={16}>
                   <FormItem label="箱型箱号" labelCol={{ span: 2 }} wrapperCol={{ span: 22 }}>
                     <Popover
                       placement="rightBottom"
@@ -397,8 +400,11 @@ export default class OrderForm extends Component {
                       </span>
                     </Popover>
                   </FormItem>
-                )}
                 </Col>
+                )}
+              </Row>
+              }
+              <Row gutter={16}>
                 <Col sm={24} lg={8}>
                   <FormItem label="货物类型" {...formItemLayout} required="true">
                     <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleKvChange('cust_shipmt_goods_type', ev.target.value, 'goods')}>
