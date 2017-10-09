@@ -84,7 +84,7 @@ export default class HeadRulesPane extends React.Component {
     return (
       <div className="pane">
         <div className="pane-content">
-          <Card>
+          <Card noHovering>
             <Row>
               <Col span="8">
                 <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
@@ -171,7 +171,7 @@ export default class HeadRulesPane extends React.Component {
               </Col>
             </Row>
           </Card>
-          <Card>
+          <Card noHovering>
             <Row>
               <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
             </Row>
