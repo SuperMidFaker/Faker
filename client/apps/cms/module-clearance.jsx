@@ -148,6 +148,7 @@ export default class Clearance extends React.Component {
       linkMenus.push({
         single: true,
         key: 'cms-certification',
+        disabled: true,
         icon: 'logixon icon-certs-mng',
         path: '/clearance/certification',
         text: formatMsg(intl, 'certification'),
