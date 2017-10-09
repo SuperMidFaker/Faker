@@ -104,7 +104,7 @@ export function loadExceptions(params) {
   };
 }
 
-export function createException({ dispId, excpLevel, type, typeName, excpEvent, submitter }) {
+export function createException(dispId, excpLevel, type, typeName, remark, exception, tenantId, tenantName, loginId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -114,7 +114,7 @@ export function createException({ dispId, excpLevel, type, typeName, excpEvent, 
       ],
       endpoint: 'v1/transport/tracking/exception',
       method: 'post',
-      data: { dispId, excpLevel, type, typeName, excpEvent, submitter },
+      data: { dispId, excpLevel, type, typeName, remark, exception, tenantId, tenantName, loginId, loginName },
     },
   };
 }

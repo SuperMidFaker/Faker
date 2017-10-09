@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Input, InputNumber, Select, Row, Col, Button } from 'antd';
-import { reportLoc } from 'common/reducers/trackingLandStatus';
+import { createException } from 'common/reducers/trackingLandException';
+import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 
 const { TextArea } = Input;
 
@@ -18,7 +19,7 @@ const { TextArea } = Input;
     parentNo: state.shipment.previewer.shipmt.parent_no,
     dispId: state.shipment.previewer.dispatch.id,
   }),
-  { reportLoc }
+  { createException }
 )
 @Form.create()
 export default class RejectionForm extends React.Component {
@@ -31,22 +32,23 @@ export default class RejectionForm extends React.Component {
     shipmtNo: PropTypes.string.isRequired,
     parentNo: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
+    createException: PropTypes.func.isRequired,
   }
   state = {
   }
   handleSubmit = () => {
-    const { dispId, shipmtNo, parentNo, tenantId } = this.props;
-    const { damagedQty, shortageQty, remark } = this.props.form.getFieldsValue();
-    if (!damagedQty && !shortageQty) {
+    const { dispId, tenantId, tenantName, loginId, loginName } = this.props;
+    const exception = TRANSPORT_EXCEPTIONS.find(item => item.key === 'SHIPMENT_EXCEPTION_DELIVER_REJECTED');
+    const { rejectedQty, excpReason, remark } = this.props.form.getFieldsValue();
+    if (!rejectedQty && !excpReason) {
       message.warn('请至少填写破损或短少总数量的其中一项');
     } else {
-      this.props.registerCargoDamage(
-        tenantId, shipmtNo, parentNo, dispId,
+      this.props.createException(
+        dispId, exception.level, exception.code, exception.name, remark,
         {
-          damaged_qty: damagedQty,
-          shortage_qty: shortageQty,
-          remark,
-        }).then((result) => {
+          rejected_qty: rejectedQty,
+          reason_id: excpReason,
+        }, tenantId, tenantName, loginId, loginName).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
