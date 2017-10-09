@@ -7,6 +7,7 @@ const actionTypes = createActionTypes('@@welogix/transport/tracking/land/excepti
   'CREATE_EXCEPTION', 'CREATE_EXCEPTION_FAIL', 'CREATE_EXCEPTION_SUCCEED',
   'DEAL_EXCEPTION', 'DEAL_EXCEPTION_FAIL', 'DEAL_EXCEPTION_SUCCEED',
   'CHANGE_FILTER', 'SHOW_EXCPMODAL', 'SHOW_DEAL_EXCEPTION_MODAL',
+  'LOAD_EXCEPTION_REASONS', 'LOAD_EXCEPTION_REASONS_FAIL', 'LOAD_EXCEPTION_REASONS_SUCCEED',
 ]);
 
 const initialState = {
@@ -34,6 +35,7 @@ const initialState = {
     current: 1,
     data: [],
   },
+  exceptionReasons: [],
 };
 
 export const { CREATE_EXCEPTION_SUCCEED, LOAD_EXCPSHIPMT, DEAL_EXCEPTION_SUCCEED } = actionTypes;
@@ -61,6 +63,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, exceptions: action.result.data };
     case actionTypes.SHOW_DEAL_EXCEPTION_MODAL:
       return { ...state, dealExcpModal: action.data };
+    case actionTypes.LOAD_EXCEPTION_REASONS_SUCCEED:
+      return { ...state, exceptionReasons: action.result.data };
     default:
       return state;
   }
@@ -137,6 +141,21 @@ export function dealException({ shipmtNo, excpId, solution, solver }) {
       endpoint: 'v1/transport/tracking/dealException',
       method: 'post',
       data: { shipmtNo, excpId, solution, solver },
+    },
+  };
+}
+
+export function loadExceptionReasons(tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_EXCEPTION_REASONS,
+        actionTypes.LOAD_EXCEPTION_REASONS_SUCCEED,
+        actionTypes.LOAD_EXCEPTION_REASONS_FAIL,
+      ],
+      endpoint: 'v1/transport/tracking/exception/reasons',
+      method: 'get',
+      params: { tenantId },
     },
   };
 }
