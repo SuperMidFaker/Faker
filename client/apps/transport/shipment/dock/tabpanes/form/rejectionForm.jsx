@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, message, Input, InputNumber, Select, Row, Col, Button } from 'antd';
-import { createException } from 'common/reducers/trackingLandException';
+import { createException, loadExceptionReasons } from 'common/reducers/trackingLandException';
 import { TRANSPORT_EXCEPTIONS } from 'common/constants';
 
 const { TextArea } = Input;
-
+const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
@@ -18,8 +18,9 @@ const { TextArea } = Input;
     shipmtNo: state.shipment.previewer.dispatch.shipmt_no,
     parentNo: state.shipment.previewer.shipmt.parent_no,
     dispId: state.shipment.previewer.dispatch.id,
+    exceptionReasons: state.trackingLandException.exceptionReasons,
   }),
-  { createException }
+  { createException, loadExceptionReasons }
 )
 @Form.create()
 export default class RejectionForm extends React.Component {
@@ -33,8 +34,12 @@ export default class RejectionForm extends React.Component {
     parentNo: PropTypes.string.isRequired,
     dispId: PropTypes.number.isRequired,
     createException: PropTypes.func.isRequired,
+    loadExceptionReasons: PropTypes.func.isRequired,
   }
   state = {
+  }
+  componentWillMount() {
+    this.props.loadExceptionReasons(this.props.tenantId);
   }
   handleSubmit = () => {
     const { dispId, tenantId, tenantName, loginId, loginName } = this.props;
@@ -63,7 +68,7 @@ export default class RejectionForm extends React.Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, exceptionReasons } = this.props;
     return (
       <Form layout="vertical">
         <Row gutter={16}>
@@ -88,7 +93,9 @@ export default class RejectionForm extends React.Component {
                   required: true,
                   message: '拒收原因',
                 }],
-              })(<Select style={{ width: '100%' }} />)}
+              })(<Select style={{ width: '100%' }} >
+                {exceptionReasons.map(item => (<Option value={item.id}>{item.name}</Option>))}
+              </Select>)}
             </Form.Item>
           </Col>
           <Col span={12}>
