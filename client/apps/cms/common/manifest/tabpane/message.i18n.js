@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   containerId: {
     id: 'cms.manifest.tabpanes.container.id',
-    defaultMessage: '箱号',
+    defaultMessage: '集装箱号',
   },
   containerWt: {
     id: 'cms.manifest.tabpanes.container.wt',
@@ -11,7 +11,7 @@ export default defineMessages({
   },
   containerSpec: {
     id: 'cms.manifest.tabpanes.container.spec',
-    defaultMessage: '规格',
+    defaultMessage: '集装箱规格',
   },
   containerQty: {
     id: 'cms.manifest.tabpanes.container.qty',
@@ -19,11 +19,11 @@ export default defineMessages({
   },
   docuSpec: {
     id: 'cms.manifest.tabpanes.document.spec',
-    defaultMessage: '单据类型',
+    defaultMessage: '随附单据文件类别',
   },
   docuCode: {
     id: 'cms.manifest.tabpanes.document.code',
-    defaultMessage: '单据编码',
+    defaultMessage: '随附单据编号',
   },
   certSpec: {
     id: 'cms.manifest.tabpanes.cert.spec',

@@ -111,8 +111,8 @@ export default class ManifestHeadPane extends React.Component {
             {formatGlobalMsg(this.props.intl, 'save')}
           </Button>}
           {!readonly &&
-          <Popconfirm title={'是否确认重置表头数据?'} onConfirm={this.handleBillHeadReset}>
-            <Button icon="reload" style={{ marginLeft: 8 }}>重置</Button>
+          <Popconfirm title={'是否确认清空表头数据?'} onConfirm={this.handleBillHeadReset}>
+            <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
           </Popconfirm>}
         </div>
         <div className="pane-content form-layout-multi-col">

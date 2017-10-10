@@ -793,14 +793,6 @@ export default class ManifestBodyPane extends React.Component {
       <Menu onClick={this.handleExpMenuClick}>
         <Menu.Item key="expToItem"><Icon type="export" /> 导出未归类数据</Menu.Item>
       </Menu>);
-    const moremenu = (
-      <Menu>
-        <Menu.Item key="delete">
-          <Popconfirm title="确定删除表体数据?" onConfirm={this.handleBodyReset}>
-            <a> <Icon type="delete" /> 清空表体数据</a>
-          </Popconfirm>
-        </Menu.Item>
-      </Menu>);
     if (readonly) {
       return (billMeta.repoId === null ? <Button icon="export" onClick={this.handleManifestBodyExport}> 导出全部</Button> :
       <Dropdown.Button onClick={this.handleManifestBodyExport} overlay={exportmenu}>
@@ -845,11 +837,9 @@ export default class ManifestBodyPane extends React.Component {
           <Icon type="export" /> 导出全部
         </Dropdown.Button>}
         {billMeta.repoId === null && <Button icon="export" onClick={this.handleManifestBodyExport} style={{ marginLeft: 8 }}> 导出全部</Button>}
-        <Dropdown overlay={moremenu}>
-          <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
-            {this.msg('more')} <Icon type="down" />
-          </Button>
-        </Dropdown>
+        <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
+          <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
+        </Popconfirm>
       </span>);
     }
   }

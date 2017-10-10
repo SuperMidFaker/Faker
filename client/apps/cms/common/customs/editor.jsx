@@ -218,7 +218,7 @@ export default class CustomsDeclEditor extends React.Component {
       </TabPane>);
     if (filterProducts.length > 0) {
       tabs.push(
-        <TabPane tab="法检物料" key="ciqDetails">
+        <TabPane tab="法检商品" key="ciqDetails">
           <CiqDetailsPane filterProducts={filterProducts} />
         </TabPane>);
     }
@@ -262,7 +262,7 @@ export default class CustomsDeclEditor extends React.Component {
                 <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
               }
               <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
-                <Icon type="file-text" /> 关联报关清单
+                <Icon type="link" /> 转至报关清单
               </Dropdown.Button>
             </div>
           </Header>

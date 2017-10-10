@@ -263,11 +263,11 @@ export default defineMessages({
   },
   viewManifest: {
     id: 'cms.delegation.manifest.view',
-    defaultMessage: '查看清单',
+    defaultMessage: '申报清单',
   },
   editManifest: {
     id: 'cms.delegation.manifest.edit',
-    defaultMessage: '编辑清单',
+    defaultMessage: '申报清单',
   },
   trackDecl: {
     id: 'cms.delegation.track.decl',

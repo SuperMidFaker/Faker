@@ -351,9 +351,11 @@ export default class ManifestEditor extends React.Component {
       <Menu onClick={this.handleOverlayMenu}>
         <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
         {editable && lockMenuItem}
-        {editable && <Menu.Item key="reset">
+        {/*
+        editable && <Menu.Item key="reset">
           <a role="presentation" onClick={this.handleBillReset}> <Icon type="reload" /> 重置清单</a>
-        </Menu.Item>}
+    </Menu.Item>
+    */}
       </Menu>);
   }
   render() {
@@ -399,7 +401,7 @@ export default class ManifestEditor extends React.Component {
       </TabPane>);
     if (filterProducts.length > 0) {
       tabs.push(
-        <TabPane tab="法检物料" key="legalInspection">
+        <TabPane tab="法检商品" key="legalInspection">
           <CiqDetailsPane filterProducts={filterProducts} />
         </TabPane>);
     }
@@ -463,7 +465,7 @@ export default class ManifestEditor extends React.Component {
               }
               {billMeta.entries.length > 0 &&
                 <Dropdown overlay={declEntryMenu}>
-                  <Button size="large"><Icon type="schedule" />已生成报关建议书<Icon type="down" /></Button>
+                  <Button size="large"><Icon type="link" />转至报关建议书<Icon type="down" /></Button>
                 </Dropdown>
               }
               {revertable &&

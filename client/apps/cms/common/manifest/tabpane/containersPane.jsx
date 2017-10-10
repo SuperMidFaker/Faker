@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Table, Icon, Input, message } from 'antd';
+import { Button, Table, Input, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -105,17 +105,8 @@ export default class ContainersPane extends React.Component {
     const columns = [{
       title: this.msg('containerId'),
       dataIndex: 'container_id',
-      width: 200,
       render: (o, record) =>
         (<ColumnInput field="container_id" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
-        />),
-    }, {
-      title: this.msg('containerWt'),
-      dataIndex: 'container_wt',
-      width: 100,
-      render: (o, record) =>
-        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />),
     }, {
@@ -126,17 +117,21 @@ export default class ContainersPane extends React.Component {
           onChange={this.handleEditChange}
         />),
     }, {
-      width: 60,
+      title: this.msg('containerWt'),
+      dataIndex: 'container_wt',
+      render: (o, record) =>
+        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      width: 100,
       render: (o, record, index) => {
         if (record.id) {
-          return (<span>
-            <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>
-          </span>);
+          return (<Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />);
         } else {
           return (<span>
-            <a onClick={() => this.handleSave(record)}><Icon type="save" /></a>
-            <span className="ant-divider" />
-            <a onClick={() => this.editDone(index)}><Icon type="close" /></a>
+            <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
+            <Button shape="circle" onClick={() => this.handleCancel(record)} icon="close" style={{ marginLeft: 8 }} />
           </span>);
         }
       },
