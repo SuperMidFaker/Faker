@@ -34,16 +34,12 @@ export default class HeadCard extends Component {
     form: PropTypes.object.isRequired,
     handleOwnerChange: PropTypes.func,
   }
-  componentWillMount() {
-    if (this.props.asnHead && this.props.asnHead.owner_partner_id) {
-      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, this.props.asnHead.owner_partner_id);
-    }
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.asnHead !== this.props.asnHead) {
       const { asnHead } = nextProps;
       if (asnHead) {
         this.props.loadSkuParams(asnHead.owner_partner_id);
+        this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, asnHead.owner_partner_id);
       }
     }
   }
