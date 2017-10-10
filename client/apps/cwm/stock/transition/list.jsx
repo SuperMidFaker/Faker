@@ -11,6 +11,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import RowUpdater from 'client/components/rowUpdater';
 import TrimSpan from 'client/components/trimSpan';
+import Summary from 'client/components/Summary';
 import QueryForm from './queryForm';
 import { commonTraceColumns } from '../commonColumns';
 import BatchTransitModal from './modal/batchTransitModal';
@@ -72,6 +73,12 @@ export default class StockTransitionList extends React.Component {
     unfreezeReason: '',
     totalQty: 0,
     allSelectedRows: [],
+    stockQty: 0,
+    availQty: 0,
+    allocQty: 0,
+    frozenQty: 0,
+    bondedQty: 0,
+    nonbondedQty: 0,
   }
   componentDidMount() {
     const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
@@ -82,8 +89,16 @@ export default class StockTransitionList extends React.Component {
       this.handleStockQuery();
     }
   }
+  getTotalData = (data) => {
+    const stockQty = data.reduce((prev, curr) => prev + curr.stock_qty, 0);
+    const availQty = data.reduce((prev, curr) => prev + curr.avail_qty, 0);
+    const allocQty = data.reduce((prev, curr) => prev + curr.alloc_qty, 0);
+    const frozenQty = data.reduce((prev, curr) => prev + curr.frozen_qty, 0);
+    const bondedQty = data.reduce((prev, curr) => prev + curr.bonded_qty, 0);
+    const nonbondedQty = data.reduce((prev, curr) => prev + curr.nonbonded_qty, 0);
+    return { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty };
+  }
   msg = formatMsg(this.props.intl);
-
   columns = [{
     title: this.msg('owner'),
     dataIndex: 'owner_name',
@@ -253,6 +268,18 @@ export default class StockTransitionList extends React.Component {
       sorter: JSON.stringify(sortFilter),
       pageSize,
       current: currentPage || current,
+    }).then((result) => {
+      if (!result.error) {
+        const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.getTotalData(result.data.data);
+        this.setState({
+          stockQty,
+          availQty,
+          allocQty,
+          frozenQty,
+          bondedQty,
+          nonbondedQty,
+        });
+      }
     });
     this.handleDeselectRows();
   }
@@ -289,7 +316,8 @@ export default class StockTransitionList extends React.Component {
     this.props.openTransitionModal(row.trace_id);
   }
   handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [] });
+    const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.getTotalData(this.props.transitionlist.data);
+    this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [], stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty });
   }
   handleExportExcel = () => {
     const { tenantId, listFilter, sortFilter } = this.props;
@@ -304,6 +332,7 @@ export default class StockTransitionList extends React.Component {
   }
   render() {
     const { defaultWhse, whses, loading, listFilter } = this.props;
+    const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selRows) => {
@@ -338,7 +367,25 @@ export default class StockTransitionList extends React.Component {
             whse_code: selectedRows[0].whse_code,
           };
         }
-        this.setState({ selectedRowKeys, enableBatchTransit, batchTransitDetail, totalQty: total.stock_qty, allSelectedRows });
+        let data = null;
+        if (selectedRowKeys.length !== 0) {
+          data = this.getTotalData(selRows);
+        } else {
+          data = this.getTotalData(this.props.transitionlist.data);
+        }
+        this.setState({
+          selectedRowKeys,
+          enableBatchTransit,
+          batchTransitDetail,
+          totalQty: total.stock_qty,
+          allSelectedRows,
+          stockQty: data.stockQty,
+          availQty: data.availQty,
+          allocQty: data.allocQty,
+          frozenQty: data.frozenQty,
+          bondedQty: data.bondedQty,
+          nonbondedQty: data.nonbondedQty,
+        });
       },
     };
     const rowKey = 'trace_id'; // selectedRowKeys 有影响
@@ -383,6 +430,16 @@ export default class StockTransitionList extends React.Component {
       {listFilter.status === 'normal' && <Button onClick={this.handleBatchFreeze}>批量冻结</Button>}
       {listFilter.status === 'frozen' && <Button onClick={this.handleBatchUnfreeze}>批量解冻</Button>}
     </span>);
+    const totCol = (
+      <Summary>
+        <Summary.Item label="库存数量">{stockQty || 0}</Summary.Item>
+        <Summary.Item label="可用数量">{availQty || 0}</Summary.Item>
+        <Summary.Item label="分配数量">{allocQty || 0}</Summary.Item>
+        <Summary.Item label="冻结数量">{frozenQty || 0}</Summary.Item>
+        <Summary.Item label="保税数量">{bondedQty || 0}</Summary.Item>
+        <Summary.Item label="非保税数量">{nonbondedQty || 0}</Summary.Item>
+      </Summary>
+    );
     return (
       <Layout>
         <PageHeader>
@@ -415,7 +472,7 @@ export default class StockTransitionList extends React.Component {
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
+          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions} total={totCol}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} loading={loading} rowKey={rowKey} scrollOffset={390}
           />
