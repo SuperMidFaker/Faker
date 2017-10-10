@@ -98,7 +98,7 @@ export default class HeadCard extends Component {
           <Col sm={24} lg={6}>
             <FormItem label="预期到货日期" >
               {getFieldDecorator('expect_receive_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-                initialValue: asnHead ? moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
+                initialValue: (asnHead && asnHead.expect_receive_date) ? moment(new Date(asnHead.expect_receive_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
           </Col>
