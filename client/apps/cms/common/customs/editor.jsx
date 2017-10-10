@@ -255,7 +255,7 @@ export default class CustomsDeclEditor extends React.Component {
               { head.status === CMS_DECL_STATUS.reviewed.value &&
                 <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip>
               }
-              { head.status === CMS_DECL_STATUS.reviewed.value &&
+              { head.status >= CMS_DECL_STATUS.reviewed.value && head.status < CMS_DECL_STATUS.entered.value &&
                 <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
               }
               { (head.status !== CMS_DECL_STATUS.proposed.value && head.status !== CMS_DECL_STATUS.released.value) &&

@@ -54,7 +54,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('declCustoms')}>
                 {getFieldDecorator('decl_port', {
                   initialValue: model.decl_port,
-                })(<Select allowClear showSearch>
+                })(<Select allowClear showSearch optionFilterProp="children">
                   {
                     declPorts.map(dp => <Option value={dp.code} key={dp.code}>{dp.code}|{dp.name}</Option>)
                   }
@@ -119,9 +119,7 @@ export default class CMSDelegationPane extends Component {
                 {getFieldDecorator('quote_no', {
                   initialValue: model.quote_no,
                 })(<Select allowClear>
-                  {
-                    cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)
-                  }
+                  {cmsQuotes.map(cq => <Option value={cq.quote_no} key={cq._id}>{cq.quote_no}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>
