@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, Table, Select, Input, message } from 'antd';
 import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
+import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -137,7 +138,7 @@ export default class CertMarkPane extends React.Component {
   }
 
   render() {
-    const { certParams } = this.props;
+    const { certParams, head } = this.props;
     const option = certParams.map(cert => ({
       value: cert.cert_code,
       text: `${cert.cert_code}|${cert.cert_spec}`,
@@ -146,7 +147,6 @@ export default class CertMarkPane extends React.Component {
     const columns = [{
       title: this.msg('certSpec'),
       dataIndex: 'cert_spec',
-      width: 200,
       render: (o, record) =>
         (<ColumnSelect field="cert_spec" inEdit={!record.id} record={record}
           onChange={this.handleEditChange} options={option}
@@ -154,25 +154,33 @@ export default class CertMarkPane extends React.Component {
     }, {
       title: this.msg('certNum'),
       dataIndex: 'cert_num',
-      width: 200,
       render: (o, record) =>
         (<ColumnInput field="cert_num" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />),
     }, {
-      width: 80,
+      width: 100,
       render: (o, record, index) => {
         if (record.id) {
-          return <Button type="ghost" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
+          return <Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" />;
         } else {
-          return <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />;
+          return (<span>
+            <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
+            <Button shape="circle" onClick={() => this.handleCancel(record)} icon="close" />
+          </span>);
         }
       },
     }];
     return (
-      <Table pagination={false} columns={columns} dataSource={this.state.datas}
-        footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }}>{this.msg('add')}</Button>}
-      />
+      <div className="pane">
+        <div className="panel-header">
+          {head.status < CMS_DECL_STATUS.sent.value &&
+          <Button type="primary" onClick={this.handleAdd} icon="plus" >{this.msg('添加')}</Button>}
+        </div>
+        <div className="panel-body table-panel table-fixed-layout">
+          <Table pagination={false} columns={columns} dataSource={this.state.datas} />
+        </div>
+      </div>
     );
   }
 }

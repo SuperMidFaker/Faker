@@ -202,7 +202,7 @@ export default class ManifestTemplate extends Component {
     });
   }
   render() {
-    const { form, ietype, templateName, formData, template, operation, customers, fieldInits } = this.props;
+    const { form, ietype, templateName, formData, template, operation, fieldInits } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
@@ -263,9 +263,11 @@ export default class ManifestTemplate extends Component {
             </div>
             <Collapse accordion defaultActiveKey="properties">
               <Panel header={'模板属性'} key="properties">
+                {/*
                 <InfoItem type="select" label="关联客户" placeholder="关联客户" field={template.customer_partner_id}
                   editable options={customers} onEdit={value => this.handleTempInfoChange(value, 'customer_partner_id')}
                 />
+                */}
                 <InfoItem label="模板名称" field={templateName} dataIndex="template_name" placeholder="模板名称" editable onEdit={this.handleTempInfoChange} />
               </Panel>
               <Panel header={'授权使用单位'} key="user">

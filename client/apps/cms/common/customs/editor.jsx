@@ -205,12 +205,12 @@ export default class CustomsDeclEditor extends React.Component {
         <ContainersPane />
       </TabPane>);
     tabs.push(
-      <TabPane tab="随附单据" key="attachedDocs" head={head}>
-        <AttachedDocsPane />
-      </TabPane>);
-    tabs.push(
       <TabPane tab="随附单证" key="attachedCerts" head={head}>
         <AttachedCertsPane />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="随附单据" key="attachedDocs" head={head}>
+        <AttachedDocsPane />
       </TabPane>);
     tabs.push(
       <TabPane tab="清单明细" key="manifestDetails" head={head}>

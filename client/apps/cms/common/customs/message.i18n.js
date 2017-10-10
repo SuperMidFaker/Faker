@@ -267,15 +267,15 @@ export default defineMessages({
   },
   containerId: {
     id: 'cms.common.customs.tabpanes.container.id',
-    defaultMessage: '箱号',
+    defaultMessage: '集装箱号',
   },
   containerWt: {
     id: 'cms.common.customs.tabpanes.container.wt',
-    defaultMessage: '自重',
+    defaultMessage: '自重(KG)',
   },
   containerSpec: {
     id: 'cms.common.customs.tabpanes.container.spec',
-    defaultMessage: '规格',
+    defaultMessage: '集装箱规格',
   },
   containerQty: {
     id: 'cms.common.customs.tabpanes.container.qty',
@@ -283,15 +283,15 @@ export default defineMessages({
   },
   docuSpec: {
     id: 'cms.common.customs.tabpanes.document.spec',
-    defaultMessage: '单据类型',
+    defaultMessage: '随附单据文件类别',
   },
   docuCode: {
     id: 'cms.common.customs.tabpanes.document.code',
-    defaultMessage: '单据编码',
+    defaultMessage: '随附单据编号',
   },
   certSpec: {
     id: 'cms.common.customs.tabpanes.cert.spec',
-    defaultMessage: '单证类型',
+    defaultMessage: '单证代码及名称',
   },
   certNum: {
     id: 'cms.common.customs.tabpanes.cert.num',

@@ -6,7 +6,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import FormInput from '../../../form/formInput';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, DeclCustoms, Pieces, ContractNo, LicenseNo, TermConfirm,
-  TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight, RaDeclManulNo, StoreYard } from './headFormItems';
+  TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
+  RaDeclManulNo, StoreYard,
+} from '../../../form/headFormItems';
 import { loadSearchedParam } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -83,8 +85,8 @@ export default class HeadRulesPane extends React.Component {
     const tradesOpt = formRequire.trades.filter(data => data.customer_partner_id === template.customer_partner_id);
     return (
       <div className="pane">
-        <div className="pane-content">
-          <Card noHovering>
+        <div className="pane-content form-layout-multi-col">
+          <Card bodyStyle={{ padding: 16 }} noHovering>
             <Row>
               <Col span="8">
                 <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}

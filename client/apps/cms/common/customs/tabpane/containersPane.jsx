@@ -105,17 +105,8 @@ export default class ContainersPane extends React.Component {
     const columns = [{
       title: this.msg('containerId'),
       dataIndex: 'container_id',
-      width: 200,
       render: (o, record) =>
         (<ColumnInput field="container_id" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
-        />),
-    }, {
-      title: this.msg('containerWt'),
-      dataIndex: 'container_wt',
-      width: 100,
-      render: (o, record) =>
-        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />),
     }, {
@@ -123,6 +114,13 @@ export default class ContainersPane extends React.Component {
       dataIndex: 'container_spec',
       render: (o, record) =>
         (<ColumnInput field="container_spec" inEdit={!record.id} record={record}
+          onChange={this.handleEditChange}
+        />),
+    }, {
+      title: this.msg('containerWt'),
+      dataIndex: 'container_wt',
+      render: (o, record) =>
+        (<ColumnInput field="container_wt" inEdit={!record.id} record={record}
           onChange={this.handleEditChange}
         />),
     }];

@@ -148,13 +148,16 @@ export default class AttachedDocsPane extends React.Component {
           onChange={this.handleEditChange}
         />),
     }, {
-      width: 60,
+      width: 100,
       render: (o, record, index) => {
         if (head.status > CMS_DECL_STATUS.reviewed.value) {
           return <Button type="primary" shape="circle" onClick={() => this.handleUpload(record, index)} icon="upload" />;
         } else {
-          return record.id ? <Button shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" /> :
-          <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />;
+          return record.id ? <Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" /> :
+          <span>
+            <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
+            <Button shape="circle" onClick={() => this.handleCancel(record)} icon="close" />
+          </span>;
         }
       },
     }];
@@ -162,7 +165,7 @@ export default class AttachedDocsPane extends React.Component {
       <div className="pane">
         <div className="panel-header">
           {head.status < CMS_DECL_STATUS.sent.value &&
-          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>}
+          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('添加')}</Button>}
         </div>
         <div className="panel-body table-panel table-fixed-layout">
           <Table pagination={false} columns={columns} dataSource={this.state.datas} />

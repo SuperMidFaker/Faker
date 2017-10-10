@@ -175,15 +175,15 @@ export default defineMessages({
   },
   customsCode: {
     id: 'cms.forms.form.customs.code',
-    defaultMessage: '10位海关编码',
+    defaultMessage: '企业海关编码',
   },
   scc: {
     id: 'cms.forms.form.customs.scc',
-    defaultMessage: '18位统一社会信用代码',
+    defaultMessage: '企业信用代码',
   },
   relationName: {
     id: 'cms.forms.form.relation.name',
-    defaultMessage: '名称',
+    defaultMessage: '企业名称',
   },
   forwardName: {
     id: 'cms.forms.form.forward.name',
