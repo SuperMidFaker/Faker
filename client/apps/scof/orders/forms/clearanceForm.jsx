@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Icon, Input, Select, Radio } from 'antd';
+import { Form, Row, Col, Card, Icon, Input, Select, Radio, message } from 'antd';
+import AttchmentUpload from './attachmentUpload';
 import { TRANS_MODE, WRAP_TYPE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
-import AttchmentUpload from './attachmentUpload';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -51,6 +51,8 @@ export default class ClearanceForm extends Component {
       this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
         if (!result.error) {
           this.handleSetClientForm({ ...result.data, uuid: uuidWithoutDash() });
+        } else {
+          message.error(result.error.message);
         }
       });
     }

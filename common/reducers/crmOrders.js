@@ -379,7 +379,7 @@ export function loadOrderNodesTriggers(uuid, bizObjects) {
   };
 }
 
-export function cancelOrder(orderNo) {
+export function cancelOrder(orderNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -389,12 +389,12 @@ export function cancelOrder(orderNo) {
       ],
       endpoint: 'v1/crm/cancel/order',
       method: 'post',
-      data: { order_no: orderNo },
+      data: { order_no: orderNo, tenant_id: tenantId },
     },
   };
 }
 
-export function closeOrder(orderNo) {
+export function closeOrder(orderNo, tenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -404,7 +404,7 @@ export function closeOrder(orderNo) {
       ],
       endpoint: 'v1/crm/close/order',
       method: 'post',
-      data: { order_no: orderNo },
+      data: { order_no: orderNo, tenant_id: tenantId },
     },
   };
 }
