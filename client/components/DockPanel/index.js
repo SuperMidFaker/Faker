@@ -35,6 +35,7 @@ export default class DockPanel extends PureComponent {
   }
   state = {
     depth: this.props.currentDepth,
+    overlayVisible: false,
   }
   componentWillUnmount() {
     window.$(document).unbind('click');
@@ -57,7 +58,14 @@ export default class DockPanel extends PureComponent {
     });
     (this.props.onBackward || noop)(e);
   }
-
+  handleVisibleChange = (overlayVisible) => {
+    this.setState({ overlayVisible });
+  }
+  hideOverlay = () => {
+    this.setState({
+      overlayVisible: false,
+    });
+  }
   render() {
     const { prefixCls, size = '', className, visible, title, status, statusText, overlay, extra, loading, alert, alertType, children } = this.props;
     const sizeCls = ({
@@ -85,7 +93,11 @@ export default class DockPanel extends PureComponent {
                 {status ? <Badge status={status} text={statusText} /> : null}
                 {overlay &&
                 <div className={`${prefixCls}-head-overlay`}>
-                  <Popover placement="bottomRight" title="更多操作" content={<div className={`${prefixCls}-popover`}>{overlay}</div>} trigger="click">
+                  <Popover placement="bottomRight" title="更多操作" visible={this.state.overlayVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                    content={<div className={`${prefixCls}-popover`} onClick={this.hideOverlay}>{overlay}</div>}
+                    trigger="click"
+                  >
                     <Button shape="circle" icon="ellipsis" />
                   </Popover>
                 </div>

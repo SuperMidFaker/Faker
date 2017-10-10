@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Badge, Button, Col, Icon, Row, Tabs, Tag, Popconfirm, message } from 'antd';
+import { Badge, Button, Col, Icon, Menu, Row, Tabs, Tag, Popconfirm, message } from 'antd';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -250,6 +250,18 @@ export default class DelegationDockPanel extends React.Component {
         </Col>
       </Row>);
   }
+  renderMenu() {
+    const { previewer } = this.props;
+    const { delgDispatch } = previewer;
+    const menuItems = [];
+    if (delgDispatch.status < CMS_DELEGATION_STATUS.declaring) {
+      menuItems.push(<Menu.Item key="cancel"><Icon type="delete" />取消委托</Menu.Item>);
+    } else if (delgDispatch.status === CMS_DELEGATION_STATUS.declaring) {
+      menuItems.push(<Menu.Item key="close"><Icon type="close-square" />关闭委托</Menu.Item>);
+    }
+    menuItems.push(<Menu.Item key="share"><Icon type="share-alt" /><span onClick={this.handleExportExcel}>共享委托</span></Menu.Item>);
+    return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
+  }
   render() {
     const { visible, previewLoading } = this.props;
     return (
@@ -258,6 +270,7 @@ export default class DelegationDockPanel extends React.Component {
         extra={this.renderExtra()}
         alert={this.renderBtns()}
         loading={previewLoading}
+        overlay={this.renderMenu()}
       >
         {this.renderTabs()}
         <DelgDispModal />

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Form, Row, Col, Card, Icon, Input, Select, Radio, message } from 'antd';
-import AttchmentUpload from './attachmentUpload';
+// import AttchmentUpload from './attachmentUpload';
 import { TRANS_MODE, WRAP_TYPE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
@@ -219,9 +219,10 @@ export default class ClearanceForm extends Component {
             </FormItem>
           </Col>
         </Row>
-        <div style={{ marginTop: 20 }}>
+        {/* <div style={{ marginTop: 20 }}>
           <AttchmentUpload files={formData.files} onFileListUpdate={this.handleUploadFiles} />
         </div>
+              */}
       </Card>
     );
   }

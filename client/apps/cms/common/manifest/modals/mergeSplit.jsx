@@ -315,7 +315,7 @@ export default class MergeSplitModal extends React.Component {
                         {getFieldDecorator('mergeHsSort', {
                           rules: [{ type: 'array' }],
                           initialValue: mergeOpt.splHsSorts,
-                        })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '80%' }}>
+                        })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} style={{ width: '80%' }} disabled={mergeCategories.length === 0}>
                           { mergeCategories.map(ct => <Option value={ct.id} key={ct.id}>{ct.name}</Option>) }
                         </Select>)}
                       </div> : null}
@@ -367,7 +367,7 @@ export default class MergeSplitModal extends React.Component {
                       {getFieldDecorator('specialSort', {
                         rules: [{ type: 'array' }],
                         initialValue: splitOpt.hsCategory,
-                      })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
+                      })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')} disabled={splitCategories.length === 0}>
                         {
                           splitCategories.map(ct =>
                             <Option value={ct.id} key={ct.id}>{ct.name}</Option>

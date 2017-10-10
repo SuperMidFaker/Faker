@@ -120,11 +120,11 @@ const messages = defineMessages({
   },
   customsBroker: {
     id: 'scof.flow.biz.cms.customs.broker',
-    defaultMessage: '报关行',
+    defaultMessage: '报关供应商',
   },
   ciqBroker: {
     id: 'scof.flow.biz.cms.ciq.broker',
-    defaultMessage: '报检商',
+    defaultMessage: '报检供应商',
   },
   quoteNo: {
     id: 'scof.flow.biz.cms.quote.no',
