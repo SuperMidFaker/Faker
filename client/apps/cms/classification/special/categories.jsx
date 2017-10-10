@@ -12,6 +12,7 @@ loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reduc
 import CategoryHscodeList from './categoryHscodeList';
 import SearchBar from 'client/components/SearchBar';
 import ExcelUploader from 'client/components/ExcelUploader';
+import { createFilename } from 'client/util/dataTransform';
 import '../index.less';
 
 const formatMsg = format(messages);
@@ -62,6 +63,7 @@ export default class SpecialCategories extends React.Component {
     editIndex: -1,
     type: 'split',
     currentPage: 1,
+    disabled: false,
   }
   componentWillReceiveProps(nextProps) {
     const hscodeCategories = nextProps.hscodeCategories.filter(ct => ct.type === this.state.type);
@@ -88,7 +90,7 @@ export default class SpecialCategories extends React.Component {
   }
   handleShowAddCategory = () => {
     const hscodeCategories = this.state.hscodeCategories.concat([{ id: -1, name: '' }]);
-    this.setState({ hscodeCategories, editIndex: hscodeCategories.length - 1 });
+    this.setState({ hscodeCategories, editIndex: hscodeCategories.length - 1, disabled: true });
   }
   handleAddCategory = () => {
     const { editIndex, hscodeCategories } = this.state;
@@ -97,7 +99,7 @@ export default class SpecialCategories extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.setState({ editIndex: -1, hscodeCategory: result.data });
+          this.setState({ editIndex: -1, hscodeCategory: result.data, disabled: false });
         }
       });
     } else {
@@ -147,6 +149,18 @@ export default class SpecialCategories extends React.Component {
   handleUploaded = () => {
     const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
     this.props.loadCategoryHsCode({ categoryId, current, pageSize });
+  }
+  handleCancel = (row, index) => {
+    const categories = [...this.state.hscodeCategories];
+    categories.splice(index, 1);
+    this.setState({
+      hscodeCategories: categories,
+      disabled: false,
+    });
+  }
+  handleExportExcel = () => {
+    const { categoryHscodes: { categoryId } } = this.props;
+    window.open(`${API_ROOTS.default}v1/cmsTradeitem/category/${createFilename('hscode')}.xlsx?categoryId=${categoryId}`);
   }
   render() {
     const { hscodeCategory } = this.state;
@@ -201,7 +215,7 @@ export default class SpecialCategories extends React.Component {
       <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
         pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
         rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
-        footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} style={{ width: '100%' }}>添加分类</Button>}
+        footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} disabled={this.state.disabled} style={{ width: '100%' }}>添加分类</Button>}
       />
     );
     const content = (
@@ -243,6 +257,9 @@ export default class SpecialCategories extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-header-tools">
+              <Button size="large" icon="export" onClick={this.handleExportExcel}>
+                {this.msg('导出')}
+              </Button>
               <Popover title="导入数据表格式如下" content={content}>
                 <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/cmsTradeitem/hscode/category/import`}
                   formData={{
