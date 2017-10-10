@@ -48,7 +48,7 @@ export default class OrderDockPanel extends React.Component {
     this.props.hideDock();
   }
   handleCancelOrder = () => {
-    this.props.cancelOrder(this.props.order.shipmt_order_no).then(
+    this.props.cancelOrder(this.props.order.shipmt_order_no, this.props.tenantId).then(
       (result) => {
         if (!result.error) {
           message.info('订单已取消');
@@ -61,7 +61,7 @@ export default class OrderDockPanel extends React.Component {
     );
   }
   handleCloseOrder = () => {
-    this.props.closeOrder(this.props.order.shipmt_order_no).then(
+    this.props.closeOrder(this.props.order.shipmt_order_no, this.props.tenantId).then(
       (result) => {
         if (!result.error) {
           message.info('订单已关闭');

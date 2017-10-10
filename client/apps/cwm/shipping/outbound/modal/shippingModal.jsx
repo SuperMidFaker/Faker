@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { DatePicker, Form, Modal, Input, Radio } from 'antd';
-
+import { Select, DatePicker, Form, Modal, Input, Radio } from 'antd';
+import { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails } from 'common/reducers/cwmOutbound';
+import { WRAP_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails } from 'common/reducers/cwmOutbound';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -58,33 +59,31 @@ export default class ShippingModal extends Component {
     const { outboundNo, skuPackQty, pickedQty, username, tenantId, shipMode, selectedRows, id } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const list = [];
+        let list = [];
+        const outbounddata = { no: outboundNo,
+          pieces: values.pieces,
+          volumes: values.volumes,
+          pack_type: values.pack,
+        };
         if (shipMode === 'single') {
-          const data = {};
-          data.id = id;
-          data.shipped_qty = pickedQty;
-          data.shipped_pack_qty = pickedQty / skuPackQty;
-          data.drop_id = '';
-          data.waybill = values.waybill;
-          data.shipped_type = this.state.shippingMode;
-          data.pieces = values.pieces;
-          data.volumes = values.volumes;
-          list.push(data);
+          list.push({ id,
+            shipped_qty: pickedQty,
+            shipped_pack_qty: pickedQty / skuPackQty,
+            drop_id: '',
+            waybill: values.waybill,
+            shipped_type: this.state.shippingMode,
+          });
         } else {
-          for (let i = 0; i < selectedRows.length; i++) {
-            const data = {};
-            data.id = selectedRows[i].id;
-            data.shipped_qty = selectedRows[i].picked_qty;
-            data.shipped_pack_qty = selectedRows[i].picked_qty / selectedRows[i].sku_pack_qty;
-            data.drop_id = '';
-            data.waybill = values.waybill;
-            data.shipped_type = this.state.shippingMode;
-            data.pieces = values.pieces;
-            data.volumes = values.volumes;
-            list.push(data);
-          }
+          list = list.concat(selectedRows.map(sr => ({
+            id: sr.id,
+            shipped_qty: sr.picked_qty,
+            shipped_pack_qty: sr.picked_qty / sr.sku_pack_qty,
+            drop_id: '',
+            waybill: values.waybill,
+            shipped_type: this.state.shippingMode,
+          })));
         }
-        this.props.shipConfirm(outboundNo, list, username, tenantId, values.shippedBy, values.shippedDate).then((result) => {
+        this.props.shipConfirm(outbounddata, list, username, tenantId, values.shippedBy, values.shippedDate).then((result) => {
           if (!result.error) {
             this.props.closeShippingModal();
             this.props.loadPickDetails(this.props.outboundNo);
@@ -119,13 +118,21 @@ export default class ShippingModal extends Component {
               })(<Input />)
             }
           </FormItem>
-          <FormItem {...formItemLayout} label="箱数">
+          <FormItem {...formItemLayout} label="包装类型">
+            {
+              getFieldDecorator('pack', {
+              })(<Select size="large">
+                {WRAP_TYPE.map(wt => <Option value={wt.value} key={wt.value}>{wt.text}</Option>)}
+              </Select>)
+            }
+          </FormItem>
+          <FormItem {...formItemLayout} label="总包装件数">
             {
               getFieldDecorator('pieces', {
               })(<Input type="number" />)
             }
           </FormItem>
-          <FormItem {...formItemLayout} label="体积">
+          <FormItem {...formItemLayout} label="总体积">
             {
               getFieldDecorator('volumes', {
               })(<Input type="number" />)
