@@ -177,7 +177,7 @@ export default class CustomsList extends Component {
       return child;
     },
   }, {
-    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
+    title: <Tooltip title="商品项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
@@ -234,6 +234,14 @@ export default class CustomsList extends Component {
       }
       return <TrimSpan text={port} maxLen={14} />;
     },
+  }, {
+    title: '监管方式',
+    dataIndex: 'trade_mode',
+    width: 100,
+  }, {
+    title: '提运单号',
+    dataIndex: 'bl_wb_no',
+    width: 180,
   }, {
     title: '进/出口日期',
     dataIndex: 'i_e_date',

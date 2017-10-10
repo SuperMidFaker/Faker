@@ -213,7 +213,7 @@ export default class CustomsDeclEditor extends React.Component {
         <AttachedDocsPane />
       </TabPane>);
     tabs.push(
-      <TabPane tab="清单明细" key="manifestDetails" head={head}>
+      <TabPane tab="申报清单明细" key="manifestDetails" head={head}>
         <ManifestDetailsPane />
       </TabPane>);
     if (filterProducts.length > 0) {
