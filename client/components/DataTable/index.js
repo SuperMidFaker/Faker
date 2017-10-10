@@ -45,6 +45,7 @@ class DataTable extends Component {
     selectedRowKeys: PropTypes.array,
     handleDeselectRows: PropTypes.func,
     noBorder: PropTypes.bool,
+    total: PropTypes.node,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -247,6 +248,7 @@ class DataTable extends Component {
         <div className={`${baseCls}-toolbar`}>
           {this.props.toolbarActions}
           <div className={`${baseCls}-toolbar-right`}>
+            {this.props.total}
             <Popover placement="leftTop" trigger="click" title="选择、排序显示字段" content={<div className="col-selection">{content}</div>}
               visible={this.state.visible} onVisibleChange={this.handleVisibleChange}
             >
@@ -264,6 +266,7 @@ class DataTable extends Component {
                 <Button type="primary" ghost shape="circle" icon="close" onClick={this.props.handleDeselectRows} />
               </Tooltip>
             </div>
+            {this.props.total}
           </div>}
         </div>
         <div className={`${baseCls}-body ${baseCls}-body-fixed`}>
