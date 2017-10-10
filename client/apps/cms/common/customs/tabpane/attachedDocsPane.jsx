@@ -109,6 +109,14 @@ export default class AttachedDocsPane extends React.Component {
     this.setState({ datas: data });
   }
   handleSave = (record) => {
+    if (!record.docu_spec) {
+      message.info('随附单据文件类别为必填项');
+      return;
+    }
+    if (!record.docu_code) {
+      message.info('随附单据编号为必填项');
+      return;
+    }
     this.props.saveDocuMark(record).then(
       (result) => {
         if (result.error) {
@@ -130,7 +138,11 @@ export default class AttachedDocsPane extends React.Component {
       }
     });
   }
-
+  handleCancel = (record, index) => {
+    const datas = [...this.state.datas];
+    datas.splice(index, 1);
+    this.setState({ datas });
+  }
   render() {
     const { head } = this.props;
     const columns = [{
@@ -156,7 +168,7 @@ export default class AttachedDocsPane extends React.Component {
           return record.id ? <Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" /> :
           <span>
             <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
-            <Button shape="circle" onClick={() => this.handleCancel(record)} icon="close" style={{ marginLeft: 8 }} />
+            <Button shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" style={{ marginLeft: 8 }} />
           </span>;
         }
       },

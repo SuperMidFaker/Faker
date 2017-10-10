@@ -173,9 +173,13 @@ export default class SpecialCategories extends React.Component {
       render: (col, row, index) => {
         if (this.state.editIndex === index) {
           if (row.id === -1) {
-            return (<a onClick={this.handleAddCategory}>保存</a>);
+            return (<span>
+              <a onClick={this.handleAddCategory}><Icon type="save" /></a>
+              <span className="ant-divider" />
+              <a onClick={() => this.handleCancel(row, index)}><Icon type="close" /></a>
+            </span>);
           } else {
-            return (<a onClick={() => this.handleEditCategory(row.id)}>保存</a>);
+            return (<a onClick={() => this.handleEditCategory(row.id)}><Icon type="save" /></a>);
           }
         } else {
           return (

@@ -4,6 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Select, Layout, message } from 'antd';
+import Summary from 'client/components/Summary';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadStocks } from 'common/reducers/cwmInventoryStock';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -48,10 +49,25 @@ export default class StockInventoryList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    stockQty: 0,
+    availQty: 0,
+    allocQty: 0,
+    frozenQty: 0,
+    bondedQty: 0,
+    nonbondedQty: 0,
   }
   componentDidMount() {
     const filter = { ...this.props.listFilter, whse_code: this.props.defaultWhse.code };
     this.handleStockQuery(1, filter);
+  }
+  getTotalData = (data) => {
+    const stockQty = data.reduce((prev, curr) => prev + curr.stock_qty, 0);
+    const availQty = data.reduce((prev, curr) => prev + curr.avail_qty, 0);
+    const allocQty = data.reduce((prev, curr) => prev + curr.alloc_qty, 0);
+    const frozenQty = data.reduce((prev, curr) => prev + curr.frozen_qty, 0);
+    const bondedQty = data.reduce((prev, curr) => prev + curr.bonded_qty, 0);
+    const nonbondedQty = data.reduce((prev, curr) => prev + curr.nonbonded_qty, 0);
+    return { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty };
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -171,6 +187,19 @@ export default class StockInventoryList extends React.Component {
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       current: currentPage || current,
+    }).then((result) => {
+      if (!result.error) {
+        const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.getTotalData(result.data.data);
+        this.setState({
+          selectedRowKeys: [],
+          stockQty,
+          availQty,
+          allocQty,
+          frozenQty,
+          bondedQty,
+          nonbondedQty,
+        });
+      }
     });
   }
   handleSearch = (searchForm) => {
@@ -182,6 +211,17 @@ export default class StockInventoryList extends React.Component {
     window.open(`${API_ROOTS.default}v1/cwm/stock/exportInventoryExcel/${createFilename('inventory')}.xlsx?tenantId=${tenantId}&filters=${
       JSON.stringify(listFilter)}`);
   }
+  handleDeselectRows = () => {
+    this.setState({
+      selectedRowKeys: [],
+      stockQty: 0,
+      availQty: 0,
+      allocQty: 0,
+      frozenQty: 0,
+      bondedQty: 0,
+      nonbondedQty: 0,
+    });
+  }
   renderNormalCol(text, row) {
     const colObj = { children: text, props: {} };
     if (row.key === 'wh_no') {
@@ -191,10 +231,25 @@ export default class StockInventoryList extends React.Component {
   }
   render() {
     const { defaultWhse, whses, loading, listFilter } = this.props;
+    const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+      onChange: (selectedRowKeys, selRows) => {
+        let data = null;
+        if (selectedRowKeys.length !== 0) {
+          data = this.getTotalData(selRows);
+        } else {
+          data = this.getTotalData(this.props.stocklist.data);
+        }
+        this.setState({
+          selectedRowKeys,
+          stockQty: data.stockQty,
+          availQty: data.availQty,
+          allocQty: data.allocQty,
+          frozenQty: data.frozenQty,
+          bondedQty: data.bondedQty,
+          nonbondedQty: data.nonbondedQty,
+        });
       },
     };
     const dataSource = new DataTable.DataSource({
@@ -223,6 +278,16 @@ export default class StockInventoryList extends React.Component {
       },
       remotes: this.props.stocklist,
     });
+    const totCol = (
+      <Summary>
+        <Summary.Item label="库存数量">{stockQty}</Summary.Item>
+        <Summary.Item label="可用数量">{availQty}</Summary.Item>
+        <Summary.Item label="分配数量">{allocQty}</Summary.Item>
+        <Summary.Item label="冻结数量">{frozenQty}</Summary.Item>
+        <Summary.Item label="保税数量">{bondedQty}</Summary.Item>
+        <Summary.Item label="非保税数量">{nonbondedQty}</Summary.Item>
+      </Summary>
+    );
     return (
       <Layout>
         <PageHeader>
@@ -253,8 +318,8 @@ export default class StockInventoryList extends React.Component {
           <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
-          <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}
-            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
+          <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} handleDeselectRows={this.handleDeselectRows}
+            total={totCol} columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={loading}
           />
         </Content>
       </Layout>

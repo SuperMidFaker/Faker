@@ -115,6 +115,14 @@ export default class CertMarkPane extends React.Component {
     this.setState({ datas: data });
   }
   handleSave = (record) => {
+    if (!record.cert_code) {
+      message.info('单证代码及名称为必填项');
+      return;
+    }
+    if (!record.cert_num) {
+      message.info('单证编号为必填项');
+      return;
+    }
     this.props.saveCertMark(record).then(
       (result) => {
         if (result.error) {
@@ -136,7 +144,11 @@ export default class CertMarkPane extends React.Component {
       }
     });
   }
-
+  handleCancel = (record, index) => {
+    const datas = [...this.state.datas];
+    datas.splice(index, 1);
+    this.setState({ datas });
+  }
   render() {
     const { certParams, head } = this.props;
     const option = certParams.map(cert => ({
@@ -166,7 +178,7 @@ export default class CertMarkPane extends React.Component {
         } else {
           return (<span>
             <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
-            <Button shape="circle" onClick={() => this.handleCancel(record)} icon="close" style={{ marginLeft: 8 }} />
+            <Button shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" style={{ marginLeft: 8 }} />
           </span>);
         }
       },

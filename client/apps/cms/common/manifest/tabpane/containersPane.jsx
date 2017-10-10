@@ -100,6 +100,11 @@ export default class ContainersPane extends React.Component {
       }
     });
   }
+  handleCancel = (record, index) => {
+    const datas = [...this.state.datas];
+    datas.splice(index, 1);
+    this.setState({ datas });
+  }
 
   render() {
     const columns = [{
@@ -131,7 +136,7 @@ export default class ContainersPane extends React.Component {
         } else {
           return (<span>
             <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />
-            <Button shape="circle" onClick={() => this.handleCancel(record)} icon="close" style={{ marginLeft: 8 }} />
+            <Button shape="circle" onClick={() => this.handleCancel(record, index)} icon="close" style={{ marginLeft: 8 }} />
           </span>);
         }
       },
