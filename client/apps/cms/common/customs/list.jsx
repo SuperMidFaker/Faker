@@ -18,15 +18,16 @@ import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import DeclReleasedModal from './modals/declReleasedModal';
 import DeclStatusPopover from './declStatusPopover';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import { CMS_DECL_STATUS, CMS_DECL_TYPE } from 'common/constants';
 import SendModal from './modals/sendModal';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from './modals/batchSendModal';
 import { Logixon, Fontello } from 'client/components/FontIcon';
+import { loadPartnersByTypes } from 'common/reducers/partner';
+import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -42,6 +43,7 @@ const Option = Select.Option;
     loginName: state.account.username,
     customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
+    clients: state.partner.partners,
     customs: state.cmsDeclare.customs.map(cus => ({
       value: cus.customs_code,
       text: cus.customs_name,
@@ -49,6 +51,7 @@ const Option = Select.Option;
     trades: state.cmsDeclare.trades,
   }),
   { loadCustomsDecls,
+    loadPartnersByTypes,
     openEfModal,
     deleteDecl,
     setDeclReviewed,
@@ -78,6 +81,9 @@ export default class CustomsList extends Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+  }
+  componentDidMount() {
+    this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -250,7 +256,7 @@ export default class CustomsList extends Component {
   }, {
     title: '报关人员',
     dataIndex: 'epsend_login_name',
-    width: 100,
+    width: 120,
   }, {
     title: this.msg('opColumn'),
     width: 140,
@@ -368,6 +374,20 @@ export default class CustomsList extends Component {
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, filters);
+  }
+  handleClientSelectChange = (value) => {
+    const clientView = { tenantIds: [], partnerIds: [] }; // FIXME should not use two ids; delegation/list vice versa
+    if (value !== -1) {
+      const client = this.props.clients.find(clt => clt.partner_id === value);
+      if (client.partner_id !== null) {
+        clientView.partnerIds.push(client.partner_id);
+      } else {
+        clientView.tenantIds.push(client.tid);
+      }
+    }
+    const filter = { ...this.props.listFilter, clientView };
+    this.setState({ selectedRowKeys: [] });
+    this.handleTableLoad(1, filter);
   }
   mergeFilters(curFilters, value) {
     const newFilters = {};
@@ -497,6 +517,14 @@ export default class CustomsList extends Component {
           </Popconfirm>
         </span>);
     }
+    let clientPid = -1;
+    if (listFilter.clientView.partnerIds.length > 0) {
+      clientPid = listFilter.clientView.partnerIds[0];
+    }
+    const clients = [{
+      name: '全部客户',
+      partner_id: -1,
+    }].concat(this.props.clients);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <Header className="page-header">
@@ -525,6 +553,14 @@ export default class CustomsList extends Component {
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
               <span />
+              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                onChange={this.handleClientSelectChange} value={clientPid}
+                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+              >
+                {clients.map(data => (<Option key={data.name} value={data.partner_id}>
+                  {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+                </Option>))}
+              </Select>
               <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
                 onChange={this.handleTradesSelectChange} defaultValue="all"
                 dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}

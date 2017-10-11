@@ -508,10 +508,9 @@ export default class DelegationList extends Component {
         onChange={this.handleClientSelectChange} value={clientPid}
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
-          search={`${data.partner_code}${data.name}`}
-        >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-          )}
+        {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}>
+          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+        </Option>))}
       </Select>
       <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
         onChange={this.handleViewChange}

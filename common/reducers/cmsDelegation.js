@@ -30,7 +30,6 @@ const actionTypes = createActionTypes('@@welogix/cms/delegation/', [
 ]);
 
 const initialState = {
-
   delegationsReload: false,
   delegationlist: {
     totalCount: 0,

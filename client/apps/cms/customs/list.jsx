@@ -20,15 +20,16 @@ import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from '../common/customs/modals/fillCustomsNoModal';
 import DeclReleasedModal from '../common/customs/modals/declReleasedModal';
 import DeclStatusPopover from '../common/customs/declStatusPopover';
-import { format } from 'client/common/i18n/helpers';
-import messages from './message.i18n';
-import { CMS_DECL_STATUS, CMS_DECL_TYPE } from 'common/constants';
 import SendModal from '../common/customs/modals/sendModal';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from '../common/customs/modals/batchSendModal';
 import { Logixon, Fontello } from 'client/components/FontIcon';
+import { loadPartnersByTypes } from 'common/reducers/partner';
+import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -37,6 +38,7 @@ const RadioButton = Radio.Button;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const RangePicker = DatePicker.RangePicker;
+// todo merge common/customs/list.jsx
 
 @injectIntl
 @connect(
@@ -46,6 +48,7 @@ const RangePicker = DatePicker.RangePicker;
     loginName: state.account.username,
     customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
+    clients: state.partner.partners,
     customs: state.cmsDeclare.customs.map(cus => ({
       value: cus.customs_code,
       text: cus.customs_name,
@@ -53,6 +56,7 @@ const RangePicker = DatePicker.RangePicker;
     trades: state.cmsDeclare.trades,
   }),
   { loadCustomsDecls,
+    loadPartnersByTypes,
     openEfModal,
     deleteDecl,
     setDeclReviewed,
@@ -92,6 +96,7 @@ export default class CustomsList extends Component {
         filters = { ...filters, filterDate: listFilters.acptDate };
       }
     }
+    this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
     this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -276,7 +281,7 @@ export default class CustomsList extends Component {
   }, {
     title: '报关人员',
     dataIndex: 'epsend_login_name',
-    width: 100,
+    width: 120,
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -427,6 +432,20 @@ export default class CustomsList extends Component {
     this.setState({ selectedRowKeys: [] });
     this.handleTableLoad(1, filter);
   }
+  handleClientSelectChange = (value) => {
+    const clientView = { tenantIds: [], partnerIds: [] }; // FIXME should not use two ids
+    if (value !== -1) {
+      const client = this.props.clients.find(clt => clt.partner_id === value);
+      if (client.partner_id !== null) {
+        clientView.partnerIds.push(client.partner_id);
+      } else {
+        clientView.tenantIds.push(client.tid);
+      }
+    }
+    const filter = { ...this.props.listFilter, clientView };
+    this.setState({ selectedRowKeys: [] });
+    this.handleTableLoad(1, filter);
+  }
   handleDelete = (declId, delgNo, billNo) => {
     this.props.deleteDecl(declId, delgNo, billNo).then((result) => {
       if (result.error) {
@@ -551,8 +570,24 @@ export default class CustomsList extends Component {
           </Popconfirm>
         </span>);
     }
+    let clientPid = -1;
+    if (listFilter.clientView.partnerIds.length > 0) {
+      clientPid = listFilter.clientView.partnerIds[0];
+    }
+    const clients = [{
+      name: '全部客户',
+      partner_id: -1,
+    }].concat(this.props.clients);
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleClientSelectChange} value={clientPid}
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        {clients.map(data => (<Option key={data.name} value={data.partner_id}>
+          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+        </Option>))}
+      </Select>
       <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
         onChange={this.handleTradesSelectChange} defaultValue="all"
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}

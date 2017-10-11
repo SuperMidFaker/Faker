@@ -26,6 +26,7 @@ const initialState = {
     status: 'all',
     ietype: 'all',
     viewStatus: 'all',
+    clientView: { tenantIds: [], partnerIds: [] },
     filterDate: [],
     declareType: '',
     name: '',
