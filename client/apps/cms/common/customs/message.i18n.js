@@ -149,6 +149,10 @@ export default defineMessages({
     id: 'cms.common.customs.send.packets',
     defaultMessage: '发送报文',
   },
+  resendPackets: {
+    id: 'cms.common.customs.resend.packets',
+    defaultMessage: '重新发送',
+  },
   markReleased: {
     id: 'cms.common.customs.mark.released',
     defaultMessage: '放行确认',

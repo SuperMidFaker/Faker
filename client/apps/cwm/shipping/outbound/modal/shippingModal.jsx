@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Select, DatePicker, Form, Modal, Input, Radio } from 'antd';
+import { Select, DatePicker, Form, Modal, Input, Radio, message } from 'antd';
 import { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails } from 'common/reducers/cwmOutbound';
 import { WRAP_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -90,6 +90,8 @@ export default class ShippingModal extends Component {
             this.props.loadOutboundHead(this.props.outboundNo);
             this.props.resetState();
             this.props.loadShipDetails(this.props.outboundNo);
+          } else {
+            message.error(result.error.message);
           }
         });
       }
@@ -121,7 +123,7 @@ export default class ShippingModal extends Component {
           <FormItem {...formItemLayout} label="包装类型">
             {
               getFieldDecorator('pack', {
-              })(<Select size="large">
+              })(<Select size="large" allowClear>
                 {WRAP_TYPE.map(wt => <Option value={wt.value} key={wt.value}>{wt.text}</Option>)}
               </Select>)
             }

@@ -222,6 +222,12 @@ export default class CustomsDeclEditor extends React.Component {
           <CiqDetailsPane filterProducts={filterProducts} />
         </TabPane>);
     }
+    let sendDelLabel;
+    if (head.status === CMS_DECL_STATUS.reviewed.value) {
+      sendDelLabel = this.msg('sendPackets');
+    } else if (head.status === CMS_DECL_STATUS.sent.value) {
+      sendDelLabel = this.msg('resendPackets');
+    }
     return (
       <Layout>
         <Layout>
@@ -255,9 +261,7 @@ export default class CustomsDeclEditor extends React.Component {
               { head.status === CMS_DECL_STATUS.reviewed.value &&
                 <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip>
               }
-              { head.status >= CMS_DECL_STATUS.reviewed.value && head.status < CMS_DECL_STATUS.entered.value &&
-                <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
-              }
+              { sendDelLabel && <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{sendDelLabel}</Button>}
               { (head.status !== CMS_DECL_STATUS.proposed.value && head.status !== CMS_DECL_STATUS.released.value) &&
                 <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
               }

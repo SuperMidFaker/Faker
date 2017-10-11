@@ -100,18 +100,6 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.ADD_ASN:
-    case actionTypes.UPDATE_ASN:
-    case actionTypes.RECEIVE_PRODUCT:
-      return { ...state, submitting: true };
-    case actionTypes.ADD_ASN_SUCCEED:
-    case actionTypes.ADD_ASN_FAIL:
-    case actionTypes.UPDATE_ASN_SUCCEED:
-    case actionTypes.UPDATE_ASN_FAIL:
-    case actionTypes.RECEIVE_PRODUCT_FAIL:
-      return { ...state, submitting: false, inboundReload: true };
-    case actionTypes.RECEIVE_PRODUCT_SUCCEED:
-      return { ...state, submitting: false, inboundReload: true };
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:
@@ -152,12 +140,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, inbound: { ...action.result.data, loading: false, loaded: true } };
     case actionTypes.MARK_RELOAD_INBOUND:
       return { ...state, inboundReload: true };
-    case actionTypes.LOAD_INBOUNDHEAD:
-      return { ...state, inboundReload: false };
     case actionTypes.LOAD_INBOUNDHEAD_SUCCEED:
-      return { ...state, inboundFormHead: action.result.data };
+      return { ...state, inboundFormHead: action.result.data, inboundReload: false };
     case actionTypes.LOAD_INBPRDDETAILS_SUCCEED:
-      return { ...state, inboundProducts: action.result.data };
+      return { ...state, inboundProducts: action.result.data, inboundReload: false };
+    case actionTypes.LOAD_INBOUNDHEAD_FAIL:
+    case actionTypes.LOAD_INBPRDDETAILS_FAIL:
+      return { ...state, inboundReload: false };
     case actionTypes.LOAD_INBPUTAWAYS:
       return { ...state, inboundPutaways: { ...state.inboundPutaways, loading: true } };
     case actionTypes.LOAD_INBPUTAWAYS_SUCCEED:
@@ -174,29 +163,38 @@ export default function reducer(state = initialState, action) {
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: true, details: action.data } };
     case actionTypes.HIDE_PUTTING_AWAY_MODAL:
       return { ...state, puttingAwayModal: { ...state.puttingAwayModal, visible: false } };
+    case actionTypes.ADD_ASN:
+    case actionTypes.UPDATE_ASN:
     case actionTypes.RELEASE_ASN:
     case actionTypes.BATCH_RELEASE:
+    case actionTypes.RECEIVE_PRODUCT:
     case actionTypes.RECEIVE_BATCH:
+    case actionTypes.RECEIVE_EXPRESS:
     case actionTypes.RECEIVES_UNDO:
     case actionTypes.PUTAWAY_BATCH:
     case actionTypes.PUTAWAY_EXPRESS:
-    case actionTypes.RECEIVE_EXPRESS:
       return { ...state, submitting: true };
-    case actionTypes.RECEIVE_BATCH_FAIL:
-    case actionTypes.RECEIVES_UNDO_FAIL:
-    case actionTypes.PUTAWAY_BATCH_FAIL:
-    case actionTypes.PUTAWAY_EXPRESS_FAIL:
-    case actionTypes.RECEIVE_EXPRESS_FAIL:
+    case actionTypes.ADD_ASN_SUCCEED:
+    case actionTypes.ADD_ASN_FAIL:
+    case actionTypes.UPDATE_ASN_SUCCEED:
+    case actionTypes.UPDATE_ASN_FAIL:
     case actionTypes.RELEASE_ASN_SUCCEED:
     case actionTypes.RELEASE_ASN_FAIL:
     case actionTypes.BATCH_RELEASE_SUCCEED:
     case actionTypes.BATCH_RELEASE_FAIL:
+    case actionTypes.RECEIVE_PRODUCT_FAIL:
+    case actionTypes.RECEIVE_BATCH_FAIL:
+    case actionTypes.RECEIVE_EXPRESS_FAIL:
+    case actionTypes.RECEIVES_UNDO_FAIL:
+    case actionTypes.PUTAWAY_BATCH_FAIL:
+    case actionTypes.PUTAWAY_EXPRESS_FAIL:
       return { ...state, submitting: false };
-    case actionTypes.PUTAWAY_BATCH_SUCCEED:
-    case actionTypes.RECEIVES_UNDO_SUCCEED:
-    case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
+    case actionTypes.RECEIVE_PRODUCT_SUCCEED:
     case actionTypes.RECEIVE_BATCH_SUCCEED:
     case actionTypes.RECEIVE_EXPRESS_SUCCEED:
+    case actionTypes.RECEIVES_UNDO_SUCCEED:
+    case actionTypes.PUTAWAY_BATCH_SUCCEED:
+    case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
       return { ...state, submitting: false, inboundReload: true };
     case actionTypes.GET_ASN_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };

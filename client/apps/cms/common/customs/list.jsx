@@ -97,7 +97,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
-    width: 160,
+    width: 200,
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
       const preEntryLink = (
@@ -107,10 +107,7 @@ export default class CustomsList extends Component {
       switch (record.status) {
         case CMS_DECL_STATUS.proposed.value:
         case CMS_DECL_STATUS.reviewed.value:
-          return (
-            <span>
-              {preEntryLink}
-            </span>);
+          return (<span>{preEntryLink}</span>);
         case CMS_DECL_STATUS.sent.value:
           return (
             <span>
@@ -269,14 +266,17 @@ export default class CustomsList extends Component {
         );
       } else {
         const spanElems = [];
-        if (record.status < CMS_DECL_STATUS.entered.value) {
+        if (record.status === CMS_DECL_STATUS.reviewed.value) {
+          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="recall">
+            <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
+          </PrivilegeCover>);
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
             <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
           </PrivilegeCover>);
         }
-        if (record.status === CMS_DECL_STATUS.reviewed.value) {
-          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="recall">
-            <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
+        if (record.status === CMS_DECL_STATUS.sent.value) {
+          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
+            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('resendPackets')}</span>} row={record} />
           </PrivilegeCover>);
         }
         if (record.status !== CMS_DECL_STATUS.released.value) {
@@ -311,8 +311,7 @@ export default class CustomsList extends Component {
         } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.released.value) {
           spanElems.push(<a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>);
         }
-        const elemLen = spanElems.length;
-        for (let i = 1; i < elemLen; i += 2) {
+        for (let i = 1; i < spanElems.length; i += 2) {
           spanElems.splice(i, 0, <span className="ant-divider" key={`divid${i}`} />);
         }
         return <span>{spanElems}</span>;

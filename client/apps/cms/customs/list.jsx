@@ -291,24 +291,21 @@ export default class CustomsList extends Component {
             </PrivilegeCover>
           </span>
         );
-      } else if (record.status === CMS_DECL_STATUS.reviewed.value) {
-        return (
-          <span>
-            <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
-            </PrivilegeCover>
-            <span className="ant-divider" />
-            <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onHit={this.handleShowDeclReleasedModal} label={<span><Icon type="flag" />标记放行</span>} row={record} />
-            </PrivilegeCover>
-            <span className="ant-divider" />
-            <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
-            </PrivilegeCover>
-          </span>
-        );
       } else {
         const spanElems = [];
+        if (record.status === CMS_DECL_STATUS.reviewed.value) {
+          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="recall">
+            <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
+          </PrivilegeCover>);
+          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
+            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
+          </PrivilegeCover>);
+        }
+        if (record.status === CMS_DECL_STATUS.sent.value) {
+          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
+            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" />重新发送</span>} row={record} />
+          </PrivilegeCover>);
+        }
         if (record.status !== CMS_DECL_STATUS.released.value) {
           spanElems.push(
             <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
@@ -341,13 +338,10 @@ export default class CustomsList extends Component {
         } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.released.value) {
           spanElems.push(<a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>);
         }
-        if (spanElems.length === 2) {
-          spanElems.splice(1, 0, <span className="ant-divider" key="divid1" />);
+        for (let i = 1; i < spanElems.length; i += 2) {
+          spanElems.splice(i, 0, <span className="ant-divider" key={`divid${i}`} />);
         }
-        return (
-          <span>
-            {spanElems}
-          </span>);
+        return <span>{spanElems}</span>;
       }
     },
   }]
