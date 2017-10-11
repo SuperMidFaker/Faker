@@ -503,6 +503,7 @@ export default class TransportForm extends Component {
     const related = {
       goods_type: shipment.cust_shipmt_goods_type,
       gross_wt: shipment.cust_shipmt_weight,
+      volume: shipment.cust_shipmt_volume,
       package: shipment.cust_shipmt_wrap_type,
       pack_count: shipment.cust_shipmt_pieces,
     };
@@ -651,6 +652,13 @@ export default class TransportForm extends Component {
             <FormItem label={this.msg('delgGrossWt')}>
               <Input value={node.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
+              />
+            </FormItem>
+          </Col>
+          <Col sm={24} md={8}>
+            <FormItem label={this.msg('goodsVolume')}>
+              <Input value={node.volume} addonAfter={this.msg('cubicMeter')} type="number"
+                onChange={e => this.handleCommonFieldChange('volume', e.target.value)}
               />
             </FormItem>
           </Col>

@@ -228,10 +228,6 @@ export default class OrderForm extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
     };
-    const spanFormItemLayout = {
-      labelCol: { span: 3 },
-      wrapperCol: { span: 21 },
-    };
     const orderShipment = {
       cust_shipmt_trans_mode: formData.cust_shipmt_trans_mode,
       cust_shipmt_mawb: formData.cust_shipmt_mawb,
@@ -242,6 +238,7 @@ export default class OrderForm extends Component {
       cust_shipmt_voy: formData.cust_shipmt_voy,
       cust_shipmt_pieces: formData.cust_shipmt_pieces,
       cust_shipmt_weight: formData.cust_shipmt_weight,
+      cust_shipmt_volume: formData.cust_shipmt_volume,
       cust_shipmt_goods_type: formData.cust_shipmt_goods_type,
       cust_shipmt_is_container: formData.cust_shipmt_is_container,
       cust_shipmt_wrap_type: formData.cust_shipmt_wrap_type,
@@ -306,8 +303,17 @@ export default class OrderForm extends Component {
                     </RadioGroup>
                   </FormItem>
                 </Col>
-                <Col sm={16}>
-                  {formData.cust_shipmt_transfer && formData.cust_shipmt_transfer !== 'DOM' && <FormItem label="跨境运输方式" {...spanFormItemLayout}>
+                <Col sm={24} lg={8}>
+                  <FormItem label="货物类型" {...formItemLayout} required="true">
+                    <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleKvChange('cust_shipmt_goods_type', ev.target.value, 'goods')}>
+                      <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
+                      <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
+                      <RadioButton value={GOODSTYPES[2].value}>{GOODSTYPES[2].text}</RadioButton>
+                    </RadioGroup>
+                  </FormItem>
+                </Col>
+                <Col sm={16} lg={8}>
+                  {formData.cust_shipmt_transfer && formData.cust_shipmt_transfer !== 'DOM' && <FormItem label="跨境运输方式" {...formItemLayout}>
                     <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleKvChange('cust_shipmt_trans_mode', ev.target.value, 'transmode')}>
                       { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
                       <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
@@ -405,16 +411,7 @@ export default class OrderForm extends Component {
               </Row>
               }
               <Row gutter={16}>
-                <Col sm={24} lg={8}>
-                  <FormItem label="货物类型" {...formItemLayout} required="true">
-                    <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleKvChange('cust_shipmt_goods_type', ev.target.value, 'goods')}>
-                      <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
-                      <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
-                      <RadioButton value={GOODSTYPES[2].value}>{GOODSTYPES[2].text}</RadioButton>
-                    </RadioGroup>
-                  </FormItem>
-                </Col>
-                <Col sm={8}>
+                <Col sm={16} lg={8}>
                   <FormItem label="件数/包装" {...formItemLayout} required="true">
                     <InputGroup compact>
                       <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={(ev) => {
@@ -430,16 +427,12 @@ export default class OrderForm extends Component {
                         onChange={value => this.handleKvChange('cust_shipmt_wrap_type', value, 'wrap')}
                         value={formData.cust_shipmt_wrap_type}
                       >
-                        {
-                          WRAP_TYPE.map(wt =>
-                            <Option value={wt.value} key={wt.value}>{wt.text}</Option>
-                          )
-                        }
+                        {WRAP_TYPE.map(wt => <Option value={wt.value} key={wt.value}>{wt.text}</Option>)}
                       </Select>
                     </InputGroup>
                   </FormItem>
                 </Col>
-                <Col sm={8}>
+                <Col sm={16} lg={8}>
                   <FormItem label="总毛重" {...formItemLayout} required="true">
                     <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={(ev) => {
                       const weight = parseFloat(ev.target.value);
@@ -447,6 +440,19 @@ export default class OrderForm extends Component {
                         this.handleChange('cust_shipmt_weight', weight);
                       } else {
                         this.handleChange('cust_shipmt_weight', null);
+                      }
+                    }}
+                    />
+                  </FormItem>
+                </Col>
+                <Col sm={16} lg={8}>
+                  <FormItem label={this.msg('totalVolume')} {...formItemLayout}>
+                    <Input type="number" addonAfter={this.msg('cubicMeter')} value={formData.cust_shipmt_volume} onChange={(ev) => {
+                      const volume = parseFloat(ev.target.value);
+                      if (!isNaN(volume)) {
+                        this.handleChange('cust_shipmt_volume', volume);
+                      } else {
+                        this.handleChange('cust_shipmt_volume', null);
                       }
                     }}
                     />

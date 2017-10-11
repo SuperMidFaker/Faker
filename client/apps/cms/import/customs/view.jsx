@@ -27,6 +27,7 @@ export default class ImportCustomsDeclView extends React.Component {
   }
   render() {
     const { customsDeclSpinning, params } = this.props;
+    // todo remove url's import/export part
     return <CustomsDeclEditor ietype="import" declSpinning={customsDeclSpinning} params={params} />;
   }
 }

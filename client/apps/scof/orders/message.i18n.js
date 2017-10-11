@@ -356,7 +356,7 @@ const messages = defineMessages({
   },
   kilogram: {
     id: 'scof.orders.previewer.goods.kilogram',
-    defaultMessage: '千克',
+    defaultMessage: '公斤',
   },
   insuranceValue: {
     id: 'tcrm.orders.previewer.goods.insurance',
@@ -392,7 +392,7 @@ const messages = defineMessages({
   },
   goodsVolume: {
     id: 'scof.orders.previewer.goods.volume',
-    defaultMessage: '体积(立方米)',
+    defaultMessage: '体积',
   },
   goodsLength: {
     id: 'scof.orders.previewer.goods.length',
