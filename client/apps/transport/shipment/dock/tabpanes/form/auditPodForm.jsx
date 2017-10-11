@@ -99,7 +99,7 @@ export default class AuditPodForm extends React.Component {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Upload
+            <Upload className="noremove-upload-picture"
               action={`${API_ROOTS.default}v1/upload/img/`}
               listType="picture-card"
               fileList={photoList}
@@ -107,7 +107,7 @@ export default class AuditPodForm extends React.Component {
               onRemove={this.handleRemove}
             />
             <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
-              <img alt="example" style={{ width: '100%' }} src={previewImage} />
+              <a rel="noopener noreferrer" href={previewImage} target="_blank"><img alt="example" style={{ width: '100%' }} src={previewImage} /></a>
             </Modal>
           </Col>
         </Row>

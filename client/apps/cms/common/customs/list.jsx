@@ -259,7 +259,7 @@ export default class CustomsList extends Component {
     width: 120,
   }, {
     title: this.msg('opColumn'),
-    width: 140,
+    width: 180,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CMS_DECL_STATUS.proposed.value) {

@@ -285,7 +285,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
-    width: 140,
+    width: 180,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
@@ -606,7 +606,7 @@ export default class CustomsList extends Component {
           <Option value="my">我负责的委托</Option>
         </OptGroup>
       </Select>
-      <RangePicker size="large" value={dateVal}
+      <RangePicker size="large" value={dateVal} style={{ width: '30%' }}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       /></span>);
