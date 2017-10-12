@@ -54,6 +54,8 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'VALIDATE_BILL_DATAS', 'VALIDATE_BILL_DATAS_SUCCEED', 'VALIDATE_BILL_DATAS_FAIL',
   'LOAD_BILL_META', 'LOAD_BILL_META_SUCCEED', 'LOAD_BILL_META_FAIL',
   'CHANGE_TEMP_INFO', 'CHANGE_TEMP_INFO_SUCCEED', 'CHANGE_TEMP_INFO_FAIL',
+  'SHOW_DECL_ELEMENTS_MODAL', 'HIDE_DECL_ELEMENTS_MODAL',
+  'UPDATE_BILLBODY', 'UPDATE_BILLBODY_SUCCEED', 'UPDATE_BILLBODY_FAIL',
 ]);
 
 const initialState = {
@@ -136,6 +138,13 @@ const initialState = {
   },
   editBodyVisible: false,
   billDetails: [],
+  declElementsModal: {
+    visible: false,
+    element: '',
+    gModel: '',
+    id: '',
+    disabled: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -306,6 +315,16 @@ export default function reducer(state = initialState, action) {
       return { ...state, billMeta: { ...state.billMeta, ...action.result.data.meta } };
     case actionTypes.CHANGE_TEMP_INFO_SUCCEED:
       return { ...state, template: { ...state.template, ...action.data.change } };
+    case actionTypes.SHOW_DECL_ELEMENTS_MODAL:
+      return { ...state,
+        declElementsModal: { ...state.declElementsModal,
+          visible: true,
+          element: action.element,
+          id: action.id,
+          gModel: action.gModel,
+          disabled: action.disabled } };
+    case actionTypes.HIDE_DECL_ELEMENTS_MODAL:
+      return { ...state, declElementsModal: { ...state.declElementsModal, visible: false } };
     default:
       return state;
   }
@@ -613,6 +632,21 @@ export function editBillBody(body) {
       endpoint: 'v1/cms/manifest/billbody/edit',
       method: 'post',
       data: body,
+    },
+  };
+}
+
+export function updateBillBody(id, model) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_BILLBODY,
+        actionTypes.UPDATE_BILLBODY_SUCCEED,
+        actionTypes.UPDATE_BILLBODY_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/billbody/update',
+      method: 'post',
+      data: { id, model },
     },
   };
 }
@@ -1053,5 +1087,21 @@ export function changeTempInfo(data) {
       method: 'post',
       data,
     },
+  };
+}
+
+export function showDeclElementsModal(element, id, gModel, disabled) {
+  return {
+    type: actionTypes.SHOW_DECL_ELEMENTS_MODAL,
+    element,
+    id,
+    gModel,
+    disabled,
+  };
+}
+
+export function hideDeclElementsModal() {
+  return {
+    type: actionTypes.HIDE_DECL_ELEMENTS_MODAL,
   };
 }

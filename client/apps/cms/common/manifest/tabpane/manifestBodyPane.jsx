@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
-  deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal } from 'common/reducers/cmsManifest';
+  deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUploader from 'client/components/ExcelUploader';
@@ -17,6 +17,7 @@ import RelateImportRuleModal from '../modals/relateImportRules';
 import { dividGrossWt } from './helper';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import EditBodyModal from '../modals/editBodyModal';
+import DeclElementsModal from '../../modal/declElementsModal';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -183,7 +184,10 @@ function calculateTotal(bodies, currencies) {
     deleteSelectedBodies,
     resetBillBody,
     openRuleModel,
-    loadHscodes }
+    loadHscodes,
+    showDeclElementsModal,
+    updateBillBody,
+  }
 )
 export default class ManifestBodyPane extends React.Component {
   static propTypes = {
@@ -316,6 +320,7 @@ export default class ManifestBodyPane extends React.Component {
     }, {
       title: this.msg('gModel'),
       width: 400,
+      onCellClick: record => record.cop_g_no && this.props.showDeclElementsModal(record.element, record.id, record.g_model, false),
       render: (o, record, index) =>
         (<ColumnInput type="textarea" autosize field="g_model" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -772,6 +777,13 @@ export default class ManifestBodyPane extends React.Component {
       this.handleBodyExportToItem();
     }
   }
+  handleModelChange = (value, id) => {
+    this.props.updateBillBody(id, value).then((result) => {
+      if (!result.error) {
+        this.props.loadBillBody(this.props.billSeqNo);
+      }
+    });
+  }
   renderToolbar() {
     const { readonly, billMeta } = this.props;
     const handlemenu = (
@@ -843,6 +855,7 @@ export default class ManifestBodyPane extends React.Component {
       </span>);
     }
   }
+
   render() {
     const { totGrossWt, totWetWt, totTrade, totPcs, editBody } = this.state;
     const selectedRows = this.state.selectedRowKeys;
@@ -887,6 +900,7 @@ export default class ManifestBodyPane extends React.Component {
           <RelateImportRuleModal />
           <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         </div>
+        <DeclElementsModal onOk={this.handleModelChange} />
       </div>);
   }
 }

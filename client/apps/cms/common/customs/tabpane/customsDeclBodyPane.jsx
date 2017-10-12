@@ -5,6 +5,8 @@ import { Button, Table, Tag, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
+import DeclElementsModal from '../../modal/declElementsModal';
+import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import messages from '../../form/message.i18n';
 import { buildTipItems } from 'client/common/customs';
 
@@ -124,7 +126,7 @@ function calculateTotal(bodies, currencies) {
     bodyItem: state.cmsTradeitem.bodyItem,
     bodyHscode: state.cmsTradeitem.bodyHscode,
     entryHead: state.cmsManifest.entryHead,
-  })
+  }), { showDeclElementsModal }
 )
 export default class CustomsDeclBodyPane extends React.Component {
   static propTypes = {
@@ -163,6 +165,7 @@ export default class CustomsDeclBodyPane extends React.Component {
         showQuickJumper: false,
         onChange: this.handlePageChange,
       },
+
     };
   }
   componentWillMount() {
@@ -283,6 +286,7 @@ export default class CustomsDeclBodyPane extends React.Component {
     }, {
       title: this.msg('gModel'),
       width: 400,
+      onCellClick: record => this.props.showDeclElementsModal(record.element, record.id, record.g_model, true),
       render: (o, record, index) =>
         (<ColumnInput field="g_model" inEdit={index === editIndex} record={record}
           edit={editBody} type="textarea"
@@ -462,7 +466,6 @@ export default class CustomsDeclBodyPane extends React.Component {
     const timestamp = Date.now().toString().substr(-6);
     window.open(`${API_ROOTS.default}v1/cms/manifest/declare/export/entry_${preSeqNo}_${timestamp}.xlsx?headId=${this.props.headNo}`);
   }
-
   render() {
     const { totGrossWt, totWetWt, totTrade } = this.state;
     const columns = this.getColumns();
@@ -486,6 +489,7 @@ export default class CustomsDeclBodyPane extends React.Component {
             scroll={{ x: 2600, y: this.state.scrollY }} pagination={this.state.pagination}
           />
         </div>
+        <DeclElementsModal />
       </div>);
   }
 }
