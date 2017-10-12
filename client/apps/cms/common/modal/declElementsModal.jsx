@@ -23,11 +23,14 @@ export default class DeclElementsModal extends Component {
   state = {
     visible: false,
     model: '',
+    others: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
+      const others = nextProps.gModel ? nextProps.gModel.split('|').pop() : '';
       this.setState({
         model: nextProps.gModel,
+        others,
       });
     }
   }
@@ -53,20 +56,38 @@ export default class DeclElementsModal extends Component {
   handleInputChange = (value, item) => {
     const data = this.props.form.getFieldsValue();
     data[item] = value;
-    let model = '';
-    const values = Object.values(data);
-    for (let i = 0; i < values.length; i++) {
-      if (model) {
-        model += `|${values[i]}`;
-      } else if (!model) {
-        model = values[i];
+    const values = [];
+    for (const key in data) {
+      if (key) {
+        values.push(data[key]);
       }
     }
+    values.push(this.state.others);
+    const model = values.join('|');
     this.setState({ model });
+  }
+  handleOthersChange = (e) => {
+    let { model } = this.state;
+    if (model) {
+      const values = model.split('|');
+      values.splice(-1, 1, e.target.value);
+      model = values.join('|');
+    } else {
+      model = '';
+      const element = this.props.element ? this.props.element.split(';') : [];
+      for (let i = 0; i < element.length; i++) {
+        model += '|';
+      }
+      model += `|${e.target.value}`;
+    }
+    this.setState({
+      model,
+      others: e.target.value,
+    });
   }
   render() {
     const { form: { getFieldDecorator }, disabled } = this.props;
-    const { model } = this.state;
+    const { model, others } = this.state;
     const formItemLayout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
@@ -96,6 +117,9 @@ export default class DeclElementsModal extends Component {
               return '';
             }
           })}
+          <FormItem {...formItemLayout} label="其他">
+            <Input value={others} disabled={disabled} onChange={this.handleOthersChange} />
+          </FormItem>
           <FormItem {...formItemLayout} label="规格型号">
             <Input value={model} disabled={disabled} />
           </FormItem>
