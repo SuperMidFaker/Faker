@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Popover, Input, Tabs, Menu, Avatar, Tree } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -19,7 +19,7 @@ const TreeNode = Tree.TreeNode;
   }),
   { loadDepartments, loadTeamUserIds, loadDepartmentMembers }
 )
-export default class MemberSelect extends Component {
+export default class MemberSelect extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     preparerName: PropTypes.string,

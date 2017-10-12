@@ -6,13 +6,14 @@ import { Breadcrumb, Icon, Form, Layout, Tabs, Steps, Card, Col, Row, Tooltip, R
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
+import PageHeader from 'client/components/PageHeader';
 import MovementDetailsPane from './tabpane/movementDetailsPane';
 import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmMovement';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Step = Steps.Step;
@@ -77,25 +78,27 @@ export default class MovementDetail extends Component {
     const manualLabel = this.state.mode === 'manual' ? ' 手动模式' : '';
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {defaultWhse.name}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('movement')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.props.params.movementNo}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {defaultWhse.name}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('movement')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.props.params.movementNo}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <RadioGroup value={this.state.mode} onChange={this.handleMovingModeChange} size="large" disabled={movingStep === 1}>
               <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
               <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>
-          </div>
-        </Header>
+          </PageHeader.Actions>
+        </PageHeader>
         <Content className="page-content">
           <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
             <Row>

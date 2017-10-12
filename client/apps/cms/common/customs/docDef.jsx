@@ -320,7 +320,7 @@ function pdfBody(bodydatas, declWayCode, params) {
       { text: '币制', style: 'tableHeader' },
       { text: '征免', style: 'tableHeader' }
     );
-  const widths = ['4%', '10%', '38%', '8%', '10%', '6%', '9%', '7%', '8%'];
+  const widths = ['4%', '10%', '38%', '10%', '10%', '6%', '8%', '6%', '8%'];
   pdfbody.push(header);
   for (let i = 0; i < bodydatas.length; i++) {
     const dbody = bodydatas[i];
@@ -375,7 +375,7 @@ export function DocDef(head, bodies, declWayCode, orderNo, params) {
         fontSize: 8,
       },
       tableCell: {
-        height: 30,
+        height: 60,
       },
       tableHeader: {
         fontSize: 8,

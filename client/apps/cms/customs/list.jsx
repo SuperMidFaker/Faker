@@ -7,7 +7,7 @@ import { Breadcrumb, DatePicker, Dropdown, Menu, Icon, Layout, Radio, Tag, Toolt
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
-import QueueAnim from 'rc-queue-anim';
+import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal } from 'common/reducers/cmsDeclare';
@@ -25,6 +25,7 @@ import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
 import BatchSendModal from '../common/customs/modals/batchSendModal';
+import DeclMsgPanel from './panel/declMsgPanel';
 import { Logixon, Fontello } from 'client/components/FontIcon';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -32,7 +33,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Content } = Layout;
+const { Sider, Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -86,6 +87,7 @@ export default class CustomsList extends Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
+    rightSiderCollapsed: true,
   }
   componentDidMount() {
     let filters = { status: 'all', filterDate: [] };
@@ -533,6 +535,11 @@ export default class CustomsList extends Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  toggleRightSider = () => {
+    this.setState({
+      rightSiderCollapsed: !this.state.rightSiderCollapsed,
+    });
+  }
   render() {
     const { customslist, listFilter, trades } = this.props;
     this.dataSource.remotes = customslist;
@@ -611,51 +618,68 @@ export default class CustomsList extends Component {
         onChange={this.handleDateRangeChange}
       /></span>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <PageHeader>
-          <PageHeader.Title>
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('customsDecl')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-          </PageHeader.Title>
-          <PageHeader.Nav>
-            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
-              <RadioButton value="all">{this.msg('all')}</RadioButton>
-              <RadioButton value="import">{this.msg('import')}</RadioButton>
-              <RadioButton value="export">{this.msg('export')}</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
-              <RadioButton value="all">{this.msg('all')}</RadioButton>
-              {Object.keys(CMS_DECL_STATUS).map(declkey =>
-                <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
-              )}
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
-              <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
-            </RadioGroup>
-          </PageHeader.Nav>
-          <PageHeader.Actions>
-            <PageHint />
-          </PageHeader.Actions>
-        </PageHeader>
-        <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
-            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
-          />
-          <FillCustomsNoModal reload={this.handleTableLoad} />
-          <DeclReleasedModal reload={this.handleTableLoad} />
-          <SendModal reload={this.handleTableLoad} />
-          <BatchSendModal reload={this.handleTableLoad} />
-        </Content>
+      <Layout>
+        <Layout>
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('customsDecl')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Nav>
+              <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
+                <RadioButton value="all">{this.msg('all')}</RadioButton>
+                <RadioButton value="import">{this.msg('import')}</RadioButton>
+                <RadioButton value="export">{this.msg('export')}</RadioButton>
+              </RadioGroup>
+              <span />
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+                <RadioButton value="all">{this.msg('all')}</RadioButton>
+                {Object.keys(CMS_DECL_STATUS).map(declkey =>
+                  <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
+                )}
+              </RadioGroup>
+              <span />
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+                <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
+              </RadioGroup>
+            </PageHeader.Nav>
+            <PageHeader.Actions>
+              <PageHint />
+              <ButtonToggle size="large" tooltip="报文收发记录"
+                iconOn="double-right" iconOff="double-left"
+                onClick={this.toggleRightSider}
+              />
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content" key="main">
+            <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
+              rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
+            />
+            <FillCustomsNoModal reload={this.handleTableLoad} />
+            <DeclReleasedModal reload={this.handleTableLoad} />
+            <SendModal reload={this.handleTableLoad} />
+            <BatchSendModal reload={this.handleTableLoad} />
+          </Content>
+        </Layout>
+        <Sider
+          trigger={null}
+          defaultCollapsed
+          collapsible
+          collapsed={this.state.rightSiderCollapsed}
+          width={580}
+          collapsedWidth={0}
+          className="right-sider"
+        >
+          <DeclMsgPanel />
+        </Sider>
         <DelegationDockPanel />
         <OrderDockPanel />
         <ShipmentDockPanel />
-      </QueueAnim>
+      </Layout>
     );
   }
 }

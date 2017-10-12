@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Form, Input } from 'antd';
+import { Alert, Modal, Form, Input } from 'antd';
 import { hideDeclElementsModal } from 'common/reducers/cmsManifest';
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
+
 @connect(
   state => ({
     visible: state.cmsManifest.declElementsModal.visible,
@@ -27,10 +29,10 @@ export default class DeclElementsModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
-      const others = nextProps.gModel ? nextProps.gModel.split('|').pop() : '';
+      // const others = nextProps.gModel ? nextProps.gModel.split('|').pop() : '';
       this.setState({
         model: nextProps.gModel,
-        others,
+        // others,
       });
     }
   }
@@ -89,7 +91,7 @@ export default class DeclElementsModal extends Component {
     const { form: { getFieldDecorator }, disabled } = this.props;
     const { model, others } = this.state;
     const formItemLayout = {
-      labelCol: { span: 8 },
+      labelCol: { span: 12 },
       wrapperCol: { span: 12 },
     };
     const element = this.props.element ? this.props.element.split(';') : [];
@@ -98,31 +100,36 @@ export default class DeclElementsModal extends Component {
       <div>
         <Modal
           title="规格型号"
+          width={800}
           visible={this.props.visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          {element.map((item, index) => {
-            if (item) {
-              return (
-                <FormItem {...formItemLayout} label={item}>
-                  {getFieldDecorator(item, {
-                    initialValue: gModel[index] || '',
-                  })(
-                    <Input disabled={disabled} onChange={e => this.handleInputChange(e.target.value, item)} />
+          <Form className="form-layout-multi-col">
+            <FormItem>
+              <TextArea value={model} disabled={disabled} autosize />
+            </FormItem>
+            <Alert message="根据海关规定应填报以下要素" type="info" closable />
+            {element.map((item, index) => {
+              if (item) {
+                return (
+                  <FormItem {...formItemLayout} label={item}>
+                    {getFieldDecorator(item, {
+                      initialValue: gModel[index] || '',
+                    })(
+                      <Input disabled={disabled} onChange={e => this.handleInputChange(e.target.value, item)} />
                 )}
-                </FormItem>
-              );
-            } else {
-              return '';
-            }
-          })}
-          <FormItem {...formItemLayout} label="其他">
-            <Input value={others} disabled={disabled} onChange={this.handleOthersChange} />
-          </FormItem>
-          <FormItem {...formItemLayout} label="规格型号">
-            <Input value={model} disabled={disabled} />
-          </FormItem>
+                  </FormItem>
+                );
+              } else {
+                return '';
+              }
+            })}
+            <FormItem {...formItemLayout} label="其他">
+              <Input value={others} disabled={disabled} onChange={this.handleOthersChange} />
+            </FormItem>
+
+          </Form>
         </Modal>
       </div>
     );
