@@ -71,7 +71,7 @@ export default class DeclElementsModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 12 },
     };
-    const element = this.props.element.split(';');
+    const element = this.props.element ? this.props.element.split(';') : [];
     const gModel = this.props.gModel ? this.props.gModel.split('|') : [];
     return (
       <div>
