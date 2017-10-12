@@ -10,6 +10,7 @@ const actionTypes = createActionTypes('@@welogix/cms/hscode/', [
   'LOAD_CATEGORY_HSCODE', 'LOAD_CATEGORY_HSCODE_SUCCEED', 'LOAD_CATEGORY_HSCODE_FAIL',
   'ADD_CATEGORY_HSCODE', 'ADD_CATEGORY_HSCODE_SUCCEED', 'ADD_CATEGORY_HSCODE_FAIL',
   'REMOVE_CATEGORY_HSCODE', 'REMOVE_CATEGORY_HSCODE_SUCCEED', 'REMOVE_CATEGORY_HSCODE_FAIL',
+  'GET_ELEMENT_BY_HSCODE', 'GET_ELEMENT_BY_HSCODE_SUCCEED', 'GET_ELEMENT_BY_HSCODE_FAIL',
 ]);
 
 const initialState = {
@@ -177,6 +178,21 @@ export function removeCategoryHsCode(id) {
       endpoint: 'v1/cms/cmsTradeitem/hscode/categoryHscode/remove',
       method: 'post',
       data: { id },
+    },
+  };
+}
+
+export function getElementByHscode(hscode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_ELEMENT_BY_HSCODE,
+        actionTypes.GET_ELEMENT_BY_HSCODE_SUCCEED,
+        actionTypes.GET_ELEMENT_BY_HSCODE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/get/element/by/hscode',
+      method: 'get',
+      params: { hscode },
     },
   };
 }

@@ -7,6 +7,7 @@ import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
 import DeclElementsModal from '../../modal/declElementsModal';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
+import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import messages from '../../form/message.i18n';
 import { buildTipItems } from 'client/common/customs';
 
@@ -126,7 +127,7 @@ function calculateTotal(bodies, currencies) {
     bodyItem: state.cmsTradeitem.bodyItem,
     bodyHscode: state.cmsTradeitem.bodyHscode,
     entryHead: state.cmsManifest.entryHead,
-  }), { showDeclElementsModal }
+  }), { showDeclElementsModal, getElementByHscode }
 )
 export default class CustomsDeclBodyPane extends React.Component {
   static propTypes = {
@@ -253,7 +254,6 @@ export default class CustomsDeclBodyPane extends React.Component {
       }
     }
   }
-
   getColumns() {
     const { units, countries, currencies, exemptions } = this.props;
     const { editIndex, editBody } = this.state;
@@ -286,7 +286,7 @@ export default class CustomsDeclBodyPane extends React.Component {
     }, {
       title: this.msg('gModel'),
       width: 400,
-      onCellClick: record => this.props.showDeclElementsModal(record.element, record.id, record.g_model, true),
+      onCellClick: record => this.handleShowDeclElementModal(record),
       render: (o, record, index) =>
         (<ColumnInput field="g_model" inEdit={index === editIndex} record={record}
           edit={editBody} type="textarea"
@@ -451,7 +451,13 @@ export default class CustomsDeclBodyPane extends React.Component {
     }]; */
     return columns;
   }
-
+  handleShowDeclElementModal = (record) => {
+    this.props.getElementByHscode(record.codes).then((result) => {
+      if (!result.error) {
+        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, true);
+      }
+    });
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handlePageChange = (current) => {
     this.setState({
