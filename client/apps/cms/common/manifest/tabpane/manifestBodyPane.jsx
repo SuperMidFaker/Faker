@@ -15,7 +15,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import messages from '../../form/message.i18n';
 import RelateImportRuleModal from '../modals/relateImportRules';
 import { dividGrossWt } from './helper';
-import { loadHscodes } from 'common/reducers/cmsHsCode';
+import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
 
@@ -187,6 +187,7 @@ function calculateTotal(bodies, currencies) {
     loadHscodes,
     showDeclElementsModal,
     updateBillBody,
+    getElementByHscode,
   }
 )
 export default class ManifestBodyPane extends React.Component {
@@ -259,7 +260,6 @@ export default class ManifestBodyPane extends React.Component {
       });
     }
   }
-
   getColumns() {
     const { readonly, units, countries, currencies, exemptions, hscodeData } = this.props;
     const { editIndex, bodies, editBody, pagination } = this.state;
@@ -320,7 +320,7 @@ export default class ManifestBodyPane extends React.Component {
     }, {
       title: this.msg('gModel'),
       width: 400,
-      onCellClick: record => record.cop_g_no && this.props.showDeclElementsModal(record.element, record.id, record.g_model, false),
+      onCellClick: record => record.cop_g_no && this.handleShowDeclElementModal(record),
       render: (o, record, index) =>
         (<ColumnInput type="textarea" autosize field="g_model" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
@@ -511,7 +511,13 @@ export default class ManifestBodyPane extends React.Component {
     }];
     return columns;
   }
-
+  handleShowDeclElementModal = (record) => {
+    this.props.getElementByHscode(record.codes).then((result) => {
+      if (!result.error) {
+        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, false);
+      }
+    });
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handlePageChange = (current) => {
     this.setState({
