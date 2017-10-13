@@ -344,13 +344,13 @@ export default class DetailPane extends React.Component {
     this.props.showChangeActDateModal(true, type);
   }
   render() {
-    const { upstream, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, transitModes, containerPackagings } = this.props;
+    const { upstream, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, transitModes, containerPackagings, charges } = this.props;
     const pckg = packagings.find(item => item.package_code === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
     const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
     const editable = !upstream.parent_id && upstream.status > SHIPMENT_TRACK_STATUS.unaccepted && upstream.status < SHIPMENT_TRACK_STATUS.intransit;
-    const changeDropdown = editable ?
+    const changeDropdown = !upstream.parent_id && upstream.status > SHIPMENT_TRACK_STATUS.unaccepted ?
     (
       <Dropdown overlay={(
         <Menu>
@@ -370,12 +370,12 @@ export default class DetailPane extends React.Component {
         </a>
       </Dropdown>
     ) : <span />;
-    // const shipmtModeExtra = (<span>运输时效:{shipmt.transit_time}{this.msg('day')}/公里数:{charges.revenue.miles}</span>);
+    const shipmtModeExtra = (<span>时效: {shipmt.transit_time}{this.msg('day')}/里程: {charges.revenue.miles}公里</span>);
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }} noHovering>
           <Collapse bordered={false} defaultActiveKey={['main', 'mode', 'cargo']}>
-            <Panel header={<span>{this.msg('shipmtSchedule')}<span className="pull-right">{changeDropdown}</span></span>} key="main">
+            <Panel header={<span>{this.msg('shipmtSchedule')} {shipmtModeExtra}<span className="pull-right">{changeDropdown}</span></span>} key="main">
               <div className="trans_schedule">
                 <div className="schedule">
                   <Steps direction="vertical">
