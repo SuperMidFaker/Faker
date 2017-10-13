@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Progress, Upload, Modal } from 'antd';
+import { Alert, Progress, Upload, Modal } from 'antd';
 
 export default class ExcelUploader extends React.Component {
   static propTypes = {
@@ -14,6 +14,8 @@ export default class ExcelUploader extends React.Component {
     inUpload: false,
     uploadPercent: 10,
     uploadStatus: 'active',
+    errorMsg: '',
+    closable: false,
   }
   handleImport = (info) => {
     if (this.state.uploadChangeCount === 0) {
@@ -23,26 +25,32 @@ export default class ExcelUploader extends React.Component {
       this.state.uploadChangeCount++;
       this.setState({ uploadPercent: info.event.percent * 0.8 });
     } else if (info.file.status === 'done') {
-      const reponseData = info.file.response.data;
-      this.setState({ inUpload: false, uploadStatus: 'success' });
+      const response = info.file.response;
       this.state.uploadChangeCount = 0;
-      if (this.props.onUploaded) {
-        this.props.onUploaded(reponseData);
+      if (response.status !== 200) {
+        this.setState({ uploadStatus: 'exception', errorMsg: response.msg, closable: true });
+      } else {
+        this.setState({ inUpload: false, uploadStatus: 'success' });
+        if (this.props.onUploaded) {
+          this.props.onUploaded(response.data);
+        }
       }
     } else if (info.file.status === 'error') {
-      this.setState({ inUpload: false, uploadStatus: 'exception' });
+      this.setState({ uploadStatus: 'exception', errorMsg: '文件处理超时, 请考虑分批导入', closable: true });
       this.state.uploadChangeCount = 0;
     }
   }
+  handleCancel = () => { this.setState({ inUpload: false, errorMsg: '', closable: false }); }
   render() {
     const { endpoint, formData, children } = this.props;
-    const { inUpload, uploadPercent, uploadStatus } = this.state;
+    const { inUpload, uploadPercent, uploadStatus, errorMsg, closable } = this.state;
     return (
       <Upload accept=".xls,.xlsx" action={endpoint} showUploadList={false}
         data={formData} onChange={this.handleImport} withCredentials
       >
         {children}
-        <Modal closable={false} maskClosable={false} footer={[]} visible={inUpload}>
+        <Modal closable={closable} maskClosable={false} footer={[]} visible={inUpload} onCancel={this.handleCancel}>
+          {errorMsg && <Alert message={errorMsg} showIcon type="error" /> }
           <Progress type="circle" percent={uploadPercent} status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}
           />

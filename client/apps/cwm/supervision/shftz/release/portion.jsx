@@ -401,6 +401,9 @@ export default class SHFTZRelDetail extends Component {
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>
+                        {reg.ftz_apply_nos && <Col className="col-flex-primary info-group-inline">
+                          <InfoItem label="集中申报单号" field={reg.ftz_apply_nos} width={380} />
+                        </Col>}
                         <Col className="col-flex-secondary">
                           {totCol}
                         </Col>
