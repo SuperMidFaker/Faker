@@ -55,7 +55,7 @@ export default class Transport extends React.Component {
         single: true,
         key: 'tms-2',
         path: '/transport/dispatch',
-        icon: 'logixon icon-truck',
+        icon: 'logixon icon-dispatch',
         text: formatMsg(intl, 'dispatch'),
       });
     }

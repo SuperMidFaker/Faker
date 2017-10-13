@@ -11,11 +11,11 @@ const messages = defineMessages({
   },
   customsDecl: {
     id: 'cms.module.customs.decl',
-    defaultMessage: '报关管理',
+    defaultMessage: '报关申报',
   },
   ciqDecl: {
     id: 'cms.module.ciq.decl',
-    defaultMessage: '报检管理',
+    defaultMessage: '报检申报',
   },
   import: {
     id: 'cms.module.import',
@@ -27,11 +27,11 @@ const messages = defineMessages({
   },
   importCustomsDecl: {
     id: 'cms.module.import.decl.customs',
-    defaultMessage: '报关单证',
+    defaultMessage: '进口报关申报',
   },
   importCiqDecl: {
     id: 'cms.module.import.decl.ciq',
-    defaultMessage: '报检单证',
+    defaultMessage: '入境报检申报',
   },
   export: {
     id: 'cms.module.export',
@@ -43,11 +43,11 @@ const messages = defineMessages({
   },
   exportCustomsDecl: {
     id: 'cms.module.export.decl.customs',
-    defaultMessage: '报关单证',
+    defaultMessage: '出口报关申报',
   },
   exportCiqDecl: {
     id: 'cms.module.export.decl.ciq',
-    defaultMessage: '报检单证',
+    defaultMessage: '出境报检申报',
   },
   billing: {
     id: 'cms.module.billing',
@@ -77,9 +77,13 @@ const messages = defineMessages({
     id: 'cms.module.classification.special.category',
     defaultMessage: '特殊商品编码分类',
   },
-  certification: {
-    id: 'cms.module.certification',
+  license: {
+    id: 'cms.module.license',
     defaultMessage: '涉证管理',
+  },
+  manual: {
+    id: 'cms.module.manual',
+    defaultMessage: '手册账册',
   },
   analytics: {
     id: 'cms.module.analytics',
