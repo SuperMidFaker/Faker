@@ -8,7 +8,9 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import SKUPopover from '../../../common/popover/skuPopover';
 import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
+import { showAsnSelectModal } from 'common/reducers/cwmShippingOrder';
 import AddDetailModal from '../modal/addDetailModal';
+import AsnSelectModal from '../modal/asnSelectModal';
 
 const formatMsg = format(messages);
 
@@ -19,7 +21,7 @@ const formatMsg = format(messages);
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { showDetailModal, addTemporary, deleteTemporary, clearTemporary }
+  { showDetailModal, addTemporary, deleteTemporary, clearTemporary, showAsnSelectModal }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
@@ -88,9 +90,13 @@ export default class DetailsPane extends Component {
       selectedRowKeys: [],
     });
   }
+  showAsnSelectModal = () => {
+    this.props.showAsnSelectModal();
+  }
   render() {
-    const { editable, temporaryDetails, detailEnable, units, currencies } = this.props;
+    const { editable, temporaryDetails, detailEnable, units, currencies, form } = this.props;
     const { pagination } = this.state;
+    const soType = form.getFieldValue('so_type');
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -145,10 +151,6 @@ export default class DetailsPane extends Component {
       dataIndex: 'external_lot_no',
       width: 150,
     }, {
-      title: '序列号',
-      dataIndex: 'serial_no',
-      width: 150,
-    }, {
       title: '供货商',
       dataIndex: 'supplier',
       width: 120,
@@ -181,8 +183,9 @@ export default class DetailsPane extends Component {
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
-          {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
+          {editable && <Button type="primary" icon="plus-circle-o" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
+          {editable && <Button icon="upload" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'}>导入</Button>}
+          {editable && <Button disabled={(detailEnable && Number(soType) === 3) ? '' : 'disabled'} onClick={this.showAsnSelectModal}>选择ASN</Button>}
           <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
             <h3>已选中{this.state.selectedRowKeys.length}项</h3>
             <Button size="large" onClick={this.handleBatchDelete} icon="delete" />
@@ -192,6 +195,7 @@ export default class DetailsPane extends Component {
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
+        <AsnSelectModal />
       </div>
     );
   }

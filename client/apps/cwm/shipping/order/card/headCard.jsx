@@ -9,7 +9,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
 import { loadSkuParams } from 'common/reducers/cwmSku';
-import { getSuppliers } from 'common/reducers/cwmReceive';
+import { getSuppliers, clearTemporary } from 'common/reducers/cwmReceive';
 
 const dateFormat = 'YYYY/MM/DD';
 const formatMsg = format(messages);
@@ -25,7 +25,7 @@ const RadioGroup = Radio.Group;
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadSkuParams, getSuppliers }
+  { loadSkuParams, getSuppliers, clearTemporary }
 )
 export default class HeadCard extends Component {
   static propTypes = {
@@ -80,6 +80,12 @@ export default class HeadCard extends Component {
     this.props.loadSkuParams(value);
     this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, value);
   }
+  handleSoTypeChange = (value) => {
+    const sotype = this.props.form.getFieldValue('so_type');
+    if ((Number(sotype) !== 3 && Number(value) === 3) || (Number(sotype) === 3 && Number(value) !== 3)) {
+      this.props.clearTemporary();
+    }
+  }
   render() {
     const { form: { getFieldDecorator }, owners, soHead, defaultWhse } = this.props;
     const { bonded } = this.state;
@@ -123,7 +129,7 @@ export default class HeadCard extends Component {
               {getFieldDecorator('so_type', {
                 initialValue: soHead ? soHead.so_type : CWM_SO_TYPES[0].value,
               })(
-                <Select placeholder="SO类型">
+                <Select placeholder="SO类型" onChange={this.handleSoTypeChange}>
                   {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
                 </Select>
                     )}

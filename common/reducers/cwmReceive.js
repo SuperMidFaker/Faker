@@ -38,6 +38,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'CLEAR_PRODUCT_NOS', 'MARK_RELOAD_INBOUND',
   'LOAD_LOT_INFO', 'LOAD_LOT_INFO_SUCCEED', 'LOAD_LOT_INFO_FAIL',
   'GET_SUPPLIERS', 'GET_SUPPLIERS_SUCCEED', 'GET_SUPPLIERS_FAIL',
+  'GET_CROSS_ASNS', 'GET_CROSS_ASNS_SUCCEED', 'GET_CROSS_ASNS_FAIL',
+  'GET_ASN_DETAILS', 'GET_ASN_DETAILS_SUCCEED', 'GET_ASN_DETAILS_FAIL',
 ]);
 
 const initialState = {
@@ -735,6 +737,36 @@ export function getSuppliers(tenantId, whseCode, ownerPartnerId) {
       endpoint: 'v1/cwm/get/suppliers',
       method: 'get',
       params: { tenantId, whseCode, ownerPartnerId },
+    },
+  };
+}
+
+export function getCrossAsns(whseCode, tenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_CROSS_ASNS,
+        actionTypes.GET_CROSS_ASNS_SUCCEED,
+        actionTypes.GET_CROSS_ASNS_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/cross/asns',
+      method: 'get',
+      params: { whseCode, tenantId },
+    },
+  };
+}
+
+export function getAsnDetails(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_ASN_DETAILS,
+        actionTypes.GET_ASN_DETAILS_SUCCEED,
+        actionTypes.GET_ASN_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/get/asn/details',
+      method: 'get',
+      params: { asnNo },
     },
   };
 }
