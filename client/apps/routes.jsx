@@ -20,6 +20,7 @@ import * as Collab from './hub/collab';
 import * as OpenAPI from './hub/api';
 import * as OpenIntegration from './hub/integration';
 import * as IntegraionArCTM from './hub/integration/arctm';
+import * as IntegraionQuickPass from './hub/integration/quickpass';
 import * as IntegraionEasipassEDI from './hub/integration/easipass';
 import * as IntegraionSHFTZ from './hub/integration/shftz';
 import * as IntegraionShunfeng from './hub/integration/shunfeng';
@@ -182,6 +183,10 @@ export default(store, cookie) => {
             <Route path="arctm">
               <Route path="install" component={IntegraionArCTM.Install} />
               <Route path="config/:uuid" component={IntegraionArCTM.Config} />
+            </Route>
+            <Route path="quickpass">
+              <Route path="install" component={IntegraionQuickPass.Install} />
+              <Route path="config/:uuid" component={IntegraionQuickPass.Config} />
             </Route>
             <Route path="easipass">
               <Route path="install" component={IntegraionEasipassEDI.Install} />

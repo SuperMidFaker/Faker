@@ -19,7 +19,7 @@ import DeclReleasedModal from './modals/declReleasedModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
-import SendModal from './modals/sendModal';
+import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import { DocDef } from './docDef';
 
 
@@ -282,7 +282,7 @@ export default class CustomsDeclEditor extends React.Component {
         </Layout>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
-        <SendModal ietype={ietype} reload={this.reloadEntry} />
+        <SendDeclMsgModal ietype={ietype} reload={this.reloadEntry} />
         <DeclReleasedModal reload={this.reloadEntry} />
       </Layout>
     );

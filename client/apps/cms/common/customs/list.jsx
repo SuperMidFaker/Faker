@@ -18,7 +18,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import DeclReleasedModal from './modals/declReleasedModal';
 import DeclStatusPopover from './declStatusPopover';
-import SendModal from './modals/sendModal';
+import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
@@ -583,7 +583,7 @@ export default class CustomsList extends Component {
             </div>
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />
-            <SendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
+            <SendDeclMsgModal ietype={this.props.ietype} reload={this.handleTableLoad} />
             <BatchSendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
           </div>
         </Content>

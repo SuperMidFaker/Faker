@@ -20,7 +20,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from '../common/customs/modals/fillCustomsNoModal';
 import DeclReleasedModal from '../common/customs/modals/declReleasedModal';
 import DeclStatusPopover from '../common/customs/declStatusPopover';
-import SendModal from '../common/customs/modals/sendModal';
+import SendDeclMsgModal from '../common/customs/modals/sendDeclMsgModal';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
@@ -613,7 +613,7 @@ export default class CustomsList extends Component {
           <Option value="my">我负责的委托</Option>
         </OptGroup>
       </Select>
-      <RangePicker size="large" value={dateVal} style={{ width: '30%' }}
+      <RangePicker size="large" value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       /></span>);
@@ -661,7 +661,7 @@ export default class CustomsList extends Component {
             />
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />
-            <SendModal reload={this.handleTableLoad} />
+            <SendDeclMsgModal reload={this.handleTableLoad} />
             <BatchSendModal reload={this.handleTableLoad} />
           </Content>
         </Layout>

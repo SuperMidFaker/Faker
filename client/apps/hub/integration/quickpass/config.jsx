@@ -20,12 +20,12 @@ function fetchData({ dispatch, params }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    easipass: state.openIntegration.easipassApp,
+    quickpass: state.openIntegration.quickpassApp,
   }),
   { updateEasipassApp }
 )
 @Form.create()
-export default class ConfigEasipassEDI extends React.Component {
+export default class ConfigQuickPass extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -37,11 +37,11 @@ export default class ConfigEasipassEDI extends React.Component {
   state = { submitting: false }
   msg = formatMsg(this.props.intl);
   handleSaveBtnClick = () => {
-    const { easipass } = this.props;
+    const { quickpass } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.setState({ submitting: true });
-        this.props.updateEasipassApp({ ...values, uuid: easipass.uuid }).then((result) => {
+        this.props.updateEasipassApp({ ...values, uuid: quickpass.uuid }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);
@@ -57,7 +57,7 @@ export default class ConfigEasipassEDI extends React.Component {
   }
 
   render() {
-    const { form, easipass } = this.props;
+    const { form, quickpass } = this.props;
     return (
       <div>
         <Header className="page-header">
@@ -66,10 +66,10 @@ export default class ConfigEasipassEDI extends React.Component {
               <Icon type="appstore-o" /> {this.msg('integration')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('appEasipassEDI')}
+              {this.msg('appQuickPass')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {easipass.name}
+              {quickpass.name}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
@@ -84,11 +84,11 @@ export default class ConfigEasipassEDI extends React.Component {
         <Content className="main-content layout-fixed-width">
           <Form layout="vertical">
             <Card>
-              <InfoItem label={this.msg('integrationName')} field={easipass.name} />
+              <InfoItem label={this.msg('integrationName')} field={quickpass.name} />
             </Card>
             <Card title={this.msg('interfaceConfig')}>
               <Row gutter={16}>
-                <MainForm form={form} easipass={easipass} />
+                <MainForm form={form} quickpass={quickpass} />
               </Row>
             </Card>
           </Form>

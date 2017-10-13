@@ -34,6 +34,7 @@ const initialState = {
   },
   listFilter: {},
   easipassApp: {},
+  quickpassApp: {},
   arctm: {},
   shftzApp: {},
   shunfeng: {},

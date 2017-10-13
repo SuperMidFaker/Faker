@@ -26,6 +26,10 @@ const messages = defineMessages({
     id: 'hub.integration.app.arctm',
     defaultMessage: 'AmberRoad CTM',
   },
+  appQuickPass: {
+    id: 'hub.integration.app.quickpass',
+    defaultMessage: 'QP预录入',
+  },
   appEasipassEDI: {
     id: 'hub.integration.app.easipass',
     defaultMessage: '亿通海关EDI申报',
@@ -38,9 +42,9 @@ const messages = defineMessages({
     id: 'hub.integration.app.shunfeng',
     defaultMessage: '顺丰快递',
   },
-  easipassConfig: {
-    id: 'hub.integration.easipass.config',
-    defaultMessage: '亿通配置',
+  interfaceConfig: {
+    id: 'hub.integration.config',
+    defaultMessage: '接口配置',
   },
   integrationName: {
     id: 'hub.integration.name',

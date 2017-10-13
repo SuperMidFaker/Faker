@@ -281,6 +281,12 @@ export const CMS_DECL_STATUS = {
   closed: { value: 5, text: '结关', badge: 'success', step: 5, stepDesc: '结关', date: 'close_date' },
 };
 
+export const CMS_DECL_CHANNEL = {
+  QP: { value: 'qp', text: 'QP预录入', disabled: false },
+  EP: { value: 'ep', text: '亿通EDI', disabled: false },
+  SW: { value: 'sw', text: '单一窗口', disabled: true },
+};
+
 export const ITEMS_STATUS = [
   { value: 0, text: '未归类' },
   { value: 1, text: '归类待定' },

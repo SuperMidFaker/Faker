@@ -63,6 +63,7 @@ const initialState = {
     bizManifest: { trades: [], agents: [], templates: [] },
   },
   eplist: [],
+  qplist: [],
   cmsQuotes: [],
   tmsParams: { consigners: [], consignees: [], transitModes: [], packagings: [] },
   cwmParams: { whses: [] },

@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Collapse, Form, Row, Col, Select } from 'antd';
+import { Collapse, Form, Radio, Row, Col, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
+import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 import FlowTriggerTable from '../compose/flowTriggerTable';
 import { formatMsg } from '../../message.i18n';
 
 const Panel = Collapse.Panel;
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
   state => ({
     eplist: state.scofFlow.eplist,
+    qplist: state.scofFlow.qplist,
   })
 )
 export default class CMSCustomsDeclPane extends Component {
@@ -24,7 +27,7 @@ export default class CMSCustomsDeclPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, model, eplist } = this.props;
+    const { form: { getFieldDecorator, getFieldValue }, model, eplist, qplist } = this.props;
     let cmsDeclTypes = [];
     if (model.kind === 'import') {
       cmsDeclTypes = CMS_IMPORT_DECL_TYPE;
@@ -47,6 +50,19 @@ export default class CMSCustomsDeclPane extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
+              <FormItem label={this.msg('customsDeclChannel')}>
+                {getFieldDecorator('decl_channel', {
+                })(
+                  <RadioGroup>
+                    {Object.keys(CMS_DECL_CHANNEL).map(declChannel =>
+                      <RadioButton value={declChannel} key={declChannel} disabled={CMS_DECL_CHANNEL[declChannel].disabled}>{CMS_DECL_CHANNEL[declChannel].text}</RadioButton>
+                    )}
+                  </RadioGroup>
+                  )}
+              </FormItem>
+            </Col>
+            {
+            getFieldValue('decl_channel') === 'EP' && <Col sm={24} lg={8}>
               <FormItem label={this.msg('customsEasipass')}>
                 {getFieldDecorator('ep_app_uuid', {
                   initialValue: model.ep_app_uuid,
@@ -57,6 +73,20 @@ export default class CMSCustomsDeclPane extends Component {
                 </Select>)}
               </FormItem>
             </Col>
+            }
+            {
+            getFieldValue('decl_channel') === 'QP' && <Col sm={24} lg={8}>
+              <FormItem label={this.msg('customsQuickpass')}>
+                {getFieldDecorator('qp_app_uuid', {
+                  initialValue: model.qp_app_uuid,
+                })(<Select allowClear>
+                  {
+                    qplist.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))
+                  }
+                </Select>)}
+              </FormItem>
+            </Col>
+            }
           </Row>
         </Panel>
         <Panel header={this.msg('bizEvents')} key="events">

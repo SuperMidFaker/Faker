@@ -38,8 +38,23 @@ export default class IntegrationAppsList extends React.Component {
               closable
               key="alert"
             />
-
-            <Row gutter={16} key="apps">
+            <Row gutter={16} key="decl">
+              <Col sm={24} md={12} lg={8}>
+                <Card title="QP海关预录入系统" extra={<NavLink to="/hub/integration/quickpass/install">Install</NavLink>}>
+                  QuickPass 海关预录入系统
+                </Card>
+              </Col>
+              <Col sm={24} md={12} lg={8}>
+                <Card title="亿通EDI海关申报系统" extra={<NavLink to="/hub/integration/easipass/install">Install</NavLink>}>
+                  海关EDI申报系统是亿通公司就针对海关通关管理系统，自主设计开发的一套适用于电子报关企业的客户端应用软件。
+                  整套系统集成了数据录入、单证发送、回执接收、报关单查询、数据备份等功能；系统涵盖了有纸报关、无纸报关、普货报关、转关、进出境备案、快件申报的所有报关功能。
+                </Card>
+              </Col>
+              <Col sm={24} md={12} lg={8}>
+                <Card title="上海自贸区监管系统" extra={<NavLink to="/hub/integration/shftz/install">Install</NavLink>} />
+              </Col>
+            </Row>
+            <Row gutter={16} key="ctm">
               <Col sm={24} md={12} lg={8}>
                 <Card title="Amber Road CTM" extra={<NavLink to="/hub/integration/arctm/install">Install</NavLink>}>
                   Amber Road 中国贸易管理（CTM）系统已经：
@@ -48,15 +63,8 @@ export default class IntegrationAppsList extends React.Component {
                   对接全国各主要口岸，企业可在一个平台上管理所有进出口活动。
                 </Card>
               </Col>
-              <Col sm={24} md={12} lg={8}>
-                <Card title="亿通 EDI" extra={<NavLink to="/hub/integration/easipass/install">Install</NavLink>}>
-                  海关EDI申报系统是亿通公司就针对海关通关管理系统，自主设计开发的一套适用于电子报关企业的客户端应用软件。
-                  整套系统集成了数据录入、单证发送、回执接收、报关单查询、数据备份等功能；系统涵盖了有纸报关、无纸报关、普货报关、转关、进出境备案、快件申报的所有报关功能。
-                </Card>
-              </Col>
-              <Col sm={24} md={12} lg={8}>
-                <Card title="上海自贸区监管（东方支付）" extra={<NavLink to="/hub/integration/shftz/install">Install</NavLink>} />
-              </Col>
+            </Row>
+            <Row gutter={16} key="apps">
               <Col sm={24} md={12} lg={8}>
                 <Card title="顺丰快递下单" extra={<NavLink to="/hub/integration/shunfeng/install">Install</NavLink>}>
                   通过与顺丰快递公司合作，获取快递单号以打印快递单。

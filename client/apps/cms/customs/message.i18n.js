@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 export default defineMessages({
   customsDecl: {
     id: 'cms.customs.decl',
-    defaultMessage: '报关管理',
+    defaultMessage: '报关申报',
   },
   import: {
     id: 'cms.customs.decl.import',
@@ -75,7 +75,7 @@ export default defineMessages({
   },
   sendDecl: {
     id: 'cms.customs.decl.decl.sendModal.sendDecl',
-    defaultMessage: '发送报关单',
+    defaultMessage: '发送报关报文',
   },
   agent: {
     id: 'cms.customs.decl.agent',

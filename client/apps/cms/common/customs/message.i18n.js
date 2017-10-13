@@ -58,12 +58,16 @@ export default defineMessages({
     defaultMessage: '单证类型',
   },
   easipassList: {
-    id: 'cms.common.customs.decl.easipassList',
+    id: 'cms.common.customs.decl.easipass.list',
     defaultMessage: 'EDI列表',
+  },
+  quickpassList: {
+    id: 'cms.common.customs.decl.quickpass.list',
+    defaultMessage: 'QP列表',
   },
   sendDecl: {
     id: 'cms.common.customs.decl.sendModal.sendDecl',
-    defaultMessage: '发送报关单',
+    defaultMessage: '发送报关报文',
   },
   agent: {
     id: 'cms.common.customs.agent',

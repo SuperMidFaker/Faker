@@ -2,14 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Select, message } from 'antd';
+import { Modal, Form, Radio, Select, message } from 'antd';
 import { showSendDeclModal, getEasipassList, sendDecl } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CMS_DECL_TYPE, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
+import { CMS_DECL_CHANNEL, CMS_DECL_TYPE, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
+
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
@@ -27,7 +30,7 @@ const Option = Select.Option;
   { showSendDeclModal, getEasipassList, sendDecl }
 )
 @Form.create()
-export default class SendModal extends React.Component {
+export default class SendDeclMsgModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export', '']),
@@ -43,6 +46,7 @@ export default class SendModal extends React.Component {
   }
   state = {
     easipassList: [],
+    quickpassList: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && !this.props.visible) {
@@ -74,8 +78,8 @@ export default class SendModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible, form: { getFieldDecorator }, ietype } = this.props;
-    const { easipassList } = this.state;
+    const { visible, form: { getFieldDecorator, getFieldValue }, ietype } = this.props;
+    const { easipassList, quickpassList } = this.state;
     let declList = [];
     if (ietype === 'import') {
       declList = CMS_IMPORT_DECL_TYPE;
@@ -89,6 +93,15 @@ export default class SendModal extends React.Component {
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>
+          <FormItem>
+            {getFieldDecorator('declChannel')(
+              <RadioGroup>
+                {Object.keys(CMS_DECL_CHANNEL).map(declChannel =>
+                  <RadioButton value={declChannel} key={declChannel} disabled={CMS_DECL_CHANNEL[declChannel].disabled}>{CMS_DECL_CHANNEL[declChannel].text}</RadioButton>
+                )}
+              </RadioGroup>
+            )}
+          </FormItem>
           <FormItem label={this.msg('declType')}>
             {getFieldDecorator('declType', { rules: [{ required: true, message: '请选择单证类型' }] })(
               <Select placeholder="请选择">
@@ -96,13 +109,22 @@ export default class SendModal extends React.Component {
               </Select>
             )}
           </FormItem>
-          <FormItem label={this.msg('easipassList')}>
-            {getFieldDecorator('easipass', { rules: [{ required: true, message: '请选择EDI' }] })(
-              <Select placeholder="请选择">
-                {easipassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
-              </Select>
+          {
+            getFieldValue('declChannel') === 'EP' && <FormItem label={this.msg('easipassList')}>
+              {getFieldDecorator('easipass', { rules: [{ required: true, message: '请选择EDI' }] })(
+                <Select placeholder="请选择">
+                  {easipassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
+                </Select>
             )}
-          </FormItem>
+            </FormItem>}
+          {
+            getFieldValue('declChannel') === 'QP' && <FormItem label={this.msg('quickpassList')}>
+              {getFieldDecorator('quickpass', { rules: [{ required: true, message: '请选择QP' }] })(
+                <Select placeholder="请选择">
+                  {quickpassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
+                </Select>
+            )}
+            </FormItem>}
         </Form>
       </Modal>
     );

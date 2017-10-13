@@ -91,7 +91,7 @@ export default class InstallEasipassEDI extends React.Component {
                 })(<Input />)}
               </FormItem>
             </Card>
-            <Card title={this.msg('easipassConfig')}>
+            <Card title={this.msg('interfaceConfig')}>
               <MainForm form={form} easipass={this.defaultEasipassConfig} />
             </Card>
           </Form>
