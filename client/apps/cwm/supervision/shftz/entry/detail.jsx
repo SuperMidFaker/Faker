@@ -435,16 +435,16 @@ export default class SHFTZEntryDetail extends Component {
                           <InfoItem label="海关进库单号" field={reg.ftz_ent_no} width={370} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
                           />
-                          <InfoItem label="报关单号" field={reg.cus_decl_no} width={370} editable={entryEditable}
+                          <InfoItem label="报关单号" field={reg.cus_decl_no} width={330} editable={entryEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
                           />
                           <InfoItem label="进口日期"
                             type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))} width={280}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))} width={200}
                           />
                           <InfoItem label="进库日期"
                             type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_dateie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))} width={280}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))} width={200}
                           />
                         </Col>
                         <Col className="col-flex-secondary">

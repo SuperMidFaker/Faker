@@ -39,7 +39,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_LOT_INFO', 'LOAD_LOT_INFO_SUCCEED', 'LOAD_LOT_INFO_FAIL',
   'GET_SUPPLIERS', 'GET_SUPPLIERS_SUCCEED', 'GET_SUPPLIERS_FAIL',
   'GET_CROSS_ASNS', 'GET_CROSS_ASNS_SUCCEED', 'GET_CROSS_ASNS_FAIL',
-  'GET_CROSS_ASN', 'GET_CROSS_ASN_SUCCEED', 'GET_CROSS_ASN_FAIL',
+  'GET_CROSS_ASNDS', 'GET_CROSS_ASNDS_SUCCEED', 'GET_CROSS_ASNDS_FAIL',
 ]);
 
 const initialState = {
@@ -756,15 +756,15 @@ export function getCrossAsns(whseCode, tenantId) {
   };
 }
 
-export function getCrossAsn(asnNo) {
+export function getCrossAsnDetails(asnNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.GET_CROSS_ASN,
-        actionTypes.GET_CROSS_ASN_SUCCEED,
-        actionTypes.GET_CROSS_ASN_FAIL,
+        actionTypes.GET_CROSS_ASNDS,
+        actionTypes.GET_CROSS_ASNDS_SUCCEED,
+        actionTypes.GET_CROSS_ASNDS_FAIL,
       ],
-      endpoint: 'v1/cwm/get/cross/asn',
+      endpoint: 'v1/cwm/get/cross/asn/details',
       method: 'get',
       params: { asnNo },
     },

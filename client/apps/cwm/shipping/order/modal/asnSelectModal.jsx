@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { hideAsnSelectModal } from 'common/reducers/cwmShippingOrder';
-import { getCrossAsns, addTemporary, clearTemporary, getCrossAsn } from 'common/reducers/cwmReceive';
+import { getCrossAsns, addTemporary, clearTemporary, getCrossAsnDetails } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 
@@ -17,7 +17,7 @@ const formatMsg = format(messages);
     whseCode: state.cwmContext.defaultWhse.code,
     tenantId: state.account.tenantId,
   }),
-  { getCrossAsns, hideAsnSelectModal, addTemporary, clearTemporary, getCrossAsn }
+  { getCrossAsns, hideAsnSelectModal, addTemporary, clearTemporary, getCrossAsnDetails }
 )
 export default class AddDetailModal extends Component {
   static propTypes = {
@@ -41,7 +41,7 @@ export default class AddDetailModal extends Component {
   }
   handleRowClick = (record) => {
     this.handleCancel();
-    this.props.getCrossAsn(record.asn_no).then((result) => {
+    this.props.getCrossAsnDetails(record.asn_no).then((result) => {
       if (!result.error) {
         this.props.clearTemporary();
         this.props.addTemporary(result.data);

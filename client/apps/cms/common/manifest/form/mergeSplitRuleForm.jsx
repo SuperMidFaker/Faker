@@ -146,7 +146,7 @@ export default class MergeSplitForm extends React.Component {
               <Col span="3">
                 {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(
                   <Radio checked={!mergeOpt.checked}>
-                    {this.msg('conditionalMerge')}
+                    {this.msg('nonMerge')}
                   </Radio>)}
               </Col>
               <Col offset="2" span="19">

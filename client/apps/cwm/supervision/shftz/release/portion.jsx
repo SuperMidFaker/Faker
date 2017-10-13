@@ -397,12 +397,12 @@ export default class SHFTZRelDetail extends Component {
                     <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
                       <Row type="flex" className="panel-header">
                         <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={380} editable={relEditable}
+                          <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={390} editable={relEditable}
                             onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                           />
                         </Col>
                         {reg.ftz_apply_nos && <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="集中申报单号" field={reg.ftz_apply_nos} width={380} />
+                          <InfoItem label="集中申报单号" field={reg.ftz_apply_nos} width={480} />
                         </Col>}
                         <Col className="col-flex-secondary">
                           {totCol}
