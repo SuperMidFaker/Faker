@@ -24,6 +24,9 @@ exports.CWM_ASN_TYPES = [{
 }, {
   value: '3',
   text: '退货入库',
+}, {
+  value: '4',
+  text: '越库入库',
 }];
 
 exports.CWM_ASN_BONDED_REGTYPES = [{
@@ -138,6 +141,9 @@ exports.CWM_SO_TYPES = [{
 }, {
   value: '2',
   text: '调拨出库',
+}, {
+  value: '3',
+  text: '越库出库',
 }];
 
 exports.CWM_SO_BONDED_REGTYPES = [{

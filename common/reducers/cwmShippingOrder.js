@@ -24,6 +24,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'GET_SHIPMT_ORDERNO', 'GET_SHIPMT_ORDERNO_SUCCEED', 'GET_SHIPMT_ORDERNO_FAIL',
   'CANCEL_OUTBOUND', 'CANCEL_OUTBOUND_SUCCEED', 'CANCEL_OUTBOUND_FAIL',
   'CLOSE_OUTBOUND', 'CLOSE_OUTBOUND_SUCCEED', 'CLOSE_OUTBOUND_FAIL',
+  'SHOW_ASN_SELECT', 'HIDE_ASN_SELECT',
 ]);
 
 const initialState = {
@@ -63,6 +64,9 @@ const initialState = {
   waveOrders: [],
   waveDetails: [],
   waveReload: false,
+  asnSelectModal: {
+    visible: false,
+  },
 };
 
 export const { CANCEL_OUTBOUND_SUCCEED, CLOSE_OUTBOUND_SUCCEED } = actionTypes;
@@ -112,6 +116,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
     case actionTypes.CLOSE_OUTBOUND_SUCCEED:
       return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
+    case actionTypes.SHOW_ASN_SELECT:
+      return { ...state, asnSelectModal: { ...state.asnSelectModal, visible: true } };
+    case actionTypes.HIDE_ASN_SELECT:
+      return { ...state, asnSelectModal: { ...state.asnSelectModal, visible: false } };
     default:
       return state;
   }
@@ -448,5 +456,17 @@ export function closeOutbound(body) {
       method: 'post',
       data: body,
     },
+  };
+}
+
+export function showAsnSelectModal() {
+  return {
+    type: actionTypes.SHOW_ASN_SELECT,
+  };
+}
+
+export function hideAsnSelectModal() {
+  return {
+    type: actionTypes.HIDE_ASN_SELECT,
   };
 }
