@@ -36,6 +36,7 @@ function apiRequestPromise(initialReq) {
         }
         if (initialReq) {
           request.set('cookie', initialReq.get('cookie'));
+          request.set('referer', initialReq.get('referer') || 'https://dummy.welogix.cn');
         }
         request.end((err, resp) => {
           if (err || !resp.body || resp.body.status !== 200) {
