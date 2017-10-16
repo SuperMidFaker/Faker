@@ -308,8 +308,8 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, margin: [2, 10], alignment: 'center' },
-            { image: barcode1, width: 150, margin: [2, 10], alignment: 'center' }],
+        [{ image: data.sf3, width: 70, margin: [3, 10], alignment: 'center' },
+            { image: barcode1, width: 150, margin: [3, 10], alignment: 'center' }],
       ],
     },
     }
@@ -348,8 +348,8 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, margin: [2, 10], alignment: 'center' },
-          { image: barcode1, width: 150, margin: [2, 10], alignment: 'center' }],
+        [{ image: data.sf3, width: 70, margin: [3, 10], alignment: 'center' },
+          { image: barcode1, width: 150, margin: [3, 10], alignment: 'center' }],
       ],
     },
     }
