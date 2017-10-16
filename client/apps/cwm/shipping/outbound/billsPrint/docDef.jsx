@@ -246,10 +246,10 @@ function TrigeminyList(data) {
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ rowSpan: 2, image: barcode0, margin: [2, 10], width: 150, alignment: 'center', border: [true, true, true, false] },
-            { text: expressInfo.express_type, margin: [2, 10], fontSize: 12, alignment: 'center' }],
-          ['', { rowSpan: 2, text: '', fontSize: 11, margin: [2, 10], alignment: 'center', border: [true, true, true, true] }],
-          [{ text: `${bartext}`, margin: [2, 10], fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
+          [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
+            { text: expressInfo.express_type, fontSize: 12, alignment: 'center' }],
+          ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
+          [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
       },
     },
@@ -273,22 +273,22 @@ function TrigeminyList(data) {
     table: {
       widths: ['26%', '26%', '26%', '22%'],
       body: [
-        [{ text: `付款方式：${expressInfo.pay_method}`, fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
-          { text: '计费重量：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
-          { text: '包装费用：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
-          { rowSpan: 4, text: '签名', fontSize: 7, margin: [2, 2], border: [true, false, true] }],
-        [{ text: `月结账号：${expressInfo.custid}`, fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
-          { text: '声明价值：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
-          { text: '运费：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+        [{ text: `付款方式：${expressInfo.pay_method}`, fontSize: 7, border: [true, false, false, false] },
+          { text: '计费重量：', fontSize: 7, border: [false, false, false, false] },
+          { text: '包装费用：', fontSize: 7, border: [false, false, false, false] },
+          { rowSpan: 4, text: '签名', fontSize: 7, border: [true, false, true] }],
+        [{ text: `月结账号：${expressInfo.custid}`, fontSize: 7, border: [true, false, false, false] },
+          { text: '声明价值：', fontSize: 7, border: [false, false, false, false] },
+          { text: '运费：', fontSize: 7, border: [false, false, false, false] },
           ''],
-        [{ text: '第三方地区：', fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
-          { text: '保价费用：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
-          { text: '费用合计', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
+        [{ text: '第三方地区：', fontSize: 7, border: [true, false, false, false] },
+          { text: '保价费用：', fontSize: 7, border: [false, false, false, false] },
+          { text: '费用合计', fontSize: 7, border: [false, false, false, false] },
           ''],
-        [{ text: '实际重量：', fontSize: 7, margin: [2, 2], border: [true, false, false, false] },
-          { text: '定时派送：', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
-          { text: '', fontSize: 7, margin: [2, 2], border: [false, false, false, false] },
-          { text: '', fontSize: 7, margin: [2, 2], border: [false, false, false, false] }],
+        [{ text: '实际重量：', fontSize: 7, border: [true, false, false, false] },
+          { text: '定时派送：', fontSize: 7, border: [false, false, false, false] },
+          { text: '', fontSize: 7, border: [false, false, false, false] },
+          { text: '', fontSize: 7, border: [false, false, false, false] }],
       ],
     },
   };
@@ -308,8 +308,8 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, alignment: 'center' },
-            { image: barcode1, width: 150, alignment: 'center' }],
+        [{ image: data.sf3, width: 70, margin: [2, 10], alignment: 'center' },
+            { image: barcode1, width: 150, margin: [2, 10], alignment: 'center' }],
       ],
     },
     }
@@ -348,8 +348,8 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, alignment: 'center' },
-          { image: barcode1, width: 150, alignment: 'center' }],
+        [{ image: data.sf3, width: 70, margin: [2, 10], alignment: 'center' },
+          { image: barcode1, width: 150, margin: [2, 10], alignment: 'center' }],
       ],
     },
     }

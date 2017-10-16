@@ -454,7 +454,7 @@ export default class CustomsDeclBodyPane extends React.Component {
   handleShowDeclElementModal = (record) => {
     this.props.getElementByHscode(record.codes).then((result) => {
       if (!result.error) {
-        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, true);
+        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, true, record.g_name);
       }
     });
   }
