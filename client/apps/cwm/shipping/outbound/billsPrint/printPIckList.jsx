@@ -45,7 +45,7 @@ export default class Print extends Component {
         { text: '' },
       ] },
       { columns: [
-        { text: `入库单号:  ${outboundNo || ''}`, style: 'header' },
+        { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
         { text: `客户订单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
         { text: '出库日期:  ', style: 'header' },
       ] },

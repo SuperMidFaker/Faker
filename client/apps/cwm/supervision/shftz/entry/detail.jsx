@@ -440,11 +440,11 @@ export default class SHFTZEntryDetail extends Component {
                           />
                           <InfoItem label="进口日期"
                             type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))} width={200}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))} width={280}
                           />
                           <InfoItem label="进库日期"
                             type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_dateie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))} width={200}
+                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))} width={280}
                           />
                         </Col>
                         <Col className="col-flex-secondary">
