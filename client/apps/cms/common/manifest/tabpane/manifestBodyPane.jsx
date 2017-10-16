@@ -514,7 +514,7 @@ export default class ManifestBodyPane extends React.Component {
   handleShowDeclElementModal = (record) => {
     this.props.getElementByHscode(record.codes).then((result) => {
       if (!result.error) {
-        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, this.props.readonly);
+        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, this.props.readonly, record.g_name);
       }
     });
   }

@@ -14,6 +14,7 @@ const { TextArea } = Input;
     gModel: state.cmsManifest.declElementsModal.gModel,
     disabled: state.cmsManifest.declElementsModal.disabled,
     id: state.cmsManifest.declElementsModal.id,
+    name: state.cmsManifest.declElementsModal.name,
   }),
   { hideDeclElementsModal }
 )
@@ -29,10 +30,10 @@ export default class DeclElementsModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible) {
-      // const others = nextProps.gModel ? nextProps.gModel.split('|').pop() : '';
+      const others = nextProps.gModel ? nextProps.gModel.split('|').pop() : '';
       this.setState({
         model: nextProps.gModel,
-        // others,
+        others,
       });
     }
   }
@@ -88,7 +89,7 @@ export default class DeclElementsModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, disabled } = this.props;
+    const { form: { getFieldDecorator }, disabled, name } = this.props;
     const { model, others } = this.state;
     const formItemLayout = {
       labelCol: { span: 12 },
@@ -111,14 +112,20 @@ export default class DeclElementsModal extends Component {
             </FormItem>
             <Alert message="根据海关规定应填报以下要素" type="info" closable />
             {element.map((item, index) => {
-              if (item) {
+              if (item && index >= 1) {
                 return (
                   <FormItem {...formItemLayout} label={item}>
                     {getFieldDecorator(item, {
-                      initialValue: gModel[index] || '',
+                      initialValue: gModel[index - 1] || '',
                     })(
                       <Input disabled={disabled} onChange={e => this.handleInputChange(e.target.value, item)} />
-                )}
+                    )}
+                  </FormItem>
+                );
+              } else if (item && index === 0) {
+                return (
+                  <FormItem {...formItemLayout} label={item}>
+                    <Input disabled value={name} />
                   </FormItem>
                 );
               } else {

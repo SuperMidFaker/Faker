@@ -144,6 +144,7 @@ const initialState = {
     gModel: '',
     id: '',
     disabled: false,
+    name: '',
   },
 };
 
@@ -322,7 +323,8 @@ export default function reducer(state = initialState, action) {
           element: action.element,
           id: action.id,
           gModel: action.gModel,
-          disabled: action.disabled } };
+          disabled: action.disabled,
+          name: action.name } };
     case actionTypes.HIDE_DECL_ELEMENTS_MODAL:
       return { ...state, declElementsModal: { ...state.declElementsModal, visible: false } };
     default:
@@ -1090,13 +1092,14 @@ export function changeTempInfo(data) {
   };
 }
 
-export function showDeclElementsModal(element, id, gModel, disabled) {
+export function showDeclElementsModal(element, id, gModel, disabled, name) {
   return {
     type: actionTypes.SHOW_DECL_ELEMENTS_MODAL,
     element,
     id,
     gModel,
     disabled,
+    name,
   };
 }
 
