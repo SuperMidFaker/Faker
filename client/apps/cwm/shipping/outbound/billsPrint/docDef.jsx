@@ -221,18 +221,18 @@ function TrigeminyList(data) {
   }
   let pdfcontent = [];
   const imgE = false;
-  const titleBody = [{ image: data.sflogo, width: 75, margin: [2, 10], alignment: 'center', border: [true, true, false, false] }];
+  const titleBody = [{ image: data.sflogo, width: 75, alignment: 'center', border: [true, true, false, false] }];
   if (expressInfo.added_services && expressInfo.added_services.indexOf('COD') >= 0) {
-    titleBody.push({ image: data.sfCod, margin: [2, 10], width: 70, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({ image: data.sfCod, width: 70, alignment: 'center', border: [false, true, false, false] });
   } else {
-    titleBody.push({ text: '', margin: [2, 10], border: [false, true, false, false] });
+    titleBody.push({ text: '', border: [false, true, false, false] });
   }
   if (imgE) {
-    titleBody.push({ image: data.sfE, margin: [2, 10], width: 30, alignment: 'center', border: [false, true, false, false] });
+    titleBody.push({ image: data.sfE, width: 30, alignment: 'center', border: [false, true, false, false] });
   } else {
-    titleBody.push({ text: '', margin: [2, 10], border: [false, true, false, false] });
+    titleBody.push({ text: '', border: [false, true, false, false] });
   }
-  titleBody.push({ image: data.sfNum, margin: [2, 10], width: 80, alignment: 'center', border: [false, true, true, false] });
+  titleBody.push({ image: data.sfNum, width: 80, alignment: 'center', border: [false, true, true, false] });
   const receiverAddr = `${expressInfo.receiver_contact} ${expressInfo.receiver_phone}\n${Location.renderConsignLocation(expressInfo, 'receiver', '')}${expressInfo.receiver_address}`;
   const senderAddr = `${expressInfo.sender_contact} ${expressInfo.sender_phone}\n${Location.renderConsignLocation(expressInfo, 'sender', '')}${expressInfo.sender_address}`;
   pdfcontent = [
@@ -240,6 +240,7 @@ function TrigeminyList(data) {
       table: {
         widths: ['25%', '35%', '15%', '25%'],
         body: [titleBody],
+        heights: [42],
       },
     },
     { style: 'table',
@@ -251,18 +252,20 @@ function TrigeminyList(data) {
           ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
           [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
+        heights: [30, 20, 20],
       },
     },
     // 代收货款\n卡号：0123456789\n¥3000元
     { style: 'table',
       table: {
-        widths: ['3%', '70%', '27%'],
+        widths: ['3%', '75.5%', '21.5%'],
         body: [
           // [{ text: '目的地', border: [true, false] }, { image: data.sf2, width: 200, alignment: 'center', border: [true, false, true] }],
           [{ text: '目的地', fontSize: 9, border: [true, false] }, { colSpan: 2, text: expressInfo.destcode, fontSize: 18, border: [true, false, true] }, ''],
           [{ text: '收件人', fontSize: 9 }, { colSpan: 2, text: receiverAddr, fontSize: 12 }, ''],
-          [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }, { text: '定时派送\n自寄自取', alignment: 'center' }],
+          [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }, { text: '定时派送\n自寄自取', fontSize: 12, alignment: 'center' }],
         ],
+        heights: [40, 40, 36],
       },
       layout: {
         paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
@@ -290,6 +293,7 @@ function TrigeminyList(data) {
           { text: '', fontSize: 7, border: [false, false, false, false] },
           { text: '', fontSize: 7, border: [false, false, false, false] }],
       ],
+      heights: [4, 4, 4, 4],
     },
   };
   pdfcontent.push(detailTab);
@@ -302,7 +306,7 @@ function TrigeminyList(data) {
             { text: '收件员：\n寄件日期：\n派件员：' },
             { text: '\n\n月     日', alignment: 'right', border: [true, false, true, true] }],
         ],
-        heights: [45],
+        heights: [36],
       },
     }
   );
@@ -310,9 +314,10 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, margin: [3, 10], alignment: 'center' },
-            { image: barcode1, width: 150, margin: [3, 10], alignment: 'center' }],
+        [{ image: data.sf3, width: 70, alignment: 'center' },
+            { image: barcode1, width: 150, alignment: 'center' }],
       ],
+      heights: [60],
     },
     }
   );
@@ -330,6 +335,7 @@ function TrigeminyList(data) {
           }],
           [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
         ],
+        heights: [40, 40],
       },
       layout: {
         paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
@@ -341,9 +347,9 @@ function TrigeminyList(data) {
       table: {
         widths: ['100%'],
         body: [
-          [{ text: '客户自定义内容\n\n\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域\n\n\n\n', alignment: 'center', border: [true, false, true, true] }],
+          [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [50],
+        heights: [75],
       },
     }
   );
@@ -351,9 +357,10 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, margin: [3, 10], alignment: 'center' },
-          { image: barcode1, width: 150, margin: [3, 10], alignment: 'center' }],
+        [{ image: data.sf3, width: 70, alignment: 'center' },
+          { image: barcode1, width: 150, alignment: 'center' }],
       ],
+      heights: [60],
     },
     }
   );
@@ -371,6 +378,7 @@ function TrigeminyList(data) {
           }],
           [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }],
         ],
+        heights: [40, 40],
       },
       layout: {
         paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
@@ -382,9 +390,9 @@ function TrigeminyList(data) {
       table: {
         widths: ['100%'],
         body: [
-          [{ text: '客户自定义内容\n\n\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域\n\n\n\n', alignment: 'center', border: [true, false, true, true] }],
+          [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [50],
+        heights: [75],
       },
     }
   );
@@ -394,7 +402,7 @@ function TrigeminyList(data) {
 export function TrigeminyListDef(data) {
   const docDefinition = {
     pageSize: { width: 400, height: 840 },
-    pageMargins: [5, 5],
+    pageMargins: [0, 0],
     content: [],
     styles: {
       table: {
