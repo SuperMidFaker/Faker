@@ -327,24 +327,24 @@ export default class ReceivingModal extends Component {
     title: '容器编号',
     dataIndex: 'convey_no',
     width: 180,
-    render: (convey, row, index) => (
-      <Input value={convey} onChange={ev => this.handleConveyChange(index, ev.target.value)}
+    render: (convey, row) => (
+      <Input value={convey} onChange={ev => this.handleConveyChange(row.index, ev.target.value)}
         disabled={!!row.trace_id}
       />),
   }, {
     title: '收货数量',
     dataIndex: 'inbound_qty',
     width: 220,
-    render: (o, record, index) => (
+    render: (o, record) => (
       <QuantityInput packQty={record.inbound_pack_qty} pcsQty={o}
-        onChange={e => this.handleProductReceive(index, e.target.value)} disabled={!!record.trace_id}
+        onChange={e => this.handleProductReceive(record.index, e.target.value)} disabled={!!record.trace_id}
       />),
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
     width: 100,
-    render: (o, record, index) => (
-      <Select value={o} onChange={value => this.handleDamageLevelChange(index, value)} style={{ width: 90 }}
+    render: (o, record) => (
+      <Select value={o} onChange={value => this.handleDamageLevelChange(record.index, value)} style={{ width: 90 }}
         disabled={!!record.trace_id}
       >
         <Option value={CWM_DAMAGE_LEVEL[0].value}>{CWM_DAMAGE_LEVEL[0].text}</Option>
@@ -357,18 +357,18 @@ export default class ReceivingModal extends Component {
     title: '收货库位',
     dataIndex: 'location',
     width: 150,
-    render: (o, record, index) => (
+    render: (o, record) => (
       <LocationPopover value={o} style={{ width: 140 }} productNo={this.props.inboundProduct.product_no}
-        whseCode={this.props.defaultWhse.code} disabled={!!record.trace_id} index={index}
+        whseCode={this.props.defaultWhse.code} disabled={!!record.trace_id} index={record.index}
         onChange={this.handleProductPutAway}
       />),
   }, {
     title: '库存状态',
     dataIndex: 'avail',
     width: 70,
-    render: (avail, row, index) => {
+    render: (avail, row) => {
       const availStatus = avail ? 'avail' : 'frozen';
-      return (<Select value={availStatus} onChange={value => this.handleAvailChange(index, value)} style={{ width: 60 }}
+      return (<Select value={availStatus} onChange={value => this.handleAvailChange(row.index, value)} style={{ width: 60 }}
         disabled={!!row.trace_id}
       >
         <Option value="avail">可用</Option>
