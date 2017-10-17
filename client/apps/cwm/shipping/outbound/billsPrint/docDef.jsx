@@ -349,7 +349,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [78],
+        heights: [79],
       },
     }
   );
@@ -392,7 +392,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [78],
+        heights: [79],
       },
     }
   );
