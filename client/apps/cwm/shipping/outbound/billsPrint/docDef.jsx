@@ -298,9 +298,11 @@ function TrigeminyList(data) {
       table: {
         widths: ['3%', '55%', '20%', '22%'],
         body: [
-          [{ text: '托寄物', fontSize: 9 }, { text: expressInfo.product_name, alignment: 'center', fontSize: 12 }, { text: '收件员：\n寄件日期：\n派件员：' },
+          [{ text: '托寄物', fontSize: 9 }, { text: expressInfo.product_name, alignment: 'center', fontSize: 12 },
+            { text: '收件员：\n寄件日期：\n派件员：' },
             { text: '\n\n月     日', alignment: 'right', border: [true, false, true, true] }],
         ],
+        heights: [45],
       },
     }
   );
@@ -308,8 +310,8 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, margin: [2, 10], alignment: 'center' },
-            { image: barcode1, width: 150, margin: [2, 10], alignment: 'center' }],
+        [{ image: data.sf3, width: 70, margin: [3, 10], alignment: 'center' },
+            { image: barcode1, width: 150, margin: [3, 10], alignment: 'center' }],
       ],
     },
     }
@@ -341,6 +343,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '客户自定义内容\n\n\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域\n\n\n\n', alignment: 'center', border: [true, false, true, true] }],
         ],
+        heights: [50],
       },
     }
   );
@@ -348,8 +351,8 @@ function TrigeminyList(data) {
     { table: {
       widths: ['30%', '70%'],
       body: [
-        [{ image: data.sf3, width: 70, margin: [2, 10], alignment: 'center' },
-          { image: barcode1, width: 150, margin: [2, 10], alignment: 'center' }],
+        [{ image: data.sf3, width: 70, margin: [3, 10], alignment: 'center' },
+          { image: barcode1, width: 150, margin: [3, 10], alignment: 'center' }],
       ],
     },
     }
@@ -381,6 +384,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '客户自定义内容\n\n\n托寄物、订单条码、备注、sku、产品属性、派件要求打印在该区域\n\n\n\n', alignment: 'center', border: [true, false, true, true] }],
         ],
+        heights: [50],
       },
     }
   );
