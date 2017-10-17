@@ -30,6 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'DELETE_CONTAINER', 'DELETE_CONTAINER_SUCCEED', 'DELETE_CONTAINER_FAIL',
   'SAVE_ENTRY_HEAD', 'SAVE_ENTRY_HEAD_SUCCEED', 'SAVE_ENTRY_HEAD_FAIL',
   'REDO_MANIFEST', 'REDO_MANIFEST_SUCCEED', 'REDO_MANIFEST_FAIL',
+  'REFRESH_RELBODIES', 'REFRESH_RELBODIES_SUCCEED', 'REFRESH_RELBODIES_FAIL',
   'DELETE_SELECTED_BODIES', 'DELETE_SELECTED_BODIES_SUCCEED', 'DELETE_SELECTED_BODIES_FAIL',
   'RESET_BILLBODY', 'RESET_BILLBODY_SUCCEED', 'RESET_BILLBODY_FAIL',
   'OPEN_RULE_MODEL', 'CLOSE_RULE_MODEL',
@@ -790,6 +791,21 @@ export function redoManifest(delgNo, billSeqNo) {
       endpoint: 'v1/cms/manifest/redo',
       method: 'post',
       data: { delgNo, billSeqNo },
+    },
+  };
+}
+
+export function refreshRelatedBodies(billSeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REFRESH_RELBODIES,
+        actionTypes.REFRESH_RELBODIES_SUCCEED,
+        actionTypes.REFRESH_RELBODIES_FAIL,
+      ],
+      endpoint: 'v1/cms/manifest/billbody/related/refresh',
+      method: 'post',
+      data: { bill_seq_no: billSeqNo },
     },
   };
 }

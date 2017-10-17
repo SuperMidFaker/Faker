@@ -111,24 +111,25 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '货品',
     dataIndex: 'product_sku',
-    width: 200,
+    width: 150,
     fixed: 'left',
     render: o => (<SKUPopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {
     title: '品名',
+    width: 150,
     dataIndex: 'name',
   }, {
-    title: '采购订单号',
+    title: '客户订单号',
     dataIndex: 'po_no',
-    width: 160,
+    width: 150,
   }, {
     title: '集装箱号',
     dataIndex: 'container_no',
-    width: 160,
+    width: 100,
   }, {
     title: '库别',
     dataIndex: 'virtual_whse',
-    width: 160,
+    width: 100,
   }, {
     title: '预期数量',
     width: 100,
@@ -137,7 +138,6 @@ export default class ReceiveDetailsPane extends React.Component {
     render: o => (<span className="text-emphasis">{o}</span>),
   }, {
     title: '收货数量',
-    width: 100,
     dataIndex: 'received_qty',
     className: 'cell-align-right',
     render: (o, record) => {
