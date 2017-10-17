@@ -1,3 +1,4 @@
+import moment from 'moment';
 
 function calFeeRate(curr, rate, mark) {
   const feeRate = { curr: '', rate: '', mark: '' };
@@ -55,18 +56,18 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         { text: '中华人民共和国海关进境货物备案清单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { width: 180, text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
         { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
-          widths: ['40%', '15%', '15%', '15%', '15%'],
+          widths: [200, '*', '*', '*', '*'],
           body: [
             [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}`, style: 'tableCell' },
             { text: `进境口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
             { text: `备案号   ${head.manual_no || ''}` },
-            { text: `进境日期   ${head.i_e_date || ''}` },
-            { text: `申报日期   ${head.d_date || ''}` }],
+            { text: `进境日期   ${head.i_e_date ? moment(head.i_e_date).format('YYYY-MM-DD') : ''}` },
+            { text: `申报日期   ${head.d_date ? moment(head.d_date).format('YYYY-MM-DD') : ''}` }],
             [{ text: `消费使用单位  (${head.owner_custco})\n${head.owner_name || ''}` },
             { text: `监管方式   (${trademode.trade_mode})\n${trademode.trade_abbr}` },
             { text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
@@ -77,13 +78,19 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       },
       { style: 'table',
         table: {
-          widths: ['26%', '13%', '21%', '20%', '20%'],
+          widths: [200, 104, '*', '*'],
           body: [
-            [{ colSpan: 2, text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, false, true, true] },
-            {},
-            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
-            { text: `运输工具名称   ${head.traf_name || ''}` },
-            { text: `提运单号\n${head.bl_wb_no || ''}` }],
+            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, false, true, false] },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}`, border: [true, false, true, false] },
+            { text: `运输工具名称   ${head.traf_name || ''}`, border: [true, false, true, false] },
+            { text: `提运单号\n${head.bl_wb_no || ''}`, border: [true, false, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [121, 70, 104, '*', '*'],
+          body: [
             [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${feeRateStr}` },
@@ -100,9 +107,9 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         style: 'table',
         table: {
           widths: ['100%'],
-          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+          heights: [90],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, false] }]],
         },
-        layout: { paddingBottom() { return 25; } },
       },
     ];
   } else if (declWayCode === 'EBND') {
@@ -114,20 +121,20 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         { text: '中华人民共和国海关出境货物备案清单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { width: 180, text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
         { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
-          widths: ['40%', '15%', '15%', '15%', '15%'],
+          widths: [200, '*', '*', '*', '*'],
           body: [
-            [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}` },
+            [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}`, style: 'tableCell' },
             { text: `出境口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
             { text: `备案号   ${head.manual_no || ''}` },
-            { text: `出境日期   ${head.i_e_date || ''}` },
-            { text: `申报日期   ${head.d_date || ''}` }],
-            [{ text: `消费使用单位  (${head.owner_custco})\n${head.owner_name || ''}` },
-            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}` },
+            { text: `出境日期   ${head.i_e_date ? moment(head.i_e_date).format('YYYY-MM-DD') : ''}` },
+            { text: `申报日期   ${head.d_date ? moment(head.d_date).format('YYYY-MM-DD') : ''}` }],
+            [{ text: `生成销售单位  (${head.owner_custco})\n${head.owner_name || ''}` },
+            { text: `监管方式   (${trademode.trade_mode})\n${trademode.trade_abbr}` },
             { text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
             { text: `运抵国(地区) (${deptCountry.value})\n${deptCountry.text}` },
             { text: `境内货源地 (${district.district_code})\n${district.district_name}` }],
@@ -136,13 +143,19 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       },
       { style: 'table',
         table: {
-          widths: ['26%', '13%', '21%', '20%', '20%'],
+          widths: [200, 104, '*', '*'],
           body: [
-            [{ colSpan: 2, text: `申报单位   ${head.agent_name || ''}`, border: [true, false, true, true] },
-            {},
-            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
-            { text: `运输工具名称   ${head.traf_name || ''}` },
-            { text: `提运单号\n${head.bl_wb_no || ''}` }],
+            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, false, true, false] },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}`, border: [true, false, true, false] },
+            { text: `运输工具名称   ${head.traf_name || ''}`, border: [true, false, true, false] },
+            { text: `提运单号\n${head.bl_wb_no || ''}`, border: [true, false, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [121, 70, 104, '*', '*'],
+          body: [
             [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${feeRateStr}` },
@@ -159,9 +172,9 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         style: 'table',
         table: {
           widths: ['100%'],
-          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+          heights: [90],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, false] }]],
         },
-        layout: { paddingBottom() { return 25; } },
       },
     ];
   } else if (declWayCode === 'IMPT') {
@@ -173,37 +186,59 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         { text: '中华人民共和国海关进口货物报关单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { width: 180, text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
         { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
-          widths: ['40%', '20%', '20%', '20%'],
+          widths: [200, 120, '*', 85],
           body: [
-            [{ text: `收发货人  (${head.trade_custco || ''})\n${head.trade_name || ''}` },
-            { text: `进口口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
-            { text: `进口日期   ${head.i_e_date || ''}` },
-            { text: `申报日期   ${head.d_date || ''}` }],
-            [{ text: `消费使用单位  (${head.owner_custco})\n${head.owner_name || ''}` },
-            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
-            { text: `运输工具名称\n${head.traf_name || ''}` },
-            { text: `提运单号\n${head.bl_wb_no || ''}` }],
-            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}` },
-            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}` },
-            { text: `征免性质 (${cutMode.rm_mode})\n${cutMode.rm_spec}` },
-            { text: `备案号\n${head.manual_no || ''}` }],
-            [{ text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
-            { text: `启运国(地区) (${deptCountry.value})\n${deptCountry.text}` },
-            { text: `装货港 (${deptPort.port_code})\n${deptPort.port_c_cod}` },
-            { text: `境内目的地 (${district.district_code})\n${district.district_name}` }],
+            [{ text: `收发货人  (${head.trade_custco || ''})\n${head.trade_name || ''}`, border: [true, true, true, false] },
+            { text: `进口口岸 (${ieport.customs_code})\n${ieport.customs_name}`, border: [true, true, true, false] },
+            { text: `进口日期   ${head.i_e_date ? moment(head.i_e_date).format('YYYY-MM-DD') : ''}`, border: [true, true, true, false] },
+            { text: `申报日期   ${head.d_date ? moment(head.d_date).format('YYYY-MM-DD') : ''}`, border: [true, true, true, false] }],
           ],
         },
       },
       { style: 'table',
         table: {
-          widths: ['26%', '13%', '21%', '20%', '20%'],
+          widths: [200, 60, '*', '*'],
           body: [
-            [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
+            [{ text: `消费使用单位  (${head.owner_custco})\n${head.owner_name || ''}`, border: [true, true, true, false] },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}`, border: [true, true, true, false] },
+            { text: `运输工具名称\n${head.traf_name || ''}`, border: [true, true, true, false] },
+            { text: `提运单号\n${head.bl_wb_no || ''}`, border: [true, true, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [200, 120, '*', 100],
+          body: [
+            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, true, true, false] },
+            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}`, border: [true, true, true, false] },
+            { text: `征免性质 (${cutMode.rm_mode})\n${cutMode.rm_spec}`, border: [true, true, true, false] },
+            { text: `备案号\n${head.manual_no || ''}`, border: [true, true, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [140, 120, '*', 100],
+          body: [
+            [{ text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}`, border: [true, true, true, false] },
+            { text: `启运国(地区) (${deptCountry.value})\n${deptCountry.text}`, border: [true, true, true, false] },
+            { text: `装货港 (${deptPort.port_code})\n${deptPort.port_c_cod}`, border: [true, true, true, false] },
+            { text: `境内目的地 (${district.district_code})\n${district.district_name}`, border: [true, true, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [140, 52, 120, '*', 100],
+          heights: [20, 20, 20],
+          body: [
+            [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${feeRateStr}` },
             { text: `保费   ${insurRateStr}` },
@@ -222,9 +257,9 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         style: 'table',
         table: {
           widths: ['100%'],
-          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+          heights: [40],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, false] }]],
         },
-        layout: { paddingBottom() { return 25; } },
       },
     ];
   } else if (declWayCode === 'EXPT') {
@@ -236,47 +271,69 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         { text: '中华人民共和国海关出口货物报关单', style: 'title' },
       ] },
       { columns: [
-        { text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
+        { width: 180, text: `预录入编号:  ${head.pre_entry_id || ''}`, fontSize: 8, alignment: 'center' },
         { text: `海关编号:  ${head.entry_id || ''}`, fontSize: 8, alignment: 'center' },
       ] },
       { style: 'table',
         table: {
-          widths: ['40%', '20%', '20%', '20%'],
+          widths: [200, 120, '*', 85],
           body: [
-            [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}` },
-            { text: `出口口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
-            { text: `出口日期\n${head.i_e_date || ''}` },
-            { text: `申报日期\n${head.d_date || ''}` }],
-            [{ text: `生产销售单位  (${head.owner_custco})\n${head.owner_name || ''}` },
-            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}` },
-            { text: `运输工具名称\n${head.traf_name || ''}` },
-            { text: `提运单号\n${head.bl_wb_no || ''}` }],
-            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}` },
-            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}` },
-            { text: `征免性质 (${cutMode.rm_mode})\n${cutMode.rm_spec}` },
-            { text: `备案号\n${head.manual_no || ''}` }],
-            [{ text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}` },
-            { text: `运抵国(地区) (${deptCountry.value})\n${deptCountry.text}` },
-            { text: `指运港 (${deptPort.port_code})\n${deptPort.port_c_cod}` },
-            { text: `境内货源地 (${district.district_code})\n${district.district_name}` }],
+            [{ text: `收发货人  (${head.trade_custco || ''})\n${head.trade_name || ''}`, border: [true, true, true, false] },
+            { text: `出口口岸 (${ieport.customs_code})\n${ieport.customs_name}`, border: [true, true, true, false] },
+            { text: `出口日期   ${head.i_e_date ? moment(head.i_e_date).format('YYYY-MM-DD') : ''}`, border: [true, true, true, false] },
+            { text: `申报日期   ${head.d_date ? moment(head.d_date).format('YYYY-MM-DD') : ''}`, border: [true, true, true, false] }],
           ],
         },
       },
       { style: 'table',
         table: {
-          widths: ['26%', '13%', '21%', '20%', '20%'],
+          widths: [200, 60, '*', '*'],
           body: [
-            [{ text: `许可证号\n${head.license_no || ''}`, border: [true, false, true, true] },
+            [{ text: `生产销售单位  (${head.owner_custco})\n${head.owner_name || ''}`, border: [true, true, true, false] },
+            { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}`, border: [true, true, true, false] },
+            { text: `运输工具名称\n${head.traf_name || ''}`, border: [true, true, true, false] },
+            { text: `提运单号\n${head.bl_wb_no || ''}`, border: [true, true, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [200, 120, '*', 100],
+          body: [
+            [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, true, true, false] },
+            { text: `监管方式 (${trademode.trade_mode})\n${trademode.trade_abbr}`, border: [true, true, true, false] },
+            { text: `征免性质 (${cutMode.rm_mode})\n${cutMode.rm_spec}`, border: [true, true, true, false] },
+            { text: `备案号\n${head.manual_no || ''}`, border: [true, true, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [140, 120, '*', 100],
+          body: [
+            [{ text: `贸易国(地区) (${tradeCountry.value})\n${tradeCountry.text}`, border: [true, true, true, false] },
+            { text: `启运国(地区) (${deptCountry.value})\n${deptCountry.text}`, border: [true, true, true, false] },
+            { text: `装货港 (${deptPort.port_code})\n${deptPort.port_c_cod}`, border: [true, true, true, false] },
+            { text: `境内目的地 (${district.district_code})\n${district.district_name}`, border: [true, true, true, false] }],
+          ],
+        },
+      },
+      { style: 'table',
+        table: {
+          widths: [140, 52, 120, '*', 100],
+          heights: [20, 20, 20],
+          body: [
+            [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
             { text: `运费   ${feeRateStr}` },
             { text: `保费   ${insurRateStr}` },
             { text: `杂费   ${otherRateStr}` }],
             [{ text: `合同协议号\n${head.contr_no || ''}` },
-            { text: `件数\n   ${head.pack_count || ''}` },
+            { text: `件数\n      ${head.pack_count || ''}` },
             { text: `包装种类 (${wrapType.value})\n${wrapType.text}` },
-            { text: `毛重(千克)\n   ${head.gross_wt || ''}` },
-            { text: `净重(千克)\n   ${head.net_wt || ''}` }],
-            [{ text: `集装箱号\n ${head.container_no || ''}` },
+            { text: `毛重(千克)\n      ${head.gross_wt || ''}` },
+            { text: `净重(千克)\n      ${head.net_wt || ''}` }],
+            [{ text: `集装箱号\n${head.container_no || ''}` },
             { colSpan: 4, text: `随附单证   ${head.cert_mark || ''}` }, {}, {}, {}],
           ],
         },
@@ -285,9 +342,9 @@ function pdfHeader(head, declWayCode, orderNo, params) {
         style: 'table',
         table: {
           widths: ['100%'],
-          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, true] }]],
+          heights: [40],
+          body: [[{ text: `标记唛码及备注   ${head.note || ''}`, border: [true, false, true, false] }]],
         },
-        layout: { paddingBottom() { return 25; } },
       },
     ];
   }
@@ -321,6 +378,8 @@ function pdfBody(bodydatas, declWayCode, params) {
       { text: '征免', style: 'tableHeader' }
     );
   const widths = ['4%', '10%', '38%', '10%', '10%', '6%', '8%', '6%', '8%'];
+  const height = 32;
+  const heights = [10, height, height, height, height, height, height, height, height];
   pdfbody.push(header);
   for (let i = 0; i < bodydatas.length; i++) {
     const dbody = bodydatas[i];
@@ -349,14 +408,14 @@ function pdfBody(bodydatas, declWayCode, params) {
     body.push(`${dutyMode.text}\n${dutyMode.value}`);
     pdfbody.push(body);
   }
-  const bodytable = { widths, body: pdfbody };
+  const bodytable = { widths, heights, body: pdfbody };
   return bodytable;
 }
 
 export function DocDef(head, bodies, declWayCode, orderNo, params) {
   const docDefinition = {
     pageSize: 'A4',
-    pageMargins: [15, 15],
+    pageMargins: [18, 15],
     content: [],
     styles: {
       header: {
@@ -369,7 +428,7 @@ export function DocDef(head, bodies, declWayCode, orderNo, params) {
         bold: true,
         alignment: 'center',
         width: '100%',
-        margin: [0, 8, 0, 10],
+        margin: [0, 40, 0, 14],
       },
       table: {
         fontSize: 8,
@@ -403,9 +462,12 @@ export function DocDef(head, bodies, declWayCode, orderNo, params) {
       { style: 'table',
         table: pdfBody(datas, declWayCode, params),
         layout: {
-          paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 15 : 1; },
+          // paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 15 : 1; },
           vLineWidth(i, node) {
             return (i !== 0 && i !== node.table.widths.length) ? 0 : 1;
+          },
+          hLineColor(i, node) {
+            return (i === 0 || i === 1 || i === node.table.body.length) ? 'black' : 'gray';
           },
         },
       });
@@ -416,16 +478,16 @@ export function DocDef(head, bodies, declWayCode, orderNo, params) {
       { text: '\n', border: [false, false, true, true] }],
       [{ text: '录入人员\n', border: [true, true, false, true] },
       { text: '录入单位\n', border: [false, true, true, true] },
-      { text: '兹申明对以上内容承担如实申报、依法纳税之法律责任\n', border: [true, true, true, false] },
+      { text: '兹申明对以上内容承担如实申报、依法纳税之法律责任\n', margin: [12, 0, 10, 0], border: [true, true, true, false] },
       { text: '海关批注及签章\n', border: [true, true, true, false] }],
       [{ text: '\n报关人员', colSpan: 2, border: [true, true, false, true] }, {},
-      { text: '\n申报单位（签章）', border: [false, false, true, true] },
-      { text: '\n审核日期', border: [true, false, true, true] }],
+      { text: '\n\n申报单位（签章）', margin: [12, 0, 10, 0], border: [false, false, true, true] },
+      { text: '\n\n审核日期', border: [true, false, true, true] }],
     ];
     if (end) {
-      content.push({ style: 'table', table: { widths: ['15%', '15%', '40%', '30%'], body: pdfFooter } });
+      content.push({ style: 'table', table: { widths: ['15%', '15%', '37%', '33%'], heights: [14, 36, 42], body: pdfFooter } });
     } else {
-      content.push({ style: 'table', pageBreak: 'after', table: { widths: ['15%', '15%', '40%', '30%'], body: pdfFooter } });
+      content.push({ style: 'table', pageBreak: 'after', table: { widths: ['15%', '15%', '37%', '33%'], body: pdfFooter } });
     }
     docDefinition.content = docDefinition.content.concat(content);
   }
