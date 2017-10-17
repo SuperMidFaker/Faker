@@ -252,7 +252,7 @@ function TrigeminyList(data) {
           ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
           [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
-        heights: [30, 20, 20],
+        heights: [27, 20, 20],
       },
     },
     // 代收货款\n卡号：0123456789\n¥3000元
@@ -265,7 +265,7 @@ function TrigeminyList(data) {
           [{ text: '收件人', fontSize: 9 }, { colSpan: 2, text: receiverAddr, fontSize: 12 }, ''],
           [{ text: '寄件人', fontSize: 9 }, { text: senderAddr, fontSize: 12 }, { text: '定时派送\n自寄自取', fontSize: 12, alignment: 'center' }],
         ],
-        heights: [40, 40, 36],
+        heights: [40, 40, 35],
       },
       layout: {
         paddingBottom(i, node) { return (node.table.body[i][1].text === '') ? 10 : 1; },
@@ -306,7 +306,7 @@ function TrigeminyList(data) {
             { text: '收件员：\n寄件日期：\n派件员：' },
             { text: '\n\n月     日', alignment: 'right', border: [true, false, true, true] }],
         ],
-        heights: [36],
+        heights: [35],
       },
     }
   );
@@ -349,7 +349,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [75],
+        heights: [78],
       },
     }
   );
@@ -392,7 +392,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [75],
+        heights: [78],
       },
     }
   );
