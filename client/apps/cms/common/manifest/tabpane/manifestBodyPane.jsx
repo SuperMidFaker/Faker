@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel,
+import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel, refreshRelatedBodies,
   deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
@@ -183,6 +183,7 @@ function calculateTotal(bodies, currencies) {
     getItemForBody,
     deleteSelectedBodies,
     resetBillBody,
+    refreshRelatedBodies,
     openRuleModel,
     loadHscodes,
     showDeclElementsModal,
@@ -227,6 +228,7 @@ export default class ManifestBodyPane extends React.Component {
       totWetWt: calresult.totWetWt,
       totTrade: calresult.totTrade,
       totPcs: calresult.totPcs,
+      tableMask: false,
       pagination: {
         current: 1,
         total: 0,
@@ -695,7 +697,7 @@ export default class ManifestBodyPane extends React.Component {
     const bodyDatas = this.state.bodies;
     if (bodyDatas.length > 1) {
       const grossWts = dividGrossWt(bodyDatas.slice(0, bodyDatas.length - 1).map(bd => bd.wet_wt || 0), totGrossWt);
-      const datas = [];
+      const datas = [];// server side todo
       for (let i = 0; i < bodyDatas.length - 1; i++) {
         const body = bodyDatas[i];
         const data = { ...body, gross_wt: grossWts[i] };
@@ -790,6 +792,18 @@ export default class ManifestBodyPane extends React.Component {
       }
     });
   }
+  handleRelatedRefresh = () => {
+    this.setState({ tableMask: true });
+    this.props.refreshRelatedBodies(this.props.billSeqNo).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.success('表体已刷新');
+        this.props.loadBillBody(this.props.billSeqNo);
+        this.setState({ tableMask: false });
+      }
+    });
+  }
   renderToolbar() {
     const { readonly, billMeta } = this.props;
     const handlemenu = (
@@ -846,6 +860,7 @@ export default class ManifestBodyPane extends React.Component {
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
+        {this.state.bodies.length > 1 && billMeta.repoId !== null && <Button icon="retweet" onClick={this.handleRelatedRefresh} style={{ marginLeft: 8 }}>关联刷新</Button>}
         <Dropdown overlay={handlemenu}>
           <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
             {this.msg('handle')} <Icon type="down" />
@@ -899,7 +914,7 @@ export default class ManifestBodyPane extends React.Component {
           </div>
         </div>
         <div className="panel-body table-panel table-fixed-layout">
-          <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
+          <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered loading={this.state.tableMask}
             scroll={{ x: 2600, y: this.state.scrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
           />
           <AmountModel />
