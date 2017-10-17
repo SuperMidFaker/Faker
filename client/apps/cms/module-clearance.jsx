@@ -158,7 +158,6 @@ export default class Clearance extends React.Component {
       linkMenus.push({
         single: true,
         key: 'cms-manual',
-        disabled: true,
         icon: 'logixon icon-manual',
         path: '/clearance/manual',
         text: formatMsg(intl, 'manual'),

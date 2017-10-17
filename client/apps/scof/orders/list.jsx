@@ -8,6 +8,7 @@ import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
+import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -26,7 +27,7 @@ import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 import { SCOF_ORDER_TRANSFER, CRM_ORDER_STATUS, PARTNER_ROLES } from 'common/constants';
 import CreatorSelect from './creatorSelect';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const formatMsg = format(messages);
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -289,31 +290,35 @@ export default class OrderList extends React.Component {
     });
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('shipmentOrders')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.progress}>
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value="active">进行中</RadioButton>
-            <RadioButton value="completed">已完成</RadioButton>
-          </RadioGroup>
-          <span />
-          <RadioGroup onChange={this.handleTransferChange} size="large" value={filters.transfer}>
-            <RadioButton value="all">全部</RadioButton>
-            <RadioButton value={SCOF_ORDER_TRANSFER[0].value}><Icon type={SCOF_ORDER_TRANSFER[0].icon} /> {SCOF_ORDER_TRANSFER[0].text}</RadioButton>
-            <RadioButton value={SCOF_ORDER_TRANSFER[1].value}><Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}</RadioButton>
-            <RadioButton value={SCOF_ORDER_TRANSFER[2].value}><Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('shipmentOrders')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.progress}>
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value="active">进行中</RadioButton>
+              <RadioButton value="completed">已完成</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup onChange={this.handleTransferChange} size="large" value={filters.transfer}>
+              <RadioButton value="all">全部</RadioButton>
+              <RadioButton value={SCOF_ORDER_TRANSFER[0].value}><Icon type={SCOF_ORDER_TRANSFER[0].icon} /> {SCOF_ORDER_TRANSFER[0].text}</RadioButton>
+              <RadioButton value={SCOF_ORDER_TRANSFER[1].value}><Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}</RadioButton>
+              <RadioButton value={SCOF_ORDER_TRANSFER[2].value}><Icon type={SCOF_ORDER_TRANSFER[2].icon} /> {SCOF_ORDER_TRANSFER[2].text}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+          <PageHeader.Actions>
             <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}
             </Button>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" value={filters.order_no} />

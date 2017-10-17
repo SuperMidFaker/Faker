@@ -6,7 +6,7 @@ import { Avatar, Card, Badge } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { MdIcon } from 'client/components/FontIcon';
-import { CUSTOMER_TYPES } from 'common/constants';
+import { BUSINESS_TYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 
@@ -30,13 +30,13 @@ export default class OverviewCard extends React.Component {
           <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{customer.name}</h2>
         </div>
         {
-          CUSTOMER_TYPES.map((item) => {
+          BUSINESS_TYPES.map((item) => {
             let iconType = item.value;
             if (item.value === 'warehousing') {
               iconType = 'cwm';
             }
             return (
-              <Card.Grid style={{ width: `${1 / CUSTOMER_TYPES.length * 100}%`, fontSize: 16 }}>
+              <Card.Grid style={{ width: `${1 / BUSINESS_TYPES.length * 100}%`, fontSize: 16 }}>
                 <MdIcon type={iconType} /> {item.label}业务
                 <span className="pull-right">
                   {customer.business_type && customer.business_type.indexOf(item.value) >= 0 ? <Badge status="success" text="开通" /> : <Badge status="default" text="未开通" /> }

@@ -20,9 +20,8 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
-import { DocDef } from './docDef';
-
-
+import { StandardDocDef } from './print/standardDocDef';
+import { SkeletonDocDef } from './print/skeletonDocDef';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -30,7 +29,6 @@ import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 const TabPane = Tabs.TabPane;
-const ButtonGroup = Button.Group;
 
 const navObj = {
   depth: 3,
@@ -151,12 +149,29 @@ export default class CustomsDeclEditor extends React.Component {
     const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
   }
+  handlePrintMenuClick = (ev) => {
+    const { head, bodies, billMeta, formRequire } = this.props;
+    let docDefinition;
+    window.pdfMake.fonts = {
+      yahei: {
+        normal: 'msyh.ttf',
+        bold: 'msyh.ttf',
+      },
+    };
+    if (ev.key === 'standard') {
+      docDefinition = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+      window.pdfMake.createPdf(docDefinition).open();
+    } else if (ev.key === 'skeleton') {
+      docDefinition = SkeletonDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+      window.pdfMake.createPdf(docDefinition).print();
+    }
+  }
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'customsDecl');
   }
-  handlePDF = () => {
+  handleStandardPrint = () => {
     const { head, bodies, billMeta, formRequire } = this.props;
-    const docDefinition = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+    const docDefinition = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
     window.pdfMake.fonts = {
       yahei: {
         normal: 'msyh.ttf',
@@ -165,9 +180,9 @@ export default class CustomsDeclEditor extends React.Component {
     };
     window.pdfMake.createPdf(docDefinition).open();
   }
-  handlePrinter = () => {
+  handleSkeletonPrint = () => {
     const { head, bodies, billMeta, formRequire } = this.props;
-    const docDefinition = DocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+    const docDefinition = SkeletonDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
     window.pdfMake.fonts = {
       yahei: {
         normal: 'msyh.ttf',
@@ -191,6 +206,12 @@ export default class CustomsDeclEditor extends React.Component {
           <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
         )}
       </Menu>);
+    const printMenu = (
+      <Menu onClick={this.handlePrintMenuClick}>
+        <Menu.Item key="standard">标准格式</Menu.Item>
+        <Menu.Item key="skeleton">套打格式</Menu.Item>
+      </Menu>
+    );
     const tabs = [];
     tabs.push(
       <TabPane tab="报关单表头" key="header">
@@ -250,24 +271,27 @@ export default class CustomsDeclEditor extends React.Component {
                   <Button size="large" icon="delete" />
                 </Tooltip>
               </Popconfirm> }
-              <ButtonGroup>
-                <Button size="large" icon="file-pdf" onClick={this.handlePDF} />
-                <Button size="large" icon="printer" onClick={this.handlePrinter} />
-                <Button size="large" icon="mail" />
-              </ButtonGroup>
+              <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
+                <Icon type="link" /> 转至报关清单
+              </Dropdown.Button>
+              <Dropdown overlay={printMenu}>
+                <Button size="large">
+                  <Icon type="printer" />
+                </Button>
+              </Dropdown>
               { head.status === CMS_DECL_STATUS.proposed.value &&
                 <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
               }
               { head.status === CMS_DECL_STATUS.reviewed.value &&
                 <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip>
               }
-              { sendDelLabel && <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{sendDelLabel}</Button>}
-              { (head.status !== CMS_DECL_STATUS.proposed.value && head.status !== CMS_DECL_STATUS.released.value) &&
-                <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal}>{this.msg('markReleased')}</Button>
+              { head.status > CMS_DECL_STATUS.proposed.value && head.status < CMS_DECL_STATUS.entered.value &&
+                <Tooltip title={this.msg('markReleased')} placement="bottom"><Button size="large" icon="flag" onClick={this.handleMarkReleasedModal} /></Tooltip>
               }
-              <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
-                <Icon type="link" /> 转至报关清单
-              </Dropdown.Button>
+              { head.status === CMS_DECL_STATUS.entered.value &&
+                <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>
+              }
+              { sendDelLabel && <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{sendDelLabel}</Button>}
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large readonly">

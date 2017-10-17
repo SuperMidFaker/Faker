@@ -109,6 +109,12 @@ export const PROMPT_TYPES = {
   promptSpPod: 'promptSpPod',
 };
 
+export const BUSINESS_TYPES = [
+  { label: '清关', value: 'clearance' },
+  { label: '仓储', value: 'warehousing' },
+  { label: '运输', value: 'transport' },
+];
+
 export * from './module';
 export * from './role';
 export * from './transport';

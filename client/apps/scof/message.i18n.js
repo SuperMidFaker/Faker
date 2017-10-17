@@ -2,27 +2,27 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   dashboard: {
-    id: 'scop.module.dashboard',
+    id: 'sof.module.dashboard',
     defaultMessage: '工作台',
   },
   orders: {
-    id: 'scop.module.orders',
+    id: 'sof.module.orders',
     defaultMessage: '订单',
   },
   customers: {
-    id: 'scop.module.customers',
+    id: 'sof.module.customers',
     defaultMessage: '客户',
   },
   vendors: {
-    id: 'scop.module.vendors',
+    id: 'sof.module.vendors',
     defaultMessage: '供应商',
   },
   flow: {
-    id: 'scop.module.flow',
+    id: 'sof.module.flow',
     defaultMessage: '流程',
   },
   settings: {
-    id: 'scop.module.settings',
+    id: 'sof.module.settings',
     defaultMessage: '设置',
   },
 });

@@ -2,47 +2,47 @@ import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   customer: {
-    id: 'scop.customers.customer',
+    id: 'sof.customers.customer',
     defaultMessage: '客户',
   },
   add: {
-    id: 'scop.customers.add',
+    id: 'sof.customers.add',
     defaultMessage: '新增',
   },
   save: {
-    id: 'scop.customers.save',
+    id: 'sof.customers.save',
     defaultMessage: '保存',
   },
   searchPlaceholder: {
-    id: 'scop.customers.search.placeholder',
+    id: 'sof.customers.search.placeholder',
     defaultMessage: '搜索客户',
   },
   customerName: {
-    id: 'scop.customers.name',
+    id: 'sof.customers.name',
     defaultMessage: '客户名称',
   },
   customerCode: {
-    id: 'scop.customers.code',
+    id: 'sof.customers.code',
     defaultMessage: '客户代码',
   },
   displayName: {
-    id: 'scop.customers.display.name',
+    id: 'sof.customers.display.name',
     defaultMessage: '显示名称',
   },
   englishName: {
-    id: 'scop.customers.english.name',
+    id: 'sof.customers.english.name',
     defaultMessage: '英文名称',
   },
   profile: {
-    id: 'scop.customers.profile',
+    id: 'sof.customers.profile',
     defaultMessage: '客户资料',
   },
   subCustomer: {
-    id: 'scop.customers.sub.customer',
+    id: 'sof.customers.sub.customer',
     defaultMessage: '子客户',
   },
   serviceTeam: {
-    id: 'scop.customers.service.team',
+    id: 'sof.customers.service.team',
     defaultMessage: '服务团队',
   },
 });

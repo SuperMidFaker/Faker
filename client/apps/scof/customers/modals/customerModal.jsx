@@ -8,7 +8,7 @@ import messages from '../message.i18n';
 import { addCustomer, editCustomer, hideCustomerModal } from 'common/reducers/crmCustomers';
 import { getCompanyInfo } from 'common/reducers/common';
 import { checkPartner } from 'common/reducers/partner';
-import { CUSTOMER_TYPES } from 'common/constants';
+import { BUSINESS_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
@@ -175,7 +175,6 @@ export default class CustomerModal extends React.Component {
     });
   }
   handleNameChange = (value) => {
-    console.log(value);
     const company = this.state.companies.find(item => item.Name === value);
     this.setState({ name: value, partnerUniqueCode: company.CreditCode });
   }
@@ -249,7 +248,7 @@ export default class CustomerModal extends React.Component {
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={CUSTOMER_TYPES} value={businessArray} onChange={this.handleCustomerTypesChange} />
+            <CheckboxGroup options={BUSINESS_TYPES} value={businessArray} onChange={this.handleCustomerTypesChange} />
           </FormItem>
           <FormItem
             {...formItemLayout}

@@ -1,9 +1,3 @@
-export const CUSTOMER_TYPES = [
-  { label: '清关', value: 'clearance' },
-  { label: '仓储', value: 'warehousing' },
-  { label: '运输', value: 'transport' },
-];
-
 export const CRM_ORDER_STATUS = {
   created: 1,
   processing: 2,

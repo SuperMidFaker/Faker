@@ -2,37 +2,43 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Input, Checkbox, message } from 'antd';
-import { addSp, editSp, closeSpModal, checkPartner, matchTenant } from 'common/reducers/partner';
+import { Checkbox, Modal, Form, Input, Select, Row, Col, Button, Icon, message } from 'antd';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
+import { addVendor, editVendor, hideVendorModal } from 'common/reducers/sofVendors';
+import { getCompanyInfo } from 'common/reducers/common';
+import { checkPartner } from 'common/reducers/partner';
 import { BUSINESS_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
+const formatMsg = format(messages);
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    visible: state.partner.visibleSpModal,
-    spPartner: state.partner.spModal.partner,
-    operation: state.partner.spModal.operation,
-    matchedPartners: state.partner.matchedPartners,
+    visible: state.sofVendors.vendorModal.visible,
+    vendor: state.sofVendors.vendorModal.vendor,
+    operation: state.sofVendors.vendorModal.operation,
   }),
-  { addSp, editSp, checkPartner, closeSpModal, matchTenant }
+  { addVendor, editVendor, checkPartner, hideVendorModal, getCompanyInfo }
 )
 
-export default class SpModal extends React.Component {
+export default class VendorModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     operation: PropTypes.string, // add  edit
-    addSp: PropTypes.func.isRequired,
+    addVendor: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
-    closeSpModal: PropTypes.func.isRequired,
-    editSp: PropTypes.func.isRequired,
-    spPartner: PropTypes.object.isRequired,
-    reload: PropTypes.func,
+    hideVendorModal: PropTypes.func.isRequired,
+    editVendor: PropTypes.func.isRequired,
+    vendor: PropTypes.object.isRequired,
+    onOk: PropTypes.func,
+    getCompanyInfo: PropTypes.func.isRequired,
   }
   state = {
     id: -1,
@@ -44,22 +50,25 @@ export default class SpModal extends React.Component {
     phone: '',
     email: '',
     businessType: '',
+
+    companies: [],
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.operation === 'edit') {
       this.setState({
-        id: nextProps.spPartner.id,
-        name: nextProps.spPartner.name,
-        partnerCode: nextProps.spPartner.partner_code,
-        partnerUniqueCode: nextProps.spPartner.partner_unique_code || '',
-        customsCode: nextProps.spPartner.customs_code || '',
-        contact: nextProps.spPartner.contact,
-        phone: nextProps.spPartner.phone,
-        email: nextProps.spPartner.email,
-        businessType: nextProps.spPartner.business_type,
+        id: nextProps.vendor.id,
+        name: nextProps.vendor.name,
+        partnerCode: nextProps.vendor.partner_code,
+        partnerUniqueCode: nextProps.vendor.partner_unique_code || '',
+        customsCode: nextProps.vendor.customs_code || '',
+        contact: nextProps.vendor.contact,
+        phone: nextProps.vendor.phone,
+        email: nextProps.vendor.email,
+        businessType: nextProps.vendor.business_type,
       });
     }
   }
+  msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {
     this.setState({
       id: -1,
@@ -72,7 +81,7 @@ export default class SpModal extends React.Component {
       email: '',
       businessType: '',
     });
-    this.props.closeSpModal();
+    this.props.hideVendorModal();
   }
   nameChooseConfirm = (foundName, name) => {
     Modal.confirm({
@@ -82,11 +91,11 @@ export default class SpModal extends React.Component {
       cancelText: name,
       onOk: () => {
         this.setState({ name: foundName }, () => {
-          this.handleAddSp();
+          this.hancleAddVendor();
         });
       },
       onCancel: () => {
-        this.handleAddSp();
+        this.hancleAddVendor();
       },
     });
   }
@@ -95,16 +104,16 @@ export default class SpModal extends React.Component {
     const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
-    } else if (operation === 'add' && partnerUniqueCode === '') {
+    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode === '') {
       message.error('统一社会信用代码必填');
-    } else if (operation === 'add' && partnerUniqueCode.length !== 18) {
+    } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode.length !== 18) {
       message.error(`统一社会信用代码必须18位,当前${partnerUniqueCode.length}位`);
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (businessType === '') {
-      message.error('请选择业务类型');
+      message.error('请选择供应商业务类型');
     } else if (this.props.operation === 'edit') {
-      this.props.editSp({
+      this.props.editVendor({
         tenantId,
         partnerInfo: { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
         businessType,
@@ -112,12 +121,12 @@ export default class SpModal extends React.Component {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
-          this.props.reload();
+          this.props.onOk();
           message.success('修改成功');
           this.handleCancel();
         }
       });
-    } else {
+    } else if (partnerUniqueCode) {
       this.props.checkPartner({
         tenantId,
         partnerInfo: { name, partnerCode, partnerUniqueCode },
@@ -129,15 +138,17 @@ export default class SpModal extends React.Component {
         if (foundName !== name) {
           this.nameChooseConfirm(foundName, name);
         } else {
-          this.handleAddSp();
+          this.hancleAddVendor();
         }
       });
+    } else {
+      this.hancleAddVendor();
     }
   }
-  handleAddSp = () => {
+  hancleAddVendor = () => {
     const { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
     const { tenantId } = this.props;
-    this.props.addSp({
+    this.props.addVendor({
       tenantId,
       partnerInfo: { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
       businessType,
@@ -146,51 +157,83 @@ export default class SpModal extends React.Component {
         message.error(result1.error.message);
       } else {
         this.handleCancel();
-        this.props.reload();
         message.info('添加成功');
       }
     });
   }
-  handleBlur = () => {
-    const name = this.state.name;
-    this.props.matchTenant(name).then(
-      result => this.setState({
-        partnerUniqueCode: result.data.code,
-        customsCode: result.data.customs_code,
-      })
-    );
+  handleVendorTypesChange = (value) => {
+    if (value.length !== 0) {
+      this.setState({ businessType: value.join(',') });
+    }
+  }
+  handleSearchCompany = (value) => {
+    this.props.getCompanyInfo(value).then((result) => {
+      if (result.data.Result) {
+        this.setState({ companies: result.data.Result });
+      } else {
+        message.warning(`企查查：${result.data.Message}`, 5);
+      }
+    });
+  }
+  handleNameChange = (value) => {
+    const company = this.state.companies.find(item => item.Name === value);
+    this.setState({ name: value, partnerUniqueCode: company.CreditCode });
   }
   render() {
     const { visible, operation } = this.props;
-    const { businessType } = this.state;
-    const businessArray = businessType !== '' ? businessType.split(',') : [];
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
     let title = '';
     if (operation === 'add') {
-      title = '新增服务商';
+      title = '新增供应商';
     } else if (operation === 'edit') {
-      title = '修改服务商资料';
+      title = '修改供应商资料';
     }
     return (
       <Modal visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form layout="horizontal">
           <FormItem
             {...formItemLayout}
-            label="名称"
+            label="供应商名称"
             hasFeedback
             required
           >
-            <Input value={this.state.name} onBlur={this.handleBlur} onChange={(e) => { this.setState({ name: e.target.value }); }} />
+            <Row gutter={5}>
+              <Col span={20}>
+                <Select
+                  mode="combobox"
+                  value={this.state.name}
+                  showSearch
+                  placeholder="输入企业名称搜索"
+                  optionFilterProp="children"
+                  onSelect={value => this.handleNameChange(value)}
+                  onChange={value => this.setState({ name: value })}
+                >
+                  {this.state.companies.map(item => <Option value={item.Name}>{item.Name}</Option>)}
+                </Select>
+              </Col>
+              <Col span={2}>
+                <Button size="default" onClick={() => this.handleSearchCompany(this.state.name)}>
+                  <Icon type="search" />
+                </Button>
+              </Col>
+            </Row>
           </FormItem>
           <FormItem
             {...formItemLayout}
-            label="服务商代码"
+            label="供应商代码"
             hasFeedback
           >
             <Input value={this.state.partnerCode} onChange={(e) => { this.setState({ partnerCode: e.target.value }); }} />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="业务类型"
+            hasFeedback
+          >
+            <CheckboxGroup options={BUSINESS_TYPES} onChange={this.handleCustomerTypesChange} />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -205,19 +248,6 @@ export default class SpModal extends React.Component {
             hasFeedback
           >
             <Input placeholder="请填写10位海关编码" value={this.state.customsCode} onChange={(e) => { this.setState({ customsCode: e.target.value }); }} />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="业务类型"
-            hasFeedback
-          >
-            <CheckboxGroup options={BUSINESS_TYPES} value={businessArray}
-              onChange={(value) => {
-                if (value !== []) {
-                  this.setState({ businessType: value.join(',') });
-                }
-              }}
-            />
           </FormItem>
           <FormItem
             {...formItemLayout}
@@ -245,11 +275,14 @@ export default class SpModal extends React.Component {
             label="邮箱"
             hasFeedback
           >
-            <Input type="email" value={this.state.email} onChange={(e) => { this.setState({ email: e.target.value }); }} />
+            <Input
+              type="email"
+              value={this.state.email}
+              onChange={(e) => { this.setState({ email: e.target.value }); }}
+            />
           </FormItem>
         </Form>
       </Modal>
     );
   }
 }
-

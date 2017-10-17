@@ -53,7 +53,6 @@ export default class ModuleSCOF extends React.Component {
     linkMenus.push({
       single: true,
       key: 'scof-vendor',
-      disabled: true,
       path: '/scof/vendors',
       icon: 'logixon icon-supplier-mng',
       text: formatMsg(intl, 'vendors'),

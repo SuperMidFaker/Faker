@@ -49,6 +49,7 @@ import * as CMSImportCiq from './cms/import/ciq';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSExportCustoms from './cms/export/customs';
 import * as CMSExportCiq from './cms/export/ciq';
+import * as CMSManual from './cms/manual';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
@@ -102,6 +103,7 @@ import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
 import * as SCOFCustomers from './scof/customers';
+import * as SCOFVendors from './scof/vendors';
 import * as SCOFFlow from './scof/flow';
 import BSS from './bss/module-bss';
 import * as BSSSettlement from './bss/settlement';
@@ -334,6 +336,10 @@ export default(store, cookie) => {
               </Route>
               <Route path="ciq" component={CMSExportCiq.CiqList} />
             </Route>
+            <Route path="manual">
+              <IndexRoute component={CMSManual.List} />
+              <Route path=":id" component={CMSManual.Detail} />
+            </Route>
             <Route path="billing">
               <IndexRedirect to="/clearance/billing/expense" />
               <Route path="expense" component={CMSExpense.List} />
@@ -545,6 +551,7 @@ export default(store, cookie) => {
               <Route path="edit" component={SCOFOrders.Edit} />
             </Route>
             <Route path="customers" component={SCOFCustomers.List} />
+            <Route path="vendors" component={SCOFVendors.List} />
             <Route path="flow" component={SCOFFlow.ListPanel} />
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>

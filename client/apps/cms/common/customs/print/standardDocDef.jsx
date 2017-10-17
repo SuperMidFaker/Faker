@@ -61,7 +61,7 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       ] },
       { style: 'table',
         table: {
-          widths: [200, '*', '*', '*', '*'],
+          widths: [200, '*', '*', 82, 80],
           body: [
             [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}`, style: 'tableCell' },
             { text: `进境口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
@@ -78,7 +78,7 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       },
       { style: 'table',
         table: {
-          widths: [200, 104, '*', '*'],
+          widths: [200, 95, '*', 118],
           body: [
             [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, false, true, false] },
             { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}`, border: [true, false, true, false] },
@@ -89,7 +89,7 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       },
       { style: 'table',
         table: {
-          widths: [121, 70, 104, '*', '*'],
+          widths: [131, 60, 95, '*', 118],
           body: [
             [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
@@ -126,7 +126,7 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       ] },
       { style: 'table',
         table: {
-          widths: [200, '*', '*', '*', '*'],
+          widths: [200, '*', '*', 82, 80],
           body: [
             [{ text: `收发货人  ${head.trade_custco || ''}\n${head.trade_name || ''}`, style: 'tableCell' },
             { text: `出境口岸 (${ieport.customs_code})\n${ieport.customs_name}` },
@@ -143,7 +143,7 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       },
       { style: 'table',
         table: {
-          widths: [200, 104, '*', '*'],
+          widths: [200, 95, '*', 118],
           body: [
             [{ text: `申报单位  (${head.agent_custco})\n${head.agent_name || ''}`, border: [true, false, true, false] },
             { text: `运输方式 (${trafmode.trans_code})\n${trafmode.trans_spec}`, border: [true, false, true, false] },
@@ -154,7 +154,7 @@ function pdfHeader(head, declWayCode, orderNo, params) {
       },
       { style: 'table',
         table: {
-          widths: [121, 70, 104, '*', '*'],
+          widths: [131, 60, 95, '*', 118],
           body: [
             [{ text: `许可证号\n${head.license_no || ''}` },
             { text: `成交方式 (${trxnmode.trx_mode})\n${trxnmode.trx_spec}` },
@@ -417,10 +417,10 @@ function pdfBody(bodydatas, declWayCode, params) {
   return bodytable;
 }
 
-export function DocDef(head, bodies, declWayCode, orderNo, params) {
+export function StandardDocDef(head, bodies, declWayCode, orderNo, params) {
   const docDefinition = {
     pageSize: 'A4',
-    pageMargins: [18, 15],
+    pageMargins: [20, 15],
     content: [],
     styles: {
       header: {

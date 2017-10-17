@@ -6,7 +6,7 @@ import { Modal, Form, Input, Checkbox, Button, Icon, Row, Col, message } from 'a
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { addCustomer, editCustomer, hideSubCustomerModal } from 'common/reducers/crmCustomers';
-import { CUSTOMER_TYPES } from 'common/constants';
+import { BUSINESS_TYPES } from 'common/constants';
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
 const formatMsg = format(messages);
@@ -204,7 +204,7 @@ export default class SubCustomerModal extends React.Component {
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={CUSTOMER_TYPES} value={businessArray}
+            <CheckboxGroup options={BUSINESS_TYPES} value={businessArray}
               onChange={(value) => {
                 if (value !== []) {
                   this.setState({ businessType: value.join(',') });

@@ -43,7 +43,7 @@ const messages = defineMessages({
     defaultMessage: '顺丰快递',
   },
   interfaceConfig: {
-    id: 'hub.integration.config',
+    id: 'hub.integration.interface.config',
     defaultMessage: '接口配置',
   },
   integrationName: {

@@ -301,17 +301,11 @@ export default class CustomsList extends Component {
       } else {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
-          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="recall">
-            <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
-          </PrivilegeCover>);
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
             <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
-          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" />重新发送</span>} row={record} />
-          </PrivilegeCover>);
         }
         if (record.status !== CMS_DECL_STATUS.released.value) {
           spanElems.push(

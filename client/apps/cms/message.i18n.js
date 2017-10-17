@@ -79,11 +79,11 @@ const messages = defineMessages({
   },
   license: {
     id: 'cms.module.license',
-    defaultMessage: '涉证管理',
+    defaultMessage: '单证管理',
   },
   manual: {
     id: 'cms.module.manual',
-    defaultMessage: '手册账册',
+    defaultMessage: '手册帐册',
   },
   analytics: {
     id: 'cms.module.analytics',

@@ -2,15 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Form, Input, Row, Col, Table, Tooltip, Layout } from 'antd';
+import { Breadcrumb, Button, Form, Input, Row, Table, Tooltip, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import ProfileCard from './cards/profileCard';
-import CustomerModal from './modals/customerModal';
-import { loadCustomers, showCustomerModal, deleteCustomer } from 'common/reducers/crmCustomers';
+import VendorModal from './modals/vendorModal';
+import { loadVendors, showVendorModal, deleteVendor } from 'common/reducers/sofVendors';
 import { PARTNER_ROLES } from 'common/constants';
 import TrimSpan from 'client/components/trimSpan';
 import OverviewCard from './cards/overviewCard';
@@ -21,50 +20,50 @@ const { Header, Content, Sider } = Layout;
 const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
-  return dispatch(loadCustomers(state.account.tenantId));
+  return dispatch(loadVendors(state.account.tenantId));
 }
 @connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    customers: state.crmCustomers.customers,
-    loading: state.crmCustomers.loading,
-    loaded: state.crmCustomers.loaded,
+    vendors: state.sofVendors.vendors,
+    loading: state.sofVendors.loading,
+    loaded: state.sofVendors.loaded,
   }),
-  { loadCustomers, deleteCustomer, showCustomerModal }
+  { loadVendors, deleteVendor, showVendorModal }
 )
 @connectNav({
   depth: 2,
   moduleName: 'scof',
 })
 @Form.create()
-export default class CustomerList extends React.Component {
+export default class VendorList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     loaded: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    customers: PropTypes.array.isRequired,
-    loadCustomers: PropTypes.func.isRequired,
-    deleteCustomer: PropTypes.func.isRequired,
-    showCustomerModal: PropTypes.func.isRequired,
+    vendors: PropTypes.array.isRequired,
+    loadVendors: PropTypes.func.isRequired,
+    deleteVendor: PropTypes.func.isRequired,
+    showVendorModal: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
   }
   state = {
-    customerModalVisible: false,
-    customer: {},
+    vendorModalVisible: false,
+    vendor: {},
     currentPage: 1,
     collapsed: false,
     unchanged: true,
-    customers: [],
+    vendors: [],
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.customers !== this.props.customers) {
+    if (nextProps.vendors !== this.props.vendors) {
       this.setState({
-        customer: nextProps.customers.length === 0 ? {} : nextProps.customers[0],
+        vendor: nextProps.vendors.length === 0 ? {} : nextProps.vendors[0],
       });
     }
-    this.setState({ customers: nextProps.customers });
+    this.setState({ vendors: nextProps.vendors });
     if (!nextProps.loaded) {
       this.handleTableLoad();
     }
@@ -81,16 +80,16 @@ export default class CustomerList extends React.Component {
   }
   handleRowClick = (record) => {
     this.setState({
-      customer: record,
+      vendor: record,
       unchanged: true,
     });
     this.props.form.setFieldsValue(record);
   }
   handleTableLoad = () => {
-    this.props.loadCustomers(this.props.tenantId);
+    this.props.loadVendors(this.props.tenantId);
   }
-  handleDelCustomer = () => {
-    this.props.deleteCustomer(this.state.customer.id, PARTNER_ROLES.CUS).then(() => {
+  handleDelVendor = () => {
+    this.props.deleteVendor(this.state.vendor.id, PARTNER_ROLES.CUS).then(() => {
       this.handleTableLoad();
     });
   }
@@ -98,19 +97,19 @@ export default class CustomerList extends React.Component {
     this.setState({ currentPage: page });
   }
   handleSearch = (value) => {
-    let customers = this.props.customers;
+    let vendors = this.props.vendors;
     if (value) {
-      customers = this.props.customers.filter((item) => {
+      vendors = this.props.vendors.filter((item) => {
         const reg = new RegExp(value);
         return reg.test(item.name);
       });
     }
-    this.setState({ customers, currentPage: 1 });
+    this.setState({ vendors, currentPage: 1 });
   }
   handleSaveBtnClick = () => {
   }
   render() {
-    const { customer } = this.state;
+    const { vendor } = this.state;
     const columns = [{
       dataIndex: 'name',
       key: 'name',
@@ -127,12 +126,12 @@ export default class CustomerList extends React.Component {
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('customer')}
+                {this.msg('vendor')}
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="pull-right">
-              <Tooltip placement="bottom" title="新增客户">
-                <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showCustomerModal('add')} />
+              <Tooltip placement="bottom" title="新增供应商">
+                <Button type="primary" shape="circle" icon="plus" onClick={() => this.props.showVendorModal('add')} />
               </Tooltip>
             </div>
           </div>
@@ -144,22 +143,22 @@ export default class CustomerList extends React.Component {
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.customers} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" dataSource={this.state.vendors} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
-                rowClassName={record => record.id === customer.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+                rowClassName={record => record.id === vendor.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
               />
             </div>
-            <CustomerModal onOk={this.handleTableLoad} />
+            <VendorModal onOk={this.handleTableLoad} />
           </div>
         </Sider>
         <Layout>
           <Header className="page-header">
             { this.state.collapsed && <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('customer')}
+                {this.msg('vendor')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {customer.name}
+                {vendor.name}
               </Breadcrumb.Item>
               </Breadcrumb>}
             <ButtonToggle size="large"
@@ -175,13 +174,8 @@ export default class CustomerList extends React.Component {
           </Header>
           <Content className="main-content layout-fixed-width layout-fixed-width-lg">
             <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <OverviewCard customer={customer} />
-                <ResourcesCard customer={customer} />
-              </Col>
-              <Col sm={24} md={8}>
-                <ProfileCard customer={customer} />
-              </Col>
+              <OverviewCard vendor={vendor} />
+              <ResourcesCard vendor={vendor} />
             </Row>
           </Content>
         </Layout>
