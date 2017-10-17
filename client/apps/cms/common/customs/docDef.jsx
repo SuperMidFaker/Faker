@@ -366,6 +366,7 @@ function pdfBody(bodydatas, declWayCode, params) {
     value: cr.curr_code,
     text: cr.curr_name,
   }));
+  let widths = ['4%', '10%', '33%', '10%', '10%', '*', '*', '*'];
   header.push(
       { text: '项号', style: 'tableHeader' },
       { text: '商品编号', style: 'tableHeader' },
@@ -375,9 +376,11 @@ function pdfBody(bodydatas, declWayCode, params) {
       { text: '单价', style: 'tableHeader' },
       { text: '总价', style: 'tableHeader' },
       { text: '币制', style: 'tableHeader' },
-      { text: '征免', style: 'tableHeader' }
     );
-  const widths = ['4%', '10%', '38%', '10%', '10%', '6%', '8%', '6%', '8%'];
+  if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
+    header.push({ text: '征免', style: 'tableHeader' });
+    widths = ['4%', '10%', '33%', '10%', '10%', '*', '*', '*', '*'];
+  }
   const height = 32;
   const heights = [10, height, height, height, height, height, height, height, height];
   pdfbody.push(header);
@@ -405,7 +408,9 @@ function pdfBody(bodydatas, declWayCode, params) {
         { text: `${dbody.trade_total || ''}`, alignment: 'right' },
         `${tradeCurr}`,
       );
-    body.push(`${dutyMode.text}\n${dutyMode.value}`);
+    if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
+      body.push(`${dutyMode.text}\n${dutyMode.value}`);
+    }
     pdfbody.push(body);
   }
   const bodytable = { widths, heights, body: pdfbody };
