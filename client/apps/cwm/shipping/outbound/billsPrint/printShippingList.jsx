@@ -87,7 +87,7 @@ export default class PrintShippingList extends Component {
     docDefinition.content.push(this.pdfHead());
     docDefinition.content.push({
       style: 'table',
-      table: { widths: ['10%', '25%', '45%', '20%'], headerRows: 1, body: this.pdfTable() },
+      table: { widths: ['10%', '25%', '45%', '20%'], body: this.pdfTable() },
       layout: {
         hLineColor: 'gray',
         vLineColor: 'gray',

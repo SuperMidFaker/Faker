@@ -139,7 +139,7 @@ export default class PrintShippingConfirm extends Component {
       this.pdfHead(),
       {
         style: 'table',
-        table: { widths: ['3%', '10%', '14%', '8%', '10%', '15%', '8%', '10%', '10%', '12%'], headerRows: 1, body: this.pdfDetails() },
+        table: { widths: ['3%', '10%', '14%', '8%', '10%', '15%', '8%', '10%', '10%', '12%'], body: this.pdfDetails() },
         layout: {
           hLineColor: 'gray',
           vLineColor: 'gray',
