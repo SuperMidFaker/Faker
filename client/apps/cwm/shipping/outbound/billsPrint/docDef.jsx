@@ -252,7 +252,7 @@ function TrigeminyList(data) {
           ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
           [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
-        heights: [27, 20, 20],
+        heights: [26, 20, 20],
       },
     },
     // 代收货款\n卡号：0123456789\n¥3000元
@@ -349,7 +349,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [79],
+        heights: [82],
       },
     }
   );
@@ -392,7 +392,7 @@ function TrigeminyList(data) {
         body: [
           [{ text: '', alignment: 'center', border: [true, false, true, true] }],
         ],
-        heights: [79],
+        heights: [82],
       },
     }
   );
