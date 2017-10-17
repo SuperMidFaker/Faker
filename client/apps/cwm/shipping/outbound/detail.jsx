@@ -13,8 +13,7 @@ import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
 import ShippingDetailsPane from './tabpane/shippingDetailsPane';
-import { loadOutboundHead, updateOutboundMode, readWaybillLogo, loadCourierNo, toggleShunfengExpressModal,
-loadShunfengConfig } from 'common/reducers/cwmOutbound';
+import { loadOutboundHead, updateOutboundMode, toggleShunfengExpressModal, loadShunfengConfig } from 'common/reducers/cwmOutbound';
 import PrintPickList from './billsPrint/printPIckList';
 import PrintShippingList from './billsPrint/printShippingList';
 import PrintShippingConfirm from './billsPrint/printShippingConfirm';
@@ -44,8 +43,6 @@ const TabPane = Tabs.TabPane;
   }),
   { loadOutboundHead,
     updateOutboundMode,
-    readWaybillLogo,
-    loadCourierNo,
     toggleShunfengExpressModal,
     loadShunfengConfig }
 )

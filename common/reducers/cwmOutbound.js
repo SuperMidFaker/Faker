@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'MANUAL_ALLOC', 'MANUAL_ALLOC_SUCCEED', 'MANUAL_ALLOC_FAIL',
   'CANCEL_PRDALLOC', 'CANCEL_PRDALLOC_SUCCEED', 'CANCEL_PRDALLOC_FAIL',
   'LOAD_PICK_DETAILS', 'LOAD_PICK_DETAILS_SUCCEED', 'LOAD_PICK_DETAILS_FAIL',
+  'LOAD_PPICK_DETAILS', 'LOAD_PPICK_DETAILS_SUCCEED', 'LOAD_PPICK_DETAILS_FAIL',
   'LOAD_ALLOCATED_DETAILS', 'LOAD_ALLOCATED_DETAILS_SUCCEED', 'LOAD_ALLOCATED_DETAILS_FAIL',
   'OUTBOUNDS_PICK', 'OUTBOUNDS_PICK_SUCCEED', 'OUTBOUNDS_PICK_FAIL',
   'UNDO_PICKED', 'UNDO_PICKED_SUCCEED', 'UNDO_PICKED_FAIL',
@@ -375,6 +376,21 @@ export function loadPickDetails(outboundNo) {
         actionTypes.LOAD_PICK_DETAILS_FAIL,
       ],
       endpoint: 'v1/cwm/pick/details/load',
+      method: 'get',
+      params: { outboundNo },
+    },
+  };
+}
+
+export function loadPrintPickDetails(outboundNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PPICK_DETAILS,
+        actionTypes.LOAD_PPICK_DETAILS_SUCCEED,
+        actionTypes.LOAD_PPICK_DETAILS_FAIL,
+      ],
+      endpoint: 'v1/cwm/pick/print/details',
       method: 'get',
       params: { outboundNo },
     },

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Icon } from 'antd';
-import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../message.i18n';
-import { format } from 'client/common/i18n/helpers';
+import { Icon, message } from 'antd';
 import JsBarcode from 'jsbarcode';
+import { intlShape, injectIntl } from 'react-intl';
+import { loadPrintPickDetails } from 'common/reducers/cwmOutbound';
+import { CWM_OUTBOUND_STATUS } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 
@@ -23,10 +25,9 @@ function textToBase64Barcode(text) {
     outboundHead: state.cwmOutbound.outboundFormHead,
     pickDetails: state.cwmOutbound.pickDetails,
   }),
-  {}
+  { loadPrintPickDetails }
 )
-
-export default class Print extends Component {
+export default class OutboundPickPrint extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     outboundNo: PropTypes.string.isRequired,
@@ -47,7 +48,7 @@ export default class Print extends Component {
       { columns: [
         { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
         { text: `客户订单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
-        { text: '出库日期:  ', style: 'header' },
+        { text: `订单数量:  ${outboundHead.total_alloc_qty || ''}`, style: 'header' },
       ] },
       { columns: [
         { text: `货物属性:  ${outboundHead.bonded ? '保税' : '非保税'}`, style: 'header' },
@@ -60,21 +61,23 @@ export default class Print extends Component {
     ];
     return headContent;
   }
-  pdfPickDetails = () => {
-    const { outboundHead, pickDetails } = this.props;
+  pdfPickDetails = (pickDetails) => {
+    const { outboundHead } = this.props;
     const pdf = [];
     pdf.push([{ text: '项', style: 'tableHeader' }, { text: '货号', style: 'tableHeader' },
-      { text: '产品名称', style: 'tableHeader' }, { text: '待捡数', style: 'tableHeader' },
-      { text: '实件数', style: 'tableHeader' }, { text: '库位', style: 'tableHeader' },
-      { text: '扩展属性1', style: 'tableHeader' }]);
+      { text: '产品名称', style: 'tableHeader' }, { text: '库位', style: 'tableHeader' },
+      { text: '库存数', style: 'tableHeader' }, { text: '余量数', style: 'tableHeader' },
+      { text: '待捡数', style: 'tableHeader' }, { text: '实捡数', style: 'tableHeader' }]);
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
-      pdf.push([i + 1, data.product_no || '', data.name || '', data.alloc_qty || '', '', data.location || '', '']);
+      const remQty = data.stock_qty - data.alloc_qty;
+      pdf.push([i + 1, data.product_no || '', data.name || '', data.location || '',
+        data.stock_qty, remQty, data.alloc_qty, '']);
     }
     if (pickDetails.length !== 16) {
-      pdf.push(['', '', '', '', '', '', '']);
+      pdf.push(['', '', '', '', '', '', '', '']);
     }
-    pdf.push(['合计', '', '', outboundHead.total_alloc_qty, '', '', '']);
+    pdf.push(['合计', '', '', '', '', '', outboundHead.total_alloc_qty, '']);
     return pdf;
   }
   pdfSign = () => {
@@ -91,8 +94,7 @@ export default class Print extends Component {
     ];
     return foot;
   }
-  handleDocDef = () => {
-    const { pickDetails } = this.props;
+  handleDocDef = (pickDetails) => {
     const docDefinition = {
       content: [],
       pageOrientation: 'landscape',
@@ -140,7 +142,7 @@ export default class Print extends Component {
       this.pdfPickHead(),
       {
         style: 'table',
-        table: { widths: ['3%', '22%', '27%', '12%', '12%', '12%', '12%'], headerRows: 1, body: this.pdfPickDetails() },
+        table: { widths: ['3%', '22%', '27%', '16%', '8%', '8%', '8%', '8%'], headerRows: 1, body: this.pdfPickDetails(pickDetails) },
         layout: {
           hLineColor: 'gray',
           vLineColor: 'gray',
@@ -153,22 +155,31 @@ export default class Print extends Component {
     return docDefinition;
   }
   handlePrint = () => {
-    const docDefinition = this.handleDocDef();
-    window.pdfMake.fonts = {
-      yahei: {
-        normal: 'msyh.ttf',
-        bold: 'msyh.ttf',
-        italics: 'msyh.ttf',
-        bolditalics: 'msyh.ttf',
-      },
-    };
-    window.pdfMake.createPdf(docDefinition).open();
+    this.props.loadPrintPickDetails(this.props.outboundNo).then((result) => {
+      if (!result.error) {
+        const pickDetails = result.data;
+        const docDefinition = this.handleDocDef(pickDetails);
+        window.pdfMake.fonts = {
+          yahei: {
+            normal: 'msyh.ttf',
+            bold: 'msyh.ttf',
+            italics: 'msyh.ttf',
+            bolditalics: 'msyh.ttf',
+          },
+        };
+        window.pdfMake.createPdf(docDefinition).open();
+      } else {
+        message.error(result.error.message);
+      }
+    });
   }
   render() {
-    const { pickDetails } = this.props;
+    const { outboundHead } = this.props;
+    const printable = outboundHead.status >= CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value;
     return (
       <div>
-        <Icon type={pickDetails.length > 0 ? 'check' : 'close'} /> <a disabled={!pickDetails.length > 0} onClick={this.handlePrint}>拣货单</a>
+        <Icon type={printable ? 'check' : 'close'} />
+        <a disabled={!printable} onClick={this.handlePrint}>拣货单</a>
       </div>
     );
   }
