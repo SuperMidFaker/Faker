@@ -142,7 +142,7 @@ export default class OutboundPickPrint extends Component {
       this.pdfPickHead(),
       {
         style: 'table',
-        table: { widths: ['3%', '22%', '27%', '16%', '8%', '8%', '8%', '8%'], body: this.pdfPickDetails() },
+        table: { widths: ['3%', '22%', '27%', '16%', '8%', '8%', '8%', '8%'], body: this.pdfPickDetails(pickDetails) },
         layout: {
           hLineColor: 'gray',
           vLineColor: 'gray',
