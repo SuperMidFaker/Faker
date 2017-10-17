@@ -9,8 +9,8 @@ import BasicForm from './forms/basicForm';
 import SiderForm from './forms/siderForm';
 import { loadTradeItem, itemEditedSave } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
