@@ -115,6 +115,16 @@ class DataTable extends Component {
       });
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.columns.find(column => column.dataIndex === 'OPS_COL')) {
+      const opColumn = nextProps.columns.pop();
+      const tableColumns = [...this.state.tableColumns];
+      tableColumns.splice(-1, 1, opColumn);
+      this.setState({
+        tableColumns,
+      });
+    }
+  }
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
   }
