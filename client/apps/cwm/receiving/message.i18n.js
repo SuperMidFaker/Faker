@@ -60,7 +60,7 @@ const messages = defineMessages({
   },
   vendor: {
     id: 'cwm.receiving.vendor',
-    defaultMessage: '供应商',
+    defaultMessage: '供货商',
   },
   unitPrice: {
     id: 'cwm.receiving.unit.price',

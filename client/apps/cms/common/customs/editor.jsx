@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, Tooltip, message, Popconfirm, Spin, Dropdown, Menu } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Spin, Dropdown, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
@@ -146,8 +146,25 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleEntryVisit = (ev) => {
     const { ietype, billMeta } = this.props;
-    const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
+    const pathname = `/clearance/${ietype}/cusdecl/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
+  }
+  handleMoreMenuClick = (ev) => {
+    if (ev.key === 'release') {
+      this.handleMarkReleasedModal();
+    } else if (ev.key === 'resend') {
+      this.handleShowSendDeclModal();
+    } else if (ev.key === 'declMsg') {
+      this.handleEpSendXmlView(this.props.head.ep_send_filename);
+    } else if (ev.key === 'resultMsg') {
+      this.handleEpRecvXmlView(this.props.head.ep_receipt_filename);
+    }
+  }
+  handleEpSendXmlView = (filename) => {
+    window.open(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`);
+  }
+  handleEpRecvXmlView = (filename) => {
+    window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
   }
   handlePrintMenuClick = (ev) => {
     const { head, bodies, billMeta, formRequire } = this.props;
@@ -203,13 +220,27 @@ export default class CustomsDeclEditor extends React.Component {
     const declEntryMenu = (
       <Menu onClick={this.handleEntryVisit}>
         {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-          <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
+          <Icon type="file" /> 关联报关单{bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
         )}
       </Menu>);
     const printMenu = (
       <Menu onClick={this.handlePrintMenuClick}>
         <Menu.Item key="standard">标准格式</Menu.Item>
         <Menu.Item key="skeleton">套打格式</Menu.Item>
+      </Menu>
+    );
+    const moreMenu = (
+      <Menu onClick={this.handleMoreMenuClick}>
+        { head.status === CMS_DECL_STATUS.proposed.value &&
+        <Menu.Item key="delete"><Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}><Icon type="delete" /> 删除</Popconfirm></Menu.Item>}
+        { head.status === CMS_DECL_STATUS.reviewed.value &&
+        <Menu.Item key="recall"><Popconfirm title={this.msg('recallConfirm')} onConfirm={() => this.handleRecall()}><Icon type="close-circle-o" /> 取消复核</Popconfirm></Menu.Item>}
+        { head.status === CMS_DECL_STATUS.sent.value &&
+        <Menu.Item key="resend"><Icon type="mail" /> 重新发送</Menu.Item>}
+        { (head.status === CMS_DECL_STATUS.reviewed.value || head.status === CMS_DECL_STATUS.sent.value) &&
+        <Menu.Item key="release"><Icon type="flag" /> 放行确认</Menu.Item>}
+        { head.status > CMS_DECL_STATUS.reviewed.value && <Menu.Item key="declMsg"><Icon type="eye-o" /> 查看申报报文</Menu.Item>}
+        { head.status > CMS_DECL_STATUS.sent.value && <Menu.Item key="resultMsg"><Icon type="eye-o" /> 查看回执报文</Menu.Item>}
       </Menu>
     );
     const tabs = [];
@@ -243,19 +274,13 @@ export default class CustomsDeclEditor extends React.Component {
           <CiqDetailsPane filterProducts={filterProducts} />
         </TabPane>);
     }
-    let sendDelLabel;
-    if (head.status === CMS_DECL_STATUS.reviewed.value) {
-      sendDelLabel = this.msg('sendPackets');
-    } else if (head.status === CMS_DECL_STATUS.sent.value) {
-      sendDelLabel = this.msg('resendPackets');
-    }
     return (
       <Layout>
         <Layout>
           <Header className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="file" /> <NavLink to={`/clearance/${ietype}/customs/`}>{this.msg('customsDeclaration')}</NavLink>
+                <Icon type="file" /> <NavLink to={`/clearance/${ietype}/cusdecl/`}>{this.msg('customsDeclaration')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>
@@ -266,32 +291,28 @@ export default class CustomsDeclEditor extends React.Component {
             </Breadcrumb>
             {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
             <div className="page-header-tools">
-              { head.status === CMS_DECL_STATUS.proposed.value && <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelete()}>
-                <Tooltip title={this.msg('delete')} placement="bottom">
-                  <Button size="large" icon="delete" />
-                </Tooltip>
-              </Popconfirm> }
               <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
-                <Icon type="link" /> 转至报关清单
+                <Icon type="link" /> 申报清单
               </Dropdown.Button>
               <Dropdown overlay={printMenu}>
                 <Button size="large">
-                  <Icon type="printer" />
+                  <Icon type="printer" /> 打印
                 </Button>
               </Dropdown>
               { head.status === CMS_DECL_STATUS.proposed.value &&
                 <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
               }
               { head.status === CMS_DECL_STATUS.reviewed.value &&
-                <Tooltip title={this.msg('recall')} placement="bottom"><Button size="large" icon="left-circle-o" onClick={this.handleRecall} /></Tooltip>
-              }
-              { head.status > CMS_DECL_STATUS.proposed.value && head.status < CMS_DECL_STATUS.entered.value &&
-                <Tooltip title={this.msg('markReleased')} placement="bottom"><Button size="large" icon="flag" onClick={this.handleMarkReleasedModal} /></Tooltip>
+                <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
               }
               { head.status === CMS_DECL_STATUS.entered.value &&
-                <Button type="primary" ghost size="large" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>
+                <Button type="primary" size="large" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>
               }
-              { sendDelLabel && <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{sendDelLabel}</Button>}
+              <Dropdown overlay={moreMenu}>
+                <Button size="large">
+                  <Icon type="ellipsis" />
+                </Button>
+              </Dropdown>
             </div>
           </Header>
           <Content className="main-content layout-min-width layout-min-width-large readonly">

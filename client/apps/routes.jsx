@@ -302,10 +302,10 @@ export default(store, cookie) => {
               <Route path="create" component={CMSDelegation.Create} />
               <Route path=":delgNo" component={CMSDelegation.Detail} />
             </Route>
-            <Route path="customs">
+            <Route path="cusdecl">
               <IndexRoute component={CMSCustomsDecl.List} />
             </Route>
-            <Route path="ciq" component={CMSCiqDecl.List} />
+            <Route path="ciqdecl" component={CMSCiqDecl.List} />
             <Route path="import">
               <IndexRedirect to="/clearance/import/manifest" />
               <Route path="manifest">
@@ -315,11 +315,11 @@ export default(store, cookie) => {
                 <Route path="rules/edit/:id" component={CMSImportManifest.RuleEdit} />
                 <Route path="rules/view/:id" component={CMSImportManifest.RuleView} />
               </Route>
-              <Route path="customs">
+              <Route path="cusdecl">
                 <IndexRoute component={CMSImportCustoms.DeclList} />
                 <Route path=":billseqno/:preEntrySeqNo" component={CMSImportCustoms.DeclView} />
               </Route>
-              <Route path="ciq" component={CMSImportCiq.CiqList} />
+              <Route path="ciqdecl" component={CMSImportCiq.CiqList} />
             </Route>
             <Route path="export">
               <IndexRedirect to="/clearance/export/manifest" />
@@ -330,11 +330,11 @@ export default(store, cookie) => {
                 <Route path="rules/edit/:id" component={CMSExportManifest.RuleEdit} />
                 <Route path="rules/view/:id" component={CMSExportManifest.RuleView} />
               </Route>
-              <Route path="customs">
+              <Route path="cusdecl">
                 <IndexRoute component={CMSExportCustoms.DeclList} />
                 <Route path=":billseqno/:preEntrySeqNo" component={CMSExportCustoms.DeclView} />
               </Route>
-              <Route path="ciq" component={CMSExportCiq.CiqList} />
+              <Route path="ciqdecl" component={CMSExportCiq.CiqList} />
             </Route>
             <Route path="manual">
               <IndexRoute component={CMSManual.List} />

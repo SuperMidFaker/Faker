@@ -68,7 +68,7 @@ export default class Expander extends Component {
   render() {
     const { dataSource } = this.state;
     const columns = [{
-      title: '内部编号',
+      title: '统一编号',
       dataIndex: 'pre_entry_seq_no',
     }, {
       title: '类型',

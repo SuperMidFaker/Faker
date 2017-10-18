@@ -11,11 +11,11 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.ciq.search.placeholder',
-    defaultMessage: '海关编号/内部编号/委托编号',
+    defaultMessage: '海关编号/统一编号/委托编号',
   },
   ciqSearchPlaceholder: {
     id: 'cms.ciq.ciq.search.placeholder',
-    defaultMessage: '通关单号/内部编号/委托编号',
+    defaultMessage: '报检号/统一编号/委托编号',
   },
 
   ciqDeclaration: {
@@ -32,7 +32,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.ciq.delg.preEntry.no',
-    defaultMessage: '内部编号',
+    defaultMessage: '统一编号',
   },
   clrStatus: {
     id: 'cms.ciq.clr.status',

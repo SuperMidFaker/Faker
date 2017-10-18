@@ -389,7 +389,7 @@ export default class NormalDeclModal extends Component {
       title: '出库单号',
       dataIndex: 'ftz_rel_no',
     }, {
-      title: '供应商',
+      title: '供货商',
       dataIndex: 'supplier',
       width: 150,
       filterDropdown: (

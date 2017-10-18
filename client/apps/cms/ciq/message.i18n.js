@@ -4,7 +4,7 @@ export default defineMessages({
 
   ciqDecl: {
     id: 'cms.ciq.decl',
-    defaultMessage: '报检管理',
+    defaultMessage: '报检申报',
   },
   import: {
     id: 'cms.ciq.decl.import',
@@ -20,7 +20,7 @@ export default defineMessages({
   },
   ciqSearchPlaceholder: {
     id: 'cms.ciq.decl.ciq.search.placeholder',
-    defaultMessage: '通关单号/内部编号/委托编号',
+    defaultMessage: '报检号/统一编号/通关单号',
   },
   entryId: {
     id: 'cms.ciq.decl.delg.entryId',
@@ -32,7 +32,7 @@ export default defineMessages({
   },
   preEntryNo: {
     id: 'cms.ciq.decl.delg.preEntry.no',
-    defaultMessage: '内部编号',
+    defaultMessage: '报检号/统一编号',
   },
   clrStatus: {
     id: 'cms.ciq.decl.clr.status',

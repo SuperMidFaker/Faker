@@ -71,7 +71,7 @@ export default class Clearance extends React.Component {
         {
           single: true,
           key: 'cms-customs',
-          path: '/clearance/customs',
+          path: '/clearance/cusdecl',
           icon: 'logixon icon-customs',
           text: formatMsg(intl, 'customsDecl'),
         }
@@ -79,9 +79,8 @@ export default class Clearance extends React.Component {
       linkMenus.push(
         {
           single: true,
-          disabled: true,
           key: 'cms-ciq',
-          path: '/clearance/ciq',
+          path: '/clearance/ciqdecl',
           icon: 'logixon icon-ciq',
           text: formatMsg(intl, 'ciqDecl'),
         }
@@ -96,12 +95,11 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'import'),
         sublinks: [{
           key: 'cms-import-2',
-          path: '/clearance/import/customs',
+          path: '/clearance/import/cusdecl',
           text: formatMsg(intl, 'importCustomsDecl'),
         }, {
           key: 'cms-import-3',
-          disabled: true,
-          path: '/clearance/import/ciq',
+          path: '/clearance/import/ciqdecl',
           text: formatMsg(intl, 'importCiqDecl'),
         }],
       });
@@ -113,12 +111,11 @@ export default class Clearance extends React.Component {
         text: formatMsg(intl, 'export'),
         sublinks: [{
           key: 'cms-export-2',
-          path: '/clearance/export/customs',
+          path: '/clearance/export/cusdecl',
           text: formatMsg(intl, 'exportCustomsDecl'),
         }, {
           key: 'cms-export-3',
-          disabled: true,
-          path: '/clearance/export/ciq',
+          path: '/clearance/export/ciqdecl',
           text: formatMsg(intl, 'exportCiqDecl'),
         }],
       });
@@ -215,15 +212,14 @@ export default class Clearance extends React.Component {
           {
             single: true,
             key: 'cms-customs',
-            path: '/clearance/customs',
+            path: '/clearance/cusdecl',
             icon: 'logixon icon-customs',
             text: formatMsg(intl, 'customsDecl'),
           },
           {
             single: true,
-            disabled: true,
             key: 'cms-ciq',
-            path: '/clearance/ciq',
+            path: '/clearance/ciqdecl',
             icon: 'logixon icon-ciq',
             text: formatMsg(intl, 'ciqDecl'),
           }
@@ -238,13 +234,12 @@ export default class Clearance extends React.Component {
             text: formatMsg(intl, 'import'),
             sublinks: [{
               key: 'cms-import-2',
-              path: '/clearance/import/customs',
+              path: '/clearance/import/cusdecl',
               text: formatMsg(intl, 'importCustomsDecl'),
             }, {
               key: 'cms-import-3',
-              disabled: true,
               group: formatMsg(intl, 'import'),
-              path: '/clearance/import/ciq',
+              path: '/clearance/import/ciqdecl',
               text: formatMsg(intl, 'importCiqDecl'),
             }],
           },
@@ -256,13 +251,12 @@ export default class Clearance extends React.Component {
             text: formatMsg(intl, 'export'),
             sublinks: [{
               key: 'cms-export-2',
-              path: '/clearance/export/customs',
+              path: '/clearance/export/cusdecl',
               text: formatMsg(intl, 'exportCustomsDecl'),
             }, {
               key: 'cms-export-3',
-              disabled: true,
               group: formatMsg(intl, 'export'),
-              path: '/clearance/export/ciq',
+              path: '/clearance/export/ciqdecl',
               text: formatMsg(intl, 'exportCiqDecl'),
             }],
           }
@@ -272,15 +266,14 @@ export default class Clearance extends React.Component {
           {
             single: true,
             key: 'cms-customs',
-            path: '/clearance/customs',
+            path: '/clearance/cusdecl',
             icon: 'logixon icon-customs',
             text: formatMsg(intl, 'customsDecl'),
           },
           {
             single: true,
-            disabled: true,
             key: 'cms-ciq',
-            path: '/clearance/ciq',
+            path: '/clearance/ciqdecl',
             icon: 'logixon icon-ciq',
             text: formatMsg(intl, 'ciqDecl'),
           },
@@ -296,9 +289,8 @@ export default class Clearance extends React.Component {
               text: formatMsg(intl, 'importCustomsDecl'),
             }, {
               key: 'cms-import-3',
-              disabled: true,
               group: formatMsg(intl, 'import'),
-              path: '/clearance/import/ciq',
+              path: '/clearance/import/ciqdecl',
               text: formatMsg(intl, 'importCiqDecl'),
             }],
           },
@@ -314,9 +306,8 @@ export default class Clearance extends React.Component {
               text: formatMsg(intl, 'exportCustomsDecl'),
             }, {
               key: 'cms-export-3',
-              disabled: true,
               group: formatMsg(intl, 'export'),
-              path: '/clearance/export/ciq',
+              path: '/clearance/export/ciqdecl',
               text: formatMsg(intl, 'exportCiqDecl'),
             }],
           }

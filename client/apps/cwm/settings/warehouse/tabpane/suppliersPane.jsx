@@ -42,7 +42,7 @@ export default class SuppliersPane extends Component {
     dataIndex: 'code',
     width: 100,
   }, {
-    title: '供应商名称',
+    title: '供货商名称',
     dataIndex: 'name',
     width: 250,
   }, {
@@ -118,7 +118,7 @@ export default class SuppliersPane extends Component {
     return (
       <div className="table-panel table-fixed-layout">
         <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供应商</Button>
+          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供货商</Button>
         </div>
         <Table columns={this.columns} dataSource={suppliers} rowKey="id" />
         <SuppliersModal whseCode={whseCode} />

@@ -123,7 +123,7 @@ export default class BatchDeclList extends React.Component {
     dataIndex: 'cus_decl_no',
     width: 150,
   }, {
-    title: '供应商',
+    title: '供货商',
     dataIndex: 'supplier',
     width: 100,
   }, {

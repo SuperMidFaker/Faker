@@ -39,7 +39,7 @@ export default defineMessages({
   },
   delgInternalNo: {
     id: 'cms.forms.delg.internal.no',
-    defaultMessage: '企业内部编号',
+    defaultMessage: '统一编号',
   },
   packageNum: {
     id: 'cms.forms.delg.packageNum',

@@ -92,7 +92,7 @@ export default class OrderDetailsPane extends React.Component {
     dataIndex: 'serial_no',
     width: 120,
   }, {
-    title: '供应商',
+    title: '供货商',
     dataIndex: 'supplier',
     width: 120,
   }, {

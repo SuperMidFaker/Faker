@@ -150,7 +150,7 @@ export default class ManifestEditor extends React.Component {
   }
   handleEntryVisit = (ev) => {
     const { ietype, billMeta } = this.props;
-    const pathname = `/clearance/${ietype}/customs/${billMeta.bill_seq_no}/${ev.key}`;
+    const pathname = `/clearance/${ietype}/cusdecl/${billMeta.bill_seq_no}/${ev.key}`;
     this.context.router.push({ pathname });
   }
   validateCode = (code, customsCode) => {

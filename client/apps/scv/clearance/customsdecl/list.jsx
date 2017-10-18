@@ -84,7 +84,7 @@ export default class ScvCustomsDeclList extends Component {
     render: (entryNO, record) => {
       const ietype = record.i_e_type === 0 ? 'import' : 'export';
       const preEntryLink = (
-        <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
+        <NavLink to={`/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
           {record.pre_entry_seq_no}
         </NavLink>);
       switch (record.status) {
@@ -111,7 +111,7 @@ export default class ScvCustomsDeclList extends Component {
           return (
             <span>
               <DeclStatusPopover entryId={entryNO}><Tag color={record.status === CMS_DECL_STATUS.released.value ? 'green' : 'blue'}><Logixon type="customs-o" /></Tag></DeclStatusPopover>
-              <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>
+              <NavLink to={`/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>
             </span>);
         default:
           return <span />;

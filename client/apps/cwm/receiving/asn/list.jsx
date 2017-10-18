@@ -93,7 +93,7 @@ export default class ReceivingASNList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
-    title: '供应商',
+    title: '供货商',
     dataIndex: 'supplier_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
@@ -387,7 +387,7 @@ export default class ReceivingASNList extends React.Component {
       <Select showSearch optionFilterProp="children" size="large" value={filters.supplierCode}
         onChange={this.handleSupplierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <Option value="all" key="all">全部供应商</Option>
+        <Option value="all" key="all">全部供货商</Option>
         {suppliers.filter(supplier => filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true)
         .map(supplier => (<Option key={supplier.code} value={supplier.code}>{supplier.name}</Option>))}
       </Select></span>);

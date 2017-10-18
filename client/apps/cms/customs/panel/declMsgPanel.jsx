@@ -20,7 +20,7 @@ export default class DeclMsgPanel extends React.Component {
   state = {
   }
   sentColumns = [{
-    title: '内部编号',
+    title: '统一编号',
     dataIndex: 'pre_entry_seq_no',
     width: 160,
   }, {
@@ -33,7 +33,7 @@ export default class DeclMsgPanel extends React.Component {
     width: 160,
   }];
   recvColumns = [{
-    title: '内部编号',
+    title: '统一编号',
     dataIndex: 'pre_entry_seq_no',
     width: 160,
   }, {

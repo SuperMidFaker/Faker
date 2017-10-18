@@ -116,7 +116,7 @@ export default class WarehouseList extends Component {
         <OwnersPane whseCode={warehouse.code} whseName={warehouse.name} whseTenantId={warehouse.wh_ent_tenant_id} />
       </TabPane>);
     tabs.push(
-      <TabPane tab="供应商" key="suppliers">
+      <TabPane tab="供货商" key="suppliers">
         <SuppliersPane whseCode={warehouse.code} whseTenantId={warehouse.wh_ent_tenant_id} />
       </TabPane>);
     tabs.push(

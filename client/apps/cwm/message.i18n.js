@@ -96,7 +96,7 @@ const messages = defineMessages({
   },
   resourcesSupplier: {
     id: 'cwm.module.resources.supplier',
-    defaultMessage: '供应商',
+    defaultMessage: '供货商',
   },
   resourcesConsignee: {
     id: 'cwm.module.resources.consignee',

@@ -277,7 +277,7 @@ export default class DelegationPane extends React.Component {
                         >
                           <Row>
                             <Col span={12}>
-                              <InfoItem label="内部编号" field={activity.field} />
+                              <InfoItem label="统一编号" field={activity.field} />
                             </Col>
                             <Col span={12}>
                               <InfoItem label="查验状态" field={inspectStatusTxt} />

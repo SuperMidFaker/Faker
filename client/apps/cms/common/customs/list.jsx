@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import { Breadcrumb, DatePicker, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -13,7 +12,8 @@ import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import NavLink from 'client/components/NavLink';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import DeclReleasedModal from './modals/declReleasedModal';
@@ -30,10 +30,12 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
+const OptGroup = Select.OptGroup;
+const RangePicker = DatePicker.RangePicker;
 
 @injectIntl
 @connect(
@@ -89,10 +91,10 @@ export default class CustomsList extends Component {
   columns = [{
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
-    width: 110,
+    width: 120,
     fixed: 'left',
     render: (o, record) => (
-      <a onClick={() => this.handlePreview(o, record)}>
+      <a onClick={ev => this.handlePreview(record, ev)}>
         {o}
       </a>),
   }, {
@@ -105,19 +107,23 @@ export default class CustomsList extends Component {
     dataIndex: 'entry_id',
     width: 200,
     render: (entryNO, record) => {
-      const ietype = record.i_e_type === 0 ? 'import' : 'export';
-      const preEntryLink = (
-        <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
-          {record.pre_entry_seq_no}
-        </NavLink>);
       switch (record.status) {
         case CMS_DECL_STATUS.proposed.value:
         case CMS_DECL_STATUS.reviewed.value:
-          return (<span>{preEntryLink}</span>);
+          return (
+            <Tooltip title="点击编号在新窗口中打开" placement="left">
+              <a onClick={ev => this.handleDounbleClick(record, ev)}>
+                {record.pre_entry_seq_no}
+              </a>
+            </Tooltip>);
         case CMS_DECL_STATUS.sent.value:
           return (
             <span>
-              {preEntryLink}
+              <Tooltip title="点击编号在新窗口中打开" placement="left">
+                <a onClick={ev => this.handleDounbleClick(record, ev)}>
+                  {record.pre_entry_seq_no}
+                </a>
+              </Tooltip>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
@@ -126,9 +132,9 @@ export default class CustomsList extends Component {
             </span>);
         case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
-          return (<NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>);
+          return (<Tooltip title="点击编号在新窗口中打开" placement="left"><a onClick={ev => this.handleDounbleClick(record, ev)}>{entryNO}</a></Tooltip>);
         default:
-          return <span />;
+          break;
       }
     },
   }, {
@@ -165,7 +171,7 @@ export default class CustomsList extends Component {
       return child;
     },
   }, {
-    title: <Tooltip title="明细记录数"><Icon type="bars" /></Tooltip>,
+    title: <Tooltip title="商品项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
     width: 50,
     render: dc => !isNaN(dc) ? dc : null,
@@ -209,7 +215,7 @@ export default class CustomsList extends Component {
   }, {
     title: '收发货人',
     dataIndex: 'trade_name',
-    width: 160,
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '进/出口口岸',
@@ -222,6 +228,14 @@ export default class CustomsList extends Component {
       }
       return <TrimSpan text={port} maxLen={14} />;
     },
+  }, {
+    title: '监管方式',
+    dataIndex: 'trade_mode',
+    width: 100,
+  }, {
+    title: '提运单号',
+    dataIndex: 'bl_wb_no',
+    width: 180,
   }, {
     title: '进/出口日期',
     dataIndex: 'i_e_date',
@@ -251,7 +265,7 @@ export default class CustomsList extends Component {
   }, {
     title: '申报单位',
     dataIndex: 'agent_name',
-    width: 160,
+    width: 180,
     render: o => <TrimSpan text={o} maxLen={10} />,
   }, {
     title: '报关人员',
@@ -259,7 +273,8 @@ export default class CustomsList extends Component {
     width: 120,
   }, {
     title: this.msg('opColumn'),
-    width: 180,
+    dataIndex: 'OPS_COL',
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
@@ -273,49 +288,19 @@ export default class CustomsList extends Component {
       } else {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
-          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="recall">
-            <RowUpdater onHit={this.handleRecall} label={<span><Icon type="left-circle-o" />{this.msg('recall')}</span>} row={record} />
-          </PrivilegeCover>);
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
             <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
-          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('resendPackets')}</span>} row={record} />
-          </PrivilegeCover>);
         }
-        if (record.status !== CMS_DECL_STATUS.released.value) {
+        if (record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />放行确认</span>}
               />
             </PrivilegeCover>);
-        }
-        if (record.ep_send_filename && record.status === CMS_DECL_STATUS.sent.value) {
-          spanElems.push(
-            <Dropdown key="epsend" overlay={(
-              <Menu>
-                <Menu.Item key="edit">
-                  <a role="presentation" onClick={() => this.handleEpSendXmlView(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
-                </Menu.Item>
-              </Menu>)}
-            >
-              <a><Icon type="down" /></a>
-            </Dropdown>);
-        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.entered.value) {
-          spanElems.push(
-            <Dropdown key="receipt" overlay={(<Menu>
-              <Menu.Item key="edit">
-                <a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>
-              </Menu.Item>
-            </Menu>)}
-            >
-              <a><Icon type="down" /></a>
-            </Dropdown>);
-        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.released.value) {
-          spanElems.push(<a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>);
         }
         for (let i = 1; i < spanElems.length; i += 2) {
           spanElems.splice(i, 0, <span className="ant-divider" key={`divid${i}`} />);
@@ -324,7 +309,7 @@ export default class CustomsList extends Component {
       }
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCustomsDecls(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -361,8 +346,9 @@ export default class CustomsList extends Component {
       }
     });
   }
-  handlePreview = (delgNo) => {
-    this.props.showPreviewer(delgNo, 'customsDecl');
+  handlePreview = (record, ev) => {
+    ev.stopPropagation();
+    this.props.showPreviewer(record.delg_no, 'customsDecl');
   }
   handleDeclNoFill = (row) => {
     this.props.openEfModal({
@@ -374,6 +360,18 @@ export default class CustomsList extends Component {
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, filters);
+  }
+  handleRowClick = (record, index, ev) => {
+    ev.preventDefault();
+    const ietype = record.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    this.context.router.push(link);
+  }
+  handleDounbleClick = (record, ev) => {
+    ev.stopPropagation();
+    const ietype = record.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    window.open(link);
   }
   handleClientSelectChange = (value) => {
     const clientView = { tenantIds: [], partnerIds: [] }; // FIXME should not use two ids; delegation/list vice versa
@@ -494,18 +492,26 @@ export default class CustomsList extends Component {
       },
     };
     const status = this.props.listFilter.status;
-    let bulkBtns = '';
+    let dateVal = [];
+    if (listFilter.filterDate.length > 0 && listFilter.filterDate[0] !== '') {
+      dateVal = [moment(listFilter.filterDate[0]), moment(listFilter.filterDate[1])];
+    }
+    let clientPid = -1;
+    if (listFilter.clientView.partnerIds.length > 0) {
+      clientPid = listFilter.clientView.partnerIds[0];
+    }
+    let bulkActions = '';
     if (status === 'proposed') {
-      bulkBtns = (
-        <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+      bulkActions = (
+        <PrivilegeCover module="clearance" feature="customs" action="edit">
           <Button type="default" size="large" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
           批量复核
         </Button>
         </PrivilegeCover>);
     } else if (status === 'reviewed') {
-      bulkBtns = (
+      bulkActions = (
         <span>
-          <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
+          <PrivilegeCover module="clearance" feature="customs" action="edit">
             <Button type="primary" size="large" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
             批量发送
           </Button>
@@ -517,75 +523,78 @@ export default class CustomsList extends Component {
           </Popconfirm>
         </span>);
     }
-    let clientPid = -1;
-    if (listFilter.clientView.partnerIds.length > 0) {
-      clientPid = listFilter.clientView.partnerIds[0];
-    }
     const clients = [{
       name: '全部客户',
       partner_id: -1,
     }].concat(this.props.clients);
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleClientSelectChange} value={clientPid}
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        {clients.map(data => (<Option key={data.name} value={data.partner_id}>
+          {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+        </Option>))}
+      </Select>
+      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+        onChange={this.handleTradesSelectChange} defaultValue="all"
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      >
+        <Option value="all">全部收发货人</Option>
+        {trades.map(data => (<Option key={data.id} value={data.id}
+          search={`${data.code}${data.name}`}
+        >{data.name}</Option>)
+        )}
+      </Select>
+      <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+        onChange={this.handleViewChange}
+      >
+        <OptGroup label="常用视图">
+          <Option value="all">全部委托</Option>
+          <Option value="my">我负责的委托</Option>
+        </OptGroup>
+      </Select>
+      <RangePicker size="large" value={dateVal}
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      /></span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('customsDeclaration')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            {Object.keys(CMS_DECL_STATUS).map(declkey =>
-              <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('customsDeclaration')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+              <RadioButton value="all">{this.msg('all')}</RadioButton>
+              {Object.keys(CMS_DECL_STATUS).map(declkey =>
+                <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
             )}
-          </RadioGroup>
-          <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
-            <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
-          </RadioGroup>
-          <div className="page-header-tools" />
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-              <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleClientSelectChange} value={clientPid}
-                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                {clients.map(data => (<Option key={data.name} value={data.partner_id}>
-                  {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
-                </Option>))}
-              </Select>
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
-                onChange={this.handleTradesSelectChange} defaultValue="all"
-                dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-              >
-                <Option value="all">全部收发货人</Option>
-                {trades.map(data => (<Option key={data.id} value={data.id}
-                  search={`${data.code}${data.name}`}
-                >{data.name}</Option>)
-                )}
-              </Select>
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                {bulkBtns}
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="id" dataSource={this.dataSource}
-                loading={customslist.loading} scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-              />
-            </div>
-            <FillCustomsNoModal reload={this.handleTableLoad} />
-            <DeclReleasedModal reload={this.handleTableLoad} />
-            <SendDeclMsgModal ietype={this.props.ietype} reload={this.handleTableLoad} />
-            <BatchSendModal ietype={this.props.ietype} reload={this.handleTableLoad} />
-          </div>
+            </RadioGroup>
+            <span />
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+              <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
+            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
+            onRowClick={this.handleRowClick}
+          />
+          <FillCustomsNoModal reload={this.handleTableLoad} />
+          <DeclReleasedModal reload={this.handleTableLoad} />
+          <SendDeclMsgModal reload={this.handleTableLoad} />
+          <BatchSendModal reload={this.handleTableLoad} />
         </Content>
         <DelegationDockPanel ietype={this.props.ietype} />
         <OrderDockPanel />

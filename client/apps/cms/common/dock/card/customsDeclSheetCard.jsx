@@ -17,7 +17,7 @@ export default class CustomsDeclSheetCard extends React.Component {
   }
   handleView = () => {
     const clearType = this.props.manifest.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${clearType}/customs/${this.props.manifest.bill_seq_no}/${this.props.customsDecl.pre_entry_seq_no}`;
+    const link = `/clearance/${clearType}/cusdecl/${this.props.manifest.bill_seq_no}/${this.props.customsDecl.pre_entry_seq_no}`;
     this.context.router.push(`${link}`);
   }
 
@@ -29,7 +29,7 @@ export default class CustomsDeclSheetCard extends React.Component {
     const sheetType = customsDecl.sheet_type === 'CDF' ? <Tag color="blue">报关单</Tag> : <Tag color="green">备案清单</Tag>;
     const declNo = (customsDecl.entry_id) ?
       <span>海关编号# {customsDecl.entry_id} {sheetType}</span> :
-      <span className="mdc-text-grey">内部编号# {customsDecl.pre_entry_seq_no} {sheetType}</span>;
+      <span className="mdc-text-grey">统一编号# {customsDecl.pre_entry_seq_no} {sheetType}</span>;
     let inspectFlag = <Tag>否</Tag>;
     if (customsDecl.customs_inspect === 1) {
       inspectFlag = <Tag color="#F04134">是</Tag>;

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag } from 'antd';
-import Table from 'client/components/remoteAntTable';
-import QueueAnim from 'rc-queue-anim';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCiqDecls, setInspect, setCiqFinish } from 'common/reducers/cmsDeclare';
@@ -18,7 +18,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import CiqnoFillModal from '../common/ciq/modals/ciqNoFill';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -66,10 +66,23 @@ export default class CiqDeclList extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
+    width: 120,
+    fixed: 'left',
+    render: (o, record) => (
+      <a onClick={ev => this.handlePreview(record, ev)}>
+        {o}
+      </a>),
+  }, {
+    title: this.msg('orderNo'),
+    width: 180,
+    dataIndex: 'order_no',
+    render: o => <TrimSpan text={o} maxLen={20} />,
+  }, {
     title: this.msg('preEntryNo'),
     dataIndex: 'pre_entry_seq_no',
-    fixed: 'left',
-    width: 150,
+    width: 180,
   }, {
     title: this.msg('ciqNo'),
     width: 180,
@@ -94,26 +107,9 @@ export default class CiqDeclList extends Component {
       }
     },
   }, {
-    title: '客户',
-    dataIndex: 'send_name',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
-  }, {
-    title: this.msg('ciqAgent'),
-    dataIndex: 'ciq_name',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
-  }, {
-    title: '提运单号',
-    dataIndex: 'bl_wb_no',
-  }, {
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
-    width: 120,
-  }, {
-    title: '检验检疫',
+    title: '报检类别',
     width: 100,
-    dataIndex: 'ciq_type',
+    dataIndex: 'ciqdecl_type',
     render: (o) => {
       if (o === 'NL') {
         return <Tag color="cyan">包装检疫</Tag>;
@@ -123,6 +119,10 @@ export default class CiqDeclList extends Component {
       return <span />;
     },
   }, {
+    title: '报检状态',
+    dataIndex: 'ciqdecl_status',
+    width: 100,
+  }, {
     title: '报检日期',
     width: 120,
     render: (o, record) => (record.id ?
@@ -131,16 +131,33 @@ export default class CiqDeclList extends Component {
     title: this.msg('qualityCheck'),
     dataIndex: 'ciq_quality_inspect',
     width: 80,
-    fixed: 'right',
     render: (o, record) =>
       <ColumnSwitch field="pzcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('anipkCheck'),
     dataIndex: 'ciq_ap_inspect',
     width: 100,
-    fixed: 'right',
     render: (o, record) =>
       <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
+  }, {
+    title: '发货人',
+    dataIndex: 'consignor',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: '收货人',
+    dataIndex: 'consignee',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: this.msg('ciqAgent'),
+    dataIndex: 'ciqdecl_org',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: '报检地',
+    dataIndex: 'ciqdecl_place',
+    width: 100,
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -160,7 +177,7 @@ export default class CiqDeclList extends Component {
       }
     },
   }]
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCiqDecls(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -246,36 +263,36 @@ export default class CiqDeclList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const toolbarActions = (<span>
+      <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+    </span>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('ciqDecl')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
-            <RadioButton value="all">{this.msg('all')}</RadioButton>
-            <RadioButton value="import">{this.msg('import')}</RadioButton>
-            <RadioButton value="export">{this.msg('export')}</RadioButton>
-          </RadioGroup>
-          <span />
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-              <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-              </div>
-            </div>
-            <div className="panel-body table-panel table-fixed-layout expandable">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource} loading={ciqdeclList.loading} scroll={{ x: 1700 }} />
-            </div>
-            <CiqnoFillModal reload={this.handleTableLoad} />
-          </div>
+      <Layout>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('ciqDecl')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
+            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
+              <RadioButton value="all">{this.msg('all')}</RadioButton>
+              <RadioButton value="import">{this.msg('import')}</RadioButton>
+              <RadioButton value="export">{this.msg('export')}</RadioButton>
+            </RadioGroup>
+          </PageHeader.Nav>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable toolbarActions={toolbarActions}
+            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
+            columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={ciqdeclList.loading}
+            onRowClick={this.handleRowClick}
+          />
+          <CiqnoFillModal reload={this.handleTableLoad} />
         </Content>
-      </QueueAnim>
+      </Layout>
     );
   }
 }

@@ -234,7 +234,7 @@ export default class StatsCard extends Component {
             <h4>{this.msg('inspected')}</h4>
             <div className="data">
               <div className="data-num lg text-error">
-                <Link to="/clearance/customs?status='inspect'" onClick={() => this.handleLinkClick('inspected')}>{inspected}</Link>
+                <Link to="/clearance/cusdecl?status='inspect'" onClick={() => this.handleLinkClick('inspected')}>{inspected}</Link>
               </div>
               <div className="data-extra">
                 {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%

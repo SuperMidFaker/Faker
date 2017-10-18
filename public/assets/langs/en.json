@@ -151,7 +151,7 @@
   "cms.docs.delg.delivery.no": "提运单号",
   "cms.docs.delg.invoice.no": "发票号",
   "cms.docs.delg.voyage.no": "航名航次",
-  "cms.docs.delg.internal.no": "企业内部编号",
+  "cms.docs.delg.internal.no": "统一编号",
   "cms.docs.delg.packageNum": "件数",
   "cms.docs.delg.weight": "重量",
   "cms.docs.delg.source": "来源",

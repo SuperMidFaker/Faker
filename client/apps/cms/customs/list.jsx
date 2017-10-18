@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Dropdown, Menu, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Breadcrumb, DatePicker, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -15,7 +15,6 @@ import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import NavLink from 'client/components/NavLink';
 import RowUpdater from 'client/components/rowUpdater';
 import FillCustomsNoModal from '../common/customs/modals/fillCustomsNoModal';
 import DeclReleasedModal from '../common/customs/modals/declReleasedModal';
@@ -108,7 +107,7 @@ export default class CustomsList extends Component {
     width: 120,
     fixed: 'left',
     render: (o, record) => (
-      <a onClick={() => this.handlePreview(o, record)}>
+      <a onClick={ev => this.handlePreview(record, ev)}>
         {o}
       </a>),
   }, {
@@ -121,22 +120,23 @@ export default class CustomsList extends Component {
     dataIndex: 'entry_id',
     width: 200,
     render: (entryNO, record) => {
-      const ietype = record.i_e_type === 0 ? 'import' : 'export';
-      const preEntryLink = (
-        <NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>
-          {record.pre_entry_seq_no}
-        </NavLink>);
       switch (record.status) {
         case CMS_DECL_STATUS.proposed.value:
         case CMS_DECL_STATUS.reviewed.value:
           return (
-            <span>
-              {preEntryLink}
-            </span>);
+            <Tooltip title="点击编号在新窗口中打开" placement="left">
+              <a onClick={ev => this.handleDounbleClick(record, ev)}>
+                {record.pre_entry_seq_no}
+              </a>
+            </Tooltip>);
         case CMS_DECL_STATUS.sent.value:
           return (
             <span>
-              {preEntryLink}
+              <Tooltip title="点击编号在新窗口中打开" placement="left">
+                <a onClick={ev => this.handleDounbleClick(record, ev)}>
+                  {record.pre_entry_seq_no}
+                </a>
+              </Tooltip>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
                 <RowUpdater onHit={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
@@ -145,9 +145,9 @@ export default class CustomsList extends Component {
             </span>);
         case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
-          return (<NavLink to={`/clearance/${ietype}/customs/${record.bill_seq_no}/${record.pre_entry_seq_no}`}>{entryNO}</NavLink>);
+          return (<Tooltip title="点击编号在新窗口中打开" placement="left"><a onClick={ev => this.handleDounbleClick(record, ev)}>{entryNO}</a></Tooltip>);
         default:
-          return <span />;
+          break;
       }
     },
   }, {
@@ -287,7 +287,7 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
-    width: 180,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
@@ -307,37 +307,13 @@ export default class CustomsList extends Component {
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
         }
-        if (record.status !== CMS_DECL_STATUS.released.value) {
+        if (record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
               <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />放行确认</span>}
               />
             </PrivilegeCover>);
-        }
-        if (record.ep_send_filename && record.status === CMS_DECL_STATUS.sent.value) {
-          spanElems.push(
-            <Dropdown key="epsend" overlay={(
-              <Menu>
-                <Menu.Item key="edit">
-                  <a role="presentation" onClick={() => this.handleEpSendXmlView(record.ep_send_filename)}><Icon type="eye-o" /> EDI报文</a>
-                </Menu.Item>
-              </Menu>)}
-            >
-              <a><Icon type="down" /></a>
-            </Dropdown>);
-        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.entered.value) {
-          spanElems.push(
-            <Dropdown key="receipt" overlay={(<Menu>
-              <Menu.Item key="edit">
-                <a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>
-              </Menu.Item>
-            </Menu>)}
-            >
-              <a><Icon type="down" /></a>
-            </Dropdown>);
-        } else if (record.ep_receipt_filename && record.status === CMS_DECL_STATUS.released.value) {
-          spanElems.push(<a role="presentation" onClick={() => this.handleEpRecvXmlView(record.ep_receipt_filename)}><Icon type="eye-o" /> EDI回执</a>);
         }
         for (let i = 1; i < spanElems.length; i += 2) {
           spanElems.splice(i, 0, <span className="ant-divider" key={`divid${i}`} />);
@@ -386,8 +362,9 @@ export default class CustomsList extends Component {
       }
     });
   }
-  handlePreview = (delgNo) => {
-    this.props.showPreviewer(delgNo, 'customsDecl');
+  handlePreview = (record, ev) => {
+    ev.stopPropagation();
+    this.props.showPreviewer(record.delg_no, 'customsDecl');
   }
   handleDeclNoFill = (row) => {
     this.props.openEfModal({
@@ -399,6 +376,18 @@ export default class CustomsList extends Component {
   handleSearch = (searchVal) => {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, { ...filters });
+  }
+  handleRowClick = (record, index, ev) => {
+    ev.preventDefault();
+    const ietype = record.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    this.context.router.push(link);
+  }
+  handleDounbleClick = (record, ev) => {
+    ev.stopPropagation();
+    const ietype = record.i_e_type === 0 ? 'import' : 'export';
+    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    window.open(link);
   }
   mergeFilters(curFilters, value) {
     const newFilters = {};
@@ -652,6 +641,7 @@ export default class CustomsList extends Component {
             <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
               rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
               columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
+              onRowClick={this.handleRowClick}
             />
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />
@@ -664,7 +654,7 @@ export default class CustomsList extends Component {
           defaultCollapsed
           collapsible
           collapsed={this.state.rightSiderCollapsed}
-          width={580}
+          width={480}
           collapsedWidth={0}
           className="right-sider"
         >

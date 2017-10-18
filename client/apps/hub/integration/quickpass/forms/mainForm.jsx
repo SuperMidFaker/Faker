@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Col, Row } from 'antd';
+import { Form, Input, Radio, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { formatMsg } from '../../message.i18n';
 
 const FormItem = Form.Item;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @injectIntl
 export default class MainForm extends Component {
@@ -21,31 +23,38 @@ export default class MainForm extends Component {
     return (
       <Row gutter={16}>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('epSendTradeCode')}>
-            {getFieldDecorator('send_trade_code', {
-              initialValue: quickpass.send_trade_code,
+          <FormItem label={this.msg('部署模式')}>
+            {getFieldDecorator('deploy_mode', {
+              initialValue: quickpass.deploy_mode,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
-            })(<Input />)}
+            })(<RadioGroup>
+              <RadioButton value="host">私有主机</RadioButton>
+              <RadioButton value="cloud">公有云</RadioButton>
+            </RadioGroup>)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('epRecvTradeCode')}>
-            {getFieldDecorator('receive_trade_code', {
-              initialValue: quickpass.receive_trade_code,
+          <FormItem label={this.msg('连接方式')}>
+            {getFieldDecorator('connect_type', {
+              initialValue: quickpass.connect_type,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
-            })(<Input />)}
+            })(<RadioGroup>
+              <RadioButton value="ftp">FTP</RadioButton>
+              <RadioButton value="mq">MQ</RadioButton>
+              <RadioButton value="api">API</RadioButton>
+            </RadioGroup>)}
           </FormItem>
         </Col>
         <Col sm={24} lg={24}>
-          <FormItem label={this.msg('FTPserver')}>
-            {getFieldDecorator('ftp_server', {
-              initialValue: quickpass.ftp_server,
+          <FormItem label={this.msg('主机地址')}>
+            {getFieldDecorator('host_address', {
+              initialValue: quickpass.host_address,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
-            })(<Input />)}
+            })(<Input placeholder="主机IP地址或域名" />)}
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('FTPusername')}>
+          <FormItem label={this.msg('username')}>
             {getFieldDecorator('username', {
               initialValue: quickpass.username,
               rules: [{ required: true, message: this.msg('parameterRequired') }],
@@ -53,7 +62,7 @@ export default class MainForm extends Component {
           </FormItem>
         </Col>
         <Col sm={24} lg={12}>
-          <FormItem label={this.msg('FTPpassword')}>
+          <FormItem label={this.msg('password')}>
             {getFieldDecorator('password', {
               initialValue: quickpass.password,
               rules: [{ required: true, message: this.msg('parameterRequired') }],

@@ -73,7 +73,7 @@ export default class SuppliersModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     }; return (
-      <Modal title="添加供应商" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
+      <Modal title="添加供货商" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Form layout="horizontal">
           <FormItem label="名称:" required {...formItemLayout}>
             {getFieldDecorator('name')(<Input required />)}
