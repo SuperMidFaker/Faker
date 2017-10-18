@@ -115,6 +115,38 @@ class DataTable extends Component {
       });
     }
   }
+  componentWillReceiveProps(nextProps) {
+    if (!this.isSameColumns(nextProps.columns, this.props.columns)) {
+      const tableColumns = nextProps.columns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index,
+      }));
+      let popoverColumns = nextProps.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      popoverColumns = popoverColumns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index }));
+      this.setState({
+        popoverColumns,
+        tableColumns,
+      });
+    }
+  }
+  isSameColumns = (nextColumns, currColumns) => {
+    if (nextColumns === currColumns) {
+      return true;
+    } if (nextColumns.length === currColumns.length) {
+      for (let i = 0; i < nextColumns.length; i++) {
+        if (nextColumns[i] !== currColumns[i]) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
   isLocalDataSource(dataSource) {
     return Array.isArray(dataSource);
   }
