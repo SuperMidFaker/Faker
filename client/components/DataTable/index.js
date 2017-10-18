@@ -116,7 +116,7 @@ class DataTable extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (this.isSameColumns(nextProps.columns, this.props.columns)) {
+    if (!this.isSameColumns(nextProps.columns, this.props.columns)) {
       const tableColumns = nextProps.columns.map((column, index) => ({
         ...column,
         checked: true,
@@ -135,16 +135,16 @@ class DataTable extends Component {
   }
   isSameColumns = (nextColumns, currColumns) => {
     if (nextColumns === currColumns) {
-      return false;
+      return true;
     } if (nextColumns.length === currColumns.length) {
       for (let i = 0; i < nextColumns.length; i++) {
         if (nextColumns[i] !== currColumns[i]) {
-          return true;
+          return false;
         }
       }
-      return false;
-    } else {
       return true;
+    } else {
+      return false;
     }
   }
   isLocalDataSource(dataSource) {
