@@ -288,9 +288,9 @@ export default class SHFTZRelDetail extends Component {
     const sendText = sent ? '重新发送' : '发送备案';
     let sendable = true;
     let whyunsent = '';
-    if (relSo.outbound_status < CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
+    if (relSo.outbound_status < CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
       sendable = false;
-      whyunsent = '出库单配货未完成';
+      whyunsent = '出库单未配货';
     }
     if (sendable) {
       const nonOutDates = [];
@@ -306,7 +306,7 @@ export default class SHFTZRelDetail extends Component {
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     let splitExtra = null;
-    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.ALL_ALLOC.value && regStatus < CWM_SHFTZ_APIREG_STATUS.processing) {
+    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value && regStatus < CWM_SHFTZ_APIREG_STATUS.processing) {
       splitExtra = (<Form layout="inline">
         <Form.Item label="拆分选项: ">
           <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
