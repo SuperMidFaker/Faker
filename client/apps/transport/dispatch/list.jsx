@@ -23,7 +23,7 @@ import { loadTable,
          changeDockStatus } from 'common/reducers/transportDispatch';
 import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
-import { TRANS_MODE_INDICATOR } from 'common/constants';
+import { SHIPMENT_TRACK_STATUS, SHIPMENT_VEHICLE_CONNECT, TRANS_MODE_INDICATOR } from 'common/constants';
 import messages from './message.i18n';
 import Condition from './condition';
 import DispatchDock from './dispatchDock';
@@ -388,8 +388,10 @@ export default class DispatchList extends React.Component {
           fixed: fixedRight,
           dataIndex: 'OPS_COL',
           render: (o, record) => {
-            if (s === 'dispatched') {
-              if (record.disp_status === 2) {
+            if (s === 'dispatched') { // record is downstream dispatch
+              if (record.status < SHIPMENT_TRACK_STATUS.intransit && ( // 线下承运商和线下车队直接退回
+                (record.sp_tenant_id === 0 && record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) ||
+                record.sp_tenant_id === -1 || (record.status === SHIPMENT_TRACK_STATUS.unaccepted))) { // 线上承运商未接单可退回
                 return (
                   <PrivilegeCover module="transport" feature="dispatch" action="edit">
                     <span>

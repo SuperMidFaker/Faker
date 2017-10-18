@@ -291,6 +291,24 @@ export default class DetailPane extends React.Component {
     } else if (field === 'total_volume') {
       const msg = `总体积：${formData.total_volume} 变更为 ${value}`;
       this.computeSaleCharge({ [field]: value }, form, type, msg);
+    } else if (field === 'pickup_est_date') {
+      if (!value) {
+        form[field] = null;
+      } else if (formData.deliver_est_date) {
+        form.transit_time = moment(formData.deliver_est_date).diff(value, 'days');
+      } else {
+        formData.deliver_est_date = moment(value).add(formData.transit_time, 'days');
+      }
+      this.handleSave(form, type);
+    } else if (field === 'deliver_est_date') {
+      if (!value) {
+        form[field] = null;
+      } else if (formData.pickup_est_date) {
+        form.transit_time = moment(value).diff(formData.pickup_est_date, 'days');
+      } else if (formData.transit_time) {
+        form.pickup_est_date = moment(value).subtract(formData.transit_time, 'days');
+      }
+      this.handleSave(form, type);
     } else {
       this.handleSave(form, type);
     }
@@ -388,7 +406,7 @@ export default class DetailPane extends React.Component {
                               type="date"
                               field={shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : null}
                               editable={editable}
-                              onEdit={value => this.handleSaveShipment('pickup_est_date', new Date(value), 'timeInfoChanged')}
+                              onEdit={value => this.handleSaveShipment('pickup_est_date', value && new Date(value), 'timeInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
@@ -437,7 +455,7 @@ export default class DetailPane extends React.Component {
                               type="date"
                               field={shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : null}
                               editable={editable}
-                              onEdit={value => this.handleSaveShipment('deliver_est_date', new Date(value), 'timeInfoChanged')}
+                              onEdit={value => this.handleSaveShipment('deliver_est_date', value && new Date(value), 'timeInfoChanged')}
                             />
                           </Col>
                           <Col span={12}>
