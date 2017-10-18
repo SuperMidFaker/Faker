@@ -116,13 +116,35 @@ class DataTable extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.columns.find(column => column.dataIndex === 'OPS_COL')) {
-      const opColumn = nextProps.columns.pop();
-      const tableColumns = [...this.state.tableColumns];
-      tableColumns.splice(-1, 1, opColumn);
+    if (this.isSameColumns(nextProps.columns, this.props.columns)) {
+      const tableColumns = nextProps.columns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index,
+      }));
+      let popoverColumns = nextProps.columns.filter(column => column.dataIndex !== 'OPS_COL');
+      popoverColumns = popoverColumns.map((column, index) => ({
+        ...column,
+        checked: true,
+        index }));
       this.setState({
+        popoverColumns,
         tableColumns,
       });
+    }
+  }
+  isSameColumns = (nextColumns, currColumns) => {
+    if (nextColumns === currColumns) {
+      return false;
+    } if (nextColumns.length === currColumns.length) {
+      for (let i = 0; i < nextColumns.length; i++) {
+        if (nextColumns[i] !== currColumns[i]) {
+          return true;
+        }
+      }
+      return false;
+    } else {
+      return true;
     }
   }
   isLocalDataSource(dataSource) {
