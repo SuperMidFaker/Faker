@@ -42,9 +42,10 @@ export default class CWMShippingPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('cwmWarehouse')}>
                 {getFieldDecorator('whse_code', {
-                  initialValue: model.whse_code,
+                  initialValue: `${model.wh_ent_tenant_id}-${model.whse_code}`,
                 })(<Select showSearch allowClear optionFilterProp="children">
-                  {shipParams.whses.map(wh => <Option key={wh.code} value={wh.code}>{wh.code}|{wh.name}</Option>)}
+                  {shipParams.whses.map(wh =>
+                    <Option key={`${wh.wh_ent_tenant_id}-${wh.code}`} value={`${wh.wh_ent_tenant_id}-${wh.code}`}>{wh.code}|{wh.name}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>
