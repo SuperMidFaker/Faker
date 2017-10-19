@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Row, Col, Card, Icon, Input, Select, Radio, message } from 'antd';
-// import AttchmentUpload from './attachmentUpload';
+import { Form, Row, Col, Card, Icon, Input, Select, message } from 'antd';
 import { TRANS_MODE, WRAP_TYPE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constants';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
@@ -13,8 +12,6 @@ import { format } from 'client/common/i18n/helpers';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 const InputGroup = Input.Group;
 
 @injectIntl
@@ -104,14 +101,13 @@ export default class ClearanceForm extends Component {
     const node = formData.node;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
-      <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }} noHovering>
+      <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} noHovering>
         <Row style={{ marginBottom: 8 }}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>
-              <RadioGroup value={node.decl_way_code} onChange={ev => this.handleChange('decl_way_code', ev.target.value)}>
-                <RadioButton value={declWays[0].key}>{declWays[0].value}</RadioButton>
-                <RadioButton value={declWays[1].key}>{declWays[1].value}</RadioButton>
-              </RadioGroup>
+              <Select value={node.decl_way_code} onChange={value => this.handleChange('decl_way_code', value)}>
+                { declWays.map(dw => <Option value={dw.key} key={dw.key}>{dw.value}</Option>) }
+              </Select>
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>

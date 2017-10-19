@@ -10,7 +10,7 @@ import PageHint from 'client/components/PageHint';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
 import {
-  CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_I_TYPE, DECL_E_TYPE,
+  CMS_DELEGATION_STATUS, CMS_DELEGATION_MANIFEST, DELG_SOURCE, DECL_TYPE,
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -18,7 +18,7 @@ import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
-  ensureManifestMeta, showDispModal } from 'common/reducers/cmsDelegation';
+  ensureManifestMeta, showDispModal, loadFormRequire } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
@@ -70,7 +70,8 @@ const RangePicker = DatePicker.RangePicker;
     loadPartnersByTypes,
     loadBasicInfo,
     loadCustPanel,
-    loadDeclCiqPanel }
+    loadDeclCiqPanel,
+    loadFormRequire }
 )
 @connectNav({
   depth: 2,
@@ -112,6 +113,7 @@ export default class DelegationList extends Component {
     }
     this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
+    this.props.loadFormRequire();
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -144,7 +146,7 @@ export default class DelegationList extends Component {
     width: 120,
     fixed: 'left',
     render: (o, record) => (
-      <a onClick={() => this.handlePreview(o, record)}>
+      <a onClick={ev => this.handlePreview(o, record, ev)}>
         {o}
       </a>),
   }, {
@@ -170,10 +172,11 @@ export default class DelegationList extends Component {
       const mode = TRANS_MODE.filter(ts => ts.value === o)[0];
       return mode ? <span><MdIcon type={mode.icon} /> {mode.text}</span> : <span />;
     },
-/*  }, {
+  }, {
     title: this.msg('declareCustoms'),
     width: 120,
     dataIndex: 'decl_port',
+
     render: (o) => {
       const cust = this.props.customs.filter(ct => ct.value === o)[0];
       let port = '';
@@ -181,7 +184,7 @@ export default class DelegationList extends Component {
         port = cust.text;
       }
       return <TrimSpan text={port} maxLen={14} />;
-    }, */
+    },
   }, {
     title: this.msg('status'),
     width: 100,
@@ -216,16 +219,18 @@ export default class DelegationList extends Component {
     title: this.msg('declareWay'),
     width: 100,
     dataIndex: 'decl_way_code',
-    render: (o, record) => {
-      const DECL_TYPE = record.i_e_type === 0 ? DECL_I_TYPE : DECL_E_TYPE;
+    render: (o) => {
+      // const DECL_TYPE = record.i_e_type === 0 ? DECL_I_TYPE : DECL_E_TYPE;
       const type = DECL_TYPE.filter(dl => dl.key === o)[0];
       if (type) {
-        // 0000口岸进口 0001口岸出口 0100保税区进口 0101保税区出口
         if (o === CMS_DECL_WAY_TYPE.IMPT || o === CMS_DECL_WAY_TYPE.IBND) {
           return (<Tag color="blue">{type.value}</Tag>);
-          // 0102保税区进境 0103保税区出境
         } else if (o === CMS_DECL_WAY_TYPE.EXPT || o === CMS_DECL_WAY_TYPE.EBND) {
           return (<Tag color="green">{type.value}</Tag>);
+        } else if (o === CMS_DECL_WAY_TYPE.IMTR || o === CMS_DECL_WAY_TYPE.IBTR) {
+          return (<Tag color="geekblue">{type.value}</Tag>);
+        } else if (o === CMS_DECL_WAY_TYPE.EXTR || o === CMS_DECL_WAY_TYPE.EBTR) {
+          return (<Tag color="lime">{type.value}</Tag>);
         }
       } else {
         return <span />;
@@ -290,7 +295,8 @@ export default class DelegationList extends Component {
   handleCreateBtnClick = () => {
     this.context.router.push('/clearance/delegation/create');
   }
-  handlePreview = (delgNo, record) => {
+  handlePreview = (delgNo, record, ev) => {
+    ev.stopPropagation();
     let tabKey = 'customsDecl';
     if (record.status < 1) {
       tabKey = 'basic';
@@ -448,6 +454,16 @@ export default class DelegationList extends Component {
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
     this.handleDelgListLoad(1, filters);
+  }
+  handleRowClick = (record, index, ev) => {
+    ev.preventDefault();
+    if (record.status > CMS_DELEGATION_STATUS.accepted) {
+      if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
+        this.handleManifestMake(record);
+      } else {
+        this.handleManifestView(record);
+      }
+    }
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
@@ -673,6 +689,7 @@ export default class DelegationList extends Component {
           <DataTable toolbarActions={toolbarActions}
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={columns} dataSource={dataSource} rowKey="delg_no" loading={delegationlist.loading}
+            onRowClick={this.handleRowClick}
           />
         </Content>
         <DelegationDockPanel />

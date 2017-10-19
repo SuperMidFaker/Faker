@@ -13,25 +13,37 @@ export const I_E_TYPES = [
 export const DECL_TYPE = [
   { key: 'IMPT', value: '进口报关' },
   { key: 'IBND', value: '进境备案' },
+  { key: 'IMTR', value: '进口转关提前报关' },
+  { key: 'IBTR', value: '进境转关提前备案' },
   { key: 'EXPT', value: '出口报关' },
   { key: 'EBND', value: '出境备案' },
+  { key: 'EXTR', value: '出口转关提前报关' },
+  { key: 'EBTR', value: '出境转关提前备案' },
 ];
 
 export const DECL_I_TYPE = [
   { key: 'IMPT', value: '进口报关' },
   { key: 'IBND', value: '进境备案' },
+  { key: 'IMTR', value: '进口转关提前报关' },
+  { key: 'IBTR', value: '进境转关提前备案' },
 ];
 
 export const DECL_E_TYPE = [
   { key: 'EXPT', value: '出口报关' },
   { key: 'EBND', value: '出境备案' },
+  { key: 'EXTR', value: '出口转关提前报关' },
+  { key: 'EBTR', value: '出境转关提前备案' },
 ];
 
 export const CMS_DECL_WAY_TYPE = {
   IMPT: 'IMPT',
   IBND: 'IBND',
+  IMTR: 'IMTR',
+  IBTR: 'IBTR',
   EXPT: 'EXPT',
   EBND: 'EBND',
+  EXTR: 'EXTR',
+  EBTR: 'EBTR',
 };
 
 export const SOURCE_CHOOSE = {

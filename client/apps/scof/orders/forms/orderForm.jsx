@@ -246,16 +246,16 @@ export default class OrderForm extends Component {
     const current = formData.subOrders.length || 0;
     const cargoTransferHint = (
       <ul>
-        根据货物是否有实际进出境运输区分
-        <li>货物进境: 有实际进境运输</li>
-        <li>货物出境: 有实际出境运输</li>
-        <li>境内流转: 无实际进出境运输</li>
+        根据货物是否有实际国际运输区分
+        <li>货物进口: 有实际进境运输</li>
+        <li>货物出口: 有实际出境运输</li>
+        <li>国内流转: 无实际进出境运输</li>
       </ul>
     );
     return (
       <Form layout="horizontal" className="order-flow-form">
         <Card title={<span>客户
-          <Select size="large" placeholder="请选择客户" showSearch optionFilterProp="children"
+          <Select size="large" placeholder="请选择客户" showSearch allowClear optionFilterProp="children"
             value={formData.customer_partner_id}
             onChange={value => this.handleClientChange(value)}
             style={{ width: '50%', marginLeft: 24 }}
@@ -266,32 +266,13 @@ export default class OrderForm extends Component {
           </Select></span>}
           bodyStyle={{ padding: 8 }}
         >
-          <Collapse bordered={false} defaultActiveKey={['trading', 'shipment']}>
-            <Panel header="贸易信息" key="trading">
-              <Row gutter={16}>
-                <Col sm={8}>
-                  <FormItem label="订单号" {...formItemLayout}>
-                    <Input value={formData.cust_order_no} onChange={e => this.handleChange('cust_order_no', e.target.value)} />
-                  </FormItem>
-                </Col>
-                <Col sm={8}>
-                  <FormItem label="发票号" {...formItemLayout}>
-                    <Input placeholder="可用逗号分隔填写多个" value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_invoice_no', e.target.value)} />
-                  </FormItem>
-                </Col>
-                <Col sm={8}>
-                  <FormItem label="合同号" {...formItemLayout}>
-                    <Input value={formData.cust_contract_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
-                  </FormItem>
-                </Col>
-              </Row>
-            </Panel>
-            <Panel header="货运信息" key="shipment">
+          <Collapse bordered={false} defaultActiveKey={['shipment']}>
+            <Panel header="基本信息" key="shipment">
               <Row gutter={16}>
                 <Col sm={24} lg={8}>
                   <FormItem label={(
                     <span>
-                      货物流向&nbsp;
+                      订单类型&nbsp;
                       <Popover content={cargoTransferHint} title="提示" trigger="hover">
                         <Icon type="question-circle-o" />
                       </Popover>
@@ -313,7 +294,7 @@ export default class OrderForm extends Component {
                   </FormItem>
                 </Col>
                 <Col sm={16} lg={8}>
-                  {formData.cust_shipmt_transfer && formData.cust_shipmt_transfer !== 'DOM' && <FormItem label="跨境运输方式" {...formItemLayout}>
+                  {formData.cust_shipmt_transfer && formData.cust_shipmt_transfer !== 'DOM' && <FormItem label="国际运输方式" {...formItemLayout}>
                     <RadioGroup value={formData.cust_shipmt_trans_mode} onChange={ev => this.handleKvChange('cust_shipmt_trans_mode', ev.target.value, 'transmode')}>
                       { (formData.cust_shipmt_transfer === 'IMP' || formData.cust_shipmt_transfer === 'EXP') &&
                       <RadioButton value={SCOF_ORDER_TRANSMODES[0].value}><i className={SCOF_ORDER_TRANSMODES[0].icon} /> {SCOF_ORDER_TRANSMODES[0].text}</RadioButton>
@@ -456,6 +437,23 @@ export default class OrderForm extends Component {
                       }
                     }}
                     />
+                  </FormItem>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col sm={8}>
+                  <FormItem label="订单号" {...formItemLayout}>
+                    <Input value={formData.cust_order_no} onChange={e => this.handleChange('cust_order_no', e.target.value)} />
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="发票号" {...formItemLayout}>
+                    <Input placeholder="可用逗号分隔填写多个" value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_invoice_no', e.target.value)} />
+                  </FormItem>
+                </Col>
+                <Col sm={8}>
+                  <FormItem label="合同号" {...formItemLayout}>
+                    <Input value={formData.cust_contract_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
                   </FormItem>
                 </Col>
               </Row>
