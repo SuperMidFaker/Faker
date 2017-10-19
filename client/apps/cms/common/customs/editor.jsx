@@ -21,7 +21,6 @@ import messages from './message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import { StandardDocDef } from './print/standardDocDef';
-import { SkeletonDocDef } from './print/skeletonDocDef';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
@@ -179,34 +178,12 @@ export default class CustomsDeclEditor extends React.Component {
       docDefinition = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
       window.pdfMake.createPdf(docDefinition).open();
     } else if (ev.key === 'skeleton') {
-      docDefinition = SkeletonDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
+      docDefinition = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire, true);
       window.pdfMake.createPdf(docDefinition).print();
     }
   }
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'customsDecl');
-  }
-  handleStandardPrint = () => {
-    const { head, bodies, billMeta, formRequire } = this.props;
-    const docDefinition = StandardDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
-    window.pdfMake.fonts = {
-      yahei: {
-        normal: 'msyh.ttf',
-        bold: 'msyh.ttf',
-      },
-    };
-    window.pdfMake.createPdf(docDefinition).open();
-  }
-  handleSkeletonPrint = () => {
-    const { head, bodies, billMeta, formRequire } = this.props;
-    const docDefinition = SkeletonDocDef(head, bodies, billMeta.declWayCode, billMeta.orderNo, formRequire);
-    window.pdfMake.fonts = {
-      yahei: {
-        normal: 'msyh.ttf',
-        bold: 'msyh.ttf',
-      },
-    };
-    window.pdfMake.createPdf(docDefinition).print();
   }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
@@ -241,6 +218,8 @@ export default class CustomsDeclEditor extends React.Component {
         <Menu.Item key="release"><Icon type="flag" /> 放行确认</Menu.Item>}
         { head.status > CMS_DECL_STATUS.reviewed.value && <Menu.Item key="declMsg"><Icon type="eye-o" /> 查看申报报文</Menu.Item>}
         { head.status > CMS_DECL_STATUS.sent.value && <Menu.Item key="resultMsg"><Icon type="eye-o" /> 查看回执报文</Menu.Item>}
+        <Menu.Divider />
+        <Menu.Item key="log"><Icon type="solution" /> 操作记录</Menu.Item>
       </Menu>
     );
     const tabs = [];
