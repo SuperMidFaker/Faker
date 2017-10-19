@@ -9,12 +9,14 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCiqDecls, setInspect, setCiqFinish } from 'common/reducers/cmsDeclare';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
+import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
+import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import CiqnoFillModal from '../common/ciq/modals/ciqNoFill';
 
 const formatMsg = format(messages);
@@ -45,7 +47,7 @@ ColumnSwitch.propTypes = {
     ciqdeclList: state.cmsDeclare.ciqdeclList,
     listFilter: state.cmsDeclare.listFilter,
   }),
-  { loadCiqDecls, openCiqModal, setCiqFinish, setInspect }
+  { loadCiqDecls, openCiqModal, setCiqFinish, setInspect, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -201,6 +203,10 @@ export default class CiqDeclList extends Component {
     },
     remotes: this.props.ciqdeclList,
   })
+  handlePreview = (record, ev) => {
+    ev.stopPropagation();
+    this.props.showPreviewer(record.delg_no, 'ciqDecl');
+  }
   handleEditChange = (record, field, checked) => {
     this.props.setInspect({
       preEntrySeqNo: record.pre_entry_seq_no,
@@ -277,7 +283,7 @@ export default class CiqDeclList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
+            <RadioGroup value={listFilter.iotype} onChange={this.handleIOFilter} size="large">
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               <RadioButton value="import">{this.msg('import')}</RadioButton>
               <RadioButton value="export">{this.msg('export')}</RadioButton>
@@ -292,6 +298,7 @@ export default class CiqDeclList extends Component {
           />
           <CiqnoFillModal reload={this.handleTableLoad} />
         </Content>
+        <DelegationDockPanel />
       </Layout>
     );
   }

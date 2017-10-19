@@ -165,7 +165,7 @@ export default class CustomsDeclHeadPane extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Card noHovering>
+            <Card bodyStyle={{ padding: 16 }} noHovering>
               <Row>
                 <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
               </Row>
@@ -174,7 +174,6 @@ export default class CustomsDeclHeadPane extends React.Component {
                 <StoreYard {...formProps} intl={intl} formRequire={formRequire} />
               </Row>
             </Card>
-
           </div>
         </Form>
       </div>

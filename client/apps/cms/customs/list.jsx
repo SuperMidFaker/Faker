@@ -449,7 +449,7 @@ export default class CustomsList extends Component {
       }
     });
   }
-  handleListsReview = (ids) => {
+  handleBatchReview = (ids) => {
     this.props.setDeclReviewed(ids, CMS_DECL_STATUS.reviewed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -472,7 +472,7 @@ export default class CustomsList extends Component {
       }
     });
   }
-  handleListsRecall = (ids) => {
+  handleBatchRecall = (ids) => {
     this.props.setDeclReviewed(ids, CMS_DECL_STATUS.proposed.value).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -541,7 +541,7 @@ export default class CustomsList extends Component {
     if (status === 'proposed') {
       bulkActions = (
         <PrivilegeCover module="clearance" feature="customs" action="edit">
-          <Button type="default" size="large" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
+          <Button type="default" size="large" onClick={() => this.handleBatchReview(this.state.selectedRowKeys)}>
           批量复核
         </Button>
         </PrivilegeCover>);
@@ -549,11 +549,11 @@ export default class CustomsList extends Component {
       bulkActions = (
         <span>
           <PrivilegeCover module="clearance" feature="customs" action="edit">
-            <Button type="primary" size="large" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
+            <Button type="primary" size="large" onClick={() => this.handleBatchSend(this.state.selectedRowKeys)}>
             批量发送
           </Button>
           </PrivilegeCover>
-          <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleListsRecall(this.state.selectedRowKeys)}>
+          <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleBatchRecall(this.state.selectedRowKeys)}>
             <Button size="large">
             批量退回
           </Button>

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Card, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { createFilename } from 'client/util/dataTransform';
@@ -10,6 +10,7 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
   showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
 import { loadDocuDatas } from 'common/reducers/cmsInvoice';
 import NavLink from 'client/components/NavLink';
+import PageHeader from 'client/components/PageHeader';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
@@ -27,7 +28,7 @@ import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
@@ -338,7 +339,7 @@ export default class ManifestEditor extends React.Component {
   handleDoctsDownload = () => {
     window.open(`${API_ROOTS.default}v1/cms/manifest/docts/download/${createFilename('doctsDatas')}.xlsx?billSeqNo=${this.props.billHead.bill_seq_no}&tenantId=${this.props.tenantId}`);
   }
-  renderOverlayMenu(editable) {
+  renderOverlayMenu(editable, revertable) {
     let lockMenuItem = null;
     if (editable) {
       if (this.props.billHead.locking_login_id === this.props.loginId) {
@@ -349,6 +350,11 @@ export default class ManifestEditor extends React.Component {
     }
     return (
       <Menu onClick={this.handleOverlayMenu}>
+        {revertable &&
+          <Menu.Item key="redo">
+            <Popconfirm title="确定删除已生成的报关建议书?" onConfirm={this.handleManifestRedo}><Icon type="reload" /> 重新制单</Popconfirm>
+          </Menu.Item>
+        }
         <Menu.Item key="template"><Icon type="book" /> {this.msg('saveAsTemplate')}</Menu.Item>
         {editable && lockMenuItem}
         {/*
@@ -361,6 +367,7 @@ export default class ManifestEditor extends React.Component {
   render() {
     const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates } = this.props;
     const { locked, lockedByOthers } = this.state;
+    const declType = (billHead.decl_way_code === 'IBND' || billHead.decl_way_code === 'EBND') ? '备案清单' : '报关单';
     const declEntryMenu = (
       <Menu onClick={this.handleEntryVisit}>
         {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
@@ -416,25 +423,27 @@ export default class ManifestEditor extends React.Component {
     return (
       <Layout>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Icon type="file-text" /> <NavLink to={path}>{this.msg('declManifest')}</NavLink>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Icon type="file-text" /> <NavLink to={path}>{this.msg('declManifest')}</NavLink>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
               {locked &&
-                <Tooltip title={`清单已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">
-                  <Switch className="switch-lock" checked={locked}
-                    checkedChildren={<Icon type="lock" />}
-                    unCheckedChildren={<Icon type="unlock" />}
-                    disabled={lockedByOthers}
-                    onChange={this.handleLock} style={{ marginTop: 4 }}
-                  />
-                </Tooltip>}
+              <Tooltip title={`清单已锁定，仅限${billHead.locking_name}可进行编辑`} placement="bottom">
+                <Switch className="switch-lock" checked={locked}
+                  checkedChildren={<Icon type="lock" />}
+                  unCheckedChildren={<Icon type="unlock" />}
+                  disabled={lockedByOthers}
+                  onChange={this.handleLock} style={{ marginTop: 4 }}
+                />
+              </Tooltip>}
               {editable && getFieldDecorator('model', modelProps)(<Select
                 placeholder="选择制单规则"
                 optionFilterProp="search"
@@ -448,43 +457,35 @@ export default class ManifestEditor extends React.Component {
                   {templates.map(data => (<Option key={data.id} value={data.id}
                     search={`${data.id}${data.template_name}`}
                   ><Icon type="book" /> {data.template_name}</Option>)
-                    )}
+                  )}
                 </OptGroup>
               </Select>)
-              }
-              <Dropdown overlay={this.renderOverlayMenu(editable)}><Button size="large" icon="ellipsis" /></Dropdown>
-              {editable &&
-                (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
-                  loading={this.state.generating} onClick={this.handleGenerateEntry}
-                >{this.msg('generateEntry')}</Button>) }
-              {billMeta.docts &&
-                <Button type="primary" size="large" icon="export" onClick={this.handleDoctsDownload}>下载单据数据</Button>
-              }
-              {sendable &&
-                <Button type="primary" size="large" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>
-              }
+            }
               {billMeta.entries.length > 0 &&
-                <Dropdown overlay={declEntryMenu}>
-                  <Button size="large"><Icon type="link" />转至报关建议书<Icon type="down" /></Button>
-                </Dropdown>
-              }
-              {revertable &&
-                <Popconfirm title="确定操作?" placement="topRight" onConfirm={this.handleManifestRedo}>
-                  <Tooltip title="删除已生成的报关建议书，重新修改" placement="bottomLeft">
-                    <Button size="large"><Icon type="reload" /></Button>
-                  </Tooltip>
-                </Popconfirm>
-              }
-            </div>
-          </Header>
-          <Content className={`main-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
-            <Spin spinning={this.props.manifestSpinning}>
-              <div className="page-body tabbed">
-                <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
-                  {tabs}
-                </Tabs>
-              </div>
-            </Spin>
+              <Dropdown overlay={declEntryMenu}>
+                <Button size="large"><Icon type="link" />转至{declType}<Icon type="down" /></Button>
+              </Dropdown>
+            }
+
+              {billMeta.docts &&
+              <Button size="large" icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
+            }
+              {sendable &&
+              <Button type="primary" size="large" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>
+            }
+              {editable &&
+              (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
+                loading={this.state.generating} onClick={this.handleGenerateEntry}
+              >{this.msg('generate')}{declType}</Button>) }
+              <Dropdown overlay={this.renderOverlayMenu(editable, revertable)}><Button size="large" icon="ellipsis" /></Dropdown>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
+            <Card bodyStyle={{ padding: 0 }} noHovering loading={this.props.manifestSpinning}>
+              <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
+                {tabs}
+              </Tabs>
+            </Card>
           </Content>
         </Layout>
         <DelegationDockPanel ietype={ietype} />

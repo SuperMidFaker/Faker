@@ -7,12 +7,12 @@ export default defineMessages({
     defaultMessage: '报检申报',
   },
   import: {
-    id: 'cms.ciq.decl.import',
-    defaultMessage: '入境',
+    id: 'cms.ciq.decl.in',
+    defaultMessage: '入境报检',
   },
   export: {
-    id: 'cms.ciq.decl.export',
-    defaultMessage: '出境',
+    id: 'cms.ciq.decl.out',
+    defaultMessage: '出境报检',
   },
   all: {
     id: 'cms.ciq.decl.filter.all',

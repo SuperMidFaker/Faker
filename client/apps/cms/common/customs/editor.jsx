@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Spin, Dropdown, Menu } from 'antd';
+import { Badge, Card, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
 import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import NavLink from 'client/components/NavLink';
+import PageHeader from 'client/components/PageHeader';
 import CustomsDeclHeadPane from './tabpane/customsDeclHeadPane';
 import CustomsDeclBodyPane from './tabpane/customsDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';
@@ -26,7 +27,7 @@ import DelegationDockPanel from '../dock/delegationDockPanel';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const TabPane = Tabs.TabPane;
 
 const navObj = {
@@ -165,6 +166,13 @@ export default class CustomsDeclEditor extends React.Component {
   handleEpRecvXmlView = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
   }
+  handleLinkMenuClick = (ev) => {
+    if (ev.key === 'manifest') {
+      this.handleManifestVisit();
+    } else {
+      this.handleEntryVisit(ev);
+    }
+  }
   handlePrintMenuClick = (ev) => {
     const { head, bodies, billMeta, formRequire } = this.props;
     let docDefinition;
@@ -195,7 +203,8 @@ export default class CustomsDeclEditor extends React.Component {
     }
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
     const declEntryMenu = (
-      <Menu onClick={this.handleEntryVisit}>
+      <Menu onClick={this.handleLinkMenuClick}>
+        <Menu.Item key="manifest">申报清单</Menu.Item>
         {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
           <Icon type="file" /> 关联报关单{bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
         )}
@@ -255,8 +264,8 @@ export default class CustomsDeclEditor extends React.Component {
     }
     return (
       <Layout>
-        <Layout>
-          <Header className="page-header">
+        <PageHeader>
+          <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Icon type="file" /> <NavLink to={`/clearance/${ietype}/cusdecl/`}>{this.msg('customsDeclaration')}</NavLink>
@@ -268,42 +277,40 @@ export default class CustomsDeclEditor extends React.Component {
                 {head.entry_id || head.pre_entry_seq_no}
               </Breadcrumb.Item>
             </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Nav>
             {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
-            <div className="page-header-tools">
-              <Dropdown.Button size="large" onClick={this.handleManifestVisit} overlay={declEntryMenu}>
-                <Icon type="link" /> 申报清单
-              </Dropdown.Button>
-              <Dropdown overlay={printMenu}>
-                <Button size="large">
-                  <Icon type="printer" /> 打印
+          </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Dropdown overlay={declEntryMenu}>
+              <Button size="large"><Icon type="link" />转至 <Icon type="down" /></Button>
+            </Dropdown>
+            <Dropdown overlay={printMenu}>
+              <Button size="large">
+                <Icon type="printer" /> 打印
                 </Button>
-              </Dropdown>
-              { head.status === CMS_DECL_STATUS.proposed.value &&
-                <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
+            </Dropdown>
+            { head.status === CMS_DECL_STATUS.proposed.value &&
+            <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
               }
-              { head.status === CMS_DECL_STATUS.reviewed.value &&
-                <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
+            { head.status === CMS_DECL_STATUS.reviewed.value &&
+            <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
               }
-              { head.status === CMS_DECL_STATUS.entered.value &&
-                <Button type="primary" size="large" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>
+            { head.status === CMS_DECL_STATUS.entered.value &&
+            <Button type="primary" size="large" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>
               }
-              <Dropdown overlay={moreMenu}>
-                <Button size="large">
-                  <Icon type="ellipsis" />
-                </Button>
-              </Dropdown>
-            </div>
-          </Header>
-          <Content className="main-content layout-min-width layout-min-width-large readonly">
-            <Spin spinning={this.props.declSpinning}>
-              <div className="page-body tabbed">
-                <Tabs defaultActiveKey="header">
-                  {tabs}
-                </Tabs>
-              </div>
-            </Spin>
-          </Content>
-        </Layout>
+            <Dropdown overlay={moreMenu}>
+              <Button size="large" icon="ellipsis" />
+            </Dropdown>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content layout-min-width layout-min-width-large readonly">
+          <Card bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning}>
+            <Tabs defaultActiveKey="header">
+              {tabs}
+            </Tabs>
+          </Card>
+        </Content>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
         <SendDeclMsgModal ietype={ietype} reload={this.reloadEntry} />

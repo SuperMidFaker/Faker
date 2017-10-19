@@ -202,7 +202,7 @@ export default class ManifestHeadPane extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Card noHovering>
+            <Card bodyStyle={{ padding: 16 }} noHovering>
               <Row>
                 <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
               </Row>

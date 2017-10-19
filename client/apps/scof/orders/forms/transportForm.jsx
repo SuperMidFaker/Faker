@@ -525,6 +525,10 @@ export default class TransportForm extends Component {
       transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
     const { quoteNoField } = this.state;
     // todo consigner consignee by customer partner id
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    };
     const node = formData.node;
     const transModeExtras = [];
     const modeCode = node.trs_mode_code;
@@ -536,7 +540,7 @@ export default class TransportForm extends Component {
       // 整车,修改车型,车长
       transModeExtras.push(
         <Col key="vehicle_type" sm={24} md={8}>
-          <FormItem label={this.msg('vehicleType')}>
+          <FormItem label={this.msg('vehicleType')} {...formItemLayout}>
             <Select onSelect={this.handelVehicleTypeSelect} value={node.vehicle_type_id}>
               {vehicleTypes.map(
                 vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
@@ -545,7 +549,7 @@ export default class TransportForm extends Component {
           </FormItem>
         </Col>,
         <Col key="vehicle_length" sm={24} md={8}>
-          <FormItem label={this.msg('vehicleLength')}>
+          <FormItem label={this.msg('vehicleLength')} {...formItemLayout}>
             <Select onSelect={this.handelVehicleLengthSelect} value={node.vehicle_length_id}>
               {vehicleLengths.map(
                 vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
@@ -558,7 +562,7 @@ export default class TransportForm extends Component {
       // 集装箱,修改箱号
       transModeExtras.push(
         <Col key="container" sm={24} md={8} >
-          <FormItem label={this.msg('containerPack')}>
+          <FormItem label={this.msg('containerPack')} {...formItemLayout}>
             <Select onSelect={value => this.handleCommonFieldChange('container', value)} value={node.container}>
               {CONTAINER_PACKAGE_TYPE.map(
                 ct => <Option value={ct.key} key={ct.key}>{ct.value}</Option>
@@ -567,7 +571,7 @@ export default class TransportForm extends Component {
           </FormItem>
         </Col>,
         <Col key="container_no" sm={24} md={8}>
-          <FormItem label={this.msg('containerNo')}>
+          <FormItem label={this.msg('containerNo')} {...formItemLayout}>
             <Input value={node.container_no} onChange={ev => this.handleCommonFieldChange('container_no', ev.target.value)} />
           </FormItem>
         </Col>
@@ -576,29 +580,29 @@ export default class TransportForm extends Component {
       // 快递公司
       transModeExtras.push(
         <Col key="courier_code" sm={24} md={8}>
-          <FormItem label={this.msg('expressVendor')}>
+          <FormItem label={this.msg('expressVendor')} {...formItemLayout}>
             <Select onSelect={this.handleExpressChange} value={node.express_code}>
               {COURIERS.map(cr => <Option value={cr.code} key={cr.code}>{cr.name}</Option>)}
             </Select>
           </FormItem>
         </Col>,
         <Col key="courier_no" sm={24} md={8}>
-          <FormItem label={this.msg('expressNo')}>
+          <FormItem label={this.msg('expressNo')} {...formItemLayout}>
             <Input value={node.express_no} onChange={ev => this.handleCommonFieldChange('express_no', ev.target.value)} />
           </FormItem>
         </Col>
       );
     }
     return (
-      <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ paddingTop: 40 }} noHovering>
+      <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} noHovering>
         {
           !this.state.isLineIntariff && <Row>
             <Alert message={<div>发货/收货地址不在报价协议的线路里 <a onClick={this.handleShowAddLineModal}>添加到报价协议</a></div>} type="warning" showIcon />
           </Row>
         }
-        <Row gutter={20}>
+        <Row gutter={16}>
           <Col sm={24} md={8}>
-            <FormItem label="运输模式" required="true">
+            <FormItem label="运输模式" required {...formItemLayout}>
               <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
                 {transitModes.map(
                   tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
@@ -608,34 +612,34 @@ export default class TransportForm extends Component {
           </Col>
           {transModeExtras}
         </Row>
-        <Row gutter={20}>
+        <Row gutter={16}>
           <Col sm={24} md={8}>
-            <FormItem label="货物类型">
+            <FormItem label="货物类型" {...formItemLayout}>
               <Select value={node.goods_type} onChange={value => this.handleCommonFieldChange('goods_type', value)}>
                 {GOODS_TYPES.map(gt => <Option value={gt.value} key={gt.value}>{gt.text}</Option>)}
               </Select>
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('quoteNo')} validateStatus={quoteNoField.validateStatus} help={quoteNoField.help}>
+            <FormItem label={this.msg('quoteNo')} validateStatus={quoteNoField.validateStatus} help={quoteNoField.help} {...formItemLayout}>
               <Select allowClear value={node.quote_no} onChange={value => this.handleChange('quote_no', value)}>
                 {
-                  this.state.tariffs.map(t => <Option value={t.quoteNo} key={t._id}>{this.renderTmsTariff(t)}</Option>)
+                  this.state.tariffs && this.state.tariffs.map(t => <Option value={t.quoteNo} key={t._id}>{this.renderTmsTariff(t)}</Option>)
                 }
               </Select>
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('personResponsible')}>
+            <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
               <Select size="large" value={node.person_id} onChange={this.handlePersonChange}>
                 {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
               </Select>
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={20}>
+        <Row gutter={16}>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('packageNum')}>
+            <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
                 <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
@@ -649,23 +653,23 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('delgGrossWt')}>
+            <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
               <Input value={node.gross_wt} addonAfter="千克" type="number"
                 onChange={e => this.handleCommonFieldChange('gross_wt', e.target.value)}
               />
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('goodsVolume')}>
+            <FormItem label={this.msg('goodsVolume')} {...formItemLayout}>
               <Input value={node.volume} addonAfter={this.msg('cubicMeter')} type="number"
                 onChange={e => this.handleCommonFieldChange('volume', e.target.value)}
               />
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={20}>
+        <Row gutter={16}>
           <Col sm={12}>
-            <FormItem label="发货方">
+            <FormItem label="发货方" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
               <Row style={{ paddingRight: 8 }}>
                 <Select allowClear size="large" showArrow value={node.consigner_id} optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
@@ -714,7 +718,7 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
           <Col sm={12}>
-            <FormItem label="收货方">
+            <FormItem label="收货方" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
               <Row style={{ paddingRight: 8 }}>
                 <Select allowClear size="large" showArrow value={node.consignee_id} optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
@@ -763,23 +767,23 @@ export default class TransportForm extends Component {
             </FormItem>
           </Col>
         </Row>
-        <Row gutter={20}>
+        <Row gutter={16}>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('pickupEstDate')}>
+            <FormItem label={this.msg('pickupEstDate')} {...formItemLayout}>
               <DatePicker style={{ width: '100%' }} value={node.pickup_est_date && moment(new Date(node.pickup_est_date), 'YYYY-MM-DD')}
                 onChange={this.handlePickupChange}
               />
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('shipmtTransit')}>
+            <FormItem label={this.msg('shipmtTransit')} {...formItemLayout}>
               <InputNumber style={{ width: '100%' }} min={0} value={node.transit_time}
                 onChange={this.handleTransitChange}
               />
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label={this.msg('deliveryEstDate')}>
+            <FormItem label={this.msg('deliveryEstDate')} {...formItemLayout}>
               <DatePicker style={{ width: '100%' }} value={node.deliver_est_date && moment(new Date(node.deliver_est_date), 'YYYY-MM-DD')}
                 onChange={this.handleDeliveryChange}
               />
@@ -787,14 +791,14 @@ export default class TransportForm extends Component {
           </Col>
         </Row>
 
-        <Row gutter={20}>
+        <Row gutter={16}>
           <Col sm={24} md={8}>
-            <FormItem label="备注">
+            <FormItem label="备注" {...formItemLayout}>
               <Input value={node.remark} onChange={e => this.handleCommonFieldChange('remark', e.target.value)} />
             </FormItem>
           </Col>
           <Col sm={24} md={8}>
-            <FormItem label="回单">
+            <FormItem label="回单" {...formItemLayout}>
               <Switch checked={node.pod} onChange={checked => this.handleCommonFieldChange('pod', checked)} />
             </FormItem>
           </Col>

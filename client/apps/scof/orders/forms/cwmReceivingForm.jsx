@@ -68,12 +68,16 @@ export default class CwmReceivingForm extends Component {
   render() {
     const { recParams, formData } = this.props;
     const node = formData.node;
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 },
+    };
     // todo required
     return (
-      <Card noHovering>
-        <Row gutter={20}>
+      <Card noHovering bodyStyle={{ padding: 16 }}>
+        <Row gutter={16}>
           <Col sm={24} lg={8}>
-            <FormItem label="仓库">
+            <FormItem label="仓库" {...formItemLayout}>
               <Select showSearch allowClear optionFilterProp="children" value={node.whse_code}
                 onChange={value => this.handleCommonFieldChange('whse_code', value)}
               >
@@ -82,19 +86,19 @@ export default class CwmReceivingForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="供应商">
+            <FormItem label="供应商" {...formItemLayout}>
               <Input value={node.supplier} onChange={ev => this.handleCommonFieldChange('supplier', ev.target.value)} />
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="ASN类型">
+            <FormItem label="ASN类型" {...formItemLayout}>
               <Select placeholder="ASN类型" value={node.asn_type} onChange={value => this.handleCommonFieldChange('asn_type', value)}>
                 {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
               </Select>
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="货物属性">
+            <FormItem label="货物属性" {...formItemLayout}>
               <RadioGroup onChange={this.handleBondedChange} value={node.bonded}>
                 <RadioButton value={0}>非保税</RadioButton>
                 <RadioButton value={1}>保税</RadioButton>
@@ -105,18 +109,18 @@ export default class CwmReceivingForm extends Component {
         <Row gutter={20}>
           {node.bonded &&
             <Col sm={24} lg={8}>
-              <FormItem label="保税监管方式">
+              <FormItem label="保税监管方式" {...formItemLayout}>
                 <RadioGroup value={node.bonded_reg_type}
                   onChange={ev => this.handleCommonFieldChange('bonded_reg_type', ev.target.value)}
                 >
-                  {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.text}</RadioButton>)}
+                  {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
                 </RadioGroup>
               </FormItem>
             </Col>
           }
           {node.bonded_reg_type === CWM_ASN_BONDED_REGTYPES[0].value &&
           <Col sm={24} lg={8}>
-            <FormItem label="保税入库预期收货日期">
+            <FormItem label="保税入库预期收货日期" {...formItemLayout}>
               <Input addonBefore="晚于申报日期" addonAfter="天" value={node.rec_after_decl_days}
                 onChange={ev => this.handleCommonFieldChange('rec_after_decl_days', ev.target.value)}
               />
@@ -124,7 +128,7 @@ export default class CwmReceivingForm extends Component {
           </Col>}
           {node.bonded_reg_type !== CWM_ASN_BONDED_REGTYPES[0].value &&
           <Col sm={24} lg={8}>
-            <FormItem label="预期收货日期">
+            <FormItem label="预期收货日期" {...formItemLayout}>
               <DatePicker format="YYYY/MM/DD" style={{ width: '100%' }}
                 value={node.expect_receive_date && moment(node.expect_receive_date)}
                 onChange={expectDate => this.handleCommonFieldChange('expect_receive_date', expectDate && expectDate.valueOf())}
