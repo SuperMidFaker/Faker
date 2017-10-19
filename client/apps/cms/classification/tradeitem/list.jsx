@@ -123,8 +123,6 @@ export default class TradeItemList extends Component {
       const repo = nextProps.repos.find(rp => rp.id === nextProps.repoId);
       if (repo) {
         this.handleRowClick(repo);
-      } else {
-        this.handleRowClick(nextProps.repos[0]);
       }
     }
     this.setState({ repos: nextProps.repos });
