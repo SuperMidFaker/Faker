@@ -66,18 +66,18 @@ export default class OutboundPickPrint extends Component {
     const pdf = [];
     pdf.push([{ text: '项', style: 'tableHeader' }, { text: '货号', style: 'tableHeader' },
       { text: '产品名称', style: 'tableHeader' }, { text: '库位', style: 'tableHeader' },
-      { text: '库存数', style: 'tableHeader' }, { text: '余量数', style: 'tableHeader' },
-      { text: '待捡数', style: 'tableHeader' }, { text: '实捡数', style: 'tableHeader' }]);
+      { text: '待捡数', style: 'tableHeader' }, { text: '库存数', style: 'tableHeader' },
+      { text: '余量数', style: 'tableHeader' }, { text: '实捡数', style: 'tableHeader' }]);
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
       const remQty = data.stock_qty - data.alloc_qty;
       pdf.push([i + 1, data.product_no || '', data.name || '', data.location || '',
-        data.stock_qty, remQty, data.alloc_qty, '']);
+        data.alloc_qty, data.stock_qty, remQty, '']);
     }
     if (pickDetails.length !== 16) {
       pdf.push(['', '', '', '', '', '', '', '']);
     }
-    pdf.push(['合计', '', '', '', '', '', outboundHead.total_alloc_qty, '']);
+    pdf.push(['合计', '', '', '', outboundHead.total_alloc_qty, '', '', '']);
     return pdf;
   }
   pdfSign = () => {
