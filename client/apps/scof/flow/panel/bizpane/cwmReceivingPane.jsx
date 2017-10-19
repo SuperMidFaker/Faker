@@ -41,8 +41,8 @@ export default class CWMReceivingPane extends Component {
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('cwmWarehouse')}>
-                {getFieldDecorator('whse_code', {
-                  initialValue: `${model.wh_ent_tenant_id}-${model.whse_code}`,
+                {getFieldDecorator('t_whse_code', {
+                  initialValue: model.whse_code && `${model.wh_ent_tenant_id}-${model.whse_code}`, // clear still t_whse_code undefined, this still exist
                   rules: [{ required: true }],
                 })(<Select showSearch allowClear optionFilterProp="children">
                   {recParams.whses.map(wh =>

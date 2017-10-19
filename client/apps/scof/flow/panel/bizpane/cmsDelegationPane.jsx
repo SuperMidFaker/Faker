@@ -65,6 +65,7 @@ export default class CMSDelegationPane extends Component {
               <FormItem label={this.msg('declWay')}>
                 {getFieldDecorator('decl_way', {
                   initialValue: model.decl_way,
+                  rules: [{ required: true }],
                 })(<Select allowClear>
                   {
                     declWays.map(dw =>
