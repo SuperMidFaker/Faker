@@ -144,7 +144,7 @@ export function loadVendors(tenantId) {
       ],
       endpoint: 'v1/cooperation/partners',
       method: 'get',
-      params: { tenantId, role: 'CUS' },
+      params: { tenantId, role: 'SUP' },
     },
   };
 }
