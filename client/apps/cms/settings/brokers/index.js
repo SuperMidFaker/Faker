@@ -1,1 +1,1 @@
-export List from './brokerListContainer';
+export List from './list';

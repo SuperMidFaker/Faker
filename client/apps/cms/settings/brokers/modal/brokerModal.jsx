@@ -1,73 +1,68 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Input, message, Checkbox } from 'antd';
+import { Modal, Form, Input, message, Radio, Select } from 'antd';
 import { connect } from 'react-redux';
-import { addPartner, editPartner, checkPartner } from 'common/reducers/partner';
-import { toggleCarrierModal } from 'common/reducers/transportResources';
+import { toggleBrokerModal, addBroker, editBroker } from 'common/reducers/cmsBrokers';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
-const CheckboxGroup = Checkbox.Group;
+const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
-const options = [
-  { label: '报关代理', value: 'CCB' },
-  { label: '报检代理', value: 'CIB' },
-];
+const role = PARTNER_ROLES.SUP;
+const businessType = PARTNER_BUSINESSE_TYPES.clearance;
+
+function fetchData({ dispatch, state }) {
+  return dispatch(loadPartners({
+    tenantId: state.account.tenantId,
+    role,
+    businessType,
+    from: 'table',
+  }));
+}
+
+@connectFetch()(fetchData)
 @connect(state => ({
   tenantId: state.account.tenantId,
-  visible: state.transportResources.carrierModal.visible,
-  carrier: state.transportResources.carrierModal.carrier,
-  operation: state.transportResources.carrierModal.operation,
-}), { addPartner, editPartner, toggleCarrierModal, checkPartner })
+  loginId: state.account.loginId,
+  username: state.account.username,
+  visible: state.cmsBrokers.brokerModal.visible,
+  broker: state.cmsBrokers.brokerModal.broker,
+  operation: state.cmsBrokers.brokerModal.operation,
+  partners: state.partner.partners,
+}), { toggleBrokerModal, addBroker, editBroker })
 
 export default class BrokerModal extends React.Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool,
     operation: PropTypes.string, // add  edit
-    carrier: PropTypes.object,
-    addPartner: PropTypes.func.isRequired,
-    editPartner: PropTypes.func.isRequired,
-    checkPartner: PropTypes.func.isRequired,
-    toggleCarrierModal: PropTypes.func.isRequired,
+    broker: PropTypes.object,
+    toggleBrokerModal: PropTypes.func.isRequired,
   }
   state = {
-    partnerName: '',
+    name: '',
     customsCode: '',
     partnerUniqueCode: '',
-    role: PARTNER_ROLES.SUP,
-    business: '',
-    businessType: PARTNER_BUSINESSE_TYPES.clearance,
+    ieType: '',
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
-      partnerName: nextProps.carrier.name || '',
-      customsCode: nextProps.carrier.customs_code || '',
-      partnerUniqueCode: nextProps.carrier.partner_unique_code || '',
-      role: nextProps.carrier.role || PARTNER_ROLES.SUP,
-      business: nextProps.carrier.business || '',
+      name: nextProps.broker.comp_name || '',
+      customsCode: nextProps.broker.customs_code || '',
+      partnerUniqueCode: nextProps.broker.comp_code || '',
+      ieType: nextProps.broker.i_e_type || '',
     });
   }
-  nameChooseConfirm = (foundName, name) => {
-    Modal.confirm({
-      title: '请选择',
-      content: `${foundName} 与 ${name} 的唯一标识码一致，请选择该标识码下的企业名称`,
-      okText: foundName,
-      cancelText: name,
-      onOk: () => {
-        this.setState({ partnerName: foundName }, () => {
-          this.handleAddPartner();
-        });
-      },
-      onCancel: () => {
-        this.handleAddPartner();
-      },
-    });
+  onChange = (e) => {
+    this.setState({ ieType: e.target.value });
   }
   handleOk = () => {
-    const { tenantId, carrier, operation } = this.props;
-    const { partnerName, customsCode, partnerUniqueCode, role, business } = this.state;
-    if (partnerName === '') {
+    const { broker, operation } = this.props;
+    const { name, customsCode, partnerUniqueCode, ieType } = this.state;
+    if (name === '') {
       message.error('请填写企业名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
       message.error('统一社会信用代码必填');
@@ -78,33 +73,21 @@ export default class BrokerModal extends React.Component {
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (operation === 'edit') {
-      this.props.editPartner(carrier.id, partnerName, partnerUniqueCode, customsCode, role, business).then((result) => {
+      this.props.editBroker(broker.id, name, customsCode, partnerUniqueCode, ieType).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
         this.handleCancel();
+        this.props.onOk();
       });
     } else {
-      this.props.checkPartner({
-        tenantId,
-        partnerInfo: { name: partnerName, customsCode, partnerUniqueCode },
-      }).then((result) => {
-        let foundName = partnerName;
-        if (result.data.partner && result.data.partner.name !== partnerName) {
-          foundName = result.data.partner.name;
-        }
-        if (foundName !== partnerName) {
-          this.nameChooseConfirm(foundName, partnerName);
-        } else {
-          this.handleAddPartner();
-        }
-      });
+      this.handleAddPartner();
     }
   }
   handleAddPartner = () => {
-    const { tenantId } = this.props;
-    const { partnerName, customsCode, partnerUniqueCode, role, business, businessType } = this.state;
-    this.props.addPartner({ tenantId, partnerInfo: { partnerName, customsCode, partnerUniqueCode }, role, business, businessType }).then((result1) => {
+    const { name, customsCode, partnerUniqueCode, ieType } = this.state;
+    const { loginId, username } = this.props;
+    this.props.addBroker(name, customsCode, partnerUniqueCode, ieType, loginId, username).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
@@ -117,22 +100,28 @@ export default class BrokerModal extends React.Component {
     });
   }
   handleCancel = () => {
-    this.props.toggleCarrierModal(false);
+    this.props.toggleBrokerModal(false);
   }
-  handleProviderChange = (value) => {
-    if (value !== []) {
-      this.setState({ business: value.join(',') });
-    }
+  handleSelect = (value) => {
+    const { partners } = this.props;
+    const broker = partners.find(partner => partner.name === value);
+    this.setState({
+      name: broker.comp_name,
+      customsCode: broker.customs_code,
+      partnerUniqueCode: broker.partner_unique_code,
+    });
   }
   render() {
-    const { visible, operation } = this.props;
-    const { partnerName, customsCode, partnerUniqueCode, business } = this.state;
-    const businessArray = business !== '' ? business.split(',') : [];
+    const { visible, operation, partners } = this.props;
+    const { name, customsCode, partnerUniqueCode, ieType } = this.state;
     return (
       <Modal title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           <FormItem label="企业名称" required>
-            <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
+            {/* <Input required value={name} onChange={e => this.setState({ name: e.target.value })} /> */}
+            <Select mode="combobox" value={name} onChange={value => this.setState({ name: value })} style={{ width: '100%' }} onSelect={this.handleSelect}>
+              {partners.map(partner => (<Option value={partner.name} key={partner.name}>{partner.name}</Option>))}
+            </Select>
           </FormItem>
           <FormItem label="统一社会信用代码" required>
             <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
@@ -141,11 +130,11 @@ export default class BrokerModal extends React.Component {
             <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
           </FormItem>
           <FormItem label="业务类型" required>
-            <CheckboxGroup
-              options={options}
-              value={businessArray}
-              onChange={this.handleProviderChange}
-            />
+            <RadioGroup onChange={this.onChange} value={ieType}>
+              <Radio value="A">进出口</Radio>
+              <Radio value="I">进口</Radio>
+              <Radio value="E">出口</Radio>
+            </RadioGroup>
           </FormItem>
         </Form>
       </Modal>
