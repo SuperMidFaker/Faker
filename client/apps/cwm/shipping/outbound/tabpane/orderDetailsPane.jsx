@@ -76,28 +76,9 @@ export default class OrderDetailsPane extends React.Component {
     dataIndex: 'product_no',
     width: 160,
   }, {
-    title: '库别',
-    dataIndex: 'virtual_whse',
-    width: 120,
-  }, {
-    title: '入库单号',
-    dataIndex: 'po_no',
-    width: 120,
-  }, {
-    title: '批次号',
-    dataIndex: 'external_lot_no',
-    width: 120,
-  }, {
-    title: '产品序列号',
-    dataIndex: 'serial_no',
-    width: 120,
-  }, {
-    title: '供货商',
-    dataIndex: 'supplier',
-    width: 120,
-  }, {
     title: '中文品名',
     dataIndex: 'name',
+    width: 160,
   }, {
     title: '订货数量',
     dataIndex: 'order_qty',
@@ -122,6 +103,26 @@ export default class OrderDetailsPane extends React.Component {
     width: 100,
     className: 'cell-align-center',
     render: o => this.props.units.length > 0 && o ? this.props.units.find(unit => unit.code === o).name : '',
+  }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 120,
+  }, {
+    title: '入库单号',
+    dataIndex: 'po_no',
+    width: 120,
+  }, {
+    title: '批次号',
+    dataIndex: 'external_lot_no',
+    width: 120,
+  }, {
+    title: '产品序列号',
+    dataIndex: 'serial_no',
+    width: 120,
+  }, {
+    title: '供应商',
+    dataIndex: 'supplier',
+    width: 120,
   }, {
     title: '操作',
     width: 150,
