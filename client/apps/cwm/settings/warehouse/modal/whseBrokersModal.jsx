@@ -109,9 +109,7 @@ export default class SuppliersModal extends Component {
             {getFieldDecorator('name')(<Select
               showSearch
               style={{ width: '100%' }}
-              optionFilterProp="children"
               onChange={this.handleChange}
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             >
               {brokers.map(broker => (<Option value={broker.comp_name} key={broker.comp_name}>{broker.comp_name}</Option>))}
             </Select>)}
