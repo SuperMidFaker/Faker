@@ -37,7 +37,7 @@ export function toggleBrokerModal(visible, operation = '', broker = {}) {
   };
 }
 
-export function loadBrokers() {
+export function loadCmsBrokers() {
   return {
     [CLIENT_API]: {
       types: [

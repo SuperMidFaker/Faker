@@ -8,7 +8,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { toggleBrokerModal, loadBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
+import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
 
 const { Header, Content } = Layout;
 const rowSelection = {
@@ -16,14 +16,14 @@ const rowSelection = {
 };
 
 function fetchData({ dispatch }) {
-  return dispatch(loadBrokers());
+  return dispatch(loadCmsBrokers());
 }
 
 @connectFetch()(fetchData)
 @connect(state => ({
   tenantId: state.account.tenantId,
   brokers: state.cmsBrokers.brokers,
-}), { toggleBrokerModal, loadBrokers, changeBrokerStatus, deleteBroker })
+}), { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker })
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
@@ -60,7 +60,7 @@ export default class BrokerList extends Component {
     });
   }
   handleReload = () => {
-    this.props.loadBrokers();
+    this.props.loadCmsBrokers();
   }
   handleSearch = (value) => {
     this.setState({ searchText: value });

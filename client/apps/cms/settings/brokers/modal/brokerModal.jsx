@@ -46,15 +46,17 @@ export default class BrokerModal extends React.Component {
     name: '',
     customsCode: '',
     partnerUniqueCode: '',
-    ieType: '',
+    ieType: 'A',
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      name: nextProps.broker.comp_name || '',
-      customsCode: nextProps.broker.customs_code || '',
-      partnerUniqueCode: nextProps.broker.comp_code || '',
-      ieType: nextProps.broker.i_e_type || '',
-    });
+    if (nextProps.visible !== this.props.visible && nextProps.visible && nextProps.broker && nextProps.broker.id) {
+      this.setState({
+        name: nextProps.broker.comp_name,
+        customsCode: nextProps.broker.customs_code,
+        partnerUniqueCode: nextProps.broker.comp_code,
+        ieType: nextProps.broker.i_e_type,
+      });
+    }
   }
   onChange = (e) => {
     this.setState({ ieType: e.target.value });
@@ -72,6 +74,8 @@ export default class BrokerModal extends React.Component {
       message.error('海关编码必填');
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
+    } else if (ieType === '') {
+      message.error('请选择业务类型');
     } else if (operation === 'edit') {
       this.props.editBroker(broker.id, name, customsCode, partnerUniqueCode, ieType).then((result) => {
         if (result.error) {
@@ -101,6 +105,12 @@ export default class BrokerModal extends React.Component {
   }
   handleCancel = () => {
     this.props.toggleBrokerModal(false);
+    this.setState({
+      name: '',
+      customsCode: '',
+      partnerUniqueCode: '',
+      ieType: '',
+    });
   }
   handleSelect = (value) => {
     const { partners } = this.props;
@@ -111,20 +121,25 @@ export default class BrokerModal extends React.Component {
       partnerUniqueCode: broker.partner_unique_code,
     });
   }
+  handleNameChange = (value) => {
+    this.setState({ name: value });
+  }
+  handleUniqueCodeChange = (e) => {
+    this.setState({ partnerUniqueCode: e.target.value });
+  }
   render() {
     const { visible, operation, partners } = this.props;
     const { name, customsCode, partnerUniqueCode, ieType } = this.state;
     return (
       <Modal title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
-          <FormItem label="企业名称" required>
-            {/* <Input required value={name} onChange={e => this.setState({ name: e.target.value })} /> */}
-            <Select mode="combobox" value={name} onChange={value => this.setState({ name: value })} style={{ width: '100%' }} onSelect={this.handleSelect}>
+          {visible && <FormItem label="企业名称" required>
+            <Select mode="combobox" value={name} onChange={this.handleNameChange} style={{ width: '100%' }} onSelect={this.handleSelect}>
               {partners.map(partner => (<Option value={partner.name} key={partner.name}>{partner.name}</Option>))}
             </Select>
-          </FormItem>
+          </FormItem>}
           <FormItem label="统一社会信用代码" required>
-            <Input required value={partnerUniqueCode} onChange={e => this.setState({ partnerUniqueCode: e.target.value })} />
+            <Input required value={partnerUniqueCode} onChange={this.handleUniqueCodeChange} />
           </FormItem>
           <FormItem label="海关编码" required>
             <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />

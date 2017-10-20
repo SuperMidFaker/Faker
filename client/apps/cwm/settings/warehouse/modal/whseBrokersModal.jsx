@@ -2,12 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Input, Form, Alert } from 'antd';
+import { Modal, Input, Form, Alert, Select } from 'antd';
 import { toggleBrokerModal, addBroker, loadBrokers, updateBroker, loadCCBs } from 'common/reducers/cwmWarehouse';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, PARTNER_BUSINESSES } from 'common/constants';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
+
+function fetchData({ dispatch }) {
+  return dispatch(loadCmsBrokers());
+}
+
+@connectFetch()(fetchData)
 
 @injectIntl
 @connect(
@@ -18,8 +27,9 @@ const FormItem = Form.Item;
     visible: state.cwmWarehouse.brokerModal.visible,
     broker: state.cwmWarehouse.brokerModal.broker,
     CCBs: state.cwmWarehouse.CCBs,
+    brokers: state.cmsBrokers.brokers,
   }),
-  { toggleBrokerModal, addBroker, loadBrokers, updateBroker, loadCCBs }
+  { toggleBrokerModal, addBroker, loadBrokers, updateBroker, loadCCBs, loadCmsBrokers }
 )
 
 @Form.create()
@@ -77,8 +87,17 @@ export default class SuppliersModal extends Component {
     });
     this.props.form.resetFields();
   }
+  handleChange = (value) => {
+    const { brokers, form } = this.props;
+    const broker = brokers.find(bk => bk.comp_name === value);
+    form.setFieldsValue({
+      name: broker.comp_name,
+      uscc_code: broker.comp_code,
+      customs_code: broker.customs_code,
+    });
+  }
   render() {
-    const { form: { getFieldDecorator }, visible } = this.props;
+    const { form: { getFieldDecorator }, visible, brokers } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
@@ -87,13 +106,21 @@ export default class SuppliersModal extends Component {
         { this.state.visible && <Alert message="报关行不存在" showIcon type="error" /> }
         <Form layout="horizontal">
           <FormItem label="名称:" required {...formItemLayout}>
-            {getFieldDecorator('name')(<Input required />)}
+            {getFieldDecorator('name')(<Select
+              showSearch
+              style={{ width: '100%' }}
+              optionFilterProp="children"
+              onChange={this.handleChange}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {brokers.map(broker => (<Option value={broker.comp_name} key={broker.comp_name}>{broker.comp_name}</Option>))}
+            </Select>)}
           </FormItem>
           <FormItem label="统一社会信用代码:" required {...formItemLayout}>
-            {getFieldDecorator('uscc_code')(<Input />)}
+            {getFieldDecorator('uscc_code')(<Input disabled />)}
           </FormItem>
           <FormItem label="海关编码:" required {...formItemLayout}>
-            {getFieldDecorator('customs_code')(<Input />)}
+            {getFieldDecorator('customs_code')(<Input disabled />)}
           </FormItem>
         </Form>
       </Modal>
