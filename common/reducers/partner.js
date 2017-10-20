@@ -132,7 +132,7 @@ export function checkPartner({ tenantId, partnerInfo }) {
   };
 }
 
-export function editPartner(partnerId, name, partnerUniqueCode, code, role, business) {
+export function editPartner(partnerId, name, partnerUniqueCode, code, role, business, customsCode, businessType, contact, phone, email) {
   return {
     [CLIENT_API]: {
       types: [
@@ -150,6 +150,11 @@ export function editPartner(partnerId, name, partnerUniqueCode, code, role, busi
         code,
         role,
         business,
+        customsCode,
+        businessType,
+        contact,
+        phone,
+        email,
       },
     },
   };

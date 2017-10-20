@@ -22,12 +22,12 @@ export default class ResourcesCard extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { customer } = this.props;
+    const { vendor } = this.props;
     return (
       <Card bodyStyle={{ padding: 0 }}>
         <Tabs defaultActiveKey="team">
           <TabPane tab={<span>价格协议</span>} key="tariff">
-            <TariffPane customer={customer} />
+            <TariffPane vendor={vendor} />
           </TabPane>
         </Tabs>
       </Card>

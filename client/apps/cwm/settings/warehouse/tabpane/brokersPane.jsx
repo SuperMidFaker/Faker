@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Icon, Table, Tag } from 'antd';
-import { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus } from 'common/reducers/cwmWarehouse';
+import { Button, Icon, Table, Tag, message } from 'antd';
+import { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus, authorizeBroker } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import BrokerModal from '../modal/whseBrokersModal';
 import { formatMsg } from '../message.i18n';
@@ -18,7 +18,7 @@ import { formatMsg } from '../message.i18n';
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus }
+  { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus, authorizeBroker }
 )
 export default class BrokersPane extends Component {
   static propTypes = {
@@ -71,10 +71,12 @@ export default class BrokersPane extends Component {
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '操作',
-    width: 150,
+    width: 200,
     dataIndex: 'OPS_COL',
     render: (o, record) => (
       <span>
+        <RowUpdater onHit={() => this.authorizeBroker(record)} label="仓库授权" row={record} />
+        <span className="ant-divider" />
         {record.active === 0 ? <RowUpdater onHit={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
@@ -85,6 +87,13 @@ export default class BrokersPane extends Component {
     ),
   }]
   msg = formatMsg(this.props.intl)
+  authorizeBroker = (row) => {
+    this.props.authorizeBroker(this.props.whseCode, row.partner_tenant_id, row.partner_id, row.name, this.props.loginId).then((result) => {
+      if (!result.error) {
+        message.info('授权成功');
+      }
+    });
+  }
   changeBrokerStatus = (id, status) => {
     this.props.changeBrokerStatus(id, status).then((result) => {
       if (!result.error) {

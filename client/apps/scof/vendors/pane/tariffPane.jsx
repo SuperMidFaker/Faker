@@ -28,7 +28,7 @@ export default class TariffPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    customer: PropTypes.object.isRequired,
+    vendor: PropTypes.object.isRequired,
     transitModes: PropTypes.array.isRequired,
     loadTransportTariffs: PropTypes.func.isRequired,
     loadCmsQuotes: PropTypes.func.isRequired,
@@ -120,7 +120,7 @@ export default class TariffPane extends React.Component {
         else return <Tag color="#87d068">有效</Tag>;
       },
     }];
-    const pId = this.props.customer.id;
+    const pId = this.props.vendor.id;
     const toData = data.filter(item => pId !== -1 && (item.recvPartnerId === pId || item.sendPartnerId === pId)
      && filters.module.indexOf(String(item.module)) >= 0);
     return (
