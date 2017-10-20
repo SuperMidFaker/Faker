@@ -657,6 +657,10 @@ const messages = defineMessages({
     id: 'scof.orders.progress.action.so.finished',
     defaultMessage: '发货',
   },
+  regFinish: {
+    id: 'scof.orders.progress.action.so.reg.finished',
+    defaultMessage: '备案',
+  },
   tabOrder: {
     id: 'scof.orders.dock.tab.order',
     defaultMessage: '订单',

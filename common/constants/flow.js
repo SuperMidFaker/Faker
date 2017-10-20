@@ -110,6 +110,13 @@ const cwmShippingBizObjects = [{
     text: 'onSoFinished',
     actionText: 'soFinish',
   }],
+}, {
+  key: 'cwmSoNormal',
+  text: 'cwmShippingOrderNormalReg',
+  triggers: [{ key: 'regFinished',
+    text: 'onRegFinished',
+    actionText: 'regFinish',
+  }],
 }];
 
 exports.NODE_BIZ_OBJECTS = {

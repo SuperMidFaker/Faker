@@ -72,12 +72,13 @@ export default class CwmSoForm extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
     };
+    const whseCode = node.t_whse_code || (node.whse_code ? `${node.wh_ent_tenant_id}-${node.whse_code}` : '');
     return (
       <Card noHovering bodyStyle={{ padding: 16 }}>
         <Row gutter={16}>
           <Col sm={24} lg={8}>
             <FormItem label="仓库" {...formItemLayout} required>
-              <Select showSearch allowClear optionFilterProp="children" value={node.whse_code ? `${node.wh_ent_tenant_id}-${node.whse_code}` : ''}
+              <Select showSearch allowClear optionFilterProp="children" value={whseCode}
                 onChange={value => this.handleCommonFieldChange('t_whse_code', value)}
               >
                 {recParams.whses.map(wh =>

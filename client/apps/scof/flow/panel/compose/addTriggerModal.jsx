@@ -302,6 +302,7 @@ export default class AddTriggerModal extends React.Component {
     if (this.props.kind) {
       const bizobjExecutes = NODE_BIZ_OBJECTS_EXECUTABLES[this.props.kind];
       if (bizobjExecutes) {
+        // todo creatableBiz func this.props.model for example SO bonded reg_type: normal -> NormalReg bizobject
         const creatableBizObjects = NODE_CREATABLE_BIZ_OBJECTS[this.props.kind].map(nbo => ({ key: nbo.key, text: nbo.text }));
         this.setState({ bizobjExecutes, creatableBizObjects });
       }

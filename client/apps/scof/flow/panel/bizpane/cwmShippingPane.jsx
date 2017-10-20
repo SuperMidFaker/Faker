@@ -35,6 +35,8 @@ export default class CWMShippingPane extends Component {
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, model, shipParams } = this.props;
+    model.t_whse_code = model.t_whse_code || (model.whse_code && `${model.wh_ent_tenant_id}-${model.whse_code}`);
+    // todo wh !bonded -> 只选非保
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
@@ -42,7 +44,7 @@ export default class CWMShippingPane extends Component {
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('cwmWarehouse')}>
                 {getFieldDecorator('t_whse_code', {
-                  initialValue: model.whse_code && `${model.wh_ent_tenant_id}-${model.whse_code}`,
+                  initialValue: model.t_whse_code,
                 })(<Select showSearch allowClear optionFilterProp="children">
                   {shipParams.whses.map(wh =>
                     <Option key={`${wh.wh_ent_tenant_id}-${wh.code}`} value={`${wh.wh_ent_tenant_id}-${wh.code}`}>{wh.code}|{wh.name}</Option>)}
@@ -54,7 +56,7 @@ export default class CWMShippingPane extends Component {
                 {getFieldDecorator('so_type', {
                   initialValue: model.so_type,
                 })(
-                  <Select placeholder="SO类型">
+                  <Select placeholder="SO类型" allowClear>
                     {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
                   </Select>
                     )}

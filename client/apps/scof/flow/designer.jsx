@@ -583,7 +583,9 @@ export default class FlowDesigner extends React.Component {
                 }
                 </QueueAnim>
               }
-              <AddTriggerModal onModalOK={this.handleTriggerModalChange} kind={activeItem && activeItem.get('model').kind} />
+              <AddTriggerModal onModalOK={this.handleTriggerModalChange} kind={activeItem && activeItem.get('model').kind}
+                model={activeItem && activeItem.get('model')}
+              />
             </Spin>
           </Content>
         </Layout>
