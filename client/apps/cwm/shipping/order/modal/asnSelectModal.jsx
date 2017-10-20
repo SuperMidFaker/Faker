@@ -27,7 +27,7 @@ export default class AddDetailModal extends Component {
     dataSource: [],
   }
   componentWillMount() {
-    this.props.getCrossAsns(this.props.whseCode, this.props.tenantId).then((result) => {
+    this.props.getCrossAsns(this.props.whseCode).then((result) => {
       if (!result.error) {
         this.setState({
           dataSource: result.data,

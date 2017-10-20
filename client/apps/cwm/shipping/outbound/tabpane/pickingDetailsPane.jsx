@@ -65,9 +65,14 @@ export default class PickingDetailsPane extends React.Component {
     this.setState({ searchValue: value });
   }
   columns = [{
+    title: '行号',
+    dataIndex: 'seq_no',
+    width: 50,
+    className: 'cell-align-center',
+  }, {
     title: 'SKU',
     dataIndex: 'product_sku',
-    width: 160,
+    width: 140,
     render: (o) => {
       if (o) {
         return <SKUPopover ownerPartnerId={this.props.outboundHead.owner_partner_id} sku={o} />;
@@ -123,7 +128,7 @@ export default class PickingDetailsPane extends React.Component {
   }, {
     title: '批次号',
     dataIndex: 'external_lot_no',
-    width: 150,
+    width: 120,
   }, {
     title: '序列号',
     dataIndex: 'serial_no',

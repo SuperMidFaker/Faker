@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Breadcrumb, Table, Button, Layout, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
@@ -7,27 +7,60 @@ import SearchBar from 'client/components/SearchBar';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
-import { mapPartnerships } from './dataMapping';
+import connectFetch from 'client/common/decorators/connect-fetch';
+import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
 
 const { Header, Content } = Layout;
 const rowSelection = {
   onSelect() {},
 };
+
+function fetchData({ dispatch }) {
+  return dispatch(loadCmsBrokers());
+}
+
+@connectFetch()(fetchData)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  brokers: state.cmsBrokers.brokers,
+}), { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker })
 @connectNav({
   depth: 2,
-  muduleName: 'clearance',
+  moduleName: 'clearance',
 })
 export default class BrokerList extends Component {
-  static propTyps = {
-    dataSource: PropTypes.array,
-    onAddBtnClicked: PropTypes.func.isRequired,
-    onStopBtnClick: PropTypes.func.isRequired,
-    onDeleteBtnClick: PropTypes.func.isRequired,
-    onResumeBtnClick: PropTypes.func.isRequired,
-    onEditBtnClick: PropTypes.func.isRequired,
-  }
   state = {
     searchText: '',
+  }
+  handleEditBtnClick = (broker) => {
+    this.props.toggleBrokerModal(true, 'edit', broker);
+  }
+  handleAddBtnClick = () => {
+    this.props.toggleBrokerModal(true, 'add');
+  }
+  handleStopBtnClick = (id, status) => {
+    this.props.changeBrokerStatus(id, status).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+      }
+    });
+  }
+  handleDeleteBtnClick = (id) => {
+    this.props.deleteBroker(id).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+      }
+    });
+  }
+  handleResumeBtnClick = (id, status) => {
+    this.props.changeBrokerStatus(id, status).then((result) => {
+      if (!result.error) {
+        this.handleReload();
+      }
+    });
+  }
+  handleReload = () => {
+    this.props.loadCmsBrokers();
   }
   handleSearch = (value) => {
     this.setState({ searchText: value });
@@ -35,9 +68,12 @@ export default class BrokerList extends Component {
   renderEditAndStopOperations = itemInfo => (
     <PrivilegeCover module="corp" feature="partners" action="edit">
       <span>
-        <a onClick={() => this.props.onEditBtnClick(itemInfo)}>修改</a>
-        <span className="ant-divider" />
-        <a onClick={() => this.props.onStopBtnClick(itemInfo.id)}>停用</a>
+        {itemInfo.editable && (
+          <span>
+            <a onClick={() => this.handleEditBtnClick(itemInfo)}>修改</a>
+            <span className="ant-divider" />
+          </span>)}
+        <a onClick={() => this.handleStopBtnClick(itemInfo.id, false)}>停用</a>
       </span>
     </PrivilegeCover>
     )
@@ -47,23 +83,23 @@ export default class BrokerList extends Component {
     return (
       <span>
         <PrivilegeCover module="corp" feature="partners" action="delete">
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.onDeleteBtnClick(id)}>
+          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(id)}>
             <a>删除</a>
           </Popconfirm>
         </PrivilegeCover>
         <span className="ant-divider" />
         <PrivilegeCover module="corp" feature="partners" action="edit">
-          <a onClick={() => this.props.onResumeBtnClick(id)}>启用</a>
+          <a onClick={() => this.handleResumeBtnClick(id, true)}>启用</a>
         </PrivilegeCover>
       </span>
     );
   }
   render() {
-    const { dataSource, onAddBtnClicked } = this.props;
-    const data = dataSource.filter((item) => {
+    const { brokers } = this.props;
+    const data = brokers.filter((item) => {
       if (this.state.searchText) {
         const reg = new RegExp(this.state.searchText);
-        return reg.test(item.name) || reg.test(item.customs_code) || reg.test(item.partner_unique_code);
+        return reg.test(item.name) || reg.test(item.customs_code) || reg.test(item.comp_code);
       } else {
         return true;
       }
@@ -71,12 +107,12 @@ export default class BrokerList extends Component {
     const columns = [
       {
         title: '企业名称',
-        dataIndex: 'name',
+        dataIndex: 'comp_name',
         key: 'name',
         width: 240,
       }, {
         title: '统一社会信用代码',
-        dataIndex: 'partner_unique_code',
+        dataIndex: 'comp_code',
         key: 'partner_unique_code',
         width: 200,
       }, {
@@ -86,12 +122,16 @@ export default class BrokerList extends Component {
         width: 120,
       }, {
         title: '业务类型',
-        dataIndex: 'business',
-        key: 'business',
+        dataIndex: 'i_e_type',
+        key: 'i_e_type',
         render(o) {
-          return (
-            <span>{o ? mapPartnerships(o.split(',')) : ''}</span>
-          );
+          if (o === 'A') {
+            return <span>进出口</span>;
+          } else if (o === 'I') {
+            return <span>进口</span>;
+          } else {
+            return <span>出口</span>;
+          }
         },
       }, {
         title: '创建日期',
@@ -133,7 +173,7 @@ export default class BrokerList extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             <PrivilegeCover module="clearance" feature="resources" action="create">
-              <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus">新增</Button>
+              <Button type="primary" size="large" onClick={this.handleAddBtnClick} icon="plus">新增</Button>
             </PrivilegeCover>
           </div>
         </Header>
@@ -147,7 +187,7 @@ export default class BrokerList extends Component {
             <div className="panel-body table-panel table-fixed-layout">
               <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
             </div>
-            <BrokerModal />
+            <BrokerModal onOk={this.handleReload} />
           </div>
         </Content>
       </QueueAnim>

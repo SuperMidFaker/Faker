@@ -741,7 +741,7 @@ export function getSuppliers(tenantId, whseCode, ownerPartnerId) {
   };
 }
 
-export function getCrossAsns(whseCode, tenantId) {
+export function getCrossAsns(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -751,7 +751,7 @@ export function getCrossAsns(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/get/cross/asns',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }

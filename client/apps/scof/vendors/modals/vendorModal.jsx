@@ -5,9 +5,9 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Checkbox, Modal, Form, Input, Select, Row, Col, Button, Icon, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { addVendor, editVendor, hideVendorModal } from 'common/reducers/sofVendors';
+import { hideVendorModal } from 'common/reducers/sofVendors';
 import { getCompanyInfo } from 'common/reducers/common';
-import { checkPartner } from 'common/reducers/partner';
+import { checkPartner, addPartner, editPartner } from 'common/reducers/partner';
 import { BUSINESS_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -23,7 +23,7 @@ const formatMsg = format(messages);
     vendor: state.sofVendors.vendorModal.vendor,
     operation: state.sofVendors.vendorModal.operation,
   }),
-  { addVendor, editVendor, checkPartner, hideVendorModal, getCompanyInfo }
+  { addPartner, editPartner, checkPartner, hideVendorModal, getCompanyInfo }
 )
 
 export default class VendorModal extends React.Component {
@@ -32,10 +32,10 @@ export default class VendorModal extends React.Component {
     tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     operation: PropTypes.string, // add  edit
-    addVendor: PropTypes.func.isRequired,
+    addPartner: PropTypes.func.isRequired,
     checkPartner: PropTypes.func.isRequired,
     hideVendorModal: PropTypes.func.isRequired,
-    editVendor: PropTypes.func.isRequired,
+    editPartner: PropTypes.func.isRequired,
     vendor: PropTypes.object.isRequired,
     onOk: PropTypes.func,
     getCompanyInfo: PropTypes.func.isRequired,
@@ -91,11 +91,11 @@ export default class VendorModal extends React.Component {
       cancelText: name,
       onOk: () => {
         this.setState({ name: foundName }, () => {
-          this.hancleAddVendor();
+          this.handleAddVendor();
         });
       },
       onCancel: () => {
-        this.hancleAddVendor();
+        this.handleAddVendor();
       },
     });
   }
@@ -113,19 +113,16 @@ export default class VendorModal extends React.Component {
     } else if (businessType === '') {
       message.error('请选择供应商业务类型');
     } else if (this.props.operation === 'edit') {
-      this.props.editVendor({
-        tenantId,
-        partnerInfo: { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
-        businessType,
-      }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.onOk();
-          message.success('修改成功');
-          this.handleCancel();
-        }
-      });
+      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'SUP', '', customsCode, businessType, contact, phone, email
+        ).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            message.success('修改成功');
+            this.handleCancel();
+            this.props.onOk();
+          }
+        });
     } else if (partnerUniqueCode) {
       this.props.checkPartner({
         tenantId,
@@ -138,26 +135,28 @@ export default class VendorModal extends React.Component {
         if (foundName !== name) {
           this.nameChooseConfirm(foundName, name);
         } else {
-          this.hancleAddVendor();
+          this.handleAddVendor();
         }
       });
     } else {
-      this.hancleAddVendor();
+      this.handleAddVendor();
     }
   }
-  hancleAddVendor = () => {
+  handleAddVendor = () => {
     const { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
     const { tenantId } = this.props;
-    this.props.addVendor({
+    this.props.addPartner({
       tenantId,
-      partnerInfo: { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
+      partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
       businessType,
+      role: 'SUP',
     }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
-        this.handleCancel();
         message.info('添加成功');
+        this.handleCancel();
+        this.props.onOk();
       }
     });
   }
@@ -181,6 +180,8 @@ export default class VendorModal extends React.Component {
   }
   render() {
     const { visible, operation } = this.props;
+    const { businessType } = this.state;
+    const businessArray = businessType !== '' ? businessType.split(',') : [];
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -233,7 +234,7 @@ export default class VendorModal extends React.Component {
             label="业务类型"
             hasFeedback
           >
-            <CheckboxGroup options={BUSINESS_TYPES} onChange={this.handleCustomerTypesChange} />
+            <CheckboxGroup options={BUSINESS_TYPES} value={businessArray} onChange={this.handleVendorTypesChange} />
           </FormItem>
           <FormItem
             {...formItemLayout}

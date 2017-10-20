@@ -56,6 +56,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'UPDATE_BROKER', 'UPDATE_BROKER_SUCCEED', 'UPDATE_BROKER_FAIL',
   'LOAD_CCBS', 'LOAD_CCBS_SUCCEED', 'LOAD_CCBS_FAIL',
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
+  'AUTHORIZE_BROKER', 'AUTHORIZE_BROKER_SUCCEED', 'AUTHORIZE_BROKER_FAIL',
 ]);
 
 const initialState = {
@@ -939,6 +940,21 @@ export function loadAdviceLocations(productNo, tenantId, whseCode) {
       endpoint: 'v1/cwm/get/advice/locations',
       method: 'get',
       params: { productNo, tenantId, whseCode },
+    },
+  };
+}
+
+export function authorizeBroker(whseCode, ownerTenantId, partnerId, name, loginId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.AUTHORIZE_BROKER,
+        actionTypes.AUTHORIZE_BROKER_SUCCEED,
+        actionTypes.AUTHORIZE_BROKER_FAIL,
+      ],
+      endpoint: 'v1/cwm/authorize/broker',
+      method: 'post',
+      data: { whseCode, ownerTenantId, partnerId, name, loginId },
     },
   };
 }
