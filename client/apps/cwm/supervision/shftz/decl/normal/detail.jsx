@@ -6,6 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadParams, loadNormalDelg, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
@@ -281,7 +282,7 @@ export default class NormalDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
@@ -304,7 +305,7 @@ export default class NormalDeclDetail extends Component {
                   </div>
                 </TabPane>
               </Tabs>
-            </Card>
+            </MagicCard>
           </Form>
         </Content>
       </div>

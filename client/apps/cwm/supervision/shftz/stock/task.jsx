@@ -6,6 +6,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Badge, Breadcrumb, Layout, Tabs, Row, Col, Card } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import InfoItem from 'client/components/InfoItem';
 import FTZStockPane from './tabpane/ftzStockPane';
 import ComaprisonPane from './tabpane/comparisonPane';
@@ -80,7 +81,7 @@ export default class SHFTZStockTask extends Component {
               </Col>
             </Row>
           </Card>
-          <Card noHovering bodyStyle={{ padding: 0 }}>
+          <MagicCard noHovering bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="comparison">
               <TabPane tab="对比视图" key="comparison">
                 <ComaprisonPane />
@@ -92,7 +93,7 @@ export default class SHFTZStockTask extends Component {
                 <FTZStockPane taskId={this.props.params.taskId} />
               </TabPane>
             </Tabs>
-          </Card>
+          </MagicCard>
         </Content>
       </div>
     );

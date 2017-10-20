@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tooltip, Button, Popover, message } from 'antd';
 import classNames from 'classnames';
@@ -29,7 +29,7 @@ class DataSource {
   }
 }
 
-class DataTable extends Component {
+class DataTable extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-table',
   }

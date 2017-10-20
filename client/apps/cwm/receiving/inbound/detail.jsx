@@ -7,6 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
@@ -196,7 +197,7 @@ export default class ReceiveInbound extends Component {
               </Steps>
             </div>
           </Card>
-          <Card bodyStyle={{ padding: 0 }} noHovering>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
                 <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
@@ -205,7 +206,7 @@ export default class ReceiveInbound extends Component {
                 <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
               </TabPane>
             </Tabs>
-          </Card>
+          </MagicCard>
         </Content>
       </div>
     );

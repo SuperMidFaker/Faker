@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Card, Form, Layout, Tabs, Button, Select, message } from 'antd';
+import { Breadcrumb, Form, Layout, Tabs, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import HeadCard from './card/headCard';
 import DetailsPane from './tabpane/detailsPane';
 import ReceiverPane from './tabpane/receiverPane';
@@ -173,7 +174,7 @@ export default class CreateShippingOrder extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <HeadCard soHead={soHead} form={form} editable={this.state.editable} handleOwnerChange={this.handleOwnerChange} />
-            <Card bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
                   <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} />
@@ -185,7 +186,7 @@ export default class CreateShippingOrder extends Component {
                   <CarrierPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} onCarrierChange={this.handleCarrierChange} />
                 </TabPane>
               </Tabs>
-            </Card>
+            </MagicCard>
           </Form>
         </Content>
       </div>

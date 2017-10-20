@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Card, Tabs, Button, Select, message } from 'antd';
+import { Breadcrumb, Form, Layout, Tabs, Button, Select, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import HeadCard from './card/headCard';
 import DetailsPane from './tabpane/detailsPane';
 import LottingPane from './tabpane/lottingPane';
@@ -141,7 +142,7 @@ export default class CreateReceivingASN extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <HeadCard form={form} handleOwnerChange={this.handleOwnerChange} />
-            <Card bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
                 <TabPane tab="ASN明细" key="asnDetails">
                   <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
@@ -150,7 +151,7 @@ export default class CreateReceivingASN extends Component {
                   <LottingPane editable={this.state.editable} form={form} />
                 </TabPane>
               </Tabs>
-            </Card>
+            </MagicCard>
           </Form>
         </Content>
       </div>

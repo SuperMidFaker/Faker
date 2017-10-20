@@ -9,6 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import Summary from 'client/components/Summary';
 import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
@@ -409,7 +410,7 @@ export default class SHFTZEntryDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {entryRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
@@ -459,7 +460,7 @@ export default class SHFTZEntryDetail extends Component {
                     </TabPane>);
                 })}
               </Tabs>
-            </Card>
+            </MagicCard>
           </Form>
         </Content>
       </div>

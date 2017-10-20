@@ -8,6 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg, fileRelTransfers, cancelRelReg,
   editReleaseWt } from 'common/reducers/cwmShFtz';
@@ -340,7 +341,7 @@ export default class SHFTZTransferOutDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
@@ -375,7 +376,7 @@ export default class SHFTZTransferOutDetail extends Component {
                     </TabPane>);
                 })}
               </Tabs>
-            </Card>
+            </MagicCard>
           </Form>
         </Content>
       </div>

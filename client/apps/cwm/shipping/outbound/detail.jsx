@@ -9,6 +9,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import { Logixon } from 'client/components/FontIcon';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
 import PickingDetailsPane from './tabpane/pickingDetailsPane';
 import PackingDetailsPane from './tabpane/packingDetailsPane';
@@ -322,7 +323,7 @@ export default class OutboundDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <Card bodyStyle={{ padding: 0 }} noHovering>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="订单明细" key="orderDetails">
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} />
@@ -337,7 +338,7 @@ export default class OutboundDetail extends Component {
                 <ShippingDetailsPane outboundNo={this.props.params.outboundNo} />
               </TabPane>
             </Tabs>
-          </Card>
+          </MagicCard>
           <ShunfengExpressModal />
         </Content>
       </div>

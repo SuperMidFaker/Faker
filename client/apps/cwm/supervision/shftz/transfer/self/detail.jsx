@@ -9,6 +9,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import Summary from 'client/components/Summary';
 import { loadVirtualTransferDetails, loadParams, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
@@ -301,7 +302,7 @@ export default class SHFTZTransferSelfDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Card bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Row type="flex" className="panel-header">
                 <Col className="col-flex-primary info-group-inline" />
                 <Col className="col-flex-secondary">
@@ -313,7 +314,7 @@ export default class SHFTZTransferSelfDetail extends Component {
                   scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                 />
               </div>
-            </Card>
+            </MagicCard>
           </Form>
         </Content>
       </div>
