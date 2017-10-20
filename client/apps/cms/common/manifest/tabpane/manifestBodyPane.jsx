@@ -19,6 +19,7 @@ import { dividGrossWt } from './helper';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
+import DeclBodyImportModal from '../modals/DeclBodyImportModal';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -757,7 +758,7 @@ export default class ManifestBodyPane extends React.Component {
     window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/unclassified/to/item/export/${createFilename('bodyExportToItem')}.xlsx?billSeqNo=${
       this.props.billSeqNo}&repoId=${this.props.billMeta.repoId}`);
   }
-  handleUploaded = () => {
+  handleReload = () => {
     this.props.loadBillBody(this.props.billSeqNo);
   }
   handleDeleteSelected = () => {
@@ -843,7 +844,7 @@ export default class ManifestBodyPane extends React.Component {
               tenant_id: this.props.tenantId,
               creater_login_id: this.props.loginId,
             }),
-          }} onUploaded={this.handleUploaded}
+          }} onUploaded={this.handleReload}
         >
           <Dropdown.Button size="large" onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
             <Icon type="upload" /> {this.msg('unrelatedImport')}
@@ -858,7 +859,7 @@ export default class ManifestBodyPane extends React.Component {
               delgNo: this.props.billHead.delg_no,
               tradeCode: this.props.billHead.trade_co,
             }),
-          }} onUploaded={this.handleUploaded}
+          }} onUploaded={this.handleReload}
         >
           <Dropdown.Button size="large" onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
@@ -921,6 +922,7 @@ export default class ManifestBodyPane extends React.Component {
         <RelateImportRuleModal />
         <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
+        <DeclBodyImportModal reload={this.handleReload} />
       </DataPane>
     );
   }

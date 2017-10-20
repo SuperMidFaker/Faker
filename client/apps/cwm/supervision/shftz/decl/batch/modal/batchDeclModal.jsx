@@ -356,7 +356,6 @@ export default class BatchDeclModal extends Component {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();
-          this.props.form.resetFields();
         } else {
           message.error(result.error.message);
         }
