@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Table, Input } from 'antd';
+import { Modal, Button, Input } from 'antd';
 import { MdIcon } from 'client/components/FontIcon';
+import DataPane from 'client/components/DataPane';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -46,11 +47,6 @@ export default class MovementDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleReload();
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -168,29 +164,33 @@ export default class MovementDetailsPane extends React.Component {
   }]
   render() {
     const { movementDetails, mode, movementHead } = this.props;
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={movementDetails} rowKey="to_trace_id" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {this.state.selectedRowKeys.length > 0 && (<Button size="large" onClick={this.handleBatchDetailRemove}>
               <MdIcon type="check-all" />批量移除明细
             </Button>)}
-          </div>
-          <div className="toolbar-right">
+          </DataPane.BulkActions>
+          <DataPane.Actions>
             {mode === 'manual' && movementHead.isdone === 0 &&
             <Button size="large" icon="check" onClick={this.handleExecuteMovement}>
               执行库存移动
             </Button>
             }
-          </div>
-        </div>
-        <Table columns={this.columns} dataSource={movementDetails} rowKey="to_trace_id"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-        />
-      </div>
+          </DataPane.Actions>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

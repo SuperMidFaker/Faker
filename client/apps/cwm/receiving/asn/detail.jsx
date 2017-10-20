@@ -52,6 +52,7 @@ export default class ReceivingASNDetail extends Component {
     editable: true,
     asnHead: {},
     asnBody: [],
+    fullscreen: true,
   }
   componentWillMount() {
     this.props.loadAsn(this.props.params.asnNo).then(
@@ -69,6 +70,9 @@ export default class ReceivingASNDetail extends Component {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   handleSaveBtnClick = () => {
     const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, suppliers } = this.props;
     this.props.form.validateFields((errors, values) => {
@@ -148,7 +152,7 @@ export default class ReceivingASNDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
                 <TabPane tab="ASN明细" key="asnDetails">
-                  <DetailsPane asnBody={asnBody} detailEnable selectedOwner={asnHead.owner_partner_id} form={form} editable={this.state.editable} />
+                  <DetailsPane asnBody={asnBody} detailEnable selectedOwner={asnHead.owner_partner_id} form={form} editable={this.state.editable} fullscreen={this.state.fullscreen} />
                 </TabPane>
                 <TabPane tab="批次属性" key="lottingProps">
                   <LottingPane editable={this.state.editable} form={form} asnNo={this.props.params.asnNo} />

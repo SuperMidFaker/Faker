@@ -2,9 +2,10 @@ import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Input, Button, notification } from 'antd';
+import { Input, Button, notification } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
+import DataPane from 'client/components/DataPane';
 import AllocatingModal from '../modal/allocatingModal';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
@@ -40,13 +41,7 @@ export default class OrderDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleReload();
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
       this.handleReload();
@@ -78,7 +73,6 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '中文品名',
     dataIndex: 'name',
-    width: 160,
   }, {
     title: '订货数量',
     dataIndex: 'order_qty',
@@ -299,33 +293,27 @@ export default class OrderDetailsPane extends React.Component {
       }],
     };
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={dataSource} rowKey={rowKey} loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {ButtonStatus === 'alloc' && (<Button loading={submitting} onClick={this.handleBatchAutoAlloc}>
               <MdIcon type="check-all" />批量自动分配
             </Button>)}
             {ButtonStatus === 'unalloc' && (<Button loading={submitting} onClick={this.handleAllocBatchCancel} icon="close">
               批量取消分配
             </Button>)}
-            <div className="pull-right">
-              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-            </div>
-          </div>
-          <div className="toolbar-right">
+          </DataPane.BulkActions>
+          <DataPane.Actions>
             { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
               <Button loading={submitting} type="primary" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
-          </div>
-        </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey={rowKey}
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-          loading={this.state.loading}
-        />
+          </DataPane.Actions>
+        </DataPane.Toolbar>
         <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />
-      </div>
+      </DataPane>
     );
   }
 }

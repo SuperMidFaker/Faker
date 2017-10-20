@@ -51,6 +51,7 @@ export default class ReceiveInbound extends Component {
   state = {
     printed: false,
     activeTab: '',
+    fullscreen: true,
   }
   componentWillMount() {
     this.props.loadInboundHead(this.props.params.inboundNo).then((result) => {
@@ -75,6 +76,9 @@ export default class ReceiveInbound extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   handleReceivingModeChange = (ev) => {
     this.props.updateInboundMode(this.props.params.inboundNo, ev.target.value);
   }
@@ -197,13 +201,13 @@ export default class ReceiveInbound extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
-                <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} />
+                <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} fullscreen={this.state.fullscreen} />
               </TabPane>
               <TabPane tab="上架明细" key="putawayDetails" disabled={inboundHead.status === CWM_INBOUND_STATUS.CREATED.value}>
-                <PutawayDetailsPane inboundNo={this.props.params.inboundNo} />
+                <PutawayDetailsPane inboundNo={this.props.params.inboundNo} fullscreen={this.state.fullscreen} />
               </TabPane>
             </Tabs>
           </MagicCard>

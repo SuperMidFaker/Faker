@@ -2,7 +2,8 @@ import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button, Input } from 'antd';
+import { Button, Input } from 'antd';
+import DataPane from 'client/components/DataPane';
 import { openAllocatingModal } from 'common/reducers/cwmOutbound';
 import { loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 
@@ -28,11 +29,6 @@ export default class OrderDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.props.loadWaveDetails(this.props.waveNo);
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -93,21 +89,14 @@ export default class OrderDetailsPane extends React.Component {
       },
     };
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={this.props.waveDetails} rowKey="wave_seq_no" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-            <div className="pull-right">
-              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-            </div>
-          </div>
-        </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveDetails} rowKey="wave_seq_no"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-        />
-      </div>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

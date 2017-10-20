@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Modal, Button, Table, Input, Tag, Tooltip } from 'antd';
+import { Modal, Button, Input, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import SKUPopover from '../../../common/popover/skuPopover';
 import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
@@ -52,11 +53,6 @@ export default class ReceiveDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleReload();
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -149,24 +145,6 @@ export default class ReceiveDetailsPane extends React.Component {
         return (<span className="text-error">{o}</span>);
       }
     },
-/*  }, {
-    title: '收货库位',
-    dataIndex: 'location',
-    width: 300,
-    render: (o, record) => {
-      const Options = this.props.locations.map(location => (<Option key={location.id} value={location.location}>{location.location}</Option>));
-      if (record.location.length <= 1) {
-        return (
-          <Select size="small" className="readonly" value={o[0]} style={{ width: 280 }} disabled>
-            {Options}
-          </Select>);
-      } else {
-        return (
-          <Select size="small" className="readonly" mode="tags" value={o} style={{ width: 280 }} disabled>
-            {Options}
-          </Select>);
-      }
-    }, */
   }, {
     title: '包装情况',
     dataIndex: 'damage_level',
@@ -253,21 +231,20 @@ export default class ReceiveDetailsPane extends React.Component {
       }),
     };
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {inboundHead.rec_mode === 'manual' &&
             <Button onClick={this.handleBatchProductReceive}>
-              批量收货确认
-            </Button>
-            }
-            <div className="pull-right">
-              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-            </div>
-          </div>
-          <div className="toolbar-right">
+            批量收货确认
+          </Button>
+          }
+          </DataPane.BulkActions>
+          <DataPane.Actions>
             {inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
             <Tooltip title="导出收货明细" placement="bottom"><Button icon="download" onClick={this.handleDownloadReceiving}>导出</Button></Tooltip>
             }
@@ -286,23 +263,12 @@ export default class ReceiveDetailsPane extends React.Component {
               >
                 <Button icon="upload">导入</Button>
               </ExcelUploader>
-            </Tooltip>
-            }
-            {/* inboundHead.rec_mode === 'manual' && inboundHead.status === CWM_INBOUND_STATUS.CREATED.value &&
-            <Button icon="check" onClick={this.handleExpressReceived}>
-              快捷收货
-            </Button>
-            */}
-          </div>
-        </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-          loading={this.state.loading}
-        />
+            </Tooltip>}
+          </DataPane.Actions>
+        </DataPane.Toolbar>
         <ReceivingModal />
         <BatchReceivingModal inboundNo={this.props.inboundNo} data={this.state.selectedRows} />
-      </div>
+      </DataPane>
     );
   }
 }

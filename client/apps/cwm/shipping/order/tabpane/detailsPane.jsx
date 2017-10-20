@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Icon, Table } from 'antd';
+import { Button, Icon } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -43,13 +44,6 @@ export default class DetailsPane extends Component {
     editRecord: {},
     edit: false,
   };
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
-  }
   componentWillReceiveProps(nextProps) {
     const { soBody } = nextProps;
     if (soBody && (nextProps.soBody !== this.props.soBody)) {
@@ -93,6 +87,9 @@ export default class DetailsPane extends Component {
   }
   showAsnSelectModal = () => {
     this.props.showAsnSelectModal();
+  }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
   }
   render() {
     const { editable, temporaryDetails, detailEnable, units, currencies, form } = this.props;
@@ -182,22 +179,21 @@ export default class DetailsPane extends Component {
       ),
     }];
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           {editable && <Button type="primary" icon="plus-circle-o" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
           {editable && <Button icon="upload" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'}>导入</Button>}
           {editable && <Button disabled={(detailEnable && Number(soType) === 3) ? '' : 'disabled'} onClick={this.showAsnSelectModal}>选择ASN</Button>}
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button size="large" onClick={this.handleBatchDelete} icon="delete" />
-          </div>
-        </div>
-        <Table columns={columns} rowSelection={rowSelection} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" pagination={pagination}
-          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-        />
+          </DataPane.BulkActions>
+        </DataPane.Toolbar>
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
         <AsnSelectModal />
-      </div>
+      </DataPane>
     );
   }
 }

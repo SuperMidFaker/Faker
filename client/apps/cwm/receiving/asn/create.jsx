@@ -52,11 +52,15 @@ export default class CreateReceivingASN extends Component {
     editable: true,
     detailEnable: false,
     selectedOwner: null,
+    fullscreen: true,
   }
   componentWillUnmount() {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   handleSaveBtnClick = () => {
     const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, suppliers } = this.props;
     if (temporaryDetails.length === 0) {
@@ -145,7 +149,7 @@ export default class CreateReceivingASN extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="asnDetails" onChange={this.handleTabChange}>
                 <TabPane tab="ASN明细" key="asnDetails">
-                  <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} />
+                  <DetailsPane editable={this.state.editable} form={form} detailEnable={this.state.detailEnable} selectedOwner={this.state.selectedOwner} fullscreen={this.state.fullscreen} />
                 </TabPane>
                 <TabPane tab="批次属性" key="lottingProps">
                   <LottingPane editable={this.state.editable} form={form} />

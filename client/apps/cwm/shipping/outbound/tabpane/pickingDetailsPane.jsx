@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Tag, Icon, Input, Button } from 'antd';
+import { Tag, Icon, Input, Button } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
+import DataPane from 'client/components/DataPane';
 import PickingModal from '../modal/pickingModal';
 import ShippingModal from '../modal/shippingModal';
 import SKUPopover from '../../../common/popover/skuPopover';
@@ -354,11 +355,13 @@ export default class PickingDetailsPane extends React.Component {
       }],
     };
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {outboundHead.shipping_mode === 'manual' && currentStep === 'allAllocated' && <Button onClick={this.handleBatchConfirmPicked}>
               <MdIcon type="check-all" />批量拣货确认
             </Button>
@@ -372,20 +375,11 @@ export default class PickingDetailsPane extends React.Component {
             {outboundHead.shipping_mode === 'manual' && currentStep === 'allPicked' && <Button loading={submitting} onClick={this.handleBatchCancelPicked} icon="close">
               批量取消拣货
             </Button>}
-            <div className="pull-right">
-              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-            </div>
-          </div>
-          <div className="toolbar-right" />
-        </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey="id"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-          loading={this.state.loading}
-        />
+          </DataPane.BulkActions>
+        </DataPane.Toolbar>
         <PickingModal resetState={this.resetState} pickMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
         <ShippingModal resetState={this.resetState} shipMode={this.state.operationMode} selectedRows={this.state.selectedRows} outboundNo={this.props.outboundNo} />
-      </div>
+      </DataPane>
     );
   }
 }

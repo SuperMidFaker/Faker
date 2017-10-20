@@ -61,6 +61,7 @@ export default class CreateShippingOrder extends Component {
       receiver_region_code: null,
     },
     carrier_name: '',
+    fullscreen: true,
   }
   componentWillMount() {
     this.props.getSo(this.props.params.soNo).then(
@@ -86,6 +87,9 @@ export default class CreateShippingOrder extends Component {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   handleSaveBtnClick = () => {
     const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName } = this.props;
     if (temporaryDetails.length === 0) {
@@ -177,7 +181,7 @@ export default class CreateShippingOrder extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} noHovering>
               <Tabs defaultActiveKey="orderDetails" onChange={this.handleTabChange}>
                 <TabPane tab="订单明细" key="orderDetails">
-                  <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} />
+                  <DetailsPane soBody={soBody} detailEnable selectedOwner={soHead.owner_partner_id} form={form} editable={this.state.editable} fullscreen={this.state.fullscreen} />
                 </TabPane>
                 <TabPane tab="收货人" key="receiver">
                   <ReceiverPane form={form} selectedOwner={soHead.owner_partner_id} soHead={soHead} region={region} onRegionChange={this.handleRegionChange} />

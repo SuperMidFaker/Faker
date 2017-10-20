@@ -7,6 +7,8 @@ import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, T
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DataPane from 'client/components/DataPane';
+import Summary from 'client/components/Summary';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadParams, loadNormalDelg, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
@@ -69,6 +71,10 @@ export default class NormalDeclDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    tabKey: 'details',
+    fullscreen: true,
+  }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
@@ -77,6 +83,9 @@ export default class NormalDeclDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   regColumns = [{
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
@@ -234,6 +243,18 @@ export default class NormalDeclDetail extends Component {
       declStatusText = '已放行';
       declStep = 2;
     }
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
+    const totCol = (
+      <Summary>
+        <Summary.Item label="总数量" addonAfter="KG">{statWt.gross_wt.toFixed(2)}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{statWt.net_wt.toFixed(6)}</Summary.Item>
+      </Summary>
+    );
     return (
       <div>
         <PageHeader>
@@ -282,28 +303,25 @@ export default class NormalDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />
                 </TabPane>
                 <TabPane tab="出库报关明细" key="details">
-                  <div className="panel-header">
-                    <Row>
-                      <Col sm={24} lg={6}>
-                        <InfoItem size="small" addonBefore="总毛重" field={statWt.gross_wt.toFixed(2)} addonAfter="KG" />
-                      </Col>
-                      <Col sm={24} lg={6}>
-                        <InfoItem size="small" addonBefore="总净重" field={statWt.net_wt.toFixed(6)} addonAfter="KG" />
-                      </Col>
-                    </Row>
-                  </div>
-                  <div className="table-panel table-fixed-layout">
-                    <Table size="middle" columns={this.columns} dataSource={details} indentSize={8} rowKey="id"
-                      pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-                      scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                    />
-                  </div>
+                  <DataPane fullscreen={this.state.fullscreen}
+                    columns={this.columns} rowSelection={rowSelection} indentSize={0}
+                    dataSource={details} rowKey="id" loading={this.state.loading}
+                  >
+                    <DataPane.Toolbar>
+                      <Row type="flex">
+                        <Col className="col-flex-primary info-group-inline" />
+                        <Col className="col-flex-secondary">
+                          {totCol}
+                        </Col>
+                      </Row>
+                    </DataPane.Toolbar>
+                  </DataPane>
                 </TabPane>
               </Tabs>
             </MagicCard>

@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg, fileRelTransfers, cancelRelReg,
   editReleaseWt } from 'common/reducers/cwmShFtz';
@@ -75,6 +76,7 @@ export default class SHFTZTransferOutDetail extends Component {
   }
   state = {
     tabKey: '',
+    fullscreen: true,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -137,6 +139,9 @@ export default class SHFTZTransferOutDetail extends Component {
         });
       }
     });
+  }
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
   }
   columns = [{
     title: '行号',
@@ -248,6 +253,12 @@ export default class SHFTZTransferOutDetail extends Component {
     if (relRegs.length !== 1) {
       return null;
     }
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const relReg = relRegs[0];
     const relType = CWM_SO_BONDED_REGTYPES[2];
     const regStatus = relReg.status;
@@ -341,7 +352,7 @@ export default class SHFTZTransferOutDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
@@ -362,18 +373,21 @@ export default class SHFTZTransferOutDetail extends Component {
                   );
                   return (
                     <TabPane tab="转出明细" key={reg.pre_entry_seq_no}>
-                      <Row type="flex" className="panel-header">
-                        <Col className="col-flex-primary info-group-inline" />
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
-                      <div className="table-panel table-fixed-layout">
-                        <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                        />
-                      </div>
+                      <DataPane fullscreen={this.state.fullscreen}
+                        columns={this.columns} rowSelection={rowSelection} indentSize={8}
+                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                      >
+                        <DataPane.Toolbar>
+                          <Row type="flex">
+                            <Col className="col-flex-primary info-group-inline" />
+
+
+                            <Col className="col-flex-secondary">
+                              {totCol}
+                            </Col>
+                          </Row>
+                        </DataPane.Toolbar>
+                      </DataPane>
                     </TabPane>);
                 })}
               </Tabs>

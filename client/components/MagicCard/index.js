@@ -7,18 +7,22 @@ import './index.less';
 
 export default class MagicCard extends React.Component {
   static defaultProps = {
-    baseCls: 'welo-magic-card',
+    // baseCls: 'welo-magic-card',
   }
   static propTypes = {
-    type: PropTypes.string,
+    onFullscreen: PropTypes.func,
   };
   state = {
     fullscreen: false,
   }
-  toggleFullScreen = () => {
+  toggleFullscreen = () => {
     this.setState({
       fullscreen: !this.state.fullscreen,
     });
+    const onFullscreen = this.props.onFullscreen;
+    if (onFullscreen) {
+      onFullscreen(this.state.fullscreen);
+    }
   }
 
   render() {
@@ -30,7 +34,7 @@ export default class MagicCard extends React.Component {
     return (
       <Card {...this.props} className={classes} >
         <div className="welo-magic-card-toggle">
-          <ButtonToggle iconOff="up-square-o" iconOn="down-square-o" onClick={this.toggleFullScreen} />
+          <ButtonToggle size="default" iconOff="up-square-o" iconOn="down-square-o" onClick={this.toggleFullscreen} />
         </div>
         {children}
       </Card>

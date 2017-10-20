@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Card, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { createFilename } from 'client/util/dataTransform';
@@ -11,6 +11,7 @@ import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadN
 import { loadDocuDatas } from 'common/reducers/cmsInvoice';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import ManifestHeadPane from './tabpane/manifestHeadPane';
 import ManifestBodyPane from './tabpane/manifestBodyPane';
 import CiqDetailsPane from './tabpane/ciqDetailsPane';
@@ -481,11 +482,11 @@ export default class ManifestEditor extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
-            <Card bodyStyle={{ padding: 0 }} noHovering loading={this.props.manifestSpinning}>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.manifestSpinning}>
               <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
                 {tabs}
               </Tabs>
-            </Card>
+            </MagicCard>
           </Content>
         </Layout>
         <DelegationDockPanel ietype={ietype} />

@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Icon, Table } from 'antd';
+import { Button, Icon } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUploader from 'client/components/ExcelUploader';
@@ -37,13 +38,6 @@ export default class DetailsPane extends Component {
     edit: false,
     currentPage: 1,
   };
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
-  }
   componentWillReceiveProps(nextProps) {
     const { asnBody } = nextProps;
     if (asnBody && (nextProps.asnBody !== this.props.asnBody)) {
@@ -79,6 +73,9 @@ export default class DetailsPane extends Component {
     this.setState({
       selectedRowKeys: [],
     });
+  }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
   }
   handleTemplateDownload = () => {
     window.open(`${XLSX_CDN}/ASN明细导入模板_20170901.xlsx`);
@@ -154,8 +151,11 @@ export default class DetailsPane extends Component {
         ),
     }];
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
           <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
             formData={{
@@ -169,17 +169,12 @@ export default class DetailsPane extends Component {
             {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
           </ExcelUploader>
           <Button icon="download" onClick={this.handleTemplateDownload}>模版下载</Button>
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button size="large" onClick={this.handleBatchDelete} icon="delete" />
-          </div>
-        </div>
-        <Table columns={columns} rowSelection={rowSelection} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-        />
+          </DataPane.BulkActions>
+        </DataPane.Toolbar>
         <AddDetailModal poNo={poNo} product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
-      </div>
+      </DataPane>
     );
   }
 }

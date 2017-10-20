@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Tag, Icon, Input } from 'antd';
+import { Tag, Icon, Input } from 'antd';
+import DataPane from 'client/components/DataPane';
 import { loadShipDetails } from 'common/reducers/cwmOutbound';
 
 const Search = Input.Search;
@@ -27,11 +28,6 @@ export default class ShippingDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.handleLoad();
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -112,17 +108,21 @@ export default class ShippingDetailsPane extends React.Component {
         return true;
       }
     });
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={dataSource} rowKey="id" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-        </div>
-        <Table size="middle" columns={this.columns} indentSize={0} dataSource={dataSource} rowKey="id"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-          loading={this.state.loading}
-        />
-      </div>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Steps, Button, Card, Col, Row, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadVirtualTransferDetails, loadParams, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
@@ -64,6 +65,9 @@ export default class SHFTZTransferSelfDetail extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    fullscreen: true,
+  }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
@@ -72,6 +76,9 @@ export default class SHFTZTransferSelfDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   columns = [{
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -234,6 +241,12 @@ export default class SHFTZTransferSelfDetail extends Component {
       total_amount: 0,
       total_net_wt: 0,
     };
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const totCol = (
       <Summary>
         <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
@@ -302,19 +315,22 @@ export default class SHFTZTransferSelfDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
-              <Row type="flex" className="panel-header">
-                <Col className="col-flex-primary info-group-inline" />
-                <Col className="col-flex-secondary">
-                  {totCol}
-                </Col>
-              </Row>
-              <div className="table-panel table-fixed-layout">
-                <Table size="middle" columns={this.columns} dataSource={entryAsn.details} indentSize={8} rowKey="id"
-                  pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                />
-              </div>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+              <DataPane fullscreen={this.state.fullscreen}
+                columns={this.columns} rowSelection={rowSelection} indentSize={8}
+                dataSource={entryAsn.details} rowKey="id" loading={this.state.loading}
+              >
+                <DataPane.Toolbar>
+                  <Row type="flex">
+                    <Col className="col-flex-primary info-group-inline" />
+
+
+                    <Col className="col-flex-secondary">
+                      {totCol}
+                    </Col>
+                  </Row>
+                </DataPane.Toolbar>
+              </DataPane>
             </MagicCard>
           </Form>
         </Content>

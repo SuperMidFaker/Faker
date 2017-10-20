@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Badge, Card, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
@@ -9,6 +9,7 @@ import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import CustomsDeclHeadPane from './tabpane/customsDeclHeadPane';
 import CustomsDeclBodyPane from './tabpane/customsDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';
@@ -305,11 +306,11 @@ export default class CustomsDeclEditor extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large readonly">
-          <Card bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning}>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning}>
             <Tabs defaultActiveKey="header">
               {tabs}
             </Tabs>
-          </Card>
+          </MagicCard>
         </Content>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />

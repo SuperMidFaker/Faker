@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, Table, notification } from 'antd';
+import { Alert, Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
@@ -69,6 +70,7 @@ export default class SHFTZEntryDetail extends Component {
   state = {
     sendable: false,
     queryable: false,
+    fullscreen: true,
     whyunsent: '',
     tabKey: '',
     owner: this.props.owners.filter(own => own.name === this.props.entryAsn.owner_name).length === 0 ?
@@ -232,6 +234,9 @@ export default class SHFTZEntryDetail extends Component {
   handleInboundPage = () => {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
   }
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   columns = [{
     title: '行号',
     dataIndex: 'asn_seq_no',
@@ -346,6 +351,12 @@ export default class SHFTZEntryDetail extends Component {
     const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
     const inbStatus = entryAsn.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <div>
         <PageHeader>
@@ -410,7 +421,7 @@ export default class SHFTZEntryDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {entryRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
@@ -431,33 +442,34 @@ export default class SHFTZEntryDetail extends Component {
                   );
                   return (
                     <TabPane tab="备案明细" key={reg.pre_entry_seq_no}>
-                      <Row type="flex" className="panel-header">
-                        <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="海关进库单号" field={reg.ftz_ent_no} width={370} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
-                          />
-                          <InfoItem label="报关单号" field={reg.cus_decl_no} width={330} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
-                          />
-                          <InfoItem label="进口日期"
-                            type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))} width={280}
-                          />
-                          <InfoItem label="进库日期"
-                            type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_dateie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))} width={280}
-                          />
-                        </Col>
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
-                      <div className="table-panel table-fixed-layout">
-                        <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                        />
-                      </div>
+                      <DataPane fullscreen={this.state.fullscreen}
+                        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                      >
+                        <DataPane.Toolbar>
+                          <Row type="flex">
+                            <Col className="col-flex-primary info-group-inline">
+                              <InfoItem label="海关进库单号" field={reg.ftz_ent_no} width={370} editable={entryEditable}
+                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                              />
+                              <InfoItem label="报关单号" field={reg.cus_decl_no} width={330} editable={entryEditable}
+                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
+                              />
+                              <InfoItem label="进口日期"
+                                type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
+                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))} width={280}
+                              />
+                              <InfoItem label="进库日期"
+                                type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_dateie_date).format('YYYY-MM-DD')} editable={entryEditable}
+                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))} width={280}
+                              />
+                            </Col>
+                            <Col className="col-flex-secondary">
+                              {totCol}
+                            </Col>
+                          </Row>
+                        </DataPane.Toolbar>
+                      </DataPane>
                     </TabPane>);
                 })}
               </Tabs>

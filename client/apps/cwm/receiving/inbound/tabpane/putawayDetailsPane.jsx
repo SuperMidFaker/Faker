@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Tag, Table, Button, Modal, Input, message } from 'antd';
+import { Tag, Button, Modal, Input, message } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
 import { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways } from 'common/reducers/cwmReceive';
@@ -210,38 +211,31 @@ export default class PutawayDetailsPane extends React.Component {
     }
 
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={dataSource} rowKey="id" loading={this.props.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button onClick={this.handleBatchPutAways} icon="check">
-              批量上架确认
-            </Button>
+          批量上架确认
+        </Button>
             <Button loading={submitting} onClick={this.handleBatchUndoReceives} icon="rollback">
-              批量取消收货
-            </Button>
-            <div className="pull-right">
-              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-            </div>
-          </div>
-          <div className="toolbar-right">
+          批量取消收货
+        </Button>
+          </DataPane.BulkActions>
+          <DataPane.Actions>
             {inboundHead.rec_mode === 'manual' &&
               dataSource.filter(ds => ds.receive_location && ds.result === 0).length > 0 &&
               <Button loading={submitting} type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
             </Button>
             }
-          </div>
-        </div>
-        <Table size="middle" columns={columns} rowSelection={rowSelection} indentSize={0}
-          dataSource={dataSource} rowKey="id"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
-          loading={this.props.loading}
-        />
+          </DataPane.Actions>
+        </DataPane.Toolbar>
         <PuttingAwayModal inboundNo={this.props.inboundNo} />
-      </div>
+      </DataPane>
     );
   }
 }

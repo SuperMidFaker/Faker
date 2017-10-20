@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Button, Input } from 'antd';
+import { Button, Input } from 'antd';
+import DataPane from 'client/components/DataPane';
 import { loadWaveOrders, removeWaveOrders, loadWaveHead, loadWaveDetails } from 'common/reducers/cwmShippingOrder';
 import { CWM_SO_TYPES } from 'common/constants';
 
@@ -27,11 +28,6 @@ export default class OrderDetailsPane extends React.Component {
   }
   componentWillMount() {
     this.props.loadWaveOrders(this.props.waveNo);
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.reload) {
@@ -92,25 +88,19 @@ export default class OrderDetailsPane extends React.Component {
       },
     };
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+        dataSource={this.props.waveOrders} rowKey="so_no" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Search placeholder="SO编号" style={{ width: 200 }} onSearch={this.handleSearch} />
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button size="large" onClick={this.handleRemoveOrders} icon="close">
               移除订单
             </Button>
-            <div className="pull-right">
-              <Button type="primary" ghost shape="circle" icon="close" onClick={this.handleDeselectRows} />
-            </div>
-          </div>
-          <div className="toolbar-right" />
-        </div>
-        <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveOrders} rowKey="so_no"
-          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-        />
-      </div>
+          </DataPane.BulkActions>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

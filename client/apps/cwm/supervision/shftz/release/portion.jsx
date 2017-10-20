@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, notification } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
@@ -81,6 +82,7 @@ export default class SHFTZRelDetail extends Component {
     tabKey: '',
     editable: false,
     groupVals: ['supplier', 'trxn_mode', 'currency'],
+    fullscreen: true,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -191,6 +193,9 @@ export default class SHFTZRelDetail extends Component {
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
   }
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   columns = [{
     title: '行号',
     dataIndex: 'seq_no',
@@ -296,6 +301,12 @@ export default class SHFTZRelDetail extends Component {
     if (relRegs.length === 0) {
       return null;
     }
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     const relType = CWM_SO_BONDED_REGTYPES[1];
     const regStatus = relRegs[0].status;
     const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
@@ -374,7 +385,7 @@ export default class SHFTZRelDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
@@ -396,25 +407,28 @@ export default class SHFTZRelDetail extends Component {
                   const countTag = <span>备案明细 <Tag>{reg.details.length}</Tag></span>;
                   return (
                     <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
-                      <Row type="flex" className="panel-header">
-                        <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={350} editable={relEditable}
-                            onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                          />
-                        </Col>
-                        {reg.ftz_apply_nos && <Col className="col-flex-primary info-group-inline">
-                          <InfoItem label="集中申报单号" field={reg.ftz_apply_nos} width={400} />
-                        </Col>}
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
-                      <div className="table-panel table-fixed-layout">
-                        <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                        />
-                      </div>
+                      <DataPane fullscreen={this.state.fullscreen}
+                        columns={this.columns} rowSelection={rowSelection} indentSize={8}
+                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                      >
+                        <DataPane.Toolbar>
+                          <Row type="flex">
+                            <Col className="col-flex-primary info-group-inline">
+                              <Col className="col-flex-primary info-group-inline">
+                                <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={350} editable={relEditable}
+                                  onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
+                                />
+                              </Col>
+                              {reg.ftz_apply_nos && <Col className="col-flex-primary info-group-inline">
+                                <InfoItem label="集中申报单号" field={reg.ftz_apply_nos} width={400} />
+                              </Col>}
+                            </Col>
+                            <Col className="col-flex-secondary">
+                              {totCol}
+                            </Col>
+                          </Row>
+                        </DataPane.Toolbar>
+                      </DataPane>
                     </TabPane>);
                 })}
               </Tabs>

@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Table, Tooltip, notification } from 'antd';
+import { Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadEntryDetails, loadParams, updateEntryReg, pairEntryRegProducts, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
@@ -70,6 +71,7 @@ export default class SHFTZTransferInDetail extends Component {
   state = {
     comparable: false,
     tabKey: '',
+    fullscreen: true,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -134,6 +136,9 @@ export default class SHFTZTransferInDetail extends Component {
         });
       }
     });
+  }
+  handleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
   }
   columns = [{
     title: '行号',
@@ -233,6 +238,12 @@ export default class SHFTZTransferInDetail extends Component {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        this.setState({ selectedRowKeys });
+      },
+    };
     return (
       <div>
         <PageHeader>
@@ -326,7 +337,7 @@ export default class SHFTZTransferInDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {entryRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
@@ -347,18 +358,21 @@ export default class SHFTZTransferInDetail extends Component {
                   );
                   return (
                     <TabPane tab="转入明细" key={reg.pre_entry_seq_no}>
-                      <Row type="flex" className="panel-header">
-                        <Col className="col-flex-primary info-group-inline" />
-                        <Col className="col-flex-secondary">
-                          {totCol}
-                        </Col>
-                      </Row>
-                      <div className="table-panel table-fixed-layout">
-                        <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
-                          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
-                          scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-                        />
-                      </div>
+                      <DataPane fullscreen={this.state.fullscreen}
+                        columns={this.columns} rowSelection={rowSelection} indentSize={0}
+                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                      >
+                        <DataPane.Toolbar>
+                          <Row type="flex">
+                            <Col className="col-flex-primary info-group-inline" />
+
+
+                            <Col className="col-flex-secondary">
+                              {totCol}
+                            </Col>
+                          </Row>
+                        </DataPane.Toolbar>
+                      </DataPane>
                     </TabPane>);
                 })}
               </Tabs>
