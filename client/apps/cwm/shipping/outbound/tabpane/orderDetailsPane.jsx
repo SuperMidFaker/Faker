@@ -2,12 +2,15 @@ import React from 'react';
 import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Table, Input, Button, notification } from 'antd';
+import FileSaver from 'file-saver';
+import XLSX from 'xlsx';
+import { Alert, Table, Input, Button, notification } from 'antd';
 import RowUpdater from 'client/components/rowUpdater';
 import { MdIcon } from 'client/components/FontIcon';
 import AllocatingModal from '../modal/allocatingModal';
 import { loadSkuParams } from 'common/reducers/cwmSku';
 import { openAllocatingModal, loadOutboundProductDetails, batchAutoAlloc, cancelProductsAlloc } from 'common/reducers/cwmOutbound';
+import { string2Bytes } from 'client/util/dataTransform';
 import { CWM_OUTBOUND_STATUS } from 'common/constants';
 
 const Search = Input.Search;
@@ -78,7 +81,6 @@ export default class OrderDetailsPane extends React.Component {
   }, {
     title: '中文品名',
     dataIndex: 'name',
-    width: 160,
   }, {
     title: '订货数量',
     dataIndex: 'order_qty',
@@ -225,6 +227,29 @@ export default class OrderDetailsPane extends React.Component {
       }
     });
   }
+  handleExportUnAllocs = () => {
+    const { outboundHead, outboundProducts, units } = this.props;
+    const csvData = outboundProducts.filter(dv => dv.alloc_qty < dv.order_qty).map((dv) => {
+      const out = {};
+      out['订单号'] = outboundHead.cust_order_no;
+      out['货号'] = dv.product_no;
+      out['名称'] = dv.name;
+      out['订货数量'] = dv.order_qty;
+      out['分配数量'] = dv.alloc_qty;
+      out['计量单位'] = units.length > 0 && dv.unit ? units.find(unit => unit.code === dv.unit).name : '';
+      out['库别'] = dv.virtual_whse;
+      out['入库单号'] = dv.po_no;
+      out['批次号'] = dv.external_lot_no;
+      out['产品序列号'] = dv.serial_no;
+      out['供应商'] = dv.supplier;
+      return out;
+    });
+    const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+    const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+    wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
+    FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
+      `${outboundHead.cus_order_no || outboundHead.outbound_no}_nonallocates_${Date.now()}.xlsx`);
+  }
   handleSearch = (value) => {
     this.setState({ searchValue: value });
   }
@@ -241,7 +266,19 @@ export default class OrderDetailsPane extends React.Component {
       } else {
         return true;
       }
+    }).sort((pa, pb) => {
+      if (pa.alloc_qty === 0 && pb.alloc_qty === 0) {
+        return 0;
+      }
+      const diffa = pa.order_qty - pa.alloc_qty;
+      const diffb = pb.order_qty - pb.alloc_qty;
+      return -(diffa - diffb); // 分配差异越大放前面
     });
+    let alertMsg;
+    if (outboundHead.total_alloc_qty > 0) {
+      const seqNos = outboundProducts.filter(op => op.alloc_qty < op.order_qty).map(op => op.seq_no).join(',');
+      alertMsg = `未完成配货行号: ${seqNos}`;
+    }
     const rowKey = 'seq_no';
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -315,14 +352,18 @@ export default class OrderDetailsPane extends React.Component {
             </div>
           </div>
           <div className="toolbar-right">
+            {outboundHead.total_alloc_qty > 0 && outboundHead.total_alloc_qty < outboundHead.total_qty &&
+              <Button type="primary" onClick={this.handleExportUnAllocs}>导出未配货项</Button>
+            }
             { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
               <Button loading={submitting} type="primary" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
           </div>
         </div>
+        {alertMsg && <Alert message={alertMsg} type="warning" showIcon />}
         <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={dataSource} rowKey={rowKey}
           pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
-          loading={this.state.loading}
+          loading={this.state.loading} pagination={{ showSizeChanger: true }}
         />
         <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />
       </div>

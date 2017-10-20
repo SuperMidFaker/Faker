@@ -284,15 +284,13 @@ export default class OutboundDetail extends Component {
                 <InfoItem label="波次编号" field={outboundHead.wave_no} />
               </Col>
                 }
-              { outboundHead.so_no &&
               <Col sm={24} lg={4}>
-                <InfoItem label="SO编号" field={outboundHead.so_no} />
+                <InfoItem label="客户订单号" field={outboundHead.cust_order_no} />
               </Col>
-                }
-              <Col sm={12} lg={2}>
+              <Col sm={12} lg={3}>
                 <InfoItem label="订单总数" field={outboundHead.total_qty} />
               </Col>
-              <Col sm={12} lg={2}>
+              <Col sm={12} lg={3}>
                 <InfoItem label="分配总数" field={outboundHead.total_alloc_qty} />
               </Col>
               <Col sm={12} lg={2}>
@@ -303,12 +301,12 @@ export default class OutboundDetail extends Component {
               </Col>
               <Col sm={12} lg={3}>
                 <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                  field={outboundHead.created_date && moment(outboundHead.created_date).format('YYYY.MM.DD HH:mm')}
+                  field={outboundHead.created_date && moment(outboundHead.created_date).format('YYYY.MM.DD')}
                 />
               </Col>
               <Col sm={12} lg={3}>
                 <InfoItem label="出库时间" addonBefore={<Icon type="clock-circle-o" />}
-                  field={outboundHead.completed_date && moment(outboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
+                  field={outboundHead.completed_date && moment(outboundHead.completed_date).format('MM.DD HH:mm')}
                 />
               </Col>
             </Row>
