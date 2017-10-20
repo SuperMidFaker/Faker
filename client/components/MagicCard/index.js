@@ -10,7 +10,7 @@ export default class MagicCard extends React.Component {
     // baseCls: 'welo-magic-card',
   }
   static propTypes = {
-    onFullscreen: PropTypes.func,
+    onSizeChange: PropTypes.func,
   };
   state = {
     fullscreen: false,
@@ -19,9 +19,9 @@ export default class MagicCard extends React.Component {
     this.setState({
       fullscreen: !this.state.fullscreen,
     });
-    const onFullscreen = this.props.onFullscreen;
-    if (onFullscreen) {
-      onFullscreen(this.state.fullscreen);
+    const onSizeChange = this.props.onSizeChange;
+    if (onSizeChange) {
+      onSizeChange(this.state.fullscreen);
     }
   }
 

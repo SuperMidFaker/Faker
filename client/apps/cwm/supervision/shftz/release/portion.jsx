@@ -193,7 +193,7 @@ export default class SHFTZRelDetail extends Component {
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
   }
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   columns = [{
@@ -385,7 +385,7 @@ export default class SHFTZRelDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({

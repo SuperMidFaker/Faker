@@ -76,7 +76,7 @@ export default class SHFTZTransferSelfDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   columns = [{
@@ -315,7 +315,7 @@ export default class SHFTZTransferSelfDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
               <DataPane fullscreen={this.state.fullscreen}
                 columns={this.columns} rowSelection={rowSelection} indentSize={8}
                 dataSource={entryAsn.details} rowKey="id" loading={this.state.loading}

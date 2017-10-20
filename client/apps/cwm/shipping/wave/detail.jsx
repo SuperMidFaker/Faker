@@ -54,7 +54,7 @@ export default class WaveDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   handleRelease = () => {
@@ -106,7 +106,7 @@ export default class WaveDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="orderDetails">
               <TabPane tab="发货明细" key="orderDetails">
                 <OrderDetailsPane waveNo={this.props.params.waveNo} fullscreen={this.state.fullscreen} />

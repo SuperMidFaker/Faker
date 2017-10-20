@@ -83,7 +83,7 @@ export default class NormalDeclDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   regColumns = [{
@@ -303,7 +303,7 @@ export default class NormalDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />

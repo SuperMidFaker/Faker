@@ -58,7 +58,7 @@ export default class CreateReceivingASN extends Component {
     this.props.clearTemporary();
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   handleSaveBtnClick = () => {

@@ -1,12 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Table, Tag } from 'antd';
+import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
+import DataPane from 'client/components/DataPane';
+import Summary from 'client/components/Summary';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
+
+function calculateTotal(bodies, currencies) {
+  let totGrossWt = 0;
+  let totWetWt = 0;
+  let totTrade = 0;
+  let totPcs = 0;
+  for (let i = 0; i < bodies.length; i++) {
+    const body = bodies[i];
+    if (body.gross_wt) {
+      totGrossWt += Number(body.gross_wt);
+    }
+    if (body.wet_wt) {
+      totWetWt += Number(body.wet_wt);
+    }
+    if (body.trade_total) {
+      const currency = currencies.find(curr => curr.value === body.trade_curr);
+      const rate = currency ? currency.rate_cny : 1;
+      totTrade += Number(body.trade_total * rate);
+    }
+    if (body.qty_pcs) {
+      totPcs += Number(body.qty_pcs);
+    }
+  }
+  return { totGrossWt, totWetWt, totTrade, totPcs };
+}
 
 @injectIntl
 @connect(
@@ -35,9 +62,20 @@ export default class ManifestDetailsPane extends React.Component {
     intl: intlShape.isRequired,
     billDetails: PropTypes.array.isRequired,
   }
+  constructor(props) {
+    super(props);
+    const calresult = calculateTotal(props.billDetails, props.currencies);
+    this.state = {
+      totGrossWt: calresult.totGrossWt,
+      totWetWt: calresult.totWetWt,
+      totTrade: calresult.totTrade,
+      totPcs: calresult.totPcs,
+    };
+  }
   msg = key => formatMsg(this.props.intl, key);
   render() {
     const { billDetails } = this.props;
+    const { totGrossWt, totWetWt, totTrade } = this.state;
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
@@ -161,11 +199,20 @@ export default class ManifestDetailsPane extends React.Component {
       },
     }];
     return (
-      <div className="panel-body table-panel table-fixed-layout">
-        <Table columns={columns} dataSource={billDetails} bordered
-          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-        />
-      </div>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} bordered scrollOffset={312}
+        dataSource={billDetails} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <DataPane.Actions>
+            <Summary>
+              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
+            </Summary>
+          </DataPane.Actions>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

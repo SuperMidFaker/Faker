@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Table, Tag, Input, Select } from 'antd';
+import { Button, Tag, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
+import DataPane from 'client/components/DataPane';
 import DeclElementsModal from '../../modal/declElementsModal';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
@@ -475,27 +476,23 @@ export default class CustomsDeclBodyPane extends React.Component {
   render() {
     const { totGrossWt, totWetWt, totTrade } = this.state;
     const columns = this.getColumns();
-    const stats = (
-      <Summary>
-        <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
-        <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
-        <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
-      </Summary>
-      );
     return (
-      <div className="pane">
-        <div className="panel-header">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} bordered scrollOffset={312}
+        dataSource={this.state.bodies} rowKey="id" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
-          <div className="toolbar-right">
-            {stats}
-          </div>
-        </div>
-        <div className="panel-body table-panel table-fixed-layout">
-          <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered
-            scroll={{ x: 2600, y: this.state.scrollY }} pagination={this.state.pagination}
-          />
-        </div>
+          <DataPane.Actions>
+            <Summary>
+              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
+            </Summary>
+          </DataPane.Actions>
+        </DataPane.Toolbar>
         <DeclElementsModal />
-      </div>);
+      </DataPane>
+    );
   }
 }

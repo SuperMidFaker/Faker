@@ -10,22 +10,24 @@ import bulkActions from './bulkActions';
 export default class DataPane extends React.Component {
   static defaultProps = {
     baseCls: 'welo-data-pane',
+    scrollOffset: 470,
   }
   static propTypes = {
     children: PropTypes.any,
     fullscreen: PropTypes.bool,
+    scrollOffset: PropTypes.number,
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
-        scrollY: window.innerHeight - 470,
+        scrollY: window.innerHeight - this.props.scrollOffset,
       });
     }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.fullscreen) {
       this.setState({
-        scrollY: window.innerHeight - 470,
+        scrollY: window.innerHeight - this.props.scrollOffset,
       });
     } else {
       this.setState({
@@ -34,9 +36,9 @@ export default class DataPane extends React.Component {
     }
   }
   render() {
-    const { children, columns } = this.props;
+    const { baseCls, children, columns } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
+      <div className={baseCls}>
         {children}
         <Table size="middle" {...this.props}
           pagination={{ defaultPageSize: 20, showSizeChanger: true, showTotal: total => `共 ${total} 条` }}

@@ -102,6 +102,7 @@ export default class ManifestEditor extends React.Component {
     locked: false,
     lockedByOthers: false,
     headData: {},
+    fullscreen: true,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.billHead !== this.props.billHead) {
@@ -117,6 +118,9 @@ export default class ManifestEditor extends React.Component {
     this.setState({
       collapsed: !this.state.collapsed,
     });
+  }
+  toggleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
   }
   handleGenerateEntry = () => {
     this.props.form.validateFields((errors) => {
@@ -405,21 +409,21 @@ export default class ManifestEditor extends React.Component {
       </TabPane>);
     tabs.push(
       <TabPane tab="清单表体" key="body">
-        <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} />
+        <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
       </TabPane>);
     if (filterProducts.length > 0) {
       tabs.push(
         <TabPane tab="法检商品" key="legalInspection">
-          <CiqDetailsPane filterProducts={filterProducts} />
+          <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
         </TabPane>);
     }
     tabs.push(
       <TabPane tab="集装箱" key="containers">
-        <ContainersPane />
+        <ContainersPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
       <TabPane tab="随附单据" key="attachedDocs" >
-        <DocuPane billSeqNo={billHead.bill_seq_no} />
+        <DocuPane billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
       </TabPane>);
     return (
       <Layout>
@@ -482,7 +486,7 @@ export default class ManifestEditor extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.manifestSpinning}>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.manifestSpinning} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
                 {tabs}
               </Tabs>

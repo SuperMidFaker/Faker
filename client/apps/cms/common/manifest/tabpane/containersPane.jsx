@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Table, Input, message } from 'antd';
+import { Button, Input, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
+import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
@@ -142,14 +143,14 @@ export default class ContainersPane extends React.Component {
       },
     }];
     return (
-      <div className="pane">
-        <div className="panel-header">
-          <Button type="primary" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
-        </div>
-        <div className="panel-body table-panel table-fixed-layout">
-          <Table pagination={false} columns={columns} dataSource={this.state.datas} />
-        </div>
-      </div>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} bordered scrollOffset={312}
+        dataSource={this.state.datas} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <Button type="primary" size="large" onClick={this.handleAdd} icon="plus">{this.msg('add')}</Button>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

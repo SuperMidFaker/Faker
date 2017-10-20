@@ -96,7 +96,7 @@ export default class BatchDeclDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   regColumns = [{
@@ -415,7 +415,7 @@ export default class BatchDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />

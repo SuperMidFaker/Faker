@@ -76,7 +76,7 @@ export default class ReceiveInbound extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   handleReceivingModeChange = (ev) => {
@@ -201,7 +201,7 @@ export default class ReceiveInbound extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
                 <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} fullscreen={this.state.fullscreen} />

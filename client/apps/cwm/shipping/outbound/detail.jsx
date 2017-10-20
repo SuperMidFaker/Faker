@@ -140,7 +140,7 @@ export default class OutboundDetail extends Component {
       : `/cwm/supervision/shftz/release/${type}/${this.props.outboundHead.so_no}`;
     this.context.router.push(link);
   }
-  handleFullscreen = (fullscreen) => {
+  toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
   showExpressModal = () => {
@@ -325,7 +325,7 @@ export default class OutboundDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onFullscreen={this.handleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="订单明细" key="orderDetails">
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} fullscreen={this.state.fullscreen} />

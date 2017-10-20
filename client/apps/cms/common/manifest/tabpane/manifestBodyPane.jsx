@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Dropdown, Menu, Table, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
+import { Button, Dropdown, Menu, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel, refreshRelatedBodies,
   deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
@@ -9,6 +9,7 @@ import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUploader from 'client/components/ExcelUploader';
 import Summary from 'client/components/Summary';
+import DataPane from 'client/components/DataPane';
 import { createFilename } from 'client/util/dataTransform';
 import AmountModel from '../modals/amountDivid';
 import RowUpdater from 'client/components/rowUpdater';
@@ -804,6 +805,9 @@ export default class ManifestBodyPane extends React.Component {
       }
     });
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   renderToolbar() {
     const { readonly, billMeta } = this.props;
     const handlemenu = (
@@ -826,8 +830,8 @@ export default class ManifestBodyPane extends React.Component {
         <Menu.Item key="expToItem"><Icon type="export" /> 导出未归类数据</Menu.Item>
       </Menu>);
     if (readonly) {
-      return (billMeta.repoId === null ? <Button icon="export" onClick={this.handleManifestBodyExport}> 导出全部</Button> :
-      <Dropdown.Button onClick={this.handleManifestBodyExport} overlay={exportmenu}>
+      return (billMeta.repoId === null ? <Button size="large" icon="export" onClick={this.handleManifestBodyExport}> 导出全部</Button> :
+      <Dropdown.Button size="large" onClick={this.handleManifestBodyExport} overlay={exportmenu}>
         <Icon type="export" /> 导出全部
         </Dropdown.Button>);
     } else {
@@ -841,7 +845,7 @@ export default class ManifestBodyPane extends React.Component {
             }),
           }} onUploaded={this.handleUploaded}
         >
-          <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
+          <Dropdown.Button size="large" onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
             <Icon type="upload" /> {this.msg('unrelatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
@@ -856,22 +860,22 @@ export default class ManifestBodyPane extends React.Component {
             }),
           }} onUploaded={this.handleUploaded}
         >
-          <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
+          <Dropdown.Button size="large" onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
         {this.state.bodies.length > 1 && billMeta.repoId !== null && <Button icon="retweet" onClick={this.handleRelatedRefresh} style={{ marginLeft: 8 }}>关联刷新</Button>}
         <Dropdown overlay={handlemenu}>
-          <Button onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
+          <Button size="large" onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
             {this.msg('handle')} <Icon type="down" />
           </Button>
         </Dropdown>
-        {billMeta.repoId !== null && <Dropdown.Button onClick={this.handleManifestBodyExport} overlay={exportmenu} style={{ marginLeft: 8 }}>
+        {billMeta.repoId !== null && <Dropdown.Button size="large" onClick={this.handleManifestBodyExport} overlay={exportmenu} style={{ marginLeft: 8 }}>
           <Icon type="export" /> 导出全部
         </Dropdown.Button>}
-        {billMeta.repoId === null && <Button icon="export" onClick={this.handleManifestBodyExport} style={{ marginLeft: 8 }}> 导出全部</Button>}
+        {billMeta.repoId === null && <Button size="large" icon="export" onClick={this.handleManifestBodyExport} style={{ marginLeft: 8 }}> 导出全部</Button>}
         <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
-          <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
+          <Button size="large" type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
         </Popconfirm>
       </span>);
     }
@@ -889,39 +893,35 @@ export default class ManifestBodyPane extends React.Component {
       getCheckboxProps: () => ({ disabled }),
     };
     const columns = this.getColumns();
-    const stats = (
-      <Summary>
-        <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
-        <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
-        <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
-        <Summary.Item label="总个数">{totPcs.toFixed(3)}</Summary.Item>
-      </Summary>
-      );
+
     return (
-      <div className="pane">
-        <div className="panel-header">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} rowSelection={rowSelection} bordered scrollOffset={312}
+        dataSource={this.state.bodies} rowKey="id" loading={this.state.tableMask}
+      >
+        <DataPane.Toolbar>
           {this.renderToolbar()}
-          <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+          <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
               <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>
               批量删除
             </Button>
             </Popconfirm>
-          </div>
-          <div className="toolbar-right">
-            {stats}
-          </div>
-        </div>
-        <div className="panel-body table-panel table-fixed-layout">
-          <Table rowKey="id" columns={columns} dataSource={this.state.bodies} bordered loading={this.state.tableMask}
-            scroll={{ x: 2600, y: this.state.scrollY }} pagination={this.state.pagination} rowSelection={rowSelection}
-          />
-          <AmountModel />
-          <RelateImportRuleModal />
-          <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
-        </div>
+          </DataPane.BulkActions>
+          <DataPane.Actions>
+            <Summary>
+              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(2)}</Summary.Item>
+              <Summary.Item label="总个数">{totPcs}</Summary.Item>
+            </Summary>
+          </DataPane.Actions>
+        </DataPane.Toolbar>
+        <AmountModel />
+        <RelateImportRuleModal />
+        <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
-      </div>);
+      </DataPane>
+    );
   }
 }

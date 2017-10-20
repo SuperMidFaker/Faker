@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Table, Select, Input, message } from 'antd';
+import { Button, Select, Input, message } from 'antd';
 import { loadCertMarks, saveCertMark, delbillCertmark } from 'common/reducers/cmsManifest';
+import DataPane from 'client/components/DataPane';
 import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -184,15 +185,15 @@ export default class CertMarkPane extends React.Component {
       },
     }];
     return (
-      <div className="pane">
-        <div className="panel-header">
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} bordered scrollOffset={312}
+        dataSource={this.state.datas} rowKey="id" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
           {head.status < CMS_DECL_STATUS.sent.value &&
           <Button type="primary" onClick={this.handleAdd} icon="plus" >{this.msg('添加')}</Button>}
-        </div>
-        <div className="panel-body table-panel table-fixed-layout">
-          <Table pagination={false} columns={columns} dataSource={this.state.datas} />
-        </div>
-      </div>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

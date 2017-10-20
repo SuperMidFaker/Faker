@@ -66,6 +66,7 @@ export default class CustomsDeclEditor extends React.Component {
   state = {
     visible: false,
     collapsed: true,
+    fullscreen: true,
   }
   componentDidMount() {
     let script;
@@ -95,6 +96,9 @@ export default class CustomsDeclEditor extends React.Component {
     this.setState({
       collapsed: !this.state.collapsed,
     });
+  }
+  toggleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
   }
   handleDock = () => {
     this.setState({ visible: true });
@@ -239,28 +243,28 @@ export default class CustomsDeclEditor extends React.Component {
       </TabPane>);
     tabs.push(
       <TabPane tab="报关单表体" key="body">
-        <CustomsDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} />
+        <CustomsDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
       <TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
-        <ContainersPane />
+        <ContainersPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
       <TabPane tab="随附单证" key="attachedCerts" head={head}>
-        <AttachedCertsPane />
+        <AttachedCertsPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
       <TabPane tab="随附单据" key="attachedDocs" head={head}>
-        <AttachedDocsPane />
+        <AttachedDocsPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
       <TabPane tab="申报清单明细" key="manifestDetails" head={head}>
-        <ManifestDetailsPane />
+        <ManifestDetailsPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     if (filterProducts.length > 0) {
       tabs.push(
         <TabPane tab="法检商品" key="ciqDetails">
-          <CiqDetailsPane filterProducts={filterProducts} />
+          <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
         </TabPane>);
     }
     return (
@@ -306,7 +310,7 @@ export default class CustomsDeclEditor extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large readonly">
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning}>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="header">
               {tabs}
             </Tabs>

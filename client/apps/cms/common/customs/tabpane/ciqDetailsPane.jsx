@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Table, Tag } from 'antd';
+import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import messages from '../../form/message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import DataPane from 'client/components/DataPane';
 const formatMsg = format(messages);
 import { buildTipItems } from 'client/common/customs';
 
@@ -170,11 +171,10 @@ export default class CiqDetailsPane extends React.Component {
       },
     }];
     return (
-      <div className="panel-body table-panel table-fixed-layout">
-        <Table columns={columns} dataSource={filterProducts} bordered
-          scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-        />
-      </div>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} bordered scrollOffset={312}
+        dataSource={filterProducts} rowKey="id"
+      />
     );
   }
 }
