@@ -7,6 +7,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import MovementDetailsPane from './tabpane/movementDetailsPane';
 import { loadMovementHead, updateMovingMode } from 'common/reducers/cwmMovement';
 import messages from '../message.i18n';
@@ -125,13 +126,13 @@ export default class MovementDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <Card bodyStyle={{ padding: 0 }} noHovering>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering>
             <Tabs defaultActiveKey="movementDetails" onChange={this.handleTabChange}>
               <TabPane tab="移动明细" key="movementDetails">
                 <MovementDetailsPane movementNo={this.props.params.movementNo} mode={this.state.mode} movementHead={movementHead} />
               </TabPane>
             </Tabs>
-          </Card>
+          </MagicCard>
         </Content>
       </div>
     );

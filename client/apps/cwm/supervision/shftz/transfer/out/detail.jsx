@@ -370,6 +370,7 @@ export default class SHFTZTransferOutDetail extends Component {
                       </Row>
                       <div className="table-panel table-fixed-layout">
                         <Table size="middle" columns={this.columns} dataSource={reg.details} indentSize={8} rowKey="id"
+                          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
                           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                         />
                       </div>

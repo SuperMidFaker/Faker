@@ -175,6 +175,7 @@ export default class DetailsPane extends Component {
           </div>
         </div>
         <Table columns={columns} rowSelection={rowSelection} dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index"
+          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
         <AddDetailModal poNo={poNo} product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />

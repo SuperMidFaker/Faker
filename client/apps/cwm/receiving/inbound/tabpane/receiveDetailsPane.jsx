@@ -296,6 +296,7 @@ export default class ReceiveDetailsPane extends React.Component {
           </div>
         </div>
         <Table size="middle" columns={this.columns} rowSelection={rowSelection} dataSource={dataSource} rowKey="id"
+          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
           loading={this.state.loading}
         />

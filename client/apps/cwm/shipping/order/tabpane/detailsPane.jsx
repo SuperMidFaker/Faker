@@ -37,6 +37,7 @@ export default class DetailsPane extends Component {
       current: 1,
       total: 0,
       pageSize: 10,
+      showSizeChanger: true,
       onChange: this.handlePageChange,
     },
     editRecord: {},

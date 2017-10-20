@@ -111,6 +111,7 @@ export default class PackingDetailsPane extends React.Component {
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
         </div>
         <Table size="middle" columns={this.columns} indentSize={0} dataSource={dataSource} rowKey="id"
+          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
           loading={this.state.loading}
         />

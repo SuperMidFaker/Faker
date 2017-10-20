@@ -107,6 +107,7 @@ export default class OrderDetailsPane extends React.Component {
           <div className="toolbar-right" />
         </div>
         <Table size="middle" columns={this.columns} rowSelection={rowSelection} indentSize={0} dataSource={this.props.waveOrders} rowKey="so_no"
+          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
           scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
         />
       </div>

@@ -6,6 +6,7 @@ import { Breadcrumb, Layout, Tabs, Button, Card, Col, Row, Icon } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
+import MagicCard from 'client/components/MagicCard';
 import InfoItem from 'client/components/InfoItem';
 import OrderListPane from './tabpane/orderListPane';
 import OrderDetailsPane from './tabpane/orderDetailsPane';
@@ -99,7 +100,7 @@ export default class WaveDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <Card bodyStyle={{ padding: 0 }} noHovering>
+          <MagicCard bodyStyle={{ padding: 0 }} noHovering>
             <Tabs defaultActiveKey="orderDetails">
               <TabPane tab="发货明细" key="orderDetails">
                 <OrderDetailsPane waveNo={this.props.params.waveNo} />
@@ -108,7 +109,7 @@ export default class WaveDetail extends Component {
                 <OrderListPane waveNo={this.props.params.waveNo} />
               </TabPane>
             </Tabs>
-          </Card>
+          </MagicCard>
         </Content>
       </div>
     );

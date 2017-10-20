@@ -236,6 +236,7 @@ export default class PutawayDetailsPane extends React.Component {
         </div>
         <Table size="middle" columns={columns} rowSelection={rowSelection} indentSize={0}
           dataSource={dataSource} rowKey="id"
+          pagination={{ showSizeChanger: true, showTotal: total => `共 ${total} 条` }}
           scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
           loading={this.props.loading}
         />
