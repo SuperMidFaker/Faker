@@ -19,7 +19,7 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     head: state.cmsManifest.billHead,
-    visible: state.cmsManifestImport.declBodyModal.visible,
+    visible: state.cmsManifestImport.visibleDeclBodyModal,
     submitting: state.cmsManifestImport.submitting,
     declEntries: state.cmsManifestImport.declEntries,
     units: state.cmsManifest.params.units.map(un => ({
@@ -174,7 +174,7 @@ export default class DeclBodyImportModal extends Component {
       if (!result.error) {
         const cusDeclNo = row.entry_id;
         const entryDetails = this.state.entryDetails.filter(reg => reg.pre_entry_seq_no !== row.pre_entry_seq_no).concat(
-          result.data.map(dt => ({ ...dt, entry_id: cusDeclNo })));
+          result.data.map(dt => ({ ...dt, entry_id: cusDeclNo, pre_entry_seq_no: row.pre_entry_seq_no })));
         const declEntries = this.state.declEntries.map(pr => pr.entry_id === cusDeclNo ? { ...pr, added: true } : pr);
         this.setState({ entryDetails, declEntries });
       }
@@ -280,35 +280,35 @@ export default class DeclBodyImportModal extends Component {
       }
     });
     const title = (<div>
-      <span>添加已报关清单表体</span>
+      <span>导入报关单表体</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" loading={submitting} disabled={entryDetails.length === 0} onClick={() => this.handleDeclImport('mark')}>标记保存</Button>
+        <Button type="primary" loading={submitting} disabled={entryDetails.length === 0 || !filtered} onClick={() => this.handleDeclImport('mark')}>标记保存</Button>
         <Button type="primary" loading={submitting} disabled={entryDetails.length === 0} onClick={() => this.handleDeclImport('copy')}>只复用</Button>
       </div>
     </div>);
-    const mode = this.props.trxModes.filter(cur => cur.value === head.trx_mode)[0];
+    const mode = this.props.trxModes.filter(cur => cur.value === head.trxn_mode)[0];
     const trxnMode = mode && `${mode.value}| ${mode.text}`;
     return (
       <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
         <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
-          <Form className="form-layout-compact">
+          <Form className="form-layout-compact" layout="inline">
             <Row gutter={16}>
               <Col span={5}>
                 <FormItem label="客户">
-                  <Input defaultValue={`${head.owner_custco}|${head.owner_name}`} />
+                  <span className="ant-form-text">{`${head.owner_custco}|${head.owner_name}`}</span>
                 </FormItem>
               </Col>
               <Col span={5} offset={1}>
                 <FormItem label="委托号">
-                  <Input defaultValue={head.delg_no} />
+                  <span className="ant-form-text">{head.delg_no}</span>
                 </FormItem>
               </Col>
               <Col span={5} offset={1}>
                 <FormItem label="成交方式">
-                  <Input defaultValue={trxnMode} />
+                  <span className="ant-form-text">{trxnMode}</span>
                 </FormItem>
               </Col>
             </Row>
@@ -351,7 +351,9 @@ export default class DeclBodyImportModal extends Component {
                     {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.handleDetailBatchDel}>批量删除</Button>}
                     <div className="toolbar-right">
                       <FormItem label="征免方式">
-                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100 }} >
+                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode}
+                          onChange={this.handleDutyModeChange} style={{ width: 100 }} allowClear
+                        >
                           {
                             exemptions.map(data => (
                               <Option key={data.value} search={`${data.search}`} >
@@ -361,7 +363,9 @@ export default class DeclBodyImportModal extends Component {
                         </Select>
                       </FormItem>
                       <FormItem label="最终目的国">
-                        <Select showSearch showArrow optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100 }}>
+                        <Select showSearch showArrow optionFilterProp="search" value={destCountry}
+                          onChange={this.handleDestCountryChange} style={{ width: 100 }} allowClear
+                        >
                           {
                             tradeCountries.map(data => (
                               <Option key={data.value} search={`${data.search}`} >
