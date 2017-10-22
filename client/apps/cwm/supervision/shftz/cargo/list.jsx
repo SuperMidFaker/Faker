@@ -8,6 +8,7 @@ import { loadProductCargo, loadParams, updateCargoRule, syncProdSKUS,
 import { switchDefaultWhse, loadWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
+import PageHeader from 'client/components/PageHeader';
 import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
 import NavLink from 'client/components/NavLink';
@@ -19,7 +20,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -325,39 +326,43 @@ export default class SHFTZCargoList extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                  {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                </Select>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {owner.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待备案</RadioButton>
-              <RadioButton value="sent">已发送</RadioButton>
-              <RadioButton value="completed">备案料号规则库</RadioButton>
-            </RadioGroup>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
+                  </Select>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {owner.name}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Nav>
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+                <RadioButton value="all">全部</RadioButton>
+                <RadioButton value="pending">待备案</RadioButton>
+                <RadioButton value="sent">已发送</RadioButton>
+                <RadioButton value="completed">备案料号规则库</RadioButton>
+              </RadioGroup>
+            </PageHeader.Nav>
+            <PageHeader.Actions>
               {listFilter.status === 'pending' &&
               <Button size="large" icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
-                同步SKU
+              同步SKU
+            </Button>
+            }
+              {listFilter.status === 'pending' &&
+              <Button type="primary" size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>
+                发送备案
               </Button>
               }
-              {listFilter.status === 'pending' &&
-                <Button type="primary" size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>
-                  发送备案
-                </Button>
-                }
               {listFilter.status === 'sent' &&
-                <Button type="primary" ghost size="large" icon="check" loading={submitting} onClick={this.handleCargoConfirm}>
-                  确认备案
-                </Button>
-                }
+              <Button type="primary" ghost size="large" icon="check" loading={submitting} onClick={this.handleCargoConfirm}>
+                确认备案
+              </Button>
+              }
               <Popover content={<a href={`${XLSX_CDN}/分拨货物备案料号模板.xlsx`}><Icon type="file-excel" />下载导入模板</a>}>
                 <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
                   formData={{
@@ -374,8 +379,8 @@ export default class SHFTZCargoList extends React.Component {
                 </ExcelUploader>
               </Popover>
               <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
-            </div>
-          </Header>
+            </PageHeader.Actions>
+          </PageHeader>
           <Content className="page-content" key="main">
             <DataTable columns={columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="id"
               toolbarActions={toolbarActions} scroll={{ x: 1400 }} loading={loading}

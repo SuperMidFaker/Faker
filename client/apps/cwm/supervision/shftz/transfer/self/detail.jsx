@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Steps, Button, Card, Col, Row, Tag, notification } from 'antd';
+import { Breadcrumb, Icon, Form, Layout, Steps, Button, Tabs, Card, Col, Row, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
@@ -20,6 +20,7 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const Step = Steps.Step;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -316,21 +317,26 @@ export default class SHFTZTransferSelfDetail extends Component {
               </div>
             </Card>
             <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-              <DataPane fullscreen={this.state.fullscreen}
-                columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                dataSource={entryAsn.details} rowKey="id" loading={this.state.loading}
-              >
-                <DataPane.Toolbar>
-                  <Row type="flex">
-                    <Col className="col-flex-primary info-group-inline" />
+              <Tabs defaultActiveKey="transitDetails">
+                <TabPane tab="转移明细" key="transitDetails">
+                  <DataPane fullscreen={this.state.fullscreen}
+                    columns={this.columns} rowSelection={rowSelection} indentSize={8}
+                    dataSource={entryAsn.details} rowKey="id" loading={this.state.loading}
+                  >
+                    <DataPane.Toolbar>
+                      <Row type="flex">
+                        <Col className="col-flex-primary info-group-inline" />
 
 
-                    <Col className="col-flex-secondary">
-                      {totCol}
-                    </Col>
-                  </Row>
-                </DataPane.Toolbar>
-              </DataPane>
+                        <Col className="col-flex-secondary">
+                          {totCol}
+                        </Col>
+                      </Row>
+                    </DataPane.Toolbar>
+                  </DataPane>
+                </TabPane>
+              </Tabs>
+
             </MagicCard>
           </Form>
         </Content>
