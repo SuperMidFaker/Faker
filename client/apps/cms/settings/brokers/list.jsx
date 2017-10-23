@@ -68,7 +68,7 @@ export default class BrokerList extends Component {
   renderEditAndStopOperations = itemInfo => (
     <PrivilegeCover module="corp" feature="partners" action="edit">
       <span>
-        {itemInfo.editable && (
+        {itemInfo.editable === 1 && (
           <span>
             <a onClick={() => this.handleEditBtnClick(itemInfo)}>修改</a>
             <span className="ant-divider" />

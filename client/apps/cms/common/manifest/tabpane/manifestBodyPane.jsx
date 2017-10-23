@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Menu, Icon, Tooltip, Tag, Input, Select, message, notification, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import { addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel, refreshRelatedBodies,
+import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, loadBillBody, openAmountModel, refreshRelatedBodies,
   deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
+import { toggleDeclImportModal } from 'common/reducers/cmsManifestImport';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 import { format } from 'client/common/i18n/helpers';
 import ExcelUploader from 'client/components/ExcelUploader';
@@ -19,6 +20,7 @@ import { dividGrossWt } from './helper';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
+import DeclBodyImportModal from '../modals/DeclBodyImportModal';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -174,7 +176,8 @@ function calculateTotal(bodies, currencies) {
     billHead: state.cmsManifest.billHead,
     billMeta: state.cmsManifest.billMeta,
   }),
-  { addNewBillBody,
+  { loadBill,
+    addNewBillBody,
     delBillBody,
     editBillBody,
     updateHeadNetWt,
@@ -190,6 +193,7 @@ function calculateTotal(bodies, currencies) {
     showDeclElementsModal,
     updateBillBody,
     getElementByHscode,
+    toggleDeclImportModal,
   }
 )
 export default class ManifestBodyPane extends React.Component {
@@ -757,8 +761,11 @@ export default class ManifestBodyPane extends React.Component {
     window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/unclassified/to/item/export/${createFilename('bodyExportToItem')}.xlsx?billSeqNo=${
       this.props.billSeqNo}&repoId=${this.props.billMeta.repoId}`);
   }
-  handleUploaded = () => {
+  handleReload = (reloadHead) => {
     this.props.loadBillBody(this.props.billSeqNo);
+    if (reloadHead) {
+      this.props.loadBill(this.props.billSeqNo, this.props.tenantId, this.props.billHead.i_e_type);
+    }
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -808,6 +815,9 @@ export default class ManifestBodyPane extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleDeclBodyImport = () => {
+    this.props.toggleDeclImportModal(true);
+  }
   renderToolbar() {
     const { readonly, billMeta } = this.props;
     const handlemenu = (
@@ -843,7 +853,7 @@ export default class ManifestBodyPane extends React.Component {
               tenant_id: this.props.tenantId,
               creater_login_id: this.props.loginId,
             }),
-          }} onUploaded={this.handleUploaded}
+          }} onUploaded={this.handleReload}
         >
           <Dropdown.Button size="large" onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
             <Icon type="upload" /> {this.msg('unrelatedImport')}
@@ -858,7 +868,7 @@ export default class ManifestBodyPane extends React.Component {
               delgNo: this.props.billHead.delg_no,
               tradeCode: this.props.billHead.trade_co,
             }),
-          }} onUploaded={this.handleUploaded}
+          }} onUploaded={this.handleReload}
         >
           <Dropdown.Button size="large" onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
@@ -870,6 +880,7 @@ export default class ManifestBodyPane extends React.Component {
             {this.msg('handle')} <Icon type="down" />
           </Button>
         </Dropdown>
+        <Button icon="import" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>导入已报关表体</Button>
         {billMeta.repoId !== null && <Dropdown.Button size="large" onClick={this.handleManifestBodyExport} overlay={exportmenu} style={{ marginLeft: 8 }}>
           <Icon type="export" /> 导出全部
         </Dropdown.Button>}
@@ -921,6 +932,7 @@ export default class ManifestBodyPane extends React.Component {
         <RelateImportRuleModal />
         <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
+        <DeclBodyImportModal reload={() => this.handleReload(true)} />
       </DataPane>
     );
   }

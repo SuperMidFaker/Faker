@@ -72,16 +72,18 @@ export default class CwmReceivingForm extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
     };
+    const whseCode = node.t_whse_code || (node.whse_code ? `${node.wh_ent_tenant_id}-${node.whse_code}` : '');
     // todo required
     return (
       <Card noHovering bodyStyle={{ padding: 16 }}>
         <Row gutter={16}>
           <Col sm={24} lg={8}>
-            <FormItem label="仓库" {...formItemLayout}>
-              <Select showSearch allowClear optionFilterProp="children" value={node.whse_code}
-                onChange={value => this.handleCommonFieldChange('whse_code', value)}
+            <FormItem label="仓库" {...formItemLayout} required>
+              <Select showSearch allowClear optionFilterProp="children" value={whseCode}
+                onChange={value => this.handleCommonFieldChange('t_whse_code', value)}
               >
-                {recParams.whses.map(wh => <Option key={wh.code} value={wh.code}>{wh.code}|{wh.name}</Option>)}
+                {recParams.whses.map(wh =>
+                  <Option key={`${wh.wh_ent_tenant_id}-${wh.code}`} value={`${wh.wh_ent_tenant_id}-${wh.code}`}>{wh.code}|{wh.name}</Option>)}
               </Select>
             </FormItem>
           </Col>

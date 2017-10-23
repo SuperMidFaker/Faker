@@ -106,6 +106,10 @@ const messages = defineMessages({
     id: 'scof.flow.biz.cwm.shipping.order',
     defaultMessage: '出货订单',
   },
+  cwmShippingOrderNormalReg: {
+    id: 'scof.flow.biz.cwm.shipping.normalreg',
+    defaultMessage: '普通出库',
+  },
   declCustoms: {
     id: 'scof.flow.biz.cms.declcustoms',
     defaultMessage: '申报地海关',
@@ -281,6 +285,10 @@ const messages = defineMessages({
   onSoFinished: {
     id: 'scof.flow.biz.event.so.finished',
     defaultMessage: '已发货',
+  },
+  onRegFinished: {
+    id: 'scof.flow.biz.event.reg.finished',
+    defaultMessage: '已备案',
   },
   delgDeclare: {
     id: 'scof.flow.biz.action.delg.declare',

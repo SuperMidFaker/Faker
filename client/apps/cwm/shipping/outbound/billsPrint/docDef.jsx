@@ -247,7 +247,7 @@ function TrigeminyList(data) {
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ rowSpan: 2, image: barcode0, width: 150, margin: [0, 5], alignment: 'center', border: [true, true, true, false] },
+          [{ rowSpan: 2, image: barcode0, width: 200, margin: [0, 5], alignment: 'center', border: [true, true, true, false] },
             { text: expressInfo.express_type, fontSize: 12, margin: [0, 5], alignment: 'center' }],
           ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
           [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],

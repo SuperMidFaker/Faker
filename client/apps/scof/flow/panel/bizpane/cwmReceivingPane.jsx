@@ -35,16 +35,19 @@ export default class CWMReceivingPane extends Component {
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, model, recParams } = this.props;
+    model.t_whse_code = model.t_whse_code || (model.whse_code && `${model.wh_ent_tenant_id}-${model.whse_code}`);
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('cwmWarehouse')}>
-                {getFieldDecorator('whse_code', {
-                  initialValue: model.whse_code,
+                {getFieldDecorator('t_whse_code', {
+                  initialValue: model.t_whse_code, // clear still t_whse_code undefined, this still exist
+                  rules: [{ required: true }],
                 })(<Select showSearch allowClear optionFilterProp="children">
-                  {recParams.whses.map(wh => <Option key={wh.code} value={wh.code}>{wh.code}|{wh.name}</Option>)}
+                  {recParams.whses.map(wh =>
+                    <Option key={`${wh.wh_ent_tenant_id}-${wh.code}`} value={`${wh.wh_ent_tenant_id}-${wh.code}`}>{wh.code}|{wh.name}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>
