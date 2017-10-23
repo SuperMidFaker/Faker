@@ -269,7 +269,6 @@ export default function reducer(state = initialState, action) {
     case actionTypes.REMOVE_SHIPMENT_POINT_SUCCEED: {
       return { ...state,
         previewer: { ...state.previewer,
-          points: state.previewer.points.filter(item => item.id !== action.data.pointId),
           logs: state.previewer.logs.map((item) => {
             if (item.id === action.data.logId) {
               return { ...item, type: '' };
