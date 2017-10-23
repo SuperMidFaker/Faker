@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Button, Card, Collapse, Checkbox, Dropdown, Icon, Menu, Timeline } from 'antd';
+import { Button, Card, Collapse, Checkbox, Dropdown, Icon, Popconfirm, Menu, Timeline } from 'antd';
 import EventComposer from './eventComposer';
-import { SHIPMENT_LOG_CATEGORY } from 'common/constants';
+import { removeShipmtPoint } from 'common/reducers/shipment';
+import { SHIPMENT_LOG_CATEGORY, SHIPMENT_TRACK_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 const formatMsg = format(messages);
@@ -17,7 +18,9 @@ const MENUKEYS = ['all', 'operation', 'tracking', 'exception'];
 @connect(
   state => ({
     logs: state.shipment.previewer.logs,
-  })
+    downstream: state.shipment.previewer.downstream,
+  }),
+  { removeShipmtPoint }
 )
 export default class TrackingPane extends React.Component {
   static propTypes = {
@@ -53,6 +56,9 @@ export default class TrackingPane extends React.Component {
       selectedKeys,
     });
   }
+  handleRemovePoint = (pointId, logId) => {
+    this.props.removeShipmtPoint(pointId, logId);
+  }
   renderTimeLine = (log, index) => {
     const style = { backgroundColor: '#fff' };
     if (log.category === SHIPMENT_LOG_CATEGORY.message) {
@@ -71,10 +77,15 @@ export default class TrackingPane extends React.Component {
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
         </Timeline.Item>
       );
-    } else if (log.category === SHIPMENT_LOG_CATEGORY.tracking) {
+    } else if (log.category === SHIPMENT_LOG_CATEGORY.tracking) { // log.type is tms_tracking_points id
       return (
         <Timeline.Item key={index} dot={<Icon type="environment-o" style={style} />}>
-          <p>{this.msg(log.type)} {log.content}</p>
+          <p>{log.content}
+            {this.props.downstream.status <= SHIPMENT_TRACK_STATUS.intransit && log.type &&
+            <Popconfirm title="确定删除这条位置信息？" onConfirm={() => this.handleRemovePoint(Number(log.type), log.id)}>
+              <Icon type="close" className="timeline-remove" />
+            </Popconfirm>}
+          </p>
           <p>{`${log.tenant_name} ${log.login_name}`}</p>
           <p>{log.created_date && moment(log.created_date).format(timeFormat)}</p>
         </Timeline.Item>
