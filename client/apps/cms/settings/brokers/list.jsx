@@ -119,18 +119,21 @@ export default class BrokerList extends Component {
         title: '海关编码',
         dataIndex: 'customs_code',
         key: 'customs_code',
-        width: 120,
+        width: 200,
       }, {
-        title: '业务类型',
-        dataIndex: 'i_e_type',
-        key: 'i_e_type',
+        title: '检验检疫代码',
+        dataIndex: 'ciq_code',
+        key: 'ciq_code',
+        width: 200,
+      }, {
+        title: '是否供应商',
+        dataIndex: 'comp_partner_id',
+        key: 'comp_partner_id',
         render(o) {
-          if (o === 'A') {
-            return <span>进出口</span>;
-          } else if (o === 'I') {
-            return <span>进口</span>;
+          if (o > 0) {
+            return <span>是</span>;
           } else {
-            return <span>出口</span>;
+            return <span>否</span>;
           }
         },
       }, {

@@ -31,12 +31,9 @@ export default class PrintShippingConfirm extends Component {
     const barcode = textToBase64Barcode(outboundNo);
     const headContent = [
       { columns: [
+        { text: '', width: 150 },
         { text: '出库确认单', style: 'title', alignment: 'center' },
-      ] },
-      { columns: [
-        { text: '' },
-        { image: barcode, width: 200 },
-        { text: '' },
+        { image: barcode, width: 150, alignment: 'right' },
       ] },
       { columns: [
         { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
@@ -62,10 +59,17 @@ export default class PrintShippingConfirm extends Component {
   pdfDetails = () => {
     const { outboundHead, pickDetails } = this.props;
     const pdf = [];
-    pdf.push([{ text: '项', style: 'detailTable' }, { text: '仓库料号', style: 'detailTable' },
-      { text: '包装说明', style: 'detailTable' }, { text: '实捡数', style: 'detailTable' }, { text: '库位', style: 'detailTable' },
-      { text: '集箱箱号', style: 'detailTable' }, { text: '净重(kg)', style: 'detailTable' },
-      { text: '客户属性1', style: 'detailTable' }, { text: '客户属性2', style: 'detailTable' }, { text: '收货人', style: 'detailTable' },
+    pdf.push([
+      { text: '项', style: 'detailTable' },
+      { text: '仓库料号', style: 'detailTable' },
+      { text: '包装说明', style: 'detailTable' },
+      { text: '实拣数', style: 'detailTable' },
+      { text: '库位', style: 'detailTable' },
+      { text: '集箱箱号', style: 'detailTable' },
+      { text: '净重(kg)', style: 'detailTable' },
+      { text: '客户属性1', style: 'detailTable' },
+      { text: '客户属性2', style: 'detailTable' },
+      { text: '收货人', style: 'detailTable' },
     ]);
     for (let i = 0; i < pickDetails.length; i++) {
       pdf.push([i + 1, pickDetails[i].product_no, '', pickDetails[i].picked_qty, pickDetails[i].location, '', '', '', '', '']);
@@ -96,6 +100,7 @@ export default class PrintShippingConfirm extends Component {
       content: [],
       pageOrientation: 'landscape',
       pageSize: 'A4',
+      pageMargins: [20, 15],
       styles: {
         title: {
           fontSize: 18,
@@ -116,7 +121,7 @@ export default class PrintShippingConfirm extends Component {
           alignment: 'center',
         },
         table: {
-          fontSize: 9,
+          fontSize: 11,
           color: 'black',
           margin: [2, 2, 2, 2],
           alignment: 'center',
@@ -130,19 +135,23 @@ export default class PrintShippingConfirm extends Component {
       },
     };
     let num = 0;
-    if (pickDetails.length > 15) {
-      num = 24 - (pickDetails.length - 15) % 24;
+    if (pickDetails.length > 22) {
+      num = 30 - (pickDetails.length - 22) % 30;
     } else {
-      num = 15 - pickDetails.length;
+      num = 22 - pickDetails.length;
     }
     docDefinition.content = [
       this.pdfHead(),
       {
         style: 'table',
-        table: { widths: ['3%', '10%', '14%', '8%', '10%', '15%', '8%', '10%', '10%', '12%'], body: this.pdfDetails() },
+        table: { widths: [25, 100, 80, 50, 60, 80, 50, '*', '*', '*'], body: this.pdfDetails() },
         layout: {
-          hLineColor: 'gray',
-          vLineColor: 'gray',
+          vLineWidth(i, node) {
+            return (i === 0 || i === node.table.widths.length) ? 1.2 : 0.5;
+          },
+          hLineWidth(i, node) {
+            return (i === 0 || i === 1 || i === node.table.body.length - 1 || i === node.table.body.length) ? 1.2 : 0.5;
+          },
           paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
         },
       },

@@ -38,12 +38,9 @@ export default class OutboundPickPrint extends Component {
     const barcode = textToBase64Barcode(outboundNo);
     const headContent = [
       { columns: [
+        { text: '', width: 150 },
         { text: '拣货单', style: 'title', alignment: 'center' },
-      ] },
-      { columns: [
-        { text: '' },
-        { image: barcode, width: 200 },
-        { text: '' },
+        { image: barcode, width: 150, alignment: 'right' },
       ] },
       { columns: [
         { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
@@ -64,20 +61,26 @@ export default class OutboundPickPrint extends Component {
   pdfPickDetails = (pickDetails) => {
     const { outboundHead } = this.props;
     const pdf = [];
-    pdf.push([{ text: '项', style: 'tableHeader' }, { text: '货号', style: 'tableHeader' },
-      { text: '产品名称', style: 'tableHeader' }, { text: '库位', style: 'tableHeader' },
-      { text: '待捡数', style: 'tableHeader' }, { text: '库存数', style: 'tableHeader' },
-      { text: '余量数', style: 'tableHeader' }, { text: '实捡数', style: 'tableHeader' }]);
+    pdf.push([
+      { text: '项', style: 'tableHeader' },
+      { text: '货号', style: 'tableHeader' },
+      { text: '产品名称', style: 'tableHeader' },
+      { text: '批次号', style: 'tableHeader' },
+      { text: '库位', style: 'tableHeader' },
+      { text: '待拣数', style: 'tableHeader' },
+      { text: '库存数', style: 'tableHeader' },
+      { text: '余量数', style: 'tableHeader' },
+      { text: '实拣数', style: 'tableHeader' }]);
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
       const remQty = data.stock_qty - data.alloc_qty;
-      pdf.push([i + 1, data.product_no || '', data.name || '', data.location || '',
+      pdf.push([i + 1, data.product_no || '', data.name || '', data.external_lot_no || '', data.location || '',
         data.alloc_qty, data.stock_qty, remQty, '']);
     }
     if (pickDetails.length !== 16) {
-      pdf.push(['', '', '', '', '', '', '', '']);
+      pdf.push(['', '', '', '', '', '', '', '', '']);
     }
-    pdf.push(['合计', '', '', '', outboundHead.total_alloc_qty, '', '', '']);
+    pdf.push(['合计', '', '', '', '', outboundHead.total_alloc_qty, '', '', '']);
     return pdf;
   }
   pdfSign = () => {
@@ -99,6 +102,7 @@ export default class OutboundPickPrint extends Component {
       content: [],
       pageOrientation: 'landscape',
       pageSize: 'A4',
+      pageMargins: [20, 15],
       styles: {
         title: {
           fontSize: 18,
@@ -112,7 +116,7 @@ export default class OutboundPickPrint extends Component {
           margin: [0, 3, 0, 4],
         },
         table: {
-          fontSize: 10,
+          fontSize: 11,
           color: 'black',
           alignment: 'center',
           margin: [2, 2, 2, 2],
@@ -133,19 +137,26 @@ export default class OutboundPickPrint extends Component {
       },
     };
     let num = 0;
-    if (pickDetails.length > 16) {
-      num = 24 - (pickDetails.length - 16) % 24;
+    if (pickDetails.length > 23) {
+      num = 30 - (pickDetails.length - 23) % 30;
     } else {
-      num = 16 - pickDetails.length;
+      num = 23 - pickDetails.length;
     }
     docDefinition.content = [
       this.pdfPickHead(),
       {
         style: 'table',
-        table: { widths: ['3%', '22%', '27%', '16%', '8%', '8%', '8%', '8%'], body: this.pdfPickDetails(pickDetails) },
+        table: {
+          widths: [25, 100, 120, 100, 60, '*', '*', '*', '*'],
+          body: this.pdfPickDetails(pickDetails),
+        },
         layout: {
-          hLineColor: 'gray',
-          vLineColor: 'gray',
+          vLineWidth(i, node) {
+            return (i === 0 || i === node.table.widths.length - 1 || i === node.table.widths.length) ? 1.2 : 0.5;
+          },
+          hLineWidth(i, node) {
+            return (i === 0 || i === 1 || i === node.table.body.length - 1 || i === node.table.body.length) ? 1.2 : 0.5;
+          },
           paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
         },
       },
