@@ -247,12 +247,12 @@ function TrigeminyList(data) {
       table: {
         widths: ['60%', '40%'],
         body: [
-          [{ rowSpan: 2, image: barcode0, width: 150, alignment: 'center', border: [true, true, true, false] },
-            { text: expressInfo.express_type, fontSize: 12, alignment: 'center' }],
+          [{ rowSpan: 2, image: barcode0, width: 150, margin: [0, 5], alignment: 'center', border: [true, true, true, false] },
+            { text: expressInfo.express_type, fontSize: 12, margin: [0, 5], alignment: 'center' }],
           ['', { rowSpan: 2, text: '', fontSize: 11, alignment: 'center', border: [true, true, true, true] }],
           [{ text: `${bartext}`, fontSize: 9, alignment: 'center', border: [true, false, true, true] }, ''],
         ],
-        heights: [27, 20, 20],
+        heights: [20, 20, 13],
       },
     },
     // 代收货款\n卡号：0123456789\n¥3000元
@@ -278,18 +278,18 @@ function TrigeminyList(data) {
       body: [
         [{ text: `付款方式：${expressInfo.pay_method}`, fontSize: 7, border: [true, false, false, false] },
           { text: '计费重量：', fontSize: 7, border: [false, false, false, false] },
-          { text: '包装费用：', fontSize: 7, border: [false, false, false, false] },
+          { text: '运费：', fontSize: 7, border: [false, false, false, false] },
           { rowSpan: 4, text: '签名', fontSize: 7, border: [true, false, true] }],
         [{ text: `月结账号：${expressInfo.custid}`, fontSize: 7, border: [true, false, false, false] },
-          { text: '声明价值：', fontSize: 7, border: [false, false, false, false] },
-          { text: '运费：', fontSize: 7, border: [false, false, false, false] },
+          { text: '费用合计：', fontSize: 7, border: [false, false, false, false] },
+          { text: '', fontSize: 7, border: [false, false, false, false] },
           ''],
         [{ text: '第三方地区：', fontSize: 7, border: [true, false, false, false] },
           { text: '保价费用：', fontSize: 7, border: [false, false, false, false] },
-          { text: '费用合计', fontSize: 7, border: [false, false, false, false] },
+          { text: '', fontSize: 7, border: [false, false, false, false] },
           ''],
         [{ text: '实际重量：', fontSize: 7, border: [true, false, false, false] },
-          { text: '定时派送：', fontSize: 7, border: [false, false, false, false] },
+          { text: '订单号：', fontSize: 7, border: [false, false, false, false] },
           { text: '', fontSize: 7, border: [false, false, false, false] },
           { text: '', fontSize: 7, border: [false, false, false, false] }],
       ],
@@ -347,9 +347,10 @@ function TrigeminyList(data) {
       table: {
         widths: ['100%'],
         body: [
-          [{ text: '', alignment: 'center', border: [true, false, true, true] }],
+          [{ text: '订单号：', fontSize: 9, alignment: 'left', border: [true, false, true, false] }],
+          [{ text: '内物数量：', fontSize: 9, alignment: 'left', border: [true, false, true, false] }],
         ],
-        heights: [83],
+        heights: [39, 39],
       },
     }
   );
@@ -388,11 +389,12 @@ function TrigeminyList(data) {
   pdfcontent.push(
     { style: 'table',
       table: {
-        widths: ['100%'],
+        widths: ['50%', '50%'],
         body: [
-          [{ text: '', alignment: 'center', border: [true, false, true, true] }],
+          [{ text: [{ text: '订单号:\n\n\n', fontSize: 9 }, { text: '计费重量:', fontSize: 9 }], border: [true, false, false, true] },
+              { text: [{ text: '内物数量:\n\n\n', fontSize: 9 }, { text: '费用合计:', fontSize: 9 }], border: [false, false, true, true] }],
         ],
-        heights: [83],
+        heights: [80],
       },
     }
   );
@@ -401,7 +403,7 @@ function TrigeminyList(data) {
 
 export function TrigeminyListDef(data) {
   const docDefinition = {
-    pageSize: { width: 400, height: 840 },
+    pageSize: { width: 400, height: 900 },
     pageMargins: [0, 0],
     content: [],
     styles: {
