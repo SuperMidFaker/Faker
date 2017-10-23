@@ -120,7 +120,7 @@ export default class ShippingDetailsPane extends React.Component {
         dataSource={dataSource} rowKey="id" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search size="large" placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

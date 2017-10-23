@@ -25,9 +25,13 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.batch.decl',
     defaultMessage: '分拨集中报关',
   },
-  ftzStock: {
-    id: 'cwm.supervision.shftz.stock',
-    defaultMessage: '监管库存查询',
+  ftzBondedStock: {
+    id: 'cwm.supervision.shftz.bonded.stock',
+    defaultMessage: '监管保税库存',
+  },
+  ftzNonbondedStock: {
+    id: 'cwm.supervision.shftz.nonbonded.stock',
+    defaultMessage: '监管非保库存',
   },
   ftzTransferSelf: {
     id: 'cwm.supervision.shftz.transfer.self',

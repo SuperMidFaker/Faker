@@ -46,7 +46,10 @@ export default class ModuleMenu extends React.Component {
         </Menu.ItemGroup>
         <Menu.ItemGroup key="g_stock" title="库存">
           <Menu.Item key="stock">
-            <NavLink to="/cwm/supervision/shftz/stock">{this.msg('ftzStock')}</NavLink>
+            <NavLink to="/cwm/supervision/shftz/stock">{this.msg('ftzBondedStock')}</NavLink>
+          </Menu.Item>
+          <Menu.Item key="nonbonded">
+            <NavLink to="/cwm/supervision/shftz/stock/nonbonded">{this.msg('ftzNonbondedStock')}</NavLink>
           </Menu.Item>
           <Menu.Item key="transferself">
             <NavLink to="/cwm/supervision/shftz/transfer/self">{this.msg('ftzTransferSelf')}</NavLink>

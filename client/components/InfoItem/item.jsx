@@ -41,6 +41,7 @@ export default class InfoItem extends PureComponent {
     onEdit: PropTypes.func,
     action: PropTypes.node,
     options: PropTypes.array,
+    upperLimit: PropTypes.number,
   }
   renderLabel() {
     const { prefixCls, label, labelCol, colon } = this.props;
@@ -76,7 +77,7 @@ export default class InfoItem extends PureComponent {
     }
   }
   renderField() {
-    const { type, format, field, dataIndex, placeholder, editable, overlay, onEdit, options } = this.props;
+    const { type, format, field, dataIndex, placeholder, editable, overlay, onEdit, options, upperLimit } = this.props;
     if (editable) {
       if (type === 'dropdown') {
         return (<span>{this.renderAddonBefore()}
@@ -93,6 +94,9 @@ export default class InfoItem extends PureComponent {
       let span = field;
       if (type === 'date') {
         span = span && moment(span).format(format || 'YYYY.MM.DD');
+      }
+      if (upperLimit) {
+        span = field === upperLimit ? <span className="text-success">{field}</span> : <span className="text-error">{field}</span>;
       }
       return <span>{this.renderAddonBefore()}{span}{this.renderAddonAfter()}</span>;
     }

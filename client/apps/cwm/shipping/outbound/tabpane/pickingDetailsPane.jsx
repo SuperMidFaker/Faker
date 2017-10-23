@@ -365,7 +365,7 @@ export default class PickingDetailsPane extends React.Component {
         dataSource={dataSource} rowKey="id" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search size="large" placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {outboundHead.shipping_mode === 'manual' && currentStep === 'allAllocated' && <Button onClick={this.handleBatchConfirmPicked}>
               <MdIcon type="check-all" />批量拣货确认

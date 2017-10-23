@@ -336,8 +336,7 @@ export default class OrderDetailsPane extends React.Component {
         dataSource={dataSource} rowKey={rowKey} loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
-          {alertMsg && <Alert message={alertMsg} type="warning" showIcon />}
+          <Search size="large" placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {ButtonStatus === 'alloc' && (<Button loading={submitting} onClick={this.handleBatchAutoAlloc}>
               <MdIcon type="check-all" />批量自动分配
@@ -353,6 +352,7 @@ export default class OrderDetailsPane extends React.Component {
             { outboundHead.status === CWM_OUTBOUND_STATUS.CREATED.value &&
               <Button loading={submitting} type="primary" onClick={this.handleOutboundAutoAlloc}>订单自动分配</Button>}
           </DataPane.Actions>
+          {alertMsg && <Alert message={alertMsg} type="warning" showIcon />}
         </DataPane.Toolbar>
         <AllocatingModal shippingMode={this.state.shippingMode} editable={this.state.detailEditable} />
       </DataPane>

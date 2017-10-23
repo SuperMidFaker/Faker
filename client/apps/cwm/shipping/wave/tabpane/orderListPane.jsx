@@ -93,7 +93,7 @@ export default class OrderDetailsPane extends React.Component {
         dataSource={this.props.waveOrders} rowKey="so_no" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search placeholder="SO编号" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search size="large" placeholder="SO编号" style={{ width: 200 }} onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button size="large" onClick={this.handleRemoveOrders} icon="close">
               移除订单

@@ -295,13 +295,13 @@ export default class OutboundDetail extends Component {
                 <InfoItem label="订单总数" field={outboundHead.total_qty} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="分配总数" field={outboundHead.total_alloc_qty} />
+                <InfoItem label="分配总数" field={outboundHead.total_alloc_qty} upperLimit={outboundHead.total_qty} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem label="拣货总数" field={outboundHead.total_picked_qty} />
+                <InfoItem label="拣货总数" field={outboundHead.total_picked_qty} upperLimit={outboundHead.total_alloc_qty} />
               </Col>
               <Col sm={12} lg={2}>
-                <InfoItem label="发货总数" field={outboundHead.total_shipped_qty} />
+                <InfoItem label="发货总数" field={outboundHead.total_shipped_qty} upperLimit={outboundHead.total_picked_qty} />
               </Col>
               <Col sm={12} lg={3}>
                 <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
