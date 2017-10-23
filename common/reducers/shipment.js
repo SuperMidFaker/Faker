@@ -267,7 +267,16 @@ export default function reducer(state = initialState, action) {
       return { ...state, statistics: { ...state.statistics, logs: action.result.data } };
     }
     case actionTypes.REMOVE_SHIPMENT_POINT_SUCCEED: {
-      return { ...state, previewer: { ...state.previewer, points: state.previewer.points.filter(item => item.id !== action.data.pointId) } };
+      return { ...state,
+        previewer: { ...state.previewer,
+          logs: state.previewer.logs.map((item) => {
+            if (item.id === action.data.logId) {
+              return { ...item, type: '' };
+            } else {
+              return item;
+            }
+          }),
+        } };
     }
     case actionTypes.CHANGE_PREVIEWER_TAB: {
       return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
@@ -670,7 +679,7 @@ export function loadShipmtPoints(shipmtNo) {
   };
 }
 
-export function removeShipmtPoint(pointId, content, dispId) {
+export function removeShipmtPoint(pointId, logId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -680,7 +689,7 @@ export function removeShipmtPoint(pointId, content, dispId) {
       ],
       endpoint: 'v1/transport/shipment/removePoint',
       method: 'post',
-      data: { pointId, content, dispId },
+      data: { pointId, logId },
     },
   };
 }

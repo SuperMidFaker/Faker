@@ -143,8 +143,8 @@ export default class BrokerList extends Component {
         },
       }, {
         title: '创建人',
-        dataIndex: 'created_by',
-        key: 'created_by',
+        dataIndex: 'creater_name',
+        key: 'creater_name',
         width: 120,
       }, {
         title: '操作',
