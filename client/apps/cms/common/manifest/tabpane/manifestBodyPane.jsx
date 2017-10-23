@@ -761,9 +761,11 @@ export default class ManifestBodyPane extends React.Component {
     window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/unclassified/to/item/export/${createFilename('bodyExportToItem')}.xlsx?billSeqNo=${
       this.props.billSeqNo}&repoId=${this.props.billMeta.repoId}`);
   }
-  handleReload = () => {
+  handleReload = (reloadHead) => {
     this.props.loadBillBody(this.props.billSeqNo);
-    this.props.loadBill(this.props.billSeqNo, this.props.tenantId, this.props.head.i_e_type);
+    if (reloadHead) {
+      this.props.loadBill(this.props.billSeqNo, this.props.tenantId, this.props.billHead.i_e_type);
+    }
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -930,7 +932,7 @@ export default class ManifestBodyPane extends React.Component {
         <RelateImportRuleModal />
         <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
-        <DeclBodyImportModal reload={this.handleReload} />
+        <DeclBodyImportModal reload={() => this.handleReload(true)} />
       </DataPane>
     );
   }

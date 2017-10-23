@@ -189,7 +189,13 @@ export default class DeclBodyImportModal extends Component {
     const { selectedRows, entryDetails, declEntries } = this.state;
     const delEntryNos = selectedRows.map(sr => sr.entry_id);
     this.setState({
-      declEntries: declEntries.filter(dce => !delEntryNos.find(den => den === dce.entry_id)),
+      declEntries: declEntries.map((dce) => {
+        if (delEntryNos.find(den => den === dce.entry_id)) {
+          return { ...dce, added: false };
+        } else {
+          return dce;
+        }
+      }),
       entryDetails: entryDetails.filter(entd => !selectedRows.find(sr => sr.id === entd.id)),
       selectedRowKeys: [],
       selectedRows: [],
