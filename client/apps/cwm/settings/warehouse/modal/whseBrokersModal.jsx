@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Input, Form, Alert, Select } from 'antd';
 import { toggleBrokerModal, addBroker, loadBrokers, updateBroker, loadCCBs } from 'common/reducers/cwmWarehouse';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, PARTNER_BUSINESSES } from 'common/constants';
+import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { formatMsg } from '../message.i18n';
@@ -42,7 +42,7 @@ export default class SuppliersModal extends Component {
     visible: false,
   }
   componentWillMount() {
-    this.props.loadCCBs(this.props.tenantId, PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSES.CCB);
+    this.props.loadCCBs(this.props.tenantId, PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance);
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible && nextProps.broker.id) {
