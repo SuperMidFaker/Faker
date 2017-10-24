@@ -8,6 +8,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { loadCarriers } from 'common/reducers/cwmWarehouse';
 import { DELIVER_TYPES } from 'common/constants/cwm';
+import { COURIERS } from 'common/constants/transport';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -35,15 +36,35 @@ export default class CarrierPane extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCarrierChange = (value) => {
-    const { carriers, selectedOwner } = this.props;
-    const c = carriers.filter(item => item.owner_partner_id === selectedOwner).find(item => item.code === value);
-    if (c) {
-      this.props.onCarrierChange(c.name);
+    const { carriers, selectedOwner, form } = this.props;
+    const deliverType = form.getFieldValue('delivery_type');
+    let carrier;
+    if (deliverType !== 3) {
+      carrier = carriers.filter(item => item.owner_partner_id === selectedOwner).find(item => item.code === value);
+    } else {
+      carrier = COURIERS.find(item => item.code === value);
+    }
+    if (carrier) {
+      this.props.onCarrierChange(carrier.name);
+    }
+  }
+  handleDeliverTypeChange = (value) => {
+    const deliverType = this.props.form.getFieldValue('delivery_type');
+    if (deliverType && ((deliverType !== 3 && value === 3) || (deliverType === 3 && value !== 3))) {
+      this.props.form.setFieldsValue({
+        carrier_code: '',
+      });
     }
   }
   render() {
     const { form: { getFieldDecorator }, soHead, carriers, selectedOwner } = this.props;
-    const crs = carriers.filter(item => item.owner_partner_id === selectedOwner);
+    const deliverType = this.props.form.getFieldValue('delivery_type');
+    let crs;
+    if (deliverType !== 3) {
+      crs = carriers.filter(item => item.owner_partner_id === selectedOwner);
+    } else {
+      crs = COURIERS;
+    }
     return (
       <div style={{ padding: 24 }}>
         <Row gutter={16}>
@@ -52,7 +73,7 @@ export default class CarrierPane extends Component {
               {getFieldDecorator('delivery_type', {
                 initialValue: soHead && soHead.delivery_type,
               })(
-                <Select placeholder="选择配送方式">
+                <Select placeholder="选择配送方式" onChange={this.handleDeliverTypeChange}>
                   {DELIVER_TYPES.map(item => (<Option value={item.value}>{item.name}</Option>))}
                 </Select>
               )}
@@ -64,9 +85,9 @@ export default class CarrierPane extends Component {
                 rules: [{ message: 'Please select customer!' }],
                 initialValue: soHead && soHead.carrier_code,
               })(
-                <Select placeholder="选择承运人" onChange={this.handleCarrierChange}>
+                (<Select placeholder="选择承运人" onChange={this.handleCarrierChange}>
                   {crs.map(item => (<Option value={item.code}>{item.name}</Option>))}
-                </Select>
+                </Select>)
               )}
             </FormItem>
           </Col>
