@@ -46,16 +46,24 @@ export default class TraceIdPopover extends Component {
       }
     },
   }, {
-    title: '原因',
-    width: 150,
-    dataIndex: 'reason',
-    className: 'text-normal',
-  }, {
     title: '事务时间',
     width: 150,
     dataIndex: 'transaction_timestamp',
     render: traxTime => traxTime && moment(traxTime).format('YYYY.MM.DD HH:mm'),
     sorter: (a, b) => a.transaction_timestamp - b.transaction_timestamp,
+  }, {
+    title: '追踪ID',
+    width: 180,
+    dataIndex: 'trace_id',
+  }, {
+    title: '客户单号',
+    width: 180,
+    dataIndex: 'ref_order_no',
+  }, {
+    title: '原因',
+    width: 130,
+    dataIndex: 'reason',
+    className: 'text-normal',
   }]
   msg = key => formatMsg(this.props.intl, key);
   handleVisibleChange = (visible) => {
@@ -74,7 +82,7 @@ export default class TraceIdPopover extends Component {
     const { traceId } = this.props;
     const { dataSource } = this.state;
     const content = (
-      <div style={{ width: 480 }}>
+      <div style={{ width: 780 }}>
         <Table size="small" columns={this.column} dataSource={dataSource} rowKey="id" pagination={{ defaultPageSize: 10 }} />
       </div>
     );

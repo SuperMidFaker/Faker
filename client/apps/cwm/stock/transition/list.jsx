@@ -190,24 +190,30 @@ export default class StockTransitionList extends React.Component {
         >
           <a>解冻</a>
         </Popover>);
-      } else if (record.avail_qty === 1) {
-        return <RowUpdater onHit={this.handleTransitModal} label="调整" row={record} />;
-      } else if (record.avail_qty > 1) {
+      } else if (record.avail_qty >= 1) {
+        const spans = [<RowUpdater onHit={this.handleTransitModal} label="调整" row={record} key="adjust" />];
         const min = 1;
-        const max = record.avail_qty - 1;
-        return (<span>
-          <RowUpdater onHit={this.handleTransitModal} label="调整" row={record} />
-          <span className="ant-divider" />
-          <Popover placement="left" title="拆分数量" content={<span>
-            <InputNumber min={min} max={max} onChange={value => this.handleSplitChange(value, min, max)}
-              value={this.state.transitionSplitNum}
-            />
-            <Button type="primary" icon="check" style={{ marginLeft: 8 }} onClick={() => this.handleSplitTransition(record)} />
-          </span>} trigger="click"
-          >
-            <a>拆分</a>
-          </Popover>
-        </span>);
+        let max = record.avail_qty - 1;
+        if (record.avail_qty !== record.stock_qty) {
+          max = record.avail_qty;
+        }
+        if (min <= max) {
+          spans.push(<span className="ant-divider" key="divid" />,
+            <Popover placement="left" title="拆分数量" key="split" content={<span>
+              <InputNumber min={min} max={max} onChange={value => this.handleSplitChange(value, min, max)}
+                value={this.state.transitionSplitNum}
+              />
+              <Button type="primary" icon="check" style={{ marginLeft: 8 }} onClick={() => this.handleSplitTransition(record)} />
+            </span>} trigger="click"
+            >
+              <a>拆分</a>
+            </Popover>);
+        }
+        if (spans.length === 1) {
+          return spans[0];
+        } else {
+          return (<span>{spans}</span>);
+        }
       } else if (record.avail_qty === 0 && record.moving_qty > 0) {
         return <span>移库中</span>;
       }
