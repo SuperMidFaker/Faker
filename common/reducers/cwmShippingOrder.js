@@ -25,6 +25,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'CANCEL_OUTBOUND', 'CANCEL_OUTBOUND_SUCCEED', 'CANCEL_OUTBOUND_FAIL',
   'CLOSE_OUTBOUND', 'CLOSE_OUTBOUND_SUCCEED', 'CLOSE_OUTBOUND_FAIL',
   'SHOW_ASN_SELECT', 'HIDE_ASN_SELECT',
+  'UPDATE_DELIVERY_TYPE', 'UPDATE_DELIVERY_TYPE_SUCCEED', 'UPDATE_DELIVERY_TYPE_FAIL',
+  'UPDATE_SO_CARRIER', 'UPDATE_SO_CARRIER_SUCCEED', 'UPDATE_SO_CARRIER_FAIL',
 ]);
 
 const initialState = {
@@ -468,5 +470,35 @@ export function showAsnSelectModal() {
 export function hideAsnSelectModal() {
   return {
     type: actionTypes.HIDE_ASN_SELECT,
+  };
+}
+
+export function updateDeliveryType(soNo, type, reset) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_DELIVERY_TYPE,
+        actionTypes.UPDATE_DELIVERY_TYPE_SUCCEED,
+        actionTypes.UPDATE_DELIVERY_TYPE_FAIL,
+      ],
+      endpoint: 'v1/cwm/delivery/update',
+      method: 'post',
+      data: { soNo, type, reset },
+    },
+  };
+}
+
+export function updateSoCarrier(name, code, soNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_SO_CARRIER,
+        actionTypes.UPDATE_SO_CARRIER_SUCCEED,
+        actionTypes.UPDATE_SO_CARRIER_FAIL,
+      ],
+      endpoint: 'v1/cwm/so/carrier/update',
+      method: 'post',
+      data: { name, code, soNo },
+    },
   };
 }

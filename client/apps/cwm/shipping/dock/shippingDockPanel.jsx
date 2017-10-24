@@ -126,6 +126,19 @@ export default class ShippingDockPanel extends React.Component {
   handleExportExcel = () => {
     window.open(`${API_ROOTS.default}v1/cwm/shipping/exportSoExcel/${createFilename('so')}.xlsx?soNo=${this.props.order.so_no}&outboundNo=${this.props.order.outboundNo}`);
   }
+  reload = (soNo) => {
+    this.props.getSo(soNo).then(
+      (result) => {
+        if (!result.error) {
+          this.setState({
+            soHead: result.data.soHead ? result.data.soHead : {},
+            soBody: result.data.soBody,
+            outbounds: result.data.outbounds,
+          });
+        }
+      }
+    );
+  }
   renderStatus(status) {
     switch (status) {
       case CWM_SO_STATUS.PENDING.value: return CWM_SO_STATUS.PENDING.badge;
@@ -150,7 +163,7 @@ export default class ShippingDockPanel extends React.Component {
     const tabs = [];
     tabs.push(
       <TabPane tab={this.msg('tabSO')} key="order">
-        <OrderPane soHead={soHead} soBody={soBody} />
+        <OrderPane soHead={soHead} soBody={soBody} reload={this.reload} />
       </TabPane>);
     if (soHead.bonded) {
       tabs.push(
