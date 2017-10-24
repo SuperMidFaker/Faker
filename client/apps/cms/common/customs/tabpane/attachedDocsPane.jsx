@@ -40,7 +40,7 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map(opt => <Option value={opt.text} key={opt.value}>{opt.text}</Option>)
+          options.map(opt => <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
         }
       </Select>
     );
@@ -161,11 +161,13 @@ export default class AttachedDocsPane extends React.Component {
           onChange={this.handleEditChange}
         />),
     }, {
+      title: this.msg('docuFile'),
+      dataIndex: 'docu_file',
+      render: (o, record, index) => o ? <a>{o}</a> : <Button type="primary" ghost onClick={() => this.handleUpload(record, index)} icon="upload" />,
+    }, {
       width: 100,
       render: (o, record, index) => {
-        if (head.status > CMS_DECL_STATUS.reviewed.value) {
-          return <Button type="primary" shape="circle" onClick={() => this.handleUpload(record, index)} icon="upload" />;
-        } else {
+        if (head.status < CMS_DECL_STATUS.sent.value) {
           return record.id ? <Button type="danger" shape="circle" onClick={() => this.handleDelete(record, index)} icon="delete" /> :
           <span>
             <Button type="primary" shape="circle" onClick={() => this.handleSave(record)} icon="save" />

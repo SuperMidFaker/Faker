@@ -147,7 +147,7 @@ export default defineMessages({
   },
   billList: {
     id: 'cms.manifest.form.bill.list',
-    defaultMessage: '清单表体',
+    defaultMessage: '申报商品明细',
   },
   iport: {
     id: 'cms.manifest.form.iport',
@@ -503,6 +503,6 @@ export default defineMessages({
   },
   sendAllPackets: {
     id: 'cms.manifest.customs.send.all.packets',
-    defaultMessage: '批量发送报文',
+    defaultMessage: '批量发送申报',
   },
 });

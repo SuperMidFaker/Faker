@@ -34,7 +34,7 @@ export default class MagicCard extends React.Component {
     return (
       <Card {...this.props} className={classes} >
         <div className="welo-magic-card-toggle">
-          <ButtonToggle size="default" iconOff="up-square-o" iconOn="down-square-o" onClick={this.toggleFullscreen} />
+          <ButtonToggle size="default" iconOff="arrows-alt" iconOn="shrink" onClick={this.toggleFullscreen} />
         </div>
         {children}
       </Card>

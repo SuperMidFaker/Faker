@@ -289,7 +289,7 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
+            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendDeclMsg')}</span>} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {

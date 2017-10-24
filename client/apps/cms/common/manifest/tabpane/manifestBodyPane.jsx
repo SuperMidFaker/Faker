@@ -576,6 +576,10 @@ export default class ManifestBodyPane extends React.Component {
     });
     this.props.showEditBodyModal(true);
   }
+  handleAddBody = () => {
+    this.setState({ editBody: {} });
+    this.props.showEditBodyModal(true);
+  }
   handleSave = (row, index) => {
     const { editBody, pagination: origPagi } = this.state;
     const recordIdx = index + (origPagi.current - 1) * origPagi.pageSize;
@@ -752,6 +756,8 @@ export default class ManifestBodyPane extends React.Component {
       this.props.openRuleModel();
     } else if (e.key === 'downloadRelated') {
       window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/related/model/download/${createFilename('relatedModel')}.xlsx`);
+    } else if (e.key === 'refresh') {
+      this.handleRelatedRefresh();
     }
   }
   handleManifestBodyExport = () => {
@@ -788,8 +794,10 @@ export default class ManifestBodyPane extends React.Component {
       }
     });
   }
-  handleExpMenuClick = (e) => {
-    if (e.key === 'expToItem') {
+  handleExportMenuClick = (e) => {
+    if (e.key === 'all') {
+      this.handleManifestBodyExport();
+    } else if (e.key === 'expToItem') {
       this.handleBodyExportToItem();
     }
   }
@@ -820,32 +828,37 @@ export default class ManifestBodyPane extends React.Component {
   }
   renderToolbar() {
     const { readonly, billMeta } = this.props;
-    const handlemenu = (
+    const dataToolsMenu = (
       <Menu onClick={this.handleDataMenuClick}>
-        <Menu.Item key="priceDivid"><Icon type="pie-chart" /> 金额平摊</Menu.Item>
-        <Menu.Item key="wtDivid"><Icon type="arrows-alt" /> 毛重分摊</Menu.Item>
-        <Menu.Item key="wtSum"><Icon type="shrink" /> 净重汇总</Menu.Item>
+        <Menu.Item key="priceDivid">金额平摊</Menu.Item>
+        <Menu.Item key="wtDivid">毛重分摊</Menu.Item>
+        <Menu.Item key="wtSum">净重汇总</Menu.Item>
       </Menu>);
-    const unrelatedImportmenu = (
+    const unrelatedImportMenu = (
       <Menu onClick={this.handleUnrelatedImportMenuClick}>
-        <Menu.Item key="download"><Icon type="file-excel" /> 下载模板</Menu.Item>
+        <Menu.Item key="download"><Icon type="file-excel" /> 下载导入模板</Menu.Item>
       </Menu>);
-    const relatedImportmenu = (
+    const relatedImportMenu = (
       <Menu onClick={this.handleRelatedImportMenuClick}>
-        <Menu.Item key="downloadRelated"><Icon type="file-excel" /> 下载模板</Menu.Item>
-        <Menu.Item key="rule"><Icon type="tool" /> 关联导入规则</Menu.Item>
+        {this.state.bodies.length > 1 && billMeta.repoId !== null &&
+        <Menu.Item key="refresh"><Icon type="retweet" /> 重新关联归类数据</Menu.Item>}
+        <Menu.Item key="downloadRelated"><Icon type="file-excel" /> 下载导入模板</Menu.Item>
+        <Menu.Item key="rule"><Icon type="tool" /> 设置关联导入规则</Menu.Item>
       </Menu>);
-    const exportmenu = (
-      <Menu onClick={this.handleExpMenuClick}>
-        <Menu.Item key="expToItem"><Icon type="export" /> 导出未归类数据</Menu.Item>
+    const exportMenu = (
+      <Menu onClick={this.handleExportMenuClick}>
+        <Menu.Item key="all">所有申报商品明细</Menu.Item>
+        {billMeta.repoId !== null && <Menu.Item key="expToItem">未归类商品明细</Menu.Item>}
       </Menu>);
     if (readonly) {
-      return (billMeta.repoId === null ? <Button size="large" icon="export" onClick={this.handleManifestBodyExport}> 导出全部</Button> :
-      <Dropdown.Button size="large" onClick={this.handleManifestBodyExport} overlay={exportmenu}>
-        <Icon type="export" /> 导出全部
-        </Dropdown.Button>);
+      return (<Dropdown overlay={exportMenu}>
+        <Button size="large">
+          <Icon type="export" /> 导出 <Icon type="down" />
+        </Button>
+      </Dropdown>);
     } else {
       return (<span>
+        <Button size="large" icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
         <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
           formData={{
             data: JSON.stringify({
@@ -855,7 +868,7 @@ export default class ManifestBodyPane extends React.Component {
             }),
           }} onUploaded={this.handleReload}
         >
-          <Dropdown.Button size="large" onClick={this.handleUnrelatedImport} overlay={unrelatedImportmenu}>
+          <Dropdown.Button size="large" onClick={this.handleUnrelatedImport} overlay={unrelatedImportMenu} style={{ marginLeft: 8 }}>
             <Icon type="upload" /> {this.msg('unrelatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
@@ -870,21 +883,21 @@ export default class ManifestBodyPane extends React.Component {
             }),
           }} onUploaded={this.handleReload}
         >
-          <Dropdown.Button size="large" onClick={this.handleRelatedImport} overlay={relatedImportmenu} style={{ marginLeft: 8 }}>
+          <Dropdown.Button size="large" onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
-        {this.state.bodies.length > 1 && billMeta.repoId !== null && <Button icon="retweet" onClick={this.handleRelatedRefresh} style={{ marginLeft: 8 }}>关联刷新</Button>}
-        <Dropdown overlay={handlemenu}>
-          <Button size="large" onClick={this.handleButtonClick} style={{ marginLeft: 8 }}>
-            {this.msg('handle')} <Icon type="down" />
+        <Button size="large" icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
+        <Dropdown overlay={dataToolsMenu}>
+          <Button size="large" style={{ marginLeft: 8 }}>
+            <Icon type="tool" /> <Icon type="down" />
           </Button>
         </Dropdown>
-        <Button icon="import" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>导入已报关表体</Button>
-        {billMeta.repoId !== null && <Dropdown.Button size="large" onClick={this.handleManifestBodyExport} overlay={exportmenu} style={{ marginLeft: 8 }}>
-          <Icon type="export" /> 导出全部
-        </Dropdown.Button>}
-        {billMeta.repoId === null && <Button size="large" icon="export" onClick={this.handleManifestBodyExport} style={{ marginLeft: 8 }}> 导出全部</Button>}
+        <Dropdown overlay={exportMenu}>
+          <Button size="large" style={{ marginLeft: 8 }}>
+            <Icon type="export" /> 导出 <Icon type="down" />
+          </Button>
+        </Dropdown>
         <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
           <Button size="large" type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
         </Popconfirm>

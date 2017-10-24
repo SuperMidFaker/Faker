@@ -223,17 +223,46 @@ export const CMS_CONFIRM = [
 ];
 
 export const CMS_DECL_DOCU = [
-  { value: '1', text: '发票' },
-  { value: '2', text: '装箱单' },
-  { value: '3', text: '提运单' },
-  { value: '4', text: '合同' },
-  { value: '5', text: '其他1' },
-  { value: '6', text: '其他2' },
-  { value: '7', text: '其他3' },
-  { value: '8', text: '代理报关委托协议' },
-  { value: 'A', text: '电子代理委托协议' },
-  { value: 'B', text: '减免税货物税款担保证明' },
-  { value: 'C', text: '减免税货物税款担保延期证明' },
+  { value: '00000001', text: '发票' },
+  { value: '00000002', text: '装箱单' },
+  { value: '00000003', text: '提运单' },
+  { value: '00000004', text: '合同' },
+  { value: '00000005', text: '其他1' },
+  { value: '00000006', text: '其他2' },
+  { value: '00000007', text: '其他3' },
+  { value: '00000008', text: '代理报关委托协议' },
+  { value: '10000001', text: '电子代理委托协议' },
+  { value: '10000002', text: '减免税货物税款担保证明' },
+  { value: '10000003', text: '减免税货物税款担保延期证明' },
+];
+
+export const CMS_CNTNR_SPEC_CUS = [
+  { value: 'L', text: '2 * 标准箱' },
+  { value: 'S', text: '1 * 标准箱' },
+];
+
+export const CMS_CNTNR_SPEC_CIQ = [
+  { value: '111', text: '海运40尺普通' },
+  { value: '112', text: '海运45尺普通' },
+  { value: '121', text: '海运40尺冷藏' },
+  { value: '122', text: '海运45尺冷藏' },
+  { value: '131', text: '海运40尺罐式' },
+  { value: '132', text: '海运45尺罐式' },
+  { value: '211', text: '海运20尺普通' },
+  { value: '212', text: '海运25尺普通' },
+  { value: '221', text: '海运20尺冷藏' },
+  { value: '222', text: '海运25尺冷藏' },
+  { value: '231', text: '海运20尺罐式' },
+  { value: '132', text: '海运25尺罐式' },
+  { value: '201', text: '空运IKE(1.5*1.5*1.6)' },
+  { value: '202', text: '空运DPE(1.15*1.5*1.6)' },
+  { value: '202', text: '空运BJF(3.3*1.5*1.6)' },
+  { value: '311', text: '列车40尺普通' },
+  { value: '312', text: '列车40尺冷藏' },
+  { value: '321', text: '列车20尺普通' },
+  { value: '322', text: '列车20尺冷藏' },
+  { value: '331', text: '列车10尺' },
+  { value: '999', text: '其他集装箱' },
 ];
 
 export const CMS_GUNIT = [

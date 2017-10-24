@@ -1,17 +1,25 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
+  seqNo: {
+    id: 'cms.manifest.tabpanes.seq.no',
+    defaultMessage: '序号',
+  },
   containerId: {
     id: 'cms.manifest.tabpanes.container.id',
     defaultMessage: '集装箱号',
   },
   containerWt: {
     id: 'cms.manifest.tabpanes.container.wt',
-    defaultMessage: '自重',
+    defaultMessage: '集装箱自重',
   },
   containerSpec: {
     id: 'cms.manifest.tabpanes.container.spec',
-    defaultMessage: '集装箱规格',
+    defaultMessage: '集装箱规格-报关',
+  },
+  containerSpecCiq: {
+    id: 'cms.manifest.tabpanes.container.spec.ciq',
+    defaultMessage: '集装箱规格-报检',
   },
   containerQty: {
     id: 'cms.manifest.tabpanes.container.qty',

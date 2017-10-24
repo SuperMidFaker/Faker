@@ -408,7 +408,7 @@ export default class ManifestEditor extends React.Component {
         </Spin>
       </TabPane>);
     tabs.push(
-      <TabPane tab="清单表体" key="body">
+      <TabPane tab="申报商品明细" key="body">
         <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
       </TabPane>);
     if (filterProducts.length > 0) {

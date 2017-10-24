@@ -2,12 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Input, message } from 'antd';
+import { Button, Input, Select, message } from 'antd';
 import { loadContainers, saveContainer, delContainer } from 'common/reducers/cmsManifest';
+import { CMS_CNTNR_SPEC_CUS, CMS_CNTNR_SPEC_CIQ } from 'common/constants';
 import DataPane from 'client/components/DataPane';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
+const Option = Select.Option;
 const formatMsg = format(messages);
 
 function ColumnInput(props) {
@@ -25,6 +27,33 @@ ColumnInput.propTypes = {
   record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func,
+};
+function ColumnSelect(props) {
+  const { inEdit, record, field, options, onChange } = props;
+  function handleChange(value) {
+    if (onChange) {
+      onChange(record, field, value);
+    }
+  }
+  if (inEdit) {
+    return (
+      <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
+        {
+          options.map(opt => <Option value={opt.text} key={opt.value}>{opt.value} | {opt.text}</Option>)
+        }
+      </Select>
+    );
+  } else {
+    const option = options.find(item => item.value === record[field]);
+    return <span>{option ? option.text : ''}</span>;
+  }
+}
+ColumnSelect.proptypes = {
+  inEdit: PropTypes.bool,
+  record: PropTypes.object.isRequired,
+  field: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  options: PropTypes.array.isRequired,
 };
 
 @injectIntl
@@ -109,6 +138,10 @@ export default class ContainersPane extends React.Component {
 
   render() {
     const columns = [{
+      title: this.msg('seqNo'),
+      dataIndex: 'seq_no',
+      width: 60,
+    }, {
       title: this.msg('containerId'),
       dataIndex: 'container_id',
       render: (o, record) =>
@@ -119,8 +152,15 @@ export default class ContainersPane extends React.Component {
       title: this.msg('containerSpec'),
       dataIndex: 'container_spec',
       render: (o, record) =>
-        (<ColumnInput field="container_spec" inEdit={!record.id} record={record}
-          onChange={this.handleEditChange}
+        (<ColumnSelect field="container_spec" inEdit={!record.id} record={record}
+          onChange={this.handleEditChange} options={CMS_CNTNR_SPEC_CUS}
+        />),
+    }, {
+      title: this.msg('containerSpecCiq'),
+      dataIndex: 'container_spec_ciq',
+      render: (o, record) =>
+        (<ColumnSelect field="container_spec_ciq" inEdit={!record.id} record={record}
+          onChange={this.handleEditChange} options={CMS_CNTNR_SPEC_CIQ}
         />),
     }, {
       title: this.msg('containerWt'),

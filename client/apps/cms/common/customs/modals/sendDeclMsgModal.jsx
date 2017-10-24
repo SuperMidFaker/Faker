@@ -89,7 +89,7 @@ export default class SendDeclMsgModal extends React.Component {
       declList = CMS_DECL_TYPE;
     }
     return (
-      <Modal title={this.msg('sendDecl')} visible={visible}
+      <Modal title={this.msg('sendDeclMsg')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>

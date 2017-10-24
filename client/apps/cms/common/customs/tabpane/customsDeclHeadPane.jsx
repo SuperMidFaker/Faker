@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Card, Form, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
+import EditableCell from 'client/components/EditableCell';
 import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
@@ -16,6 +17,7 @@ import messages from '../message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 
 const formatMsg = format(messages);
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -140,28 +142,28 @@ export default class CustomsDeclHeadPane extends React.Component {
                 </Col>
                 <PackWeight {...formProps} intl={intl} formRequire={formRequire} ietype={ietype} />
               </Row>
-              <Row>
+              <Row className="info-group info-group-inline">
                 <Col span="5">
-                  <InfoItem size="small" field={formData.contr_no} placeholder="点击输入" dataIndex="contr_no"
-                    addonBefore={this.msg('contractNo')} editable={editable} onEdit={this.handleMarkFill}
-                  />
+                  <FormItem label={this.msg('contractNo')} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ marginBottom: 0 }}>
+                    <EditableCell field="contr_no" value={formData.contr_no} onSave={this.handleMarkFill} disabled={!editable} />
+                  </FormItem>
                 </Col>
                 <Col span="3">
-                  <InfoItem size="small" field={formData.pack_count} placeholder="点击输入" dataIndex="pack_count"
-                    addonBefore={this.msg('packCount')} editable={editable} onEdit={this.handleMarkFill}
-                  />
+                  <FormItem label={this.msg('packCount')} labelCol={{ span: 10 }} wrapperCol={{ span: 14 }} style={{ marginBottom: 0 }}>
+                    <EditableCell field="pack_count" value={formData.pack_count} onSave={this.handleMarkFill} disabled={!editable} />
+                  </FormItem>
                 </Col>
-                <Col span={15} offset={1}>
-                  <InfoItem size="small" field={formData.cert_mark} placeholder="点击输入" dataIndex="cert_mark"
-                    addonBefore={this.msg('certMark')} editable={editable} onEdit={this.handleMarkFill}
-                  />
+                <Col span={16}>
+                  <FormItem label={this.msg('certMark')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
+                    <EditableCell field="cert_mark" value={formData.cert_mark} onSave={this.handleMarkFill} disabled={!editable} />
+                  </FormItem>
                 </Col>
               </Row>
               <Row>
-                <Col span={15} offset={9}>
-                  <InfoItem size="small" field={formData.note} placeholder="点击输入" dataIndex="note"
-                    addonBefore={this.msg('markNotes')} editable={editable} onEdit={this.handleMarkFill}
-                  />
+                <Col span={16} offset={8}>
+                  <FormItem label={this.msg('markNotes')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
+                    <EditableCell field="note" value={formData.note} onSave={this.handleMarkFill} disabled={!editable} />
+                  </FormItem>
                 </Col>
               </Row>
             </Card>

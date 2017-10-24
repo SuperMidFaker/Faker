@@ -145,7 +145,7 @@ export default class CustomsList extends Component {
             </span>);
         case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
-          return (<Tooltip title="点击编号在新窗口中打开" placement="left"><a onClick={ev => this.handleDounbleClick(record, ev)}>{entryNO}</a></Tooltip>);
+          return (<Tooltip title="点击编号在新窗口中打开" mouseEnterDelay={3} placement="left"><a onClick={ev => this.handleDounbleClick(record, ev)}>{entryNO}</a></Tooltip>);
         default:
           break;
       }
@@ -302,7 +302,7 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendPackets')}</span>} row={record} />
+            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendDeclMsg')}</span>} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {

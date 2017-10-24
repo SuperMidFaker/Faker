@@ -170,7 +170,7 @@
   "cms.docs.generate.entry": "由清单归并生成",
   "cms.docs.add.entry": "直接添加报关单",
   "cms.docs.form.bill.header": "清单表头",
-  "cms.docs.form.bill.list": "清单表体",
+  "cms.docs.form.bill.list": "申报商品明细",
   "cms.docs.form.pre.entry.id": "预录入编号",
   "cms.docs.form.entry.id": "海关编号",
   "cms.docs.form.iport": "进口口岸",

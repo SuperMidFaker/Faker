@@ -131,7 +131,7 @@ export default defineMessages({
   },
   billList: {
     id: 'cms.forms.form.bill.list',
-    defaultMessage: '清单表体',
+    defaultMessage: '申报商品明细',
   },
   preEntryId: {
     id: 'cms.forms.form.pre.entry.id',

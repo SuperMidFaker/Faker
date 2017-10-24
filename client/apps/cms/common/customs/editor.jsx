@@ -258,7 +258,7 @@ export default class CustomsDeclEditor extends React.Component {
         <AttachedDocsPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
-      <TabPane tab="申报清单明细" key="manifestDetails" head={head}>
+      <TabPane tab="申报商品明细" key="manifestDetails" head={head}>
         <ManifestDetailsPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     if (filterProducts.length > 0) {
@@ -299,7 +299,7 @@ export default class CustomsDeclEditor extends React.Component {
             <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
               }
             { head.status === CMS_DECL_STATUS.reviewed.value &&
-            <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendPackets')}</Button>
+            <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendDeclMsg')}</Button>
               }
             { head.status === CMS_DECL_STATUS.entered.value &&
             <Button type="primary" size="large" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>

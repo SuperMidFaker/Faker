@@ -149,13 +149,17 @@ export default defineMessages({
     id: 'cms.common.customs.send',
     defaultMessage: '发送',
   },
-  sendPackets: {
-    id: 'cms.common.customs.send.packets',
-    defaultMessage: '发送报文',
+  sendDeclMsg: {
+    id: 'cms.common.customs.send.decl.msg',
+    defaultMessage: '发送申报',
   },
-  resendPackets: {
-    id: 'cms.common.customs.resend.packets',
+  resendDeclMsg: {
+    id: 'cms.common.customs.resend.decl.msg',
     defaultMessage: '重新发送',
+  },
+  markDeclared: {
+    id: 'cms.common.customs.mark.declared',
+    defaultMessage: '申报确认',
   },
   markReleased: {
     id: 'cms.common.customs.mark.released',
@@ -257,9 +261,9 @@ export default defineMessages({
     id: 'cms.common.customs.table.exemptionway',
     defaultMessage: '征免方式',
   },
-  sendAllPackets: {
-    id: 'cms.common.customs.send.all.packets',
-    defaultMessage: '批量发送报文',
+  sendBatchDeclMsgs: {
+    id: 'cms.common.customs.send.batch.decl.msgs',
+    defaultMessage: '批量发送申报',
   },
   trafMode: {
     id: 'cms.common.customs.traf.mode',
@@ -296,6 +300,10 @@ export default defineMessages({
   docuCode: {
     id: 'cms.common.customs.tabpanes.document.code',
     defaultMessage: '随附单据编号',
+  },
+  docuFile: {
+    id: 'cms.common.customs.tabpanes.document.file',
+    defaultMessage: '文件名',
   },
   certSpec: {
     id: 'cms.common.customs.tabpanes.cert.spec',

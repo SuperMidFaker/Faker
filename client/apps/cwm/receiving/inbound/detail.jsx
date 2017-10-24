@@ -179,7 +179,7 @@ export default class ReceiveInbound extends Component {
                 <InfoItem label="总预期数量" field={inboundHead.total_expect_qty} />
               </Col>
               <Col sm={12} lg={3}>
-                <InfoItem label="总实收数量" field={inboundHead.total_received_qty} />
+                <InfoItem label="总实收数量" field={inboundHead.total_received_qty} upperLimit={inboundHead.total_expect_qty} />
               </Col>
               <Col sm={12} lg={3}>
                 <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}

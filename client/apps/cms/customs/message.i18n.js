@@ -157,9 +157,9 @@ export default defineMessages({
     id: 'cms.customs.decl.send',
     defaultMessage: '发送',
   },
-  sendPackets: {
-    id: 'cms.customs.decl.send.packets',
-    defaultMessage: '发送报文',
+  sendDeclMsg: {
+    id: 'cms.customs.decl.send.decl.msg',
+    defaultMessage: '发送申报',
   },
   markReleased: {
     id: 'cms.customs.decl.mark.released',
@@ -263,7 +263,7 @@ export default defineMessages({
   },
   sendAllPackets: {
     id: 'cms.customs.decl.send.all.packets',
-    defaultMessage: '批量发送报文',
+    defaultMessage: '批量发送申报',
   },
   trafMode: {
     id: 'cms.customs.decl.traf.mode',
