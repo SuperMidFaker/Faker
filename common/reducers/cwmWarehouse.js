@@ -57,6 +57,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'LOAD_CCBS', 'LOAD_CCBS_SUCCEED', 'LOAD_CCBS_FAIL',
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
   'AUTHORIZE_BROKER', 'AUTHORIZE_BROKER_SUCCEED', 'AUTHORIZE_BROKER_FAIL',
+  'LOAD_BRKP', 'LOAD_BRKP_SUCCEED', 'LOAD_BRKP_FAIL',
 ]);
 
 const initialState = {
@@ -111,6 +112,7 @@ const initialState = {
     broker: {},
   },
   CCBs: [],
+  brokerPartners: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -173,6 +175,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, brokerModal: { ...state.brokerModal, ...action.data } };
     case actionTypes.LOAD_CCBS_SUCCEED:
       return { ...state, CCBs: action.result.data };
+    case actionTypes.LOAD_BRKP_SUCCEED:
+      return { ...state, brokerPartners: action.result.data };
     default:
       return state;
   }
@@ -923,6 +927,21 @@ export function loadCCBs(tenantId, role, businessType, business) {
         actionTypes.LOAD_CCBS_FAIL,
       ],
       endpoint: 'v1/cwm/ccbs/load',
+      method: 'get',
+      params: { tenantId, role, businessType, business },
+    },
+  };
+}
+
+export function loadBrokerPartners(tenantId, role, businessType, business) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BRKP,
+        actionTypes.LOAD_BRKP_SUCCEED,
+        actionTypes.LOAD_BRKP_FAIL,
+      ],
+      endpoint: 'v1/cooperation/partners',
       method: 'get',
       params: { tenantId, role, businessType, business },
     },
