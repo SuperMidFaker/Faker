@@ -38,9 +38,6 @@ export default class SuppliersModal extends Component {
   state = {
     visible: false,
   }
-  componentWillMount() {
-    this.props.loadCCBs(this.props.tenantId, PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance);
-  }
   componentWillUnmount() {
     this.setState({
       visible: false,
@@ -81,7 +78,8 @@ export default class SuppliersModal extends Component {
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
-    }; return (
+    };
+    return (
       <Modal title="添加报关代理" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         { this.state.visible && <Alert message="报关行不存在" showIcon type="error" /> }
         <Form layout="horizontal">
@@ -91,7 +89,8 @@ export default class SuppliersModal extends Component {
               style={{ width: '100%' }}
               onChange={this.handleChange}
             >
-              {filterBrokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.customs_code}</Option>))}
+              {filterBrokers.map(broker =>
+                (<Option value={broker.customs_code} key={broker.customs_code}>{broker.customs_code}|{broker.name}</Option>))}
             </Select>)}
           </FormItem>
           <FormItem label="统一社会信用代码:" required {...formItemLayout}>

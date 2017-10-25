@@ -316,8 +316,7 @@ export default class NormalDeclModal extends Component {
     const { destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-        // tenant_id customs_code todo
-      const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id } : { name: tenantName };
+      const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id } : { name: tenantName };
       this.props.beginNormalDecl({
         ietype: values.ietype,
         template: this.state.template,
