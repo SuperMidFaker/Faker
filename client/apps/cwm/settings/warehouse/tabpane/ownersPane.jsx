@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Table, Tag, Modal } from 'antd';
+import { Button, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import WhseOwnersModal from '../modal/whseOwnersModal';
 import OwnerControlModal from '../modal/ownerControlModal';
@@ -99,16 +100,6 @@ export default class OwnersPane extends Component {
     className: 'cell-align-center',
     render: o => o ? `${WHSE_OPERATION_MODES[o].text}发货` : '',
   }, {
-    title: '最后修改时间',
-    dataIndex: 'last_updated_date',
-    width: 120,
-    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-  }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
-    width: 120,
-    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
-  }, {
     title: '库存初始化',
     dataIndex: 'init',
     width: 100,
@@ -137,8 +128,19 @@ export default class OwnersPane extends Component {
       </ExcelUploader>
     ),
   }, {
+    title: '最后修改时间',
+    dataIndex: 'last_updated_date',
+    width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
+    title: '创建时间',
+    dataIndex: 'created_date',
+    width: 120,
+    render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
+  }, {
     title: '操作',
     width: 150,
+    fixed: 'right',
     render: record => (
       <span>
         <RowUpdater onHit={this.handleOwnerControl} label="控制属性" row={record} />
@@ -196,11 +198,12 @@ export default class OwnersPane extends Component {
   render() {
     const { whseCode, whseName, whseTenantId, whseOwners } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加货主</Button>
-        </div>
-        <Table columns={this.columns} dataSource={whseOwners} rowKey="id" />
+      <DataPane
+        columns={this.columns} dataSource={whseOwners} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加货主</Button>
+        </DataPane.Toolbar>
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />
         <ImportDataPanel
@@ -222,7 +225,7 @@ export default class OwnersPane extends Component {
           onUploaded={this.handleReload}
           template={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}
         />
-      </div>
+      </DataPane>
     );
   }
 }

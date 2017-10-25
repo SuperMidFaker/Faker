@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Icon, Table, Tag, message } from 'antd';
+import { Button, Icon, Tag, message } from 'antd';
 import { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus, authorizeBroker } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import BrokerModal from '../modal/whseBrokersModal';
 import { formatMsg } from '../message.i18n';
 
@@ -115,13 +116,14 @@ export default class BrokersPane extends Component {
   render() {
     const { whseCode, brokers } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleBrokerModal(true)}>添加报关代理</Button>
-        </div>
-        <Table columns={this.columns} dataSource={brokers} rowKey="id" />
+      <DataPane
+        columns={this.columns} dataSource={brokers} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.toggleBrokerModal(true)}>添加报关代理</Button>
+        </DataPane.Toolbar>
         <BrokerModal whseCode={whseCode} />
-      </div>
+      </DataPane>
     );
   }
 }

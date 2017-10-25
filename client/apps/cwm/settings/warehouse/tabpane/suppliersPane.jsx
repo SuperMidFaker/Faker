@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Icon, Table, Tag } from 'antd';
+import { Button, Icon, Tag } from 'antd';
 import { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import SuppliersModal from '../modal/whseSuppliersModal';
 import { formatMsg } from '../message.i18n';
 
@@ -84,6 +85,7 @@ export default class SuppliersPane extends Component {
     title: '操作',
     width: 150,
     dataIndex: 'OPS_COL',
+    fixed: 'right',
     render: (o, record) => (
       <span>
         {record.active === 0 ? <RowUpdater onHit={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
@@ -116,13 +118,14 @@ export default class SuppliersPane extends Component {
   render() {
     const { whseCode, suppliers } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供货商</Button>
-        </div>
-        <Table columns={this.columns} dataSource={suppliers} rowKey="id" />
+      <DataPane
+        columns={this.columns} dataSource={suppliers} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供货商</Button>
+        </DataPane.Toolbar>
         <SuppliersModal whseCode={whseCode} />
-      </div>
+      </DataPane>
     );
   }
 }

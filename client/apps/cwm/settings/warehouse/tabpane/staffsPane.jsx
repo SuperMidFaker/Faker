@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Table, Tag } from 'antd';
+import { Button, Icon, Tag } from 'antd';
 import { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
 import StaffModal from '../modal/staffModal';
+import DataPane from 'client/components/DataPane';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -56,12 +57,13 @@ export default class StaffsPane extends Component {
   }, {
     title: '操作',
     width: 100,
+    fixed: 'right',
     render: record => (
       <span>
         {record.active === 0 ? <RowUpdater onHit={() => this.changeStaffStatus(record.id, true)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeStaffStatus(record.id, false)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={this.handleDeleteStaff} label="删除" row={record} />
+        <RowUpdater onHit={this.handleDeleteStaff} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]
@@ -83,13 +85,14 @@ export default class StaffsPane extends Component {
   render() {
     const { whseCode, staffs } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.showStaffModal()}>添加员工</Button>
-        </div>
-        <Table columns={this.columns} dataSource={staffs} rowKey="id" />
+      <DataPane
+        columns={this.columns} dataSource={staffs} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.showStaffModal()}>添加员工</Button>
+        </DataPane.Toolbar>
         <StaffModal whseCode={whseCode} selectedUserIds={this.state.selectedRowKeys} />
-      </div>
+      </DataPane>
     );
   }
 }

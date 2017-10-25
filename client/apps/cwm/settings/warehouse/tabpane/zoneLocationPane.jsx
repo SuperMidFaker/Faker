@@ -340,7 +340,7 @@ export default class ZoneLocationPane extends Component {
             {zoneList.length > 0 && <Button type="primary" ghost icon="plus-circle" onClick={this.showLocationModal}>
               新增库位
             </Button>}
-            {zoneList.length > 0 && <Button type="primary" ghost icon="export" onClick={this.exportLocations}>
+            {zoneList.length > 0 && <Button icon="export" onClick={this.exportLocations}>
               导出库位
             </Button>}
             {this.state.selectedRowKeys.length > 0 &&

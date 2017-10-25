@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Icon, Table, Tag } from 'antd';
+import { Button, Icon, Tag } from 'antd';
 import { toggleReceiverModal, loadReceivers, deleteReceiver, changeReceiverStatus } from 'common/reducers/cwmWarehouse';
 import RowUpdater from 'client/components/rowUpdater';
+import DataPane from 'client/components/DataPane';
 import WhseReceiversModal from '../modal/whseReceiversModal';
 import { formatMsg } from '../message.i18n';
 import * as Location from 'client/util/location';
@@ -93,8 +94,9 @@ export default class ReceiversPane extends Component {
     render: o => o && moment(o).format('YYYY.MM.DD HH:mm'),
   }, {
     title: '操作',
-    width: 140,
+    width: 150,
     dataIndex: 'id',
+    fixed: 'right',
     render: (o, record) => (
       <span>
         {record.active === 0 ? <RowUpdater onHit={() => this.changeReceiverStatus(record.id, true)} label="启用" row={record} /> :
@@ -130,15 +132,14 @@ export default class ReceiversPane extends Component {
   render() {
     const { whseCode, whseTenantId, whseOwners, receivers } = this.props;
     return (
-      <div className="table-panel table-fixed-layout">
-        <div className="toolbar">
-          <Button type="primary" ghost icon="plus-circle" onClick={() => this.props.toggleReceiverModal(true)}>添加收货人</Button>
-        </div>
-        <Table columns={this.columns} dataSource={receivers} rowKey="id"
-          scroll={{ x: this.columns.map(item => item.width).reduce((a, b) => a + b) }}
-        />
+      <DataPane
+        columns={this.columns} dataSource={receivers} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.toggleReceiverModal(true)}>添加收货人</Button>
+        </DataPane.Toolbar>
         <WhseReceiversModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
-      </div>
+      </DataPane>
     );
   }
 }
