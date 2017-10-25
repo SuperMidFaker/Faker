@@ -43,26 +43,25 @@ export default class CMSCustomsDeclPane extends Component {
                 {getFieldDecorator('ep_dec_type', {
                   initialValue: model.ep_dec_type,
                 })(<Select allowClear>
-                  {
-                    cmsDeclTypes.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))
-                  }
+                  {cmsDeclTypes.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
                 </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('customsDeclChannel')}>
-                {getFieldDecorator('decl_channel', {
+                {getFieldDecorator('dec_channel', {
+                  initialValue: model.dec_channel,
                 })(
                   <RadioGroup>
-                    {Object.keys(CMS_DECL_CHANNEL).map(declChannel =>
-                      <RadioButton value={declChannel} key={declChannel} disabled={CMS_DECL_CHANNEL[declChannel].disabled}>{CMS_DECL_CHANNEL[declChannel].text}</RadioButton>
-                    )}
+                    {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
+                      const channel = CMS_DECL_CHANNEL[declChannel];
+                      return <RadioButton value={channel.value} key={channel.value} disabled={channel.disabled}>{channel.text}</RadioButton>;
+                    })}
                   </RadioGroup>
                   )}
               </FormItem>
             </Col>
-            {
-            getFieldValue('decl_channel') === 'EP' && <Col sm={24} lg={8}>
+            { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.EP.value && <Col sm={24} lg={8}>
               <FormItem label={this.msg('customsEasipass')}>
                 {getFieldDecorator('ep_app_uuid', {
                   initialValue: model.ep_app_uuid,
@@ -74,11 +73,10 @@ export default class CMSCustomsDeclPane extends Component {
               </FormItem>
             </Col>
             }
-            {
-            getFieldValue('decl_channel') === 'QP' && <Col sm={24} lg={8}>
+            { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.QP.value && <Col sm={24} lg={8}>
               <FormItem label={this.msg('customsQuickpass')}>
-                {getFieldDecorator('qp_app_uuid', {
-                  initialValue: model.qp_app_uuid,
+                {getFieldDecorator('ep_app_uuid', {
+                  initialValue: model.ep_app_uuid,
                 })(<Select allowClear>
                   {
                     qplist.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))

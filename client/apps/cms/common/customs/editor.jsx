@@ -140,7 +140,13 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleShowSendDeclModal = () => {
     const head = this.props.head;
-    this.props.showSendDeclModal({ visible: true, preEntrySeqNo: head.pre_entry_seq_no, delgNo: head.delg_no, agentCustCo: head.agent_custco });
+    const ietype = this.props.ietype;
+    this.props.showSendDeclModal({ visible: true,
+      defaultDecl: { channel: head.dec_channel, dectype: head.ep_dec_type, appuuid: head.ep_app_uuid },
+      ietype,
+      preEntrySeqNo: head.pre_entry_seq_no,
+      delgNo: head.delg_no,
+      agentCustCo: head.agent_custco });
   }
   handleMarkReleasedModal = () => {
     const head = this.props.head;
@@ -318,7 +324,7 @@ export default class CustomsDeclEditor extends React.Component {
         </Content>
         <DelegationDockPanel ietype={ietype} />
         <OrderDockPanel />
-        <SendDeclMsgModal ietype={ietype} reload={this.reloadEntry} />
+        <SendDeclMsgModal reload={this.reloadEntry} />
         <DeclReleasedModal reload={this.reloadEntry} />
       </Layout>
     );

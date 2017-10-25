@@ -7,8 +7,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { loadCarriers } from 'common/reducers/cwmWarehouse';
-import { DELIVER_TYPES } from 'common/constants/cwm';
-import { COURIERS } from 'common/constants/transport';
+import { DELIVER_TYPES, COURIERS } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
