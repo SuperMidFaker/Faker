@@ -49,6 +49,7 @@ const initialState = {
   customs: [],
   trades: [],
   sendDeclModal: {
+    defaultDecl: { channel: '', dectype: '', appuuid: '' },
     visible: false,
     ietype: '',
     preEntrySeqNo: '',
@@ -245,10 +246,10 @@ export function sendMutiDecl(data) {
   };
 }
 
-export function showSendDeclModal({ visible = true, ietype, preEntrySeqNo = '', delgNo = '', agentCustCo }) {
+export function showSendDeclModal({ visible = true, ietype, preEntrySeqNo = '', delgNo = '', agentCustCo, defaultDecl }) {
   return {
     type: actionTypes.SHOW_SEND_DECL_MODAL,
-    data: { visible, ietype, preEntrySeqNo, delgNo, agentCustCo },
+    data: { visible, ietype, preEntrySeqNo, delgNo, agentCustCo, defaultDecl },
   };
 }
 

@@ -142,9 +142,17 @@ const messages = defineMessages({
     id: 'scof.flow.biz.cms.customs.decl.type',
     defaultMessage: '单证类型',
   },
+  customsDeclChannel: {
+    id: 'scof.flow.biz.cms.customs.decl.channel',
+    defaultMessage: '申报通道',
+  },
   customsEasipass: {
     id: 'scof.flow.biz.cms.customs.easipass',
     defaultMessage: 'EDI EP',
+  },
+  customsQuickpass: {
+    id: 'scof.flow.biz.cms.customs.quickpass',
+    defaultMessage: 'QP',
   },
   consigner: {
     id: 'scof.flow.biz.tms.consigner',

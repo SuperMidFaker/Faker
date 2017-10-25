@@ -84,6 +84,7 @@ export default class CustomsList extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    selectedRows: [],
     selectedRowKeys: [],
     searchInput: '',
     rightSiderCollapsed: true,
@@ -401,12 +402,15 @@ export default class CustomsList extends Component {
     }
     return newFilters;
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [], selectedRows: [] });
+  }
   handleStatusFilter = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.setState({ selectedRowKeys: [] });
+    this.handleDeselectRows();
     this.handleTableLoad(1, filter);
   }
   handleIEFilter = (ev) => {
@@ -414,7 +418,7 @@ export default class CustomsList extends Component {
       return;
     }
     const filter = { ...this.props.listFilter, ietype: ev.target.value, acptDate: [] };
-    this.setState({ selectedRowKeys: [] });
+    this.handleDeselectRows();
     this.handleTableLoad(1, filter);
   }
   handleClientSelectChange = (value) => {
@@ -428,7 +432,7 @@ export default class CustomsList extends Component {
       }
     }
     const filter = { ...this.props.listFilter, clientView };
-    this.setState({ selectedRowKeys: [] });
+    this.handleDeselectRows();
     this.handleTableLoad(1, filter);
   }
   handleDelete = (declId, delgNo, billNo) => {
@@ -454,14 +458,14 @@ export default class CustomsList extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
+        this.handleDeselectRows();
         this.handleTableLoad();
-        this.setState({ selectedRowKeys: [] });
       }
     });
   }
-  handleListsSend = (ids) => {
-    this.props.showBatchSendModal({ tenantId: this.props.tenantId, ids });
-    this.setState({ selectedRowKeys: [] });
+  handleBatchSend= (ids) => {
+    this.props.showBatchSendModal({ tenantId: this.props.tenantId, ids }); // todo ietype import export; load put in modal
+    this.handleDeselectRows();
   }
   handleRecall = (row) => {
     this.props.setDeclReviewed([row.id], CMS_DECL_STATUS.proposed.value).then((result) => {
@@ -478,12 +482,13 @@ export default class CustomsList extends Component {
         message.error(result.error.message, 10);
       } else {
         this.handleTableLoad();
-        this.setState({ selectedRowKeys: [] });
+        this.handleDeselectRows();
       }
     });
   }
   handleShowSendDeclModal = (record) => {
     this.props.showSendDeclModal({
+      defaultDecl: { channel: record.dec_channel, dectype: record.ep_dec_type, appuuid: record.ep_app_uuid },
       visible: true,
       ietype: record.i_e_type === 0 ? 'import' : 'export',
       preEntrySeqNo: record.pre_entry_seq_no,
@@ -515,9 +520,6 @@ export default class CustomsList extends Component {
     const filters = { ...this.props.listFilter, filterDate: dateString, acptDate: [] };
     this.handleTableLoad(1, filters);
   }
-  handleDeselectRows = () => {
-    this.setState({ selectedRowKeys: [] });
-  }
   toggleRightSider = () => {
     this.setState({
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
@@ -528,8 +530,9 @@ export default class CustomsList extends Component {
     this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+      selectedRows: this.state.selectedRows,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys, selectedRows });
       },
     };
     const status = this.props.listFilter.status;
@@ -538,27 +541,31 @@ export default class CustomsList extends Component {
       dateVal = [moment(listFilter.filterDate[0]), moment(listFilter.filterDate[1])];
     }
     let bulkActions = '';
-    if (status === 'proposed') {
-      bulkActions = (
-        <PrivilegeCover module="clearance" feature="customs" action="edit">
-          <Button type="default" size="large" onClick={() => this.handleBatchReview(this.state.selectedRowKeys)}>
-          批量复核
-        </Button>
-        </PrivilegeCover>);
-    } else if (status === 'reviewed') {
-      bulkActions = (
-        <span>
+    if (this.state.selectedRows.length > 0) {
+      if (status === 'proposed') {
+        bulkActions = (
           <PrivilegeCover module="clearance" feature="customs" action="edit">
-            <Button type="primary" size="large" onClick={() => this.handleBatchSend(this.state.selectedRowKeys)}>
-            批量发送
-          </Button>
-          </PrivilegeCover>
-          <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleBatchRecall(this.state.selectedRowKeys)}>
-            <Button size="large">
-            批量退回
-          </Button>
-          </Popconfirm>
-        </span>);
+            <Button type="default" size="large" onClick={() => this.handleBatchReview(this.state.selectedRowKeys)}>
+              批量复核
+            </Button>
+          </PrivilegeCover>);
+      } else if (status === 'reviewed') {
+        const ietype = this.state.selectedRows[0].i_e_type;
+        const sameIeType = this.state.selectedRows.filter(sr => sr.i_e_type === ietype).length === this.state.selectedRows.length;
+        bulkActions = (
+          <span>
+            {sameIeType && <PrivilegeCover module="clearance" feature="customs" action="edit">
+              <Button type="primary" size="large" onClick={() => this.handleBatchSend(this.state.selectedRowKeys)}>
+                批量发送
+              </Button>
+            </PrivilegeCover>}
+            <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleBatchRecall(this.state.selectedRowKeys)}>
+              <Button size="large">
+                批量退回
+              </Button>
+            </Popconfirm>
+          </span>);
+      }
     }
     let clientPid = -1;
     if (listFilter.clientView.partnerIds.length > 0) {

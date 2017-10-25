@@ -7,9 +7,7 @@ import { Collapse, Row, Col, Card, Table, Menu, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadCarriers } from 'common/reducers/cwmWarehouse';
 import { updateDeliveryType, updateSoCarrier } from 'common/reducers/cwmShippingOrder';
-import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES } from 'common/constants';
-import { DELIVER_TYPES } from 'common/constants/cwm';
-import { COURIERS } from 'common/constants/transport';
+import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES, DELIVER_TYPES, COURIERS } from 'common/constants';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
 
