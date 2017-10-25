@@ -13,7 +13,6 @@ const actionTypes = createActionTypes('@@welogix/cms/resources/', [
 const initialState = {
   brokerModal: {
     visible: false,
-    broker: {},
     operation: 'add',
   },
   brokers: [],
@@ -30,10 +29,10 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function toggleBrokerModal(visible, operation = '', broker = {}) {
+export function toggleBrokerModal(visible, operation = '') {
   return {
     type: actionTypes.ALTER_BROKER,
-    data: { visible, operation, broker },
+    data: { visible, operation },
   };
 }
 
@@ -51,7 +50,7 @@ export function loadCmsBrokers() {
   };
 }
 
-export function addBroker(name, customsCode, code, ieType, loginId, loginName) {
+export function addBroker(name, customsCode, code, ieType, loginId, loginName, id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -61,7 +60,7 @@ export function addBroker(name, customsCode, code, ieType, loginId, loginName) {
       ],
       endpoint: 'v1/cms/broker/add',
       method: 'post',
-      data: { name, customsCode, code, ieType, loginId, loginName },
+      data: { name, customsCode, code, ieType, loginId, loginName, id },
     },
   };
 }

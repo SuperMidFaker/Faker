@@ -102,6 +102,16 @@ export default class VendorModal extends React.Component {
   handleOk = () => {
     const { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
     const { tenantId, operation } = this.props;
+    let business;
+    if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
+      business = 'CCB,TRS,CIB,ICB';
+    } else if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') === -1) {
+      business = 'CCB,CIB,ICB';
+    } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
+      business = 'TRS';
+    } else {
+      business = '';
+    }
     if (!name || name === '') {
       message.error('企业名称必填');
     } else if (operation === 'add' && businessType.indexOf('clearance') >= 0 && partnerUniqueCode === '') {
@@ -113,7 +123,7 @@ export default class VendorModal extends React.Component {
     } else if (businessType === '') {
       message.error('请选择供应商业务类型');
     } else if (this.props.operation === 'edit') {
-      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'SUP', '', customsCode, businessType, contact, phone, email
+      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'SUP', business, customsCode, businessType, contact, phone, email
         ).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -145,11 +155,22 @@ export default class VendorModal extends React.Component {
   handleAddVendor = () => {
     const { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
     const { tenantId } = this.props;
+    let business;
+    if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
+      business = 'CCB,TRS,CIB,ICB';
+    } else if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') === -1) {
+      business = 'CCB,CIB,ICB';
+    } else if (businessType.indexOf('clearance') === -1 && businessType.indexOf('transport') !== -1) {
+      business = 'TRS';
+    } else {
+      business = '';
+    }
     this.props.addPartner({
       tenantId,
       partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
       businessType,
       role: 'SUP',
+      business,
     }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
