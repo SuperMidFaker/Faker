@@ -23,7 +23,6 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     whseOwners: state.cwmWarehouse.whseOwners,
     visible: state.cwmWarehouse.brokerModal.visible,
-    CCBs: state.cwmWarehouse.CCBs,
     brokers: state.cwmWarehouse.brokerPartners,
     listBrokers: state.cwmWarehouse.brokers,
   }),
@@ -53,34 +52,27 @@ export default class SuppliersModal extends Component {
     this.props.form.resetFields();
   }
   handleAdd = () => {
-    const { tenantId, whseCode, loginId, CCBs, brokers } = this.props;
+    const { tenantId, whseCode, loginId, brokers } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const CCB = CCBs.find(ccb => ccb.partner_unique_code === values.uscc_code);
-        const broker = brokers.find(bk => bk.name === values.name);
-        if (CCB) {
-          this.props.addBroker(values, tenantId, whseCode, loginId, broker.partner_tenant_id, broker.partner_code).then((result) => {
-            if (!result.error) {
-              this.props.loadBrokers(whseCode, tenantId);
-              this.props.toggleBrokerModal(false);
-            }
-          });
-        } else {
-          this.setState({
-            visible: true,
-          });
-        }
+        const broker = brokers.find(bk => bk.customs_code === values.customs_code);
+        this.props.addBroker(values, tenantId, whseCode, loginId, broker.partner_tenant_id, broker.partner_code).then((result) => {
+          if (!result.error) {
+            this.props.loadBrokers(whseCode, tenantId);
+            this.props.toggleBrokerModal(false);
+          }
+        });
       }
     });
     this.props.form.resetFields();
   }
   handleChange = (value) => {
     const { brokers, form } = this.props;
-    const broker = brokers.find(bk => bk.name === value);
+    const broker = brokers.find(bk => bk.customs_code === value);
     form.setFieldsValue({
-      name: broker.name,
-      uscc_code: broker.partner_unique_code,
       customs_code: broker.customs_code,
+      uscc_code: broker.partner_unique_code,
+      name: broker.name,
     });
   }
   render() {
@@ -93,20 +85,20 @@ export default class SuppliersModal extends Component {
       <Modal title="添加报关代理" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         { this.state.visible && <Alert message="报关行不存在" showIcon type="error" /> }
         <Form layout="horizontal">
-          <FormItem label="名称:" required {...formItemLayout}>
-            {getFieldDecorator('name')(<Select
+          <FormItem label="海关编码:" required {...formItemLayout}>
+            {getFieldDecorator('customs_code')(<Select
               showSearch
               style={{ width: '100%' }}
               onChange={this.handleChange}
             >
-              {filterBrokers.map(broker => (<Option value={broker.name} key={broker.customs_code}>{broker.name}</Option>))}
+              {filterBrokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.customs_code}</Option>))}
             </Select>)}
           </FormItem>
           <FormItem label="统一社会信用代码:" required {...formItemLayout}>
             {getFieldDecorator('uscc_code')(<Input disabled />)}
           </FormItem>
-          <FormItem label="海关编码:" required {...formItemLayout}>
-            {getFieldDecorator('customs_code')(<Input disabled />)}
+          <FormItem label="名称:" required {...formItemLayout}>
+            {getFieldDecorator('name')(<Input disabled />)}
           </FormItem>
         </Form>
       </Modal>

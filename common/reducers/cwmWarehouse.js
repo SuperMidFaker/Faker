@@ -53,7 +53,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'ADD_BROKER', 'ADD_BROKER_SUCCEED', 'ADD_BROKER_FAIL',
   'UPDATE_BROKER_STATUS', 'UPDATE_BROKER_STATUS_SUCCEED', 'UPDATE_BROKER_STATUS_FAIL',
   'DELETE_BROKER', 'DELETE_BROKER_SUCCEED', 'DELETE_BROKER_FAIL',
-  'LOAD_CCBS', 'LOAD_CCBS_SUCCEED', 'LOAD_CCBS_FAIL',
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
   'AUTHORIZE_BROKER', 'AUTHORIZE_BROKER_SUCCEED', 'AUTHORIZE_BROKER_FAIL',
   'LOAD_BRKP', 'LOAD_BRKP_SUCCEED', 'LOAD_BRKP_FAIL',
@@ -110,7 +109,6 @@ const initialState = {
     visible: false,
     broker: {},
   },
-  CCBs: [],
   brokerPartners: [],
 };
 
@@ -898,21 +896,6 @@ export function deleteBroker(id) {
       endpoint: 'v1/cwm/warehouse/broker/delete',
       method: 'post',
       data: { id },
-    },
-  };
-}
-
-export function loadCCBs(tenantId, role, businessType, business) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_CCBS,
-        actionTypes.LOAD_CCBS_SUCCEED,
-        actionTypes.LOAD_CCBS_FAIL,
-      ],
-      endpoint: 'v1/cwm/ccbs/load',
-      method: 'get',
-      params: { tenantId, role, businessType, business },
     },
   };
 }
