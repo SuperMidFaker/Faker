@@ -94,6 +94,15 @@ export default class WareHouseModal extends Component {
     return (
       <Modal title="添加仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>
         <Form>
+          <FormItem {...formItemLayout} label="仓库模式" >
+            {
+              getFieldDecorator('whseMode', {
+              })(<Radio.Group>
+                <Radio.Button value="PRI">自营仓库</Radio.Button>
+                <Radio.Button value="PUB">公共仓库</Radio.Button>
+              </Radio.Group>)
+            }
+          </FormItem>
           <FormItem {...formItemLayout} label="仓库代码" >
             {
               getFieldDecorator('whseCode', {

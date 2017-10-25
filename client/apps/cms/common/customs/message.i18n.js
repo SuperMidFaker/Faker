@@ -63,7 +63,7 @@ export default defineMessages({
   },
   quickpassList: {
     id: 'cms.common.customs.decl.quickpass.list',
-    defaultMessage: 'QP列表',
+    defaultMessage: 'QP通道',
   },
   sendDecl: {
     id: 'cms.common.customs.decl.sendModal.sendDecl',
