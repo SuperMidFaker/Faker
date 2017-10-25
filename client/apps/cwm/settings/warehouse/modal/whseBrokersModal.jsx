@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Input, Form, Alert, Select } from 'antd';
-import { toggleBrokerModal, addBroker, loadBrokers, loadBrokerPartners, loadCCBs } from 'common/reducers/cwmWarehouse';
+import { toggleBrokerModal, addBroker, loadBrokers, loadBrokerPartners } from 'common/reducers/cwmWarehouse';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { formatMsg } from '../message.i18n';
@@ -26,7 +26,7 @@ function fetchData({ state, dispatch }) {
     brokers: state.cwmWarehouse.brokerPartners,
     listBrokers: state.cwmWarehouse.brokers,
   }),
-  { toggleBrokerModal, addBroker, loadBrokers, loadCCBs }
+  { toggleBrokerModal, addBroker, loadBrokers }
 )
 
 @Form.create()
