@@ -32,6 +32,7 @@ function fetchData({ dispatch, state }) {
   broker: state.cmsBrokers.brokerModal.broker,
   operation: state.cmsBrokers.brokerModal.operation,
   partners: state.partner.partners,
+  brokers: state.cmsBrokers.brokers,
 }), { toggleBrokerModal, addBroker, editBroker })
 
 export default class BrokerModal extends React.Component {
@@ -90,8 +91,9 @@ export default class BrokerModal extends React.Component {
   }
   handleAddPartner = () => {
     const { name, customsCode, partnerUniqueCode, ieType } = this.state;
-    const { loginId, username } = this.props;
-    this.props.addBroker(name, customsCode, partnerUniqueCode, ieType, loginId, username).then((result1) => {
+    const { loginId, username, partners } = this.props;
+    const broker = partners.find(partner => partner.name === name);
+    this.props.addBroker(name, customsCode, partnerUniqueCode, ieType, loginId, username, broker.id).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
@@ -128,14 +130,15 @@ export default class BrokerModal extends React.Component {
     this.setState({ partnerUniqueCode: e.target.value });
   }
   render() {
-    const { visible, operation, partners } = this.props;
+    const { visible, operation, partners, brokers } = this.props;
     const { name, customsCode, partnerUniqueCode, ieType } = this.state;
+    const filterPartners = partners.filter(partner => !brokers.find(broker => broker.comp_partner_id === partner.id));
     return (
       <Modal title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           {visible && <FormItem label="企业名称" required>
             <Select mode="combobox" value={name} onChange={this.handleNameChange} style={{ width: '100%' }} onSelect={this.handleSelect}>
-              {partners.map(partner => (<Option value={partner.name} key={partner.name}>{partner.name}</Option>))}
+              {filterPartners.map(partner => (<Option value={partner.name} key={partner.name}>{partner.name}</Option>))}
             </Select>
           </FormItem>}
           <FormItem label="统一社会信用代码" required>

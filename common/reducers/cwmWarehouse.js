@@ -53,7 +53,6 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'ADD_BROKER', 'ADD_BROKER_SUCCEED', 'ADD_BROKER_FAIL',
   'UPDATE_BROKER_STATUS', 'UPDATE_BROKER_STATUS_SUCCEED', 'UPDATE_BROKER_STATUS_FAIL',
   'DELETE_BROKER', 'DELETE_BROKER_SUCCEED', 'DELETE_BROKER_FAIL',
-  'UPDATE_BROKER', 'UPDATE_BROKER_SUCCEED', 'UPDATE_BROKER_FAIL',
   'LOAD_CCBS', 'LOAD_CCBS_SUCCEED', 'LOAD_CCBS_FAIL',
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
   'AUTHORIZE_BROKER', 'AUTHORIZE_BROKER_SUCCEED', 'AUTHORIZE_BROKER_FAIL',
@@ -858,7 +857,7 @@ export function toggleBrokerModal(visible, broker = {}) {
   };
 }
 
-export function addBroker(data, tenantId, whseCode, loginId) {
+export function addBroker(data, tenantId, whseCode, loginId, partnerTenantId, partnerCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -868,7 +867,7 @@ export function addBroker(data, tenantId, whseCode, loginId) {
       ],
       endpoint: 'v1/cwm/warehouse/broker/add',
       method: 'post',
-      data: { data, tenantId, whseCode, loginId },
+      data: { data, tenantId, whseCode, loginId, partnerTenantId, partnerCode },
     },
   };
 }
@@ -899,21 +898,6 @@ export function deleteBroker(id) {
       endpoint: 'v1/cwm/warehouse/broker/delete',
       method: 'post',
       data: { id },
-    },
-  };
-}
-
-export function updateBroker(data, id, loginId) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_BROKER,
-        actionTypes.UPDATE_BROKER_SUCCEED,
-        actionTypes.UPDATE_BROKER_FAIL,
-      ],
-      endpoint: 'v1/cwm/warehouse/broker/update',
-      method: 'post',
-      data: { data, id, loginId },
     },
   };
 }
@@ -963,7 +947,7 @@ export function loadAdviceLocations(productNo, tenantId, whseCode) {
   };
 }
 
-export function authorizeBroker(whseCode, ownerTenantId, partnerId, name, loginId) {
+export function authorizeBroker(value, whseCode, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -973,7 +957,7 @@ export function authorizeBroker(whseCode, ownerTenantId, partnerId, name, loginI
       ],
       endpoint: 'v1/cwm/authorize/broker',
       method: 'post',
-      data: { whseCode, ownerTenantId, partnerId, name, loginId },
+      data: { value, whseCode, partnerId },
     },
   };
 }

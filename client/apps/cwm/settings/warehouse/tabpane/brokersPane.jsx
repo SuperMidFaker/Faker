@@ -75,21 +75,25 @@ export default class BrokersPane extends Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={() => this.authorizeBroker(record)} label="仓库授权" row={record} />
+        {record.authority === 0 ? <RowUpdater onHit={() => this.authorizeBroker(true, record.partner_id)} label="仓库授权" row={record} /> :
+        <RowUpdater onHit={() => this.authorizeBroker(false, record.partner_id)} label="取消授权" row={record} />}
         <span className="ant-divider" />
         {record.active === 0 ? <RowUpdater onHit={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
         <RowUpdater onHit={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
-        <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditCarrier(record)} label={<Icon type="edit" />} row={record} />
-        <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleDeleteBroker(record.id)} label={<Icon type="delete" />} row={record} />
+        {record.active === 0 && (
+          <span>
+            <span className="ant-divider" />
+            <RowUpdater onHit={() => this.handleDeleteBroker(record.id)} label={<Icon type="delete" />} row={record} />
+          </span>
+        )}
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
-  authorizeBroker = (row) => {
-    this.props.authorizeBroker(this.props.whseCode, row.partner_tenant_id, row.partner_id, row.name, this.props.loginId).then((result) => {
+  authorizeBroker = (value, partnerId) => {
+    this.props.authorizeBroker(value, this.props.whseCode, partnerId).then((result) => {
       if (!result.error) {
+        this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
         message.info('授权成功');
       }
     });
@@ -107,9 +111,6 @@ export default class BrokersPane extends Component {
         this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
       }
     });
-  }
-  handleEditCarrier = (broker) => {
-    this.props.toggleBrokerModal(true, broker);
   }
   render() {
     const { whseCode, brokers } = this.props;
