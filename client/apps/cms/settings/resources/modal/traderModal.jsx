@@ -39,7 +39,6 @@ export default class TraderModal extends React.Component {
     code: '',
     customsCode: '',
     type: '',
-    ieType: '',
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -47,12 +46,11 @@ export default class TraderModal extends React.Component {
       code: nextProps.businessUnit.comp_code || '',
       customsCode: nextProps.businessUnit.customs_code || '',
       type: nextProps.businessUnit.relation_type || '',
-      ieType: nextProps.businessUnit.i_e_type || 'A',
     });
   }
   handleOk = () => {
     const { businessUnit } = this.props;
-    const { name, code, customsCode, ieType } = this.state;
+    const { name, code, customsCode } = this.state;
     if (name === '') {
       message.error('请填写企业名称');
     } else if (code === '' && customsCode === '') {
@@ -62,7 +60,7 @@ export default class TraderModal extends React.Component {
     } else if (customsCode && customsCode.length !== 10) {
       message.error('海关编码必须为10位');
     } else if (this.props.operation === 'edit') {
-      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode, ieType).then((result) => {
+      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
@@ -74,8 +72,8 @@ export default class TraderModal extends React.Component {
   }
   handleAddPartner = () => {
     const { tenantId, loginId, loginName, customer } = this.props;
-    const { name, code, customsCode, type, ieType } = this.state;
-    this.props.addBusinessUnit({ name, code, customsCode, type, ieType, tenantId, loginId, loginName, customerPartnerId: customer.id }).then((result1) => {
+    const { name, code, customsCode, type } = this.state;
+    this.props.addBusinessUnit({ name, code, customsCode, type, tenantId, loginId, loginName, customerPartnerId: customer.id }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message, 10);
       } else {

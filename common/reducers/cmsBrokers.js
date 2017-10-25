@@ -50,7 +50,7 @@ export function loadCmsBrokers() {
   };
 }
 
-export function addBroker(name, customsCode, code, ieType, loginId, loginName, id) {
+export function addBroker(name, customsCode, code, loginId, loginName, id) {
   return {
     [CLIENT_API]: {
       types: [
@@ -60,12 +60,12 @@ export function addBroker(name, customsCode, code, ieType, loginId, loginName, i
       ],
       endpoint: 'v1/cms/broker/add',
       method: 'post',
-      data: { name, customsCode, code, ieType, loginId, loginName, id },
+      data: { name, customsCode, code, loginId, loginName, id  },
     },
   };
 }
 
-export function editBroker(id, name, customsCode, code, ieType) {
+export function editBroker(id, name, customsCode, code) {
   return {
     [CLIENT_API]: {
       types: [
@@ -75,7 +75,7 @@ export function editBroker(id, name, customsCode, code, ieType) {
       ],
       endpoint: 'v1/cms/broker/edit',
       method: 'post',
-      data: { id, name, customsCode, code, ieType },
+      data: { id, name, customsCode, code },
     },
   };
 }

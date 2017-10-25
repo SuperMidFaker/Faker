@@ -90,7 +90,7 @@ export function addBusinessUnit(data) {
   };
 }
 
-export function updateBusinessUnit(id, name, code, customsCode, ieType) {
+export function updateBusinessUnit(id, name, code, customsCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -100,7 +100,7 @@ export function updateBusinessUnit(id, name, code, customsCode, ieType) {
       ],
       endpoint: 'v1/cms/resources/business_unit/update',
       method: 'post',
-      data: { id, name, code, customsCode, ieType },
+      data: { id, name, code, customsCode },
     },
   };
 }

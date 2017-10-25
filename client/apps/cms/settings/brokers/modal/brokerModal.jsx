@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Input, message, Radio, Select } from 'antd';
+import { Modal, Form, Input, message, Select } from 'antd';
 import { connect } from 'react-redux';
 import { toggleBrokerModal, addBroker, editBroker } from 'common/reducers/cmsBrokers';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -8,7 +8,6 @@ import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 
 const FormItem = Form.Item;
-const RadioGroup = Radio.Group;
 const Option = Select.Option;
 
 const role = PARTNER_ROLES.SUP;
@@ -47,7 +46,6 @@ export default class BrokerModal extends React.Component {
     name: '',
     customsCode: '',
     partnerUniqueCode: '',
-    ieType: 'A',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible !== this.props.visible && nextProps.visible && nextProps.broker && nextProps.broker.id) {
@@ -55,16 +53,12 @@ export default class BrokerModal extends React.Component {
         name: nextProps.broker.comp_name,
         customsCode: nextProps.broker.customs_code,
         partnerUniqueCode: nextProps.broker.comp_code,
-        ieType: nextProps.broker.i_e_type,
       });
     }
   }
-  onChange = (e) => {
-    this.setState({ ieType: e.target.value });
-  }
   handleOk = () => {
     const { broker, operation } = this.props;
-    const { name, customsCode, partnerUniqueCode, ieType } = this.state;
+    const { name, customsCode, partnerUniqueCode } = this.state;
     if (name === '') {
       message.error('请填写企业名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -75,10 +69,8 @@ export default class BrokerModal extends React.Component {
       message.error('海关编码必填');
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
-    } else if (ieType === '') {
-      message.error('请选择业务类型');
     } else if (operation === 'edit') {
-      this.props.editBroker(broker.id, name, customsCode, partnerUniqueCode, ieType).then((result) => {
+      this.props.editBroker(broker.id, name, customsCode, partnerUniqueCode).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
@@ -90,10 +82,10 @@ export default class BrokerModal extends React.Component {
     }
   }
   handleAddPartner = () => {
-    const { name, customsCode, partnerUniqueCode, ieType } = this.state;
+    const { name, customsCode, partnerUniqueCode } = this.state;
     const { loginId, username, partners } = this.props;
     const broker = partners.find(partner => partner.name === name);
-    this.props.addBroker(name, customsCode, partnerUniqueCode, ieType, loginId, username, broker.id).then((result1) => {
+    this.props.addBroker(name, customsCode, partnerUniqueCode, loginId, username, broker.id).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
@@ -111,7 +103,6 @@ export default class BrokerModal extends React.Component {
       name: '',
       customsCode: '',
       partnerUniqueCode: '',
-      ieType: '',
     });
   }
   handleSelect = (value) => {
@@ -131,7 +122,7 @@ export default class BrokerModal extends React.Component {
   }
   render() {
     const { visible, operation, partners, brokers } = this.props;
-    const { name, customsCode, partnerUniqueCode, ieType } = this.state;
+    const { name, customsCode, partnerUniqueCode } = this.state;
     const filterPartners = partners.filter(partner => !brokers.find(broker => broker.comp_partner_id === partner.id));
     return (
       <Modal title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
@@ -146,13 +137,6 @@ export default class BrokerModal extends React.Component {
           </FormItem>
           <FormItem label="海关编码" required>
             <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
-          </FormItem>
-          <FormItem label="业务类型" required>
-            <RadioGroup onChange={this.onChange} value={ieType}>
-              <Radio value="A">进出口</Radio>
-              <Radio value="I">进口</Radio>
-              <Radio value="E">出口</Radio>
-            </RadioGroup>
           </FormItem>
         </Form>
       </Modal>
