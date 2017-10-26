@@ -71,7 +71,7 @@ export default class ImportModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal visible={visible} title="客户选择" footer={<span>
+      <Modal maskClosable={false} visible={visible} title="客户选择" footer={<span>
         <Button onClick={this.handleCancel} style={{ marginRight: 8 }}>取消</Button>
         <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manual/import`}
           formData={{
