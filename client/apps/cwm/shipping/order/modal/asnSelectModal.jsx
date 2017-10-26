@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Modal, Table } from 'antd';
+import { Modal, Table, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -24,6 +24,7 @@ export default class AddDetailModal extends Component {
     intl: intlShape.isRequired,
   }
   state = {
+    selectedRowKeys: [],
     dataSource: [],
   }
   componentWillMount() {
@@ -39,14 +40,21 @@ export default class AddDetailModal extends Component {
   handleCancel = () => {
     this.props.hideAsnSelectModal();
   }
-  handleRowClick = (record) => {
-    this.handleCancel();
-    this.props.getCrossAsnDetails(record.asn_no).then((result) => {
+  handleCrossAsnDetails = () => {
+    this.props.getCrossAsnDetails(this.state.selectedRowKeys).then((result) => {
       if (!result.error) {
         this.props.clearTemporary();
         this.props.addTemporary(result.data);
+        this.handleCancel();
+      } else {
+        message.error(result.error.message);
       }
     });
+  }
+  rowSelection = {
+    onChange: (selectedRowKeys) => {
+      this.setState({ selectedRowKeys });
+    },
   }
   render() {
     const { visible } = this.props;
@@ -60,8 +68,10 @@ export default class AddDetailModal extends Component {
       render: o => moment(o).format('YYYY-MM-DD'),
     }];
     return (
-      <Modal maskClosable={false} onCancel={this.handleCancel} visible={visible} title="asnList" onOk={this.handleCancel}>
-        <Table columns={columns} dataSource={dataSource} rowKey="asn_no" onRowClick={record => this.handleRowClick(record)} />
+      <Modal maskClosable={false} onCancel={this.handleCancel} visible={visible} title="越库列表"
+        onOk={this.handleCrossAsnDetails}
+      >
+        <Table columns={columns} dataSource={dataSource} rowKey="asn_no" rowSelection={this.rowSelection} />
       </Modal>
     );
   }

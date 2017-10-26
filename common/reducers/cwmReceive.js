@@ -20,6 +20,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'LOAD_INBPUTAWAYS', 'LOAD_INBPUTAWAYS_SUCCEED', 'LOAD_INBPUTAWAYS_FAIL',
   'GET_INBOUND_DETAIL', 'GET_INBOUND_DETAIL_SUCCEED', 'GET_INBOUND_DETAIL_FAIL',
   'UPDATE_INBMODE', 'UPDATE_INBMODE_SUCCEED', 'UPDATE_INBMODE_FAIL',
+  'UPDATE_INBPRDTVOL', 'UPDATE_INBPRDTVOL_SUCCEED', 'UPDATE_INBPRDTVOL_FAIL',
   'LOAD_PRODUCT_DETAILS', 'LOAD_PRODUCT_DETAILS_SUCCEED', 'LOAD_PRODUCT_DETAILS_FAIL',
   'CLOSE_ASN', 'CLOSE_ASN_SUCCEED', 'CLOSE_ASN_FAIL',
   'SHOW_BATCH_RECEIVING_MODAL', 'HIDE_BATCH_RECEIVING_MODAL',
@@ -156,7 +157,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_INBPUTAWAYS_FAIL:
       return { ...state, inboundPutaways: { ...state.inboundPutaways, list: action.result.data, loading: false }, inboundReload: false };
     case actionTypes.UPDATE_INBMODE_SUCCEED:
-      return { ...state, inboundFormHead: { ...state.inboundFormHead, rec_mode: action.data.recMode } };
+      return { ...state, inboundFormHead: { ...state.inboundFormHead, ...action.data.mode } };
     case actionTypes.SHOW_BATCH_RECEIVING_MODAL:
       return { ...state, batchReceivingModal: { ...state.batchReceivingModal, visible: true } };
     case actionTypes.HIDE_BATCH_RECEIVING_MODAL:
@@ -175,6 +176,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.RECEIVES_UNDO:
     case actionTypes.PUTAWAY_BATCH:
     case actionTypes.PUTAWAY_EXPRESS:
+    case actionTypes.UPDATE_INBPRDTVOL:
       return { ...state, submitting: true };
     case actionTypes.ADD_ASN_SUCCEED:
     case actionTypes.ADD_ASN_FAIL:
@@ -190,6 +192,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.RECEIVES_UNDO_FAIL:
     case actionTypes.PUTAWAY_BATCH_FAIL:
     case actionTypes.PUTAWAY_EXPRESS_FAIL:
+    case actionTypes.UPDATE_INBPRDTVOL_FAIL:
       return { ...state, submitting: false };
     case actionTypes.RECEIVE_PRODUCT_SUCCEED:
     case actionTypes.RECEIVE_BATCH_SUCCEED:
@@ -197,6 +200,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.RECEIVES_UNDO_SUCCEED:
     case actionTypes.PUTAWAY_BATCH_SUCCEED:
     case actionTypes.PUTAWAY_EXPRESS_SUCCEED:
+    case actionTypes.UPDATE_INBPRDTVOL_SUCCEED:
       return { ...state, submitting: false, inboundReload: true };
     case actionTypes.GET_ASN_UUID_SUCCEED:
       return { ...state, dock: { ...state.dock, asn: { ...state.dock.asn, uuid: action.result.data.flow_instance_uuid } } };
@@ -540,7 +544,7 @@ export function hidePuttingAwayModal() {
   };
 }
 
-export function updateInboundMode(inboundNo, recMode) {
+export function updateInboundMode(inboundNo, mode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -548,9 +552,24 @@ export function updateInboundMode(inboundNo, recMode) {
         actionTypes.UPDATE_INBMODE_SUCCEED,
         actionTypes.UPDATE_INBMODE_FAIL,
       ],
-      endpoint: 'v1/cwm/inbound/update/recmode',
+      endpoint: 'v1/cwm/inbound/head/update/mode',
       method: 'post',
-      data: { inboundNo, recMode },
+      data: { inboundNo, mode },
+    },
+  };
+}
+
+export function updateInbProductVol(id, vol) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_INBPRDTVOL,
+        actionTypes.UPDATE_INBPRDTVOL_SUCCEED,
+        actionTypes.UPDATE_INBPRDTVOL_FAIL,
+      ],
+      endpoint: 'v1/cwm/inbound/product/update/recvol',
+      method: 'post',
+      data: { id, vol },
     },
   };
 }
@@ -749,14 +768,14 @@ export function getCrossAsns(whseCode) {
         actionTypes.GET_CROSS_ASNS_SUCCEED,
         actionTypes.GET_CROSS_ASNS_FAIL,
       ],
-      endpoint: 'v1/cwm/get/cross/asns',
+      endpoint: 'v1/cwm/cross/asns',
       method: 'get',
       params: { whseCode },
     },
   };
 }
 
-export function getCrossAsnDetails(asnNo) {
+export function getCrossAsnDetails(asnNos) {
   return {
     [CLIENT_API]: {
       types: [
@@ -764,9 +783,9 @@ export function getCrossAsnDetails(asnNo) {
         actionTypes.GET_CROSS_ASNDS_SUCCEED,
         actionTypes.GET_CROSS_ASNDS_FAIL,
       ],
-      endpoint: 'v1/cwm/get/cross/asn/details',
+      endpoint: 'v1/cwm/cross/asn/details',
       method: 'get',
-      params: { asnNo },
+      params: { asnNos },
     },
   };
 }

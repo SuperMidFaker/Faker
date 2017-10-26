@@ -11,7 +11,8 @@ import ReceivingModal from '../modal/receivingModal';
 import BatchReceivingModal from '../modal/batchReceivingModal';
 import { createFilename } from 'client/util/dataTransform';
 import ExcelUploader from 'client/components/ExcelUploader';
-import { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
+import EditableCell from 'client/components/EditableCell';
+import { openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_DAMAGE_LEVEL } from 'common/constants';
 import moment from 'moment';
 
@@ -29,7 +30,7 @@ const Search = Input.Search;
     reload: state.cwmReceive.inboundReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { openReceiveModal, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound }
+  { openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound }
 )
 @connectNav({
   depth: 3,
@@ -115,18 +116,6 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 150,
     dataIndex: 'name',
   }, {
-    title: '客户订单号',
-    dataIndex: 'po_no',
-    width: 150,
-  }, {
-    title: '集装箱号',
-    dataIndex: 'container_no',
-    width: 100,
-  }, {
-    title: '库别',
-    dataIndex: 'virtual_whse',
-    width: 100,
-  }, {
     title: '预期数量',
     width: 100,
     dataIndex: 'expect_qty',
@@ -151,6 +140,24 @@ export default class ReceiveDetailsPane extends React.Component {
     width: 120,
     className: 'cell-align-center',
     render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
+  }, {
+    title: '立方数',
+    width: 130,
+    dataIndex: 'received_vol',
+    render: (vol, record) =>
+      <EditableCell size="small" value={vol} onSave={value => this.handlePrdtVolChange(record.id, Number(value))} style={{ width: '100%' }} />,
+  }, {
+    title: '客户订单号',
+    dataIndex: 'po_no',
+    width: 150,
+  }, {
+    title: '集装箱号',
+    dataIndex: 'container_no',
+    width: 100,
+  }, {
+    title: '库别',
+    dataIndex: 'virtual_whse',
+    width: 100,
   }, {
     title: '收货人员',
     width: 150,
@@ -187,6 +194,9 @@ export default class ReceiveDetailsPane extends React.Component {
   }
   handleUploadPutaway = () => {
     this.props.markReloadInbound();
+  }
+  handlePrdtVolChange = (inbPrdId, vol) => {
+    this.props.updateInbProductVol(inbPrdId, vol);
   }
   render() {
     const { inboundHead, inboundProducts } = this.props;
@@ -255,7 +265,6 @@ export default class ReceiveDetailsPane extends React.Component {
                   data: JSON.stringify({
                     loginId: this.props.loginId,
                     loginName: this.props.username,
-                    receiveDate: new Date(),
                     inboundNo: this.props.inboundNo,
                     whseCode: this.props.defaultWhse.code,
                   }),

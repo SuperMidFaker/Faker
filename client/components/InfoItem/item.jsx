@@ -89,7 +89,10 @@ export default class InfoItem extends PureComponent {
           {this.renderAddonAfter()}
         </span>);
       }
-      return (<EditableCell cellTrigger type={type} value={field} field={dataIndex} options={options} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()} placeholder={placeholder} onSave={onEdit} />);
+      return (<EditableCell cellTrigger type={type} value={field} field={dataIndex}
+        options={options} addonBefore={this.renderAddonBefore()} addonAfter={this.renderAddonAfter()}
+        placeholder={placeholder} onSave={onEdit} style={{ width: this.props.width ? this.props.width : '100%' }}
+      />);
     } else {
       let span = field;
       if (type === 'date') {
