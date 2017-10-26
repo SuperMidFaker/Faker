@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Input, Form, Alert, Select } from 'antd';
+import { Modal, Input, Form, Select } from 'antd';
 import { toggleBrokerModal, addBroker, loadBrokers, loadBrokerPartners } from 'common/reducers/cwmWarehouse';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -34,14 +34,6 @@ export default class SuppliersModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     whseCode: PropTypes.string.isRequired,
-  }
-  state = {
-    visible: false,
-  }
-  componentWillUnmount() {
-    this.setState({
-      visible: false,
-    });
   }
   msg = formatMsg(this.props.intl)
   handleCancel = () => {
@@ -81,7 +73,6 @@ export default class SuppliersModal extends Component {
     };
     return (
       <Modal title="添加报关代理" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
-        { this.state.visible && <Alert message="报关行不存在" showIcon type="error" /> }
         <Form layout="horizontal">
           <FormItem label="海关编码:" required {...formItemLayout}>
             {getFieldDecorator('customs_code')(<Select
