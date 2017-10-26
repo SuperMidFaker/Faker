@@ -66,6 +66,7 @@ import cwmTransaction from './cwmTransaction';
 import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
 import cmsBrokers from './cmsBrokers';
+import cmsTradeManual from './cmsTradeManual';
 
 export default combineReducers({
   activities,
@@ -135,4 +136,5 @@ export default combineReducers({
   cwmTransition,
   cwmMovement,
   cmsBrokers,
+  cmsTradeManual,
 });

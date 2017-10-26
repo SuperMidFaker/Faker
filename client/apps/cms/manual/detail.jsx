@@ -53,7 +53,7 @@ export default class ManualDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Card bodyStyle={{ padding: 0 }} noHovering>
-            <Tabs activeKey="head">
+            <Tabs defaultActiveKey="head">
               <TabPane tab="基本信息" key="head" />
               <TabPane tab="料件表" key="img" />
               <TabPane tab="成品表" key="exg" />

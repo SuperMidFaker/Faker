@@ -564,7 +564,7 @@ export function loadEntry(billSeqNo, preEntrySeqNo, tenantId) {
   };
 }
 
-export function loadCmsParams(params) {
+export function loadCmsParams() {
   return {
     [CLIENT_API]: {
       types: [
@@ -574,7 +574,6 @@ export function loadCmsParams(params) {
       ],
       endpoint: 'v1/cms/manifest/params',
       method: 'get',
-      params,
     },
   };
 }
