@@ -135,17 +135,17 @@ export default class ReceiveDetailsPane extends React.Component {
       }
     },
   }, {
-    title: '包装情况',
-    dataIndex: 'damage_level',
-    width: 120,
-    className: 'cell-align-center',
-    render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
-  }, {
     title: '立方数',
     width: 130,
     dataIndex: 'received_vol',
     render: (vol, record) =>
       <EditableCell size="small" value={vol} onSave={value => this.handlePrdtVolChange(record.id, Number(value))} style={{ width: '100%' }} />,
+  }, {
+    title: '包装情况',
+    dataIndex: 'damage_level',
+    width: 120,
+    className: 'cell-align-center',
+    render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
     title: '客户订单号',
     dataIndex: 'po_no',

@@ -178,11 +178,17 @@ export default class ReceiveInbound extends Component {
               <Col sm={12} lg={4}>
                 <InfoItem label="ASN编号" field={inboundHead.asn_no} />
               </Col>
-              <Col sm={12} lg={4}>
+              <Col sm={12} lg={3}>
                 <InfoItem label="总预期数量" field={inboundHead.total_expect_qty} />
               </Col>
-              <Col sm={12} lg={4}>
+              <Col sm={12} lg={3}>
                 <InfoItem label="总实收数量" field={inboundHead.total_received_qty} upperLimit={inboundHead.total_expect_qty} />
+              </Col>
+              <Col sm={12} lg={3}>
+                <InfoItem label="总立方数" field={inboundHead.total_received_vol}
+                  editable={currentStatus < CWM_INBOUND_STATUS.COMPLETED.value}
+                  onEdit={this.handleTotalRecVolChange}
+                />
               </Col>
               <Col sm={12} lg={3}>
                 <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
@@ -192,14 +198,6 @@ export default class ReceiveInbound extends Component {
               <Col sm={12} lg={3}>
                 <InfoItem label="入库时间" addonBefore={<Icon type="clock-circle-o" />}
                   field={inboundHead.completed_date && moment(inboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
-                />
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col sm={12} lg={8}>
-                <InfoItem label="总立方数" field={inboundHead.total_received_vol}
-                  editable={currentStatus < CWM_INBOUND_STATUS.COMPLETED.value}
-                  onEdit={this.handleTotalRecVolChange}
                 />
               </Col>
             </Row>

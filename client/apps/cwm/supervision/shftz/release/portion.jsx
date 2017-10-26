@@ -360,6 +360,9 @@ export default class SHFTZRelDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
               <Row gutter={16} className="info-group-underline">
+                <Col sm={12} lg={4}>
+                  <InfoItem label="分拨出库单号" field={relRegs[0].ftz_rel_no} />
+                </Col>
                 <Col sm={12} lg={6}>
                   <InfoItem label="提货单位" field={relRegs[0].owner_name} />
                 </Col>
@@ -414,14 +417,12 @@ export default class SHFTZRelDetail extends Component {
                         <DataPane.Toolbar>
                           <Row type="flex">
                             <Col className="col-flex-primary info-group-inline">
-                              <Col className="col-flex-primary info-group-inline">
-                                <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={350} editable={relEditable}
-                                  onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                                />
-                              </Col>
-                              {reg.ftz_apply_nos && <Col className="col-flex-primary info-group-inline">
+                              <InfoItem label="分拨出库单号" field={reg.ftz_rel_no} width={350} editable={relEditable}
+                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
+                              />
+                              {reg.ftz_apply_nos &&
                                 <InfoItem label="集中申报单号" field={reg.ftz_apply_nos} width={400} />
-                              </Col>}
+                              }
                             </Col>
                             <Col className="col-flex-secondary">
                               {totCol}
@@ -431,6 +432,12 @@ export default class SHFTZRelDetail extends Component {
                       </DataPane>
                     </TabPane>);
                 })}
+                <TabPane tab="集中报关" key="batchDecl">
+                  <DataPane fullscreen={this.state.fullscreen}
+                    columns={this.columns}
+                    dataSource={relRegs[0].ftz_apply_nos} rowKey="id" loading={this.state.loading}
+                  />
+                </TabPane>
               </Tabs>
             </MagicCard>
           </Form>
