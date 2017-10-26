@@ -73,15 +73,7 @@ export default class SHFTZEntryDetail extends Component {
     fullscreen: true,
     whyunsent: '',
     tabKey: '',
-    owner: this.props.owners.filter(own => own.name === this.props.entryAsn.owner_name).length === 0 ?
-      {} : this.props.owners.filter(own => own.name === this.props.entryAsn.owner_name)[0],
-  }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
+    nonCargono: false,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
@@ -104,41 +96,36 @@ export default class SHFTZEntryDetail extends Component {
       if (this.state.tabKey === '') {
         newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
       }
+      const owner = nextProps.owners.filter(own => own.customs_code === nextProps.entryRegs[0].owner_cus_code)[0];
+      console.log(owner);
+      if (owner && owner.portion_enabled) {
+        for (let i = 0; i < this.props.entryRegs.length; i++) {
+          const nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
+          if (nonCargono) {
+            newState.nonCargono = true;
+            break;
+          }
+        }
+      }
       this.setState(newState);
-    }
-    if (nextProps.entryAsn !== this.props.entryAsn) {
-      const owners = nextProps.owners.filter(owner => owner.name === nextProps.entryAsn.owner_name);
-      const owner = owners.length === 0 ? {} : owners[0];
-      this.setState({ owner });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
-    if (!this.state.owner.portion_enabled) { // 判断是否启用分拨
-      this.handleRegSend();
+    if (!this.state.nonCargono) {
+      notification.warn({
+        message: '货号未备案',
+        description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
+        btn: (<div>
+          <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
+          <span className="ant-divider" />
+          <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
+        </div>),
+        key: 'confirm-cargono',
+        duration: 0,
+      });
     } else {
-      let nonCargono = false;
-      for (let i = 0; i < this.props.entryRegs.length; i++) {
-        nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
-        if (nonCargono) {
-          break;
-        }
-      }
-      if (nonCargono) {
-        notification.warn({
-          message: '货号未备案',
-          description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
-          btn: (<div>
-            <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
-            <span className="ant-divider" />
-            <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
-          </div>),
-          key: 'confirm-cargono',
-          duration: 0,
-        });
-      } else {
-        this.handleRegSend();
-      }
+      this.handleRegSend();
     }
   }
   handleRegSend = () => {
@@ -357,6 +344,13 @@ export default class SHFTZEntryDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    let nonCargono = false;
+    for (let i = 0; i < this.props.entryRegs.length; i++) {
+      nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
+      if (nonCargono) {
+        break;
+      }
+    }
     return (
       <div>
         <PageHeader>
@@ -387,6 +381,7 @@ export default class SHFTZEntryDetail extends Component {
           <PageHeader.Actions>
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {this.state.queryable && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
+            {this.state.nonCargono && <Button size="large" icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
           </PageHeader.Actions>

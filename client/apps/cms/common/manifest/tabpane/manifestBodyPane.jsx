@@ -290,6 +290,10 @@ export default class ManifestBodyPane extends React.Component {
           return (<Tooltip title="物料库中未对该货号归类"><Tag color="red">
             <a onClick={() => this.handleEditBody(record)}>{o}</a>
           </Tag></Tooltip>);
+        } else if (record.feedback === 'incomplete') {
+          return (<Tooltip title="货号原产国或目的国或币制为空"><Tag color="red">
+            <a onClick={() => this.handleEditBody(record)}>{o}</a>
+          </Tag></Tooltip>);
         } else {
           return (
             <a onClick={() => this.handleEditBody(record)}>{o}</a>

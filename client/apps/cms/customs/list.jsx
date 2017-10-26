@@ -488,7 +488,7 @@ export default class CustomsList extends Component {
   }
   handleShowSendDeclModal = (record) => {
     this.props.showSendDeclModal({
-      defaultDecl: { channel: record.dec_channel, dectype: record.ep_dec_type, appuuid: record.ep_app_uuid },
+      defaultDecl: { channel: record.dec_channel, dectype: record.pre_entry_dec_type, appuuid: record.ep_app_uuid },
       visible: true,
       ietype: record.i_e_type === 0 ? 'import' : 'export',
       preEntrySeqNo: record.pre_entry_seq_no,

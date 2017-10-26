@@ -17,6 +17,7 @@ export default class DataPane extends React.Component {
     fullscreen: PropTypes.bool,
     scrollOffset: PropTypes.number,
   }
+  state = { scrollY: 0 }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
@@ -25,14 +26,16 @@ export default class DataPane extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.fullscreen) {
-      this.setState({
-        scrollY: window.innerHeight - this.props.scrollOffset,
-      });
-    } else {
-      this.setState({
-        scrollY: window.innerHeight - 200,
-      });
+    if (nextProps.fullscreen !== this.props.fullscreen) {
+      if (nextProps.fullscreen) {
+        this.setState({
+          scrollY: window.innerHeight - this.props.scrollOffset,
+        });
+      } else {
+        this.setState({
+          scrollY: window.innerHeight - 200,
+        });
+      }
     }
   }
   render() {

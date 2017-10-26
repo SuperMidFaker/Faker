@@ -69,13 +69,6 @@ export default class SHFTZTransferSelfDetail extends Component {
   state = {
     fullscreen: true,
   }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({
-        scrollY: window.innerHeight - 460,
-      });
-    }
-  }
   msg = key => formatMsg(this.props.intl, key)
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });

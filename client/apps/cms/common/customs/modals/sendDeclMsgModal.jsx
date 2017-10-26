@@ -25,7 +25,6 @@ const RadioButton = Radio.Button;
     preEntrySeqNo: state.cmsDeclare.sendDeclModal.preEntrySeqNo,
     delgNo: state.cmsDeclare.sendDeclModal.delgNo,
     agentCustCo: state.cmsDeclare.sendDeclModal.agentCustCo,
-    loginId: state.account.loginId,
     loginName: state.account.username,
   }),
   { showSendDeclModal, getEasipassList, sendDecl }
@@ -60,12 +59,13 @@ export default class SendDeclMsgModal extends React.Component {
     this.props.showSendDeclModal({ visible: false });
   }
   handleOk = () => {
-    const { delgNo, preEntrySeqNo, subdomain, loginId, loginName } = this.props;
+    const { delgNo, preEntrySeqNo, subdomain, loginName } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const uuid = values.easipass;
         const declType = values.declType;
-        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, declType, loginId, username: loginName }).then((result) => {
+        const channel = values.declChannel;
+        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, channel, declType, username: loginName }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {

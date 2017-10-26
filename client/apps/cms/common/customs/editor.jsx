@@ -142,7 +142,7 @@ export default class CustomsDeclEditor extends React.Component {
     const head = this.props.head;
     const ietype = this.props.ietype;
     this.props.showSendDeclModal({ visible: true,
-      defaultDecl: { channel: head.dec_channel, dectype: head.ep_dec_type, appuuid: head.ep_app_uuid },
+      defaultDecl: { channel: head.dec_channel, dectype: head.pre_entry_dec_type, appuuid: head.ep_app_uuid },
       ietype,
       preEntrySeqNo: head.pre_entry_seq_no,
       delgNo: head.delg_no,
