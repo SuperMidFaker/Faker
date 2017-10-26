@@ -126,7 +126,7 @@ export default class AddLineModal extends React.Component {
     if (tariff.intervals) varColumns = getEndTableVarColumns(tariff, transitModes, vehicleTypes, vehicleLengths);
 
     return (
-      <Modal visible={visible} maskClosable={false} width={700} title="添加线路"
+      <Modal maskClosable={false} visible={visible} width={700} title="添加线路"
         onCancel={this.handleCancel} onOk={this.handleOk}
       >
         <Row>

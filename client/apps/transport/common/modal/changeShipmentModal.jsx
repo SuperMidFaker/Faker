@@ -96,7 +96,7 @@ export default class ChangeShipmentModal extends React.Component {
   render() {
     const { visible, formData } = this.props;
     return (
-      <Modal title={`${this.msg('changeShipment')} ${formData.shipmt_no}`} visible={visible}
+      <Modal maskClosable={false} title={`${this.msg('changeShipment')} ${formData.shipmt_no}`} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <div className="changeShipment">

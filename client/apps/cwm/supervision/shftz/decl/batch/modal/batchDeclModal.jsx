@@ -424,7 +424,7 @@ export default class BatchDeclModal extends Component {
       </FormItem>
     );
     return (
-      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
         <Card noHovering bodyStyle={{ paddingBottom: 16 }}>

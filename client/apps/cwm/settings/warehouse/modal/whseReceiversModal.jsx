@@ -117,7 +117,7 @@ export default class WhseReceiversModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal title="添加收货人" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal maskClosable={false} title="添加收货人" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form layout="horizontal">
           <FormItem label="代码" required {...formItemLayout}>
             {getFieldDecorator('code')(<Input />)}

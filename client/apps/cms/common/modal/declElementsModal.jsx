@@ -99,7 +99,7 @@ export default class DeclElementsModal extends Component {
     const gModel = this.props.gModel ? this.props.gModel.split('|') : [];
     return (
       <div>
-        <Modal
+        <Modal maskClosable={false}
           title="规格型号"
           width={800}
           visible={this.props.visible}

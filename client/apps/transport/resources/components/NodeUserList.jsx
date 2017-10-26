@@ -161,7 +161,7 @@ export default class NodeUserList extends Component {
     return (
       <Card title="联系人" extra={<a onClick={() => this.showModal()}>添加</a>} style={{ margin: '0 24px 24px 12px' }}>
         <DataTable columns={columns} dataSource={nodeUsers} rowKey="id" pagination={false} />
-        <Modal title="联系人"
+        <Modal maskClosable={false} title="联系人"
           visible={this.state.visible}
           onOk={this.handleOk}
           confirmLoading={this.state.confirmLoading}

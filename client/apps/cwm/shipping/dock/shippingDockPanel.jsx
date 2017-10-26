@@ -236,7 +236,7 @@ export default class ShippingDockPanel extends React.Component {
         extra={this.renderExtra()}
       >
         {this.renderTabs()}
-        <Modal
+        <Modal maskClosable={false}
           visible={this.state.closeModalVisible}
           onCancel={() => this.setState({ closeModalVisible: false })}
           title="请选择"

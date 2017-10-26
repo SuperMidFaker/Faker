@@ -70,7 +70,7 @@ export default class PackingRuleModal extends Component {
     const { form: { getFieldDecorator } } = this.props;
     const { conveyBoxQty, conveyPalletQty } = this.state;
     return (
-      <Modal title="包装规则" width={800} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleSubmit} visible={this.props.visible}>
+      <Modal maskClosable={false} title="包装规则" width={800} onCancel={this.handleCancel} onOk={this.handleSubmit} visible={this.props.visible}>
         <Form>
           <Row gutter={16}>
             <Col sm={12}>

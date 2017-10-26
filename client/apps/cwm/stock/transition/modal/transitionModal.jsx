@@ -54,7 +54,7 @@ export default class TransitionModal extends React.Component {
       </div>
     </div>);
     return (
-      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         visible={visible} footer={null}
       >
         <Spin spinning={loading}>

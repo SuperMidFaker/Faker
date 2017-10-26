@@ -55,7 +55,7 @@ export default class CreateModal extends React.Component {
   render() {
     const { form: { getFieldDecorator, getFieldValue }, visible } = this.props;
     return (
-      <Modal title={this.msg('newShipment')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('newShipment')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="horizontal">

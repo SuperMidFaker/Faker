@@ -91,7 +91,7 @@ export default class VehicleUpdater extends React.Component {
     const { vehiclePlate, plateDisabled, driverName, driverDisabled, remark } = this.state;
     const colSpan = 4;
     return (
-      <Modal title={this.msg('vehicleModalTitle')} onCancel={this.handleCancel}
+      <Modal maskClosable={false} title={this.msg('vehicleModalTitle')} onCancel={this.handleCancel}
         onOk={this.handleOk} visible={this.props.visible}
       >
         <Form className="row">
@@ -99,7 +99,7 @@ export default class VehicleUpdater extends React.Component {
             wrapperCol={{ span: 24 - colSpan }}
           >
             <Col span="17">
-              <ModalInput field="vehiclePlate" value={vehiclePlate}
+              <Modal maskClosable={false}Input field="vehiclePlate" value={vehiclePlate}
                 onChange={this.handleFieldChange} disabled={plateDisabled}
               />
             </Col>
@@ -113,7 +113,7 @@ export default class VehicleUpdater extends React.Component {
             wrapperCol={{ span: 24 - colSpan }}
           >
             <Col span="17">
-              <ModalInput field="driverName" value={driverName}
+              <Modal maskClosable={false}Input field="driverName" value={driverName}
                 onChange={this.handleFieldChange} disabled={driverDisabled}
               />
             </Col>
@@ -126,7 +126,7 @@ export default class VehicleUpdater extends React.Component {
           <FormItem label={this.msg('taskRemark')} labelCol={{ span: colSpan }}
             wrapperCol={{ span: 24 - colSpan }}
           >
-            <ModalInput type="textarea" placeholder={this.msg('remarkPlaceholder')}
+            <Modal maskClosable={false}Input type="textarea" placeholder={this.msg('remarkPlaceholder')}
               field="remark" value={remark} onChange={this.handleFieldChange}
             />
           </FormItem>

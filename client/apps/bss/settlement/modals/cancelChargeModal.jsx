@@ -57,7 +57,7 @@ export default class CancelChargeModal extends React.Component {
     const { visible, totalCharge } = this.props;
     return (
       <div>
-        <Modal style={{ width: '680px' }} visible={visible}
+        <Modal maskClosable={false} style={{ width: '680px' }} visible={visible}
           title={`核销金额 (账单总金额: ${totalCharge.toFixed(2)})`} onOk={this.handleOk}
           onCancel={this.handleCancel}
         >

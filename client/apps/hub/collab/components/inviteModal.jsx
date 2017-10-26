@@ -57,7 +57,7 @@ export default class InviteModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal visible={this.props.visible} title="申请开通" onCancel={this.handleCancel} onOk={this.handleSave}>
+      <Modal maskClosable={false} visible={this.props.visible} title="申请开通" onCancel={this.handleCancel} onOk={this.handleSave}>
         <Alert message="该合作伙伴为线下用户，申请开通平台租户帐号" type="info" showIcon />
         <FormItem {...formItemLayout} label="电话:">
           <Input value={phone} onChange={e => this.setState({ phone: e.target.value })} />

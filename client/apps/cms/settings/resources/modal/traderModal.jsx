@@ -89,7 +89,7 @@ export default class TraderModal extends React.Component {
     const { visible } = this.props;
     const { name, code, customsCode } = this.state;
     return (
-      <Modal title={this.props.operation === 'add' ? '新增收发货人' : '修改收发货人'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} title={this.props.operation === 'add' ? '新增收发货人' : '修改收发货人'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="horizontal">
           <FormItem label="企业名称" required {...formItemLayout}>
             <Input required value={name} onChange={e => this.setState({ name: e.target.value })} />

@@ -55,7 +55,7 @@ export default class AddWarehouseModal extends React.Component {
   render() {
     const { form: { getFieldDecorator, getFieldValue }, visible } = this.props;
     return (
-      <Modal title={this.msg('addWarehouse')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('addWarehouse')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="horizontal">

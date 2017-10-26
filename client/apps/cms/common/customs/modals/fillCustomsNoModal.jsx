@@ -69,7 +69,7 @@ export default class FillCustomsNoModal extends React.Component {
   render() {
     const { visible } = this.props;
     return (
-      <Modal title={this.msg('entryNoFillModalTitle')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('entryNoFillModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>

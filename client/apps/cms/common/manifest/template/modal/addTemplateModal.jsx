@@ -74,7 +74,7 @@ export default class AddTemplateModal extends React.Component {
   render() {
     const { form: { getFieldDecorator }, visible, customers } = this.props;
     return (
-      <Modal title="新增制单规则" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} title="新增制单规则" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           <FormItem label="关联客户">
             {getFieldDecorator('customer', { initialValue: null, rules: [{ required: true, message: '关联客户必选' }] }

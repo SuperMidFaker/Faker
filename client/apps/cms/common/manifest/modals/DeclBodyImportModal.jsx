@@ -296,7 +296,7 @@ export default class DeclBodyImportModal extends Component {
     const mode = this.props.trxModes.filter(cur => cur.value === head.trxn_mode)[0];
     const trxnMode = mode && `${mode.value}| ${mode.text}`;
     return (
-      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
         <Card noHovering bodyStyle={{ paddingBottom: 16 }}>

@@ -426,7 +426,7 @@ export default class ReceivingModal extends Component {
       </div>
     </div>);
     return (
-      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
         <Card bodyStyle={{ paddingBottom: 16 }} noHovering>

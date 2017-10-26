@@ -76,7 +76,7 @@ export default class ZoneEditModal extends Component {
         </FormItem>
       </Form>);
     return (
-      <Modal visible={this.props.visible} title="编辑库区" onCancel={this.handleCancel} onOk={this.editZone}>
+      <Modal maskClosable={false} visible={this.props.visible} title="编辑库区" onCancel={this.handleCancel} onOk={this.editZone}>
         {zonePopoverContent}
       </Modal>
     );

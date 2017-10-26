@@ -71,7 +71,7 @@ export default class addSlaveModal extends React.Component {
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
-      <Modal title={this.msg('addSlave')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal maskClosable={false} title={this.msg('addSlave')} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form>
           <FormItem label="报关报检代理" labelCol={{ xs: { span: 24 }, sm: { span: 6 } }} wrapperCol={{ xs: { span: 24 }, sm: { span: 14 } }}>
             {

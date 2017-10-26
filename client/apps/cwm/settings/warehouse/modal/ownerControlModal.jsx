@@ -81,7 +81,7 @@ export default class OwnerControlModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal title="控制属性" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal maskClosable={false} title="控制属性" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Form>
           <FormItem {...formItemLayout} label="默认收货模式">
             <RadioGroup value={ownerAuth.receiving_mode} onChange={this.handleRecModeChange}>

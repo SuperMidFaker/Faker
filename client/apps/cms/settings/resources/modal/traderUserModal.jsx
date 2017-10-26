@@ -140,7 +140,7 @@ export default class TraderUserModal extends React.Component {
       },
     }];
     return (
-      <Modal title="授权使用单位" visible={visible} onCancel={this.handleCancel} footer={null} >
+      <Modal maskClosable={false} title="授权使用单位" visible={visible} onCancel={this.handleCancel} footer={null} >
         <Table size="middle" showHeader={false} pagination={false} columns={columns} dataSource={this.state.datas}
           footer={() => <Button type="dashed" onClick={this.handleAdd} icon="plus" style={{ width: '100%' }} />}
         />

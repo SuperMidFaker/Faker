@@ -72,7 +72,7 @@ export default class ImportDataPanel extends React.Component {
         </div>
         <Button size="large" icon="download" style={{ width: '100%' }} onClick={this.handleDownloadTemplate}>下载数据模板</Button>
         {children}
-        <Modal closable={false} maskClosable={false} footer={[]} visible={uploading}>
+        <Modal maskClosable={false} closable={false} footer={[]} visible={uploading}>
           <Progress type="circle" percent={uploadPercent} status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}
           />

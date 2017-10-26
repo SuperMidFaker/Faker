@@ -72,7 +72,7 @@ class VehicleFormMini extends Component {
     const { form, vehicleValidate, vehicleParams } = this.props;
     const getFieldDecorator = form.getFieldDecorator;
     return (
-      <Modal visible={this.state.visible} title="新增车辆"
+      <Modal maskClosable={false} visible={this.state.visible} title="新增车辆"
         onOk={this.handleCarSave} onCancel={this.handleCancel}
       >
         <Form className="">

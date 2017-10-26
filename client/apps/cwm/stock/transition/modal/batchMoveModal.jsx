@@ -44,7 +44,7 @@ export default class BatchMoveModal extends Component {
       wrapperCol: { span: 12 },
     };
     return (
-      <Modal title="批量库存移动" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit} okText="创建库存移动单">
+      <Modal maskClosable={false} title="批量库存移动" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit} okText="创建库存移动单">
         <Alert message="已选择 项 库存数量总计" type="info" />
         <FormItem {...formItemLayout} label="目标库位">
           <LocationSelect style={{ width: 160 }} onSelect={this.handleLocationChange} value={this.state.location} showSearch />

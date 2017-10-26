@@ -118,7 +118,7 @@ export default class CreateQtModal extends React.Component {
     const { form: { getFieldDecorator }, visible, partners } = this.props;
     const { disBase } = this.state;
     return (
-      <Modal title={this.msg('newQuote')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('newQuote')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <div>

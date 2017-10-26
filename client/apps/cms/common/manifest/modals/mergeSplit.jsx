@@ -284,7 +284,7 @@ export default class MergeSplitModal extends React.Component {
       mergeConditions = [...mergeConditions, { label: this.msg('emGNo'), value: 'byEmGNo' }];
     }
     return (
-      <Modal title="生成报关建议书" width={800} onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal maskClosable={false} title="生成报关建议书" width={800} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
         <Form>

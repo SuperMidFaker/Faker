@@ -131,7 +131,7 @@ export default class WhseOwnersModal extends Component {
       selectedRowKeys: this.state.selectedRowKeys,
     };
     return (
-      <Modal title="添加货主" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
+      <Modal maskClosable={false} title="添加货主" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Alert message="请确认在客户管理中已加入该货主，并开通了仓储业务" type="info" showIcon />
         <Table size="small" columns={this.columns} dataSource={filterPartners} rowKey="id" rowSelection={rowSelection} pagination={false} />
       </Modal>

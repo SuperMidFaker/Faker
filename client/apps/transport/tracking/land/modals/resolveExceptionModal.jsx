@@ -102,8 +102,8 @@ export default class ResolveExceptionModal extends React.Component {
   render() {
     const { form: { getFieldDecorator }, dealExcpModal: { exception }, dispatch } = this.props;
     return (
-      <Modal title="处理异常" onCancel={this.handleCancel} onOk={this.handleOk}
-        visible={this.props.visible} maskClosable={false}
+      <Modal maskClosable={false} title="处理异常" onCancel={this.handleCancel} onOk={this.handleOk}
+        visible={this.props.visible}
       >
         {this.renderException()}
         <Form className="row">

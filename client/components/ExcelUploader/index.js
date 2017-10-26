@@ -49,7 +49,7 @@ export default class ExcelUploader extends React.Component {
         data={formData} onChange={this.handleImport} withCredentials
       >
         {children}
-        <Modal closable={closable} maskClosable={false} footer={[]} visible={inUpload} onCancel={this.handleCancel}>
+        <Modal maskClosable={false} closable={closable} footer={[]} visible={inUpload} onCancel={this.handleCancel}>
           {errorMsg && <Alert message={errorMsg} showIcon type="error" /> }
           <Progress type="circle" percent={uploadPercent} status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}

@@ -232,7 +232,7 @@ export default class RateSourceTable extends React.Component {
         <DataTable size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource} onRowClick={this.handleRowClick} rowKey={getRowKey}
         />
-        <Modal visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
+        <Modal maskClosable={false} visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
           closable={false}
         >
           <Form layout="horizontal">

@@ -100,7 +100,7 @@ export default class AddLocationModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal title="创建库位" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
+      <Modal maskClosable={false} title="创建库位" onCancel={this.handleCancel} visible={this.props.visible} onOk={this.handleSubmit}>
         <Form>
           <FormItem {...formItemLayout} label="库位编号">
             <Input onChange={this.locationChange} value={location} />

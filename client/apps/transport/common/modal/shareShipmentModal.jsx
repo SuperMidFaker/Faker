@@ -130,7 +130,7 @@ export default class ShareShipmentModal extends React.Component {
     const { shipmt } = this.props;
     const shipmtNo = shipmt.shipmt_no;
     return (
-      <Modal style={{ width: '680px' }} visible={this.props.visible}
+      <Modal maskClosable={false} style={{ width: '680px' }} visible={this.props.visible}
         title={`分享运单 ${shipmtNo}`} onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={[

@@ -90,7 +90,7 @@ export default class DeclReleasedModal extends React.Component {
     const entryNo = this.state.entryNo;
     // const ieLabel = entry.ietype === 0 ? '进口日期' : '出口日期';
     return (
-      <Modal title={this.msg('customsClearModalTitle')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('customsClearModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>

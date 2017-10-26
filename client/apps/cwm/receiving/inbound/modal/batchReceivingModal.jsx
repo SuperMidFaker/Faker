@@ -87,7 +87,7 @@ export default class BatchReceivingModal extends Component {
       wrapperCol: { span: 12 },
     };
     return (
-      <Modal title="批量收货" onCancel={this.handleCancel} visible={this.props.visible} confirmLoading={submitting} onOk={this.handleSubmit} okText="确认收货">
+      <Modal maskClosable={false} title="批量收货" onCancel={this.handleCancel} visible={this.props.visible} confirmLoading={submitting} onOk={this.handleSubmit} okText="确认收货">
         <FormItem {...formItemLayout} label="收货数量">
           <Checkbox checked>实际收货数量与预期一致</Checkbox>
         </FormItem>

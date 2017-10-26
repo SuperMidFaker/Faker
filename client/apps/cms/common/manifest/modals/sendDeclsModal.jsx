@@ -143,7 +143,7 @@ export default class SendDeclsModal extends React.Component {
         />),
     }];
     return (
-      <Modal title={this.msg('sendAllPackets')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('sendAllPackets')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Table rowKey="id" columns={columns} dataSource={this.state.bodies} />

@@ -326,8 +326,8 @@ export default class ImportComparisonModal extends React.Component {
       },
     });
     return (
-      <Modal title={this.msg('对比结果确认')} width="100%" visible={visibleCompareModal} wrapClassName="fullscreen-modal"
-        onOk={this.handleOk} onCancel={this.handleCancel} maskClosable={false}
+      <Modal maskClosable={false} title={this.msg('对比结果确认')} width="100%" visible={visibleCompareModal} wrapClassName="fullscreen-modal"
+        onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <div className="pane">
           <div className="panel-header">

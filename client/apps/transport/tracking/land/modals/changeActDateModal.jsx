@@ -87,8 +87,8 @@ export default class ChangeActDateModal extends React.Component {
   }
   render() {
     return (
-      <Modal title="纠正节点时间" onCancel={this.handleCancel} onOk={this.handleOk}
-        visible={this.props.visible} maskClosable={false}
+      <Modal maskClosable={false} title="纠正节点时间" onCancel={this.handleCancel} onOk={this.handleOk}
+        visible={this.props.visible}
       >
         <Form layout="vertical">
           {this.props.type === 'pickupActDate' && <FormItem label="实际提货时间" >

@@ -159,7 +159,7 @@ export default class BeforeFeesModal extends React.Component {
       render: (o, record) => (<a onClick={() => this.handleAdd(record)}>入帐</a>),
     }];
     return (
-      <Modal visible={this.props.visible} width="85%" title="未入账运单"
+      <Modal maskClosable={false} visible={this.props.visible} width="85%" title="未入账运单"
         onOk={() => this.props.showBeforeFeesModal(false)}
         onCancel={() => this.props.showBeforeFeesModal(false)}
       >

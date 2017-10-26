@@ -62,7 +62,7 @@ export default class CiqDispModal extends Component {
   render() {
     const { form: { getFieldDecorator }, ciqSups, ciqDispShow } = this.props;
     return (
-      <Modal visible={ciqDispShow} title="报检分配" onOk={this.handleSave} onCancel={this.handleCancel} >
+      <Modal maskClosable={false} visible={ciqDispShow} title="报检分配" onOk={this.handleSave} onCancel={this.handleCancel} >
         <Form layout="vertical">
           <FormItem label="报检供应商" {...formItemLayout} >
             {getFieldDecorator('ciq_name',

@@ -90,7 +90,7 @@ export default class WhseAuthModal extends React.Component {
   render() {
     const { visible, whse } = this.props;
     return (
-      <Modal title={whse.whse_name} visible={visible} key="whse-auth-modal"
+      <Modal maskClosable={false} title={whse.whse_name} visible={visible} key="whse-auth-modal"
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Transfer dataSource={this.state.transferItems} titles={['全部货主', '授权货主']}

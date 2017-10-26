@@ -52,7 +52,7 @@ export default class CancelChargeModal extends React.Component {
     const { visible } = this.props;
     return (
       <div>
-        <Modal style={{ width: '680px' }} visible={visible}
+        <Modal maskClosable={false} style={{ width: '680px' }} visible={visible}
           title={this.msg('cancelCharge')} onOk={this.handleOk}
           onCancel={this.handleCancel}
         >

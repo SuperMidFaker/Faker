@@ -210,7 +210,7 @@ export default class SaveAsTemplateModal extends React.Component {
       description: '确认合并拆分规则',
     }];
     return (
-      <Modal title="保存为模板" width={800} visible={visibleStepModal} onCancel={this.handleCancel} footer={null}>
+      <Modal maskClosable={false} title="保存为模板" width={800} visible={visibleStepModal} onCancel={this.handleCancel} footer={null}>
         <Steps size="small" current={current}>
           {steps.map(item => <Step key={item.title} title={item.title} description={item.description} />)}
         </Steps>

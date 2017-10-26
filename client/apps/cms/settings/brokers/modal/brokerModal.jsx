@@ -125,7 +125,7 @@ export default class BrokerModal extends React.Component {
     const { name, customsCode, partnerUniqueCode } = this.state;
     const filterPartners = partners.filter(partner => !brokers.find(broker => broker.comp_partner_id === partner.id));
     return (
-      <Modal title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           {visible && <FormItem label="企业名称" required>
             <Select mode="combobox" value={name} onChange={this.handleNameChange} style={{ width: '100%' }} onSelect={this.handleSelect}>

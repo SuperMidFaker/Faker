@@ -65,7 +65,7 @@ export default class InvTemplateModal extends React.Component {
   render() {
     const { form: { getFieldDecorator }, visible, docuType } = this.props;
     return (
-      <Modal title="新增单据模板" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} title="新增单据模板" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem label="单据类型:" {...formItemLayout} >
           {getFieldDecorator('docu_type', {
             initialValue: docuType,

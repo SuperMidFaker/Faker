@@ -214,7 +214,7 @@ export default class VendorModal extends React.Component {
       title = '修改供应商资料';
     }
     return (
-      <Modal visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal maskClosable={false} visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form layout="horizontal">
           <FormItem
             {...formItemLayout}

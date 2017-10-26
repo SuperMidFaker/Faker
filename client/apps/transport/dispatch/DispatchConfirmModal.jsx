@@ -67,7 +67,7 @@ export default class DispatchConfirmModal extends Component {
       msg = `将【${shipmt.shipmt_no}】分配给【${target.plate_number}】承运，请选择对回单的要求：`;
     } */
     return (
-      <Modal title="确认回单要求" visible={this.props.visible} onCancel={this.handleCancel}
+      <Modal maskClosable={false} title="确认回单要求" visible={this.props.visible} onCancel={this.handleCancel}
         footer={[
           <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
           <Button key="dispatch" type="default" size="large" onClick={this.handleDispatch}>

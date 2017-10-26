@@ -65,7 +65,7 @@ export default class RevokeModal extends React.Component {
   render() {
     const { visible } = this.props;
     return (
-      <Modal title={this.msg('revokejectModalTitle')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('revokejectModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Input.TextArea rows="4" onBlur={this.handleReasonChange} />

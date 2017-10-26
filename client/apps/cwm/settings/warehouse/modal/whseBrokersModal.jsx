@@ -72,7 +72,7 @@ export default class SuppliersModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal title="添加报关代理" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
+      <Modal maskClosable={false} title="添加报关代理" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Form layout="horizontal">
           <FormItem label="海关编码:" required {...formItemLayout}>
             {getFieldDecorator('customs_code')(<Select

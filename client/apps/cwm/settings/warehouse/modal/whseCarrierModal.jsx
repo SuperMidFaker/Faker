@@ -93,7 +93,7 @@ export default class SuppliersModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
     }; return (
-      <Modal title="添加承运人" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
+      <Modal maskClosable={false} title="添加承运人" visible={visible} onCancel={this.handleCancel} onOk={this.handleAdd}>
         <Form layout="horizontal">
           {visible && <FormItem label="名称:" required {...formItemLayout}>
             {getFieldDecorator('name', {

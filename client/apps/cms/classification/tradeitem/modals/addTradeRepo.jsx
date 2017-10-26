@@ -75,7 +75,7 @@ export default class AddTradeRepoModal extends React.Component {
       newCustomers = newCustomers.filter(ct => ct.id !== owner.owner_partner_id);
     }
     return (
-      <Modal title={this.msg('addRepo')} visible={visibleAddModal}
+      <Modal maskClosable={false} title={this.msg('addRepo')} visible={visibleAddModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>

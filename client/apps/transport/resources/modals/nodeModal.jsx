@@ -70,7 +70,7 @@ export default class NodeModal extends Component {
   render() {
     const { form, visible } = this.props;
     return (
-      <Modal visible={visible} onOk={this.handleAddNode} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} visible={visible} onOk={this.handleAddNode} onCancel={this.handleCancel}>
         <NodeForm mode="add"
           form={form}
           onRegionChange={this.handleRegionChange}

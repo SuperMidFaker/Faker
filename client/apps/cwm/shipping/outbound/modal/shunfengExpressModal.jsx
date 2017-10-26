@@ -355,7 +355,7 @@ export default class ShunfengExpressModal extends Component {
       </div>
     </div>);
     return (
-      <Modal title={title} visible={this.props.visible} width="100%" maskClosable={false} closable={false} wrapClassName="fullscreen-modal" footer={null}>
+      <Modal maskClosable={false} title={title} visible={this.props.visible} width="100%" closable={false} wrapClassName="fullscreen-modal" footer={null}>
         <Row gutter={24}>
           <Col span={16}>
             <Card title="订单信息" noHovering>

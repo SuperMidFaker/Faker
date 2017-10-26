@@ -98,8 +98,8 @@ export default class CreateTariffModal extends React.Component {
       wrapperCol: { span: 18 },
     };
     return (
-      <Modal title="新建报价" onCancel={this.handleCancel} onOk={this.handleOk}
-        visible={this.props.visible} maskClosable={false}
+      <Modal maskClosable={false} title="新建报价" onCancel={this.handleCancel} onOk={this.handleOk}
+        visible={this.props.visible}
       >
         <Form className="row" style={{ width: '400px' }}>
           <FormItem label="价格类型" {...formItemLayout}>

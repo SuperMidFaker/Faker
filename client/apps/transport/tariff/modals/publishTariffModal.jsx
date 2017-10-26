@@ -93,8 +93,8 @@ export default class PublishTariffModal extends React.Component {
     };
 
     return (
-      <Modal title="发布" onCancel={this.handleCancel} onOk={this.handleOk}
-        visible={this.props.visible} maskClosable={false}
+      <Modal maskClosable={false} title="发布" onCancel={this.handleCancel} onOk={this.handleOk}
+        visible={this.props.visible}
       >
         <Form className="row" >
           <Alert message="报价发布后将按设置的生效时间起重新计费" type="info" showIcon />

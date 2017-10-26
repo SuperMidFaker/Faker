@@ -54,7 +54,7 @@ export default class CiqnoFillModal extends React.Component {
   render() {
     const { visible } = this.props;
     return (
-      <Modal title={this.msg('ciqNoFillModalTitle')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('ciqNoFillModalTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} />

@@ -299,7 +299,7 @@ export default class TransferSelfModal extends Component {
         </FormItem>
       </Form>);
     return (
-      <Modal title={title} width="100%" maskClosable={false} wrapClassName="fullscreen-modal" closable={false}
+      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
         <Card title="入库单" extra={extraForm} bodyStyle={{ padding: 0 }} noHovering>

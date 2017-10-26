@@ -101,7 +101,7 @@ export default class InputModal extends Component {
       },
     ];
     return (
-      <Modal visible={showInputModal} title="录入代垫费用" onCancel={this.handleCancel} onOk={this.handleSave}>
+      <Modal maskClosable={false} visible={showInputModal} title="录入代垫费用" onCancel={this.handleCancel} onOk={this.handleSave}>
         <ReactDataGrid
           enableCellSelect
           columns={columns}

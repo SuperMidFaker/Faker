@@ -60,7 +60,7 @@ export default class BillingForm extends React.Component {
     const { form: { getFieldDecorator }, visible } = this.props;
     const { beginDate, endDate } = this.state;
     return (
-      <Modal visible={visible} title={this.msg('eptExp')}
+      <Modal maskClosable={false} visible={visible} title={this.msg('eptExp')}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>

@@ -138,7 +138,7 @@ export default class AddLocationModal extends React.Component {
       typeDesc = '收货方';
     }
     return (
-      <Modal visible={visible} title={`添加${typeDesc}`}
+      <Modal maskClosable={false} visible={visible} title={`添加${typeDesc}`}
         onCancel={this.handleCancel} onOk={this.handleOk}
       >
         <Row>

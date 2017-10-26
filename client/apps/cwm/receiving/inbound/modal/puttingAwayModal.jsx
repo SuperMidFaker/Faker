@@ -99,7 +99,7 @@ export default class PuttingAwayModal extends Component {
       }
     }
     return (
-      <Modal title="上架确认" onCancel={this.handleCancel} visible={this.props.visible} confirmLoading={submitting} onOk={this.handleSubmit}>
+      <Modal maskClosable={false} title="上架确认" onCancel={this.handleCancel} visible={this.props.visible} confirmLoading={submitting} onOk={this.handleSubmit}>
         <FormItem {...formItemLayout} label="上架库位">
           <LocationSelect style={{ width: 160 }} onChange={this.handleLocationChange} value={this.state.location} />
         </FormItem>

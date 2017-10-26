@@ -75,8 +75,8 @@ export default class CreateSpecialCharge extends React.Component {
     const { form: { getFieldDecorator }, spTenantId, type } = this.props;
     const colSpan = 6;
     return (
-      <Modal title="添加特殊费用" onCancel={this.handleCancel} onOk={this.handleOk}
-        visible={this.props.visible} maskClosable={false}
+      <Modal maskClosable={false} title="添加特殊费用" onCancel={this.handleCancel} onOk={this.handleOk}
+        visible={this.props.visible}
       >
         <Form className="row" style={{ width: '400px' }}>
           {

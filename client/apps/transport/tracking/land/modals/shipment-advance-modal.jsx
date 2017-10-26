@@ -206,8 +206,8 @@ export default class ShipmentAdvanceModal extends React.Component {
     if (type === 1) title = `${shipmtNo}代垫收入`;
     else if (type === -1) title = `${shipmtNo}代垫成本`;
     return (
-      <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
-        width={600} visible={this.props.visible} maskClosable={false}
+      <Modal maskClosable={false} title={title} onCancel={this.handleCancel} onOk={this.handleOk}
+        width={600} visible={this.props.visible}
       >
         <Table columns={columns} dataSource={this.state.advances} pagination={false} />
       </Modal>

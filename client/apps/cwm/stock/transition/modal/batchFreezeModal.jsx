@@ -65,7 +65,7 @@ export default class BatchFreezeModal extends Component {
     const { batchFreezeModal } = this.props;
     const actionTxt = batchFreezeModal.freezed ? '冻结' : '解冻';
     return (
-      <Modal title={`批量${actionTxt}`} onCancel={this.handleCancel} visible={batchFreezeModal.visible}
+      <Modal maskClosable={false} title={`批量${actionTxt}`} onCancel={this.handleCancel} visible={batchFreezeModal.visible}
         onOk={this.handleSubmit} okText={`确认${actionTxt}`}
       >
         <Alert message={`已选择${batchFreezeModal.traceIds.length}项库存数量`} type="info" />

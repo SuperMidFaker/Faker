@@ -121,7 +121,7 @@ export default class CarrierModal extends React.Component {
     const { visible, operation } = this.props;
     const { partnerName, partnerCode, partnerUniqueCode } = this.state;
     return (
-      <Modal title={operation === 'add' ? '新增承运商' : '修改承运商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} title={operation === 'add' ? '新增承运商' : '修改承运商'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <FormItem {...formItemLayout} label="承运商名称:" required>
           <Input required value={partnerName} onChange={e => this.setState({ partnerName: e.target.value })} />
         </FormItem>

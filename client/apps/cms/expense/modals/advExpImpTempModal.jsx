@@ -189,7 +189,7 @@ export default class AdvExpsImpTempModal extends Component {
         </TabPane>);
     }
     return (
-      <Modal visible={advImpTempVisible} title={this.msg('advanceFee')} onCancel={this.handleCancel} onOk={this.handleSave} width={1000} okText="保存">
+      <Modal maskClosable={false} visible={advImpTempVisible} title={this.msg('advanceFee')} onCancel={this.handleCancel} onOk={this.handleSave} width={1000} okText="保存">
         <Tabs activeKey={this.state.tabkey} onChange={this.handleTabChange}>
           {tabs}
         </Tabs>

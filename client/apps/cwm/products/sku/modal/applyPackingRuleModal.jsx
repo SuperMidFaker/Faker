@@ -38,7 +38,7 @@ export default class ApplyPackingRuleModal extends Component {
   render() {
     const { packings } = this.props;
     return (
-      <Modal title="采用包装规则" onCancel={this.handleCancel} visible={this.props.visible}>
+      <Modal maskClosable={false} title="采用包装规则" onCancel={this.handleCancel} visible={this.props.visible}>
         <FormItem label={this.msg('packingCode')}>
           <Select showSearch placeholder="选择包装代码" style={{ width: '100%' }}
             onSelect={this.handlePackingSelect}

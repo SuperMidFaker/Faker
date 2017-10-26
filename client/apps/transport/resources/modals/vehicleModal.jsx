@@ -106,7 +106,7 @@ export default class VehicleModal extends Component {
     ) : '';
     const numberValidate = operation === 'edit' || vehicleValidate;
     return (
-      <Modal visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal maskClosable={false} visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form layout="horizontal">
           <FormItem label="车牌号"
             required

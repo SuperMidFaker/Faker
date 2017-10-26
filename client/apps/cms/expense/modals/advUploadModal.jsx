@@ -182,7 +182,7 @@ export default class AdvUploadModal extends React.Component {
       <Button key="next" type="primary" size="large" onClick={this.handleOk} disabled={this.state.attachments.length === 0}>确定</Button>,
     ];
     return (
-      <Modal visible={visible} title="导入代垫费用" footer={footer} onCancel={this.handleCancel} >
+      <Modal maskClosable={false} visible={visible} title="导入代垫费用" footer={footer} onCancel={this.handleCancel} >
         <Form>
           <Col offset={6}>
             <FormItem {...formItemLayout} >

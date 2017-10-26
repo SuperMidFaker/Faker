@@ -80,7 +80,7 @@ export default class CreateFlowModal extends React.Component {
   render() {
     const { visible, customerPartners, form: { getFieldDecorator } } = this.props;
     return (
-      <Modal title={this.msg('createFlow')} visible={visible} maskClosable={false}
+      <Modal maskClosable={false} title={this.msg('createFlow')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="vertical">

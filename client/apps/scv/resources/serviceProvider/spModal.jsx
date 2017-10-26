@@ -175,7 +175,7 @@ export default class SpModal extends React.Component {
       title = '修改服务商资料';
     }
     return (
-      <Modal visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
+      <Modal maskClosable={false} visible={visible} title={title} onCancel={this.handleCancel} onOk={this.handleOk}>
         <Form layout="horizontal">
           <FormItem
             {...formItemLayout}

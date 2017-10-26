@@ -140,7 +140,7 @@ export default class TrialModal extends React.Component {
       stepContent = trialFilename;
     }
     return (
-      <Modal title={this.msg('trialTitle')} visible={visible} footer={footer} closable={false}>
+      <Modal maskClosable={false} title={this.msg('trialTitle')} visible={visible} footer={footer} closable={false}>
         <Steps current={curStep}>
           <Step title="选择范围" />
           <Step title="计算费用" />

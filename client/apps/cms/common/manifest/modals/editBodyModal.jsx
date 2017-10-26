@@ -66,7 +66,7 @@ export default class EditBodyModal extends React.Component {
   render() {
     const { editBodyVisible, form, editBody, billSeqNo } = this.props;
     return (
-      <Modal visible={editBodyVisible} width={800} style={{ top: 24 }}
+      <Modal maskClosable={false} visible={editBodyVisible} width={800} style={{ top: 24 }}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <EditBodyForm form={form} editBody={editBody} billSeqNo={billSeqNo} />

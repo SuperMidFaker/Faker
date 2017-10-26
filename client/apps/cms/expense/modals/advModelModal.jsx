@@ -130,7 +130,7 @@ export default class AdvModelModal extends Component {
       <Button key="next" type="primary" size="large" onClick={this.handleSave} disabled={this.state.selectedRowKeys.length === 0}>下载</Button>,
     ];
     return (
-      <Modal visible={visibleAdvModal} title={this.msg('advModel')} onCancel={this.handleCancel} footer={footer} width={600}>
+      <Modal maskClosable={false} visible={visibleAdvModal} title={this.msg('advModel')} onCancel={this.handleCancel} footer={footer} width={600}>
         <Table rowSelection={rowSelection} pagination={false} rowKey="_id" columns={this.columns} dataSource={this.state.datas} scroll={{ y: 450 }} />
       </Modal>
     );

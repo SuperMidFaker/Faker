@@ -84,7 +84,7 @@ class WarningModal extends React.Component {
   render() {
     const { width, title, content, iconClassType, okCancel, cancelText, okText } = this.props;
     return (
-      <Modal
+      <Modal maskClosable={false}
         prefixCls="ant-modal"
         className="ant-confirm"
         visible={this.state.visible}

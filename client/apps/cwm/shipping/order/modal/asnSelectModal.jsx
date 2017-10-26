@@ -60,7 +60,7 @@ export default class AddDetailModal extends Component {
       render: o => moment(o).format('YYYY-MM-DD'),
     }];
     return (
-      <Modal onCancel={this.handleCancel} visible={visible} title="asnList" onOk={this.handleCancel}>
+      <Modal maskClosable={false} onCancel={this.handleCancel} visible={visible} title="asnList" onOk={this.handleCancel}>
         <Table columns={columns} dataSource={dataSource} rowKey="asn_no" onRowClick={record => this.handleRowClick(record)} />
       </Modal>
     );

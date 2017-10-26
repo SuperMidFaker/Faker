@@ -107,7 +107,7 @@ export default class SendModal extends React.Component {
   render() {
     const { visible, brokers, transps, form: { getFieldDecorator } } = this.props;
     return (
-      <Modal title={this.msg('sendShipment')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('sendShipment')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="horizontal">

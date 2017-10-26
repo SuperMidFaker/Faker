@@ -109,7 +109,7 @@ export default class NominatedImport extends React.Component {
   render() {
     const { form: { getFieldDecorator }, visibleNominatedModal, slaves } = this.props;
     return (
-      <Modal title={this.msg('nominatedBroker')} visible={visibleNominatedModal}
+      <Modal maskClosable={false} title={this.msg('nominatedBroker')} visible={visibleNominatedModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <FormItem>

@@ -176,7 +176,7 @@ export default class AddDetailModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal visible={visible} title="货品明细" onOk={this.submit} onCancel={this.handleCancel}>
+      <Modal maskClosable={false} visible={visible} title="货品明细" onOk={this.submit} onCancel={this.handleCancel}>
         <Form layout="horizontal">
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {

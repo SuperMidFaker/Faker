@@ -118,7 +118,7 @@ export default class WareHouseModal extends Component {
     const { province, city, district, street } = this.state;
     const regionValues = [province, city, district, street];
     return (
-      <Modal title="编辑仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>
+      <Modal maskClosable={false} title="编辑仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>
         <Form>
           <FormItem {...formItemLayout} label="仓库模式" >
             {

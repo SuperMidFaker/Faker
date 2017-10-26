@@ -198,7 +198,7 @@ export default class HeaderNavBar extends React.Component {
         <div className="navbar-search">
           <input type="search" placeholder={this.msg('search')} />
         </div>
-        <Modal visible={this.state.visible} footer={[]}
+        <Modal maskClosable={false} visible={this.state.visible} footer={[]}
           title={formatMsg(intl, 'userLanguage')} onCancel={this.handleCancel}
         >
           <div style={{ textAlign: 'center' }}>

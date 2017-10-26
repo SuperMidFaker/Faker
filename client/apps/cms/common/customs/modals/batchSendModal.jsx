@@ -175,7 +175,7 @@ export default class BatchSendModal extends React.Component {
       },
     }];
     return (
-      <Modal title={this.msg('sendBatchDeclMsgs')} visible={visible} width={800}
+      <Modal maskClosable={false} title={this.msg('sendBatchDeclMsgs')} visible={visible} width={800}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Table size="middle" rowKey="agent_name" columns={columns} dataSource={this.state.bodies}

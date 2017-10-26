@@ -105,7 +105,7 @@ export default class ShippingModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal title="发货确认" maskClosable={false} onOk={this.handleSubmit} onCancel={this.handleCancel} confirmLoading={submitting} visible={this.props.visible}>
+      <Modal maskClosable={false} title="发货确认" onOk={this.handleSubmit} onCancel={this.handleCancel} confirmLoading={submitting} visible={this.props.visible}>
         <Form>
           <FormItem {...formItemLayout} label="发货方式" >
             <Radio.Group value={shippingMode} onChange={this.handleChange}>

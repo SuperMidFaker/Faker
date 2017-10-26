@@ -156,7 +156,7 @@ export default class TariffRatesForm extends React.Component {
             </Col>
           </Row>
         </div>
-        <Modal closable={false} maskClosable={false} footer={[]} visible={inUpload}>
+        <Modal maskClosable={false} closable={false} footer={[]} visible={inUpload}>
           <Progress type="circle" percent={uploadPercent} status={uploadStatus}
             style={{ display: 'block', margin: '0 auto', width: '40%' }}
           />

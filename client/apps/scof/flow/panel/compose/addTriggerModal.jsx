@@ -352,8 +352,8 @@ export default class AddTriggerModal extends React.Component {
     const { visible, serviceTeamMembers } = this.props;
     const { actions, bizobjExecutes, creatableBizObjects } = this.state;
     return (
-      <Modal title={this.msg('triggerActions')}
-        width={800} visible={visible} maskClosable={false}
+      <Modal maskClosable={false} title={this.msg('triggerActions')}
+        width={800} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="vertical">

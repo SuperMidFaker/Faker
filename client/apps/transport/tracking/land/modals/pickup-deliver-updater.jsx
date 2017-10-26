@@ -100,7 +100,7 @@ export default class PickupDeliverUpdater extends React.Component {
     }
 
     return (
-      <Modal title={title} onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal maskClosable={false} title={title} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
         <Alert message={warningMessage} type="warning" showIcon style={{ display: warningMessage === '' ? 'none' : '' }} />

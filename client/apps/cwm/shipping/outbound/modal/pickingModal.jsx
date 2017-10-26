@@ -88,7 +88,7 @@ export default class PickingModal extends Component {
       wrapperCol: { span: 14 },
     };
     return (
-      <Modal title="拣货确认" maskClosable={false} onOk={this.handleSubmit} onCancel={this.handleCancel} confirmLoading={submitting} visible={this.props.visible}>
+      <Modal maskClosable={false} title="拣货确认" onOk={this.handleSubmit} onCancel={this.handleCancel} confirmLoading={submitting} visible={this.props.visible}>
         <Form>
           {pickMode === 'single' && <FormItem {...formItemLayout} label="目标库位" >
             {

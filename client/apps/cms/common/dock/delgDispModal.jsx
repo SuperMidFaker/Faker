@@ -125,7 +125,7 @@ export default class DelgDispModal extends Component {
     const { form: { getFieldDecorator }, partners, delgDisp, delgDispShow, fieldInits } = this.props;
     const { appoint, ciqSups } = this.state;
     return (
-      <Modal visible={delgDispShow} title="分配" onOk={this.handleSave} onCancel={this.handleCancel} >
+      <Modal maskClosable={false} visible={delgDispShow} title="分配" onOk={this.handleSave} onCancel={this.handleCancel} >
         <Form layout="vertical">
           <FormItem label="报关代理">
             {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name }

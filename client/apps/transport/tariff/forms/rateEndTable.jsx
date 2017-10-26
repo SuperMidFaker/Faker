@@ -273,7 +273,7 @@ export default class RateEndTable extends React.Component {
         <DataTable size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
           dataSource={this.dataSource}
         />
-        <Modal visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
+        <Modal maskClosable={false} visible={visibleModal} onOk={this.handleSave} onCancel={this.handleCancel}>
           <Form layout="horizontal">
             <FormItem label="目的地" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               <RegionCascader defaultRegion={editRegion} onChange={this.handleRegionChange} />

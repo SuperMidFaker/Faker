@@ -57,7 +57,7 @@ export default class ExportPDF extends React.Component {
     ];
     return (
       <span>
-        <Modal title={`${this.msg('exportPDF')} ${shipmtNo}`}
+        <Modal maskClosable={false} title={`${this.msg('exportPDF')} ${shipmtNo}`}
           visible={this.state.visible}
           onOk={this.handleOk}
           onCancel={this.handleClose}

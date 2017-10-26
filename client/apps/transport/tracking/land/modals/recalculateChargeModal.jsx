@@ -78,8 +78,8 @@ export default class RecalculateChargeModal extends React.Component {
   render() {
     const { intl, charges: { revenue, expense } } = this.props;
     return (
-      <Modal title="修改费用" onCancel={this.handleCancel} onOk={this.handleOk}
-        visible={this.props.visible} maskClosable={false}
+      <Modal maskClosable={false} title="修改费用" onCancel={this.handleCancel} onOk={this.handleOk}
+        visible={this.props.visible}
       >
         <Alert type="info" message="代垫费用需单独添加" />
         {revenue.need_recalculate === 1 &&

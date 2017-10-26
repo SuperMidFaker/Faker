@@ -85,7 +85,7 @@ export default class MarkModal extends Component {
   render() {
     const { showMarkModal, data } = this.props;
     return (
-      <Modal visible={showMarkModal} title={this.msg('markState')} onCancel={this.handleCancel} onOk={this.handleSave}>
+      <Modal maskClosable={false} visible={showMarkModal} title={this.msg('markState')} onCancel={this.handleCancel} onOk={this.handleSave}>
         <Table columns={this.columns} dataSource={data} pagination={false} scroll={{ y: 200 }} />
       </Modal>
     );

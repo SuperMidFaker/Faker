@@ -73,7 +73,7 @@ export default class CreateQtModal extends React.Component {
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
     return (
-      <Modal title={this.msg('publishTitle')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('publishTitle')} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form layout="horizontal">

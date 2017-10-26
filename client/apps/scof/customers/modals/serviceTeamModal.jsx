@@ -79,7 +79,7 @@ export default class ServiceTeamModal extends React.Component {
     const { visible, tenantUsers } = this.props;
     const { targetKeys, selectedKeys } = this.state;
     return (
-      <Modal visible={visible} title="添加成员至服务团队" onCancel={this.handleCancel} onOk={this.handleAdd} width={600}>
+      <Modal maskClosable={false} visible={visible} title="添加成员至服务团队" onCancel={this.handleCancel} onOk={this.handleAdd} width={600}>
         <Transfer
           dataSource={tenantUsers}
           titles={['所有成员', '服务团队']}

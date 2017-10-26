@@ -211,7 +211,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
   render() {
     const { advanceParties, advDirection, visible, delgNo, fees } = this.props;
     return (
-      <Modal title={`${delgNo} ${advDirection === 'send' ? this.msg('cushCost') : this.msg('cushBill')}`}
+      <Modal maskClosable={false} title={`${delgNo} ${advDirection === 'send' ? this.msg('cushCost') : this.msg('cushBill')}`}
         onOk={this.handleOk} onCancel={this.handleCancel} visible={visible}
       >
         {

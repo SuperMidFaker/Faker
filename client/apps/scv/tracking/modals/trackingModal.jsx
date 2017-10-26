@@ -127,7 +127,7 @@ export default class TrackingModal extends React.Component {
       </Select>
     );
     return (
-      <Modal title={this.state.title} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={680}>
+      <Modal maskClosable={false} title={this.state.title} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={680}>
         <FormItem label="跟踪表名称:" required>
           <Input value={this.state.name} onChange={e => this.setState({ name: e.target.value })} />
         </FormItem>
