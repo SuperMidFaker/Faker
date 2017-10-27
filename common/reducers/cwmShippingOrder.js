@@ -25,8 +25,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shipping/', [
   'CANCEL_OUTBOUND', 'CANCEL_OUTBOUND_SUCCEED', 'CANCEL_OUTBOUND_FAIL',
   'CLOSE_OUTBOUND', 'CLOSE_OUTBOUND_SUCCEED', 'CLOSE_OUTBOUND_FAIL',
   'SHOW_ASN_SELECT', 'HIDE_ASN_SELECT',
-  'UPDATE_DELIVERY_TYPE', 'UPDATE_DELIVERY_TYPE_SUCCEED', 'UPDATE_DELIVERY_TYPE_FAIL',
-  'UPDATE_SO_CARRIER', 'UPDATE_SO_CARRIER_SUCCEED', 'UPDATE_SO_CARRIER_FAIL',
+  'UPDATE_SOHEAD', 'UPDATE_SOHEAD_SUCCEED', 'UPDATE_SOHEAD_FAIL',
 ]);
 
 const initialState = {
@@ -41,6 +40,7 @@ const initialState = {
       uuid: '',
     },
   },
+  dockLoading: false,
   solist: {
     totalCount: 0,
     pageSize: 20,
@@ -117,11 +117,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CANCEL_OUTBOUND_SUCCEED:
       return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
     case actionTypes.CLOSE_OUTBOUND_SUCCEED:
-      return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
+      return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false }, dockLoading: false };
     case actionTypes.SHOW_ASN_SELECT:
       return { ...state, asnSelectModal: { ...state.asnSelectModal, visible: true } };
     case actionTypes.HIDE_ASN_SELECT:
       return { ...state, asnSelectModal: { ...state.asnSelectModal, visible: false } };
+    case actionTypes.GET_SO:
+    case actionTypes.CLOSE_OUTBOUND:
+      return { ...state, dockLoading: true };
+    case actionTypes.GET_SO_SUCCEED:
+    case actionTypes.GET_SO_FAIL:
+    case actionTypes.CLOSE_OUTBOUND_FAIL:
+      return { ...state, dockLoading: false };
     default:
       return state;
   }
@@ -473,32 +480,17 @@ export function hideAsnSelectModal() {
   };
 }
 
-export function updateDeliveryType(soNo, type, reset) {
+export function updateSoHead(soNo, updates) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.UPDATE_DELIVERY_TYPE,
-        actionTypes.UPDATE_DELIVERY_TYPE_SUCCEED,
-        actionTypes.UPDATE_DELIVERY_TYPE_FAIL,
+        actionTypes.UPDATE_SOHEAD,
+        actionTypes.UPDATE_SOHEAD_SUCCEED,
+        actionTypes.UPDATE_SOHEAD_FAIL,
       ],
-      endpoint: 'v1/cwm/delivery/update',
+      endpoint: 'v1/cwm/so/head/update/fields',
       method: 'post',
-      data: { soNo, type, reset },
-    },
-  };
-}
-
-export function updateSoCarrier(name, code, soNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.UPDATE_SO_CARRIER,
-        actionTypes.UPDATE_SO_CARRIER_SUCCEED,
-        actionTypes.UPDATE_SO_CARRIER_FAIL,
-      ],
-      endpoint: 'v1/cwm/so/carrier/update',
-      method: 'post',
-      data: { name, code, soNo },
+      data: { updates, soNo },
     },
   };
 }

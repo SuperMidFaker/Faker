@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Row, Col, Card, Table, Menu, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadCarriers } from 'common/reducers/cwmWarehouse';
-import { updateDeliveryType, updateSoCarrier } from 'common/reducers/cwmShippingOrder';
+import { updateSoHead } from 'common/reducers/cwmShippingOrder';
 import { CWM_SO_TYPES, CWM_SO_BONDED_REGTYPES, DELIVER_TYPES, COURIERS } from 'common/constants';
 // import Strip from 'client/components/Strip';
 // import { MdIcon } from 'client/components/FontIcon';
@@ -21,7 +21,7 @@ const Panel = Collapse.Panel;
     order: state.crmOrders.dock.order,
     defaultWhse: state.cwmContext.defaultWhse,
     carriers: state.cwmWarehouse.carriers,
-  }), { loadCarriers, updateDeliveryType, updateSoCarrier }
+  }), { loadCarriers, updateSoHead }
 )
 export default class SOPane extends React.Component {
   static propTypes = {
@@ -62,26 +62,27 @@ export default class SOPane extends React.Component {
     title: '批次号',
     dataIndex: 'external_lot_no',
   }]
-  updateDeliveryType = (value) => {
+  handleDeliveryTypeUpdate = (ev) => {
     const { soHead } = this.props;
-    if (soHead.delivery_type && ((soHead.delivery_type !== 3 && Number(value) === 3) || (soHead.delivery_type === 3 && Number(value) !== 3))) {
-      this.props.updateDeliveryType(soHead.so_no, value, true).then((result) => {
-        if (!result.error) {
-          this.props.reload(soHead.so_no);
-          message.success('修改成功');
-        }
-      });
-    } else {
-      this.props.updateDeliveryType(soHead.so_no, value, false).then((result) => {
-        if (!result.error) {
-          this.props.reload(soHead.so_no);
-          message.success('修改成功');
-        }
-      });
-    }
+    const value = ev.key;
+    this.props.updateSoHead(soHead.so_no, {
+      delivery_type: value,
+      carrier_code: '',
+      carrier_name: '',
+    }).then((result) => {
+      if (!result.error) {
+        this.props.reload(soHead.so_no);
+        message.success('修改成功');
+      }
+    });
   }
-  updateCarrier = (value) => {
+  handleCarrierUpdate = (ev) => {
     const { carriers, soHead } = this.props;
+    if (!soHead.delivery_type) {
+      message.error('先选择配送方式');
+      return;
+    }
+    const value = ev.value;
     let carrier;
     if (soHead.delivery_type !== 3) {
       carrier = carriers.filter(item => item.owner_partner_id === soHead.owner_partner_id).find(item => item.code === value);
@@ -89,7 +90,7 @@ export default class SOPane extends React.Component {
       carrier = COURIERS.find(item => item.code === value);
     }
     if (carrier) {
-      this.props.updateSoCarrier(carrier.name, carrier.code, soHead.so_no).then((result) => {
+      this.props.updateSoHead(soHead.so_no, { carrier_name: carrier.name, carrier_code: carrier.code }).then((result) => {
         if (!result.error) {
           this.props.reload(soHead.so_no);
           message.success('修改成功');
@@ -97,13 +98,21 @@ export default class SOPane extends React.Component {
       });
     }
   }
+  handleExpressNoUpdate = (value) => {
+    this.props.updateSoHead(this.props.soHead.so_no, { express_no: value }).then((result) => {
+      if (!result.error) {
+        this.props.reload(this.props.soHead.so_no);
+        message.success('修改成功');
+      }
+    });
+  }
   render() {
     const { soHead, carriers } = this.props;
     const contactNumber = `${soHead.receiver_phone || ''} ${soHead.receiver_number || ''}`;
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }} noHovering>
-          <Collapse bordered={false} defaultActiveKey={['main', 'receiver', 'asnDetails']}>
+          <Collapse bordered={false} defaultActiveKey={['main', 'receiver', 'carrier']}>
             <Panel header="主信息" key="main">
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
@@ -151,7 +160,7 @@ export default class SOPane extends React.Component {
                   <InfoItem label="配送方式" field={soHead.delivery_type && DELIVER_TYPES.find(item => item.value === soHead.delivery_type).name}
                     editable
                     type="dropdown"
-                    overlay={<Menu onClick={e => this.updateDeliveryType(e.key)}>
+                    overlay={<Menu onClick={this.handleDeliveryTypeUpdate}>
                       {DELIVER_TYPES.map(item => (<Menu.Item key={item.value}>{item.name}</Menu.Item>))}
                     </Menu>}
                   />
@@ -160,7 +169,7 @@ export default class SOPane extends React.Component {
                   <InfoItem label="承运人" field={soHead.carrier_name}
                     editable
                     type="dropdown"
-                    overlay={<Menu onClick={e => this.updateCarrier(e.key)}>
+                    overlay={<Menu onClick={this.handleCarrierUpdate}>
                       {soHead.delivery_type !== 3 ?
                                 carriers.map(c => (<Menu.Item key={c.code}>{c.name}</Menu.Item>)) :
                                 COURIERS.map(c => (<Menu.Item key={c.code}>{c.name}</Menu.Item>))}
@@ -168,7 +177,7 @@ export default class SOPane extends React.Component {
                   />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="快递单号" field={''} editable onEdit={() => this.update} />
+                  <InfoItem label="运单号" field={soHead.express_no} editable onEdit={this.handleExpressNoUpdate} />
                 </Col>
               </Row>
             </Panel>

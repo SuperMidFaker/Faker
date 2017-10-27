@@ -60,7 +60,10 @@ export default class AddDetailModal extends Component {
     const { visible } = this.props;
     const { dataSource } = this.state;
     const columns = [{
-      title: 'asnNo',
+      title: '客户订单号',
+      dataIndex: 'po_no',
+    }, {
+      title: 'ASN',
       dataIndex: 'asn_no',
     }, {
       title: '入库日期',

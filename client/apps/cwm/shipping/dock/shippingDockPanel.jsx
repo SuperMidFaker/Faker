@@ -30,6 +30,7 @@ const TabPane = Tabs.TabPane;
     order: state.cwmShippingOrder.dock.order,
     defaultWhse: state.cwmContext.defaultWhse,
     uuid: state.cwmShippingOrder.dock.order.uuid,
+    loading: state.cwmShippingOrder.dockLoading,
   }),
   { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, loadOrderDetail, cancelOutbound, closeOutbound }
 )
@@ -225,11 +226,11 @@ export default class ShippingDockPanel extends React.Component {
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
   render() {
-    const { visible } = this.props;
+    const { visible, loading } = this.props;
     const { soHead } = this.state;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
-        title={this.renderTitle()}
+        title={this.renderTitle()} loading={loading}
         status={this.renderStatus(soHead.status)}
         statusText={this.renderStatusMsg(soHead.status)}
         overlay={this.renderMenu()}
