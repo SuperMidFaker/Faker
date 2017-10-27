@@ -50,7 +50,7 @@ export function hideImportModal() {
   };
 }
 
-export function loadManualLists({ pageSize, current }) {
+export function loadManualLists({ pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -60,7 +60,7 @@ export function loadManualLists({ pageSize, current }) {
       ],
       endpoint: 'v1/cms/manuals/load',
       method: 'get',
-      params: { pageSize, current },
+      params: { pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
