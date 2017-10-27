@@ -160,6 +160,13 @@ export default class ManualList extends Component {
       current: this.props.manuallist.current,
     });
   }
+  handleSearch = (value) => {
+    this.props.loadManualLists({
+      pageSize: this.props.manuallist.pageSize,
+      current: this.props.manuallist.current,
+      filters: { text: value },
+    });
+  }
   render() {
     const { loading } = this.props.loading;
     const rowSelection = {
@@ -169,7 +176,7 @@ export default class ManualList extends Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
+      <SearchBar placeholder={this.msg('搜索手/账册编号')} size="large"
         onInputSearch={this.handleSearch}
       /></span>);
     const dataSource = new DataTable.DataSource({
@@ -187,6 +194,7 @@ export default class ManualList extends Component {
         const params = {
           pageSize: pagination.pageSize,
           current: pagination.current,
+          filters: { text: this.state.searchInput },
         };
         return params;
       },
