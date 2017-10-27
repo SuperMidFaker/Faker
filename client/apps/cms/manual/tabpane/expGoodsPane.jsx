@@ -1,9 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { Input } from 'antd';
 import DataPane from 'client/components/DataPane';
+import TrimSpan from 'client/components/trimSpan';
+import { loadManualGoods } from 'common/reducers/cmsTradeManual';
+import { DELG_EXEMPTIONWAY } from 'common/constants';
 
 const Search = Input.Search;
 
@@ -11,16 +14,31 @@ const Search = Input.Search;
 @connect(
   state => ({
     tenantId: state.account.tenantId,
+    units: state.cmsManifest.params.units.map(un => ({
+      value: un.unit_code,
+      text: un.unit_name,
+    })),
+    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+      value: tc.cntry_co,
+      text: tc.cntry_name_cn,
+    })),
+    currencies: state.cmsManifest.params.currencies.map(cr => ({
+      value: cr.curr_code,
+      text: cr.curr_name,
+      rate_cny: cr.rate_CNY,
+    })),
   }),
-  { }
+  { loadManualGoods }
 )
 export default class ExpGoodsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    manualNo: PropTypes.string.isRequired,
   }
   state = {
     searchValue: '',
     loading: false,
+    dataSource: [],
   }
   componentWillMount() {
     this.handleLoad();
@@ -31,12 +49,13 @@ export default class ExpGoodsPane extends React.Component {
     }
   }
   handleLoad = () => {
-    /*
-    this.setState({ loading: true });
-    this.props.loadShipDetails(this.props.outboundNo).then(() => {
-      this.setState({ loading: false });
+    this.props.loadManualGoods(this.props.manualNo, 'EXG').then((result) => {
+      if (!result.error) {
+        this.setState({
+          dataSource: result.data,
+        });
+      }
     });
-    */
   }
   handleSearch = (value) => {
     this.setState({ searchValue: value });
@@ -65,10 +84,12 @@ export default class ExpGoodsPane extends React.Component {
     title: '计量单位',
     dataIndex: 'g_unit',
     width: 150,
+    render: o => <TrimSpan text={this.props.units.find(u => u.value === o) && this.props.units.find(u => u.value === o).text} />,
   }, {
     title: '法定计量单位',
     dataIndex: 'unit_1',
     width: 100,
+    render: o => <TrimSpan text={this.props.units.find(u => u.value === o) && this.props.units.find(u => u.value === o).text} />,
   }, {
     title: '申报数量',
     dataIndex: 'dec_qty',
@@ -83,25 +104,24 @@ export default class ExpGoodsPane extends React.Component {
   }, {
     title: '币制',
     dataIndex: 'currency',
+    render: o => <TrimSpan text={this.props.currencies.find(cu => cu.value === o) && this.props.currencies.find(cu => cu.value === o).text} />,
   }, {
     title: '产销国',
     width: 100,
     dataIndex: 'country',
+    render: o => <TrimSpan text={this.props.countries.find(co => co.value === o) && this.props.countries.find(co => co.value === o).text} />,
   }, {
     title: '征免方式',
     width: 100,
     dataIndex: 'duty_mode',
-  }, {
-    title: '征税比例',
-    width: 100,
-    dataIndex: 'duty_rate',
+    render: o => <TrimSpan text={DELG_EXEMPTIONWAY.find(way => way.value === o) && DELG_EXEMPTIONWAY.find(way => way.value === o).text} />,
   }, {
     title: '备注',
     width: 100,
     dataIndex: 'remark',
   }]
   render() {
-    // const { shipDetails } = this.props;
+    const { dataSource } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -111,7 +131,7 @@ export default class ExpGoodsPane extends React.Component {
     return (
       <DataPane fullscreen={this.props.fullscreen}
         columns={this.columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={null} rowKey="id" loading={this.state.loading}
+        dataSource={dataSource} rowKey="id" loading={this.state.loading}
       >
         <DataPane.Toolbar>
           <Search size="large" placeholder="商品编码" style={{ width: 200 }} onSearch={this.handleSearch} />

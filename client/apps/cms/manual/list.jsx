@@ -154,6 +154,12 @@ export default class ManualList extends Component {
   handleCreateBtnClick = () => {
     this.props.showImportModal();
   }
+  handleReload = () => {
+    this.props.loadManualLists({
+      pageSize: this.props.manuallist.pageSize,
+      current: this.props.manuallist.current,
+    });
+  }
   render() {
     const { loading } = this.props.loading;
     const rowSelection = {
@@ -207,7 +213,7 @@ export default class ManualList extends Component {
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} dataSource={dataSource} rowKey="manual_no" loading={loading}
           />
-          <ImportModal />
+          <ImportModal reload={this.handleReload} />
         </Content>
       </Layout>
     );
