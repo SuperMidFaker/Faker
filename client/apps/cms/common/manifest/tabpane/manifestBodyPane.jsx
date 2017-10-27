@@ -20,7 +20,7 @@ import { dividGrossWt } from './helper';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
-import DeclBodyImportModal from '../modals/DeclBodyImportModal';
+import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -949,7 +949,7 @@ export default class ManifestBodyPane extends React.Component {
         <RelateImportRuleModal />
         <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
-        <DeclBodyImportModal reload={() => this.handleReload(true)} />
+        <ImportDeclaredBodyModal reload={() => this.handleReload(true)} />
       </DataPane>
     );
   }

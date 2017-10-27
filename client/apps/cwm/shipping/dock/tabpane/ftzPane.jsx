@@ -70,7 +70,7 @@ export default class FTZPane extends React.Component {
     dataIndex: 'product_no',
     width: 120,
   }, {
-    title: 'HS编码',
+    title: '商品编码',
     dataIndex: 'hscode',
     width: 150,
   }, {

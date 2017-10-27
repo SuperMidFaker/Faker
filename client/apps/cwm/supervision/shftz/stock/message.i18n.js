@@ -56,7 +56,7 @@ const messages = defineMessages({
   },
   hsCode: {
     id: 'cwm.supervision.shftz.stock.hsCode',
-    defaultMessage: 'HS编码',
+    defaultMessage: '商品编码',
   },
   gName: {
     id: 'cwm.supervision.shftz.stock.gName',

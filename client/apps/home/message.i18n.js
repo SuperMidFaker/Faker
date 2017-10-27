@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 const messages = defineMessages({
   applications: {
     id: 'home.applications',
-    defaultMessage: '业务系统',
+    defaultMessage: '业务应用',
   },
   openPlatform: {
     id: 'home.hub',

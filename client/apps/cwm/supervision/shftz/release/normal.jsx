@@ -207,7 +207,7 @@ export default class SHFTZRelDetail extends Component {
     dataIndex: 'product_no',
     width: 160,
   }, {
-    title: 'HS编码',
+    title: '商品编码',
     dataIndex: 'hscode',
     width: 100,
   }, {

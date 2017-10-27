@@ -33,15 +33,15 @@ export default class DataHubPack extends React.Component {
               defaultOpenKeys={['integration', 'api']}
               mode="inline"
             >
-              <MenuItemGroup key="integration" title="应用">
-                <Menu.Item key="installed">
-                  <NavLink to="/hub/integration/installed">
-                    <Icon type="appstore-o" />应用整合
-                  </NavLink>
-                </Menu.Item>
+              <MenuItemGroup key="integration" title="整合">
                 <Menu.Item key="apps">
                   <NavLink to="/hub/integration/apps">
-                    <Icon type="shop" />应用商店
+                    <Icon type="shop" />系统整合
+                  </NavLink>
+                </Menu.Item>
+                <Menu.Item key="installed">
+                  <NavLink to="/hub/integration/installed">
+                    <Icon type="appstore-o" />整合管理
                   </NavLink>
                 </Menu.Item>
               </MenuItemGroup>

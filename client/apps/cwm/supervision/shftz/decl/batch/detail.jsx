@@ -146,7 +146,7 @@ export default class BatchDeclDetail extends Component {
       }
     },
   }, {
-    title: 'HS编码',
+    title: '商品编码',
     dataIndex: 'hscode',
     width: 120,
   }, {

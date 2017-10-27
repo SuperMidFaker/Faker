@@ -120,7 +120,7 @@ export default class TransferSelfModal extends Component {
     dataIndex: 'ftz_ent_detail_id',
     width: 120,
   }, {
-    title: 'HS编码',
+    title: '商品编码',
     dataIndex: 'hscode',
     width: 120,
   }, {

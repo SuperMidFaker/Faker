@@ -106,7 +106,7 @@ export default class NormalDeclModal extends Component {
       }
     },
   }, {
-    title: 'HS编码',
+    title: '商品编码',
     dataIndex: 'hscode',
     width: 120,
   }, {

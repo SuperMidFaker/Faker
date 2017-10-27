@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   integration: {
     id: 'hub.integration',
-    defaultMessage: '应用整合',
+    defaultMessage: '整合管理',
   },
   integrationDesc: {
     id: 'hub.integration.desc',
@@ -16,7 +16,7 @@ const messages = defineMessages({
   },
   appsStore: {
     id: 'hub.integration.apps.store',
-    defaultMessage: '应用商店',
+    defaultMessage: '系统整合',
   },
   installedApps: {
     id: 'hub.integration.installed.apps',

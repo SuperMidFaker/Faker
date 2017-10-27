@@ -83,7 +83,7 @@ export default class ImportModal extends Component {
             }),
           }} onUploaded={this.manualUploaded}
         >
-          <Button type="primary" onClick={this.handleOk} disabled={!ownerPartnerId}>确定</Button>
+          <Button type="primary" onClick={this.handleOk} disabled={!ownerPartnerId}>上传</Button>
         </ExcelUploader>
       </span>} onCancel={this.handleCancel}
       >

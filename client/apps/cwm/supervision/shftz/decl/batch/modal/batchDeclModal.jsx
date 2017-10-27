@@ -129,7 +129,7 @@ export default class BatchDeclModal extends Component {
     dataIndex: 'ftz_rel_detail_id',
     width: 120,
   }, {
-    title: 'HS编码',
+    title: '商品编码',
     dataIndex: 'hscode',
     width: 120,
   }, {

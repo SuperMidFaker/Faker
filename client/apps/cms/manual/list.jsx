@@ -7,7 +7,6 @@ import { Breadcrumb, Button, Layout } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import PageHint from 'client/components/PageHint';
 import TrimSpan from 'client/components/trimSpan';
 import connectNav from 'client/common/decorators/connect-nav';
 import SearchBar from 'client/components/SearchBar';
@@ -198,8 +197,7 @@ export default class ManualList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <PageHint />
-            <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
+            <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="upload">
               {this.msg('导入')}
             </Button>
           </PageHeader.Actions>

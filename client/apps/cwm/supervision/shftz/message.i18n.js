@@ -7,7 +7,7 @@ const messages = defineMessages({
   },
   ftzTransferIn: {
     id: 'cwm.supervision.shftz.transfer.in',
-    defaultMessage: '区内转入',
+    defaultMessage: '区内移库转入',
   },
   ftzReleaseReg: {
     id: 'cwm.supervision.shftz.release.reg',
@@ -15,7 +15,7 @@ const messages = defineMessages({
   },
   ftzTransferOut: {
     id: 'cwm.supervision.shftz.transfer.out',
-    defaultMessage: '区内转出',
+    defaultMessage: '区内移库转出',
   },
   ftzNormalDecl: {
     id: 'cwm.supervision.shftz.normal.decl',

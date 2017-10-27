@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, Table, Switch, Form, Modal, Row, Col, Radio, Select, Tag, Tooltip, Input, message } from 'antd';
+import { Button, Card, Table, Switch, Form, Modal, Row, Col, Radio, Select, Tag, Input, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
 import { toggleDeclImportModal, loadDeclEntries, loadEntryGnoDetails, importDeclBodies } from 'common/reducers/cmsManifestImport';
@@ -47,7 +47,7 @@ const RadioButton = Radio.Button;
   }),
   { toggleDeclImportModal, loadDeclEntries, loadEntryGnoDetails, importDeclBodies }
 )
-export default class DeclBodyImportModal extends Component {
+export default class ImportDeclaredBodyModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     reload: PropTypes.func.isRequired,
@@ -112,7 +112,7 @@ export default class DeclBodyImportModal extends Component {
     dataIndex: 'cop_g_no',
     width: 150,
   }, {
-    title: 'HS编码',
+    title: '商品编码',
     dataIndex: 'hscode',
     width: 120,
     render: (hs, row) => `${row.code_s || ''}${row.code_t || ''}`,
@@ -222,14 +222,14 @@ export default class DeclBodyImportModal extends Component {
     this.setState({ clearDateRange });
   }
   handleCusDeclQuery = () => {
-    const { ietype, cusDeclNo, filtered/* , clearDateRange*/ } = this.state;
+    const { ietype, cusDeclNo, filtered /* , clearDateRange */ } = this.state;
     this.props.loadDeclEntries({
       owner_custco: this.props.head.owner_custco,
       entry_no: cusDeclNo,
       ietype,
       filtered,
       /* start_date: clearDateRange.length === 2 ? clearDateRange[0].valueOf() : undefined,
-      end_date: clearDateRange.length === 2 ? clearDateRange[1].valueOf() : undefined,*/
+      end_date: clearDateRange.length === 2 ? clearDateRange[1].valueOf() : undefined, */
     });
   }
   handleDeclImport = (action) => {
@@ -275,7 +275,7 @@ export default class DeclBodyImportModal extends Component {
     this.setState({ destCountry });
   }
   render() {
-    const { submitting, exemptions, tradeCountries, head } = this.props;
+    const { submitting, exemptions, tradeCountries } = this.props;
     const { cusDeclNo, entryDetails, dutyMode, destCountry, filtered, ietype } = this.state;
     const dataSource = entryDetails.filter((item) => {
       if (this.state.addedEntryId) {
@@ -286,19 +286,20 @@ export default class DeclBodyImportModal extends Component {
       }
     });
     const title = (<div>
-      <span>导入报关单表体</span>
+      <span>复制历史数据</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" loading={submitting} disabled={entryDetails.length === 0 || !filtered} onClick={() => this.handleDeclImport('mark')}>标记保存</Button>
-        <Button type="primary" loading={submitting} disabled={entryDetails.length === 0} onClick={() => this.handleDeclImport('copy')}>只复用</Button>
+        <Button type="primary" ghost loading={submitting} disabled={entryDetails.length === 0 || !filtered} onClick={() => this.handleDeclImport('mark')}>复制并标记</Button>
+        <Button type="primary" loading={submitting} disabled={entryDetails.length === 0} onClick={() => this.handleDeclImport('copy')}>复制</Button>
       </div>
     </div>);
-    const mode = this.props.trxModes.filter(cur => cur.value === head.trxn_mode)[0];
-    const trxnMode = mode && `${mode.value}| ${mode.text}`;
+    // const mode = this.props.trxModes.filter(cur => cur.value === head.trxn_mode)[0];
+    // const trxnMode = mode && `${mode.value}| ${mode.text}`;
     return (
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
+        {/*
         <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact" layout="inline">
             <Row gutter={16}>
@@ -320,17 +321,15 @@ export default class DeclBodyImportModal extends Component {
             </Row>
           </Form>
         </Card>
+        */}
         <Form layout="inline">
           <Row gutter={16}>
             <Col span={12}>
-              <Card title="原始报关单" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="来源报关单" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Tooltip title="过滤已标记保存报关单">
-                      <Switch checked={filtered} onChange={this.handleFilterSwitch} />
-                    </Tooltip>
-                    <FormItem label="报关单号">
-                      <Input value={cusDeclNo} onChange={this.handleCusDeclNoChange} />
+                    <FormItem>
+                      <Input placeholder="报关单号" value={cusDeclNo} onChange={this.handleCusDeclNoChange} />
                     </FormItem>
                     <FormItem>
                       <RadioGroup onChange={this.handleIetypeChange} value={ietype}>
@@ -338,6 +337,9 @@ export default class DeclBodyImportModal extends Component {
                         <RadioButton value="import">进口</RadioButton>
                         <RadioButton value="export">出口</RadioButton>
                       </RadioGroup>
+                    </FormItem>
+                    <FormItem label="过滤已标记报关单">
+                      <Switch checked={filtered} onChange={this.handleFilterSwitch} />
                     </FormItem>
                     <Button type="primary" ghost size="large" onClick={this.handleCusDeclQuery}>查找</Button>
                   </div>
@@ -348,7 +350,7 @@ export default class DeclBodyImportModal extends Component {
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="已选报关单表体" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search size="large" placeholder="报关单号" style={{ width: 200 }} onChange={this.handleAddedEntryNoChange}
