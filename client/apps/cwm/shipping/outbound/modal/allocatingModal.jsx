@@ -135,6 +135,9 @@ export default class AllocatingModal extends Component {
           disabled = !(record.ftz_ent_filed_id && record.portion); // 有明细ID 且 是分拨库存时不disable
           reason = disabled ? '货物不可分拨' : '';
         }
+        if (record.priority === 0) {
+          reason = '库位封存';
+        }
         if (!record.avail_qty || record.avail_qty === 0) {  // 可用库存为空或等于0时disable
           disabled = true;
           reason = '库存数量不足';
