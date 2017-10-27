@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Table, Form, Modal, Row, Col, Select, Tag, Input, message, Checkbox } from 'antd';
+import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from '../form/headForm';
@@ -78,6 +79,7 @@ export default class BatchDeclModal extends Component {
     selectedRows: [],
     destCountry: '142',
     dutyMode: '1',
+    leftSpan: 10,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -374,9 +376,16 @@ export default class BatchDeclModal extends Component {
   handleDestCountryChange = (destCountry) => {
     this.setState({ destCountry });
   }
+  handleSpanChange = (ev, toggle) => {
+    if (toggle) {
+      this.setState({ leftSpan: 4 });
+    } else {
+      this.setState({ leftSpan: 10 });
+    }
+  }
   render() {
-    const { submitting, billTemplates, exemptions, tradeCountries } = this.props;
-    const { relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
+    const { submitting, billTemplates, exemptions, owners, tradeCountries } = this.props;
+    const { leftSpan, relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
@@ -392,15 +401,11 @@ export default class BatchDeclModal extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
+    const owner = owners.filter(data => data.customs_code === ownerCusCode)[0];
     const extraForm = (
       <div>
         <FormItem label="货主">
-          <Select placeholder="请选择货主" style={{ width: 200 }} disabled value={ownerCusCode}>
-            {this.props.owners.map(data => (
-              <Option key={data.customs_code} value={data.customs_code}>
-                {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
-              </Option>))}
-          </Select>
+          <span>{owner && `${owner.partner_code || ''}${owner.partner_code ? '|' : ''}${owner.name}`}</span>
         </FormItem>
         <FormItem label="出库单号">
           <Input value={relNo} onChange={this.handleRelNoChange} />
@@ -432,8 +437,10 @@ export default class BatchDeclModal extends Component {
         </Card>
         <Form layout="inline">
           <Row gutter={16}>
-            <Col span={12}>
-              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering>
+            <Col span={leftSpan}>
+              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering extra={
+                <ButtonToggle size="default" iconOff="double-left" iconOn="double-right" onClick={this.handleSpanChange} />}
+              >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     {extraForm}
@@ -444,17 +451,17 @@ export default class BatchDeclModal extends Component {
                 </div>
               </Card>
             </Col>
-            <Col span={12}>
+            <Col span={24 - leftSpan}>
               <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
+                    <Search size="large" placeholder="出库单号" style={{ width: 130 }} onChange={this.handleFtzRelNoChange}
                       onSearch={this.handleSearch} value={this.state.ftzRelNo}
                     />
-                    {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
+                    {this.state.selectedRowKeys.length !== 0 ? <Button onClick={this.batchDelete}>批量删除</Button> :
                     <div className="toolbar-right">
                       <FormItem label="征免方式">
-                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100 }} >
+                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 80 }} >
                           {
                             exemptions.map(data => (
                               <Option key={data.value} search={`${data.search}`} >
@@ -464,7 +471,7 @@ export default class BatchDeclModal extends Component {
                         </Select>
                       </FormItem>
                       <FormItem label="最终目的国">
-                        <Select showSearch showArrow optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100 }}>
+                        <Select showSearch showArrow optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 80 }}>
                           {
                             tradeCountries.map(data => (
                               <Option key={data.value} search={`${data.search}`} >
@@ -474,11 +481,11 @@ export default class BatchDeclModal extends Component {
                         </Select>
                       </FormItem>
                       <FormItem label="制单规则">
-                        <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
+                        <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 130 }} value={template}>
                           {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
                         </Select>
                       </FormItem>
-                    </div>
+                    </div>}
                   </div>
                   <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
                     scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

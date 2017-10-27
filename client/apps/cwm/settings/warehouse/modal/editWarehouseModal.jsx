@@ -4,7 +4,7 @@ import PropType from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Radio, message } from 'antd';
 import { hideEditWhseModal, editWarehouse } from 'common/reducers/cwmWarehouse';
-import { loadWhseContext } from 'common/reducers/cwmContext';
+import { loadWhse, loadWhseContext } from 'common/reducers/cwmContext';
 import { formatMsg } from '../message.i18n';
 import Cascader from 'client/components/RegionCascader';
 
@@ -17,8 +17,9 @@ const FormItem = Form.Item;
     loginId: state.account.loginId,
     visible: state.cwmWarehouse.editWarehouseModal.visible,
     warehouse: state.cwmWarehouse.editWarehouseModal.warehouse,
+    defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { hideEditWhseModal, editWarehouse, loadWhseContext }
+  { hideEditWhseModal, editWarehouse, loadWhseContext, loadWhse }
 )
 @Form.create()
 export default class WareHouseModal extends Component {
@@ -70,10 +71,10 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
-        const { tenantId, loginId } = this.props;
+        const { whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
+        const { tenantId, loginId, warehouse, defaultWhse } = this.props;
         const { bonded, province, city, district, street, regionCode } = this.state;
-        this.props.editWarehouse({
+        this.props.editWarehouse({ whseMode,
           whseCode,
           whseName,
           whseAddress,
@@ -90,9 +91,12 @@ export default class WareHouseModal extends Component {
         }).then(
           (result) => {
             if (!result.error) {
+              this.props.loadWhseContext(tenantId);
+              if (whseMode === 'PRI' && warehouse.code === defaultWhse.code && warehouse.whse_mode !== whseMode) {
+                this.props.loadWhse(warehouse.code, tenantId);
+              }
               message.info('编辑仓库成功');
               this.props.hideEditWhseModal();
-              this.props.loadWhseContext(tenantId);
             }
           }
         );
@@ -123,8 +127,8 @@ export default class WareHouseModal extends Component {
           <FormItem {...formItemLayout} label="仓库模式" >
             {
               getFieldDecorator('whseMode', {
-                initialValue: warehouse.mode,
-              })(<Radio.Group disabled>
+                initialValue: warehouse.whse_mode,
+              })(<Radio.Group>
                 <Radio.Button value="PRI">自营仓库</Radio.Button>
                 <Radio.Button value="PUB">公共仓库</Radio.Button>
               </Radio.Group>)

@@ -53,7 +53,7 @@ export default class OwnersPane extends Component {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.whseCode !== this.props.whseCode) {
+    if (nextProps.whseCode !== this.props.whseCode || nextProps.warehouse.whse_mode !== this.props.warehouse.whse_mode) {
       this.props.loadwhseOwners(nextProps.whseCode, nextProps.whseTenantId);
     }
   }
@@ -196,13 +196,15 @@ export default class OwnersPane extends Component {
     });
   };
   render() {
-    const { whseCode, whseName, whseTenantId, whseOwners } = this.props;
+    const { warehouse, whseCode, whseName, whseTenantId, whseOwners } = this.props;
     return (
-      <DataPane
-        columns={this.columns} dataSource={whseOwners} rowKey="id"
-      >
+      <DataPane columns={this.columns} dataSource={whseOwners} rowKey="id">
         <DataPane.Toolbar>
-          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}>添加货主</Button>
+          <Button disabled={warehouse.whse_mode === 'PRI'} type="primary" size="large"
+            icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}
+          >
+            添加货主
+          </Button>
         </DataPane.Toolbar>
         <WhseOwnersModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
         <OwnerControlModal whseCode={whseCode} reload={this.handleOwnerLoad} />

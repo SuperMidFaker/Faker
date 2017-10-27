@@ -29,7 +29,7 @@ export default class ButtonToggle extends React.Component {
     this.setState({ toggle: !this.state.toggle });
     const onClick = this.props.onClick;
     if (onClick) {
-      onClick(e);
+      onClick(e, !this.state.toggle);
     }
   }
 

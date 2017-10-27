@@ -100,6 +100,7 @@ export default class WhseOwnersModal extends Component {
       code: obj.partner_code,
       whseCode,
       tenantId: obj.partner_tenant_id,
+      customsCode: obj.customs_code,
       whseTenantId: this.props.whseTenantId,
       receivingMode: WHSE_OPERATION_MODES.manual.value,
       shippingMode: WHSE_OPERATION_MODES.manual.value,

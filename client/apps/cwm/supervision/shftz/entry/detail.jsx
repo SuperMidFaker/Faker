@@ -97,7 +97,6 @@ export default class SHFTZEntryDetail extends Component {
         newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
       }
       const owner = nextProps.owners.filter(own => own.customs_code === nextProps.entryRegs[0].owner_cus_code)[0];
-      console.log(owner);
       if (owner && owner.portion_enabled) {
         for (let i = 0; i < this.props.entryRegs.length; i++) {
           const nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
@@ -112,7 +111,7 @@ export default class SHFTZEntryDetail extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
-    if (!this.state.nonCargono) {
+    if (this.state.nonCargono) {
       notification.warn({
         message: '货号未备案',
         description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
@@ -344,13 +343,6 @@ export default class SHFTZEntryDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    let nonCargono = false;
-    for (let i = 0; i < this.props.entryRegs.length; i++) {
-      nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
-      if (nonCargono) {
-        break;
-      }
-    }
     return (
       <div>
         <PageHeader>

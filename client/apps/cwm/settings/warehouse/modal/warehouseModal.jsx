@@ -44,10 +44,10 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
+        const { whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
         const { tenantId, tenantName } = this.props;
         const { isBonded, province, city, district, street, regionCode } = this.state;
-        this.props.addWarehouse({
+        this.props.addWarehouse({ whseMode,
           whseCode,
           whseName,
           whseAddress,
