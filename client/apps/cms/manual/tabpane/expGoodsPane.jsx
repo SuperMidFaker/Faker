@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Input } from 'antd';
 import DataPane from 'client/components/DataPane';
 import TrimSpan from 'client/components/trimSpan';
-import { loadExpGoods } from 'common/reducers/cmsTradeManual';
+import { loadManualGoods } from 'common/reducers/cmsTradeManual';
 import { DELG_EXEMPTIONWAY } from 'common/constants';
 
 const Search = Input.Search;
@@ -28,7 +28,7 @@ const Search = Input.Search;
       rate_cny: cr.rate_CNY,
     })),
   }),
-  { loadExpGoods }
+  { loadManualGoods }
 )
 export default class ExpGoodsPane extends React.Component {
   static propTypes = {
@@ -49,7 +49,7 @@ export default class ExpGoodsPane extends React.Component {
     }
   }
   handleLoad = () => {
-    this.props.loadExpGoods(this.props.manualNo).then((result) => {
+    this.props.loadManualGoods(this.props.manualNo, 'EXG').then((result) => {
       if (!result.error) {
         this.setState({
           dataSource: result.data,

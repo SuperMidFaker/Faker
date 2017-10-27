@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { Input } from 'antd';
 import DataPane from 'client/components/DataPane';
 import TrimSpan from 'client/components/trimSpan';
-import { loadImpGoods } from 'common/reducers/cmsTradeManual';
+import { loadManualGoods } from 'common/reducers/cmsTradeManual';
 import { DELG_EXEMPTIONWAY } from 'common/constants';
 
 const Search = Input.Search;
@@ -28,7 +28,7 @@ const Search = Input.Search;
       rate_cny: cr.rate_CNY,
     })),
   }),
-  { loadImpGoods }
+  { loadManualGoods }
 )
 export default class ImpGoodsPane extends React.Component {
   static propTypes = {
@@ -49,7 +49,7 @@ export default class ImpGoodsPane extends React.Component {
     }
   }
   handleLoad = () => {
-    this.props.loadImpGoods(this.props.manualNo).then((result) => {
+    this.props.loadManualGoods(this.props.manualNo, 'IMG').then((result) => {
       if (!result.error) {
         this.setState({
           dataSource: result.data,

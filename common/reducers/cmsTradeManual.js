@@ -5,8 +5,7 @@ const actionTypes = createActionTypes('@@welogix/cms/manual/', [
   'SHOW_IMPORT_MODAL', 'HIDE_IMPORT_MODAL',
   'LOAD_MANUALS', 'LOAD_MANUALS_SUCCEED', 'LOAD_MANUALS_FAIL',
   'LOAD_MANUAL_HEAD', 'LOAD_MANUAL_HEAD_SUCCEED', 'LOAD_MANUAL_HEAD_FAIL',
-  'LOAD_IMP_GOODS', 'LOAD_IMP_GOODS_SUCCEED', 'LOAD_IMP_GOODS_FAIL',
-  'LOAD_EXP_GOODS', 'LOAD_EXP_GOODS_SUCCEED', 'LOAD_EXP_GOODS_FAIL',
+  'LOAD_MANUAL_GOODS', 'LOAD_MANUAL_GOODS_SUCCEED', 'LOAD_MANUAL_GOODS_FAIL',
 ]);
 
 const initialState = {
@@ -81,32 +80,17 @@ export function loadManualHead(manualNo) {
   };
 }
 
-export function loadImpGoods(manualNo) {
+export function loadManualGoods(manualNo, type) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.LOAD_IMP_GOODS,
-        actionTypes.LOAD_IMP_GOODS_SUCCEED,
-        actionTypes.LOAD_IMP_GOODS_FAIL,
+        actionTypes.LOAD_MANUAL_GOODS,
+        actionTypes.LOAD_MANUAL_GOODS_SUCCEED,
+        actionTypes.LOAD_MANUAL_GOODS_FAIL,
       ],
-      endpoint: 'v1/cms/imp/goods/load',
+      endpoint: 'v1/cms/manual/goods/load',
       method: 'get',
-      params: { manualNo },
-    },
-  };
-}
-
-export function loadExpGoods(manualNo) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_EXP_GOODS,
-        actionTypes.LOAD_EXP_GOODS_SUCCEED,
-        actionTypes.LOAD_EXP_GOODS_FAIL,
-      ],
-      endpoint: 'v1/cms/exp/goods/load',
-      method: 'get',
-      params: { manualNo },
+      params: { manualNo, type },
     },
   };
 }

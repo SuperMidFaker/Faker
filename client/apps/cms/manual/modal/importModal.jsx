@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Form, Select, Button } from 'antd';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
@@ -36,6 +37,7 @@ function fetchData({ state, dispatch }) {
 export default class ImportModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
+    reload: PropTypes.func.isRequired,
   }
   state = {
     ownerPartnerId: '',
@@ -62,6 +64,7 @@ export default class ImportModal extends Component {
   }
   manualUploaded = () => {
     this.handleCancel();
+    this.props.reload();
   }
   render() {
     const { visible, customers } = this.props;
