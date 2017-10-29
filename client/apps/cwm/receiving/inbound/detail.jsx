@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Alert, Badge, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Col, Row, Tabs, Tooltip, Tag } from 'antd';
+import { Alert, Badge, Breadcrumb, Icon, Dropdown, Radio, Layout, Menu, Steps, Button, Card, Tabs, Tooltip, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
-import InfoItem from 'client/components/InfoItem';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DescriptionList from 'client/components/DescriptionList';
+import EditableCell from 'client/components/EditableCell';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
 import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
@@ -18,6 +19,7 @@ import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Step = Steps.Step;
@@ -171,36 +173,20 @@ export default class ReceiveInbound extends Component {
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
           <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-            <Row gutter={16} className="info-group-underline">
-              <Col sm={12} lg={4}>
-                <InfoItem label="货主" field={inboundHead.owner_name} />
-              </Col>
-              <Col sm={12} lg={4}>
-                <InfoItem label="ASN编号" field={inboundHead.asn_no} />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem label="总预期数量" field={inboundHead.total_expect_qty} />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem label="总实收数量" field={inboundHead.total_received_qty} upperLimit={inboundHead.total_expect_qty} />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem label="总立方数" field={inboundHead.total_received_vol}
+            <DescriptionList col={4}>
+              <Description term="货主">{inboundHead.owner_name}</Description>
+              <Description term="ASN编号">{inboundHead.asn_no}</Description>
+              <Description term="总预期数量">{inboundHead.total_expect_qty}</Description>
+              <Description term="总实收数量">{inboundHead.total_received_qty}</Description>
+              <Description term="总立方数">
+                <EditableCell value={inboundHead.total_received_vol}
                   editable={currentStatus < CWM_INBOUND_STATUS.COMPLETED.value}
-                  onEdit={this.handleTotalRecVolChange}
+                  onSave={this.handleTotalRecVolChange}
                 />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                  field={inboundHead.created_date && moment(inboundHead.created_date).format('YYYY.MM.DD HH:mm')}
-                />
-              </Col>
-              <Col sm={12} lg={3}>
-                <InfoItem label="入库时间" addonBefore={<Icon type="clock-circle-o" />}
-                  field={inboundHead.completed_date && moment(inboundHead.completed_date).format('YYYY.MM.DD HH:mm')}
-                />
-              </Col>
-            </Row>
+              </Description>
+              <Description term="创建时间">{inboundHead.created_date && moment(inboundHead.created_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <Description term="入库时间">{inboundHead.completed_date && moment(inboundHead.completed_date).format('YYYY.MM.DD HH:mm')}</Description>
+            </DescriptionList>
             <div className="card-footer">
               <Steps progressDot current={currentStatus}>
                 <Step description="待入库" />

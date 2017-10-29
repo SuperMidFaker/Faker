@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Icon, Form, Layout, Steps, Button, Tabs, Card, Col, Row, Tag, notification } from 'antd';
+import { Breadcrumb, Form, Layout, Steps, Button, Tabs, Card, Col, Row, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
+import EditableCell from 'client/components/EditableCell';
 import Summary from 'client/components/Summary';
 import { loadVirtualTransferDetails, loadParams, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
@@ -19,6 +20,7 @@ import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
 
@@ -144,7 +146,17 @@ export default class SHFTZTransferSelfDetail extends Component {
   }]
   handleInfoSave = (field, value) => {
     const entryAsn = this.props.entryAsn;
-    this.props.updateEntryReg(entryAsn.pre_entry_seq_no, field, value, entryAsn.virtual_transfer);
+    this.props.updateEntryReg(entryAsn.pre_entry_seq_no, field, value, entryAsn.virtual_transfer).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      } else {
+        message.success('修改成功');
+      }
+    });
   }
   handleTransToWhs = () => {
     const { params, entryAsn, tenantId, owners, whse } = this.props;
@@ -277,30 +289,21 @@ export default class SHFTZTransferSelfDetail extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-              <Row gutter={16} className="info-group-underline">
-                <Col sm={12} lg={6}>
-                  <InfoItem label="货主" field={entryAsn.owner_name} />
-                </Col>
-                <Col sm={12} lg={4}>
-                  <InfoItem label="出库单号" field={entryAsn.ftz_rel_no} />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem label="转出时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.ftz_rel_date && moment(entryAsn.ftz_rel_date).format('YYYY.MM.DD HH:mm')} format="YYYY.MM.DD HH:mm"
+              <DescriptionList col={4}>
+                <Description term="货主">{entryAsn.owner_name}</Description>
+                <Description term="出库单号">{entryAsn.ftz_rel_no}</Description>
+                <Description term="转出时间">{entryAsn.ftz_rel_date && moment(entryAsn.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="入库单号">
+                  <EditableCell value={entryAsn.ftz_ent_no}
+                    onSave={value => this.handleInfoSave('ftz_ent_no', value)}
                   />
-                </Col>
-                <Col sm={12} lg={4}>
-                  <InfoItem label="入库单号" field={entryAsn.ftz_ent_no} editable
-                    onEdit={value => this.handleInfoSave('ftz_ent_no', value)}
+                </Description>
+                <Description term="转入时间">
+                  <EditableCell type="date" value={entryAsn.ftz_ent_date && moment(entryAsn.ftz_ent_date).format('YYYY-MM-DD')}
+                    onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
                   />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem label="转入时间" addonBefore={<Icon type="clock-circle-o" />}
-                    type="date" field={entryAsn.ftz_ent_date} editable
-                    onEdit={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
-                  />
-                </Col>
-              </Row>
+                </Description>
+              </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
                   <Step description="待转出" />
@@ -329,7 +332,6 @@ export default class SHFTZTransferSelfDetail extends Component {
                   </DataPane>
                 </TabPane>
               </Tabs>
-
             </MagicCard>
           </Form>
         </Content>

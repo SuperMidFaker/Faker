@@ -8,6 +8,7 @@ import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, R
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import InfoItem from 'client/components/InfoItem';
@@ -18,6 +19,7 @@ import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -391,20 +393,12 @@ export default class BatchDeclDetail extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
-              <Row className="info-group-inline">
-                <Col sm={24} lg={6}>
-                  <InfoItem label="货主" field={batchDecl.owner_name} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="收货单位" field={batchDecl.receiver_name} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="报关代理" field={batchDecl.broker_name} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="备案时间" field={batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY-MM-DD HH:mm')} />
-                </Col>
-              </Row>
+              <DescriptionList col={4}>
+                <Description term="货主">{batchDecl.owner_name}</Description>
+                <Description term="收货单位">{batchDecl.receiver_name}</Description>
+                <Description term="报关代理">{batchDecl.broker_name}</Description>
+                <Description term="备案时间">{batchDecl.reg_date && moment(batchDecl.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+              </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={applyStep}>
                   <Step description="委托制单" />

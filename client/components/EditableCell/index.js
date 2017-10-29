@@ -8,6 +8,9 @@ import './index.less';
 
 const Option = Select.Option;
 export default class EditableCell extends React.Component {
+  static defaultProps = {
+    editable: true,
+  }
   static propTypes = {
     addonBefore: PropTypes.node,
     addonAfter: PropTypes.node,
@@ -19,6 +22,7 @@ export default class EditableCell extends React.Component {
     options: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string.isRequired, text: PropTypes.string.isRequired })),
     onSave: PropTypes.func,
     onCancel: PropTypes.func,
+    editable: PropTypes.bool,
   }
   state = {
     value: this.props.value,
@@ -161,10 +165,11 @@ export default class EditableCell extends React.Component {
   }
   render() {
     const { editMode } = this.state;
+    const { editable } = this.props;
     return (
       <div className="editable-cell">
         {
-          editMode ?
+          editMode && editable ?
             <div className="editable-cell-input-wrapper">
               {this.renderControl()}
             </div>

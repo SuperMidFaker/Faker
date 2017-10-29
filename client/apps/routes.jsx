@@ -75,7 +75,8 @@ import * as CWMSupSHFTZEntry from './cwm/supervision/shftz/entry';
 import * as CWMSupSHFTZTransferIn from './cwm/supervision/shftz/transfer/in';
 import * as CWMSupSHFTZTransferOut from './cwm/supervision/shftz/transfer/out';
 import * as CWMSupSHFTZTransferSelf from './cwm/supervision/shftz/transfer/self';
-import * as CWMSupSHFTZRelease from './cwm/supervision/shftz/release';
+import * as CWMSupSHFTZRelNormal from './cwm/supervision/shftz/release/normal';
+import * as CWMSupSHFTZRelPortion from './cwm/supervision/shftz/release/portion';
 import * as CWMSupSHFTZNormalDecl from './cwm/supervision/shftz/decl/normal';
 import * as CWMSupSHFTZBatchDecl from './cwm/supervision/shftz/decl/batch';
 import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
@@ -502,10 +503,13 @@ export default(store, cookie) => {
                   <IndexRoute component={CWMSupSHFTZTransferSelf.List} />
                   <Route path=":asnNo" component={CWMSupSHFTZTransferSelf.Detail} />
                 </Route>
-                <Route path="release" >
-                  <IndexRoute component={CWMSupSHFTZRelease.List} />
-                  <Route path="normal/:soNo" component={CWMSupSHFTZRelease.Normal} />
-                  <Route path="portion/:soNo" component={CWMSupSHFTZRelease.Portion} />
+                <Route path="release/normal" >
+                  <IndexRoute component={CWMSupSHFTZRelNormal.List} />
+                  <Route path=":soNo" component={CWMSupSHFTZRelNormal.Detail} />
+                </Route>
+                <Route path="release/portion" >
+                  <IndexRoute component={CWMSupSHFTZRelPortion.List} />
+                  <Route path=":soNo" component={CWMSupSHFTZRelPortion.Detail} />
                 </Route>
                 <Route path="transfer/out" >
                   <IndexRoute component={CWMSupSHFTZTransferOut.List} />

@@ -60,7 +60,7 @@ export function addBroker(name, customsCode, code, loginId, loginName, id) {
       ],
       endpoint: 'v1/cms/broker/add',
       method: 'post',
-      data: { name, customsCode, code, loginId, loginName, id  },
+      data: { name, customsCode, code, loginId, loginName, id },
     },
   };
 }

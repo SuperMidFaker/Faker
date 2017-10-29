@@ -77,20 +77,10 @@ export default class BatchDeclList extends React.Component {
   }, {
     title: '报关申请单号',
     dataIndex: 'ftz_apply_no',
-    width: 220,
+    width: 200,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
-    title: '货主',
-    width: 180,
-    dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '收货单位',
-    width: 180,
-    dataIndex: 'receiver_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '状态',
+    title: '备案状态',
     dataIndex: 'status',
     width: 120,
     render: (st) => {
@@ -108,20 +98,34 @@ export default class BatchDeclList extends React.Component {
           return null;
       }
     },
-
+  }, {
+    title: '报关委托编号',
+    width: 120,
+    dataIndex: 'delg_no',
+  }, {
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
+    width: 180,
+  }, {
+    title: '清关状态',
+    width: 100,
+    dataIndex: 'decl_status',
+  }, {
+    title: '货主',
+    width: 180,
+    dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '收货单位',
+    width: 180,
+    dataIndex: 'receiver_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
     width: 150,
     render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '报关委托编号',
-    width: 150,
-    dataIndex: 'delg_no',
-  }, {
-    title: '报关单号',
-    dataIndex: 'cus_decl_no',
-    width: 150,
+
   }, {
     title: '供货商',
     dataIndex: 'supplier',
@@ -193,7 +197,7 @@ export default class BatchDeclList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 200,
+    width: 160,
     fixed: 'right',
     render: (o, record) => (<span>
       <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
@@ -346,15 +350,13 @@ export default class BatchDeclList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
-                <RadioButton value="pending">报关申请</RadioButton>
-                <RadioButton value="sent">已发送</RadioButton>
-                <RadioButton value="applied">申请通过</RadioButton>
+                <RadioButton value="applying">报关申请</RadioButton>
                 <RadioButton value="cleared">报关放行</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBatchDecl}>
-                {this.msg('createBatchDecl')}
+                {this.msg('create')}
               </Button>
             </PageHeader.Actions>
           </PageHeader>

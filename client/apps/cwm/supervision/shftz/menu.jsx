@@ -23,25 +23,33 @@ export default class ModuleMenu extends React.Component {
         mode="inline"
       >
         <Menu.ItemGroup key="g_in" title="入库">
-          <Menu.Item key="entry">
-            <NavLink to="/cwm/supervision/shftz/entry">{this.msg('ftzEntryReg')}</NavLink>
-          </Menu.Item>
-          <Menu.Item key="transferin">
-            <NavLink to="/cwm/supervision/shftz/transfer/in">{this.msg('ftzTransferIn')}</NavLink>
+          <Menu.Item key="bondedEntry">
+            <NavLink to="/cwm/supervision/shftz/entry">{this.msg('ftzBondedEntryReg')}</NavLink>
           </Menu.Item>
         </Menu.ItemGroup>
         <Menu.ItemGroup key="g_out" title="出库">
-          <Menu.Item key="release">
-            <NavLink to="/cwm/supervision/shftz/release">{this.msg('ftzReleaseReg')}</NavLink>
-          </Menu.Item>
-          <Menu.Item key="transferout">
-            <NavLink to="/cwm/supervision/shftz/transfer/out">{this.msg('ftzTransferOut')}</NavLink>
+          <Menu.Item key="relNormal">
+            <NavLink to="/cwm/supervision/shftz/release/normal">{this.msg('ftzRelNormalReg')}</NavLink>
           </Menu.Item>
           <Menu.Item key="normalDecl">
             <NavLink to="/cwm/supervision/shftz/decl/normal">{this.msg('ftzNormalDecl')}</NavLink>
           </Menu.Item>
+          <Menu.Item key="relPortion">
+            <NavLink to="/cwm/supervision/shftz/release/portion">{this.msg('ftzRelPortionReg')}</NavLink>
+          </Menu.Item>
           <Menu.Item key="batchDecl">
             <NavLink to="/cwm/supervision/shftz/decl/batch">{this.msg('ftzBatchDecl')}</NavLink>
+          </Menu.Item>
+        </Menu.ItemGroup>
+        <Menu.ItemGroup key="g_transfer" title="移库">
+          <Menu.Item key="transferin">
+            <NavLink to="/cwm/supervision/shftz/transfer/in">{this.msg('ftzTransferIn')}</NavLink>
+          </Menu.Item>
+          <Menu.Item key="transferout">
+            <NavLink to="/cwm/supervision/shftz/transfer/out">{this.msg('ftzTransferOut')}</NavLink>
+          </Menu.Item>
+          <Menu.Item key="transferself">
+            <NavLink to="/cwm/supervision/shftz/transfer/self">{this.msg('ftzTransferSelf')}</NavLink>
           </Menu.Item>
         </Menu.ItemGroup>
         <Menu.ItemGroup key="g_stock" title="库存">
@@ -50,9 +58,6 @@ export default class ModuleMenu extends React.Component {
           </Menu.Item>
           <Menu.Item key="nonbonded">
             <NavLink to="/cwm/supervision/shftz/stock/nonbonded">{this.msg('ftzNonbondedStock')}</NavLink>
-          </Menu.Item>
-          <Menu.Item key="transferself">
-            <NavLink to="/cwm/supervision/shftz/transfer/self">{this.msg('ftzTransferSelf')}</NavLink>
           </Menu.Item>
         </Menu.ItemGroup>
         <Menu.ItemGroup key="g_cargo" title="货物监管">

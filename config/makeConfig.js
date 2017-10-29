@@ -6,7 +6,8 @@ module.exports = (serverPort, dirName, appName) => {
 
   const __DEV__ = env === 'development' || env === 'home';
   const __TEST_PROD__ = env === 'test';
-  const __PROD__ = env === 'production' || env === 'staging';
+  const __PROD__ = env === 'production';
+  const __STAGING__ = env === 'staging';
   // ------------------------------------
   // Environment
   // ------------------------------------
@@ -71,6 +72,18 @@ module.exports = (serverPort, dirName, appName) => {
       });
       config.set('CDN_URL', '');
     }
+    config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
+    // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
+  }
+  if (__STAGING__) {
+    config.set('API_ROOTS', {
+      default: 'http://api.welogix.co/',
+      mongo: 'http://api1.welogix.co/',
+      scv: 'http://api2.welogix.co/',
+      notify: 'http://notify.welogix.co/',
+      self: '/',
+    });
+    config.set('CDN_URL', 'http://staging-cdn.welogix.co');
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }

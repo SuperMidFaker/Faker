@@ -103,20 +103,6 @@ export default class CustomsList extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
-    width: 120,
-    fixed: 'left',
-    render: (o, record) => (
-      <a onClick={ev => this.handlePreview(record, ev)}>
-        {o}
-      </a>),
-  }, {
-    title: this.msg('orderNo'),
-    width: 180,
-    dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={20} />,
-  }, {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
     width: 200,
@@ -125,7 +111,7 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.proposed.value:
         case CMS_DECL_STATUS.reviewed.value:
           return (
-            <Tooltip title="点击编号在新窗口中打开" placement="left">
+            <Tooltip title="点击编号在新窗口中打开" placement="right">
               <a onClick={ev => this.handleDounbleClick(record, ev)}>
                 {record.pre_entry_seq_no}
               </a>
@@ -184,6 +170,19 @@ export default class CustomsList extends Component {
       }
       return child;
     },
+  }, {
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
+    width: 120,
+    render: (o, record) => (
+      <a onClick={ev => this.handlePreview(record, ev)}>
+        {o}
+      </a>),
+  }, {
+    title: this.msg('orderNo'),
+    width: 180,
+    dataIndex: 'order_no',
+    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: <Tooltip title="商品项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',

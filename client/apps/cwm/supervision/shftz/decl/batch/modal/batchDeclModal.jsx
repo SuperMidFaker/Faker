@@ -4,7 +4,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Table, Form, Modal, Row, Col, Select, Tag, Input, message, Checkbox } from 'antd';
-import ButtonToggle from 'client/components/ButtonToggle';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import HeadForm from '../form/headForm';
@@ -79,7 +78,6 @@ export default class BatchDeclModal extends Component {
     selectedRows: [],
     destCountry: '142',
     dutyMode: '1',
-    leftSpan: 10,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -99,6 +97,7 @@ export default class BatchDeclModal extends Component {
   portionRegColumns = [{
     title: '出库单号',
     dataIndex: 'ftz_rel_no',
+    width: 180,
   }, {
     title: '货主',
     dataIndex: 'owner_name',
@@ -376,16 +375,9 @@ export default class BatchDeclModal extends Component {
   handleDestCountryChange = (destCountry) => {
     this.setState({ destCountry });
   }
-  handleSpanChange = (ev, toggle) => {
-    if (toggle) {
-      this.setState({ leftSpan: 4 });
-    } else {
-      this.setState({ leftSpan: 10 });
-    }
-  }
   render() {
-    const { submitting, billTemplates, exemptions, owners, tradeCountries } = this.props;
-    const { leftSpan, relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
+    const { submitting, billTemplates, exemptions, tradeCountries } = this.props;
+    const { relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
@@ -401,17 +393,6 @@ export default class BatchDeclModal extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
-    const owner = owners.filter(data => data.customs_code === ownerCusCode)[0];
-    const extraForm = (
-      <div>
-        <FormItem label="货主">
-          <span>{owner && `${owner.partner_code || ''}${owner.partner_code ? '|' : ''}${owner.name}`}</span>
-        </FormItem>
-        <FormItem label="出库单号">
-          <Input value={relNo} onChange={this.handleRelNoChange} />
-        </FormItem>
-        <Button type="primary" ghost size="large" onClick={this.handlePortionOutsQuery}>查找</Button>
-      </div>);
     const title = (<div>
       <span>新建分拨集中报关</span>
       <div className="toolbar-right">
@@ -436,14 +417,13 @@ export default class BatchDeclModal extends Component {
           <HeadForm form={this.props.form} ownerCusCode={ownerCusCode} handleOwnerChange={this.handleOwnerChange} />
         </Card>
         <Form layout="inline">
-          <Row gutter={16}>
-            <Col span={leftSpan}>
-              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering extra={
-                <ButtonToggle size="default" iconOff="double-left" iconOn="double-right" onClick={this.handleSpanChange} />}
-              >
+          <Row gutter={8}>
+            <Col sm={24} md={8} lg={10}>
+              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    {extraForm}
+                    <Input size="large" placeholder="出库单号" value={relNo} onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
+                    <Button size="large" icon="search" onClick={this.handlePortionOutsQuery} />
                   </div>
                   <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
                     scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
@@ -451,41 +431,30 @@ export default class BatchDeclModal extends Component {
                 </div>
               </Card>
             </Col>
-            <Col span={24 - leftSpan}>
+            <Col sm={24} md={16} lg={14}>
               <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="出库单号" style={{ width: 130 }} onChange={this.handleFtzRelNoChange}
+                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
                       onSearch={this.handleSearch} value={this.state.ftzRelNo}
                     />
-                    {this.state.selectedRowKeys.length !== 0 ? <Button onClick={this.batchDelete}>批量删除</Button> :
-                    <div className="toolbar-right">
-                      <FormItem label="征免方式">
-                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 80 }} >
-                          {
-                            exemptions.map(data => (
-                              <Option key={data.value} search={`${data.search}`} >
-                                {`${data.value}|${data.text}`}
-                              </Option>)
-                            )}
-                        </Select>
-                      </FormItem>
-                      <FormItem label="最终目的国">
-                        <Select showSearch showArrow optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 80 }}>
-                          {
-                            tradeCountries.map(data => (
-                              <Option key={data.value} search={`${data.search}`} >
-                                {`${data.value}|${data.text}`}
-                              </Option>)
-                            )}
-                        </Select>
-                      </FormItem>
-                      <FormItem label="制单规则">
-                        <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 130 }} value={template}>
-                          {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
-                        </Select>
-                      </FormItem>
-                    </div>}
+                    <Select allowClear size="large" placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
+                      {exemptions.map(data => (
+                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
+                      ))}
+                    </Select>
+                    <Select showSearch showArrow allowClear size="large" placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
+                      {tradeCountries.map(data => (
+                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
+                      ))}
+                    </Select>
+                    <Select allowClear size="large" placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
+                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                    </Select>
+                    <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.selectedRowKeys.length}项</h3>
+                      {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
+                    </div>
                   </div>
                   <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
                     scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

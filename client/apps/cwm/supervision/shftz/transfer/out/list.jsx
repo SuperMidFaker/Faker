@@ -75,19 +75,10 @@ export default class SHFTZTransferOutList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'SO编号',
-    dataIndex: 'so_no',
-    width: 160,
-    fixed: 'left',
-    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
-  }, {
-    title: '客户订单号',
-    dataIndex: 'cust_order_no',
-    width: 180,
-  }, {
     title: '海关出库单号',
-    width: 220,
+    width: 200,
     dataIndex: 'ftz_rel_no',
+    fixed: 'left',
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -111,6 +102,15 @@ export default class SHFTZTransferOutList extends React.Component {
         return (<Badge status="success" text="已转出" />);
       }
     },
+  }, {
+    title: 'SO编号',
+    dataIndex: 'so_no',
+    width: 160,
+    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
+  }, {
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
+    width: 180,
   }, {
     title: '发货单位',
     width: 280,

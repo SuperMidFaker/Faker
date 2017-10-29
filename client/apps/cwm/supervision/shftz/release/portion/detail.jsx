@@ -4,29 +4,30 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, notification, Checkbox, message } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
+import { loadRelDetails, loadParams, updateRelReg,
+  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
-  promises.push(dispatch(loadRelDetails(params.soNo, 'normal')));
+  promises.push(dispatch(loadRelDetails(params.soNo, 'portion')));
   promises.push(dispatch(loadParams()));
   return Promise.all(promises);
 }
@@ -61,12 +62,10 @@ function fetchData({ dispatch, params }) {
   }),
   { loadRelDetails,
     updateRelReg,
-    fileRelStockouts,
     fileRelPortionouts,
     queryPortionoutInfos,
     cancelRelReg,
-    editReleaseWt,
-    splitRelDetails }
+    editReleaseWt }
 )
 @connectNav({
   depth: 3,
@@ -109,8 +108,8 @@ export default class SHFTZRelDetail extends Component {
     const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
-    const fileOp = this.props.fileRelStockouts(soNo, whseCode, ftzWhseCode, tenantId);
-    const relType = CWM_SO_BONDED_REGTYPES[0].text;
+    const fileOp = this.props.fileRelPortionouts(soNo, whseCode, ftzWhseCode, tenantId);
+    const relType = CWM_SO_BONDED_REGTYPES[1].text;
     if (fileOp) {
       fileOp.then((result) => {
         if (!result.error) {
@@ -142,6 +141,30 @@ export default class SHFTZRelDetail extends Component {
       });
     }
   }
+  handleQuery = () => {
+    const soNo = this.props.params.soNo;
+    const tenantId = this.props.tenantId;
+    const ftzWhseCode = this.props.whse.ftz_whse_code;
+    const whseCode = this.props.whse.code;
+    this.props.queryPortionoutInfos(soNo, whseCode, ftzWhseCode, tenantId).then((result) => {
+      if (!result.error) {
+        if (result.data.errorMsg) {
+          notification.warn({
+            message: '结果异常',
+            description: result.data.errorMsg,
+            duration: 15,
+          });
+        } else {
+          this.props.loadRelDetails(soNo, 'portion');
+        }
+      } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
+        notification.error({
+          message: '操作失败',
+          description: '仓库监管系统未配置',
+        });
+      }
+    });
+  }
   handleCancelReg = () => {
     const soNo = this.props.params.soNo;
     this.props.cancelRelReg(soNo).then((result) => {
@@ -158,7 +181,7 @@ export default class SHFTZRelDetail extends Component {
     const change = { gross_wt: val };
     this.props.editReleaseWt({ change, id }).then((result) => {
       if (!result.error) {
-        this.props.loadRelDetails(this.props.params.soNo, 'normal');
+        this.props.loadRelDetails(this.props.params.soNo, 'portion');
       }
     });
   }
@@ -166,22 +189,20 @@ export default class SHFTZRelDetail extends Component {
     this.setState({ tabKey });
   }
   handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateRelReg(preRegNo, field, value);
+    this.props.updateRelReg(preRegNo, field, value).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      } else {
+        message.success('修改成功');
+      }
+    });
   }
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
-  }
-  handleCheckChange = (checkedValues) => {
-    this.setState({ groupVals: checkedValues });
-  }
-  handleDetailSplit = () => {
-    const soNo = this.props.params.soNo;
-    this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals, loginId: this.props.loginId }).then((result) => {
-      if (!result.error) {
-        message.success('明细已拆分');
-        this.props.loadRelDetails(soNo, 'normal');
-      }
-    });
   }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
@@ -198,6 +219,10 @@ export default class SHFTZRelDetail extends Component {
     title: '入库行号',
     dataIndex: 'asn_seq_no',
     width: 100, */
+  }, {
+    title: '出库明细ID',
+    dataIndex: 'ftz_rel_detail_id',
+    width: 100,
   }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -282,6 +307,43 @@ export default class SHFTZRelDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
+  declColumns = [{
+    title: '报关申请单号',
+    dataIndex: 'ftz_apply_no',
+    width: 200,
+    render: o => <TrimSpan text={o} maxLen={20} />,
+  }, {
+    title: '备案状态',
+    dataIndex: 'status',
+    width: 120,
+    render: (st) => {
+      switch (st) {
+        case 'manifest':
+        case 'generated':
+          return (<Badge status="default" />);
+        case 'processing':
+          return (<Badge status="processing" text="已发送" />);
+        case 'applied':
+          return (<Badge status="success" text="备案完成" />);
+        case 'cleared':
+          return (<Badge status="success" text="已清关" />);
+        default:
+          return null;
+      }
+    },
+  }, {
+    title: '报关委托编号',
+    width: 120,
+    dataIndex: 'delg_no',
+  }, {
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
+    width: 180,
+  }, {
+    title: '清关状态',
+    width: 100,
+    dataIndex: 'decl_status',
+  }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
     if (relRegs.length === 0) {
@@ -293,7 +355,7 @@ export default class SHFTZRelDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const relType = CWM_SO_BONDED_REGTYPES[0];
+    const relType = CWM_SO_BONDED_REGTYPES[1];
     const regStatus = relRegs[0].status;
     const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = regStatus === CWM_SHFTZ_APIREG_STATUS.processing;
@@ -304,35 +366,8 @@ export default class SHFTZRelDetail extends Component {
       sendable = false;
       whyunsent = '出库单未配货';
     }
-    if (sendable) {
-      const nonOutDates = [];
-      relRegs.forEach((reg) => {
-        if (!reg.ftz_rel_date) {
-          nonOutDates.push(reg.pre_entry_seq_no);
-        }
-      });
-      if (nonOutDates.length > 0) {
-        sendable = false;
-        whyunsent = `${nonOutDates.join(',')}预计出区日期未填`;
-      }
-    }
+    const queryable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed && relRegs.filter(er => !er.ftz_rel_no).length === 0;
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
-    let splitExtra = null;
-    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value && regStatus < CWM_SHFTZ_APIREG_STATUS.processing) {
-      splitExtra = (<Form layout="inline">
-        <Form.Item label="拆分选项: ">
-          <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
-            <Checkbox value="supplier">供货商</Checkbox>
-            <Checkbox value="trxn_mode">成交方式</Checkbox>
-            <Checkbox value="currency">币制</Checkbox>
-          </Checkbox.Group>
-        </Form.Item>
-        <Form.Item>
-          <Button disabled={!this.state.groupVals.length > 0} onClick={this.handleDetailSplit}>拆分明细</Button>
-        </Form.Item>
-      </Form>);
-    }
-
     return (
       <div>
         <PageHeader>
@@ -360,6 +395,10 @@ export default class SHFTZRelDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
+            {queryable && <Tooltip title="向监管系统接口查询并同步分拨出库单明细数据" placement="bottom">
+              <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
+            </Tooltip>
+            }
             {relEditable &&
             <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
@@ -368,24 +407,12 @@ export default class SHFTZRelDetail extends Component {
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-              <Row gutter={16} className="info-group-underline">
-                <Col sm={12} lg={6}>
-                  <InfoItem label="提货单位" field={relRegs[0].owner_name} />
-                </Col>
-                <Col sm={12} lg={6}>
-                  <InfoItem label="收货单位" field={relRegs[0].receiver_name} />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={relRegs[0].created_date && moment(relRegs[0].created_date).format('YYYY-MM-DD HH:mm')}
-                  />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={relRegs[0].ftz_reg_date && moment(relRegs[0].ftz_reg_date).format('YYYY-MM-DD HH:mm')}
-                  />
-                </Col>
-              </Row>
+              <DescriptionList col={4}>
+                <Description term="提货单位">{relRegs[0].owner_name}</Description>
+                <Description term="运输单位">{relRegs[0].carrier_name}</Description>
+                <Description term="创建时间">{relRegs[0].created_date && moment(relRegs[0].created_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="备案时间">{relRegs[0].ftz_reg_date && moment(relRegs[0].ftz_reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+              </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>
                   <Step description="待备案" />
@@ -395,7 +422,7 @@ export default class SHFTZRelDetail extends Component {
               </div>
             </Card>
             <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange} tabBarExtraContent={splitExtra}>
+              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({
                     total_qty: acc.total_qty + regd.qty,
@@ -406,13 +433,6 @@ export default class SHFTZRelDetail extends Component {
                     total_amount: 0,
                     total_net_wt: 0,
                   });
-                  const totCol = (
-                    <Summary>
-                      <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
-                      <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
-                      <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
-                    </Summary>
-                  );
                   const countTag = <span>备案明细 <Tag>{reg.details.length}</Tag></span>;
                   return (
                     <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
@@ -421,22 +441,30 @@ export default class SHFTZRelDetail extends Component {
                         dataSource={reg.details} rowKey="id" loading={this.state.loading}
                       >
                         <DataPane.Toolbar>
-                          <Row type="flex">
-                            <Col className="col-flex-primary info-group-inline">
-                              <InfoItem label="普通出库单号" field={reg.ftz_rel_no} width={320} />
-                              <InfoItem label="预计出区日期"
-                                type="date" field={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')} editable={relEditable}
-                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))} width={320}
+                          <DescriptionList size="small" col={4}>
+                            <Description term="分拨出库单号">
+                              <EditableCell value={reg.ftz_rel_no} editable={relEditable}
+                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                               />
-                            </Col>
-                            <Col className="col-flex-secondary">
-                              {totCol}
-                            </Col>
-                          </Row>
+                            </Description>
+                          </DescriptionList>
+                          <DataPane.Extra>
+                            <Summary>
+                              <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+                              <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+                              <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+                            </Summary>
+                          </DataPane.Extra>
                         </DataPane.Toolbar>
                       </DataPane>
                     </TabPane>);
                 })}
+                <TabPane tab="集中报关" key="batchDecl">
+                  <DataPane fullscreen={this.state.fullscreen}
+                    columns={this.declColumns}
+                    dataSource={relRegs[0].ftz_apply_nos} rowKey="id" loading={this.state.loading}
+                  />
+                </TabPane>
               </Tabs>
             </MagicCard>
           </Form>

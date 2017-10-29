@@ -1,29 +1,37 @@
 import { defineMessages } from 'react-intl';
 
 const messages = defineMessages({
-  ftzEntryReg: {
-    id: 'cwm.supervision.shftz.entry.reg',
-    defaultMessage: '进区备案',
+  ftzBondedEntryReg: {
+    id: 'cwm.supervision.shftz.bonded.entry.reg',
+    defaultMessage: '进境入库备案',
   },
-  ftzTransferIn: {
-    id: 'cwm.supervision.shftz.transfer.in',
-    defaultMessage: '区内移库转入',
-  },
-  ftzReleaseReg: {
-    id: 'cwm.supervision.shftz.release.reg',
-    defaultMessage: '出区备案',
-  },
-  ftzTransferOut: {
-    id: 'cwm.supervision.shftz.transfer.out',
-    defaultMessage: '区内移库转出',
+  ftzRelNormalReg: {
+    id: 'cwm.supervision.shftz.release.normal',
+    defaultMessage: '普通出库备案',
   },
   ftzNormalDecl: {
     id: 'cwm.supervision.shftz.normal.decl',
     defaultMessage: '普通出库报关',
   },
+  ftzRelPortionReg: {
+    id: 'cwm.supervision.shftz.release.portion',
+    defaultMessage: '分拨出库备案',
+  },
   ftzBatchDecl: {
     id: 'cwm.supervision.shftz.batch.decl',
     defaultMessage: '分拨集中报关',
+  },
+  ftzTransferIn: {
+    id: 'cwm.supervision.shftz.transfer.in',
+    defaultMessage: '区内移库转入',
+  },
+  ftzTransferOut: {
+    id: 'cwm.supervision.shftz.transfer.out',
+    defaultMessage: '区内移库转出',
+  },
+  ftzTransferSelf: {
+    id: 'cwm.supervision.shftz.transfer.self',
+    defaultMessage: '内部移库',
   },
   ftzBondedStock: {
     id: 'cwm.supervision.shftz.bonded.stock',
@@ -32,10 +40,6 @@ const messages = defineMessages({
   ftzNonbondedStock: {
     id: 'cwm.supervision.shftz.nonbonded.stock',
     defaultMessage: '监管非保库存',
-  },
-  ftzTransferSelf: {
-    id: 'cwm.supervision.shftz.transfer.self',
-    defaultMessage: '监管库存转移',
   },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',
@@ -105,13 +109,9 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.opColumn',
     defaultMessage: '操作',
   },
-  createBatchDecl: {
-    id: 'cwm.supervision.shftz.create.batchdecl',
-    defaultMessage: '新建分拨集中报关',
-  },
-  createClearance: {
-    id: 'cwm.supervision.shftz.create.clearance',
-    defaultMessage: '新建普通出库报关',
+  create: {
+    id: 'cwm.supervision.shftz.create',
+    defaultMessage: '新建',
   },
 });
 

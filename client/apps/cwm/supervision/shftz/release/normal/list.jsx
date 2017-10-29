@@ -9,15 +9,15 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import ShippingDockPanel from '../../../shipping/dock/shippingDockPanel';
-import OrderDockPanel from '../../../../scof/orders/docks/orderDockPanel';
-import DelegationDockPanel from '../../../../cms/common/dock/delegationDockPanel';
-import ShipmentDockPanel from '../../../../transport/shipment/dock/shipmentDockPanel';
+import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
+import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import PageHeader from 'client/components/PageHeader';
-import ModuleMenu from '../menu';
+import ModuleMenu from '../../menu';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
@@ -66,32 +66,19 @@ export default class SHFTZReleaseList extends React.Component {
     if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
-    let type = listFilter.type;
-    if (['all', 'normal', 'portion'].filter(stkey => stkey === type).length === 0) {
-      type = 'all';
-    }
     let ownerView = listFilter.ownerView;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type, ownerView };
+    const filter = { ...listFilter, status, type: 'normal', ownerView };
     this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'SO编号',
-    dataIndex: 'so_no',
-    width: 160,
-    fixed: 'left',
-    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
-  }, {
-    title: '客户订单号',
-    dataIndex: 'cust_order_no',
-    width: 180,
-  }, {
-    title: '海关出库单号',
+    title: '海关出库单号/备案编号',
     dataIndex: 'ftz_rel_no',
-    width: 220,
+    width: 200,
+    fixed: 'left',
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -115,6 +102,15 @@ export default class SHFTZReleaseList extends React.Component {
         return (<Badge status="success" text="备案完成" />);
       }
     },
+  }, {
+    title: 'SO编号',
+    dataIndex: 'so_no',
+    width: 160,
+    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
+  }, {
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
+    width: 180,
   }, {
     title: '货主',
     width: 180,
@@ -214,13 +210,6 @@ export default class SHFTZReleaseList extends React.Component {
     const filter = { ...this.props.listFilter, status: ev.target.value };
     this.handleReleaseListLoad(1, this.props.whse.code, filter);
   }
-  handleTypeChange = (ev) => {
-    if (ev.target.value === this.props.listFilter.type) {
-      return;
-    }
-    const filter = { ...this.props.listFilter, type: ev.target.value };
-    this.handleReleaseListLoad(1, this.props.whse.code, filter);
-  }
   handleDetail = (row) => {
     const link = `/cwm/supervision/shftz/release/${row.ftz_rel_type}/${row.so_no}`;
     this.context.router.push(link);
@@ -275,7 +264,7 @@ export default class SHFTZReleaseList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="release" />
+            <ModuleMenu currentKey="relNormal" />
           </div>
         </Sider>
         <Layout>
@@ -288,22 +277,16 @@ export default class SHFTZReleaseList extends React.Component {
                   </Select>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  {this.msg('ftzReleaseReg')}
+                  {this.msg('ftzRelNormalReg')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-                <RadioButton value="all">全部状态</RadioButton>
+                <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="processing">终端处理</RadioButton>
                 <RadioButton value="completed">备案完成</RadioButton>
-              </RadioGroup>
-              <span />
-              <RadioGroup value={listFilter.type} onChange={this.handleTypeChange} size="large">
-                <RadioButton value="all">全部类型</RadioButton>
-                <RadioButton value="normal">普通出库</RadioButton>
-                <RadioButton value="portion">分拨出库</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>

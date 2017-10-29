@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
+import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, notification } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg, fileRelTransfers, cancelRelReg,
@@ -20,6 +21,7 @@ import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -233,7 +235,17 @@ export default class SHFTZTransferOutDetail extends Component {
     this.setState({ tabKey });
   }
   handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateRelReg(preRegNo, field, value);
+    this.props.updateRelReg(preRegNo, field, value).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      } else {
+        message.success('修改成功');
+      }
+    });
   }
   handleOutboundPage = () => {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.relSo.outbound_no}`);
@@ -312,38 +324,38 @@ export default class SHFTZTransferOutDetail extends Component {
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-              <Row gutter={16} className="info-group-underline">
-                <Col sm={12} lg={6}>
-                  <InfoItem label="海关出库单号" field={relReg.ftz_rel_no} editable={relEditable}
-                    onEdit={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_no', value)}
+              <DescriptionList col={4}>
+                <Description term="海关出库单号">
+                  <EditableCell value={relReg.ftz_rel_no} editable={relEditable}
+                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_no', value)}
                   />
-                </Col>
-                <Col sm={12} lg={14}>
-                  <InfoItem label="发货单位" field={`${relReg.owner_cus_code} | ${relReg.owner_name} | ${relReg.sender_ftz_whse_code}`} />
-                </Col>
-                <Col sm={12} lg={4}>
-                  <InfoItem label="出库日期" field={relReg.ftz_rel_date} editable={relEditable} type="date"
-                    onEdit={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_date', value)}
+                </Description>
+                <Description term="发货单位海关编码">{relReg && relReg.owner_cus_code}</Description>
+                <Description term="发货单位">{relReg.owner_name}</Description>
+                <Description term="发货仓库号">{relReg && relReg.sender_ftz_whse_code}</Description>
+                <Description term="海关入库单号">
+                  <EditableCell value={relReg.ftz_ent_no} editable={relEditable}
+                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_ent_no', value)}
                   />
-                </Col>
-              </Row>
-              <Row gutter={16} className="info-group-underline">
-                <Col sm={12} lg={6}>
-                  <InfoItem label="海关入库单号" field={relReg.ftz_ent_no} editable={relEditable}
-                    onEdit={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                </Description>
+                <Description term="收货单位海关编码">{relReg && relReg.receiver_cus_code}</Description>
+                <Description term="收货单位">
+                  <EditableCell type="select" value={receiver && receiver.code} options={recvOpts} editable={relEditable}
+                    onSave={value => this.handleReceiverChange(relReg.pre_entry_seq_no, value)}
                   />
-                </Col>
-                <Col sm={12} lg={14}>
-                  <InfoItem label="收货单位" field={receiver && receiver.code} type="select" options={recvOpts}
-                    editable={relEditable} onEdit={value => this.handleReceiverChange(relReg.pre_entry_seq_no, value)}
+                </Description>
+                <Description term="收货仓库号">{relReg && relReg.receiver_ftz_whse_code}</Description>
+                <Description term="出库日期">
+                  <EditableCell type="date" value={relReg && relReg.ftz_rel_date && moment(relReg.ftz_rel_date).format('YYYY-MM-DD')}
+                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
                   />
-                </Col>
-                <Col sm={12} lg={4}>
-                  <InfoItem label="转出完成时间" addonBefore={<Icon type="clock-circle-o" />} type="date"
-                    format="YYYY-MM-DD HH:mm" field={relReg.ftz_reg_date}
+                </Description>
+                <Description term="转出完成时间">
+                  <EditableCell type="date" value={relReg && relReg.ftz_reg_date && moment(relReg.ftz_reg_date).format('YYYY-MM-DD')}
+                    onSave={value => this.handleInfoSave(relReg.pre_entry_seq_no, 'ftz_reg_date', new Date(value))}
                   />
-                </Col>
-              </Row>
+                </Description>
+              </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>
                   <Step description="待转出" />

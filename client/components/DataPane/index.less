@@ -37,7 +37,10 @@
       width: 160px;
     }
     &-right {
-      float: right;
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 8px;
       button,
       >span {
         margin-left: 8px;
@@ -46,8 +49,16 @@
       .ant-btn-circle {
         margin-top: 2px;
       }
-      .welo-summary {
-        float: left;
+    }
+    &-extra {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 8px;
+      button,
+      >span {
+        margin-left: 8px;
+        margin-right: 0;
       }
     }
     &-row-selection {

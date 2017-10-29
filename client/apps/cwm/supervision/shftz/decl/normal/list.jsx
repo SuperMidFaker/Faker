@@ -79,27 +79,31 @@ export default class NormalDeclList extends React.Component {
     dataIndex: 'ftz_rel_no',
     width: 150,
   }, {
+    title: '备案状态',
+    dataIndex: 'status',
+    width: 100,
+  }, {
+    title: '报关委托编号',
+    dataIndex: 'delg_no',
+    width: 120,
+  }, {
+    title: '报关单号',
+    dataIndex: 'pre_entry_seq_no',
+    width: 180,
+  }, {
+    title: '清关状态',
+    dataIndex: 'decl_status',
+    width: 100,
+  }, {
     title: '提货单位(货主)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 120,
-  }, {
     title: '报关代理',
     dataIndex: 'broker_name',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
-    title: '报关委托编号',
-    dataIndex: 'delg_no',
-    width: 150,
-  }, {
-    title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
-    width: 180,
   }, {
     title: '成交方式',
     dataIndex: 'trxn_mode',
@@ -142,7 +146,7 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 200,
+    width: 160,
     fixed: 'right',
     render: (o, record) => (
       <span>
@@ -297,7 +301,7 @@ export default class NormalDeclList extends React.Component {
             </PageHeader.Nav>
             <PageHeader.Actions>
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNormalDecl}>
-                {this.msg('createClearance')}
+                {this.msg('create')}
               </Button>
             </PageHeader.Actions>
           </PageHeader>

@@ -3,50 +3,53 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, Icon, message, Button, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
-import ModuleMenu from '../../menu';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import TransferSelfModal from './modal/transferSelfModal';
+import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
+import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
+import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPanel';
+import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import PageHeader from 'client/components/PageHeader';
-import { CWM_SHFTZ_APIREG_STATUS } from 'common/constants';
+import ModuleMenu from '../../menu';
+import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
+import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
+import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    entryList: state.cwmShFtz.entryList,
+    releaseList: state.cwmShFtz.releaseList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
   }),
-  { loadEntryRegDatas, switchDefaultWhse, showTransferInModal, deleteVirtualTransfer }
+  { loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZTransferSelfList extends React.Component {
+export default class SHFTZReleaseList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    entryList: PropTypes.object.isRequired,
+    releaseList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -67,60 +70,77 @@ export default class SHFTZTransferSelfList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'vtransfer', ownerView };
-    this.handleEntryListLoad(null, null, filter);
+    const filter = { ...listFilter, status, type: 'portion', ownerView };
+    this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '转移编号',
-    dataIndex: 'asn_no',
-    width: 160,
+    title: '分拨出库单号/备案编号',
+    dataIndex: 'ftz_rel_no',
+    width: 200,
     fixed: 'left',
   }, {
-    title: '转出出库单号',
-    width: 220,
-    dataIndex: 'ftz_rel_no',
-  }, {
-    title: '转入进库单号',
-    width: 220,
-    dataIndex: 'ftz_ent_no',
+    title: '监管类型',
+    dataIndex: 'ftz_rel_type',
+    width: 100,
+    render: (reltype) => {
+      const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === reltype)[0];
+      if (regtype) {
+        return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
+      }
+    },
   }, {
     title: '状态',
     dataIndex: 'status',
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待转出" />);
+        return (<Badge status="default" text="待备案" />);
       } else if (o === 1) {
         return (<Badge status="processing" text="终端处理" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="已转入" />);
+        return (<Badge status="success" text="备案完成" />);
       }
     },
+  }, {
+    title: 'SO编号',
+    dataIndex: 'so_no',
+    width: 160,
+    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
+  }, {
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
+    width: 180,
   }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '转移方向',
+    title: '仓储企业',
     width: 180,
-    dataIndex: 'sender_name',
+    dataIndex: 'wh_ent_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '转出时间',
-    width: 150,
-    dataIndex: 'ftz_rel_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD HH:mm'),
+    title: '运输单位',
+    width: 180,
+    dataIndex: 'carrier_name',
+    render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '转入时间',
-    width: 150,
-    dataIndex: 'ftz_ent_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD HH:mm')}`;
-      }
-    },
+    title: '出口日期',
+    width: 120,
+    dataIndex: 'ie_date',
+    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+  }, {
+    title: '报关日期',
+    width: 120,
+    dataIndex: 'cus_decl_date',
+    render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
+  }, {
+    title: '预计出区日期',
+    width: 120,
+    dataIndex: 'ftz_rel_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
     title: '创建时间',
     width: 120,
@@ -139,20 +159,14 @@ export default class SHFTZTransferSelfList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) =>
-        (
-          <span>
-            <RowUpdater onHit={this.handleDetail} label="转移详情" row={record} />
-            {record.status === CWM_SHFTZ_APIREG_STATUS.pending && <span className="ant-divider" />}
-            {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
-              <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
-                <a><Icon type="delete" /></a>
-              </Popconfirm>}
-          </span>
-        ),
+    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
+    : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
   }]
+  handlePreview = (soNo, outboundNo) => {
+    this.props.showDock(soNo, outboundNo);
+  }
   dataSource = new DataTable.DataSource({
-    fetcher: params => this.props.loadEntryRegDatas(params),
+    fetcher: params => this.props.loadReleaseRegDatas(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
       total: result.totalCount,
@@ -172,12 +186,12 @@ export default class SHFTZTransferSelfList extends React.Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.entryList,
+    remotes: this.props.releaseList,
   })
-  handleEntryListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
+  handleReleaseListLoad = (currentPage, whsecode, filter) => {
+    const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
     const newfilter = filter || listFilter;
-    this.props.loadEntryRegDatas({
+    this.props.loadReleaseRegDatas({
       tenantId,
       filter: JSON.stringify(newfilter),
       pageSize,
@@ -189,49 +203,37 @@ export default class SHFTZTransferSelfList extends React.Component {
       }
     });
   }
-  handleVTransDel = (asnNo) => {
-    this.props.deleteVirtualTransfer({ asnNo }).then((result) => {
-      if (!result.error) {
-        this.handleEntryListLoad();
-      }
-    });
-  }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
       return;
     }
     const filter = { ...this.props.listFilter, status: ev.target.value };
-    this.handleEntryListLoad(1, this.props.whse.code, filter);
+    this.handleReleaseListLoad(1, this.props.whse.code, filter);
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/transfer/self/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/release/${row.ftz_rel_type}/${row.so_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    this.handleEntryListLoad(1, value);
+    this.handleReleaseListLoad(1, value);
   }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
-    this.handleEntryListLoad(1, this.props.whse.code, filters);
+    this.handleReleaseListLoad(1, this.props.whse.code, filters);
   }
   handleOwnerSelectChange = (value) => {
     const filters = { ...this.props.listFilter, ownerView: value };
-    this.handleEntryListLoad(1, this.props.whse.code, filters);
+    this.handleReleaseListLoad(1, this.props.whse.code, filters);
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
-  handleCreateTransSelf = () => {
-    const { listFilter, owners } = this.props;
-    const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
-    this.props.showTransferInModal({ visible: true, ownerCusCode });
-  }
   render() {
-    const { entryList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded === 1);
-    this.dataSource.remotes = entryList;
+    const { releaseList, listFilter, whses, whse, owners } = this.props;
+    const bondedWhses = whses.filter(wh => wh.bonded);
+    this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -239,21 +241,21 @@ export default class SHFTZTransferSelfList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('entrySearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
       <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-            )}
-        </OptGroup>
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
+          )}
       </Select>
     </span>);
+    const bulkActions = <Button size="large">发送报关申请</Button>;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
+
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -262,7 +264,7 @@ export default class SHFTZTransferSelfList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="transferself" />
+            <ModuleMenu currentKey="relPortion" />
           </div>
         </Sider>
         <Layout>
@@ -275,36 +277,36 @@ export default class SHFTZTransferSelfList extends React.Component {
                   </Select>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  {this.msg('ftzTransferSelf')}
+                  {this.msg('ftzRelPortionReg')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-                <RadioButton value="all">全部状态</RadioButton>
-                <RadioButton value="pending">待转出</RadioButton>
+                <RadioButton value="all">全部</RadioButton>
+                <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">已转入</RadioButton>
+                <RadioButton value="completed">备案完成</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
-            <PageHeader.Actions>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateTransSelf}>新建</Button>
-            </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable
-              columns={this.columns}
-              rowSelection={rowSelection}
-              dataSource={this.dataSource}
-              indentSize={8}
-              rowKey="id"
-              defaultExpandedRowKeys={['1']}
               toolbarActions={toolbarActions}
+              bulkActions={bulkActions}
+              rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
+              columns={this.columns}
+              dataSource={this.dataSource}
+              rowKey="id"
               loading={this.props.loading}
+              indentSize={0}
             />
-            <TransferSelfModal reload={this.handleEntryListLoad} />
+            <ShippingDockPanel />
+            <OrderDockPanel />
+            <DelegationDockPanel />
+            <ShipmentDockPanel />
           </Content>
         </Layout>
       </Layout>

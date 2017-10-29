@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag, Tooltip } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import InfoItem from 'client/components/InfoItem';
 import TrimSpan from 'client/components/trimSpan';
 import { loadParams, loadNormalDelg, loadDeclRelDetails } from 'common/reducers/cwmShFtz';
 import { DELG_STATUS } from 'common/constants';
@@ -18,6 +19,7 @@ import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -284,17 +286,12 @@ export default class NormalDeclDetail extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
-              <Row className="info-group-inline">
-                <Col sm={24} lg={6}>
-                  <InfoItem label="提货单位" field={normalDecl.owner_name} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="报关代理" field={normalDecl.customs_name} />
-                </Col>
-                <Col sm={24} lg={6}>
-                  <InfoItem label="成交方式" field={mode && `${mode.value}| ${mode.text}`} />
-                </Col>
-              </Row>
+              <DescriptionList col={4}>
+                <Description term="提货单位">{normalDecl.owner_name}</Description>
+                <Description term="报关代理">{normalDecl.customs_name}</Description>
+                <Description term="成交方式">{mode && `${mode.value}| ${mode.text}`}</Description>
+                <Description term="备案时间">{normalDecl.reg_date && moment(normalDecl.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+              </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={declStep}>
                   <Step description="委托制单" />

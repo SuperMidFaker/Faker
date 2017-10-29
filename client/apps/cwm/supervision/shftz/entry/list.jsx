@@ -75,29 +75,15 @@ export default class SHFTZEntryList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type, ownerView };
+    const filter = { ...listFilter, status, type: 'bonded', ownerView };
     this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: 'ASN编号',
-    dataIndex: 'asn_no',
-    width: 160,
-    fixed: 'left',
-    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
-  }, {
-    title: '客户订单号',
-    dataIndex: 'po_no',
-    width: 160,
-  }, {
-    title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
-    width: 180,
-    render: (preno, row) => row.cus_decl_no || preno,
-  }, {
-    title: '海关进库单号',
-    width: 220,
+    title: '海关进库单号/备案编号',
+    width: 200,
     dataIndex: 'ftz_ent_no',
+    fixed: 'left',
   }, {
     title: '监管类型',
     width: 80,
@@ -119,6 +105,20 @@ export default class SHFTZEntryList extends React.Component {
         return (<Badge status="success" text="备案完成" />);
       }
     },
+  }, {
+    title: 'ASN编号',
+    dataIndex: 'asn_no',
+    width: 160,
+    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
+  }, {
+    title: '客户订单号',
+    dataIndex: 'po_no',
+    width: 160,
+  }, {
+    title: '报关单号',
+    dataIndex: 'pre_entry_seq_no',
+    width: 180,
+    render: (preno, row) => row.cus_decl_no || preno,
   }, {
     title: '货主',
     width: 180,
@@ -282,7 +282,7 @@ export default class SHFTZEntryList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="entry" />
+            <ModuleMenu currentKey="bondedEntry" />
           </div>
         </Sider>
         <Layout>
@@ -295,22 +295,16 @@ export default class SHFTZEntryList extends React.Component {
                   </Select>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  {this.msg('ftzEntryReg')}
+                  {this.msg('ftzBondedEntryReg')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
-                <RadioButton value="all">全部状态</RadioButton>
+                <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="processing">终端处理</RadioButton>
                 <RadioButton value="completed">备案完成</RadioButton>
-              </RadioGroup>
-              <span />
-              <RadioGroup value={listFilter.type} onChange={this.handleTypeChange} size="large">
-                <RadioButton value="all">全部类型</RadioButton>
-                <RadioButton value="bonded">{CWM_ASN_BONDED_REGTYPES[0].ftztext}</RadioButton>
-                <RadioButton value="export" disabled>{CWM_ASN_BONDED_REGTYPES[1].ftztext}</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>

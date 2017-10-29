@@ -12,7 +12,6 @@ import messages from '../../../message.i18n';
 import { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
-const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
 
@@ -375,7 +374,7 @@ export default class NormalDeclModal extends Component {
   }
   render() {
     const { submitting, billTemplates, exemptions, tradeCountries } = this.props;
-    const { relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
+    const { relNo, template, regDetails, dutyMode, destCountry } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
@@ -387,6 +386,7 @@ export default class NormalDeclModal extends Component {
     const normalRegColumns = [{
       title: '出库单号',
       dataIndex: 'ftz_rel_no',
+      width: 180,
     }, {
       title: '供货商',
       dataIndex: 'supplier',
@@ -442,21 +442,6 @@ export default class NormalDeclModal extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const extraForm = (
-      <div>
-        <FormItem label="货主">
-          <Select style={{ width: 150 }} disabled placeholder="请选择货主" value={ownerCusCode}>
-            {this.props.owners.map(data => (
-              <Option key={data.customs_code} value={data.customs_code}>
-                {data.partner_code}{data.partner_code ? '|' : ''}{data.name}
-              </Option>))}
-          </Select>
-        </FormItem>
-        <FormItem label="出库单号">
-          <Input value={relNo} onChange={this.handleRelNoChange} />
-        </FormItem>
-        <Button type="primary" ghost size="large" onClick={this.handleNormalOutsQuery}>查找</Button>
-      </div>);
     const title = (<div>
       <span>新建普通出库报关</span>
       <div className="toolbar-right">
@@ -472,12 +457,13 @@ export default class NormalDeclModal extends Component {
           <HeadForm ownerCusCode={this.state.ownerCusCode} handleOwnerChange={this.handleOwnerChange} form={this.props.form} />
         </Card>
         <Form layout="inline">
-          <Row gutter={16}>
-            <Col span={12}>
+          <Row gutter={8}>
+            <Col sm={24} md={8} lg={10}>
               <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    {extraForm}
+                    <Input size="large" value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
+                    <Button size="large" icon="search" onClick={this.handleNormalOutsQuery} />
                   </div>
                   <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
                     scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
@@ -485,41 +471,27 @@ export default class NormalDeclModal extends Component {
                 </div>
               </Card>
             </Col>
-            <Col span={12}>
+            <Col sm={24} md={16} lg={14}>
               <Card title="出库报关明细" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} onSearch={this.handleSearch} />
+                    <Select allowClear size="large" placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
+                      {exemptions.map(data => (
+                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
+                      ))}
+                    </Select>
+                    <Select showSearch showArrow allowClear size="large" placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
+                      {tradeCountries.map(data => (
+                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
+                      ))}
+                    </Select>
+                    <Select allowClear size="large" placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
+                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                    </Select>
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                       {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
-                    </div>
-                    <div className="toolbar-right">
-                      <FormItem label="征免方式">
-                        <Select showSearch showArrow optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100 }} >
-                          {
-                            exemptions.map(data => (
-                              <Option key={data.value} search={`${data.search}`} >
-                                {`${data.value}|${data.text}`}
-                              </Option>)
-                            )}
-                        </Select>
-                      </FormItem>
-                      <FormItem label="最终目的国">
-                        <Select showSearch showArrow optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100 }}>
-                          {
-                            tradeCountries.map(data => (
-                              <Option key={data.value} search={`${data.search}`} >
-                                {`${data.value}|${data.text}`}
-                              </Option>)
-                            )}
-                        </Select>
-                      </FormItem>
-                      <FormItem label="制单规则">
-                        <Select allowClear size="large" onChange={this.handleTemplateChange} style={{ width: 200 }} value={template}>
-                          {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
-                        </Select>
-                      </FormItem>
                     </div>
                   </div>
                   <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}

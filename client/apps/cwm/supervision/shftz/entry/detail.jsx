@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Icon, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, notification } from 'antd';
+import { Alert, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import InfoItem from 'client/components/InfoItem';
+import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
+import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
@@ -19,6 +20,7 @@ import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
+const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
@@ -215,7 +217,17 @@ export default class SHFTZEntryDetail extends Component {
     this.setState({ tabKey });
   }
   handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateEntryReg(preRegNo, field, value);
+    this.props.updateEntryReg(preRegNo, field, value).then((result) => {
+      if (result.error) {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      } else {
+        message.success('修改成功');
+      }
+    });
   }
   handleInboundPage = () => {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
@@ -382,24 +394,12 @@ export default class SHFTZEntryDetail extends Component {
           {entryEditable && !this.state.sendable && <Alert message={this.state.whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-              <Row gutter={16} className="info-group-underline">
-                <Col sm={12} lg={6}>
-                  <InfoItem label="经营单位" field={entryAsn.owner_name} />
-                </Col>
-                <Col sm={12} lg={6}>
-                  <InfoItem label="收货单位" field={entryAsn.wh_ent_tenant_name} />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem label="创建时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.created_date && moment(entryAsn.created_date).format('YYYY.MM.DD HH:mm')}
-                  />
-                </Col>
-                <Col sm={12} lg={3}>
-                  <InfoItem label="备案完成时间" addonBefore={<Icon type="clock-circle-o" />}
-                    field={entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')}
-                  />
-                </Col>
-              </Row>
+              <DescriptionList col={4}>
+                <Description term="经营单位">{entryAsn.owner_name}</Description>
+                <Description term="收货单位">{entryAsn.wh_ent_tenant_name}</Description>
+                <Description term="创建时间">{entryAsn.created_date && moment(entryAsn.created_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="备案时间">{entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+              </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
                   <Step description="待备案" />
@@ -420,13 +420,6 @@ export default class SHFTZEntryDetail extends Component {
                     total_amount: 0,
                     total_net_wt: 0,
                   });
-                  const totCol = (
-                    <Summary>
-                      <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
-                      <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
-                      <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
-                    </Summary>
-                  );
                   return (
                     <TabPane tab="备案明细" key={reg.pre_entry_seq_no}>
                       <DataPane fullscreen={this.state.fullscreen}
@@ -434,27 +427,35 @@ export default class SHFTZEntryDetail extends Component {
                         dataSource={reg.details} rowKey="id" loading={this.state.loading}
                       >
                         <DataPane.Toolbar>
-                          <Row type="flex">
-                            <Col className="col-flex-primary info-group-inline">
-                              <InfoItem label="海关进库单号" field={reg.ftz_ent_no} width={320} editable={entryEditable}
-                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                          <DescriptionList size="small" col={5}>
+                            <Description term="海关进库单号">
+                              <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
+                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
                               />
-                              <InfoItem label="报关单号" field={reg.cus_decl_no} width={300} editable={entryEditable}
-                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
+                            </Description>
+                            <Description term="报关单号">
+                              <EditableCell value={reg.cus_decl_no} editable={entryEditable}
+                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
                               />
-                              <InfoItem label="进口日期"
-                                type="date" field={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))} width={260}
+                            </Description>
+                            <Description term="进口日期">
+                              <EditableCell type="date" value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
+                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
                               />
-                              <InfoItem label="进库日期"
-                                type="date" field={reg.ftz_ent_date && moment(reg.ftz_ent_dateie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                                onEdit={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))} width={260}
+                            </Description>
+                            <Description term="进库日期">
+                              <EditableCell type="date" value={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD')} editable={entryEditable}
+                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                               />
-                            </Col>
-                            <Col className="col-flex-secondary">
-                              {totCol}
-                            </Col>
-                          </Row>
+                            </Description>
+                          </DescriptionList>
+                          <DataPane.Extra>
+                            <Summary>
+                              <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+                              <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+                              <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+                            </Summary>
+                          </DataPane.Extra>
                         </DataPane.Toolbar>
                       </DataPane>
                     </TabPane>);

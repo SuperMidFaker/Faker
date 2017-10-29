@@ -4,6 +4,7 @@ import { Table } from 'antd';
 import './index.less';
 import toolbar from './toolbar';
 import actions from './actions';
+import extra from './extra';
 import bulkActions from './bulkActions';
 
 
@@ -54,4 +55,5 @@ export default class DataPane extends React.Component {
 
 DataPane.Toolbar = toolbar;
 DataPane.Actions = actions;
+DataPane.Extra = extra;
 DataPane.BulkActions = bulkActions;
