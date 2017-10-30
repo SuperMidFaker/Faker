@@ -772,7 +772,10 @@ export default class ManifestBodyPane extends React.Component {
       this.props.billSeqNo}&repoId=${this.props.billMeta.repoId}`);
   }
   handleReload = (reloadHead) => {
-    this.props.loadBillBody(this.props.billSeqNo);
+    this.setState({ tableMask: true });
+    this.props.loadBillBody(this.props.billSeqNo).then(() => {
+      this.setState({ tableMask: false });
+    });
     if (reloadHead) {
       this.props.loadBill(this.props.billSeqNo, this.props.tenantId, this.props.billHead.i_e_type);
     }
@@ -818,9 +821,10 @@ export default class ManifestBodyPane extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        message.success('表体已刷新');
-        this.props.loadBillBody(this.props.billSeqNo);
-        this.setState({ tableMask: false });
+        this.props.loadBillBody(this.props.billSeqNo).then(() => {
+          message.success('表体已刷新');
+          this.setState({ tableMask: false });
+        });
       }
     });
   }

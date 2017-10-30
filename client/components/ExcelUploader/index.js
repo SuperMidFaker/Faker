@@ -16,9 +16,11 @@ export default class ExcelUploader extends React.Component {
     uploadStatus: 'active',
     errorMsg: '',
     closable: false,
+    startTimestamp: 0,
   }
   handleImport = (info) => {
     if (this.state.uploadChangeCount === 0) {
+      this.state.startTimestamp = Date.now();
       this.state.uploadChangeCount++;
       this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
     } else if (info.event) {
@@ -36,7 +38,11 @@ export default class ExcelUploader extends React.Component {
         }
       }
     } else if (info.file.status === 'error') {
-      this.setState({ uploadStatus: 'exception', errorMsg: '文件处理超时, 请考虑分批导入', closable: true });
+      let errorMsg = '文件处理超时,请考虑分批导入';
+      if (Date.now() - this.state.startTimestamp < 60 * 60 * 1000) { // 1min以内提示网络问题
+        errorMsg = '上传失败,请检查网络连接';
+      }
+      this.setState({ uploadStatus: 'exception', errorMsg, closable: true });
       this.state.uploadChangeCount = 0;
     }
   }
