@@ -229,8 +229,7 @@ export default class SHFTZTransferSelfList extends React.Component {
     this.props.showTransferInModal({ visible: true, ownerCusCode });
   }
   render() {
-    const { entryList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded === 1);
+    const { entryList, listFilter, owners } = this.props;
     this.dataSource.remotes = entryList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -269,11 +268,6 @@ export default class SHFTZTransferSelfList extends React.Component {
           <PageHeader>
             <PageHeader.Title>
               <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   {this.msg('ftzTransferSelf')}
                 </Breadcrumb.Item>

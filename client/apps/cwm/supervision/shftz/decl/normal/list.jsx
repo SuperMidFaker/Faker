@@ -240,8 +240,7 @@ export default class NormalDeclList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { listFilter, whses, whse, owners, delglist } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
+    const { listFilter, owners, delglist } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -282,11 +281,6 @@ export default class NormalDeclList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
                   {this.msg('ftzNormalDecl')}
                 </Breadcrumb.Item>
               </Breadcrumb>
@@ -296,7 +290,7 @@ export default class NormalDeclList extends React.Component {
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="sent">已申报</RadioButton>
-                <RadioButton value="cleared">报关放行</RadioButton>
+                <RadioButton value="cleared">已清关</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>

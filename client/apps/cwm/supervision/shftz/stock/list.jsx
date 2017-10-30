@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Card, Select, Layout, Tag, notification } from 'antd';
+import { Badge, Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -19,7 +19,6 @@ import TasksPane from './tabpane/tasksPane';
 import { formatMsg } from './message.i18n';
 
 const { Sider, Content } = Layout;
-const Option = Select.Option;
 
 @injectIntl
 @connect(
@@ -263,8 +262,6 @@ export default class SHFTZStockList extends React.Component {
     });
   }
   render() {
-    const { defaultWhse, whses } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
     const columns = this.columns;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -293,11 +290,6 @@ export default class SHFTZStockList extends React.Component {
           <PageHeader>
             <PageHeader.Title>
               <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                    {bondedWhses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-                  </Select>
-                </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   监管库存查询
                 </Breadcrumb.Item>

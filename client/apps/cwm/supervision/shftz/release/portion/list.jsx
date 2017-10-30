@@ -231,8 +231,7 @@ export default class SHFTZReleaseList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { releaseList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
+    const { releaseList, listFilter, owners } = this.props;
     this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -271,11 +270,6 @@ export default class SHFTZReleaseList extends React.Component {
           <PageHeader>
             <PageHeader.Title>
               <Breadcrumb>
-                <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   {this.msg('ftzRelPortionReg')}
                 </Breadcrumb.Item>
