@@ -62,16 +62,6 @@ module.exports = (serverPort, dirName, appName) => {
       self: '/',
     });
     config.set('CDN_URL', 'https://welogix-web-cdn.b0.upaiyun.com');
-    if (env === 'staging') {
-      config.set('API_ROOTS', {
-        default: 'https://api.welogix.co/',
-        mongo: 'https://api1.welogix.co/',
-        scv: 'https://api2.welogix.co/',
-        notify: 'https://notify.welogix.co/',
-        self: '/',
-      });
-      config.set('CDN_URL', '');
-    }
     config.set('webpack_public_path', `${config.get('CDN_URL')}/${config.get('webpack_dist')}/`);
     // config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
   }

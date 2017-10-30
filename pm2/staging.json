@@ -1,10 +1,10 @@
 [{
     "name"       : "welogix-web",
     "script"     : "./server/sboot.js",
-    "error_file" : "/data/staging/logs/welogix-web-err.log",
-    "out_file"   : "/data/staging/logs/welogix-web-out.log",
-    "pid_file"   : "/data/staging/logs/welogix-web.pid",
-    "args"      : "['--port=4022']",
+    "error_file" : "/data/deploy/logs/welogix-web-err.log",
+    "out_file"   : "/data/deploy/logs/welogix-web-out.log",
+    "pid_file"   : "/data/deploy/logs/welogix-web.pid",
+    "args"      : "['--port=3022']",
     "log_date_format" : "YYYY-MM-DD HH:mm Z",
     "_build_cmd": "build-staging",
     "env": {
