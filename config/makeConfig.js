@@ -15,7 +15,7 @@ module.exports = (serverPort, dirName, appName) => {
   config.set('env', env);
   config.set('__DEVTOOLS__', env === 'development');
   config.set('__DEV__', __DEV__);
-  config.set('__PROD__', __PROD__);
+  config.set('__PROD__', __PROD__ || __STAGING__); // server rendering subdomain
 
   // ------------------------------------
   // Server
