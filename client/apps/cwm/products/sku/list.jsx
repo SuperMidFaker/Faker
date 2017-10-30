@@ -13,6 +13,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
 import PageHeader from 'client/components/PageHeader';
+import ExcelUploader from 'client/components/ExcelUploader';
 import { formatMsg } from '../message.i18n';
 import moment from 'moment';
 
@@ -254,6 +255,15 @@ export default class CWMSkuList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  skuUploaded = () => {
+    this.props.loadOwnerSkus({
+      owner_partner_id: this.props.owner.id,
+      filter: JSON.stringify(this.props.listFilter),
+      sorter: JSON.stringify(this.props.sortFilter),
+      pageSize: this.props.skulist.pageSize,
+      current: 1,
+    });
+  }
   render() {
     const { skulist, owner, whse, whses, loading, syncing, listFilter } = this.props;
     const rowSelection = {
@@ -313,9 +323,20 @@ export default class CWMSkuList extends React.Component {
               <Button size="large" icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>
                 {this.msg('syncTradeItems')}
               </Button>
-              <Button size="large" icon="upload" disabled={syncing}>
-                {this.msg('productImport')}
-              </Button>
+              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/sku/import`}
+                formData={{
+                  data: JSON.stringify({
+                    ownerId: owner.id,
+                    ownerTenantId: owner.partner_tenant_id,
+                    name: owner.name,
+                    loginId: this.props.loginId,
+                  }),
+                }} onUploaded={this.skuUploaded}
+              >
+                <Button size="large" icon="upload" disabled={syncing}>
+                  {this.msg('productImport')}
+                </Button>
+              </ExcelUploader>
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick} disabled={syncing}>
                 {this.msg('createSKU')}
               </Button>
