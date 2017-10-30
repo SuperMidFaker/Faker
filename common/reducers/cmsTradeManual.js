@@ -50,7 +50,7 @@ export function hideImportModal() {
   };
 }
 
-export function loadManualLists({ pageSize, current, filters }) {
+export function loadManualLists({ pageSize, current, filters = {} }) {
   return {
     [CLIENT_API]: {
       types: [
