@@ -13,7 +13,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -51,10 +51,9 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
+  { loadEntryDetails, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
 )
 @connectNav({
   depth: 3,
@@ -89,8 +88,21 @@ export default class SHFTZEntryDetail extends Component {
         const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
         if (nonCusDeclRegs.length === 0) {
           sendable = true;
+          nextProps.entryRegs.forEach((er) => {
+            const invalidDets = [];
+            for (let i = 0; i < er.details.length; i++) {
+              const det = er.details[i];
+              if (!det.country || !det.currency || !det.unit || !det.net_wt) {
+                invalidDets.push(det.asn_seq_no);
+              }
+            }
+            if (invalidDets.length > 0) {
+              sendable = false;
+              unsentReason = `${unsentReason ? '\n' : ''}${er.cus_decl_no}: 行号${invalidDets.join(',')}数据不完整`;
+            }
+          });
         } else {
-          unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}未申报`;
+          unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}报关单号或进口时间或入库时间为空`;
           sendable = false;
         }
       }
@@ -98,10 +110,9 @@ export default class SHFTZEntryDetail extends Component {
       if (this.state.tabKey === '') {
         newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
       }
-      const owner = nextProps.owners.filter(own => own.customs_code === nextProps.entryRegs[0].owner_cus_code)[0];
-      if (owner && owner.portion_enabled) {
-        for (let i = 0; i < this.props.entryRegs.length; i++) {
-          const nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
+      if (nextProps.entryAsn.portion_enabled) {
+        for (let i = 0; i < nextProps.entryRegs.length; i++) {
+          const nonCargono = nextProps.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
           if (nonCargono) {
             newState.nonCargono = true;
             break;
@@ -116,13 +127,32 @@ export default class SHFTZEntryDetail extends Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key)
+  handleRefreshFtzCargo = () => {
+    const asnNo = this.props.params.asnNo;
+    this.props.refreshEntryRegFtzCargos(asnNo).then((result) => {
+      if (!result.error) {
+        this.props.loadEntryDetails({ asnNo });
+        notification.success({
+          message: '操作成功',
+          description: '备件号刷新成功',
+          placement: 'topLeft',
+        });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      }
+    });
+  }
   handleSend = () => {
     if (this.state.nonCargono) {
       notification.warn({
         message: '货号未备案',
         description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
         btn: (<div>
-          <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
+          <a role="presentation" onClick={() => this.handleRegSend(true)}>直接备案</a>
           <span className="ant-divider" />
           <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
         </div>),
@@ -130,12 +160,14 @@ export default class SHFTZEntryDetail extends Component {
         duration: 0,
       });
     } else {
-      this.handleRegSend();
+      this.handleRegSend(false);
     }
   }
-  handleRegSend = () => {
+  handleRegSend = (close) => {
+    if (close) {
+      notification.close('confirm-cargono');
+    }
     const asnNo = this.props.params.asnNo;
-    notification.close('confirm-cargono');
     this.props.fileEntryRegs(asnNo, this.props.whse.code, this.props.tenantId).then((result) => {
       if (!result.error) {
         const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.entryAsn.bonded_intype)[0];

@@ -14,6 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
   'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
+  'REFRSH_RFTZC', 'REFRSH_RFTZC_SUCCEED', 'REFRSH_RFTZC_FAIL',
   'FILE_ERS', 'FILE_ERS_SUCCEED', 'FILE_ERS_FAIL',
   'QUERY_ERI', 'QUERY_ERI_SUCCEED', 'QUERY_ERI_FAIL',
   'PAIR_ERP', 'PAIR_ERP_SUCCEED', 'PAIR_ERP_FAIL',
@@ -485,6 +486,21 @@ export function updateEntryReg(preRegNo, field, value, virtualTransfer) {
       endpoint: 'v1/cwm/shftz/entry/field/value',
       method: 'post',
       data: { pre_entry_seq_no: preRegNo, field, value, virtualTransfer },
+    },
+  };
+}
+
+export function refreshEntryRegFtzCargos(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REFRSH_RFTZC,
+        actionTypes.REFRSH_RFTZC_SUCCEED,
+        actionTypes.REFRSH_RFTZC_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/refresh/cargono',
+      method: 'post',
+      data: { asnNo },
     },
   };
 }
