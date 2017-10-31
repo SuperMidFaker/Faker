@@ -21,6 +21,7 @@ import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
 import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -243,6 +244,7 @@ export default class ManifestBodyPane extends React.Component {
         onChange: this.handlePageChange,
       },
       selectedRowKeys: [],
+      importPanelVisible: false,
     };
   }
   componentWillMount() {
@@ -895,6 +897,7 @@ export default class ManifestBodyPane extends React.Component {
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
+        { this.props.billHead.manual_no && <Button onClick={() => { this.setState({ importPanelVisible: true }); }} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
         <Button size="large" icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
         <Dropdown overlay={dataToolsMenu}>
           <Button size="large" style={{ marginLeft: 8 }}>
@@ -954,6 +957,18 @@ export default class ManifestBodyPane extends React.Component {
         <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
         <ImportDeclaredBodyModal reload={() => this.handleReload(true)} />
+        <ImportDataPanel
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/manual/import`}
+          formData={{
+            data: JSON.stringify({
+              bill_seq_no: this.props.billHead.bill_seq_no,
+            }),
+          }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.handleReload}
+          template={`${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`}
+        />
       </DataPane>
     );
   }

@@ -13,6 +13,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
 import PageHeader from 'client/components/PageHeader';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import { formatMsg } from '../message.i18n';
 import moment from 'moment';
 
@@ -61,6 +62,7 @@ export default class CWMSkuList extends React.Component {
     rightSiderCollapsed: true,
     selectedRowKeys: [],
     tableOwners: [],
+    importPanelVisible: false,
   }
   componentWillMount() {
     if (!this.props.owner.id) {
@@ -254,6 +256,15 @@ export default class CWMSkuList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  skuUploaded = () => {
+    this.props.loadOwnerSkus({
+      owner_partner_id: this.props.owner.id,
+      filter: JSON.stringify(this.props.listFilter),
+      sorter: JSON.stringify(this.props.sortFilter),
+      pageSize: this.props.skulist.pageSize,
+      current: 1,
+    });
+  }
   render() {
     const { skulist, owner, whse, whses, loading, syncing, listFilter } = this.props;
     const rowSelection = {
@@ -313,7 +324,7 @@ export default class CWMSkuList extends React.Component {
               <Button size="large" icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>
                 {this.msg('syncTradeItems')}
               </Button>
-              <Button size="large" icon="upload" disabled={syncing}>
+              <Button size="large" icon="upload" disabled={syncing} onClick={() => { this.setState({ importPanelVisible: true }); }}>
                 {this.msg('productImport')}
               </Button>
               <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick} disabled={syncing}>
@@ -350,6 +361,21 @@ export default class CWMSkuList extends React.Component {
             </Collapse>
           </div>
         </Sider>
+        <ImportDataPanel
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cwm/sku/import`}
+          formData={{
+            data: JSON.stringify({
+              ownerId: owner.id,
+              ownerTenantId: owner.partner_tenant_id,
+              name: owner.name,
+              loginId: this.props.loginId,
+            }),
+          }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.skuUploaded}
+          template={`${XLSX_CDN}/sku导入模板.xlsx`}
+        />
         <ApplyPackingRuleModal />
       </Layout>
     );
