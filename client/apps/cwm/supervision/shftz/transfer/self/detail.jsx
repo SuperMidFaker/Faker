@@ -39,7 +39,6 @@ function fetchData({ dispatch, params }) {
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
-    owners: state.cwmContext.whseAttrs.owners,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -159,14 +158,11 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   handleTransToWhs = () => {
-    const { params, entryAsn, tenantId, owners, whse } = this.props;
-    const owner = owners.find(own => own.name === entryAsn.owner_name);
+    const { params, entryAsn, whse } = this.props;
     this.props.transferToOwnWhse({
       asnNo: params.asnNo,
       whseCode: entryAsn.whse_code,
       ftzWhseCode: whse.ftz_whse_code,
-      tenantId,
-      owner,
     }).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
