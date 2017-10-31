@@ -81,6 +81,7 @@ export default class SHFTZRelDetail extends Component {
   }
   state = {
     tabKey: '',
+    reg: {},
     editable: false,
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     fullscreen: true,
@@ -94,12 +95,13 @@ export default class SHFTZRelDetail extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
-      if (this.state.tabKey === '') {
-        this.setState({
-          tabKey: nextProps.relRegs[0].pre_entry_seq_no,
-          editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
-        });
-      }
+      // if (this.state.tabKey === '') {
+      this.setState({
+        reg: nextProps.relRegs[0],
+        tabKey: nextProps.relRegs[0].pre_entry_seq_no,
+        editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
+      });
+      // }
     }
   }
   msg = key => formatMsg(this.props.intl, key)
@@ -186,7 +188,10 @@ export default class SHFTZRelDetail extends Component {
     });
   }
   handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
+    this.setState({
+      tabKey,
+      reg: this.props.relRegs[tabKey],
+    });
   }
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateRelReg(preRegNo, field, value).then((result) => {
@@ -346,6 +351,7 @@ export default class SHFTZRelDetail extends Component {
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
+    const { reg } = this.state;
     if (relRegs.length === 0) {
       return null;
     }
@@ -366,11 +372,22 @@ export default class SHFTZRelDetail extends Component {
       sendable = false;
       whyunsent = '出库单未配货';
     }
+    const tabList = [];
+    relRegs.forEach((r, index) => tabList.push({ tab: r.pre_entry_seq_no, key: index }));
+    const stat = reg.details && reg.details.reduce((acc, regd) => ({
+      total_qty: acc.total_qty + regd.qty,
+      total_amount: acc.total_amount + regd.amount,
+      total_net_wt: acc.total_net_wt + regd.net_wt,
+    }), {
+      total_qty: 0,
+      total_amount: 0,
+      total_net_wt: 0,
+    });
     const queryable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed && relRegs.filter(er => !er.ftz_rel_no).length === 0;
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     return (
       <div>
-        <PageHeader>
+        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -407,11 +424,16 @@ export default class SHFTZRelDetail extends Component {
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-              <DescriptionList col={4}>
-                <Description term="提货单位">{relRegs[0].owner_name}</Description>
-                <Description term="运输单位">{relRegs[0].carrier_name}</Description>
-                <Description term="创建时间">{relRegs[0].created_date && moment(relRegs[0].created_date).format('YYYY.MM.DD HH:mm')}</Description>
-                <Description term="备案时间">{relRegs[0].ftz_reg_date && moment(relRegs[0].ftz_reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <DescriptionList col={3}>
+                <Description term="分拨出库单号">
+                  <EditableCell value={reg.ftz_rel_no} editable={relEditable}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
+                  />
+                </Description>
+                <Description term="提货单位">{reg.owner_name}</Description>
+                <Description term="运输单位">{reg.carrier_name}</Description>
+                <Description term="创建时间">{reg.created_date && moment(reg.created_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="备案时间">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY.MM.DD HH:mm')}</Description>
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>
@@ -422,47 +444,27 @@ export default class SHFTZRelDetail extends Component {
               </div>
             </Card>
             <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                {relRegs.map((reg) => {
-                  const stat = reg.details.reduce((acc, regd) => ({
-                    total_qty: acc.total_qty + regd.qty,
-                    total_amount: acc.total_amount + regd.amount,
-                    total_net_wt: acc.total_net_wt + regd.net_wt,
-                  }), {
-                    total_qty: 0,
-                    total_amount: 0,
-                    total_net_wt: 0,
-                  });
-                  const countTag = <span>备案明细 <Tag>{reg.details.length}</Tag></span>;
-                  return (
-                    <TabPane tab={countTag} key={reg.pre_entry_seq_no}>
-                      <DataPane fullscreen={this.state.fullscreen}
-                        columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
-                      >
-                        <DataPane.Toolbar>
-                          <DescriptionList size="small" col={4}>
-                            <Description term="分拨出库单号">
-                              <EditableCell value={reg.ftz_rel_no} editable={relEditable}
-                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
-                              />
-                            </Description>
-                          </DescriptionList>
-                          <DataPane.Extra>
-                            <Summary>
-                              <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
-                              <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
-                              <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
-                            </Summary>
-                          </DataPane.Extra>
-                        </DataPane.Toolbar>
-                      </DataPane>
-                    </TabPane>);
-                })}
+              <Tabs defaultActiveKey="regDetails">
+                <TabPane tab="备案明细" key="regDetails">
+                  <DataPane fullscreen={this.state.fullscreen}
+                    columns={this.columns} rowSelection={rowSelection} indentSize={8}
+                    dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                  >
+                    <DataPane.Toolbar>
+                      <DataPane.Extra>
+                        <Summary>
+                          <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>
+                          <Summary.Item label="总净重" addonAfter="KG">{stat && stat.total_net_wt.toFixed(3)}</Summary.Item>
+                          <Summary.Item label="总金额">{stat && stat.total_amount.toFixed(3)}</Summary.Item>
+                        </Summary>
+                      </DataPane.Extra>
+                    </DataPane.Toolbar>
+                  </DataPane>
+                </TabPane>
                 <TabPane tab="集中报关" key="batchDecl">
                   <DataPane fullscreen={this.state.fullscreen}
                     columns={this.declColumns}
-                    dataSource={relRegs[0].ftz_apply_nos} rowKey="id" loading={this.state.loading}
+                    dataSource={reg.ftz_apply_nos} rowKey="id" loading={this.state.loading}
                   />
                 </TabPane>
               </Tabs>

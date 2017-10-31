@@ -176,7 +176,7 @@ export default class EditableCell extends React.Component {
             :
             <div className="editable-cell-text-wrapper" onClick={this.cellEdit}>
               {this.renderText()}
-              <Icon type="edit" className="editable-cell-icon" onClick={this.edit} />
+              {editable && <Icon type="edit" className="editable-cell-icon" onClick={this.edit} />}
             </div>
         }
       </div>

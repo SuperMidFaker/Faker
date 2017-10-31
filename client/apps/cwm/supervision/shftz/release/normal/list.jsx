@@ -45,7 +45,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZReleaseList extends React.Component {
+export default class SHFTZNormalRelRegList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
