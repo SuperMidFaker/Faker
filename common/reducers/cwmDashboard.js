@@ -21,6 +21,8 @@ const initState = {
     outboundDetails: 0,
     pickings: 0,
     shipments: 0,
+    entry: 0,
+    cargo: 0,
   },
 };
 

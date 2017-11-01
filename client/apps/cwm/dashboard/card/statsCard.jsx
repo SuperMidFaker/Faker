@@ -55,7 +55,7 @@ export default class StatsCard extends Component {
       <Card title={this.msg('stats')}
         extra={datePicker} noHovering bodyStyle={{ padding: 0 }}
       >
-        <Card.Grid style={{ width: '14%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('totalInbound')}</h4>
             <div className="data">
@@ -63,7 +63,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toReceive')}</h4>
             <div className="data">
@@ -71,7 +71,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('received')}</h4>
             <div className="data">
@@ -79,7 +79,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '14%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('totalOutbound')}</h4>
             <div className="data">
@@ -87,7 +87,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toAllocate')}</h4>
             <div className="data">
@@ -95,7 +95,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toPick')}</h4>
             <div className="data">
@@ -103,7 +103,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toShip')}</h4>
             <div className="data">
@@ -111,11 +111,27 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('shippingCompleted')}</h4>
             <div className="data">
               <div className="data-num lg text-success">{statsCard.shipped}</div>
+            </div>
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('待同步入库备案')}</h4>
+            <div className="data">
+              <div className="data-num lg text-warning">{statsCard.entry}</div>
+            </div>
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('待同步分拨出库备案')}</h4>
+            <div className="data">
+              <div className="data-num lg text-warning">{statsCard.cargo}</div>
             </div>
           </div>
         </Card.Grid>
