@@ -131,7 +131,7 @@ export default class StatsCard extends Component {
           <div className="statistics-cell">
             <h4>{this.msg('待同步分拨出库备案')}</h4>
             <div className="data">
-              <div className="data-num lg text-warning">{statsCard.cargo}</div>
+              <div className="data-num lg text-warning">{statsCard.portions}</div>
             </div>
           </div>
         </Card.Grid>
