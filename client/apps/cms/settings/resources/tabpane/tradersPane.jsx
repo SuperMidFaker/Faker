@@ -46,9 +46,6 @@ export default class TraderList extends Component {
   handleAddBtnClick = (type) => {
     this.props.toggleBusinessUnitModal(true, 'add', { relation_type: type });
   }
-  handleDeleteBtnClick = (id) => {
-    this.props.deleteBusinessUnit(id);
-  }
   handleRuleBtnClick = (record) => {
     this.props.toggleUnitRuleSetModal(true, record.id);
     this.props.loadBusinessUnitUsers(record.id);

@@ -1,7 +1,7 @@
 exports.LINE_FILE_ADAPTOR_MODELS = [{
   CMS_MANIFEST_BODY: {
     key: 'CMS_MANIFEST_BODY',
-    name: '清单表体直接导入',
+    name: '清单表体模板',
     columns: [{
       field: 'product_no',
       label: '商品货号',
@@ -71,53 +71,6 @@ exports.LINE_FILE_ADAPTOR_MODELS = [{
     }, {
       field: 'gross_wt',
       label: '毛重(千克)',
-    }, {
-      field: 'version_no',
-      label: '版本号',
-    }, {
-      field: 'processing_fees',
-      label: '工缴费',
-    }],
-  },
-  CMS_MANIFEST_RELATED: {
-    key: 'CMS_MANIFEST_RELATED',
-    name: '清单表体关联导入',
-    columns: [{
-      field: 'product_no',
-      label: '商品货号',
-    }, {
-      field: 'prdt_item_no',
-      label: '项号',
-    }, {
-      field: 'g_name',
-      label: '商品名称',
-    }, {
-      field: 'en_name',
-      label: '英文描述',
-    }, {
-      field: 'qty_pcs',
-      label: '数量',
-    }, {
-      field: 'unit_pcs',
-      label: '单位',
-    }, {
-      field: 'net_wt',
-      label: '净重(千克)',
-    }, {
-      field: 'amount',
-      label: '申报总价',
-    }, {
-      field: 'currency',
-      label: '币制',
-    }, {
-      field: 'duty_mode',
-      label: '征免方式',
-    }, {
-      field: 'dest_country',
-      label: '目的国',
-    }, {
-      field: 'orig_country',
-      label: '原产国',
     }, {
       field: 'version_no',
       label: '版本号',
