@@ -31,7 +31,6 @@ const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
   dispatch(loadInbounds({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmReceive.inbound.pageSize,
     current: state.cwmReceive.inbound.current,
     filters: state.cwmReceive.inboundFilters,
@@ -41,7 +40,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     filters: state.cwmReceive.inboundFilters,
@@ -59,7 +57,6 @@ function fetchData({ state, dispatch }) {
 export default class ReceivingInboundList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -72,7 +69,6 @@ export default class ReceivingInboundList extends React.Component {
       const filters = { ...this.props.filters };
       nextProps.loadInbounds({
         whseCode: nextProps.defaultWhse.code,
-        tenantId: nextProps.tenantId,
         pageSize: nextProps.inbound.pageSize,
         current: nextProps.inbound.current,
         filters,
@@ -174,7 +170,6 @@ export default class ReceivingInboundList extends React.Component {
     const filters = this.props.filters;
     this.props.loadInbounds({
       whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
       pageSize: this.props.inbound.pageSize,
       current: this.props.inbound.current,
       filters,
@@ -185,7 +180,6 @@ export default class ReceivingInboundList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadInbounds({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.inbound.pageSize,
       current: this.props.inbound.current,
       filters,
@@ -207,7 +201,6 @@ export default class ReceivingInboundList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadInbounds({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.inbound.pageSize,
       current: this.props.inbound.current,
       filters,
@@ -217,7 +210,6 @@ export default class ReceivingInboundList extends React.Component {
     const filters = { ...this.props.filters, name: value };
     this.props.loadInbounds({
       whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
       pageSize: this.props.inbound.pageSize,
       current: this.props.inbound.current,
       filters,
@@ -249,7 +241,6 @@ export default class ReceivingInboundList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,

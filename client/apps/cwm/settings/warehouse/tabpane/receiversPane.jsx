@@ -14,7 +14,6 @@ import * as Location from 'client/util/location';
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
     receivers: state.cwmWarehouse.receivers,

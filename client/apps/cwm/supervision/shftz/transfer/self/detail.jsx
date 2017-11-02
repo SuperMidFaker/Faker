@@ -35,7 +35,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
@@ -199,7 +198,6 @@ export default class SHFTZTransferSelfDetail extends Component {
       whse: entryAsn.whse_code,
       ftzWhseCode: this.props.whse.ftz_whse_code,
       username,
-      tenantId: this.props.tenantId,
     }).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {

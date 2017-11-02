@@ -13,7 +13,6 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.username,
     batchTransitModal: state.cwmTransition.batchTransitModal,
   }),
@@ -43,17 +42,17 @@ export default class BatchTransitModal extends Component {
   handleSubmit = () => {
     const transit = this.props.form.getFieldsValue();
     const valueChanged = Object.keys(transit).length > 0;
-    const { loginName, tenantId, batchTransitModal } = this.props;
+    const { loginName, batchTransitModal } = this.props;
     let transitOp;
     if (this.formValue.target_location) {
       if (this.formValue.movement_no) {
         transitOp = this.props.moveTransit(batchTransitModal.traceIds, transit, this.formValue.target_location,
-          this.formValue.movement_no, loginName, tenantId);
+          this.formValue.movement_no, loginName);
       } else {
         message.error('库存移动单未选');
       }
     } else if (valueChanged) {
-      transitOp = this.props.splitTransit(batchTransitModal.traceIds, transit, loginName, tenantId);
+      transitOp = this.props.splitTransit(batchTransitModal.traceIds, transit, loginName);
     }
     if (transitOp) {
       transitOp.then((result) => {

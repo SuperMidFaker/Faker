@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { message, Button, Form, Row, Input, Col, InputNumber } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -14,7 +13,6 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.username,
     detail: state.cwmTransition.transitionModal.detail,
   }),
@@ -23,7 +21,6 @@ const formItemLayout = {
 export default class AdjustPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   state = {
     adjustQty: null,
@@ -55,8 +52,8 @@ export default class AdjustPane extends React.Component {
   }
   handleAdjustTransit = () => {
     if (this.state.adjustQty) {
-      const { loginName, tenantId } = this.props;
-      this.props.adjustTransit(this.props.detail.trace_id, this.state, loginName, tenantId).then((result) => {
+      const { loginName } = this.props;
+      this.props.adjustTransit(this.props.detail.trace_id, this.state, loginName).then((result) => {
         if (!result.error) {
           message.success('库存数量调整成功');
         } else {

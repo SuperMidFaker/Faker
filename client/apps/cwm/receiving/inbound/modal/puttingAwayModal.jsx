@@ -15,7 +15,6 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
     visible: state.cwmReceive.puttingAwayModal.visible,
@@ -69,9 +68,9 @@ export default class PuttingAwayModal extends Component {
   }
   handleSubmit = () => {
     const { location, allocater, date } = this.state;
-    const { details, loginName, inboundNo, tenantId } = this.props;
+    const { details, loginName, inboundNo } = this.props;
     const traceIds = details.map(detail => detail.trace_id);
-    this.props.batchPutaways(traceIds, location, allocater, date, loginName, inboundNo, tenantId).then((result) => {
+    this.props.batchPutaways(traceIds, location, allocater, date, loginName, inboundNo).then((result) => {
       if (!result.error) {
         this.handleCancel();
       }

@@ -12,7 +12,6 @@ const Search = Input.Search;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     waveDetails: state.cwmShippingOrder.waveDetails,
     reload: state.cwmShippingOrder.waveReload,

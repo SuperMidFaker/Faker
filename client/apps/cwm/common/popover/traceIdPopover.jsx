@@ -13,8 +13,7 @@ const formatMsg = format(messages);
 
 @injectIntl
 @connect(
-  state => ({
-    tenantId: state.account.tenantId,
+  () => ({
   }),
   { loadTraceTransactions }
 )
@@ -69,7 +68,7 @@ export default class TraceIdPopover extends Component {
   handleVisibleChange = (visible) => {
     this.setState({ visible });
     if (visible) {
-      this.props.loadTraceTransactions(this.props.traceId, this.props.tenantId).then((result) => {
+      this.props.loadTraceTransactions(this.props.traceId).then((result) => {
         if (!result.error) {
           this.setState({
             dataSource: result.data,

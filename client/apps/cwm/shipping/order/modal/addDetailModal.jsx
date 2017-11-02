@@ -14,7 +14,6 @@ const InputGroup = Input.Group;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     visible: state.cwmReceive.detailModal.visible,
     temporaryDetails: state.cwmReceive.temporaryDetails,
     productNos: state.cwmReceive.productNos,
@@ -73,7 +72,7 @@ export default class AddDetailModal extends Component {
   handleSearch = (value) => {
     if (value.length >= 3) {
       const { selectedOwner } = this.props;
-      this.props.loadProducts(value, selectedOwner, this.props.tenantId);
+      this.props.loadProducts(value, selectedOwner);
     }
   }
   submit = () => {

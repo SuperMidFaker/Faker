@@ -12,7 +12,6 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     locations: state.cwmWarehouse.locations,
   }),
   { getInboundDetail, loadInboundPutaways }

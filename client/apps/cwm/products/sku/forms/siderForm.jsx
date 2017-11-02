@@ -15,7 +15,6 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     packings: state.cwmSku.params.packings,
     skuForm: state.cwmSku.skuForm,
     owner: state.cwmSku.owner,

@@ -11,7 +11,6 @@ import InboundCard from '../card/inboundCard';
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     order: state.crmOrders.dock.order,
   }),
   { loadAsnInbounds }
@@ -19,7 +18,6 @@ import InboundCard from '../card/inboundCard';
 export default class InboundPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     asnNo: PropTypes.string.isRequired,
   }
   state = {

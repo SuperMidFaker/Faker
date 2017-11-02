@@ -17,7 +17,6 @@ const RadioGroup = Radio.Group;
 @connect(
   state => ({
     visible: state.cwmSku.packingRuleModal.visible,
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     owner: state.cwmSku.owner,
   }),
@@ -39,12 +38,12 @@ export default class PackingRuleModal extends Component {
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    const { tenantId, loginId, owner } = this.props;
+    const { loginId, owner } = this.props;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const data = values;
         data.convey_pallet_qty = data.convey_box_qty * data.pallet_pack_qty;
-        this.props.saveSkuTemplate(data, tenantId, loginId, owner.id).then((result) => {
+        this.props.saveSkuTemplate(data, loginId, owner.id).then((result) => {
           if (!result.error) {
             this.props.loadSkuParams(this.props.owner.id);
             this.props.closePackingRuleModal();

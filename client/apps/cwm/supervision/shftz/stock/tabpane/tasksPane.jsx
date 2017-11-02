@@ -12,7 +12,6 @@ import { formatMsg } from '../message.i18n';
 @connect(
     state => ({
       defaultWhse: state.cwmContext.defaultWhse,
-      tenantId: state.account.tenantId,
       ftzTaskList: state.cwmShFtz.ftzTaskList,
     }),
     { loadStockTasks }
@@ -20,7 +19,6 @@ import { formatMsg } from '../message.i18n';
 export default class TasksPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     collapsed: PropTypes.bool.isRequired,
   }
   static contextTypes = {
@@ -32,7 +30,7 @@ export default class TasksPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     if ((nextProps.collapsed !== this.props.collapsed && !nextProps.collapsed)
       || nextProps.ftzTaskList.reload) {
-      this.props.loadStockTasks(nextProps.defaultWhse.code, nextProps.tenantId);
+      this.props.loadStockTasks(nextProps.defaultWhse.code);
     }
   }
   msg = formatMsg(this.props.intl)

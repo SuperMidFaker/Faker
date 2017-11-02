@@ -320,7 +320,7 @@ export function updateASN(data) {
   };
 }
 
-export function loadProducts(productNo, partnerId, tenantId) {
+export function loadProducts(productNo, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -330,7 +330,7 @@ export function loadProducts(productNo, partnerId, tenantId) {
       ],
       endpoint: 'v1/cwm/receive/productNos/load',
       method: 'get',
-      params: { productNo, partnerId, tenantId },
+      params: { productNo, partnerId },
     },
   };
 }
@@ -350,7 +350,7 @@ export function loadAsn(asnNo) {
   };
 }
 
-export function loadAsnLists({ whseCode, tenantId, pageSize, current, filters }) {
+export function loadAsnLists({ whseCode, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -360,7 +360,7 @@ export function loadAsnLists({ whseCode, tenantId, pageSize, current, filters })
       ],
       endpoint: 'v1/cwm/receive/asnLists/load',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -410,7 +410,7 @@ export function cancelAsn(asnNo) {
   };
 }
 
-export function loadInbounds({ whseCode, tenantId, pageSize, current, filters }) {
+export function loadInbounds({ whseCode, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -420,7 +420,7 @@ export function loadInbounds({ whseCode, tenantId, pageSize, current, filters })
       ],
       endpoint: 'v1/cwm/receive/inbounds/load',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -634,7 +634,7 @@ export function undoReceives(inboundNo, loginId, traceIds) {
   };
 }
 
-export function batchPutaways(traceIds, location, allocater, allocateDt, loginName, inboundNo, tenantId) {
+export function batchPutaways(traceIds, location, allocater, allocateDt, loginName, inboundNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -644,12 +644,12 @@ export function batchPutaways(traceIds, location, allocater, allocateDt, loginNa
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/batch',
       method: 'post',
-      data: { traceIds, location, allocater, allocateDt, loginName, inboundNo, tenantId },
+      data: { traceIds, location, allocater, allocateDt, loginName, inboundNo },
     },
   };
 }
 
-export function expressPutaways(loginId, loginName, inboundNo, tenantId) {
+export function expressPutaways(loginId, loginName, inboundNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -659,7 +659,7 @@ export function expressPutaways(loginId, loginName, inboundNo, tenantId) {
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/express',
       method: 'post',
-      data: { loginName, loginId, inboundNo, tenantId },
+      data: { loginName, loginId, inboundNo },
     },
   };
 }
@@ -745,7 +745,7 @@ export function loadLotInfo(asnNo) {
   };
 }
 
-export function getSuppliers(tenantId, whseCode, ownerPartnerId) {
+export function getSuppliers(whseCode, ownerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -755,7 +755,7 @@ export function getSuppliers(tenantId, whseCode, ownerPartnerId) {
       ],
       endpoint: 'v1/cwm/get/suppliers',
       method: 'get',
-      params: { tenantId, whseCode, ownerPartnerId },
+      params: { whseCode, ownerPartnerId },
     },
   };
 }

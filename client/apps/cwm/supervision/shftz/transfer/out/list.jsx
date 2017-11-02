@@ -31,7 +31,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     releaseList: state.cwmShFtz.releaseList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -48,7 +47,6 @@ const RadioButton = Radio.Button;
 export default class SHFTZTransferOutList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     releaseList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
@@ -169,7 +167,6 @@ export default class SHFTZTransferOutList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -181,10 +178,9 @@ export default class SHFTZTransferOutList extends React.Component {
     remotes: this.props.releaseList,
   })
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
+    const { listFilter, whse, releaseList: { pageSize, current } } = this.props;
     const newfilter = filter || listFilter;
     this.props.loadReleaseRegDatas({
-      tenantId,
       filter: JSON.stringify(newfilter),
       pageSize,
       currentPage: currentPage || current,

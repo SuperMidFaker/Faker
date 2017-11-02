@@ -13,8 +13,7 @@ const Search = Input.Search;
 
 @injectIntl
 @connect(
-  state => ({
-    tenantId: state.account.tenantId,
+  () => ({
   }),
   { loadLimitLocations, loadAdviceLocations }
 )
@@ -36,14 +35,14 @@ export default class LocationPopover extends Component {
   handleVisibleChange = (visible) => {
     this.setState({ visible });
     if (visible) {
-      this.props.loadLimitLocations(this.props.whseCode, '', this.props.tenantId).then((result) => {
+      this.props.loadLimitLocations(this.props.whseCode, '').then((result) => {
         if (!result.error) {
           this.setState({
             locations: result.data,
           });
         }
       });
-      this.props.loadAdviceLocations(this.props.productNo, this.props.tenantId, this.props.whseCode).then((result) => {
+      this.props.loadAdviceLocations(this.props.productNo, this.props.whseCode).then((result) => {
         if (!result.error) {
           this.setState({ adviceLocations: result.data });
         }
@@ -69,7 +68,7 @@ export default class LocationPopover extends Component {
   }
   handleChange = (e) => {
     const text = e.target.value;
-    this.props.loadLimitLocations(this.props.whseCode, '', this.props.tenantId, text).then((result) => {
+    this.props.loadLimitLocations(this.props.whseCode, '', text).then((result) => {
       if (!result.error) {
         this.setState({
           locations: result.data,

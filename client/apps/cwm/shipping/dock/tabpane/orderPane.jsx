@@ -16,7 +16,6 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     order: state.crmOrders.dock.order,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -26,7 +25,6 @@ const Panel = Collapse.Panel;
 export default class SOPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     soHead: PropTypes.object.isRequired,
     soBody: PropTypes.array.isRequired,
     reload: PropTypes.func.isRequired,
@@ -35,7 +33,7 @@ export default class SOPane extends React.Component {
     tabKey: '',
   }
   componentWillMount() {
-    this.props.loadCarriers(this.props.defaultWhse.code, this.props.tenantId);
+    this.props.loadCarriers(this.props.defaultWhse.code);
   }
   columns = [{
     title: '行号',

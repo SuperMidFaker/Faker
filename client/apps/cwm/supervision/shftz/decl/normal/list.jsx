@@ -27,7 +27,6 @@ const OptGroup = Select.OptGroup;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     delglist: state.cwmShFtz.normalDelgList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -44,7 +43,6 @@ const OptGroup = Select.OptGroup;
 export default class NormalDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -172,7 +170,6 @@ export default class NormalDeclList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -184,9 +181,8 @@ export default class NormalDeclList extends React.Component {
     remotes: this.props.delglist,
   })
   handleNormalDelgLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, delglist: { pageSize, current } } = this.props;
+    const { listFilter, whse, delglist: { pageSize, current } } = this.props;
     this.props.loadNormalDelgList({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,

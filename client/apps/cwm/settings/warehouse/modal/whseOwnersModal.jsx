@@ -15,7 +15,6 @@ import { formatMsg } from '../message.i18n';
     partners: state.partner.partners,
     visible: state.cwmWarehouse.whseOwnersModal.visible,
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
   }),
   { loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode, loadWhse }
 )
@@ -33,7 +32,6 @@ export default class WhseOwnersModal extends Component {
   }
   componentWillMount() {
     this.props.loadPartners({
-      tenantId: this.props.whseTenantId,
       role: PARTNER_ROLES.CUS,
       businessType: PARTNER_BUSINESSE_TYPES.warehousing,
     }).then((result) => {
@@ -47,9 +45,7 @@ export default class WhseOwnersModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseOwners !== this.props.whseOwners) {
-      const tenantId = nextProps.whseTenantId;
       this.props.loadPartners({
-        tenantId,
         role: PARTNER_ROLES.CUS,
         businessType: PARTNER_BUSINESSE_TYPES.warehousing,
       }).then((result) => {
@@ -99,7 +95,6 @@ export default class WhseOwnersModal extends Component {
       name: obj.name,
       code: obj.partner_code,
       whseCode,
-      tenantId: obj.partner_tenant_id,
       customsCode: obj.customs_code,
       whseTenantId: this.props.whseTenantId,
       receivingMode: WHSE_OPERATION_MODES.manual.value,
@@ -111,7 +106,7 @@ export default class WhseOwnersModal extends Component {
           message.info('添加成功');
           this.props.hideWhseOwnersModal();
           this.props.loadwhseOwners(whseCode, this.props.whseTenantId);
-          this.props.loadWhse(whseCode, this.props.tenantId);
+          this.props.loadWhse(whseCode);
           const filterPartners = this.state.filterPartners.filter(partner => !this.state.selectedRows.find(owners => owners.id === partner.id));
           this.setState({
             filterPartners,

@@ -14,7 +14,6 @@ import { formatMsg } from '../message.i18n';
 @connect(
   state => ({
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     carriers: state.cwmWarehouse.carriers,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -31,11 +30,11 @@ export default class CarriersPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+    this.props.loadCarriers(this.props.whseCode);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadCarriers(nextProps.whseCode, this.props.tenantId);
+      this.props.loadCarriers(nextProps.whseCode);
     }
   }
   columns = [{
@@ -97,14 +96,14 @@ export default class CarriersPane extends Component {
   changeCarrierStatus = (id, status) => {
     this.props.changeCarrierStatus(id, status).then((result) => {
       if (!result.error) {
-        this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+        this.props.loadCarriers(this.props.whseCode);
       }
     });
   }
   handleDeleteCarrier = (id) => {
     this.props.deleteCarrier(id).then((result) => {
       if (!result.error) {
-        this.props.loadCarriers(this.props.whseCode, this.props.tenantId);
+        this.props.loadCarriers(this.props.whseCode);
       }
     });
   }

@@ -28,7 +28,6 @@ const OptGroup = Select.OptGroup;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     entryList: state.cwmShFtz.entryList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -45,7 +44,6 @@ const OptGroup = Select.OptGroup;
 export default class SHFTZTransferSelfList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     entryList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
@@ -163,7 +161,6 @@ export default class SHFTZTransferSelfList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -175,10 +172,9 @@ export default class SHFTZTransferSelfList extends React.Component {
     remotes: this.props.entryList,
   })
   handleEntryListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
+    const { whse, listFilter, entryList: { pageSize, current } } = this.props;
     const newfilter = filter || listFilter;
     this.props.loadEntryRegDatas({
-      tenantId,
       filter: JSON.stringify(newfilter),
       pageSize,
       currentPage: currentPage || current,

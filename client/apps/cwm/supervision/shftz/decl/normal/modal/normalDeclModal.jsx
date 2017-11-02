@@ -18,7 +18,6 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     visible: state.cwmShFtz.clearanceModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -232,7 +231,6 @@ export default class NormalDeclModal extends Component {
     const { ownerCusCode, relNo, relDateRange, currency } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -249,7 +247,6 @@ export default class NormalDeclModal extends Component {
     const { ownerCusCode, relNo, relDateRange, supplier } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -274,7 +271,6 @@ export default class NormalDeclModal extends Component {
     const { ownerCusCode, relNo, relDateRange, currency, supplier } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -340,7 +336,6 @@ export default class NormalDeclModal extends Component {
   }
   handleOwnerChange = (ownerCusCode) => {
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -357,10 +352,9 @@ export default class NormalDeclModal extends Component {
     if (owner) {
       this.props.loadManifestTemplates({
         owner_partner_id: owner.id,
-        tenant_id: this.props.tenantId,
         ietype: 0,
       });
-      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
+      this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
     }
   }
   handleSearch = (searchText) => {

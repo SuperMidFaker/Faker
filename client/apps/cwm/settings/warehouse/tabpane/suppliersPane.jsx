@@ -14,7 +14,6 @@ import { formatMsg } from '../message.i18n';
 @connect(
   state => ({
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     suppliers: state.cwmWarehouse.suppliers,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -31,11 +30,11 @@ export default class SuppliersPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadSuppliers(this.props.whseCode, this.props.tenantId);
+    this.props.loadSuppliers(this.props.whseCode);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadSuppliers(nextProps.whseCode, this.props.tenantId);
+      this.props.loadSuppliers(nextProps.whseCode);
     }
   }
   columns = [{

@@ -15,7 +15,6 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     visible: state.cwmTransition.batchMoveModal.visible,
   }),

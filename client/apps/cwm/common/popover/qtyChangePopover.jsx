@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.loginName,
   }),
   { freezeTransit, adjustTransit }
@@ -59,13 +58,13 @@ export default class frozonPopover extends Component {
     }
   }
   handleConfirm = () => {
-    const { tenantId, loginName, traceId } = this.props;
+    const { loginName, traceId } = this.props;
     const { adjustQty, reason, finalQty } = this.state;
     if (!Math.abs(adjustQty)) {
       message.info('请输入调整数量');
       return;
     }
-    this.props.adjustTransit(traceId, { adjustQty, finalQty, reason }, loginName, tenantId).then((result) => {
+    this.props.adjustTransit(traceId, { adjustQty, finalQty, reason }, loginName).then((result) => {
       if (!result.error) {
         this.props.reload();
         this.setState({

@@ -36,7 +36,6 @@ const Option = Select.Option;
   state => ({
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
     loginName: state.account.username,
     loading: state.cwmTransition.loading,
     transitionlist: state.cwmTransition.list,
@@ -60,7 +59,6 @@ const Option = Select.Option;
 export default class StockTransitionList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
     transitionlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
@@ -229,8 +227,8 @@ export default class StockTransitionList extends React.Component {
     this.setState({ unfreezeReason: ev.target.value });
   }
   handleUnfreezeTransition = (row) => {
-    const { loginName, tenantId } = this.props;
-    this.props.unfreezeTransit([row.trace_id], { reason: this.state.unfreezeReason }, loginName, tenantId).then((result) => {
+    const { loginName } = this.props;
+    this.props.unfreezeTransit([row.trace_id], { reason: this.state.unfreezeReason }, loginName).then((result) => {
       if (!result.error) {
         this.handleStockQuery();
         this.setState({ unfreezeReason: '' });
@@ -255,8 +253,8 @@ export default class StockTransitionList extends React.Component {
     if (this.state.transitionSplitNum === 0) {
       message.error('请先输入拆分数量');
     } else {
-      const { loginName, tenantId } = this.props;
-      this.props.splitTransit([row.trace_id], { split: this.state.transitionSplitNum, reason: '拆分' }, loginName, tenantId).then((result) => {
+      const { loginName } = this.props;
+      this.props.splitTransit([row.trace_id], { split: this.state.transitionSplitNum, reason: '拆分' }, loginName).then((result) => {
         if (!result.error) {
           this.handleStockQuery();
           this.setState({ transitionSplitNum: 0 });
@@ -267,9 +265,8 @@ export default class StockTransitionList extends React.Component {
     }
   }
   handleStockQuery = (currentPage, filter) => {
-    const { tenantId, sortFilter, listFilter, transitionlist: { pageSize, current } } = this.props;
+    const { sortFilter, listFilter, transitionlist: { pageSize, current } } = this.props;
     this.props.loadTransitions({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       sorter: JSON.stringify(sortFilter),
       pageSize,
@@ -326,8 +323,8 @@ export default class StockTransitionList extends React.Component {
     this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [], stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty });
   }
   handleExportExcel = () => {
-    const { tenantId, listFilter, sortFilter } = this.props;
-    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?tenantId=${tenantId}&filters=${
+    const { listFilter, sortFilter } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/stock/exportTransitionExcel/${createFilename('transition')}.xlsx?filters=${
       JSON.stringify(listFilter)}&sorter=${JSON.stringify(sortFilter)}`);
   }
   toggleTableSetting = () => {
@@ -408,7 +405,6 @@ export default class StockTransitionList extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          tenantId: this.props.tenantId,
           current: pagination.current,
           pageSize: pagination.pageSize,
           sorter: JSON.stringify({

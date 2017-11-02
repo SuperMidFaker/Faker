@@ -33,7 +33,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -144,7 +143,7 @@ export default class OutboundDetail extends Component {
     this.setState({ fullscreen });
   }
   showExpressModal = () => {
-    this.props.loadShunfengConfig(this.props.tenantId).then((result) => {
+    this.props.loadShunfengConfig().then((result) => {
       if (result.error) {
         const key = `open${Date.now()}`;
         const btnClick = () => {

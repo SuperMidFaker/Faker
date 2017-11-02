@@ -14,8 +14,7 @@ const FormItem = Form.Item;
 
 @injectIntl
 @connect(
-  state => ({
-    tenantId: state.account.tenantId,
+  () => ({
   }),
   { loadLotInfo }
 )

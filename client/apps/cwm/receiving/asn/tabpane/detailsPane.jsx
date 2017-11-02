@@ -18,7 +18,6 @@ const formatMsg = format(messages);
 @connect(
   state => ({
     temporaryDetails: state.cwmReceive.temporaryDetails,
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
@@ -160,7 +159,6 @@ export default class DetailsPane extends Component {
           <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/asn/details/import`}
             formData={{
               data: JSON.stringify({
-                tenantId: this.props.tenantId,
                 loginId: this.props.loginId,
                 ownerPartnerId,
               }),

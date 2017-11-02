@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     visible: state.cwmWarehouse.editWarehouseModal.visible,
     warehouse: state.cwmWarehouse.editWarehouseModal.warehouse,
@@ -72,14 +71,13 @@ export default class WareHouseModal extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
-        const { tenantId, loginId, warehouse, defaultWhse } = this.props;
+        const { loginId, warehouse, defaultWhse } = this.props;
         const { bonded, province, city, district, street, regionCode } = this.state;
         this.props.editWarehouse({ whseMode,
           whseCode,
           whseName,
           whseAddress,
           bonded,
-          tenantId,
           loginId,
           province,
           city,
@@ -91,9 +89,9 @@ export default class WareHouseModal extends Component {
         }).then(
           (result) => {
             if (!result.error) {
-              this.props.loadWhseContext(tenantId);
+              this.props.loadWhseContext();
               if (whseMode === 'PRI' && warehouse.code === defaultWhse.code && warehouse.whse_mode !== whseMode) {
-                this.props.loadWhse(warehouse.code, tenantId);
+                this.props.loadWhse(warehouse.code);
               }
               message.info('编辑仓库成功');
               this.props.hideEditWhseModal();

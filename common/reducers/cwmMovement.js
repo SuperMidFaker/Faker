@@ -78,7 +78,7 @@ export function closeMovementModal() {
   };
 }
 
-export function inventorySearch(filter, tenantId, whseCode, ownerCode) {
+export function inventorySearch(filter, whseCode, ownerCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -88,12 +88,12 @@ export function inventorySearch(filter, tenantId, whseCode, ownerCode) {
       ],
       endpoint: 'v1/cwm/owner/inbound/details',
       method: 'get',
-      params: { filter, tenantId, whseCode, ownerCode },
+      params: { filter, whseCode, ownerCode },
     },
   };
 }
 
-export function createMovement(ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginName, details) {
+export function createMovement(ownerCode, ownerName, moveType, reason, whseCode, loginName, details) {
   return {
     [CLIENT_API]: {
       types: [
@@ -103,12 +103,12 @@ export function createMovement(ownerCode, ownerName, moveType, reason, whseCode,
       ],
       endpoint: 'v1/cwm/create/movement',
       method: 'post',
-      data: { ownerCode, ownerName, moveType, reason, whseCode, tenantId, loginName, details },
+      data: { ownerCode, ownerName, moveType, reason, whseCode, loginName, details },
     },
   };
 }
 
-export function loadMovements({ whseCode, tenantId, pageSize, current, filter }) {
+export function loadMovements({ whseCode, pageSize, current, filter }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -118,7 +118,7 @@ export function loadMovements({ whseCode, tenantId, pageSize, current, filter })
       ],
       endpoint: 'v1/cwm/load/movements',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filter: JSON.stringify(filter) },
+      params: { whseCode, pageSize, current, filter: JSON.stringify(filter) },
     },
   };
 }
@@ -160,7 +160,7 @@ export function loadMovementDetails(movementNo) {
   };
 }
 
-export function executeMovement(movementNo, toTraceIds, tenantId, loginName, whseCode) {
+export function executeMovement(movementNo, toTraceIds, loginName, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -170,12 +170,12 @@ export function executeMovement(movementNo, toTraceIds, tenantId, loginName, whs
       ],
       endpoint: 'v1/cwm/execute/move',
       method: 'post',
-      data: { movementNo, toTraceIds, tenantId, loginName, whseCode },
+      data: { movementNo, toTraceIds, loginName, whseCode },
     },
   };
 }
 
-export function cancelMovement(movementNo, loginName, tenantId) {
+export function cancelMovement(movementNo, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -185,12 +185,12 @@ export function cancelMovement(movementNo, loginName, tenantId) {
       ],
       endpoint: 'v1/cwm/cancel/movement',
       method: 'post',
-      data: { movementNo, loginName, tenantId },
+      data: { movementNo, loginName },
     },
   };
 }
 
-export function removeMoveDetail(movementNo, toTraceId, loginName, tenantId) {
+export function removeMoveDetail(movementNo, toTraceId, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -200,12 +200,12 @@ export function removeMoveDetail(movementNo, toTraceId, loginName, tenantId) {
       ],
       endpoint: 'v1/cwm/remove/movement/detail',
       method: 'post',
-      data: { toTraceId, loginName, tenantId, movementNo },
+      data: { toTraceId, loginName, movementNo },
     },
   };
 }
 
-export function loadOwnerUndoneMovements(ownerId, whseCode, tenantId) {
+export function loadOwnerUndoneMovements(ownerId, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -215,7 +215,7 @@ export function loadOwnerUndoneMovements(ownerId, whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/load/owner/undone/movement',
       method: 'get',
-      params: { ownerId, tenantId, whseCode },
+      params: { ownerId, whseCode },
     },
   };
 }

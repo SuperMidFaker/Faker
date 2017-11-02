@@ -19,7 +19,6 @@ const Search = Input.Search;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     reload: state.cwmOutbound.outboundReload,
     pickDetails: state.cwmOutbound.pickDetails,

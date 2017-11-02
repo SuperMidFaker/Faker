@@ -13,7 +13,6 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     defaultWhse: state.cwmContext.defaultWhse,
     loginId: state.account.loginId,
     filters: state.cwmShippingOrder.waveFilters,
@@ -38,7 +37,6 @@ export default class AddToWaveModal extends Component {
       const { defaultWhse, ownerCode, wave } = nextProps;
       this.props.loadWaves({
         whseCode: defaultWhse.code,
-        tenantId: nextProps.tenantId,
         pageSize: wave.pageSize,
         current: wave.current,
         filters: { status: 'pending', ownerCode },

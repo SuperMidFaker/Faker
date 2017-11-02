@@ -29,7 +29,6 @@ const TabPane = Tabs.TabPane;
 })
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     whses: state.cwmContext.whses,
     zoneList: state.cwmWarehouse.zoneList,
@@ -69,7 +68,7 @@ export default class WarehouseList extends Component {
     }
   }
   componentWillUnmount() {
-    this.props.loadWhseContext(this.props.tenantId);
+    this.props.loadWhseContext();
   }
   msg = formatMsg(this.props.intl)
   showWarehouseModal = () => {
@@ -82,10 +81,10 @@ export default class WarehouseList extends Component {
     this.setState({
       warehouse: record,
     });
-    this.props.loadZones(record.code, this.props.tenantId).then(
+    this.props.loadZones(record.code).then(
       (result) => {
         if (!result.error && result.data.length !== 0) {
-          this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code, this.props.tenantId);
+          this.props.loadLocations(this.state.warehouse.code, result.data[0].zone_code);
           this.setState({
             zone: result.data[0],
             zones: result.data,
@@ -101,7 +100,7 @@ export default class WarehouseList extends Component {
     this.props.showEditWhseModal(this.state.warehouse);
   }
   handleSearchWhse = (e) => {
-    this.props.searchWhse(e.target.value, this.props.tenantId);
+    this.props.searchWhse(e.target.value);
   }
   render() {
     const { warehouse, warehouses } = this.state;

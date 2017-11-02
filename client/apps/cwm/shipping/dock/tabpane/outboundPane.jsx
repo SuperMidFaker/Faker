@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Collapse, Card, Table, Button, Tag } from 'antd';
@@ -13,7 +12,6 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     order: state.crmOrders.dock.order,
     pickDetails: state.cwmOutbound.pickDetails,
     packDetails: state.cwmOutbound.packDetails,
@@ -23,7 +21,6 @@ const Panel = Collapse.Panel;
 export default class InboundPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   state = {
     tabKey: '',
