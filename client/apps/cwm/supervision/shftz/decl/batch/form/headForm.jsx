@@ -13,7 +13,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     customsCode: state.account.customsCode,
     tenantName: state.account.tenantName,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
@@ -30,7 +29,7 @@ export default class HeadForm extends React.Component {
     handleOwnerChange: PropTypes.func.isRequired,
   }
   componentWillMount() {
-    this.props.loadBrokers(this.props.defaultWhse.code, this.props.tenantId);
+    this.props.loadBrokers(this.props.defaultWhse.code);
   }
   handleFormReset = () => {
     this.props.form.resetFields();

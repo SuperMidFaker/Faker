@@ -20,7 +20,6 @@ const Option = Select.Option;
 @connect(
   state => ({
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     username: state.account.username,
     visible: state.cwmReceive.receiveModal.visible,
     editable: state.cwmReceive.receiveModal.editable,

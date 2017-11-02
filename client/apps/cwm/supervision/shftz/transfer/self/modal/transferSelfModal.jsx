@@ -14,7 +14,6 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     visible: state.cwmShFtz.transInModal.visible,
     ownerCusCode: state.cwmShFtz.transInModal.ownerCusCode,
     transRegs: state.cwmShFtz.transRegs,
@@ -68,7 +67,6 @@ export default class TransferSelfModal extends Component {
       this.props.loadEntryTransRegs({
         whseCode: nextProps.defaultWhse.code,
         ownerCusCode: nextProps.ownerCusCode,
-        tenantId: this.props.tenantId,
       });
       this.setState({ ownerCusCode: nextProps.ownerCusCode });
     }
@@ -181,7 +179,7 @@ export default class TransferSelfModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddReg = (row) => {
-    this.props.loadVtransferRegDetails({ preEntrySeqNo: row.pre_entry_seq_no, tenantId: this.props.tenantId }).then((result) => {
+    this.props.loadVtransferRegDetails({ preEntrySeqNo: row.pre_entry_seq_no }).then((result) => {
       if (!result.error) {
         const entNo = row.ftz_ent_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(
@@ -214,7 +212,6 @@ export default class TransferSelfModal extends Component {
     this.props.loadEntryTransRegs({
       ownerCusCode,
       whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
       preSeqNo: entryRegNo,
       start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
       end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
@@ -238,8 +235,7 @@ export default class TransferSelfModal extends Component {
     this.props.saveVirtualTransfer({ detailIds,
       owner,
       whseCode: this.props.defaultWhse.code,
-      loginId: this.props.loginId,
-      tenantId: this.props.tenantId }).then((result) => {
+      loginId: this.props.loginId }).then((result) => {
         if (!result.error) {
           this.handleCancel();
           this.props.reload();

@@ -21,7 +21,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
@@ -62,7 +61,7 @@ export default class CreateReceivingASN extends Component {
     this.setState({ fullscreen });
   }
   handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, suppliers } = this.props;
+    const { temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -77,7 +76,6 @@ export default class CreateReceivingASN extends Component {
         data.temporaryDetails = temporaryDetails;
         data.whseCode = defaultWhse.code;
         data.whseName = defaultWhse.name;
-        data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
         data.supplier_code = supplier && supplier.code;

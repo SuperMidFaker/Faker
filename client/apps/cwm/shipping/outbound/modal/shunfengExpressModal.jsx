@@ -44,7 +44,6 @@ const ADDED_SERVICES = [
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     reload: state.cwmOutbound.outboundReload,
@@ -143,7 +142,7 @@ export default class ShunfengExpressModal extends Component {
     }
   }
   loadExpressInfo = (props) => {
-    this.props.loadExpressInfo(props.config.order_no, props.tenantId).then((result) => {
+    this.props.loadExpressInfo(props.config.order_no).then((result) => {
       this.setState({ mailnoLoading: false, sonMailnoLoading: false });
       if (result.data) {
         this.setState({ ...result.data });
@@ -154,8 +153,8 @@ export default class ShunfengExpressModal extends Component {
   }
   handleAddZD = () => {
     this.setState({ sonMailnoLoading: true });
-    const { config, loginId, tenantId } = this.props;
-    this.props.addZD({ orderNo: config.order_no, tenantId, loginId, expressNum: 1 }).then(() => {
+    const { config, loginId } = this.props;
+    this.props.addZD({ orderNo: config.order_no, loginId, expressNum: 1 }).then(() => {
       this.loadExpressInfo(this.props);
     });
   }
@@ -282,7 +281,6 @@ export default class ShunfengExpressModal extends Component {
     };
     this.props.orderExpress({
       orderNo: config.order_no,
-      tenantId: this.props.tenantId,
       expressInfo,
     }).then((result) => {
       if (result.error) {

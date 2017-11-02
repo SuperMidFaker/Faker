@@ -25,7 +25,6 @@ const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   dispatch(loadWaves({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmShippingOrder.wave.pageSize,
     current: state.cwmShippingOrder.wave.current,
     filters: state.cwmShippingOrder.waveFilters,
@@ -35,7 +34,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
@@ -53,7 +51,6 @@ function fetchData({ state, dispatch }) {
 export default class WaveList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -149,7 +146,6 @@ export default class WaveList extends React.Component {
   handleReload = (whseCode, current, filters) => {
     this.props.loadWaves({
       whseCode: whseCode || this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
       current: current || this.props.wave.current,
       filters: filters || this.props.filters,
@@ -200,7 +196,6 @@ export default class WaveList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,

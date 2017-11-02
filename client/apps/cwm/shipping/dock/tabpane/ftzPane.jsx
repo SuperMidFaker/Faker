@@ -13,7 +13,6 @@ const Panel = Collapse.Panel;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     order: state.crmOrders.dock.order,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
@@ -33,7 +32,6 @@ const Panel = Collapse.Panel;
 export default class FTZPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     soNo: PropTypes.string.isRequired,
   }
   state = {

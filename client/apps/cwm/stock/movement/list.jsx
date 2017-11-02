@@ -27,7 +27,6 @@ const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   dispatch(loadMovements({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmMovement.movements.pageSize,
     current: state.cwmMovement.movements.current,
     filter: state.cwmMovement.movementFilter,
@@ -37,7 +36,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
@@ -56,7 +54,6 @@ function fetchData({ state, dispatch }) {
 export default class MovementList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -70,7 +67,6 @@ export default class MovementList extends React.Component {
       const whseCode = nextProps.defaultWhse.code;
       this.props.loadMovements({
         whseCode,
-        tenantId: this.props.tenantId,
         pageSize: this.props.movements.pageSize,
         current: this.props.movements.current,
         filter: this.props.filter,
@@ -149,7 +145,6 @@ export default class MovementList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadMovements({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.movements.pageSize,
       current: this.props.movements.current,
     });
@@ -166,7 +161,6 @@ export default class MovementList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadMovements({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.movements.pageSize,
       current: this.props.movements.current,
       filter: this.props.filter,
@@ -177,20 +171,18 @@ export default class MovementList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadMovements({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.movements.pageSize,
       current: this.props.movements.current,
       filter,
     });
   }
   cancelMovement = (row) => {
-    const { loginName, tenantId } = this.props;
-    this.props.cancelMovement(row.movement_no, loginName, tenantId).then((result) => {
+    const { loginName } = this.props;
+    this.props.cancelMovement(row.movement_no, loginName).then((result) => {
       if (!result.err) {
         const whseCode = this.props.defaultWhse.code;
         this.props.loadMovements({
           whseCode,
-          tenantId: this.props.tenantId,
           pageSize: this.props.movements.pageSize,
           current: this.props.movements.current,
           filter: this.props.filter,
@@ -215,7 +207,6 @@ export default class MovementList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,

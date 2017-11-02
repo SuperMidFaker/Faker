@@ -25,7 +25,6 @@ const { Sider, Content } = Layout;
   state => ({
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
     stockDatas: state.cwmShFtz.stockDatas,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
@@ -50,7 +49,6 @@ const { Sider, Content } = Layout;
 export default class SHFTZStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     stockDatas: PropTypes.array.isRequired,
   }
   state = {
@@ -207,8 +205,7 @@ export default class SHFTZStockList extends React.Component {
   handleStockQuery = (filters) => {
     const filter = { ...filters,
       cus_whse_code: this.props.defaultWhse.ftz_whse_code,
-      whse_code: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId };
+      whse_code: this.props.defaultWhse.code };
     this.props.loadFtzStocks(filter).then((result) => {
       if (result.error) {
         if (result.error.message === 'WHSE_FTZ_UNEXIST') {

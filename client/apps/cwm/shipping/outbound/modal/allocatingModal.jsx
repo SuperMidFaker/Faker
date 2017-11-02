@@ -33,7 +33,6 @@ const Option = Select.Option;
     loginId: state.account.loginId,
     loginName: state.account.username,
     outboundHead: state.cwmOutbound.outboundFormHead,
-    tenantId: state.account.tenantId,
     inventoryDataLoading: state.cwmOutbound.inventoryDataLoading,
     allocatedDataLoading: state.cwmOutbound.allocatedDataLoading,
   }),

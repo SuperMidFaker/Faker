@@ -12,7 +12,6 @@ const FormItem = Form.Item;
 
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     visible: state.cwmWarehouse.warehouseModal.visible,
   }),
@@ -45,14 +44,13 @@ export default class WareHouseModal extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
-        const { tenantId, tenantName } = this.props;
+        const { tenantName } = this.props;
         const { isBonded, province, city, district, street, regionCode } = this.state;
         this.props.addWarehouse({ whseMode,
           whseCode,
           whseName,
           whseAddress,
           isBonded,
-          tenantId,
           tenantName,
           province,
           city,
@@ -65,7 +63,7 @@ export default class WareHouseModal extends Component {
           if (!result.error) {
             message.info('添加仓库成功');
             this.props.hideWarehouseModal();
-            this.props.loadWhseContext(tenantId);
+            this.props.loadWhseContext();
           } else {
             message.info(result.error.message);
           }

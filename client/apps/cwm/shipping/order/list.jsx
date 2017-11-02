@@ -32,7 +32,6 @@ const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   dispatch(loadSos({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmShippingOrder.solist.pageSize,
     current: state.cwmShippingOrder.solist.current,
     filters: state.cwmShippingOrder.soFilters,
@@ -42,7 +41,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
@@ -63,7 +61,6 @@ function fetchData({ state, dispatch }) {
 export default class ShippingOrderList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -238,7 +235,6 @@ export default class ShippingOrderList extends React.Component {
   handleReload = () => {
     this.props.loadSos({
       whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters: this.props.filters,
@@ -266,7 +262,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -280,7 +275,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -291,7 +285,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -302,7 +295,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -313,7 +305,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -325,16 +316,15 @@ export default class ShippingOrderList extends React.Component {
     const filters = this.props.filters;
     this.props.loadSos({
       whseCode: value,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
     });
   }
   handleCreateWave = () => {
-    const { tenantId, tenantName, defaultWhse, loginId } = this.props;
+    const { tenantName, defaultWhse, loginId } = this.props;
     const { selectedRowKeys } = this.state;
-    this.props.createWave(selectedRowKeys, tenantId, tenantName, defaultWhse.code, loginId).then((result) => {
+    this.props.createWave(selectedRowKeys, tenantName, defaultWhse.code, loginId).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
@@ -373,7 +363,6 @@ export default class ShippingOrderList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,
@@ -494,7 +483,6 @@ export default class ShippingOrderList extends React.Component {
           endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
           formData={{
             data: JSON.stringify({
-              tenantId: this.props.tenantId,
               tenantName: this.props.tenantName,
               loginId: this.props.loginId,
               whseCode: defaultWhse.code,

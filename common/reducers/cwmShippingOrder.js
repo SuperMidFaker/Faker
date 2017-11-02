@@ -170,7 +170,7 @@ export function createSO(data) {
   };
 }
 
-export function loadSos({ whseCode, tenantId, pageSize, current, filters }) {
+export function loadSos({ whseCode, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -180,7 +180,7 @@ export function loadSos({ whseCode, tenantId, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/shipping/sos/load',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -245,7 +245,7 @@ export function batchRelease(soNos, loginId) {
   };
 }
 
-export function loadWaves({ whseCode, tenantId, pageSize, current, filters }) {
+export function loadWaves({ whseCode, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -255,7 +255,7 @@ export function loadWaves({ whseCode, tenantId, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/waves',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -275,7 +275,7 @@ export function loadWaveHead(waveNo) {
   };
 }
 
-export function createWave(soNos, tenantId, tenantName, whseCode, loginId) {
+export function createWave(soNos, tenantName, whseCode, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -285,7 +285,7 @@ export function createWave(soNos, tenantId, tenantName, whseCode, loginId) {
       ],
       endpoint: 'v1/cwm/create/waves',
       method: 'post',
-      data: { soNos, tenantId, tenantName, whseCode, loginId },
+      data: { soNos, tenantName, whseCode, loginId },
     },
   };
 }

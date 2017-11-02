@@ -20,7 +20,6 @@ const FormItem = Form.Item;
     allocQty: state.cwmOutbound.pickingModal.allocQty,
     skuPackQty: state.cwmOutbound.pickingModal.skuPackQty,
     id: state.cwmOutbound.pickingModal.id,
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     submitting: state.cwmOutbound.submitting,
@@ -48,7 +47,7 @@ export default class PickingModal extends Component {
     this.props.closePickingModal();
   }
   handleSubmit = () => {
-    const { outboundNo, allocQty, skuPackQty, tenantId, loginId, pickMode, selectedRows, id } = this.props;
+    const { outboundNo, allocQty, skuPackQty, loginId, pickMode, selectedRows, id } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const list = [];
@@ -72,7 +71,7 @@ export default class PickingModal extends Component {
             list.push(data);
           }
         }
-        this.props.pickConfirm(outboundNo, list, loginId, tenantId, values.pickedBy, values.pickedDate).then((result) => {
+        this.props.pickConfirm(outboundNo, list, loginId, values.pickedBy, values.pickedDate).then((result) => {
           if (!result.error) {
             this.props.closePickingModal();
             this.props.resetState();

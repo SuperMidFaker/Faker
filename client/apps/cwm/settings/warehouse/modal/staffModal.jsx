@@ -12,7 +12,6 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     visible: state.cwmWarehouse.staffModal.visible,
     loginId: state.account.loginId,
     tenantUsers: state.crmCustomers.serviceTeamModal.tenantUsers,
@@ -23,7 +22,6 @@ const formatMsg = format(messages);
 export default class ServiceTeamModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     tenantUsers: PropTypes.array,
     getTenantUsers: PropTypes.func.isRequired,
@@ -34,8 +32,8 @@ export default class ServiceTeamModal extends React.Component {
     selectedKeys: [],
   }
   componentWillMount() {
-    const { tenantId, selectedUserIds } = this.props;
-    this.props.loadTenantUsers(tenantId);
+    const { selectedUserIds } = this.props;
+    this.props.loadTenantUsers();
     this.setState({
       targetKeys: selectedUserIds,
     });
@@ -63,14 +61,14 @@ export default class ServiceTeamModal extends React.Component {
     this.setState({ selectedKeys: [...targetSelectedKeys, ...sourceSelectedKeys] });
   }
   handleAdd = () => {
-    const { whseCode, tenantId, loginId } = this.props;
+    const { whseCode, loginId } = this.props;
     const targetKeys = this.state.targetKeys;
     const staffs = this.props.tenantUsers.filter(user => targetKeys.find(key => key === user.user_id));
-    this.props.addStaff(whseCode, tenantId, staffs, loginId).then(
+    this.props.addStaff(whseCode, staffs, loginId).then(
       (result) => {
         if (!result.error) {
           this.props.hideStaffModal();
-          this.props.loadStaffs(whseCode, tenantId);
+          this.props.loadStaffs(whseCode);
         }
       }
     );

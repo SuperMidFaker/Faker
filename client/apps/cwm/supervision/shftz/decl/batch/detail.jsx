@@ -35,7 +35,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     batchDecl: state.cwmShFtz.batch_decl,
@@ -279,9 +278,8 @@ export default class BatchDeclDetail extends Component {
     const batchNo = this.props.params.batchNo;
     const batchDecl = this.props.batchDecl;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const tenantId = this.props.tenantId;
     const loginId = this.props.loginId;
-    this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId, tenantId).then((result) => {
+    this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -310,7 +308,7 @@ export default class BatchDeclDetail extends Component {
   }
   handleQuery = () => {
     const batchNo = this.props.params.batchNo;
-    this.props.makeBatchApplied(batchNo, this.props.tenantId).then((result) => {
+    this.props.makeBatchApplied(batchNo).then((result) => {
       if (!result.error) {
         this.props.loadApplyDetails(batchNo);
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {

@@ -15,7 +15,6 @@ const formatMsg = format(messages);
   state => ({
     visible: state.cwmShippingOrder.asnSelectModal.visible,
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
   }),
   { getCrossAsns, hideAsnSelectModal, addTemporary, clearTemporary, getCrossAsnDetails }
 )

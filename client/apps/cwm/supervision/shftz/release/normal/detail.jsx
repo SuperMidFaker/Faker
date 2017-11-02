@@ -35,7 +35,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     relSo: state.cwmShFtz.rel_so,
@@ -108,10 +107,9 @@ export default class SHFTZNormalRelRegDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
-    const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
-    const fileOp = this.props.fileRelStockouts(soNo, whseCode, ftzWhseCode, tenantId);
+    const fileOp = this.props.fileRelStockouts(soNo, whseCode, ftzWhseCode);
     const relType = CWM_SO_BONDED_REGTYPES[0].text;
     if (fileOp) {
       fileOp.then((result) => {

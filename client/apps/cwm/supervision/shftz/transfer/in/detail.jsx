@@ -35,7 +35,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
@@ -96,10 +95,9 @@ export default class SHFTZTransferInDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleEnqueryPairing = () => {
     const asnNo = this.props.params.asnNo;
-    const tenantId = this.props.tenantId;
     const loginName = this.props.username;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, ftzWhseCode, tenantId, loginName).then((result) => {
+    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, ftzWhseCode, loginName).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>

@@ -17,7 +17,6 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.username,
     batchFreezeModal: state.cwmTransition.batchFreezeModal,
   }),
@@ -46,11 +45,11 @@ export default class BatchFreezeModal extends Component {
   }
   handleSubmit = () => {
     let transitOp;
-    const { batchFreezeModal, tenantId, loginName } = this.props;
+    const { batchFreezeModal, loginName } = this.props;
     if (batchFreezeModal.freezed) {
-      transitOp = this.props.freezeTransit(batchFreezeModal.traceIds, this.state, loginName, tenantId);
+      transitOp = this.props.freezeTransit(batchFreezeModal.traceIds, this.state, loginName);
     } else {
-      transitOp = this.props.unfreezeTransit(batchFreezeModal.traceIds, this.state, loginName, tenantId);
+      transitOp = this.props.unfreezeTransit(batchFreezeModal.traceIds, this.state, loginName);
     }
     transitOp.then((result) => {
       if (!result.error) {

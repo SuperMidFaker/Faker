@@ -22,7 +22,6 @@ const confirm = Modal.confirm;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
     tenantName: state.account.tenantName,
@@ -164,7 +163,7 @@ export default class OwnersPane extends Component {
   handleOwnerLoad = () => {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
     if (this.props.whseCode === this.props.defaultWhse.code) {
-      this.props.loadWhse(this.props.whseCode, this.props.tenantId);
+      this.props.loadWhse(this.props.whseCode);
     }
   }
   handleInitData = (record) => {
@@ -178,11 +177,11 @@ export default class OwnersPane extends Component {
       importPanelVisible: true });
   }
   handleBackupData = (record) => {
-    const { tenantId, whseCode } = this.props;
-    window.open(`${API_ROOTS.default}v1/cwm/stock/backup/${createFilename('backup')}.xlsx?tenantId=${tenantId}&whseCode=${whseCode}&ownerPartnerId=${record.owner_partner_id}`);
+    const { whseCode } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/stock/backup/${createFilename('backup')}.xlsx?whseCode=${whseCode}&ownerPartnerId=${record.owner_partner_id}`);
   };
   handleEmptyData = (record) => {
-    const { tenantId, whseCode } = this.props;
+    const { whseCode } = this.props;
     const self = this;
     confirm({
       title: '确定要清空数据吗?',
@@ -191,7 +190,7 @@ export default class OwnersPane extends Component {
       okType: 'danger',
       cancelText: '否',
       onOk() {
-        self.props.clearTransition(whseCode, record.owner_partner_id, tenantId);
+        self.props.clearTransition(whseCode, record.owner_partner_id);
       },
     });
   };
@@ -213,7 +212,6 @@ export default class OwnersPane extends Component {
           endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
           formData={{
             data: JSON.stringify({
-              tenantId: this.props.tenantId,
               tenantName: this.props.tenantName,
               customsCode: this.props.customsCode,
               loginId: this.props.loginId,

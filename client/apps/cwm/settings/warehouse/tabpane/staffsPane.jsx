@@ -12,7 +12,6 @@ import { formatMsg } from '../message.i18n';
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     staffs: state.cwmWarehouse.staffs,
   }),
   { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff }
@@ -27,7 +26,7 @@ export default class StaffsPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadStaffs(this.props.whseCode, this.props.tenantId);
+    this.props.loadStaffs(this.props.whseCode);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
@@ -70,14 +69,14 @@ export default class StaffsPane extends Component {
   handleDeleteStaff = (row) => {
     this.props.deleteStaff(row.id).then((result) => {
       if (!result.err) {
-        this.props.loadStaffs(this.props.whseCode, this.props.tenantId);
+        this.props.loadStaffs(this.props.whseCode);
       }
     });
   }
   changeStaffStatus = (id, status) => {
     this.props.changeStaffStatus(status, id).then((result) => {
       if (!result.err) {
-        this.props.loadStaffs(this.props.whseCode, this.props.tenantId);
+        this.props.loadStaffs(this.props.whseCode);
       }
     });
   }

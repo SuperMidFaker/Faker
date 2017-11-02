@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -10,7 +9,6 @@ import { formatMsg } from '../../../message.i18n';
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     detail: state.cwmTransition.transitionModal.detail,
     loading: state.cwmTransaction.traceLoading,
     transactions: state.cwmTransaction.traceTransactions,
@@ -20,14 +18,13 @@ import { formatMsg } from '../../../message.i18n';
 export default class LogsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   state = {
     scrollY: 0,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.detail !== this.props.detail) {
-      this.props.loadTraceTransactions(nextProps.detail.trace_id, nextProps.tenantId);
+      this.props.loadTraceTransactions(nextProps.detail.trace_id);
     }
   }
 

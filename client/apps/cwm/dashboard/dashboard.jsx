@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Row, Select, Col, Layout, message } from 'antd';
@@ -18,7 +17,6 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -31,7 +29,6 @@ const Option = Select.Option;
 export default class CWMDashboard extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   handleWhseChange = (value) => {

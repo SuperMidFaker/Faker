@@ -23,7 +23,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
@@ -91,7 +90,7 @@ export default class CreateShippingOrder extends Component {
     this.setState({ fullscreen });
   }
   handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName } = this.props;
+    const { temporaryDetails, defaultWhse, owners, loginId, tenantName } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -105,7 +104,6 @@ export default class CreateShippingOrder extends Component {
         data.ownerTenantId = owner.partner_tenant_id;
         data.temporaryDetails = temporaryDetails;
         data.whseCode = defaultWhse.code;
-        data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
         this.props.updateSo(data).then(

@@ -22,7 +22,6 @@ const SubMenu = Menu.SubMenu;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     warehouseList: state.cwmWarehouse.warehouseList,
     zoneList: state.cwmWarehouse.zoneList,
@@ -57,9 +56,9 @@ export default class ZoneLocationPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadZones(this.props.warehouse.code, this.props.tenantId).then((result) => {
+    this.props.loadZones(this.props.warehouse.code).then((result) => {
       if (!result.error && result.data.length !== 0) {
-        this.props.loadLocations(this.props.warehouse.code, result.data[0].zone_code, this.props.tenantId);
+        this.props.loadLocations(this.props.warehouse.code, result.data[0].zone_code);
         this.setState({
           zone: result.data[0],
           zones: result.data,
@@ -71,9 +70,9 @@ export default class ZoneLocationPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.warehouse.code !== this.props.warehouse.code) {
-      this.props.loadZones(nextProps.warehouse.code, nextProps.tenantId).then((result) => {
+      this.props.loadZones(nextProps.warehouse.code).then((result) => {
         if (!result.error && result.data.length !== 0) {
-          this.props.loadLocations(nextProps.warehouse.code, result.data[0].zone_code, nextProps.tenantId);
+          this.props.loadLocations(nextProps.warehouse.code, result.data[0].zone_code);
           this.setState({
             zone: result.data[0],
             zones: result.data,
@@ -95,7 +94,7 @@ export default class ZoneLocationPane extends Component {
   }
   createZone = (ev) => {
     ev.preventDefault();
-    const { tenantId, loginId } = this.props;
+    const { loginId } = this.props;
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { zoneCode, zoneName } = values;
@@ -104,7 +103,6 @@ export default class ZoneLocationPane extends Component {
           zoneCode,
           zoneName,
           whseCode,
-          tenantId,
           loginId,
         }).then((result) => {
           if (!result.error) {
@@ -117,7 +115,7 @@ export default class ZoneLocationPane extends Component {
               zoneName: '',
             });
           }
-          this.props.loadZones(whseCode, tenantId).then((data) => {
+          this.props.loadZones(whseCode).then((data) => {
             if (!data.error) {
               this.setState({
                 zones: data.data,
@@ -145,7 +143,7 @@ export default class ZoneLocationPane extends Component {
       zone: zones.find(zone => zone.zone_code === key),
       selectedRowKeys: [],
     });
-    this.props.loadLocations(whseCode, key, this.props.tenantId);
+    this.props.loadLocations(whseCode, key);
   }
   handleDeleteLocation = (row) => {
     const whseCode = this.props.warehouse.code;
@@ -154,7 +152,7 @@ export default class ZoneLocationPane extends Component {
       (result) => {
         if (!result.error) {
           message.info('库位已删除');
-          this.props.loadLocations(whseCode, zoneCode, this.props.tenantId);
+          this.props.loadLocations(whseCode, zoneCode);
         }
       }
     );
@@ -162,12 +160,11 @@ export default class ZoneLocationPane extends Component {
   handleDeleteZone = () => {
     const whseCode = this.props.warehouse.code;
     const zoneCode = this.state.zone.zone_code;
-    const { tenantId } = this.props;
-    this.props.deleteZone(whseCode, zoneCode, tenantId).then(
+    this.props.deleteZone(whseCode, zoneCode).then(
       (result) => {
         if (!result.error) {
           message.info('库区已删除');
-          this.props.loadZones(whseCode, this.props.tenantId).then(
+          this.props.loadZones(whseCode).then(
             (data) => {
               if (!data.error && data.data.length !== 0) {
                 this.setState({
@@ -175,7 +172,7 @@ export default class ZoneLocationPane extends Component {
                   zone: data.data[0],
                   selectZone: [data.data[0].zone_code],
                 });
-                this.props.loadLocations(whseCode, data.data[0].zone_code, this.props.tenantId);
+                this.props.loadLocations(whseCode, data.data[0].zone_code);
               } else {
                 this.setState({
                   zones: [],
@@ -195,7 +192,7 @@ export default class ZoneLocationPane extends Component {
     const zoneCode = this.state.zone.zone_code;
     this.props.batchDeleteLocations(this.state.selectedRowKeys).then((result) => {
       if (!result.error) {
-        this.props.loadLocations(whseCode, zoneCode, this.props.tenantId);
+        this.props.loadLocations(whseCode, zoneCode);
         this.setState({
           selectedRowKeys: [],
         });
@@ -211,14 +208,14 @@ export default class ZoneLocationPane extends Component {
   }
   locationsUploaded = () => {
     const whseCode = this.props.warehouse.code;
-    this.props.loadZones(whseCode, this.props.tenantId).then((result) => {
+    this.props.loadZones(whseCode).then((result) => {
       if (!result.error) {
         this.setState({
           zones: result.data,
           zone: result.data[0],
           selectKeys: [result.data[0].zone_code],
         });
-        this.props.loadLocations(whseCode, result.data[0].zone_code, this.props.tenantId);
+        this.props.loadLocations(whseCode, result.data[0].zone_code);
       }
     });
   }
@@ -308,7 +305,6 @@ export default class ZoneLocationPane extends Component {
             <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/warehouse/locations/import`}
               formData={{
                 data: JSON.stringify({
-                  tenantId: this.props.tenantId,
                   loginId: this.props.loginId,
                 }),
               }} onUploaded={this.locationsUploaded}

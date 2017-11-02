@@ -27,7 +27,6 @@ const OptGroup = Select.OptGroup;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     batchlist: state.cwmShFtz.batchApplyList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -44,7 +43,6 @@ const OptGroup = Select.OptGroup;
 export default class BatchDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -220,7 +218,6 @@ export default class BatchDeclList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -232,9 +229,8 @@ export default class BatchDeclList extends React.Component {
     remotes: this.props.batchlist,
   })
   handleBatchApplyLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, batchlist: { pageSize, current } } = this.props;
+    const { listFilter, whse, batchlist: { pageSize, current } } = this.props;
     this.props.loadBatchApplyList({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,

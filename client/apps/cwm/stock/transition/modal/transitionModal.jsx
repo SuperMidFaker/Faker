@@ -16,7 +16,6 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     detail: state.cwmTransition.transitionModal.detail,
     trace_id: state.cwmTransition.transitionModal.trace_id,
     visible: state.cwmTransition.transitionModal.visible,
@@ -29,13 +28,12 @@ const formatMsg = format(messages);
 export default class TransitionModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     closeTransitionModal: PropTypes.func.isRequired,
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && (nextProps.trace_id !== this.props.trace_id || nextProps.needReload)) {
-      this.props.loadTransitionTraceDetail(nextProps.trace_id, this.props.tenantId);
+      this.props.loadTransitionTraceDetail(nextProps.trace_id);
     }
   }
   handleClose = () => {

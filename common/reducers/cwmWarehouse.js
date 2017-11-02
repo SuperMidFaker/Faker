@@ -251,7 +251,7 @@ export function addZone(params) {
   };
 }
 
-export function loadZones(whseCode, tenantId) {
+export function loadZones(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -261,7 +261,7 @@ export function loadZones(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/zone/load',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -279,7 +279,7 @@ export function hideLocationModal() {
   };
 }
 
-export function addLocation(whseCode, zoneCode, location, type, status, tenantId, loginId) {
+export function addLocation(whseCode, zoneCode, location, type, status, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -289,12 +289,12 @@ export function addLocation(whseCode, zoneCode, location, type, status, tenantId
       ],
       endpoint: 'v1/cwm/warehouse/location/add',
       method: 'get',
-      params: { whseCode, zoneCode, location, type, status, tenantId, loginId },
+      params: { whseCode, zoneCode, location, type, status, loginId },
     },
   };
 }
 
-export function loadLocations(whseCode, zoneCode, tenantId, text) {
+export function loadLocations(whseCode, zoneCode, text) {
   return {
     [CLIENT_API]: {
       types: [
@@ -304,7 +304,7 @@ export function loadLocations(whseCode, zoneCode, tenantId, text) {
       ],
       endpoint: 'v1/cwm/warehouse/location/load',
       method: 'get',
-      params: { whseCode, zoneCode, tenantId, text },
+      params: { whseCode, zoneCode, text },
     },
   };
 }
@@ -339,7 +339,7 @@ export function updateLocation(type, status, location, id, loginId) {
   };
 }
 
-export function deleteZone(whseCode, zoneCode, tenantId) {
+export function deleteZone(whseCode, zoneCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -349,7 +349,7 @@ export function deleteZone(whseCode, zoneCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/zone/delete',
       method: 'get',
-      params: { whseCode, zoneCode, tenantId },
+      params: { whseCode, zoneCode },
     },
   };
 }
@@ -394,7 +394,7 @@ export function hideOwnerControlModal() {
   };
 }
 
-export function loadwhseOwners(whseCode, tenantId) {
+export function loadwhseOwners(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -404,7 +404,7 @@ export function loadwhseOwners(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/owners/load',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -527,7 +527,7 @@ export function hideStaffModal() {
   };
 }
 
-export function addStaff(whseCode, tenantId, staffs, loginId) {
+export function addStaff(whseCode, staffs, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -537,12 +537,12 @@ export function addStaff(whseCode, tenantId, staffs, loginId) {
       ],
       endpoint: 'v1/cwm/warehouse/add/staffs',
       method: 'post',
-      data: { whseCode, tenantId, staffs, loginId },
+      data: { whseCode, staffs, loginId },
     },
   };
 }
 
-export function loadStaffs(whseCode, tenantId) {
+export function loadStaffs(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -552,7 +552,7 @@ export function loadStaffs(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/load/staffs',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -602,7 +602,7 @@ export function addReceiver(data) {
   };
 }
 
-export function loadReceivers(whseCode, tenantId) {
+export function loadReceivers(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -612,7 +612,7 @@ export function loadReceivers(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/receiver/load',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -669,7 +669,7 @@ export function changeReceiverStatus(id, status, loginId) {
   };
 }
 
-export function loadSuppliers(whseCode, tenantId) {
+export function loadSuppliers(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -679,7 +679,7 @@ export function loadSuppliers(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/suppliers/load',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -691,7 +691,7 @@ export function toggleSupplierModal(visible, supplier = {}) {
   };
 }
 
-export function addSupplier(data, tenantId, whseCode, loginId, ownerTenantId) {
+export function addSupplier(data, whseCode, loginId, ownerTenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -701,7 +701,7 @@ export function addSupplier(data, tenantId, whseCode, loginId, ownerTenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/supplier/add',
       method: 'post',
-      data: { data, tenantId, whseCode, loginId, ownerTenantId },
+      data: { data, whseCode, loginId, ownerTenantId },
     },
   };
 }
@@ -751,7 +751,7 @@ export function updateSupplier(data, id, loginId) {
   };
 }
 
-export function loadCarriers(whseCode, tenantId) {
+export function loadCarriers(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -761,7 +761,7 @@ export function loadCarriers(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/carriers/load',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -773,7 +773,7 @@ export function toggleCarrierModal(visible, carrier = {}) {
   };
 }
 
-export function addCarrier(data, tenantId, whseCode, loginId, ownerTenantId) {
+export function addCarrier(data, whseCode, loginId, ownerTenantId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -783,7 +783,7 @@ export function addCarrier(data, tenantId, whseCode, loginId, ownerTenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/carrier/add',
       method: 'post',
-      data: { data, tenantId, whseCode, loginId, ownerTenantId },
+      data: { data, whseCode, loginId, ownerTenantId },
     },
   };
 }
@@ -833,7 +833,7 @@ export function updateCarrier(data, id, loginId) {
   };
 }
 
-export function loadBrokers(whseCode, tenantId) {
+export function loadBrokers(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -843,7 +843,7 @@ export function loadBrokers(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/brokers/load',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -855,7 +855,7 @@ export function toggleBrokerModal(visible, broker = {}) {
   };
 }
 
-export function addBroker(data, tenantId, whseCode, loginId, partnerTenantId, partnerCode) {
+export function addBroker(data, whseCode, loginId, partnerTenantId, partnerCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -865,7 +865,7 @@ export function addBroker(data, tenantId, whseCode, loginId, partnerTenantId, pa
       ],
       endpoint: 'v1/cwm/warehouse/broker/add',
       method: 'post',
-      data: { data, tenantId, whseCode, loginId, partnerTenantId, partnerCode },
+      data: { data, whseCode, loginId, partnerTenantId, partnerCode },
     },
   };
 }
@@ -900,7 +900,7 @@ export function deleteBroker(id) {
   };
 }
 
-export function loadBrokerPartners(tenantId, role, businessType, business) {
+export function loadBrokerPartners(role, businessType, business) {
   return {
     [CLIENT_API]: {
       types: [
@@ -910,12 +910,12 @@ export function loadBrokerPartners(tenantId, role, businessType, business) {
       ],
       endpoint: 'v1/cooperation/partners',
       method: 'get',
-      params: { tenantId, role, businessType, business },
+      params: { role, businessType, business },
     },
   };
 }
 
-export function loadAdviceLocations(productNo, tenantId, whseCode) {
+export function loadAdviceLocations(productNo, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -925,7 +925,7 @@ export function loadAdviceLocations(productNo, tenantId, whseCode) {
       ],
       endpoint: 'v1/cwm/get/advice/locations',
       method: 'get',
-      params: { productNo, tenantId, whseCode },
+      params: { productNo, whseCode },
     },
   };
 }

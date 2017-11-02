@@ -29,7 +29,6 @@ const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
   dispatch(loadAsnLists({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmReceive.asnlist.pageSize,
     current: state.cwmReceive.asnlist.current,
     filters: state.cwmReceive.asnFilters,
@@ -40,7 +39,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     customsCode: state.account.customsCode,
     whses: state.cwmContext.whses,
@@ -62,7 +60,6 @@ function fetchData({ state, dispatch }) {
 export default class ReceivingASNList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -227,7 +224,6 @@ export default class ReceivingASNList extends React.Component {
     const filters = this.props.filters;
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
-      tenantId: this.props.tenantId,
       whseCode,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
@@ -283,7 +279,6 @@ export default class ReceivingASNList extends React.Component {
     const filters = this.props.filters;
     this.props.loadAsnLists({
       whseCode: value,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -294,7 +289,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -308,7 +302,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -319,7 +312,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -330,7 +322,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: 1,
       filters,
@@ -362,7 +353,6 @@ export default class ReceivingASNList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,
