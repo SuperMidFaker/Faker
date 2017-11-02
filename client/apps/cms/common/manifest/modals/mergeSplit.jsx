@@ -271,6 +271,14 @@ export default class MergeSplitModal extends React.Component {
           message: '操作成功',
           description: '已生成报关建议书.',
         });
+        const zeroPacks = result.data.filter(head => head.pack_count === 0);
+        if (zeroPacks.length > 0) {
+          notification.warn({
+            message: '件数为0',
+            description: `${zeroPacks.map(zp => zp.pre_entry_seq_no).join(',')}拆分成表头件数为0`,
+            duration: 0,
+          });
+        }
         this.props.closeMergeSplitModal();
         this.props.loadBillBody(this.props.billSeqNo);
       }
