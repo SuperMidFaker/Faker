@@ -30,11 +30,19 @@ export default class ModuleBMS extends React.Component {
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
-      single: true,
-      key: 'bss-settlement',
-      path: '/bss/settlement',
+      single: false,
+      key: 'bss-fee',
       icon: 'logixon icon-finance-o',
-      text: formatMsg(intl, 'settlement'),
+      text: formatMsg(intl, 'fee'),
+      sublinks: [{
+        key: 'bss-fee-0',
+        path: '/bss/fee/summary',
+        text: formatMsg(intl, 'feeSummary'),
+      }, {
+        key: 'bss-fee-1',
+        path: '/bss/fee/statement',
+        text: formatMsg(intl, 'feeStatement'),
+      }],
     });
     linkMenus.push({
       single: false,

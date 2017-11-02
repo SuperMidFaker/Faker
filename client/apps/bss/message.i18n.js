@@ -6,9 +6,17 @@ const messages = defineMessages({
     id: 'bss.module.dashboard',
     defaultMessage: '工作台',
   },
-  settlement: {
-    id: 'bss.module.settlement',
-    defaultMessage: '费用结算',
+  fee: {
+    id: 'bss.module.fee',
+    defaultMessage: '费用',
+  },
+  feeSummary: {
+    id: 'bss.module.fee.summary',
+    defaultMessage: '费用汇总',
+  },
+  feeStatement: {
+    id: 'bss.module.fee.statement',
+    defaultMessage: '费用明细',
   },
   receivable: {
     id: 'bss.module.receivable',
