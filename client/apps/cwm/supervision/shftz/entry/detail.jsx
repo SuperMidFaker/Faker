@@ -34,7 +34,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
     entryRegs: state.cwmShFtz.entry_regs,
@@ -168,7 +167,7 @@ export default class SHFTZEntryDetail extends Component {
       notification.close('confirm-cargono');
     }
     const asnNo = this.props.params.asnNo;
-    this.props.fileEntryRegs(asnNo, this.props.whse.code, this.props.tenantId).then((result) => {
+    this.props.fileEntryRegs(asnNo, this.props.whse.code).then((result) => {
       if (!result.error) {
         const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.entryAsn.bonded_intype)[0];
         this.props.loadEntryDetails({ asnNo });
@@ -204,7 +203,7 @@ export default class SHFTZEntryDetail extends Component {
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     const loginName = this.props.username;
-    this.props.queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, this.props.tenantId, loginName).then((result) => {
+    this.props.queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, loginName).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({

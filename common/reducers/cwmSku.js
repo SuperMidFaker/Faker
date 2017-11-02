@@ -182,7 +182,7 @@ export function closeApplyPackingRuleModal() {
   };
 }
 
-export function syncTradeItemSkus(tenantId, ownerPartnerId, loginId) {
+export function syncTradeItemSkus(ownerPartnerId, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -192,7 +192,7 @@ export function syncTradeItemSkus(tenantId, ownerPartnerId, loginId) {
       ],
       endpoint: 'v1/cwm/product/sync/tradeitem/skus',
       method: 'post',
-      data: { tenantId, ownerPartnerId, loginId },
+      data: { ownerPartnerId, loginId },
     },
   };
 }
@@ -257,7 +257,7 @@ export function saveSku(formData) {
   };
 }
 
-export function saveSkuTemplate(data, tenantId, loginId, partnerId) {
+export function saveSkuTemplate(data, loginId, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -267,12 +267,12 @@ export function saveSkuTemplate(data, tenantId, loginId, partnerId) {
       ],
       endpoint: 'v1/cwm/product/save/sku/template',
       method: 'post',
-      data: { data, tenantId, loginId, partnerId },
+      data: { data, loginId, partnerId },
     },
   };
 }
 
-export function loadSkuRule(ownerPartnerId, productSku, tenantId) {
+export function loadSkuRule(ownerPartnerId, productSku) {
   return {
     [CLIENT_API]: {
       types: [
@@ -282,7 +282,7 @@ export function loadSkuRule(ownerPartnerId, productSku, tenantId) {
       ],
       endpoint: 'v1/cwm/sku/rule/load',
       method: 'get',
-      params: { ownerPartnerId, productSku, tenantId },
+      params: { ownerPartnerId, productSku },
     },
   };
 }

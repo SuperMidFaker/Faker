@@ -168,7 +168,7 @@ export function loadTransitions(params) {
   };
 }
 
-export function splitTransit(traceIds, transit, loginName, tenantId) {
+export function splitTransit(traceIds, transit, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -178,12 +178,12 @@ export function splitTransit(traceIds, transit, loginName, tenantId) {
       ],
       endpoint: 'v1/cwm/stock/transition/split',
       method: 'post',
-      data: { traceIds, transit, loginName, tenantId },
+      data: { traceIds, transit, loginName },
     },
   };
 }
 
-export function moveTransit(traceIds, transit, targetLocation, movementNo, loginName, tenantId) {
+export function moveTransit(traceIds, transit, targetLocation, movementNo, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -193,12 +193,12 @@ export function moveTransit(traceIds, transit, targetLocation, movementNo, login
       ],
       endpoint: 'v1/cwm/stock/transition/move',
       method: 'post',
-      data: { traceIds, transit, targetLocation, movementNo, loginName, tenantId },
+      data: { traceIds, transit, targetLocation, movementNo, loginName },
     },
   };
 }
 
-export function adjustTransit(traceId, transit, loginName, tenantId) {
+export function adjustTransit(traceId, transit, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -208,12 +208,12 @@ export function adjustTransit(traceId, transit, loginName, tenantId) {
       ],
       endpoint: 'v1/cwm/stock/transition/adjust',
       method: 'post',
-      data: { traceId, transit, loginName, tenantId },
+      data: { traceId, transit, loginName },
     },
   };
 }
 
-export function freezeTransit(traceIds, transit, loginName, tenantId, qty) {
+export function freezeTransit(traceIds, transit, loginName, qty) {
   return {
     [CLIENT_API]: {
       types: [
@@ -223,12 +223,12 @@ export function freezeTransit(traceIds, transit, loginName, tenantId, qty) {
       ],
       endpoint: 'v1/cwm/stock/transition/freeze',
       method: 'post',
-      data: { traceIds, transit, loginName, tenantId, qty },
+      data: { traceIds, transit, loginName, qty },
     },
   };
 }
 
-export function unfreezeTransit(traceIds, transit, loginName, tenantId, qty) {
+export function unfreezeTransit(traceIds, transit, loginName, qty) {
   return {
     [CLIENT_API]: {
       types: [
@@ -238,12 +238,12 @@ export function unfreezeTransit(traceIds, transit, loginName, tenantId, qty) {
       ],
       endpoint: 'v1/cwm/stock/transition/unfreeze',
       method: 'post',
-      data: { traceIds, transit, loginName, tenantId, qty },
+      data: { traceIds, transit, loginName, qty },
     },
   };
 }
 
-export function loadTransitionTraceDetail(traceId, tenantId) {
+export function loadTransitionTraceDetail(traceId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -253,12 +253,12 @@ export function loadTransitionTraceDetail(traceId, tenantId) {
       ],
       endpoint: 'v1/cwm/inbound/trace/detail',
       method: 'get',
-      params: { traceId, tenantId },
+      params: { traceId },
     },
   };
 }
 
-export function clearTransition(whseCode, ownerPartnerId, tenantId) {
+export function clearTransition(whseCode, ownerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -268,7 +268,7 @@ export function clearTransition(whseCode, ownerPartnerId, tenantId) {
       ],
       endpoint: 'v1/cwm/clear/transition',
       method: 'post',
-      data: { whseCode, ownerPartnerId, tenantId },
+      data: { whseCode, ownerPartnerId },
     },
   };
 }

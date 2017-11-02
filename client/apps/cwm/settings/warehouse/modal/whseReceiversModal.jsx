@@ -17,7 +17,6 @@ const Option = Select.Option;
     visible: state.cwmWarehouse.receiverModal.visible,
     receiver: state.cwmWarehouse.receiverModal.receiver,
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
   }),
   { loadReceivers, addReceiver, toggleReceiverModal, updateReceiver }
 )
@@ -78,7 +77,7 @@ export default class WhseReceiversModal extends Component {
     this.props.toggleReceiverModal(false);
   }
   handleOk = () => {
-    const { form, tenantId, whseCode, loginId, whseOwners, whseTenantId, receiver } = this.props;
+    const { form, whseCode, loginId, whseOwners, whseTenantId, receiver } = this.props;
     const { region } = this.state;
     let ownerTenantId = null;
     const recv = form.getFieldsValue();
@@ -89,7 +88,6 @@ export default class WhseReceiversModal extends Component {
     const data = Object.assign({}, recv, { ...region,
       whse_code: whseCode,
       owner_tenant_id: ownerTenantId,
-      tenantId,
       loginId });
     if (receiver.id) {
       this.props.updateReceiver({ ...data, id: receiver.id }).then(() => {

@@ -14,7 +14,6 @@ const RadioButton = Radio.Button;
 @Form.create()
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     locations: state.cwmWarehouse.locations,
     defaultWhse: state.cwmContext.defaultWhse,
     loginId: state.account.loginId,
@@ -39,14 +38,14 @@ export default class LocationSelect extends React.Component {
     zones: [],
   }
   componentWillMount() {
-    this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId).then((result) => {
+    this.props.loadLimitLocations(this.props.defaultWhse.code, '').then((result) => {
       if (!result.error) {
         this.setState({
           options: result.data,
         });
       }
     });
-    this.props.loadZones(this.props.defaultWhse.code, this.props.tenantId).then((result) => {
+    this.props.loadZones(this.props.defaultWhse.code).then((result) => {
       if (!result.error && result.data.length !== 0) {
         this.setState({
           zones: result.data,
@@ -58,7 +57,7 @@ export default class LocationSelect extends React.Component {
     this.setState({ location: nextProps.value });
   }
   handleSearch = (value) => {
-    this.props.loadLimitLocations(this.props.defaultWhse.code, '', this.props.tenantId, value).then((result) => {
+    this.props.loadLimitLocations(this.props.defaultWhse.code, '', value).then((result) => {
       if (!result.error) {
         this.setState({
           options: result.data,
@@ -113,7 +112,7 @@ export default class LocationSelect extends React.Component {
       const { type, status } = this.state;
       if (!err) {
         this.props.addLocation(this.props.defaultWhse.code, values.zone, values.location,
-          type, status, this.props.tenantId, this.props.loginId).then((result) => {
+          type, status, this.props.loginId).then((result) => {
             if (!result.error) {
               this.setState({ location: values.location });
               if (this.props.onChange) {

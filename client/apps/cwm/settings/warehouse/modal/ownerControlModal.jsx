@@ -13,7 +13,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     visible: state.cwmWarehouse.ownerControlModal.visible,
     ownerAuth: state.cwmWarehouse.ownerControlModal.whOwnerAuth,

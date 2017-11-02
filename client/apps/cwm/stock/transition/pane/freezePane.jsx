@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { message, Button, Form, Row, Input, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -14,7 +13,6 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.username,
     detail: state.cwmTransition.transitionModal.detail,
   }),
@@ -23,7 +21,6 @@ const formItemLayout = {
 export default class FreezePane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   state = {
     reason: '',
@@ -32,8 +29,8 @@ export default class FreezePane extends React.Component {
     this.setState({ reason: ev.target.value });
   }
   handleFreezeTransit = () => {
-    const { loginName, tenantId, detail } = this.props;
-    this.props.freezeTransit([detail.trace_id], this.state, loginName, tenantId).then((result) => {
+    const { loginName, detail } = this.props;
+    this.props.freezeTransit([detail.trace_id], this.state, loginName).then((result) => {
       if (!result.error) {
         message.success('库存冻结成功');
       } else {

@@ -16,7 +16,6 @@ const Search = Input.Search;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     movementHead: state.cwmMovement.movementHead,
@@ -61,15 +60,15 @@ export default class MovementDetailsPane extends React.Component {
     });
   }
   handleBatchDetailRemove = () => {
-    const { username, tenantId, movementNo } = this.props;
+    const { username, movementNo } = this.props;
     if (this.props.movementDetails.length === this.state.selectedRowKeys.length) {
-      this.props.cancelMovement(movementNo, username, tenantId).then((result) => {
+      this.props.cancelMovement(movementNo, username).then((result) => {
         if (!result.err) {
           this.context.router.push('/cwm/stock/movement');
         }
       });
     } else {
-      this.props.removeMoveDetail(movementNo, this.state.selectedRowKeys, username, tenantId).then((result) => {
+      this.props.removeMoveDetail(movementNo, this.state.selectedRowKeys, username).then((result) => {
         if (!result.err) {
           this.props.loadMovementDetails(this.props.movementNo);
         }
@@ -77,15 +76,15 @@ export default class MovementDetailsPane extends React.Component {
     }
   }
   removeMoveDetail = (row) => {
-    const { username, tenantId, movementNo } = this.props;
+    const { username, movementNo } = this.props;
     if (this.props.movementDetails.length === 1) {
-      this.props.cancelMovement(movementNo, username, tenantId).then((result) => {
+      this.props.cancelMovement(movementNo, username).then((result) => {
         if (!result.err) {
           this.context.router.push('/cwm/stock/movement');
         }
       });
     } else {
-      this.props.removeMoveDetail(movementNo, [row.to_trace_id], username, tenantId).then((result) => {
+      this.props.removeMoveDetail(movementNo, [row.to_trace_id], username).then((result) => {
         if (!result.err) {
           this.props.loadMovementDetails(this.props.movementNo);
         }
@@ -103,7 +102,7 @@ export default class MovementDetailsPane extends React.Component {
     Modal.confirm({
       title: '是否确认库存移动已完成?',
       onOk() {
-        props.executeMovement(props.movementNo, toTraceIds, props.tenantId,
+        props.executeMovement(props.movementNo, toTraceIds,
           props.username, props.defaultWhse.code).then((result) => {
             if (!result.err) {
               props.loadMovementHead(props.movementNo);

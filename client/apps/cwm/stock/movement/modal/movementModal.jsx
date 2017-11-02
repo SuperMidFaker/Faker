@@ -23,7 +23,6 @@ const Option = Select.Option;
     loginName: state.account.username,
     owners: state.cwmContext.whseAttrs.owners,
     filter: state.cwmMovement.movementModal.filter,
-    tenantId: state.account.tenantId,
     movements: state.cwmMovement.movements,
     movementFilter: state.cwmMovement.movementFilter,
   }),
@@ -175,14 +174,13 @@ export default class MovementModal extends Component {
       message.info('请填写货品或库位');
       return;
     }
-    this.props.inventorySearch(JSON.stringify(filter), this.props.tenantId,
-      this.props.defaultWhse.code, this.state.owner.id).then((result) => {
-        if (!result.err) {
-          this.setState({
-            stocks: result.data.map(item => ({ ...item, moving_qty: 0 })),
-          });
-        }
-      });
+    this.props.inventorySearch(JSON.stringify(filter), this.props.defaultWhse.code, this.state.owner.id).then((result) => {
+      if (!result.err) {
+        this.setState({
+          stocks: result.data.map(item => ({ ...item, moving_qty: 0 })),
+        });
+      }
+    });
   }
   handleOwnerChange = (value) => {
     const owner = this.props.owners.find(item => item.id === value);
@@ -251,7 +249,7 @@ export default class MovementModal extends Component {
     });
   }
   handleCreateMovement = () => {
-    this.props.createMovement(this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code, this.props.tenantId,
+    this.props.createMovement(this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code,
       this.props.loginName, this.state.movements).then((result) => {
         if (!result.err) {
           this.props.closeMovementModal();

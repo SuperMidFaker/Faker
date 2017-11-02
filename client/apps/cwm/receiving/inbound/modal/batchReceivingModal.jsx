@@ -16,7 +16,6 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     username: state.account.username,
     visible: state.cwmReceive.batchReceivingModal.visible,
     inboundHead: state.cwmReceive.inboundFormHead,

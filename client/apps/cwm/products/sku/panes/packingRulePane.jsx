@@ -13,7 +13,6 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     owner: state.cwmSku.owner,
     packings: state.cwmSku.params.packings,
@@ -24,7 +23,6 @@ export default class PackingRulePane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantName: PropTypes.string.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   state = {
     datas: [],

@@ -14,7 +14,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     visible: state.cwmWarehouse.locationModal.visible,
     record: state.cwmWarehouse.record,
@@ -65,7 +64,7 @@ export default class AddLocationModal extends Component {
     });
   }
   handleSubmit = () => {
-    const { whseCode, zoneCode, record, tenantId, loginId } = this.props;
+    const { whseCode, zoneCode, record, loginId } = this.props;
     const { type, status, location } = this.state;
     if (record.id) {
       this.props.updateLocation(type, status, location, record.id, loginId).then(
@@ -73,19 +72,19 @@ export default class AddLocationModal extends Component {
           if (!result.error) {
             message.info('保存成功');
             this.props.hideLocationModal();
-            this.props.loadLocations(whseCode, zoneCode, tenantId);
+            this.props.loadLocations(whseCode, zoneCode);
           } else {
             message.error(result.error.message);
           }
         }
       );
     } else {
-      this.props.addLocation(whseCode, zoneCode, location, type, status, tenantId, loginId).then(
+      this.props.addLocation(whseCode, zoneCode, location, type, status, loginId).then(
         (result) => {
           if (!result.error) {
             message.info('创建成功');
             this.props.hideLocationModal();
-            this.props.loadLocations(whseCode, zoneCode, tenantId);
+            this.props.loadLocations(whseCode, zoneCode);
           } else {
             message.error(result.error.message);
           }

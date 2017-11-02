@@ -11,8 +11,8 @@ import { formatMsg } from '../message.i18n';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-function fetchData({ state, dispatch }) {
-  return dispatch(loadBrokerPartners(state.account.tenantId, PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance));
+function fetchData({ dispatch }) {
+  return dispatch(loadBrokerPartners(PARTNER_ROLES.SUP, PARTNER_BUSINESSE_TYPES.clearance));
 }
 
 @connectFetch()(fetchData)
@@ -20,7 +20,6 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     whseOwners: state.cwmWarehouse.whseOwners,
     visible: state.cwmWarehouse.brokerModal.visible,
     brokers: state.cwmWarehouse.brokerPartners,
@@ -41,13 +40,13 @@ export default class SuppliersModal extends Component {
     this.props.form.resetFields();
   }
   handleAdd = () => {
-    const { tenantId, whseCode, loginId, brokers } = this.props;
+    const { whseCode, loginId, brokers } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const broker = brokers.find(bk => bk.customs_code === values.customs_code);
-        this.props.addBroker(values, tenantId, whseCode, loginId, broker.partner_tenant_id, broker.partner_code).then((result) => {
+        this.props.addBroker(values, whseCode, loginId, broker.partner_tenant_id, broker.partner_code).then((result) => {
           if (!result.error) {
-            this.props.loadBrokers(whseCode, tenantId);
+            this.props.loadBrokers(whseCode);
             this.props.toggleBrokerModal(false);
           }
         });

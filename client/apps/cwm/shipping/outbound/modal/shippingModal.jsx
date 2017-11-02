@@ -21,7 +21,6 @@ const Option = Select.Option;
     skuPackQty: state.cwmOutbound.shippingModal.skuPackQty,
     id: state.cwmOutbound.shippingModal.id,
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     username: state.account.username,
     submitting: state.cwmOutbound.submitting,
   }),
@@ -56,7 +55,7 @@ export default class ShippingModal extends Component {
     this.setState({ shippingMode: e.target.value });
   }
   handleSubmit = () => {
-    const { outboundNo, skuPackQty, pickedQty, username, tenantId, shipMode, selectedRows, id } = this.props;
+    const { outboundNo, skuPackQty, pickedQty, username, shipMode, selectedRows, id } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         let list = [];
@@ -83,7 +82,7 @@ export default class ShippingModal extends Component {
             shipped_type: this.state.shippingMode,
           })));
         }
-        this.props.shipConfirm(outbounddata, list, username, tenantId, values.shippedBy, values.shippedDate).then((result) => {
+        this.props.shipConfirm(outbounddata, list, username, values.shippedBy, values.shippedDate).then((result) => {
           if (!result.error) {
             this.props.closeShippingModal();
             this.props.loadPickDetails(this.props.outboundNo);

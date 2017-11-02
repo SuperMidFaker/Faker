@@ -36,7 +36,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     relSo: state.cwmShFtz.rel_so,
@@ -97,11 +96,10 @@ export default class SHFTZTransferOutDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
-    const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     const relType = CWM_SO_BONDED_REGTYPES[2].text;
-    this.props.fileRelTransfers(soNo, whseCode, ftzWhseCode, tenantId).then((result) => {
+    this.props.fileRelTransfers(soNo, whseCode, ftzWhseCode).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({

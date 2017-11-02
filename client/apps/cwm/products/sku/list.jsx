@@ -35,7 +35,6 @@ const Panel = Collapse.Panel;
     listFilter: state.cwmSku.listFilter,
     sortFilter: state.cwmSku.sortFilter,
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
   }),
   { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal }
 )
@@ -46,7 +45,6 @@ const Panel = Collapse.Panel;
 export default class CWMSkuList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
     owners: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
@@ -223,7 +221,7 @@ export default class CWMSkuList extends React.Component {
     });
   }
   handleTradeItemsSync = () => {
-    this.props.syncTradeItemSkus(this.props.tenantId, this.props.owner.id, this.props.loginId)
+    this.props.syncTradeItemSkus(this.props.owner.id, this.props.loginId)
       .then((result) => {
         if (result.error) {
           if (result.error.message === 'NO_OWNER_REPO') {

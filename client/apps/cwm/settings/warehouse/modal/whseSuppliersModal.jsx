@@ -14,7 +14,6 @@ const Option = Select.Option;
 @connect(
   state => ({
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     whseOwners: state.cwmWarehouse.whseOwners,
     visible: state.cwmWarehouse.supplierModal.visible,
     supplier: state.cwmWarehouse.supplierModal.supplier,
@@ -30,7 +29,7 @@ export default class SuppliersModal extends Component {
     ownerPartnerId: PropTypes.number,
   }
   componentWillMount() {
-    this.props.loadwhseOwners(this.props.whseCode, this.props.tenantId);
+    this.props.loadwhseOwners(this.props.whseCode);
   }
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible && nextProps.supplier.id) {
@@ -43,22 +42,22 @@ export default class SuppliersModal extends Component {
     this.props.form.resetFields();
   }
   handleAdd = () => {
-    const { tenantId, whseCode, loginId, whseOwners, supplier, ownerPartnerId } = this.props;
+    const { whseCode, loginId, whseOwners, supplier, ownerPartnerId } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const ownerTenantId = whseOwners.find(owner => owner.owner_partner_id === values.owner_partner_id).owner_tenant_id;
         if (supplier.id) {
           this.props.updateSupplier(values, supplier.id, loginId).then(() => {
-            this.props.loadSuppliers(whseCode, tenantId);
+            this.props.loadSuppliers(whseCode);
             this.props.toggleSupplierModal(false);
           });
         } else {
-          this.props.addSupplier(values, tenantId, whseCode, loginId, ownerTenantId).then((result) => {
+          this.props.addSupplier(values, whseCode, loginId, ownerTenantId).then((result) => {
             if (!result.error) {
-              this.props.loadSuppliers(whseCode, tenantId);
+              this.props.loadSuppliers(whseCode);
               this.props.toggleSupplierModal(false);
               if (ownerPartnerId) {
-                this.props.getSuppliers(tenantId, whseCode, ownerPartnerId);
+                this.props.getSuppliers(whseCode, ownerPartnerId);
               }
             }
           });

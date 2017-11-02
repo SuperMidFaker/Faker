@@ -16,7 +16,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadLimitLocations(whseCode, zoneCode, tenantId, text) {
+export function loadLimitLocations(whseCode, zoneCode, text) {
   return {
     [CLIENT_API]: {
       types: [
@@ -26,12 +26,12 @@ export function loadLimitLocations(whseCode, zoneCode, tenantId, text) {
       ],
       endpoint: 'v1/cwm/whse/limit/locations',
       method: 'get',
-      params: { whseCode, zoneCode, tenantId, text },
+      params: { whseCode, zoneCode, text },
     },
   };
 }
 
-export function loadAdviceLocations(productNo, tenantId, whseCode) {
+export function loadAdviceLocations(productNo, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -41,7 +41,7 @@ export function loadAdviceLocations(productNo, tenantId, whseCode) {
       ],
       endpoint: 'v1/cwm/whse/advice/locations',
       method: 'get',
-      params: { productNo, tenantId, whseCode },
+      params: { productNo, whseCode },
     },
   };
 }

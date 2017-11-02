@@ -14,7 +14,6 @@ import { formatMsg } from '../message.i18n';
 @connect(
   state => ({
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     brokers: state.cwmWarehouse.brokers,
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -31,11 +30,11 @@ export default class BrokersPane extends Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
+    this.props.loadBrokers(this.props.whseCode);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.whseCode !== this.props.whseCode) {
-      this.props.loadBrokers(nextProps.whseCode, this.props.tenantId);
+      this.props.loadBrokers(nextProps.whseCode);
     }
   }
   columns = [{
@@ -94,7 +93,7 @@ export default class BrokersPane extends Component {
   authorizeBroker = (value, partnerId) => {
     this.props.authorizeBroker(value, this.props.whseCode, partnerId).then((result) => {
       if (!result.error) {
-        this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
+        this.props.loadBrokers(this.props.whseCode);
         message.info('授权成功');
       }
     });
@@ -102,14 +101,14 @@ export default class BrokersPane extends Component {
   changeBrokerStatus = (id, status) => {
     this.props.changeBrokerStatus(id, status).then((result) => {
       if (!result.error) {
-        this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
+        this.props.loadBrokers(this.props.whseCode);
       }
     });
   }
   handleDeleteBroker = (id) => {
     this.props.deleteBroker(id).then((result) => {
       if (!result.error) {
-        this.props.loadBrokers(this.props.whseCode, this.props.tenantId);
+        this.props.loadBrokers(this.props.whseCode);
       }
     });
   }

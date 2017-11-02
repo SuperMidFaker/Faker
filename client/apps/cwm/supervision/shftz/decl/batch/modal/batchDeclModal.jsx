@@ -19,7 +19,6 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     visible: state.cwmShFtz.batchDeclModal.visible,
     submitting: state.cwmShFtz.submitting,
@@ -264,7 +263,6 @@ export default class BatchDeclModal extends Component {
   }
   handleOwnerChange = (ownerCusCode) => {
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'portion',
@@ -283,11 +281,10 @@ export default class BatchDeclModal extends Component {
     if (owner) {
       this.props.loadManifestTemplates({
         owner_partner_id: owner.id,
-        tenant_id: this.props.tenantId,
         ietype: 0,
       });
     }
-    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
+    this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
   }
   handleTemplateChange = (template) => {
     this.setState({ template });
@@ -301,7 +298,6 @@ export default class BatchDeclModal extends Component {
   handlePortionOutsQuery = () => {
     const { ownerCusCode, relNo, relDateRange } = this.state;
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'portion',

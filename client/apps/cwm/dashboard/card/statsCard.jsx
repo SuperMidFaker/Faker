@@ -14,7 +14,6 @@ const RangePicker = DatePicker.RangePicker;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     statsCard: state.cwmDashboard.statsCard,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -29,18 +28,18 @@ export default class StatsCard extends Component {
     }),
   }
   componentWillMount() {
-    const { defaultWhse, tenantId } = this.props;
-    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code, tenantId);
+    const { defaultWhse } = this.props;
+    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const { defaultWhse, tenantId } = nextProps;
-      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code, tenantId);
+      const { defaultWhse } = nextProps;
+      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
     }
   }
   onDateChange = (data, dataString) => {
-    const { defaultWhse, tenantId } = this.props;
-    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code, tenantId);
+    const { defaultWhse } = this.props;
+    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code);
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
