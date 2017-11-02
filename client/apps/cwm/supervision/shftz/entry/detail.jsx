@@ -396,7 +396,7 @@ export default class SHFTZEntryDetail extends Component {
       },
     };
     const tabList = [];
-    entryRegs.forEach((r, index) => tabList.push({ tab: r.pre_entry_seq_no, key: index }));
+    entryRegs.forEach((r, index) => tabList.push({ tab: r.ftz_ent_no || r.pre_entry_seq_no, key: index }));
     const stat = reg.details && reg.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,

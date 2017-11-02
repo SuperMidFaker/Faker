@@ -373,7 +373,7 @@ export default class SHFTZRelDetail extends Component {
       whyunsent = '出库单未配货';
     }
     const tabList = [];
-    relRegs.forEach((r, index) => tabList.push({ tab: r.pre_entry_seq_no, key: index }));
+    relRegs.forEach((r, index) => tabList.push({ tab: r.ftz_rel_no || r.pre_entry_seq_no, key: index }));
     const stat = reg.details && reg.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,
