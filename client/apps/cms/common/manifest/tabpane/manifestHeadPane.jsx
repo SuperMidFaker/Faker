@@ -47,7 +47,30 @@ export default class ManifestHeadPane extends React.Component {
     onSave: PropTypes.func.isRequired,
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
   }
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      event.stopPropagation();
+      event.preventDefault();
+      const inputs = document.forms[0].elements;
+      for (let i = 0; i < inputs.length; i++) {
+        if (i === (inputs.length - 1)) {
+          inputs[0].focus();
+          inputs[0].select();
+          break;
+        } else if (event.target === inputs[i]) {
+          inputs[i + 1].focus();
+          inputs[i + 1].select();
+          break;
+        }
+      }
+    } else if (event.keyCode === 8) {
+      event.target.select();
+    }
+  }
   handleSheetSave = (ev) => {
     ev.stopPropagation();
     ev.preventDefault();

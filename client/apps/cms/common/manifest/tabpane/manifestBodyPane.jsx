@@ -897,7 +897,8 @@ export default class ManifestBodyPane extends React.Component {
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
-        { this.props.billHead.manual_no && <Button onClick={() => { this.setState({ importPanelVisible: true }); }} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
+        { this.props.billHead.manual_no &&
+        <Button size="large" icon="book" onClick={() => { this.setState({ importPanelVisible: true }); }} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
         <Button size="large" icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
         <Dropdown overlay={dataToolsMenu}>
           <Button size="large" style={{ marginLeft: 8 }}>
