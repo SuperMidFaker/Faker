@@ -72,7 +72,7 @@ const messages = defineMessages({
   },
   asnPlaceholder: {
     id: 'bss.fee.asn.search.place.holder',
-    defaultMessage: '搜索ASN编号/采购订单号',
+    defaultMessage: '搜索订单关联号/客户订单号',
   },
   inboundPlaceholder: {
     id: 'bss.fee.asn.inbound.search.place.holder',

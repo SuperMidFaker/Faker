@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, Layout, Radio } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -61,14 +61,18 @@ export default class FeeSummaryList extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
+    title: '客户',
+    width: 200,
+    dataIndex: 'owner_name',
+    render: o => <TrimSpan text={o} maxLen={16} />,
+  }, {
     title: '客户订单号',
     width: 180,
     dataIndex: 'cust_order_no',
   }, {
-    title: '客户',
-    width: 240,
-    dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
+    title: '状态',
+    width: 100,
+    dataIndex: 'status',
   }, {
     title: '应收金额',
     dataIndex: 'rec_amount',
@@ -98,13 +102,13 @@ export default class FeeSummaryList extends React.Component {
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
   }, {
-    title: '创建时间',
+    title: '审核时间',
     dataIndex: 'created_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
-    title: '结算人员',
+    title: '审核人员',
     dataIndex: 'created_by',
     width: 80,
   }, {
@@ -155,13 +159,18 @@ export default class FeeSummaryList extends React.Component {
   render() {
     const { loading } = this.props;
     const mockData = [{
-      order_rel_no: '1',
-      name: '胡彦斌',
+      order_rel_no: '5',
+      status: '未审核',
       age: 32,
       address: '西湖区湖底公园1号',
     }, {
+      order_rel_no: '4',
+      status: '审核通过',
+      age: 42,
+      address: '西湖区湖底公园1号',
+    }, {
       order_rel_no: '2',
-      name: '胡彦祖',
+      status: '已入账单',
       age: 42,
       address: '西湖区湖底公园1号',
     }];
@@ -200,6 +209,7 @@ export default class FeeSummaryList extends React.Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} />
     </span>);
+    const bulkActions = <Button size="large" icon="play-circle-o" onClick={this.handleBatchRelease}>批量审批</Button>;
     const totCol = (
       <Summary>
         <Summary.Item label="应收合计">{10000}</Summary.Item>
@@ -227,9 +237,10 @@ export default class FeeSummaryList extends React.Component {
               <RadioButton value="inbound">已入账单</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
+
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
+          <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="id" loading={loading}
             total={totCol}

@@ -2,11 +2,11 @@ import PageHeader from './pageHeader';
 import title from './title';
 import nav from './nav';
 import actions from './actions';
-import extra from './extra';
+import content from './content';
 
 PageHeader.Title = title;
 PageHeader.Nav = nav;
 PageHeader.Actions = actions;
-PageHeader.Extra = extra;
+PageHeader.Content = content;
 
 export default PageHeader;

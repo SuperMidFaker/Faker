@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, Layout, Radio } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -199,6 +199,11 @@ export default class FeeSummaryList extends React.Component {
               <RadioButton value="inbound">应付</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" size="large" icon="upload" onClick={this.handleCreateASN}>
+              {this.msg('导入费用')}
+            </Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}

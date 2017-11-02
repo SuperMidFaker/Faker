@@ -93,7 +93,12 @@ export class FormRemoteSearchSelect extends React.Component {
         >
           {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
-              <Select mode="combobox" optionLabelProp="children" disabled={disabled} showSearch allowClear onSearch={this.handleSearch} optionFilterProp="children" onFocus={() => console.log('focused')}>
+              <Select
+                mode="combobox"
+                optionLabelProp="children"
+                disabled={disabled}
+                showSearch allowClear onSearch={this.handleSearch} optionFilterProp="children"
+              >
                 {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
             }
