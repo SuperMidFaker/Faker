@@ -249,7 +249,7 @@ export default class MovementModal extends Component {
     });
   }
   handleCreateMovement = () => {
-    this.props.createMovement(this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code, this.props.tenantId,
+    this.props.createMovement(this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code,
       this.props.loginName, this.state.movements).then((result) => {
         if (!result.err) {
           this.props.closeMovementModal();
