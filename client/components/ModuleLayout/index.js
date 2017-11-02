@@ -44,7 +44,13 @@ export default class ModuleLayout extends React.Component {
                     <span className="module-text">
                       {formatMsg(this.props.intl, emod.text)}
                       {
-                        emod.status && <sup className={emod.status}>{emod.status}</sup>
+                        emod.status === 'beta' && <sup className={emod.status}>公测版</sup>
+                      }
+                      {
+                        emod.status === 'alpha' && <sup className={emod.status}>内测版</sup>
+                      }
+                      {
+                        emod.status === 'dev' && <sup className={emod.status}>开发中</sup>
                       }
                     </span>
                   </div>
