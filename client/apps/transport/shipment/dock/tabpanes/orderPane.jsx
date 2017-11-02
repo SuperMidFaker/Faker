@@ -403,7 +403,7 @@ export default class DetailPane extends React.Component {
                         <Row gutter={16} className="info-group-underline">
                           <Col span={12}>
                             <InfoItem label={this.msg('pickupEstDate')}
-                              type="date"
+                              type="date" editable
                               field={shipmt.pickup_est_date ? moment(shipmt.pickup_est_date).format('YYYY-MM-DD') : null}
                               onEdit={value => this.handleSaveShipment('pickup_est_date', value && new Date(value), 'timeInfoChanged')}
                             />
@@ -451,7 +451,7 @@ export default class DetailPane extends React.Component {
                         <Row gutter={16} className="info-group-underline">
                           <Col span={12}>
                             <InfoItem label={this.msg('deliveryEstDate')}
-                              type="date"
+                              type="date" editable
                               field={shipmt.deliver_est_date ? moment(shipmt.deliver_est_date).format('YYYY-MM-DD') : null}
                               onEdit={value => this.handleSaveShipment('deliver_est_date', value && new Date(value), 'timeInfoChanged')}
                             />
@@ -626,25 +626,25 @@ export default class DetailPane extends React.Component {
               <Row gutter={16} className="info-group-underline">
                 <Col span="8">
                   <InfoItem label={this.msg('refExternalNo')}
-                    field={shipmt.ref_external_no}
+                    field={shipmt.ref_external_no} editable
                     onEdit={value => this.handleSaveShipment('ref_external_no', value, 'correlInfoChanged')}
                   />
                 </Col>
                 <Col span="8">
                   <InfoItem label={this.msg('refWaybillNo')}
-                    field={shipmt.ref_waybill_no}
+                    field={shipmt.ref_waybill_no} editable
                     onEdit={value => this.handleSaveShipment('ref_waybill_no', value, 'correlInfoChanged')}
                   />
                 </Col>
                 <Col span="8">
                   <InfoItem label={this.msg('refEntryNo')}
-                    field={shipmt.ref_entry_no}
+                    field={shipmt.ref_entry_no} editable
                     onEdit={value => this.handleSaveShipment('ref_entry_no', value, 'correlInfoChanged')}
                   />
                 </Col>
                 <Col span="24">
                   <InfoItem label={this.msg('remark')}
-                    field={shipmt.remark}
+                    field={shipmt.remark} editable
                     onEdit={value => this.handleSaveShipment('remark', value, 'remarkChanged')}
                   />
                 </Col>
