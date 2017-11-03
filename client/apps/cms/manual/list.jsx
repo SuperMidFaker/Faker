@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, Button, Layout } from 'antd';
+import { Breadcrumb, Button, Layout, Dropdown, Menu } from 'antd';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -167,6 +167,9 @@ export default class ManualList extends Component {
       filters: { text: value },
     });
   }
+  handleExportClick = () => {
+    window.open(`${XLSX_CDN}/手册导入模版.xlsx`);
+  }
   render() {
     const { loading } = this.props.loading;
     const rowSelection = {
@@ -200,6 +203,11 @@ export default class ManualList extends Component {
       },
       remotes: this.props.manuallist,
     });
+    const menu = (
+      <Menu onClick={this.handleExportClick}>
+        <Menu.Item key="1">下载模版</Menu.Item>
+      </Menu>
+    );
     return (
       <Layout>
         <PageHeader>
@@ -211,9 +219,11 @@ export default class ManualList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="primary" onClick={this.handleCreateBtnClick} icon="upload">
-              {this.msg('导入')}
-            </Button>
+            <Dropdown overlay={menu}>
+              <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="upload">
+                {this.msg('导入')}
+              </Button>
+            </Dropdown>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
