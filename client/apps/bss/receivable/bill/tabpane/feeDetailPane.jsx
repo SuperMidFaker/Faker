@@ -19,7 +19,7 @@ const formatMsg = format(messages);
   }),
   { }
 )
-export default class OrderListPane extends Component {
+export default class FeeDetailPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
 

@@ -2,13 +2,21 @@ import { defineMessages } from 'react-intl';
 import { formati18n } from 'client/common/i18n/helpers';
 
 const messages = defineMessages({
-  fee: {
+  payable: {
     id: 'bss.payable',
-    defaultMessage: '应收',
+    defaultMessage: '应付',
   },
-  feeSummary: {
+  payableBill: {
     id: 'bss.payable.bill',
     defaultMessage: '供应商账单',
+  },
+  payableInvoice: {
+    id: 'bss.payable.invoice',
+    defaultMessage: '发票管理',
+  },
+  paymentMade: {
+    id: 'bss.payable.payment',
+    defaultMessage: '付款管理',
   },
 
 });

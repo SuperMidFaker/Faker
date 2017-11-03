@@ -63,10 +63,10 @@ export default class ReceivableBillDetail extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('fee')}
+                {this.msg('payable')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('feeSummary')}
+                {this.msg('payableBill')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.props.params.orderRelNo}

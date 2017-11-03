@@ -111,7 +111,11 @@ import * as BSSDashboard from './bss/dashboard';
 import * as BSSFeeSummary from './bss/fee/summary';
 import * as BSSFeeStatement from './bss/fee/statement';
 import * as BSSReceivableBill from './bss/receivable/bill';
+import * as BSSReceivableInvoice from './bss/receivable/invoice';
+import * as BSSPaymentReceived from './bss/receivable/payment';
 import * as BSSPayableBill from './bss/payable/bill';
+import * as BSSPayableInvoice from './bss/payable/invoice';
+import * as BSSPaymentMade from './bss/payable/payment';
 import { loadAccount } from 'common/reducers/account';
 import { loadWhseContext } from 'common/reducers/cwmContext';
 import { isLoaded } from 'client/common/redux-actions';
@@ -577,12 +581,16 @@ export default(store, cookie) => {
                 <IndexRoute component={BSSReceivableBill.List} />
                 <Route path=":billNo" component={BSSReceivableBill.Detail} />
               </Route>
+              <Route path="invoice" component={BSSReceivableInvoice.List} />
+              <Route path="payment" component={BSSPaymentReceived.List} />
             </Route>
             <Route path="payable">
               <Route path="bill" >
                 <IndexRoute component={BSSPayableBill.List} />
                 <Route path=":billNo" component={BSSPayableBill.Detail} />
               </Route>
+              <Route path="invoice" component={BSSPayableInvoice.List} />
+              <Route path="payment" component={BSSPaymentMade.List} />
             </Route>
           </Route>
         </Route>

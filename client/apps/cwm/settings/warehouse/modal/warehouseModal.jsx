@@ -101,6 +101,12 @@ export default class WareHouseModal extends Component {
               </Radio.Group>)
             }
           </FormItem>
+          <FormItem {...formItemLayout} label="保税性质" >
+            <Radio.Group value={isBonded} onChange={this.handleChange}>
+              <Radio.Button value={0}>非保税仓</Radio.Button>
+              <Radio.Button value={1}>保税仓</Radio.Button>
+            </Radio.Group>
+          </FormItem>
           <FormItem {...formItemLayout} label="仓库代码" >
             {
               getFieldDecorator('whseCode', {
@@ -131,12 +137,6 @@ export default class WareHouseModal extends Component {
             {
               getFieldDecorator('whseTel')(<Input />)
             }
-          </FormItem>
-          <FormItem {...formItemLayout} label="保税性质" >
-            <Radio.Group value={isBonded} onChange={this.handleChange}>
-              <Radio.Button value={0}>非保税仓</Radio.Button>
-              <Radio.Button value={1}>保税仓</Radio.Button>
-            </Radio.Group>
           </FormItem>
         </Form>
       </Modal>

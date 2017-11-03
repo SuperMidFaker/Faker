@@ -36,7 +36,7 @@ const RadioButton = Radio.Button;
   depth: 2,
   moduleName: 'bss',
 })
-export default class ReceivableBillList extends React.Component {
+export default class PayableBillList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -213,10 +213,10 @@ export default class ReceivableBillList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('fee')}
+                {this.msg('payable')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('feeSummary')}
+                {this.msg('payableBill')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>

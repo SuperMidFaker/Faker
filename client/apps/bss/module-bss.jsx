@@ -59,8 +59,8 @@ export default class ModuleBMS extends React.Component {
         text: formatMsg(intl, 'receivableInvoice'),
       }, {
         key: 'bss-receivable-2',
-        path: '/bss/receivable/collection',
-        text: formatMsg(intl, 'collection'),
+        path: '/bss/receivable/payment',
+        text: formatMsg(intl, 'paymentReceived'),
       }],
     });
     linkMenus.push({
@@ -79,7 +79,7 @@ export default class ModuleBMS extends React.Component {
       }, {
         key: 'bss-payable-2',
         path: '/bss/payable/payment',
-        text: formatMsg(intl, 'payment'),
+        text: formatMsg(intl, 'paymentMade'),
       }],
     });
     linkMenus.push({

@@ -30,8 +30,8 @@ const messages = defineMessages({
     id: 'bss.module.receivable.invoice',
     defaultMessage: '开票管理',
   },
-  collection: {
-    id: 'bss.module.receivable.collection',
+  paymentReceived: {
+    id: 'bss.module.receivable.payment',
     defaultMessage: '收款管理',
   },
   payable: {
@@ -46,7 +46,7 @@ const messages = defineMessages({
     id: 'bss.module.payable.invoice',
     defaultMessage: '发票管理',
   },
-  payment: {
+  paymentMade: {
     id: 'bss.module.payable.payment',
     defaultMessage: '付款管理',
   },

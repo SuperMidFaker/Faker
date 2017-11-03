@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Layout, Card, Tabs } from 'antd';
+import { Button, Breadcrumb, Layout, Card, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
+import FeeDetailPane from './tabpane/feeDetailPane';
+import OrderListPane from './tabpane/orderListPane';
+import InvoiceListPane from './tabpane/invoiceListPane';
+import PaymentReceivedPane from './tabpane/paymentReceivedPane';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -73,23 +77,37 @@ export default class ReceivableBillDetail extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
+          <PageHeader.Actions>
+            <Button icon="mail" onClick={this.handleCreateASN}>
+              {this.msg('发送账单')}
+            </Button>
+            <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
+              {this.msg('对账确认')}
+            </Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           <Card bodyStyle={{ padding: 16 }} noHovering>
             <DescriptionList col={4}>
               <Description term="货主">{summary.owner_name}</Description>
               <Description term="ASN编号">{summary.asn_no}</Description>
-              <Description term="总预期数量">{summary.total_expect_qty}</Description>
-              <Description term="总实收数量">{summary.total_received_qty}</Description>
-
               <Description term="创建时间">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-              <Description term="入库时间">{summary.completed_date && moment(summary.completed_date).format('YYYY.MM.DD HH:mm')}</Description>
             </DescriptionList>
           </Card>
           <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-            <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
-              <TabPane tab="应收明细" key="receiveDetails" />
-              <TabPane tab="应付明细" key="putawayDetails" />
+            <Tabs defaultActiveKey="feeDetail" onChange={this.handleTabChange}>
+              <TabPane tab="结算订单" key="orderList" >
+                <OrderListPane />
+              </TabPane>
+              <TabPane tab="费用明细" key="feeDetail" >
+                <FeeDetailPane />
+              </TabPane>
+              <TabPane tab="发票" key="invoiceList" >
+                <InvoiceListPane />
+              </TabPane>
+              <TabPane tab="实收款" key="paymentReceived" >
+                <PaymentReceivedPane />
+              </TabPane>
             </Tabs>
           </MagicCard>
         </Content>

@@ -19,7 +19,7 @@ const formatMsg = format(messages);
   }),
   { }
 )
-export default class OrderListPane extends Component {
+export default class PaymentReceivedPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
 
@@ -101,7 +101,7 @@ export default class OrderListPane extends Component {
         dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Button icon="download" onClick={this.handleTemplateDownload}>导出</Button>
+          <Button icon="plus-circle-o" onClick={this.handleTemplateDownload}>添加实收款</Button>
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
