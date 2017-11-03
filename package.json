@@ -50,7 +50,6 @@
   "dependencies": {
     "@welogix/react-data-grid": "^1.0.51",
     "antd": "^2.13.8",
-    "ant-design-pro": "^0.2.1",
     "babel-core": "^6.24.1",
     "babel-polyfill": "^6.22.0",
     "babel-runtime": "^6.23.0",

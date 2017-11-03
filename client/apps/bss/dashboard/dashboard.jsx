@@ -2,8 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Row, Tooltip, Icon, Col, Layout } from 'antd';
-import { MiniArea, MiniBar, MiniProgress, yuan, Field } from 'ant-design-pro/lib/Charts';
-
+import { MiniArea, MiniBar, MiniProgress, yuan, Field } from 'client/components/Charts';
 import moment from 'moment';
 import numeral from 'numeral';
 import QueueAnim from 'rc-queue-anim';
