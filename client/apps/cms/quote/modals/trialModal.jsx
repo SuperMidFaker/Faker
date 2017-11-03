@@ -98,8 +98,8 @@ export default class TrialModal extends React.Component {
     let stepContent;
     if (curStep === 0) {
       footer = [
-        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-        <Button key="start" type="primary" size="large" onClick={this.handleBeginTrial}>开始</Button>,
+        <Button key="cancel" type="ghost" onClick={this.handleCancel}>取消</Button>,
+        <Button key="start" type="primary" onClick={this.handleBeginTrial}>开始</Button>,
       ];
       stepContent = (
         <Form layout="horizontal">
@@ -124,17 +124,17 @@ export default class TrialModal extends React.Component {
       );
     } else if (curStep === 1) {
       footer = [
-        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-        <Button key="next" type="primary" size="large" onClick={this.handleTrialNext} disabled={!trialFilename}>下一步</Button>,
+        <Button key="cancel" type="ghost" onClick={this.handleCancel}>取消</Button>,
+        <Button key="next" type="primary" onClick={this.handleTrialNext} disabled={!trialFilename}>下一步</Button>,
       ];
       stepContent = (
         <Progress type="circle" percent={progressPercent} status={progressStatus} width={80} />
       );
     } else if (curStep === 2) {
       footer = [
-        <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
+        <Button key="cancel" type="ghost" onClick={this.handleCancel}>取消</Button>,
         <a href={trialFileurl} target="_blank" rel="noopener noreferrer">
-          <Button key="download" type="primary" size="large">下载</Button>
+          <Button key="download" type="primary" >下载</Button>
         </a>,
       ];
       stepContent = trialFilename;

@@ -202,7 +202,7 @@ export default class HeaderNavBar extends React.Component {
           title={formatMsg(intl, 'userLanguage')} onCancel={this.handleCancel}
         >
           <div style={{ textAlign: 'center' }}>
-            <RadioGroup size="large" onChange={this.handleLocaleChange} value={locale}>
+            <RadioGroup onChange={this.handleLocaleChange} value={locale}>
               <RadioButton value="zh">简体中文</RadioButton>
               <RadioButton value="en">English</RadioButton>
             </RadioGroup>

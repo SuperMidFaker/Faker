@@ -90,7 +90,7 @@ export default class DriverList extends Component {
     ];
     const toolbarActions = (<span>
       <PrivilegeCover module="transport" feature="resources" action="create">
-        <Button type="primary" size="large" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
+        <Button type="primary" onClick={onAddBtnClicked} icon="plus-circle-o">新增承运商</Button>
       </PrivilegeCover>
     </span>);
     return (
@@ -106,7 +106,7 @@ export default class DriverList extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             <SearchBar placeholder="承运商/承运商代码/统一社会信用代码" onInputSearch={this.props.onSearch}
-              value={this.props.searchText} size="large"
+              value={this.props.searchText}
             />
           </div>
         </Header>

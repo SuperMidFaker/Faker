@@ -89,10 +89,10 @@ export default class EditTradeItem extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button size="large" onClick={this.handleCancel}>
+            <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" onClick={this.handleSave} loading={saving}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={saving}>
               {this.msg('save')}
             </Button>
           </div>

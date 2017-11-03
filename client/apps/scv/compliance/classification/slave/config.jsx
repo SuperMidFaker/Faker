@@ -86,7 +86,7 @@ export default class ScvClassificationSlaveConfig extends React.Component {
       <ScvClassificationWrapper menuKey="slave">
         <Content className="nav-content">
           <div className="toolbar">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleAddSlave}>
+            <Button type="primary" icon="plus" onClick={this.handleAddSlave}>
               {this.msg('addSlave')}
             </Button>
           </div>

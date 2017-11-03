@@ -121,7 +121,7 @@ export default class BasicForm extends Component {
                     showSearch
                     placeholder="选择报关行"
                     optionFilterProp="children"
-                    size="large"
+
                     style={{ width: '100%' }}
                   >
                     {brokers.map(data => (

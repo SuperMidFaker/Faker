@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, Layout, Radio } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -198,7 +198,7 @@ export default class ReceivableBillList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
     </span>);
     const totCol = (
       <Summary>
@@ -221,12 +221,17 @@ export default class ReceivableBillList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} size="large">
+            <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">待结算</RadioButton>
               <RadioButton value="inbound">已入账单</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
+              {this.msg('新建账单')}
+            </Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}

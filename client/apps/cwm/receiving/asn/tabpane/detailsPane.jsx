@@ -168,7 +168,7 @@ export default class DetailsPane extends Component {
           </ExcelUploader>
           <Button icon="download" onClick={this.handleTemplateDownload}>模版下载</Button>
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
-            <Button size="large" onClick={this.handleBatchDelete} icon="delete" />
+            <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <AddDetailModal poNo={poNo} product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />

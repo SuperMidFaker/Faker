@@ -119,7 +119,7 @@ export default class ReceivingASNDetail extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select
-                  size="large"
+
                   value={defaultWhse.code}
                   style={{ width: 160 }}
                   disabled
@@ -136,10 +136,10 @@ export default class ReceivingASNDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            {this.state.editable && <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            {this.state.editable && <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>}
-            {this.state.editable && <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            {this.state.editable && <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
             </Button>}
           </PageHeader.Actions>

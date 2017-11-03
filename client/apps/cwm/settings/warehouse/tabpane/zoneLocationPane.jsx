@@ -295,7 +295,7 @@ export default class ZoneLocationPane extends Component {
           }
         </FormItem>
         <FormItem>
-          <Button size="large" type="primary" style={{ width: '100%' }} onClick={this.createZone}>创建</Button>
+          <Button type="primary" style={{ width: '100%' }} onClick={this.createZone}>创建</Button>
         </FormItem>
       </Form>);
     return (
@@ -309,7 +309,7 @@ export default class ZoneLocationPane extends Component {
                 }),
               }} onUploaded={this.locationsUploaded}
             >
-              <Button type="primary" size="large" icon="upload">
+              <Button type="primary" icon="upload">
                 导入库区库位
               </Button>
             </ExcelUploader>

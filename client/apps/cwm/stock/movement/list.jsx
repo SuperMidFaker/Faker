@@ -222,8 +222,8 @@ export default class MovementList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
@@ -239,7 +239,7 @@ export default class MovementList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
                     whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
                   }
@@ -251,7 +251,7 @@ export default class MovementList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateMovement}>
+            <Button type="primary" icon="plus" onClick={this.handleCreateMovement}>
               {this.msg('createMovement')}
             </Button>
           </PageHeader.Actions>

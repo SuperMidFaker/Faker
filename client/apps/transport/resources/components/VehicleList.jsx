@@ -112,7 +112,7 @@ export default function VehicleList(props) {
   ];
   const toolbarActions = (<span>
     <PrivilegeCover module="transport" feature="resources" action="create">
-      <Button type="primary" size="large" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
+      <Button type="primary" onClick={onAddCarBtnClick} icon="plus-circle-o">新增车辆</Button>
     </PrivilegeCover>
   </span>);
   return (
@@ -128,7 +128,7 @@ export default function VehicleList(props) {
         </Breadcrumb>
         <div className="page-header-tools">
           <SearchBar placeholder="车牌号/司机" onInputSearch={props.onSearch}
-            value={props.searchText} size="large"
+            value={props.searchText}
           />
         </div>
       </Header>

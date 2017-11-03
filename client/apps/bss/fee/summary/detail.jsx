@@ -120,10 +120,10 @@ export default class FeeSummaryDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" icon="upload" onClick={this.handleCreateASN}>
+            <Button icon="plus-square-o" onClick={this.handleCreateASN}>
               {this.msg('加入账单')}
             </Button>
-            <Button type="primary" size="large" icon="upload" onClick={this.handleCreateASN}>
+            <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
               {this.msg('审核')}
             </Button>
           </PageHeader.Actions>

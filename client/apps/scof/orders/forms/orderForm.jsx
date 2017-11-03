@@ -255,7 +255,7 @@ export default class OrderForm extends Component {
     return (
       <Form layout="horizontal" className="order-flow-form">
         <Card title={<span>客户
-          <Select size="large" placeholder="请选择客户" showSearch allowClear optionFilterProp="children"
+          <Select placeholder="请选择客户" showSearch allowClear optionFilterProp="children"
             value={formData.customer_partner_id}
             onChange={value => this.handleClientChange(value)}
             style={{ width: '50%', marginLeft: 24 }}
@@ -404,7 +404,7 @@ export default class OrderForm extends Component {
                         }
                       }}
                       />
-                      <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
+                      <Select style={{ width: '50%' }} placeholder="选择包装方式"
                         onChange={value => this.handleKvChange('cust_shipmt_wrap_type', value, 'wrap')}
                         value={formData.cust_shipmt_wrap_type}
                       >
@@ -461,7 +461,7 @@ export default class OrderForm extends Component {
           </Collapse>
         </Card>
         <Card title={<span>流程
-          <Select size="large" placeholder="请选择流程规则" showSearch allowClear optionFilterProp="children"
+          <Select placeholder="请选择流程规则" showSearch allowClear optionFilterProp="children"
             value={formData.flow_id} onChange={this.handleFlowChange} style={{ width: '50%', marginLeft: 24 }}
           >
             {flows.map(data => <Option key={data.id} value={data.id}>{data.name}</Option>)}

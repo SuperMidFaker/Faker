@@ -41,7 +41,7 @@ export default class ModuleMenu extends React.Component {
     return (
       <div>
         <div className="toolbar">
-          <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: '100%' }} onChange={this.handleWhseChange}>
+          <Select value={whse.code} placeholder="选择仓库" style={{ width: '100%' }} onChange={this.handleWhseChange}>
             {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
           </Select>
         </div>

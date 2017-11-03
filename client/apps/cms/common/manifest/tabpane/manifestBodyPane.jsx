@@ -862,13 +862,13 @@ export default class ManifestBodyPane extends React.Component {
       </Menu>);
     if (readonly) {
       return (<Dropdown overlay={exportMenu}>
-        <Button size="large">
+        <Button >
           <Icon type="export" /> 导出 <Icon type="down" />
         </Button>
       </Dropdown>);
     } else {
       return (<span>
-        <Button size="large" icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
+        <Button icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
         <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
           formData={{
             data: JSON.stringify({
@@ -878,7 +878,7 @@ export default class ManifestBodyPane extends React.Component {
             }),
           }} onUploaded={this.handleReload}
         >
-          <Dropdown.Button size="large" onClick={this.handleUnrelatedImport} overlay={unrelatedImportMenu} style={{ marginLeft: 8 }}>
+          <Dropdown.Button onClick={this.handleUnrelatedImport} overlay={unrelatedImportMenu} style={{ marginLeft: 8 }}>
             <Icon type="upload" /> {this.msg('unrelatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
@@ -893,25 +893,25 @@ export default class ManifestBodyPane extends React.Component {
             }),
           }} onUploaded={this.handleReload}
         >
-          <Dropdown.Button size="large" onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
+          <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
             <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
           </Dropdown.Button>
         </ExcelUploader>
         { this.props.billHead.manual_no &&
-        <Button size="large" icon="book" onClick={() => { this.setState({ importPanelVisible: true }); }} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
-        <Button size="large" icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
+        <Button icon="book" onClick={() => { this.setState({ importPanelVisible: true }); }} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
+        <Button icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
         <Dropdown overlay={dataToolsMenu}>
-          <Button size="large" style={{ marginLeft: 8 }}>
+          <Button style={{ marginLeft: 8 }}>
             <Icon type="tool" /> <Icon type="down" />
           </Button>
         </Dropdown>
         <Dropdown overlay={exportMenu}>
-          <Button size="large" style={{ marginLeft: 8 }}>
+          <Button style={{ marginLeft: 8 }}>
             <Icon type="export" /> 导出 <Icon type="down" />
           </Button>
         </Dropdown>
         <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
-          <Button size="large" type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
+          <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
         </Popconfirm>
       </span>);
     }

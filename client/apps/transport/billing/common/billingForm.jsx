@@ -105,7 +105,7 @@ export default class BillingForm extends React.Component {
             wrapperCol={{ span: 14 }}
           >
             {getFieldDecorator('partnerId')(
-              <Select id="select" size="large"
+              <Select id="select"
                 showSearch
                 placeholder=""
                 optionFilterProp="children"
@@ -130,7 +130,7 @@ export default class BillingForm extends React.Component {
             wrapperCol={{ span: 14 }}
           >
             {getFieldDecorator('chooseModel')(
-              <Select id="select" size="large">
+              <Select id="select" >
                 <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
                 <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
                 <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>

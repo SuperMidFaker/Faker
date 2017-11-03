@@ -26,7 +26,7 @@ export default class OverviewCard extends React.Component {
     return (
       <Card noHovering bodyStyle={{ padding: 0 }}>
         <div style={{ padding: 24 }}>
-          <Avatar shape="square" size="large" icon="global" />
+          <Avatar shape="square" icon="global" />
           <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{customer.name}</h2>
         </div>
         {

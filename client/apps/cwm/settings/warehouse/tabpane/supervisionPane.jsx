@@ -67,7 +67,7 @@ export default class SupervisionPane extends Component {
             </Select>
           </FormItem>
           <FormItem >
-            <Button type="primary" size="large" onClick={this.handleSaveFtzApp}>保存</Button>
+            <Button type="primary" onClick={this.handleSaveFtzApp}>保存</Button>
           </FormItem>
         </Form>
       </div>

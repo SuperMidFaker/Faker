@@ -396,17 +396,17 @@ export default class QuoteList extends Component {
               {this.msg('quotation')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
             <RadioButton value="all">{msg('filterAll')}</RadioButton>
             <RadioButton value="selling">{msg('filterSelling')}</RadioButton>
             <RadioButton value="buying">{msg('filterBuying')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
             <RadioButton value="draft">{msg('filterDraft')}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNew}>
+            <Button type="primary" icon="plus" onClick={this.handleCreateNew}>
               新建报价
             </Button>
           </div>
@@ -416,7 +416,7 @@ export default class QuoteList extends Component {
             <div className="toolbar">
               <div className="toolbar-right">
                 <Tooltip title="报价模板设置">
-                  <Button size="large" icon="setting" onClick={this.handleQuoteTemplate} />
+                  <Button icon="setting" onClick={this.handleQuoteTemplate} />
                 </Tooltip>
               </div>
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

@@ -58,9 +58,9 @@ export default class FeeSummaryList extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '账单号',
+    title: '业务流水号',
     width: 180,
-    dataIndex: 'bill_no',
+    dataIndex: 'biz_seq_no',
   }, {
     title: '收/付',
     dataIndex: 'rec_pay',
@@ -177,7 +177,7 @@ export default class FeeSummaryList extends React.Component {
       remotes: this.props.asnlist,
     });
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -193,14 +193,14 @@ export default class FeeSummaryList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} size="large">
+            <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">应收</RadioButton>
               <RadioButton value="inbound">应付</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button type="primary" size="large" icon="upload" onClick={this.handleCreateASN}>
+            <Button type="primary" icon="upload" onClick={this.handleCreateASN}>
               {this.msg('导入费用')}
             </Button>
           </PageHeader.Actions>

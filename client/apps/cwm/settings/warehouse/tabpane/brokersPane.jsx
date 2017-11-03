@@ -119,7 +119,7 @@ export default class BrokersPane extends Component {
         columns={this.columns} dataSource={brokers} rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.toggleBrokerModal(true)}>添加报关代理</Button>
+          <Button type="primary" icon="plus-circle" onClick={() => this.props.toggleBrokerModal(true)}>添加报关代理</Button>
         </DataPane.Toolbar>
         <BrokerModal whseCode={whseCode} />
       </DataPane>

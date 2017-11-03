@@ -362,17 +362,17 @@ export default class InboundShipmentsList extends React.Component {
               {this.msg('shipmentsTracking')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleRadioChange} size="large" defaultValue="active">
+          <RadioGroup onChange={this.handleRadioChange} defaultValue="active">
             <RadioButton value="active">{this.msg('active')}</RadioButton>
             <RadioButton value="delivered">{this.msg('delivered')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleIEChange} size="large" defaultValue="any">
+          <RadioGroup onChange={this.handleIEChange} defaultValue="any">
             <RadioButton value="import">{this.msg('import')}</RadioButton>
             <RadioButton value="export">{this.msg('export')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleTransChange} size="large" defaultValue="anyTrans">
+          <RadioGroup onChange={this.handleTransChange} defaultValue="anyTrans">
             <RadioButton value="sea"><i className="zmdi zmdi-boat" /></RadioButton>
             <RadioButton value="air"><i className="zmdi zmdi-airplane" /></RadioButton>
             <RadioButton value="inland"><i className="zmdi zmdi-truck" /></RadioButton>
@@ -382,12 +382,12 @@ export default class InboundShipmentsList extends React.Component {
               data={{ tenantId: this.props.tenantId }} onChange={this.handleImport}
               showUploadList={false} withCredentials
             >
-              <Button size="large">
+              <Button >
                 {this.msg('importShipments')}
               </Button>
             </Upload>
             <Popover content={content} title="Title" trigger="click" placement="bottomRight">
-              <Button type="primary" size="large" icon="plus">
+              <Button type="primary" icon="plus">
                 {this.msg('newShipment')}
               </Button>
             </Popover>
@@ -396,7 +396,7 @@ export default class InboundShipmentsList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
             </div>
             <div className="panel-body table-panel table-fixed-layout expandable">
               <Table columns={this.columns} dataSource={this.dataSource} loading={inboundlist.loading}

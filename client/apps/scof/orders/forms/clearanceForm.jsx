@@ -159,7 +159,7 @@ export default class ClearanceForm extends Component {
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
-                <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
+                <Select style={{ width: '50%' }} placeholder="选择包装方式"
                   onChange={value => this.handleChange('wrap_type', value)} value={node.wrap_type}
                 >
                   {
@@ -209,7 +209,7 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
-              <Select size="large" value={node.person_id} onChange={value => this.handlePersonChange(value)}>
+              <Select value={node.person_id} onChange={value => this.handlePersonChange(value)}>
                 {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
               </Select>
             </FormItem>

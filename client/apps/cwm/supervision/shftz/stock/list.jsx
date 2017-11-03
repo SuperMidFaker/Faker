@@ -267,7 +267,7 @@ export default class SHFTZStockList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder="搜索备件号/商品编码" size="large" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder="搜索备件号/商品编码" onInputSearch={this.handleSearch} />
     </span>);
     return (
       <Layout>
@@ -293,11 +293,11 @@ export default class SHFTZStockList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button size="large" icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
+              <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
                 {this.msg('export')}
               </Button>
               <Badge dot style={{ backgroundColor: '#87d068' }}>
-                <ButtonToggle size="large"
+                <ButtonToggle
                   iconOn="hourglass" iconOff="hourglass"
                   onClick={this.toggleRightSider}
                 />

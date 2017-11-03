@@ -199,7 +199,7 @@ export default class OwnersPane extends Component {
     return (
       <DataPane columns={this.columns} dataSource={whseOwners} rowKey="id">
         <DataPane.Toolbar>
-          <Button disabled={warehouse.whse_mode === 'PRI'} type="primary" size="large"
+          <Button disabled={warehouse.whse_mode === 'PRI'} type="primary"
             icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}
           >
             添加货主

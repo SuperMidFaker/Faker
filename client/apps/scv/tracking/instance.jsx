@@ -229,7 +229,7 @@ export default class Instance extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="primary" size="large" ghost icon="export" onClick={this.handleExport} loading={this.state.exportLoading}>导出</Button>
+            <Button type="primary" ghost icon="export" onClick={this.handleExport} loading={this.state.exportLoading}>导出</Button>
           </div>
         </Header>
         <Content className="main-content" key="main">
@@ -238,7 +238,7 @@ export default class Instance extends Component {
               <Search
                 style={{ width: 240 }}
                 placeholder="搜索"
-                onSearch={this.handleSearch} size="large"
+                onSearch={this.handleSearch}
               />
             </div>
             <div className="panel-body table-panel table-fixed-layout">

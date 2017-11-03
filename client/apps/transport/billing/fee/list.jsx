@@ -490,9 +490,9 @@ export default class FeesList extends React.Component {
     const { startDate, endDate, filters } = this.props.fees;
     const toolbarActions = (<span>
       <SearchBar placeholder="输入运单号搜索" onInputSearch={this.handleSearchInput}
-        value={this.props.fees.searchValue} size="large"
+        value={this.props.fees.searchValue}
       />
-      <RangePicker size="large" value={[moment(startDate), moment(endDate)]}
+      <RangePicker value={[moment(startDate), moment(endDate)]}
         onChange={this.onDateChange}
       />
     </span>);
@@ -507,14 +507,14 @@ export default class FeesList extends React.Component {
               {this.msg('billingManagement')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleRadioChange} value={filters.shipmtStatus} size="large">
+          <RadioGroup onChange={this.handleRadioChange} value={filters.shipmtStatus} >
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="atOrigin">未启运</RadioButton>
             <RadioButton value="intransit">在途</RadioButton>
             <RadioButton value="delivered">已送货</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
-            <Button size="large" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+            <Button onClick={this.handleExportExcel}>{this.msg('export')}</Button>
           </div>
         </Header>
         <Content className="main-content">

@@ -379,13 +379,13 @@ export default class BatchDeclDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             <Tooltip title="报关清单" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleDelgManifest}>{batchDecl.delg_no}<Badge status="default" text="制单中" /></Button>
+              <Button icon="link" onClick={this.handleDelgManifest}>{batchDecl.delg_no}<Badge status="default" text="制单中" /></Button>
             </Tooltip>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {sent && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
+            {sent && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
             {sendText &&
-            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

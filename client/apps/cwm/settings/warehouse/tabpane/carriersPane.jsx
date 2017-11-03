@@ -117,7 +117,7 @@ export default class CarriersPane extends Component {
         columns={this.columns} dataSource={carriers} rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加承运人</Button>
+          <Button type="primary" icon="plus-circle" onClick={() => this.props.toggleCarrierModal(true)}>添加承运人</Button>
         </DataPane.Toolbar>
         <CarrierModal whseCode={whseCode} />
       </DataPane>

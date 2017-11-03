@@ -426,18 +426,18 @@ export default class SHFTZEntryDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleInboundPage}>
+              <Button icon="link" onClick={this.handleInboundPage}>
                 <Badge status={inbStatus.badge} text={inbStatus.text} />
               </Button>
             </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
-            {this.state.queryable && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
-            {this.state.nonCargono && <Button size="large" icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
+            {this.state.queryable && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
+            {this.state.nonCargono && <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
             {entryEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

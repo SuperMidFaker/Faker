@@ -48,7 +48,7 @@ export default class MainContainer extends Component {
               <Icon type="team" /> 协作邀请
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup size="large" defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
+          <RadioGroup defaultValue={invitationType} onChange={this.handleInvitationTypeChange}>
             <RadioButton value="0">待邀请</RadioButton>
             <RadioButton value="1">收到的邀请</RadioButton>
             <RadioButton value="2">发出的邀请</RadioButton>

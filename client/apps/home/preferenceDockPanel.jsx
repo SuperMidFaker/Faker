@@ -47,7 +47,7 @@ export default class PreferenceDockPanel extends React.Component {
         <Tabs defaultActiveKey="language">
           <TabPane tab={<span><Icon type="global" />{this.msg('preferenceLanguage')}</span>} key="language">
             <InfoItem label={this.msg('labelChooseLanguage')}
-              field={<RadioGroup size="large" onChange={this.handleLocaleChange} value={locale}>
+              field={<RadioGroup onChange={this.handleLocaleChange} value={locale}>
                 <RadioButton value="zh">简体中文</RadioButton>
                 <RadioButton value="en">English</RadioButton>
               </RadioGroup>}

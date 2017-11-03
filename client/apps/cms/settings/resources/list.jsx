@@ -105,7 +105,7 @@ export default class ResourcesList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} size="large" />
+              <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} />
             </div>
             <div className="list-body">
               <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false} onRowClick={this.handleRowClick}
@@ -137,7 +137,7 @@ export default class ResourcesList extends Component {
                 </TabPane>
                 {/* <TabPane tab="导入适配器" key="adaptor">
                   <ImportAdaptorPane />
-                </TabPane>*/}
+                </TabPane> */}
               </Tabs>
             </div>
           </Content>

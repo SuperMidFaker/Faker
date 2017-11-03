@@ -152,7 +152,7 @@ export default class MainForm extends Component {
                   getValueFromEvent: this.handleClientChange,
                   initialValue: fieldInits.customer_name,
                 })(
-                  <Select size="large" mode="combobox" showArrow={false} optionFilterProp="search"
+                  <Select mode="combobox" showArrow={false} optionFilterProp="search"
                     placeholder="输入客户代码或名称"
                   >
                     {
@@ -246,10 +246,10 @@ export default class MainForm extends Component {
                 <InputGroup compact>
                   {getFieldDecorator('pieces', {
                     initialValue: fieldInits.pieces || 1,
-                  })(<InputNumber size="large" min={1} max={100000} style={{ width: '50%' }} />)}
+                  })(<InputNumber min={1} max={100000} style={{ width: '50%' }} />)}
                   {getFieldDecorator('wrap_type', {
                     initialValue: fieldInits.wrap_type,
-                  })(<Select size="large" style={{ width: '50%' }} placeholder="选择包装方式">
+                  })(<Select style={{ width: '50%' }} placeholder="选择包装方式">
                     {
                     WRAP_TYPE.map(wt =>
                       <Option value={wt.value} key={wt.value}>{wt.text}</Option>

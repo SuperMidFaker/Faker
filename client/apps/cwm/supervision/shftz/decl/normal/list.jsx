@@ -245,9 +245,9 @@ export default class NormalDeclList extends React.Component {
     };
     this.dataSource.remotes = delglist;
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('normalSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('normalSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <OptGroup>
@@ -282,7 +282,7 @@ export default class NormalDeclList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="sent">已申报</RadioButton>
@@ -290,7 +290,7 @@ export default class NormalDeclList extends React.Component {
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNormalDecl}>
+              <Button type="primary" icon="plus" onClick={this.handleCreateNormalDecl}>
                 {this.msg('create')}
               </Button>
             </PageHeader.Actions>

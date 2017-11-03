@@ -410,7 +410,7 @@ export default class DocuPane extends React.Component {
                   <Select
                     placeholder="选择发票模板"
                     optionFilterProp="search"
-                    size="large"
+
                     onChange={this.handleTempSelectChange}
                     style={{ width: '100%' }}
                     value={invTempId}
@@ -432,7 +432,7 @@ export default class DocuPane extends React.Component {
                   <Select
                     placeholder="选择合同模板"
                     optionFilterProp="search"
-                    size="large"
+
                     onChange={this.handleTempSelectChange}
                     style={{ width: '100%' }}
                     value={conTempId}
@@ -454,7 +454,7 @@ export default class DocuPane extends React.Component {
                   <Select
                     placeholder="选择箱单模板"
                     optionFilterProp="search"
-                    size="large"
+
                     onChange={this.handleTempSelectChange}
                     style={{ width: '100%' }}
                     value={pakTempId}
@@ -489,7 +489,7 @@ export default class DocuPane extends React.Component {
               }
             </Breadcrumb>
             <div className="toolbar-right">
-              <Button size="large" icon="file-pdf" onClick={this.handlePDF}>PDF</Button>
+              <Button icon="file-pdf" onClick={this.handlePDF}>PDF</Button>
             </div>
           </div>
           <Content className="layout-fixed-width layout-fixed-width-large">

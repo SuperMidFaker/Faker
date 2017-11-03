@@ -456,8 +456,8 @@ export default class NormalDeclModal extends Component {
               <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Input size="large" value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
-                    <Button size="large" icon="search" onClick={this.handleNormalOutsQuery} />
+                    <Input value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
+                    <Button icon="search" onClick={this.handleNormalOutsQuery} />
                   </div>
                   <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
                     scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
@@ -469,18 +469,18 @@ export default class NormalDeclModal extends Component {
               <Card title="出库报关明细" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} onSearch={this.handleSearch} />
-                    <Select allowClear size="large" placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
+                    <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} onSearch={this.handleSearch} />
+                    <Select allowClear placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
                       {exemptions.map(data => (
                         <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
                       ))}
                     </Select>
-                    <Select showSearch showArrow allowClear size="large" placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
+                    <Select showSearch showArrow allowClear placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
                       {tradeCountries.map(data => (
                         <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
                       ))}
                     </Select>
-                    <Select allowClear size="large" placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
+                    <Select allowClear placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
                       {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
                     </Select>
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

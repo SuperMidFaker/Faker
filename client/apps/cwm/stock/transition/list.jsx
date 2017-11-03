@@ -448,7 +448,7 @@ export default class StockTransitionList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
                 </Select>
               </Breadcrumb.Item>
@@ -458,14 +458,14 @@ export default class StockTransitionList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="normal">正常库存</RadioButton>
               <RadioButton value="frozen">冻结库存</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button size="large" icon="export" onClick={this.handleExportExcel}>
+            <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
           </PageHeader.Actions>

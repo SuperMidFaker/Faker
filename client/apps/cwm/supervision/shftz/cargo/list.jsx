@@ -291,7 +291,7 @@ export default class SHFTZCargoList extends React.Component {
       columns.shift();
     }
     const toolbarActions = (<span>
-      <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
     </span>);
     return (
       <Layout>
@@ -310,7 +310,7 @@ export default class SHFTZCargoList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <SearchBar size="large" placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
+              <SearchBar placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
               <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false} onRowClick={this.handleRowClick}
@@ -325,7 +325,7 @@ export default class SHFTZCargoList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
                     {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                   </Select>
                 </Breadcrumb.Item>
@@ -335,7 +335,7 @@ export default class SHFTZCargoList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>
@@ -344,17 +344,17 @@ export default class SHFTZCargoList extends React.Component {
             </PageHeader.Nav>
             <PageHeader.Actions>
               {listFilter.status === 'pending' &&
-              <Button size="large" icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
+              <Button icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
               同步SKU
             </Button>
             }
               {listFilter.status === 'pending' &&
-              <Button type="primary" size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>
+              <Button type="primary" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>
                 发送备案
               </Button>
               }
               {listFilter.status === 'sent' &&
-              <Button type="primary" ghost size="large" icon="check" loading={submitting} onClick={this.handleCargoConfirm}>
+              <Button type="primary" ghost icon="check" loading={submitting} onClick={this.handleCargoConfirm}>
                 确认备案
               </Button>
               }
@@ -369,10 +369,10 @@ export default class SHFTZCargoList extends React.Component {
                     }),
                   }} onUploaded={this.handleFiledCargoImport}
                 >
-                  <Button size="large"><Icon type="upload" /> 导入备案料号</Button>
+                  <Button ><Icon type="upload" /> 导入备案料号</Button>
                 </ExcelUploader>
               </Popover>
-              <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
+              <ButtonToggle iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

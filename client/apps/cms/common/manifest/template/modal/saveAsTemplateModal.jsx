@@ -235,9 +235,9 @@ export default class SaveAsTemplateModal extends React.Component {
         <Row type="flex">
           <Col className="col-flex-primary" />
           <Col className="col-flex-secondary">
-            {this.state.current > 0 && <Button size="large" style={{ marginRight: 8 }} onClick={this.handleprev}>上一步</Button>}
-            {this.state.current < steps.length - 1 && <Button size="large" type="primary" onClick={this.handlenext}>下一步</Button>}
-            {this.state.current === steps.length - 1 && <Button size="large" type="primary" onClick={this.handleOk}>保存</Button>}
+            {this.state.current > 0 && <Button style={{ marginRight: 8 }} onClick={this.handleprev}>上一步</Button>}
+            {this.state.current < steps.length - 1 && <Button type="primary" onClick={this.handlenext}>下一步</Button>}
+            {this.state.current === steps.length - 1 && <Button type="primary" onClick={this.handleOk}>保存</Button>}
           </Col>
         </Row>
       </Modal>

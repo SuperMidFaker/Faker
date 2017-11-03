@@ -116,7 +116,7 @@ export default class ScvWarehouseList extends React.Component {
       <ScvResourceWrapper menuKey="warehouse">
         <Content className="nav-content">
           <div className="toolbar">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
+            <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
               {this.msg('addWarehouse')}
             </Button>
           </div>

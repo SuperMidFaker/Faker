@@ -124,7 +124,7 @@ export default class NominatedImport extends React.Component {
                 showSearch
                 placeholder="选择报关行"
                 optionFilterProp="children"
-                size="large"
+
                 style={{ width: '90%' }}
               >
                 {slaves.map(data => (

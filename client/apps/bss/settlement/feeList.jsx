@@ -263,7 +263,7 @@ export default class FeesList extends React.Component {
           <span>{this.msg('fee')}</span>
           <div className="page-header-tools">
             <SearchBar placeholder="输入订单号搜索" onInputSearch={this.handleSearchInput}
-              value={this.props.fees.searchValue} size="large"
+              value={this.props.fees.searchValue}
             />
           </div>
         </Header>

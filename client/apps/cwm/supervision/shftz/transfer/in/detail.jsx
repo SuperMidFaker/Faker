@@ -275,16 +275,16 @@ export default class SHFTZTransferInDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleInboundPage}>
+              <Button icon="link" onClick={this.handleInboundPage}>
                 {inbStatus && <Badge status={inbStatus.badge} text={inbStatus.text} />}
               </Button>
             </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>明细匹配核对</Button>}
+            {this.state.comparable && <Button type="primary" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>明细匹配核对</Button>}
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing &&
-              <Button type="primary" size="large" loading={submitting} onClick={this.handlePairingConfirmed}>核对通过</Button>}
+              <Button type="primary" loading={submitting} onClick={this.handlePairingConfirmed}>核对通过</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

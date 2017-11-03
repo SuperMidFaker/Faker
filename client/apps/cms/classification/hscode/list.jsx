@@ -158,7 +158,7 @@ export default class HsCodeList extends Component {
             </Breadcrumb>
             <div className="page-header-tools">
               <Dropdown overlay={menu} type="primary">
-                <Button size="large">
+                <Button >
                   {this.msg('importItems')} <Icon type="down" />
                 </Button>
               </Dropdown>
@@ -167,7 +167,7 @@ export default class HsCodeList extends Component {
           <Content className="main-content" key="main">
             <div className="page-body">
               <div className="toolbar">
-                <Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} size="large" style={{ width: 400 }} />
+                <Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 400 }} />
               </div>
               <div className="panel-body table-panel table-fixed-layout">
                 <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" bordered

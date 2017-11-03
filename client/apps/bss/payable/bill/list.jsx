@@ -198,7 +198,7 @@ export default class ReceivableBillList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
     </span>);
     const totCol = (
       <Summary>
@@ -221,7 +221,7 @@ export default class ReceivableBillList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} size="large">
+            <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">待结算</RadioButton>
               <RadioButton value="inbound">已入账单</RadioButton>

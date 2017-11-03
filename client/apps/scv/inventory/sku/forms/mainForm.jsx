@@ -105,7 +105,7 @@ export default class MainForm extends Component {
               <FormItem label={this.msg('unitPrice')} >
                 {getFieldDecorator('unit_price', {
                 })(<InputGroup compact>
-                  <Select size="large" style={{ width: '20%' }} defaultValue="RMB">
+                  <Select style={{ width: '20%' }} defaultValue="RMB">
                     <Option value="RMB">人民币</Option>
                     <Option value="USD">美元</Option>
                   </Select>

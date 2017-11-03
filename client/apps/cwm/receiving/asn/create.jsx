@@ -116,7 +116,7 @@ export default class CreateReceivingASN extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select
-                  size="large"
+
                   value={defaultWhse.code}
                   style={{ width: 160 }}
                   disabled
@@ -133,10 +133,10 @@ export default class CreateReceivingASN extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

@@ -221,13 +221,13 @@ export default class InventoryTransactionList extends React.Component {
                 {this.msg('inventoryTransaction')}
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <ButtonToggle size="large"
+            <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />
             <span />
-            <Select size="large" value={listFilter.wh_no} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
+            <Select value={listFilter.wh_no} style={{ width: 200 }} onSelect={this.handleWarehouseSelect}>
               <Option value="_all_" key="_all_">{this.msg('allWarehouses')}</Option>
               {
                 warehouses.map(whse => <Option key={whse.id} value={whse.wh_no}>{whse.whse_name}</Option>)
@@ -235,12 +235,12 @@ export default class InventoryTransactionList extends React.Component {
             </Select>
             <span />
             {!this.state.lot_query &&
-              <RangePicker size="large" onChange={this.handleRangeChange}
+              <RangePicker onChange={this.handleRangeChange}
                 value={[moment.unix(listFilter.start_date), moment.unix(listFilter.end_date)]}
               />
             }
             <div className="page-header-tools">
-              <Button type="primary" size="large" icon="export" ghost>
+              <Button type="primary" icon="export" ghost>
                 {this.msg('exportInventory')}
               </Button>
             </div>

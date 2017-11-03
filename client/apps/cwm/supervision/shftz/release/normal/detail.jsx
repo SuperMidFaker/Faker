@@ -378,17 +378,17 @@ export default class SHFTZNormalRelRegDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
+              <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
             </Tooltip>
         }
           </PageHeader.Nav>
           <PageHeader.Actions>
             <Popover content={splitExtra} title="拆分选项" trigger="click" placement="bottomRight">
-              <Button size="large">拆分明细 <Icon type="down" /></Button>
+              <Button >拆分明细 <Icon type="down" /></Button>
             </Popover>
-            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
+            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

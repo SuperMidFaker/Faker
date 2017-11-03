@@ -25,7 +25,7 @@ export default class OverviewCard extends React.Component {
     const { vendor } = this.props;
     return (
       <Card noHovering>
-        <Avatar shape="square" size="large" icon="global" />
+        <Avatar shape="square" icon="global" />
         <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{vendor.name}</h2>
         <div className="pull-right">
           <Button onClick={() => this.props.showVendorModal('edit', vendor)}><Icon type="edit" /></Button>

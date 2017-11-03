@@ -122,7 +122,7 @@ export default class ShippingModal extends Component {
           <FormItem {...formItemLayout} label="包装类型">
             {
               getFieldDecorator('pack', {
-              })(<Select size="large" allowClear>
+              })(<Select allowClear>
                 {WRAP_TYPE.map(wt => <Option value={wt.value} key={wt.value}>{wt.text}</Option>)}
               </Select>)
             }

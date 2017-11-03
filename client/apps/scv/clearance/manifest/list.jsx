@@ -207,13 +207,13 @@ export default class SCVManifestList extends Component {
               {this.msg('declManifest')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleIeChange} size="large" value={filters.ietype}>
+          <RadioGroup onChange={this.handleIeChange} value={filters.ietype}>
             <RadioButton value="all">{this.msg('filterAll')}</RadioButton>
             <RadioButton value="import">进口</RadioButton>
             <RadioButton value="export">出口</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+          <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
             <RadioButton value="all">{this.msg('filterAll')}</RadioButton>
             <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
             <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
@@ -222,7 +222,7 @@ export default class SCVManifestList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('maniSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('maniSearchPlaceholder')} onInputSearch={this.handleSearch} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

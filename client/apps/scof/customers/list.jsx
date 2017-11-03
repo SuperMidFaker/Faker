@@ -140,7 +140,7 @@ export default class CustomerList extends React.Component {
             <div className="toolbar">
               <Search
                 placeholder={this.msg('searchPlaceholder')}
-                onSearch={this.handleSearch} size="large"
+                onSearch={this.handleSearch}
               />
             </div>
             <div className="list-body">
@@ -162,13 +162,13 @@ export default class CustomerList extends React.Component {
                 {customer.name}
               </Breadcrumb.Item>
               </Breadcrumb>}
-            <ButtonToggle size="large"
+            <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />
             <div className="page-header-tools">
-              <Button size="large" type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSaveBtnClick}>
+              <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSaveBtnClick}>
                 {this.msg('save')}
               </Button>
             </div>

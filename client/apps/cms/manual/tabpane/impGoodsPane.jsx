@@ -139,7 +139,7 @@ export default class ImpGoodsPane extends React.Component {
         dataSource={dataSource} rowKey="id" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search size="large" placeholder="商品编码" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search placeholder="商品编码" style={{ width: 200 }} onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

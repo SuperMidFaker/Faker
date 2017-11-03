@@ -118,7 +118,7 @@ function DriverList(props) {
   ];
   const toolbarActions = (<span>
     <PrivilegeCover module="transport" feature="resources" action="create">
-      <Button type="primary" size="large" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
+      <Button type="primary" onClick={onAddDriverBtnClicked} icon="plus-circle-o">新增司机</Button>
     </PrivilegeCover>
   </span>);
   return (
@@ -134,7 +134,7 @@ function DriverList(props) {
         </Breadcrumb>
         <div className="page-header-tools">
           <SearchBar placeholder="司机/手机" onInputSearch={props.onSearch}
-            value={props.searchText} size="large"
+            value={props.searchText}
           />
         </div>
       </Header>

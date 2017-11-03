@@ -136,7 +136,7 @@ export default class ReceiveInbound extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {!!inboundHead.bonded && <Tooltip title="海关监管" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleRegPage}>
+              <Button icon="link" onClick={this.handleRegPage}>
                 <Badge status={regStatus.badge} text={regStatus.text} />
               </Button>
             </Tooltip>
@@ -148,12 +148,12 @@ export default class ReceiveInbound extends Component {
             }
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step && false &&
             <Dropdown overlay={tagMenu}>
-              <Button size="large" onClick={this.handleTagging}>
+              <Button onClick={this.handleTagging}>
                 <Icon type="barcode" />标签 <Icon type="down" />
               </Button>
             </Dropdown>
             }
-            <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange} size="large"
+            <RadioGroup value={inboundHead.rec_mode} onChange={this.handleReceivingModeChange}
               disabled={currentStatus === CWM_INBOUND_STATUS.COMPLETED.step}
             >
               <Tooltip title="扫码入库操作模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>

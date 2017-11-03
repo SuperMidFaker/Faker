@@ -151,7 +151,7 @@ export default class SiderForm extends Component {
           <FormItem label={<Checkbox checked={getFieldValue('trace_convey')} onChange={this.handleTraceCheck}>{this.msg('库内追踪')}</Checkbox>}>
             {getFieldDecorator('trace_convey', {
               initialValue: skuForm.trace_convey,
-            })(<RadioGroup size="large" disabled={!getFieldValue('trace_convey')}>
+            })(<RadioGroup disabled={!getFieldValue('trace_convey')}>
               <RadioButton value="PCS">单件</RadioButton>
               <RadioButton value="INP">内包装</RadioButton>
               <RadioButton value="BOX">箱</RadioButton>
@@ -162,7 +162,7 @@ export default class SiderForm extends Component {
           <FormItem label={this.msg('默认入库包装')} required>
             {getFieldDecorator('inbound_convey', {
               initialValue: skuForm.inbound_convey,
-            })(<RadioGroup size="large">
+            })(<RadioGroup >
               <RadioButton value="PCS">单件</RadioButton>
               <RadioButton value="INP">内包装</RadioButton>
               <RadioButton value="BOX">箱</RadioButton>
@@ -173,7 +173,7 @@ export default class SiderForm extends Component {
           <FormItem label={this.msg('默认补货包装')}>
             {getFieldDecorator('replenish_convey', {
               initialValue: skuForm.replenish_convey,
-            })(<RadioGroup size="large">
+            })(<RadioGroup >
               <RadioButton value="BOX">箱</RadioButton>
               <RadioButton value="PLT">托盘</RadioButton>
             </RadioGroup>
@@ -183,7 +183,7 @@ export default class SiderForm extends Component {
           <FormItem label={this.msg('默认出库包装')} required>
             {getFieldDecorator('outbound_convey', {
               initialValue: skuForm.outbound_convey,
-            })(<RadioGroup size="large">
+            })(<RadioGroup >
               <RadioButton value="PCS">单件</RadioButton>
               <RadioButton value="INP">内包装</RadioButton>
               <RadioButton value="BOX">箱</RadioButton>
@@ -194,7 +194,7 @@ export default class SiderForm extends Component {
           <FormItem label={this.msg('默认ASN收货单位')}>
             {getFieldDecorator('asn_tag_unit', {
               initialValue: skuForm.asn_tag_unit,
-            })(<RadioGroup size="large">
+            })(<RadioGroup >
               <RadioButton value="primary">计量单位</RadioButton>
               <RadioButton value="sku">SKU包装单位</RadioButton>
             </RadioGroup>
@@ -203,7 +203,7 @@ export default class SiderForm extends Component {
           <FormItem label={this.msg('默认SO发货单位')}>
             {getFieldDecorator('so_tag_unit', {
               initialValue: skuForm.so_tag_unit,
-            })(<RadioGroup size="large">
+            })(<RadioGroup >
               <RadioButton value="primary">计量单位</RadioButton>
               <RadioButton value="sku">SKU包装单位</RadioButton>
             </RadioGroup>

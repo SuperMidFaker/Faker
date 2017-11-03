@@ -24,7 +24,7 @@ export default class PageHint extends React.Component {
     return (
       <span>
         <Tooltip title="操作指引" placement="bottom" mouseEnterDelay={1} mouseLeaveDelay={0}>
-          <Button size="large" icon="bulb" onClick={() => this.setState({ visible: true })} />
+          <Button icon="bulb" onClick={() => this.setState({ visible: true })} />
         </Tooltip>
         <DockPanel title="操作指引" size="small" visible={this.state.visible} onClose={() => this.setState({ visible: false })}>
           {this.props.children}

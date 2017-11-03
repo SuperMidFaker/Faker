@@ -251,7 +251,7 @@ export default class OutboundDetail extends Component {
                 CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === reg.status)[0];
               if (regStatus) {
                 return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
-                  <Button size="large" icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
+                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>
                 </Tooltip>);
@@ -263,14 +263,14 @@ export default class OutboundDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {this.state.tabKey === 'pickingDetails' && <Dropdown overlay={printMenu}>
-              <Button size="large" icon="printer" />
+              <Button icon="printer" />
             </Dropdown>}
             <Tooltip title="打印顺丰速运面单" placement="bottom">
-              <Button size="large" onClick={this.showExpressModal} >
+              <Button onClick={this.showExpressModal} >
                 <Logixon type="sf-express" />
               </Button>
             </Tooltip>
-            <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
+            <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} disabled={outboundStep === 5}>
               <Tooltip title="扫码出库操作模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
               <Tooltip title="手动出库操作模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>

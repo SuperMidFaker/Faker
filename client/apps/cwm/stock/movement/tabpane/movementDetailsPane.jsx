@@ -175,15 +175,15 @@ export default class MovementDetailsPane extends React.Component {
         dataSource={movementDetails} rowKey="to_trace_id" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search size="large" placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
-            {this.state.selectedRowKeys.length > 0 && (<Button size="large" onClick={this.handleBatchDetailRemove}>
+            {this.state.selectedRowKeys.length > 0 && (<Button onClick={this.handleBatchDetailRemove}>
               <MdIcon type="check-all" />批量移除明细
             </Button>)}
           </DataPane.BulkActions>
           <DataPane.Actions>
             {mode === 'manual' && movementHead.isdone === 0 &&
-            <Button size="large" icon="check" onClick={this.handleExecuteMovement}>
+            <Button icon="check" onClick={this.handleExecuteMovement}>
               执行库存移动
             </Button>
             }

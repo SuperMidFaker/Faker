@@ -106,7 +106,7 @@ export default class Home extends React.Component {
           <div className="home-body" key="body">
             <div className="home-body-wrapper">
               <div className="apps-handler-set" />
-              <ModuleLayout size="large" />
+              <ModuleLayout />
             </div>
           </div>
         </Content>

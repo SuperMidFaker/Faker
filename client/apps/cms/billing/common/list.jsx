@@ -264,15 +264,15 @@ export default class BillingList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="ghost" size="large" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
+            <Button type="ghost" icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+            <Button type="primary" icon="plus" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
           </div>
         </Header>
         <Content className="main-content">
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-                value={this.props.billings.searchValue} size="large"
+                value={this.props.billings.searchValue}
               />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>

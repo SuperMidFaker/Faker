@@ -206,7 +206,7 @@ export default class ChinaRegionCascader extends React.Component {
     const { cascadeRegion, disableCascader, chinaRegions } = this.state;
     const { intl } = this.props;
     return (
-      <Cascader size="large" options={chinaRegions} disabled={disableCascader}
+      <Cascader options={chinaRegions} disabled={disableCascader}
         placeholder={formatMsg(intl, 'defaultCascaderRegion')}
         loadData={this.handleRegionLoad} changeOnSelect
         onChange={this.handleRegionChange} value={cascadeRegion} showSearch

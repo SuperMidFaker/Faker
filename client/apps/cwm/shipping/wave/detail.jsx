@@ -78,7 +78,7 @@ export default class WaveDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" onClick={this.handleRelease}>释放</Button>
+            <Button onClick={this.handleRelease}>释放</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

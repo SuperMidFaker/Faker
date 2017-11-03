@@ -107,7 +107,7 @@ export default function NodeList(props) {
   ];
   const toolbarActions = (<span>
     <PrivilegeCover module="transport" feature="resources" action="create">
-      <Button type="primary" size="large" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
+      <Button type="primary" onClick={onAddNoteBtnClick} icon="plus-circle-o">新增{nodeTypes[nodeType]}</Button>
     </PrivilegeCover>
   </span>);
   return (
@@ -121,14 +121,14 @@ export default function NodeList(props) {
             收发货地
           </Breadcrumb.Item>
         </Breadcrumb>
-        <RadioGroup defaultValue={nodeType} onChange={e => onRadioButtonChange(e.target.value)} size="large">
+        <RadioGroup defaultValue={nodeType} onChange={e => onRadioButtonChange(e.target.value)} >
           <RadioButton value={0}>发货地</RadioButton>
           <RadioButton value={1}>收货地</RadioButton>
           <RadioButton value={2}>中转地</RadioButton>
         </RadioGroup>
         <div className="page-header-tools">
           <SearchBar placeholder="名称/地址/联系人/电话/邮箱" onInputSearch={props.onSearch}
-            value={props.searchText} size="large"
+            value={props.searchText}
           />
         </div>
       </Header>

@@ -127,7 +127,7 @@ export default class RulesList extends Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
+              <Button type="primary" onClick={this.handleCreateNew} icon="plus">新增</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content">

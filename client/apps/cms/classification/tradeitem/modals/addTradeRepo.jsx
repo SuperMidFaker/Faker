@@ -81,7 +81,7 @@ export default class AddTradeRepoModal extends React.Component {
         <Form>
           <FormItem label={this.msg('repoOwner')} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
             {getFieldDecorator('customs')(
-              <Select showSearch placeholder="选择客户" optionFilterProp="children" size="large"
+              <Select showSearch placeholder="选择客户" optionFilterProp="children"
                 onChange={this.handleSelectChange}
               >
                 {newCustomers.map(data => (<Option key={data.id} value={data.id}

@@ -170,7 +170,7 @@ export default class WarehouseList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search placeholder={this.msg('searchPlaceholder')} size="large" onChange={this.handleSearchWhse} />
+              <Search placeholder={this.msg('searchPlaceholder')} onChange={this.handleSearchWhse} />
             </div>
             <div className="list-body">
               <Table size="middle" columns={whseColumns} dataSource={warehouses} showHeader={false} onRowClick={this.handleRowClick}

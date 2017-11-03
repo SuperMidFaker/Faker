@@ -134,7 +134,7 @@ export default class ShareShipmentModal extends React.Component {
         title={`分享运单 ${shipmtNo}`} onOk={this.handleOk}
         onCancel={this.handleCancel}
         footer={[
-          <Button key="back" type="ghost" size="large" onClick={this.handleCancel}>关 闭</Button>,
+          <Button key="back" type="ghost" onClick={this.handleCancel}>关 闭</Button>,
         ]}
       >
         <div style={{ width: '250px', height: '250px', margin: '0 auto' }}>

@@ -207,9 +207,9 @@ export default class FeeSummaryList extends React.Component {
     });
     */
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
     </span>);
-    const bulkActions = <Button size="large" icon="play-circle-o" onClick={this.handleBatchRelease}>批量审批</Button>;
+    const bulkActions = <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量审批</Button>;
     const totCol = (
       <Summary>
         <Summary.Item label="应收合计">{10000}</Summary.Item>
@@ -231,7 +231,7 @@ export default class FeeSummaryList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} size="large">
+            <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">待结算</RadioButton>
               <RadioButton value="inbound">已入账单</RadioButton>

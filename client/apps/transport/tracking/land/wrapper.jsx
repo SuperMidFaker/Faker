@@ -118,7 +118,7 @@ export default class TrackingLandWrapper extends React.Component {
               {this.msg('transportTracking')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleStatusNav} value={radioValue} size="large">
+          <RadioGroup onChange={this.handleStatusNav} value={radioValue} >
             <RadioButton value="all">{this.msg('allShipmt')}</RadioButton>
             <RadioButton value="pending">{this.msg('pendingShipmt')}</RadioButton>
             <RadioButton value="accepted">{this.msg('acceptedShipmt')}</RadioButton>
@@ -127,13 +127,13 @@ export default class TrackingLandWrapper extends React.Component {
             <RadioButton value="delivered">{this.msg('deliveredShipmt')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handlePodNav} value={radioValue} size="large">
+          <RadioGroup onChange={this.handlePodNav} value={radioValue} >
             <RadioButton value="upload">{this.msg('uploadPOD')}</RadioButton>
             <RadioButton value="audit">{this.msg('auditPOD')}</RadioButton>
             <RadioButton value="passed">{this.msg('passedPOD')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleExcpNav} value={radioValue} size="large">
+          <RadioGroup onChange={this.handleExcpNav} value={radioValue} >
             <RadioButton value="error">{this.msg('exceptionErr')}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">

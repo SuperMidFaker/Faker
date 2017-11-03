@@ -240,8 +240,8 @@ export default class ShippingDockPanel extends React.Component {
           onCancel={() => this.setState({ closeModalVisible: false })}
           title="请选择"
           footer={[
-            <Button key="back" size="large" onClick={() => this.closeOutbound('move')}>移库</Button>,
-            <Button key="submit" type="primary" size="large" onClick={() => this.closeOutbound('return')}>放回</Button>,
+            <Button key="back" onClick={() => this.closeOutbound('move')}>移库</Button>,
+            <Button key="submit" type="primary" onClick={() => this.closeOutbound('return')}>放回</Button>,
           ]}
         >
           <p>对已捡货物如何处理，移库：则会生成移库单，放回：则按原路退回至未分配状态</p>

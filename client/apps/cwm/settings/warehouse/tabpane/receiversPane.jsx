@@ -135,7 +135,7 @@ export default class ReceiversPane extends Component {
         columns={this.columns} dataSource={receivers} rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.toggleReceiverModal(true)}>添加收货人</Button>
+          <Button type="primary" icon="plus-circle" onClick={() => this.props.toggleReceiverModal(true)}>添加收货人</Button>
         </DataPane.Toolbar>
         <WhseReceiversModal whseCode={whseCode} whseTenantId={whseTenantId} whseOwners={whseOwners} />
       </DataPane>

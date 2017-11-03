@@ -176,7 +176,7 @@ export default class ManualList extends Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('搜索手/账册编号')} size="large"
+      <SearchBar placeholder={this.msg('搜索手/账册编号')}
         onInputSearch={this.handleSearch}
       /></span>);
     const dataSource = new DataTable.DataSource({
@@ -211,7 +211,7 @@ export default class ManualList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="upload">
+            <Button type="primary" onClick={this.handleCreateBtnClick} icon="upload">
               {this.msg('导入')}
             </Button>
           </PageHeader.Actions>

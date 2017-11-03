@@ -157,7 +157,7 @@ export default class StockTransactionsList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
                 </Select>
               </Breadcrumb.Item>
@@ -167,7 +167,7 @@ export default class StockTransactionsList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" icon="export" onClick={this.handleExportExcel}>
+            <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
           </PageHeader.Actions>

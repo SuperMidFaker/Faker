@@ -71,7 +71,7 @@ export default class BillingForm extends React.Component {
             wrapperCol={{ span: 14 }}
           >
             {getFieldDecorator('chooseModel')(
-              <Select id="select" size="large">
+              <Select id="select" >
                 <Option value="acptDate">{this.msg('acptDate')}</Option>
                 <Option value="cleanDate">{this.msg('cleanDate')}</Option>
               </Select>

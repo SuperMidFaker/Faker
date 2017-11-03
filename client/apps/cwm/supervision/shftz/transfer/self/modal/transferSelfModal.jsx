@@ -264,7 +264,7 @@ export default class TransferSelfModal extends Component {
         <FormItem label="入库日期">
           <RangePicker onChange={this.handleRelRangeChange} value={relDateRange} />
         </FormItem>
-        <Button type="primary" ghost size="large" onClick={this.handleFilterQuery}>查找</Button>
+        <Button type="primary" ghost onClick={this.handleFilterQuery}>查找</Button>
       </Form>);
     const title = (<div>
       <span>新建监管库存转移</span>

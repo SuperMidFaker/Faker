@@ -403,18 +403,18 @@ export default class SHFTZRelDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
+              <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
             </Tooltip>
         }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
+            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {queryable && <Tooltip title="向监管系统接口查询并同步分拨出库单明细数据" placement="bottom">
-              <Button size="large" loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
+              <Button loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
             </Tooltip>
             }
             {relEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">

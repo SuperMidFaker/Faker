@@ -149,14 +149,14 @@ export default class Main extends Component {
           <span>{`${formData.quoteNo} - ${formData.partnerName ? formData.partnerName : ''} - ${kindText}`}</span>
           { type === 'edit' && (
             <div className="page-header-tools">
-              <Button type="default" size="large" onClick={this.handleSubmit} loading={saving}>保存</Button>
-              <Button type="primary" size="large" onClick={() => this.props.showPublishTariffModal(true)}>发布</Button>
+              <Button type="default" onClick={this.handleSubmit} loading={saving}>保存</Button>
+              <Button type="primary" onClick={() => this.props.showPublishTariffModal(true)}>发布</Button>
               <PublishTariffModal tariffForm={this.props.form} />
             </div>
             )}
           { (type === 'create') && (
             <div className="page-header-tools">
-              <Button type="default" size="large" onClick={this.handleSubmit} loading={saving}>保存</Button>
+              <Button type="default" onClick={this.handleSubmit} loading={saving}>保存</Button>
             </div>
           )}
         </Header>

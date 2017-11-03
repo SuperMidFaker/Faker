@@ -278,7 +278,7 @@ export default class NormalDeclDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             <Tooltip title="报关清单" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleDelgManifest}><Badge status="default" text={declStatusText} /></Button>
+              <Button icon="link" onClick={this.handleDelgManifest}><Badge status="default" text={declStatusText} /></Button>
             </Tooltip>
           </PageHeader.Nav>
           <PageHeader.Actions />

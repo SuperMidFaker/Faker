@@ -127,7 +127,7 @@ export default class PackingRuleModal extends Component {
               <FormItem label={this.msg('默认入库包装')}>
                 {getFieldDecorator('inbound_convey', {
                   initialValue: 'PCS',
-                })(<RadioGroup size="large">
+                })(<RadioGroup >
                   <RadioButton value="PCS">单件</RadioButton>
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
@@ -140,7 +140,7 @@ export default class PackingRuleModal extends Component {
               <FormItem label={this.msg('默认出库包装')}>
                 {getFieldDecorator('outbound_convey', {
                   initialValue: 'PCS',
-                })(<RadioGroup size="large">
+                })(<RadioGroup >
                   <RadioButton value="PCS">单件</RadioButton>
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
@@ -153,7 +153,7 @@ export default class PackingRuleModal extends Component {
               <FormItem label={this.msg('默认追踪包装')}>
                 {getFieldDecorator('tracing_convey', {
                   initialValue: 'PCS',
-                })(<RadioGroup size="large">
+                })(<RadioGroup >
                   <RadioButton value="PCS">单件</RadioButton>
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
@@ -166,7 +166,7 @@ export default class PackingRuleModal extends Component {
               <FormItem label={this.msg('默认补货包装')}>
                 {getFieldDecorator('replenish_convey', {
                   initialValue: 'BOX',
-                })(<RadioGroup size="large">
+                })(<RadioGroup >
                   <RadioButton value="BOX">箱</RadioButton>
                   <RadioButton value="PLT">托盘</RadioButton>
                 </RadioGroup>
@@ -177,7 +177,7 @@ export default class PackingRuleModal extends Component {
               <FormItem label={this.msg('默认ASN收货单位')}>
                 {getFieldDecorator('asn_tag_unit', {
                   initialValue: 'primary',
-                })(<RadioGroup size="large">
+                })(<RadioGroup >
                   <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
                 </RadioGroup>
@@ -188,7 +188,7 @@ export default class PackingRuleModal extends Component {
               <FormItem label={this.msg('默认SO发货单位')}>
                 {getFieldDecorator('so_tag_unit', {
                   initialValue: 'primary',
-                })(<RadioGroup size="large">
+                })(<RadioGroup >
                   <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
                 </RadioGroup>

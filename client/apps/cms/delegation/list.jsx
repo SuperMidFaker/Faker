@@ -517,10 +517,10 @@ export default class DelegationList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large"
+      <SearchBar placeholder={this.msg('searchPlaceholder')}
         onInputSearch={this.handleSearch} value={listFilter.filterNo}
       />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
         onChange={this.handleClientSelectChange} value={clientPid}
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
@@ -528,7 +528,7 @@ export default class DelegationList extends Component {
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
         </Option>))}
       </Select>
-      <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+      <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
         onChange={this.handleViewChange}
       >
         <OptGroup label="常用视图">
@@ -536,7 +536,7 @@ export default class DelegationList extends Component {
           <Option value="my">我负责的委托</Option>
         </OptGroup>
       </Select>
-      <RangePicker size="large" value={dateVal}
+      <RangePicker value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       /></span>);
@@ -664,13 +664,13 @@ export default class DelegationList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter} size="large">
+            <RadioGroup value={listFilter.ietype} onChange={this.handleIEFilter}>
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               <RadioButton value="import">{this.msg('import')}</RadioButton>
               <RadioButton value="export">{this.msg('export')}</RadioButton>
             </RadioGroup>
             <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleDelegationFilter}>
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               <RadioButton value="accepting">{this.msg('accepting')}</RadioButton>
               <RadioButton value="undeclared">{this.msg('processing')}</RadioButton>
@@ -680,7 +680,7 @@ export default class DelegationList extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             <PageHint />
-            <Button type="primary" size="large" onClick={this.handleCreateBtnClick} icon="plus">
+            <Button type="primary" onClick={this.handleCreateBtnClick} icon="plus">
               {this.msg('createDelegation')}
             </Button>
           </PageHeader.Actions>

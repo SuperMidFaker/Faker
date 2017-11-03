@@ -194,7 +194,7 @@ export default class AdvancedSearchBar extends React.Component {
                 wrapperCol={{ span: 14 }}
               >
                 {getFieldDecorator('transport_mode', { initialValue: '' })(
-                  <Select size="large" style={{ width: '100%' }} >
+                  <Select style={{ width: '100%' }} >
                     {transitModes.map(
                     tm => <Option value={tm.mode_name} key={tm.mode_code}>{tm.mode_name}</Option>
                   )}

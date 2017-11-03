@@ -341,7 +341,7 @@ export default class ImportDeclaredBodyModal extends Component {
                     <FormItem label="过滤已标记报关单">
                       <Switch checked={filtered} onChange={this.handleFilterSwitch} />
                     </FormItem>
-                    <Button type="primary" ghost size="large" onClick={this.handleCusDeclQuery}>查找</Button>
+                    <Button type="primary" ghost onClick={this.handleCusDeclQuery}>查找</Button>
                   </div>
                   <Table columns={this.entryColumns} dataSource={this.state.declEntries} rowKey="id"
                     scroll={{ x: this.entryColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
@@ -353,7 +353,7 @@ export default class ImportDeclaredBodyModal extends Component {
               <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="报关单号" style={{ width: 200 }} onChange={this.handleAddedEntryNoChange}
+                    <Search placeholder="报关单号" style={{ width: 200 }} onChange={this.handleAddedEntryNoChange}
                       onSearch={this.handleSearch} value={this.state.addedEntryId}
                     />
                     {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.handleDetailBatchDel}>批量删除</Button>}

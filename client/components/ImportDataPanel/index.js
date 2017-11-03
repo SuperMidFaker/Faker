@@ -49,7 +49,7 @@ export default class ImportDataPanel extends React.Component {
             <p className="ant-upload-text">Click or drag file to this area to upload</p>
           </Dragger>
         </div>
-        <Button size="large" icon="download" style={{ width: '100%' }} onClick={this.handleDownloadTemplate}>下载数据模板</Button>
+        <Button icon="download" style={{ width: '100%' }} onClick={this.handleDownloadTemplate}>下载数据模板</Button>
         {children}
         <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />
       </DockPanel>

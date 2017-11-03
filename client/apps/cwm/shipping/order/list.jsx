@@ -394,9 +394,9 @@ export default class ShippingOrderList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('soPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBar placeholder={this.msg('soPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
+      <Select showSearch optionFilterProp="children" value={filters.ownerCode}
         onChange={this.handleOwnerChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
@@ -405,7 +405,7 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" size="large" value={filters.receiverCode}
+      <Select showSearch optionFilterProp="children" value={filters.receiverCode}
         onChange={this.handleReceiverChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部收货人</Option>
@@ -415,7 +415,7 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" size="large" value={filters.carrierCode}
+      <Select showSearch optionFilterProp="children" value={filters.carrierCode}
         onChange={this.handleCarrierChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部承运人</Option>
@@ -426,9 +426,9 @@ export default class ShippingOrderList extends React.Component {
       </Select>
     </span>);
     const bulkActions = (<span>
-      {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
-      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.handleCreateWave}>创建波次计划</Button>}
-      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
+      {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}
+      {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.handleCreateWave}>创建波次计划</Button>}
+      {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
     </span>
     );
     return (
@@ -437,7 +437,7 @@ export default class ShippingOrderList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
                     whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
                   }
@@ -449,7 +449,7 @@ export default class ShippingOrderList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">订单接收</RadioButton>
               <RadioButton value="outbound">已释放</RadioButton>
@@ -457,13 +457,13 @@ export default class ShippingOrderList extends React.Component {
               <RadioButton value="completed">发货完成</RadioButton>
             </RadioGroup>
             <span />
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="inWave">已加入波次计划</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button size="large" onClick={() => { this.setState({ importPanelVisible: true }); }}>{this.msg('batchImport')}</Button>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
+            <Button onClick={() => { this.setState({ importPanelVisible: true }); }}>{this.msg('batchImport')}</Button>
+            <Button type="primary" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>
           </PageHeader.Actions>

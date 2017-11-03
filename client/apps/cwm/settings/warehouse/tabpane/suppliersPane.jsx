@@ -121,7 +121,7 @@ export default class SuppliersPane extends Component {
         columns={this.columns} dataSource={suppliers} rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供货商</Button>
+          <Button type="primary" icon="plus-circle" onClick={() => this.props.toggleSupplierModal(true)}>添加供货商</Button>
         </DataPane.Toolbar>
         <SuppliersModal whseCode={whseCode} />
       </DataPane>

@@ -88,7 +88,7 @@ export default class StaffsPane extends Component {
         columns={this.columns} dataSource={staffs} rowKey="id"
       >
         <DataPane.Toolbar>
-          <Button type="primary" size="large" icon="plus-circle" onClick={() => this.props.showStaffModal()}>添加员工</Button>
+          <Button type="primary" icon="plus-circle" onClick={() => this.props.showStaffModal()}>添加员工</Button>
         </DataPane.Toolbar>
         <StaffModal whseCode={whseCode} selectedUserIds={this.state.selectedRowKeys} />
       </DataPane>
