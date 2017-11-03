@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import equal from '../equal';
 
-const { Shape } = window.G2;
-
 const primaryColor = '#2F9CFF';
 const backgroundColor = '#F0F2F5';
 
@@ -37,7 +35,7 @@ class Gauge extends PureComponent {
   initChart(nextProps) {
     const { title, color = primaryColor } = nextProps || this.props;
 
-    Shape.registShape('point', 'dashBoard', {
+    window.G2.Shape.registShape('point', 'dashBoard', {
       drawShape(cfg, group) {
         const originPoint = cfg.points[0];
         const point = this.parsePoint({ x: originPoint.x, y: 0.4 });
