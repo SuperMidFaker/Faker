@@ -8,8 +8,10 @@ class TimelineChart extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data !== this.props.data) {
-      this.renderChart(nextProps.data);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      if (nextProps.data !== this.props.data) {
+        this.renderChart(nextProps.data);
+      }
     }
   }
 

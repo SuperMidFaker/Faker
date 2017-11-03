@@ -18,8 +18,10 @@ class TagCloud extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.data !== nextProps.data) {
-      this.renderChart(nextProps.data);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      if (this.props.data !== nextProps.data) {
+        this.renderChart(nextProps.data);
+      }
     }
   }
 

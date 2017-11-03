@@ -15,10 +15,12 @@ class Gauge extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!equal(this.props, nextProps)) {
-      setTimeout(() => {
-        this.renderChart(nextProps);
-      }, 10);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      if (!equal(this.props, nextProps)) {
+        setTimeout(() => {
+          this.renderChart(nextProps);
+        }, 10);
+      }
     }
   }
 

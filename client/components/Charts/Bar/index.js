@@ -15,8 +15,10 @@ class Bar extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!equal(this.props, nextProps)) {
-      this.renderChart(nextProps.data);
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      if (!equal(this.props, nextProps)) {
+        this.renderChart(nextProps.data);
+      }
     }
   }
 
