@@ -1,4 +1,4 @@
-exports.LINE_FILE_ADAPTOR_MODELS = [{
+exports.LINE_FILE_ADAPTOR_MODELS = {
   CMS_MANIFEST_BODY: {
     key: 'CMS_MANIFEST_BODY',
     name: '清单表体模板',
@@ -79,4 +79,4 @@ exports.LINE_FILE_ADAPTOR_MODELS = [{
       label: '工缴费',
     }],
   },
-}];
+};

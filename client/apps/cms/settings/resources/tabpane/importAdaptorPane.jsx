@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { notification, Table, Button, Layout, Popconfirm, Form, Input, Select, Tooltip, Modal } from 'antd';
 import { connect } from 'react-redux';
-import { loadAdaptors, addAdaptor, delAdaptors } from 'common/reducers/saasLineFileAdaptor';
+import { loadAdaptors, addAdaptor, loadAdaptor, updateColumnField, delAdaptor } from 'common/reducers/saasLineFileAdaptor';
 import EditableCell from 'client/components/EditableCell';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -24,13 +24,18 @@ const impModels = [LINE_FILE_ADAPTOR_MODELS.CMS_MANIFEST_BODY];
   loadingAdaptor: state.saasLineFileAdaptor.loadingAdaptor,
   adaptor: state.saasLineFileAdaptor.adaptor,
   customer: state.cmsResources.customer,
-}), { loadAdaptors, addAdaptor, delAdaptors })
+}), { loadAdaptors, addAdaptor, loadAdaptor, updateColumnField, delAdaptor })
 export default class ImportAdaptorPane extends Component {
   static propTyps = {
     customer: PropTypes.object.isRequired,
+    adaptor: PropTypes.shape({ name: PropTypes.string.isRequired,
+      columns: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired,
+        desc1: PropTypes.string.isRequired,
+      })),
+    }),
   }
   state = {
-    newAdapator: { visible: false },
+    newAdaptor: { visible: false },
     editAdaptor: false,
     lineColumns: [],
     lineData: [],
@@ -44,9 +49,8 @@ export default class ImportAdaptorPane extends Component {
     }
     if (this.props.adaptor.columns !== nextProps.adaptor.columns) {
       const lineColumns = [{
-        title: '汇总',
         dataIndex: 'keyall',
-        width: 200,
+        width: 100,
         fixed: 'left',
       }];
       const lineData = [{
@@ -56,7 +60,7 @@ export default class ImportAdaptorPane extends Component {
       }, {
         keyall: '导入字段',
       }];
-      let scrollX = 200;
+      let scrollX = 100;
       nextProps.adaptor.columns.forEach((col, index) => {
         const dataIndex = `key${index}`;
         lineColumns.push({
@@ -65,7 +69,11 @@ export default class ImportAdaptorPane extends Component {
           width: 200,
           render: (value, row) => {
             if (row.editable) {
-              return <EditableCell value={value} />;
+              return (
+                <EditableCell value={value} cellTrigger type="select"
+                  options={LINE_FILE_ADAPTOR_MODELS[nextProps.adaptor.biz_model].columns.map(acol => ({ key: acol.field, text: acol.label }))}
+                  onSave={field => this.handleFieldMap(col.id, field)}
+                />);
             } else {
               return value;
             }
@@ -81,35 +89,65 @@ export default class ImportAdaptorPane extends Component {
     }
   }
   handleReload = (ownerPid) => {
-    this.props.loadAdaptors(ownerPid, impModels.mp(impm => impm.key));
+    this.props.loadAdaptors(ownerPid, impModels.map(impm => impm.key));
+  }
+  handleFieldMap = (columnId, field) => {
+    this.props.updateColumnField(columnId, field);
   }
   handleAddBtnClick = () => {
-    this.setState({ newAdapator: { visible: true } });
+    this.setState({ newAdaptor: { visible: true } });
   }
   handleAddAdaptor = () => {
     const newAdaptor = this.state.newAdaptor;
-    this.props.addAdaptor({ code: uuidWithoutDash(), name: newAdaptor.name, model: newAdaptor.biz_model, owner: '' }).then((result) => {
+    const owner = this.props.customer;
+    this.props.addAdaptor({ code: uuidWithoutDash(),
+      name: newAdaptor.name,
+      model: newAdaptor.biz_model,
+      ownerPid: owner.id,
+      ownerTid: owner.partner_tenant_id,
+    }).then((result) => {
       if (result.error) {
         notification.error({ description: result.error.message });
       } else {
-        this.setState({ newAdapator: { visible: false } });
-        this.handleReload(this.props.customer.id);
+        this.setState({ newAdaptor: { visible: false } });
+        this.handleReload(owner.id);
       }
     });
   }
   handleUploaded = (resp) => {
+    const owner = this.props.customer;
     this.setState({ editAdaptor: true });
     this.props.loadAdaptor(resp.code);
+    this.handleReload(owner.id);
   }
   handleEditBtnClick = (edit) => {
     this.setState({ editAdaptor: true });
     this.props.loadAdaptor(edit.code);
   }
   handleNewAdaptorCancel = () => {
-    this.setState({ newAdapator: { visible: false } });
+    this.setState({ newAdaptor: { visible: false } });
   }
   handleEditCancel = () => {
-    this.setState({ editAdaptor: true });
+    this.setState({ editAdaptor: false });
+  }
+  handleAdaptorNameChange = (ev) => {
+    const newAdaptor = { ...this.state.newAdaptor };
+    newAdaptor.name = ev.target.value;
+    this.setState({ newAdaptor });
+  }
+  handleAdaptorModelChange = (value) => {
+    const newAdaptor = { ...this.state.newAdaptor };
+    newAdaptor.biz_model = value;
+    this.setState({ newAdaptor });
+  }
+  handleDel = (code) => {
+    this.props.delAdaptor(code).then((result) => {
+      if (result.error) {
+        notification.error({ description: result.error.message });
+      } else {
+        this.handleReload(this.props.owner.id);
+      }
+    });
   }
   adaptorColumns = [{
     title: '名称',
@@ -124,15 +162,14 @@ export default class ImportAdaptorPane extends Component {
     title: '操作',
     width: 120,
     render: (_, record) => {
-      const { owner } = this.props;
       let editDiv = null;
       if (record.example_file) {
         editDiv = (<PrivilegeCover module="clearance" feature="resources" action="edit">
-          <a onClick={() => this.handleEditBtnClick(record)}>修改</a>
+          <Button icon="edit" onClick={() => this.handleEditBtnClick(record)} />
         </PrivilegeCover>);
       } else {
         editDiv = (<ExcelUploader endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
-          formData={{ data: JSON.stringify({ owner }) }} onUploaded={this.handleUploaded}
+          formData={{ data: JSON.stringify({ code: record.code }) }} onUploaded={this.handleUploaded}
         >
           <Tooltip title="上传只有一个sheet页两行的示例Excel文件"><Button icon="cloud-upload-o" /></Tooltip>
         </ExcelUploader>);
@@ -141,7 +178,7 @@ export default class ImportAdaptorPane extends Component {
         {editDiv}
         <span className="ant-divider" />
         <PrivilegeCover module="clearance" feature="resources" action="delete">
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.props.delAdaptor(record.code)}>
+          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDel(record.code)}>
             <Button icon="delete" />
           </Popconfirm>
         </PrivilegeCover>
@@ -167,17 +204,21 @@ export default class ImportAdaptorPane extends Component {
         >
           <Form layout="horizontal">
             <FormItem label="名称" required {...formItemLayout}>
-              <Input value={newAdaptor.name} onChange={e => this.setState({ name: e.target.value })} />
+              <Input value={newAdaptor.name} onChange={this.handleAdaptorNameChange} />
             </FormItem>
             <FormItem label="导入对象" required {...formItemLayout}>
-              <Select value={newAdaptor.biz_model} onChange={e => this.setState({ code: e.target.value })}>
+              <Select value={newAdaptor.biz_model} onChange={this.handleAdaptorModelChange}>
                 {impModels.map(mod => <Option key={mod.key} value={mod.key}>{mod.name}</Option>)}
               </Select>
             </FormItem>
           </Form>
         </Modal>
-        <Modal maskClosable={false} title={adaptor.name} onOk={this.handleEditCancel} onCancel={this.handleEditCancel} visible={editAdaptor}>
-          <Table dataSource={lineData} columns={lineColumns} loadingAdaptor={loadingAdaptor} scroll={{ x: scrollX, y: 600 }} />
+        <Modal maskClosable={false} title={adaptor.name} width="100%" wrapClassName="fullscreen-modal"
+          footer={null} onCancel={this.handleEditCancel} visible={editAdaptor}
+        >
+          <Table dataSource={lineData} columns={lineColumns} loadingAdaptor={loadingAdaptor}
+            scroll={{ x: scrollX, y: 600 }} pagination={false}
+          />
         </Modal>
       </Content>
 

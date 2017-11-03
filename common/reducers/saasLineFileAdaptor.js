@@ -5,6 +5,7 @@ const actionTypes = createActionTypes('@@welogix/saas/lineadaptor/', [
   'LOAD_ADAPTORS', 'LOAD_ADAPTORS_SUCCEED', 'LOAD_ADAPTORS_FAIL',
   'LOAD_ADAPTOR', 'LOAD_ADAPTOR_SUCCEED', 'LOAD_ADAPTOR_FAIL',
   'ADD_ADAPTOR', 'ADD_ADAPTOR_SUCCEED', 'ADD_ADAPTOR_FAIL',
+  'UPDATE_COLFD', 'UPDATE_COLFD_SUCCEED', 'UPDATE_COLFD_FAIL',
   'DEL_ADAPTOR', 'DEL_ADAPTOR_SUCCEED', 'DEL_ADAPTOR_FAIL',
 ]);
 
@@ -24,7 +25,7 @@ export default function reducer(state = initState, action) {
     case actionTypes.LOAD_ADAPTORS_FAIL:
       return { ...state, loadingAdaptors: false };
     case actionTypes.LOAD_ADAPTOR:
-      return { ...state, loadingAdaptors: true, adaptor: {} };
+      return { ...state, loadingAdaptors: true, adaptor: initState.adaptor };
     case actionTypes.LOAD_ADAPTOR_SUCCEED:
       return { ...state, loadingAdaptors: false, adaptor: action.result.data };
     case actionTypes.LOAD_ADAPTOR_FAIL:
@@ -44,7 +45,7 @@ export function loadAdaptors(ownerPid, models) {
       ],
       endpoint: 'v1/saas/linefile/adaptors',
       method: 'get',
-      params: { ownerPid, models },
+      params: { ownerPid, models: JSON.stringify(models) },
     },
   };
 }
@@ -75,6 +76,21 @@ export function addAdaptor(data) {
       endpoint: 'v1/saas/linefile/create/adaptor',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function updateColumnField(columnId, field) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_COLFD,
+        actionTypes.UPDATE_COLFD_SUCCEED,
+        actionTypes.UPDATE_COLFD_FAIL,
+      ],
+      endpoint: 'v1/saas/linefile/update/col/field',
+      method: 'post',
+      data: { columnId, field },
     },
   };
 }
