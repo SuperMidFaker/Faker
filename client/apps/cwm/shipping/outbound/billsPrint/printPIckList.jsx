@@ -72,9 +72,10 @@ export default class OutboundPickPrint extends Component {
       { text: '实拣数', style: 'tableHeader' }]);
     for (let i = 0; i < pickDetails.length; i++) {
       const data = pickDetails[i];
-      const remQty = data.stock_qty - data.alloc_qty;
+      const remQty = data.stock_qty - data.alloc_qty + data.shipped_qty;
+      const pickedQty = data.picked_qty === 0 ? '' : data.picked_qty;
       pdf.push([i + 1, data.product_no || '', data.name || '', data.external_lot_no || '', data.location || '',
-        data.alloc_qty, remQty, '']);
+        data.alloc_qty, remQty, pickedQty]);
     }
     if (pickDetails.length !== 16) {
       pdf.push(['', '', '', '', '', '', '', '']);
