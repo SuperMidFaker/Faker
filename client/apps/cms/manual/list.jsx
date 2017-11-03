@@ -168,7 +168,7 @@ export default class ManualList extends Component {
     });
   }
   handleExportClick = () => {
-    window.open(`${XLSX_CDN}/手册导入模版.xlsx`);
+    window.open(`${XLSX_CDN}/手册导入模板.xlsx`);
   }
   render() {
     const { loading } = this.props.loading;
