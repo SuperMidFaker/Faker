@@ -45,48 +45,41 @@ export default class OrderListPane extends Component {
     };
     const columns = [{
       title: '订单关联号',
-      dataIndex: 'seq_no',
-      width: 50,
-      className: 'cell-align-center',
+      dataIndex: 'order_rel_no',
+      width: 150,
     }, {
       title: '客户订单号',
-      dataIndex: 'product_no',
-      width: 200,
-      fixed: 'left',
+      dataIndex: 'cust_order_no',
+      width: 150,
     }, {
       title: '应收金额',
-      dataIndex: 'amount',
-      width: 100,
+      dataIndex: 'rec_amount',
+      width: 150,
       className: 'cell-align-right',
     }, {
       title: '调整金额',
-      dataIndex: 'amount',
-      width: 100,
+      dataIndex: 'adjust_amount',
+      width: 150,
       className: 'cell-align-right',
     }, {
-      title: '中文品名',
-      dataIndex: 'name',
-      width: 250,
+      title: '备注',
+      dataIndex: 'remark',
     }, {
-      title: '订单数量',
-      width: 100,
-      dataIndex: 'order_qty',
-      className: 'cell-align-right',
-
+      title: '订单日期',
+      width: 150,
+      dataIndex: 'order_date',
     }, {
-      title: '采购订单号',
-      dataIndex: 'po_no',
+      title: '结单日期',
+      dataIndex: 'closed_date',
       width: 150,
     }, {
-      title: '集装箱号',
-      dataIndex: 'container_no',
+      title: '审核时间',
+      dataIndex: 'auditted_date',
       width: 150,
     }, {
-      title: '库别',
-      dataIndex: 'virtual_whse',
+      title: '审核人员',
+      dataIndex: 'auditted_by',
       width: 150,
-
-
     }, {
       title: '操作',
       width: 80,

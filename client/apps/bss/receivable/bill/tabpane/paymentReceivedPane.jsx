@@ -44,45 +44,34 @@ export default class PaymentReceivedPane extends Component {
       },
     };
     const columns = [{
-      title: '行号',
+      title: '收款流水号',
       dataIndex: 'seq_no',
-      width: 50,
-      className: 'cell-align-center',
+      width: 150,
       fixed: 'left',
-      render: (col, row) => row.index + 1,
     }, {
-      title: '货号',
-      dataIndex: 'product_no',
+      title: '发票号码',
+      dataIndex: 'invoice_no',
+      width: 150,
+    }, {
+      title: '付款方',
+      dataIndex: 'payer',
       width: 200,
-      fixed: 'left',
-    }, {
-      title: '中文品名',
-      dataIndex: 'name',
-      width: 250,
-    }, {
-      title: '订单数量',
-      width: 100,
-      dataIndex: 'order_qty',
-      className: 'cell-align-right',
-
-    }, {
-      title: '采购订单号',
-      dataIndex: 'po_no',
-      width: 150,
-    }, {
-      title: '集装箱号',
-      dataIndex: 'container_no',
-      width: 150,
-    }, {
-      title: '库别',
-      dataIndex: 'virtual_whse',
-      width: 150,
     }, {
       title: '金额',
       dataIndex: 'amount',
+      width: 250,
+    }, {
+      title: '支付方式',
       width: 100,
+      dataIndex: 'pay_mode',
       className: 'cell-align-right',
-
+    }, {
+      title: '收款日期',
+      dataIndex: 'payment_date',
+      width: 150,
+    }, {
+      title: '备注',
+      dataIndex: 'remark',
     }, {
       title: '操作',
       width: 80,

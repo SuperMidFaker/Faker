@@ -88,10 +88,10 @@ export default class BSSDashboard extends React.Component {
             <Col {...topColResponsiveProps}>
               <ChartCard
                 bordered={false}
-                title="访问量"
+                title="开票金额"
                 action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-                total={numeral(8846).format('0,0')}
-                footer={<Field label="日访问量" value={numeral(1234).format('0,0')} />}
+                total={yuan(8846)}
+                footer={<Field label="支付税金" value={`￥${numeral(12423).format('0,0')}`} />}
                 contentHeight={46} canvas
               >
                 <MiniArea
@@ -104,10 +104,10 @@ export default class BSSDashboard extends React.Component {
             <Col {...topColResponsiveProps}>
               <ChartCard
                 bordered={false}
-                title="支付笔数"
+                title="收款总金额"
                 action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-                total={numeral(6560).format('0,0')}
-                footer={<Field label="转化率" value="60%" />}
+                total={yuan(6560)}
+                footer={<Field label="回款比例" value="60%" />}
                 contentHeight={46} canvas
               >
                 <MiniBar
@@ -119,9 +119,9 @@ export default class BSSDashboard extends React.Component {
             <Col {...topColResponsiveProps}>
               <ChartCard
                 bordered={false}
-                title="运营活动效果"
+                title="毛利率"
                 action={<Tooltip title="指标说明"><Icon type="info-circle-o" /></Tooltip>}
-                total="78%"
+                total="23%"
                 footer={
                   <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
                     <span>
@@ -136,7 +136,7 @@ export default class BSSDashboard extends React.Component {
             }
                 contentHeight={46}
               >
-                <MiniProgress percent={78} strokeWidth={8} target={80} color="#13C2C2" />
+                <MiniProgress percent={23} strokeWidth={8} target={25} color="#13C2C2" />
               </ChartCard>
             </Col>
           </Row>

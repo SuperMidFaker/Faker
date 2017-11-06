@@ -60,18 +60,29 @@ export default class FeeSummaryList extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
+    title: '业务类型',
+    width: 100,
+    dataIndex: 'biz_type',
+  }, {
     title: '业务流水号',
-    width: 180,
+    width: 150,
     dataIndex: 'biz_seq_no',
   }, {
     title: '收/付',
     dataIndex: 'rec_pay',
+    width: 50,
+  }, {
+    title: '费用类目',
     width: 100,
+    dataIndex: 'fee_category',
   }, {
     title: '费用名称',
     width: 120,
     dataIndex: 'fee',
-
+  }, {
+    title: '费用类型',
+    width: 100,
+    dataIndex: 'fee_type',
   }, {
     title: '金额(人民币)',
     dataIndex: 'amount_rmb',
@@ -87,14 +98,6 @@ export default class FeeSummaryList extends React.Component {
   }, {
     title: '汇率',
     dataIndex: 'currency_rate',
-    width: 100,
-  }, {
-    title: '税率',
-    dataIndex: 'tax_rate',
-    width: 100,
-  }, {
-    title: '税金',
-    dataIndex: 'tax',
     width: 100,
   }, {
     title: '订单日期',
@@ -115,7 +118,7 @@ export default class FeeSummaryList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 100,
     fixed: 'right',
 
   }]
@@ -149,12 +152,41 @@ export default class FeeSummaryList extends React.Component {
   }
   render() {
     const { loading } = this.props;
+    const mockData = [{
+      order_rel_no: '5',
+      biz_type: '清关',
+      biz_seq_no: 'ID170923455',
+      rec_pay: '收',
+      fee_category: '报关费',
+      fee: '联单费',
+      fee_type: '服务费',
+      amount_rmb: 250.00,
+    }, {
+      order_rel_no: '5',
+      biz_type: '清关',
+      biz_seq_no: 'ID170923455',
+      rec_pay: '收',
+      fee_category: '报关费',
+      fee: '联单费',
+      fee_type: '服务费',
+      amount_rmb: 250.00,
+    }, {
+      order_rel_no: '5',
+      biz_type: '清关',
+      biz_seq_no: 'ID170923455',
+      rec_pay: '收',
+      fee_category: '报关费',
+      fee: '联单费',
+      fee_type: '服务费',
+      amount_rmb: 250.00,
+    }];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    /*
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadAsnLists(params),
       resolve: result => result.data,
@@ -178,6 +210,7 @@ export default class FeeSummaryList extends React.Component {
       },
       remotes: this.props.asnlist,
     });
+    */
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
       <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
@@ -209,14 +242,18 @@ export default class FeeSummaryList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleStatusChange} >
+            <RadioGroup onChange={this.handleTypeChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="revenue">应收营收</RadioButton>
               <RadioButton value="cost">应付成本</RadioButton>
+            </RadioGroup>
+            <span />
+            <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="abnormal">异常费用</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
+            <Button icon="file-excel">导出</Button>
             <Button type="primary" icon="upload" onClick={this.handleCreateASN}>
               {this.msg('导入费用')}
             </Button>
@@ -225,7 +262,7 @@ export default class FeeSummaryList extends React.Component {
         <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="asn_no" loading={loading}
+            columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="asn_no" loading={loading}
             locale={{ emptyText: '当前没有待结算的费用' }} total={totCol}
           />
         </Content>

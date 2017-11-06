@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -17,6 +17,7 @@ import { formatMsg } from '../message.i18n';
 
 
 const { Content } = Layout;
+const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -80,23 +81,27 @@ export default class ReceivableBillList extends React.Component {
     dataIndex: 'bill_type',
     width: 150,
   }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+  }, {
     title: '总单数',
     dataIndex: 'order_count',
     width: 100,
   }, {
-    title: '账单总金额',
+    title: '账单金额',
     dataIndex: 'bill_amount',
     width: 150,
   }, {
-    title: '确认总金额',
-    dataIndex: 'confirmed_amount',
+    title: '开票金额',
+    dataIndex: 'invoiced_amount',
     width: 150,
   }, {
-    title: '状态',
-    dataIndex: 'status',
+    title: '实收金额',
+    dataIndex: 'payment_rec_amount',
     width: 150,
   }, {
-    title: '对账确认时间',
+    title: '对账时间',
     dataIndex: 'confirmed_date',
     width: 150,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
@@ -106,14 +111,14 @@ export default class ReceivableBillList extends React.Component {
     dataIndex: 'confirmed_by',
     width: 80,
   }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
+    title: '销账时间',
+    dataIndex: 'written_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
+    title: '销账人员',
+    dataIndex: 'written_by',
     width: 80,
   }, {
     title: '操作',
@@ -207,12 +212,20 @@ export default class ReceivableBillList extends React.Component {
     */
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      />
+      <RangePicker
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      />
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="应收合计">{10000}</Summary.Item>
-        <Summary.Item label="应付合计">{6666}</Summary.Item>
-        <Summary.Item label="利润合计">{3334}</Summary.Item>
+        <Summary.Item label="账单金额合计">{10000}</Summary.Item>
+        <Summary.Item label="确认金额合计">{6666}</Summary.Item>
+        <Summary.Item label="开票金额合计">{3334}</Summary.Item>
+        <Summary.Item label="收款金额合计">{3334}</Summary.Item>
       </Summary>
     );
     return (
@@ -231,8 +244,10 @@ export default class ReceivableBillList extends React.Component {
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待结算</RadioButton>
-              <RadioButton value="inbound">已入账单</RadioButton>
+              <RadioButton value="pending">未对账</RadioButton>
+              <RadioButton value="confirmed">已对账</RadioButton>
+              <RadioButton value="invoiced">已开票</RadioButton>
+              <RadioButton value="writtenOff">已销账</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>

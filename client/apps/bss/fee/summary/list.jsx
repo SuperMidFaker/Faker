@@ -75,15 +75,15 @@ export default class FeeSummaryList extends React.Component {
     width: 100,
     dataIndex: 'status',
   }, {
-    title: '应收金额',
+    title: '应收营收',
     dataIndex: 'rec_amount',
     width: 150,
   }, {
-    title: '应付金额',
+    title: '应付成本',
     dataIndex: 'pay_amount',
     width: 150,
   }, {
-    title: '利润金额',
+    title: '利润',
     dataIndex: 'profit',
     width: 150,
   }, {
@@ -249,7 +249,9 @@ export default class FeeSummaryList extends React.Component {
               <RadioButton value="inbound">按供应商汇总</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
-
+          <PageHeader.Actions>
+            <Button icon="file-excel">导出</Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}

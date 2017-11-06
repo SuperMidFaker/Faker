@@ -10,7 +10,6 @@ import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
@@ -55,66 +54,46 @@ export default class PaymentMadeList extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: '账单编号',
-    dataIndex: 'bill_no',
+    title: '付款流水号',
+    dataIndex: 'seq_no',
     width: 150,
     fixed: 'left',
-    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '开始日期',
-    dataIndex: 'start_date',
-    width: 120,
-    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-  }, {
-    title: '结束日期',
-    dataIndex: 'end_date',
-    width: 120,
-    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-  }, {
-    title: '客户',
-    width: 240,
-    dataIndex: 'billing_party',
-    render: o => <TrimSpan text={o} maxLen={16} />,
-  }, {
-    title: '账单类型',
-    dataIndex: 'bill_type',
+    title: '发票号码',
+    dataIndex: 'invoice_no',
     width: 150,
   }, {
-    title: '总单数',
-    dataIndex: 'order_count',
+    title: '收款方',
+    dataIndex: 'payer',
+    width: 200,
+  }, {
+    title: '金额',
+    dataIndex: 'amount',
+    width: 250,
+  }, {
+    title: '支付方式',
     width: 100,
+    dataIndex: 'pay_mode',
   }, {
-    title: '账单总金额',
-    dataIndex: 'bill_amount',
+    title: '付款申请人',
+    width: 100,
+    dataIndex: 'applied_by',
+  }, {
+    title: '申请日期',
+    dataIndex: 'applied_date',
+    width: 150,
+    render: date => date && moment(date).format('MM.DD HH:mm'),
+  }, {
+    title: '付款人员',
+    dataIndex: 'paid_by',
     width: 150,
   }, {
-    title: '确认总金额',
-    dataIndex: 'confirmed_amount',
+    title: '付款日期',
+    dataIndex: 'paid_date',
     width: 150,
   }, {
-    title: '状态',
-    dataIndex: 'status',
-    width: 150,
-  }, {
-    title: '对账确认时间',
-    dataIndex: 'confirmed_date',
-    width: 150,
-    render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
-    sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
-  }, {
-    title: '对账人员',
-    dataIndex: 'confirmed_by',
-    width: 80,
-  }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
-    width: 120,
-    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
-    sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
-  }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
+    title: '备注',
+    dataIndex: 'remark',
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -124,7 +103,7 @@ export default class PaymentMadeList extends React.Component {
       if (record.status === 0) {
         return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleDetail} label="账单详情" row={record} /> </span>);
+        return (<span><RowUpdater onHit={this.handleDetail} label="付款确认" row={record} /> </span>);
       }
     },
   }]
@@ -231,13 +210,13 @@ export default class PaymentMadeList extends React.Component {
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待结算</RadioButton>
-              <RadioButton value="inbound">已入账单</RadioButton>
+              <RadioButton value="outstanding">未支付</RadioButton>
+              <RadioButton value="paid">已支付</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
-              {this.msg('新建账单')}
+              {this.msg('付款记录')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

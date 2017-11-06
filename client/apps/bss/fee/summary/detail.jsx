@@ -200,9 +200,6 @@ export default class FeeSummaryDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button icon="plus-square-o" onClick={this.handleCreateASN}>
-              {this.msg('加入账单')}
-            </Button>
             <Button type="primary" icon="check-circle-o" onClick={this.handleCreateASN}>
               {this.msg('审核')}
             </Button>
@@ -245,13 +242,25 @@ export default class FeeSummaryDetail extends Component {
                 <DataPane fullscreen={this.state.fullscreen}
                   columns={this.recColumns}
                   dataSource={mockData} rowKey="id" loading={this.state.loading}
-                />
+                >
+                  <DataPane.Toolbar>
+                    <Button icon="plus-square-o" onClick={this.handleCreateASN}>
+                      {this.msg('加入客户账单')}
+                    </Button>
+                  </DataPane.Toolbar>
+                </DataPane>
               </TabPane>
               <TabPane tab="应付明细" key="putawayDetails" >
                 <DataPane fullscreen={this.state.fullscreen}
                   columns={this.payColumns}
                   dataSource={mockData} rowKey="id" loading={this.state.loading}
-                />
+                >
+                  <DataPane.Toolbar>
+                    <Button icon="plus-square-o" onClick={this.handleCreateASN}>
+                      {this.msg('加入供应商账单')}
+                    </Button>
+                  </DataPane.Toolbar>
+                </DataPane>
               </TabPane>
             </Tabs>
           </MagicCard>

@@ -55,57 +55,69 @@ export default class PayableBillList extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: '订单关联号',
-    dataIndex: 'order_rel_no',
+    title: '账单编号',
+    dataIndex: 'bill_no',
     width: 150,
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '客户订单号',
-    width: 180,
-    dataIndex: 'cust_order_no',
-  }, {
-    title: '客户',
-    width: 240,
-    dataIndex: 'owner_name',
-    render: o => <TrimSpan text={o} maxLen={16} />,
-  }, {
-    title: '应收金额',
-    dataIndex: 'rec_amount',
-    width: 150,
-  }, {
-    title: '应付金额',
-    dataIndex: 'pay_amount',
-    width: 150,
-  }, {
-    title: '利润金额',
-    dataIndex: 'profit',
-    width: 150,
-  }, {
-    title: '毛利率',
-    dataIndex: 'profit_rate',
-    width: 100,
-  }, {
-    title: '订单日期',
-    dataIndex: 'order_date',
+    title: '开始日期',
+    dataIndex: 'start_date',
     width: 120,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-    sorter: (a, b) => new Date(a.expect_receive_date).getTime() - new Date(b.expect_receive_date).getTime(),
   }, {
-    title: '结单日期',
-    dataIndex: 'received_date',
+    title: '结束日期',
+    dataIndex: 'end_date',
     width: 120,
+    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
+  }, {
+    title: '供应商',
+    width: 240,
+    dataIndex: 'billing_party',
+    render: o => <TrimSpan text={o} maxLen={16} />,
+  }, {
+    title: '账单类型',
+    dataIndex: 'bill_type',
+    width: 150,
+  }, {
+    title: '状态',
+    dataIndex: 'status',
+    width: 100,
+  }, {
+    title: '总单数',
+    dataIndex: 'order_count',
+    width: 100,
+  }, {
+    title: '账单金额',
+    dataIndex: 'bill_amount',
+    width: 150,
+  }, {
+    title: '发票金额',
+    dataIndex: 'invoiced_amount',
+    width: 150,
+  }, {
+    title: '实付金额',
+    dataIndex: 'payment_rec_amount',
+    width: 150,
+  }, {
+    title: '对账时间',
+    dataIndex: 'confirmed_date',
+    width: 150,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
   }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
+    title: '对账人员',
+    dataIndex: 'confirmed_by',
+    width: 80,
+  }, {
+    title: '销账时间',
+    dataIndex: 'written_date',
     width: 120,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
-    title: '结算人员',
-    dataIndex: 'created_by',
+    title: '销账人员',
+    dataIndex: 'written_by',
     width: 80,
   }, {
     title: '操作',
@@ -116,7 +128,7 @@ export default class PayableBillList extends React.Component {
       if (record.status === 0) {
         return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleDetail} label="费用明细" row={record} /> </span>);
+        return (<span><RowUpdater onHit={this.handleDetail} label="账单详情" row={record} /> </span>);
       }
     },
   }]
@@ -146,7 +158,7 @@ export default class PayableBillList extends React.Component {
     });
   }
   handleDetail = (row) => {
-    const link = `/bss/fee/summary/${row.order_rel_no}`;
+    const link = `/bss/payable/bill/${row.order_rel_no}`;
     this.context.router.push(link);
   }
   handleDeselectRows = () => {
@@ -223,8 +235,10 @@ export default class PayableBillList extends React.Component {
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待结算</RadioButton>
-              <RadioButton value="inbound">已入账单</RadioButton>
+              <RadioButton value="pending">未对账</RadioButton>
+              <RadioButton value="confirmed">已对账</RadioButton>
+              <RadioButton value="applied">已申请</RadioButton>
+              <RadioButton value="paid">已付款</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
         </PageHeader>

@@ -4,19 +4,19 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import Summary from 'client/components/Summary';
-import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
 
 
 const { Content } = Layout;
+const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -55,66 +55,68 @@ export default class ReceivableInvoiceList extends React.Component {
   }
   msg = formatMsg(this.props.intl)
   columns = [{
-    title: '账单编号',
+    title: '发票号码',
+    dataIndex: 'invoice_no',
+    width: 150,
+  }, {
+    title: '关联账单编号',
     dataIndex: 'bill_no',
     width: 150,
-    fixed: 'left',
-    render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '开始日期',
-    dataIndex: 'start_date',
-    width: 120,
-    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
+    title: '发票抬头',
+    dataIndex: 'buyer',
+    width: 250,
   }, {
-    title: '结束日期',
-    dataIndex: 'end_date',
-    width: 120,
-    render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
-  }, {
-    title: '客户',
-    width: 240,
-    dataIndex: 'billing_party',
-    render: o => <TrimSpan text={o} maxLen={16} />,
-  }, {
-    title: '账单类型',
-    dataIndex: 'bill_type',
-    width: 150,
-  }, {
-    title: '总单数',
-    dataIndex: 'order_count',
-    width: 100,
-  }, {
-    title: '账单总金额',
-    dataIndex: 'bill_amount',
-    width: 150,
-  }, {
-    title: '确认总金额',
-    dataIndex: 'confirmed_amount',
-    width: 150,
+    title: '发票类型',
+    dataIndex: 'invoice_type',
+    width: 200,
   }, {
     title: '状态',
     dataIndex: 'status',
+    width: 100,
+  }, {
+    title: '开票金额',
+    dataIndex: 'amount',
     width: 150,
   }, {
-    title: '对账确认时间',
-    dataIndex: 'confirmed_date',
+    title: '税率',
+    width: 100,
+    dataIndex: 'tax_rate',
+    className: 'cell-align-right',
+  }, {
+    title: '税金',
+    dataIndex: 'tax_amount',
     width: 150,
-    render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
-    sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
   }, {
-    title: '对账人员',
-    dataIndex: 'confirmed_by',
-    width: 80,
+    title: '价税金额',
+    dataIndex: 'total_amount',
+    width: 150,
   }, {
-    title: '创建时间',
-    dataIndex: 'created_date',
-    width: 120,
-    render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
-    sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
+    title: '收款金额',
+    dataIndex: 'payment_rec_amount',
+    width: 150,
   }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
+    title: '备注',
+    dataIndex: 'remark',
+  }, {
+    title: '开票申请人',
+    dataIndex: 'applied_by',
+    width: 150,
+  }, {
+    title: '申请日期',
+    dataIndex: 'applied_date',
+    width: 100,
+    className: 'cell-align-right',
+  }, {
+    title: '开票人',
+    dataIndex: 'invoiced_by',
+    width: 100,
+    className: 'cell-align-right',
+  }, {
+    title: '开票日期',
+    dataIndex: 'invoiced_date',
+    width: 100,
+    render: date => date && moment(date).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -124,7 +126,7 @@ export default class ReceivableInvoiceList extends React.Component {
       if (record.status === 0) {
         return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleDetail} label="账单详情" row={record} /> </span>);
+        return (<span><RowUpdater onHit={this.handleDetail} label="开票确认" row={record} /> </span>);
       }
     },
   }]
@@ -207,12 +209,19 @@ export default class ReceivableInvoiceList extends React.Component {
     */
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      />
+      <RangePicker
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      />
     </span>);
     const totCol = (
       <Summary>
-        <Summary.Item label="应收合计">{10000}</Summary.Item>
-        <Summary.Item label="应付合计">{6666}</Summary.Item>
-        <Summary.Item label="利润合计">{3334}</Summary.Item>
+        <Summary.Item label="开票金额合计">{10000}</Summary.Item>
+        <Summary.Item label="税金合计">{6666}</Summary.Item>
+        <Summary.Item label="价税金额合计">{3334}</Summary.Item>
       </Summary>
     );
     return (
@@ -231,13 +240,14 @@ export default class ReceivableInvoiceList extends React.Component {
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待结算</RadioButton>
-              <RadioButton value="inbound">已入账单</RadioButton>
+              <RadioButton value="pending">开票申请</RadioButton>
+              <RadioButton value="invoiced">已开票</RadioButton>
+              <RadioButton value="writtenOff">已核销</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
             <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
-              {this.msg('新建账单')}
+              {this.msg('申请开票')}
             </Button>
           </PageHeader.Actions>
         </PageHeader>

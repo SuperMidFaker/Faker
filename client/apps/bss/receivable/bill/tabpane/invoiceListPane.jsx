@@ -44,41 +44,54 @@ export default class InvoiceListPane extends Component {
       },
     };
     const columns = [{
-      title: '发票号',
-      dataIndex: 'seq_no',
-      width: 50,
-      className: 'cell-align-center',
-      render: (col, row) => row.index + 1,
+      title: '发票号码',
+      dataIndex: 'invoice_no',
+      width: 150,
+    }, {
+      title: '购买方',
+      dataIndex: 'buyer',
+      width: 250,
     }, {
       title: '发票类型',
-      dataIndex: 'product_no',
+      dataIndex: 'invoice_type',
       width: 200,
-      fixed: 'left',
     }, {
       title: '金额',
-      dataIndex: 'name',
+      dataIndex: 'amount',
       width: 250,
     }, {
       title: '税率',
       width: 100,
-      dataIndex: 'order_qty',
+      dataIndex: 'tax_rate',
       className: 'cell-align-right',
-
     }, {
       title: '税金',
-      dataIndex: 'po_no',
+      dataIndex: 'tax_amount',
       width: 150,
     }, {
-      title: '含税总金额',
-      dataIndex: 'container_no',
+      title: '价税合计',
+      dataIndex: 'total_amount',
       width: 150,
+    }, {
+      title: '备注',
+      dataIndex: 'remark',
     }, {
       title: '开票申请人',
-      dataIndex: 'virtual_whse',
+      dataIndex: 'applied_by',
       width: 150,
     }, {
+      title: '申请日期',
+      dataIndex: 'applied_date',
+      width: 100,
+      className: 'cell-align-right',
+    }, {
       title: '开票人',
-      dataIndex: 'amount',
+      dataIndex: 'invoiced_by',
+      width: 100,
+      className: 'cell-align-right',
+    }, {
+      title: '开票日期',
+      dataIndex: 'invoiced_date',
       width: 100,
       className: 'cell-align-right',
     }, {

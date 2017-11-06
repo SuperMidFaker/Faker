@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Breadcrumb, Layout, Card, Tabs } from 'antd';
+import { Button, Breadcrumb, Col, Row, Layout, Card, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import PageHeader from 'client/components/PageHeader';
@@ -67,13 +67,13 @@ export default class ReceivableBillDetail extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('fee')}
+                {this.msg('receivable')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('feeSummary')}
+                {this.msg('receivableBill')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.props.params.orderRelNo}
+                {this.props.params.billNo}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
@@ -88,11 +88,29 @@ export default class ReceivableBillDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Card bodyStyle={{ padding: 16 }} noHovering>
-            <DescriptionList col={4}>
-              <Description term="账单编号">{summary.asn_no}</Description>
-              <Description term="客户">{summary.owner_name}</Description>
-              <Description term="创建时间">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-            </DescriptionList>
+            <Row type="flex">
+              <Col span={16}>
+                <DescriptionList col={4}>
+                  <Description term="账单编号">{summary.asn_no}</Description>
+                  <Description term="客户">{summary.owner_name}</Description>
+                  <Description term="账单期间">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
+                </DescriptionList>
+              </Col>
+              <Col span={8} className="extra">
+                <div>
+                  <p>账单金额</p>
+                  <p>5,680</p>
+                </div>
+                <div>
+                  <p>调整金额</p>
+                  <p>2,890</p>
+                </div>
+                <div>
+                  <p>最终金额</p>
+                  <p>2,223</p>
+                </div>
+              </Col>
+            </Row>
           </Card>
           <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="orderList" onChange={this.handleTabChange}>
