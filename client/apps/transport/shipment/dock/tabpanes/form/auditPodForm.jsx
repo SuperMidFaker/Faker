@@ -106,7 +106,7 @@ export default class AuditPodForm extends React.Component {
               onPreview={this.handlePreview}
               onRemove={this.handleRemove}
             />
-            <Modal maskClosable={false} visible={previewVisible} footer={null} onCancel={this.handleCancel}>
+            <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
               <a rel="noopener noreferrer" href={previewImage} target="_blank"><img alt="example" style={{ width: '100%' }} src={previewImage} /></a>
             </Modal>
           </Col>
