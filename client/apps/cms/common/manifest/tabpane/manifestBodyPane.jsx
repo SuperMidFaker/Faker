@@ -302,13 +302,13 @@ export default class ManifestBodyPane extends React.Component {
           );
         }
       },
-/*    }, {
+    }, {
       title: this.msg('emGNo'),
       width: 100,
       render: (o, record, index) =>
         (<ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
-        />), */
+        />),
     }, {
       title: this.msg('codeT'),
       width: 110,

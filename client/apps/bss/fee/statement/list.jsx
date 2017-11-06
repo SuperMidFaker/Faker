@@ -4,16 +4,18 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
+import Summary from 'client/components/Summary';
 import connectNav from 'client/common/decorators/connect-nav';
 import { formatMsg } from '../message.i18n';
 
 
 const { Content } = Layout;
+const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -178,7 +180,21 @@ export default class FeeSummaryList extends React.Component {
     });
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      />
+      <RangePicker
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      />
     </span>);
+    const totCol = (
+      <Summary>
+        <Summary.Item label="应收合计">{10000}</Summary.Item>
+        <Summary.Item label="应付合计">{6666}</Summary.Item>
+        <Summary.Item label="利润合计">{3334}</Summary.Item>
+      </Summary>
+    );
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>
@@ -195,8 +211,9 @@ export default class FeeSummaryList extends React.Component {
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">应收</RadioButton>
-              <RadioButton value="inbound">应付</RadioButton>
+              <RadioButton value="revenue">应收营收</RadioButton>
+              <RadioButton value="cost">应付成本</RadioButton>
+              <RadioButton value="abnormal">异常费用</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
@@ -209,7 +226,7 @@ export default class FeeSummaryList extends React.Component {
           <DataTable toolbarActions={toolbarActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="asn_no" loading={loading}
-            locale={{ emptyText: '没有当前状态的ASN' }}
+            locale={{ emptyText: '当前没有待结算的费用' }} total={totCol}
           />
         </Content>
       </QueueAnim>

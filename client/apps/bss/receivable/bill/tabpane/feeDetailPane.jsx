@@ -44,45 +44,44 @@ export default class FeeDetailPane extends Component {
       },
     };
     const columns = [{
-      title: '行号',
-      dataIndex: 'seq_no',
-      width: 50,
-      className: 'cell-align-center',
-      fixed: 'left',
-      render: (col, row) => row.index + 1,
+      title: '业务流水号',
+      dataIndex: 'biz_seq_no',
+      width: 180,
     }, {
-      title: '货号',
-      dataIndex: 'product_no',
-      width: 200,
-      fixed: 'left',
+      title: '费用名称',
+      dataIndex: 'fee',
     }, {
-      title: '中文品名',
-      dataIndex: 'name',
-      width: 250,
-    }, {
-      title: '订单数量',
+      title: '费用种类',
+      dataIndex: 'fee_category',
       width: 100,
-      dataIndex: 'order_qty',
-      className: 'cell-align-right',
-
     }, {
-      title: '采购订单号',
-      dataIndex: 'po_no',
-      width: 150,
-    }, {
-      title: '集装箱号',
-      dataIndex: 'container_no',
-      width: 150,
-    }, {
-      title: '库别',
-      dataIndex: 'virtual_whse',
-      width: 150,
-    }, {
-      title: '金额',
-      dataIndex: 'amount',
+      title: '费用类型',
+      dataIndex: 'fee_type',
       width: 100,
-      className: 'cell-align-right',
-
+    }, {
+      title: '营收金额(人民币)',
+      dataIndex: 'amount_rmb',
+      width: 150,
+    }, {
+      title: '外币金额',
+      dataIndex: 'amount_forc',
+      width: 150,
+    }, {
+      title: '外币币制',
+      dataIndex: 'currency',
+      width: 100,
+    }, {
+      title: '汇率',
+      dataIndex: 'currency_rate',
+      width: 100,
+    }, {
+      title: '调整金额',
+      dataIndex: 'adj_amount',
+      width: 150,
+    }, {
+      title: '审核人员',
+      dataIndex: 'auditted_by',
+      width: 150,
     }, {
       title: '操作',
       width: 80,

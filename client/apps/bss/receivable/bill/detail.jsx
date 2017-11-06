@@ -89,13 +89,13 @@ export default class ReceivableBillDetail extends Component {
         <Content className="page-content">
           <Card bodyStyle={{ padding: 16 }} noHovering>
             <DescriptionList col={4}>
-              <Description term="货主">{summary.owner_name}</Description>
-              <Description term="ASN编号">{summary.asn_no}</Description>
+              <Description term="账单编号">{summary.asn_no}</Description>
+              <Description term="客户">{summary.owner_name}</Description>
               <Description term="创建时间">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
             </DescriptionList>
           </Card>
           <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey="feeDetail" onChange={this.handleTabChange}>
+            <Tabs defaultActiveKey="orderList" onChange={this.handleTabChange}>
               <TabPane tab="结算订单" key="orderList" >
                 <OrderListPane />
               </TabPane>

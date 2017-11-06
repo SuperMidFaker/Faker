@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Button, Breadcrumb, Layout, Radio } from 'antd';
+import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -17,6 +17,7 @@ import { formatMsg } from '../message.i18n';
 
 
 const { Content } = Layout;
+const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
@@ -208,8 +209,19 @@ export default class FeeSummaryList extends React.Component {
     */
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select showSearch placeholder="结算对象" optionFilterProp="children" style={{ width: 160 }}
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      />
+      <RangePicker
+        ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
+        onChange={this.handleDateRangeChange}
+      />
     </span>);
-    const bulkActions = <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量审批</Button>;
+    const bulkActions = (<span>
+      <Button icon="check-circle-o" onClick={this.handleBatchRelease}>批量审核</Button>
+      <Button icon="plus-square-o" onClick={this.handleBatchRelease}>加入账单</Button>
+      <Button icon="plus" onClick={this.handleBatchRelease}>新建账单</Button>
+    </span>);
     const totCol = (
       <Summary>
         <Summary.Item label="应收合计">{10000}</Summary.Item>
@@ -232,9 +244,9 @@ export default class FeeSummaryList extends React.Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup onChange={this.handleStatusChange} >
-              <RadioButton value="all">全部</RadioButton>
-              <RadioButton value="pending">待结算</RadioButton>
-              <RadioButton value="inbound">已入账单</RadioButton>
+              <RadioButton value="all">按订单汇总</RadioButton>
+              <RadioButton value="pending">按客户汇总</RadioButton>
+              <RadioButton value="inbound">按供应商汇总</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
 
@@ -243,7 +255,7 @@ export default class FeeSummaryList extends React.Component {
           <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
             selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="id" loading={loading}
-            total={totCol}
+            locale={{ emptyText: '当前没有待结算的费用' }} total={totCol}
           />
         </Content>
       </QueueAnim>

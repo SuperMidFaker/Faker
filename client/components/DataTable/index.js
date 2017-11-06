@@ -291,7 +291,7 @@ class DataTable extends React.Component {
           </div>
           {this.props.selectedRowKeys &&
           <div className={`${baseCls}-toolbar-row-selection ${this.props.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-            <h3>已选中{this.props.selectedRowKeys.length}项</h3>
+            <span>已选中{this.props.selectedRowKeys.length}项</span>
             {this.props.bulkActions}
             <div className={`${baseCls}-toolbar-right`}>
               <Tooltip title="取消选择" placement="left">

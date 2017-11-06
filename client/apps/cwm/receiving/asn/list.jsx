@@ -149,19 +149,19 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '预期到货日期',
     dataIndex: 'expect_receive_date',
-    width: 120,
+    width: 140,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
     sorter: (a, b) => new Date(a.expect_receive_date).getTime() - new Date(b.expect_receive_date).getTime(),
   }, {
     title: '实际入库时间',
     dataIndex: 'received_date',
-    width: 120,
+    width: 140,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
-    width: 120,
+    width: 140,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {

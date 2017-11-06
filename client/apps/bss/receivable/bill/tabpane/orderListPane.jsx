@@ -44,17 +44,25 @@ export default class OrderListPane extends Component {
       },
     };
     const columns = [{
-      title: '行号',
+      title: '订单关联号',
       dataIndex: 'seq_no',
       width: 50,
       className: 'cell-align-center',
-      fixed: 'left',
-      render: (col, row) => row.index + 1,
     }, {
-      title: '货号',
+      title: '客户订单号',
       dataIndex: 'product_no',
       width: 200,
       fixed: 'left',
+    }, {
+      title: '应收金额',
+      dataIndex: 'amount',
+      width: 100,
+      className: 'cell-align-right',
+    }, {
+      title: '调整金额',
+      dataIndex: 'amount',
+      width: 100,
+      className: 'cell-align-right',
     }, {
       title: '中文品名',
       dataIndex: 'name',
@@ -77,11 +85,7 @@ export default class OrderListPane extends Component {
       title: '库别',
       dataIndex: 'virtual_whse',
       width: 150,
-    }, {
-      title: '金额',
-      dataIndex: 'amount',
-      width: 100,
-      className: 'cell-align-right',
+
 
     }, {
       title: '操作',

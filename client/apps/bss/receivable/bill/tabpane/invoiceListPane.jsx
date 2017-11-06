@@ -44,45 +44,43 @@ export default class InvoiceListPane extends Component {
       },
     };
     const columns = [{
-      title: '行号',
+      title: '发票号',
       dataIndex: 'seq_no',
       width: 50,
       className: 'cell-align-center',
-      fixed: 'left',
       render: (col, row) => row.index + 1,
     }, {
-      title: '货号',
+      title: '发票类型',
       dataIndex: 'product_no',
       width: 200,
       fixed: 'left',
     }, {
-      title: '中文品名',
+      title: '金额',
       dataIndex: 'name',
       width: 250,
     }, {
-      title: '订单数量',
+      title: '税率',
       width: 100,
       dataIndex: 'order_qty',
       className: 'cell-align-right',
 
     }, {
-      title: '采购订单号',
+      title: '税金',
       dataIndex: 'po_no',
       width: 150,
     }, {
-      title: '集装箱号',
+      title: '含税总金额',
       dataIndex: 'container_no',
       width: 150,
     }, {
-      title: '库别',
+      title: '开票申请人',
       dataIndex: 'virtual_whse',
       width: 150,
     }, {
-      title: '金额',
+      title: '开票人',
       dataIndex: 'amount',
       width: 100,
       className: 'cell-align-right',
-
     }, {
       title: '操作',
       width: 80,
