@@ -66,10 +66,7 @@ export default class BatchDeclModal extends Component {
     ownerCusCode: '',
     relDateRange: [],
     relNo: '',
-    portionRegs: [
-      { ftz_rel_no: 1, owner_name: '1', receiver_name: '1', id: '1', pre_entry_seq_no: '1' },
-      { ftz_rel_no: 2, owner_name: '2', receiver_name: '2', id: '2', pre_entry_seq_no: '2' },
-    ],
+    portionRegs: [],
     regDetails: [],
     supplier: '',
     currency: '',
