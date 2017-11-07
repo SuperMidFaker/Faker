@@ -153,6 +153,7 @@ export default class HeadCard extends Component {
             <FormItem label="保税监管方式">
               {getFieldDecorator('reg_type', {
                 initialValue: soHead && soHead.bonded_outtype,
+                rules: [{ required: bonded, message: '请选择监管方式' }],
               })(
                 <RadioGroup>
                   {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
