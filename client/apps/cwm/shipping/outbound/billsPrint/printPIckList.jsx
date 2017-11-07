@@ -66,6 +66,7 @@ export default class OutboundPickPrint extends Component {
       { text: '货号', style: 'tableHeader' },
       { text: '产品名称', style: 'tableHeader' },
       { text: '批次号', style: 'tableHeader' },
+      { text: '客户属性', style: 'tableHeader' },
       { text: '库位', style: 'tableHeader' },
       { text: '待拣数', style: 'tableHeader' },
       { text: '余量数', style: 'tableHeader' },
@@ -74,13 +75,13 @@ export default class OutboundPickPrint extends Component {
       const data = pickDetails[i];
       const remQty = data.stock_qty - data.alloc_qty + data.shipped_qty;
       const pickedQty = data.picked_qty === 0 ? '' : data.picked_qty;
-      pdf.push([i + 1, data.product_no || '', data.name || '', data.external_lot_no || '', data.location || '',
-        data.alloc_qty, remQty, pickedQty]);
+      pdf.push([i + 1, data.product_no || '', data.name || '', data.external_lot_no || '', data.attrib_1_string || '',
+        data.location || '', data.alloc_qty, remQty, pickedQty]);
     }
     if (pickDetails.length !== 16) {
-      pdf.push(['', '', '', '', '', '', '', '']);
+      pdf.push(['', '', '', '', '', '', '', '', '']);
     }
-    pdf.push(['合计', '', '', '', '', outboundHead.total_alloc_qty, '', '']);
+    pdf.push(['合计', '', '', '', '', '', outboundHead.total_alloc_qty, '', '']);
     return pdf;
   }
   pdfSign = () => {
@@ -147,7 +148,7 @@ export default class OutboundPickPrint extends Component {
       {
         style: 'table',
         table: {
-          widths: [25, 100, 120, 100, 60, '*', '*', '*'],
+          widths: [25, 100, 120, 100, '*', 60, '*', '*', '*'],
           body: this.pdfPickDetails(pickDetails),
         },
         layout: {
