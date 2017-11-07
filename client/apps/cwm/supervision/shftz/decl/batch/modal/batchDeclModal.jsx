@@ -77,6 +77,8 @@ export default class BatchDeclModal extends Component {
     selectedRows: [],
     destCountry: '142',
     dutyMode: '1',
+    portionRowSel: [],
+    portionSelRows: [],
   }
   componentWillMount() {
     this.props.loadParams();
@@ -222,6 +224,18 @@ export default class BatchDeclModal extends Component {
       }
     });
   }
+  batchAdd = () => {
+    const { portionSelRows } = this.state;
+    const preEntrySeqNos = portionSelRows.map(item => item.pre_entry_seq_no);
+    const relNos = portionSelRows.map(item => item.ftz_rel_no);
+    this.props.loadBatchRegDetails(preEntrySeqNos).then((result) => {
+      if (!result.error) {
+        const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
+        const portionRegs = this.state.portionRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
+        this.setState({ regDetails, portionRegs, portionRowSel: [], portionSelRows: [] });
+      }
+    });
+  }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_detail_id !== detail.ftz_rel_detail_id);
     const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
@@ -257,6 +271,8 @@ export default class BatchDeclModal extends Component {
       template: undefined,
       destCountry: '',
       dutyMode: '',
+      portionRowSel: [],
+      portionSelRows: [],
     });
     this.props.closeBatchDeclModal();
     this.props.form.resetFields();
@@ -389,6 +405,23 @@ export default class BatchDeclModal extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
+    const portionRowSel = {
+      selectedRowKeys: this.state.portionRowSel,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ portionRowSel: selectedRowKeys, portionSelRows: selectedRows });
+      },
+      selections: [{
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          const selectedRowKeys = this.state.portionRegs.map(item => item.id);
+          this.setState({
+            portionRowSel: selectedRowKeys,
+            portionSelRows: this.state.portionRegs,
+          });
+        },
+      }],
+    };
     const title = (<div>
       <span>新建分拨集中报关</span>
       <div className="toolbar-right">
@@ -420,8 +453,12 @@ export default class BatchDeclModal extends Component {
                   <div className="toolbar">
                     <Input placeholder="出库单号" value={relNo} onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
                     <Button icon="search" onClick={this.handlePortionOutsQuery} />
+                    <div className={`bulk-actions ${this.state.portionRowSel.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.portionRowSel.length}项</h3>
+                      {this.state.portionRowSel.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
+                    </div>
                   </div>
-                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" rowSelection={portionRowSel}
                     scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
