@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Icon, Upload } from 'antd';
+import { Button, Form, Icon, Select, Upload } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import UploadMask from '../UploadMask';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
+const Option = Select.Option;
 const Dragger = Upload.Dragger;
+const FormItem = Form.Item;
 const formatMsg = format(messages);
 
 @injectIntl
@@ -22,9 +24,11 @@ export default class ImportDataPanel extends React.Component {
     formData: PropTypes.object,
     onUploaded: PropTypes.func,
     onClose: PropTypes.func,
+    adaptors: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string })),
   }
   state = {
     importInfo: {},
+    adaptor: '',
   }
   handleUploadFile = (info) => {
     this.setState({ importInfo: info });
@@ -33,12 +37,37 @@ export default class ImportDataPanel extends React.Component {
     const { template } = this.props;
     window.open(template);
   }
+  handleAdaptorChange = (value) => {
+    this.setState({ adaptor: value });
+  }
+  handleClose = () => {
+    this.setState({ adaptor: '' });
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
+  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { endpoint, formData, children, visible, title, onClose, onUploaded } = this.props;
-    const { importInfo } = this.state;
+    const { endpoint, formData, children, visible, title, onUploaded, adaptors } = this.props;
+    const { importInfo, adaptor } = this.state;
+    if (adaptor) {
+      if (formData.data) {
+        formData.data = JSON.parse(formData.data);
+        formData.data.adaptor = adaptor;
+        formData.data = JSON.stringify(formData.data);
+      } else {
+        formData.data = JSON.stringify({ adaptor });
+      }
+    }
     return (
-      <DockPanel title={title || '导入'} size="small" visible={visible} onClose={onClose}>
+      <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose}>
+        {adaptors &&
+        <FormItem label="导入适配器">
+          <Select allowClear value={adaptor} onChange={this.handleAdaptorChange} style={{ width: '100%' }}>
+            {adaptors.map(opt => <Option value={opt.code} key={opt.code}>{opt.name}</Option>)}
+          </Select>
+        </FormItem>
+        }
         <div style={{ height: 300, marginBottom: 24 }}>
           <Dragger accept=".xls,.xlsx" action={endpoint} showUploadList={false}
             data={formData} onChange={this.handleUploadFile} withCredentials
@@ -46,10 +75,10 @@ export default class ImportDataPanel extends React.Component {
             <p className="ant-upload-drag-icon">
               <Icon type="inbox" />
             </p>
-            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            <p className="ant-upload-text">点击或拖拽文件至此区域上传</p>
           </Dragger>
         </div>
-        <Button icon="download" style={{ width: '100%' }} onClick={this.handleDownloadTemplate}>下载数据模板</Button>
+        <Button icon="download" style={{ width: '100%' }} onClick={this.handleDownloadTemplate}>下载标准导入模板</Button>
         {children}
         <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />
       </DockPanel>

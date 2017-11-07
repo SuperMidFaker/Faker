@@ -135,7 +135,7 @@ export default class ResourcesList extends Component {
                 <TabPane tab="随附单据模板" key="dock">
                   <DocuTemplatesPane />
                 </TabPane>
-                <TabPane tab="导入适配器" key="adaptor">
+                <TabPane tab="导入数据适配器" key="adaptor">
                   <ImportAdaptorPane />
                 </TabPane>
               </Tabs>

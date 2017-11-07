@@ -35,7 +35,7 @@ export default function reducer(state = initState, action) {
   }
 }
 
-export function loadAdaptors(ownerPid, models) {
+export function loadAdaptors(ownerPid, models, active) {
   return {
     [CLIENT_API]: {
       types: [
@@ -45,7 +45,7 @@ export function loadAdaptors(ownerPid, models) {
       ],
       endpoint: 'v1/saas/linefile/adaptors',
       method: 'get',
-      params: { ownerPid, models: JSON.stringify(models) },
+      params: { ownerPid, models: JSON.stringify(models), active },
     },
   };
 }

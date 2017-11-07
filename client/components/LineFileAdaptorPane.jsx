@@ -94,7 +94,7 @@ export default class LineFileAdaptorPane extends Component {
     this.props.updateColumnField(columnId, field);
   }
   handleAddBtnClick = () => {
-    this.setState({ newAdaptor: { visible: true } });
+    this.setState({ newAdaptor: { visible: true, biz_model: this.props.impModels[0].key } });
   }
   handleAddAdaptor = () => {
     const newAdaptor = this.state.newAdaptor;
@@ -162,7 +162,7 @@ export default class LineFileAdaptorPane extends Component {
     width: 120,
     render: (_, record) => {
       let editDiv = null;
-      if (record.example_file) {
+      if (record.active) {
         editDiv = (<PrivilegeCover module="clearance" feature="resources" action="edit">
           <Button icon="edit" onClick={() => this.handleEditBtnClick(record)} />
         </PrivilegeCover>);
@@ -170,7 +170,7 @@ export default class LineFileAdaptorPane extends Component {
         editDiv = (<ExcelUploader endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}
           formData={{ data: JSON.stringify({ code: record.code }) }} onUploaded={this.handleUploaded}
         >
-          <Tooltip title="上传只有一个sheet页两行的示例Excel文件"><Button icon="cloud-upload-o" /></Tooltip>
+          <Tooltip title="上传只有两行示例内容的Excel文件"><Button icon="cloud-upload-o" /></Tooltip>
         </ExcelUploader>);
       }
       return (<span>
@@ -206,7 +206,7 @@ export default class LineFileAdaptorPane extends Component {
               <Input value={newAdaptor.name} onChange={this.handleAdaptorNameChange} />
             </FormItem>
             <FormItem label="导入对象" required {...formItemLayout}>
-              <Select value={newAdaptor.biz_model} onChange={this.handleAdaptorModelChange}>
+              <Select value={newAdaptor.biz_model} onChange={this.handleAdaptorModelChange} allowClear optionFilterProp="children">
                 {impModels.map(mod => <Option key={mod.key} value={mod.key}>{mod.name}</Option>)}
               </Select>
             </FormItem>
