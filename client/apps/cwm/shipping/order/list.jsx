@@ -482,12 +482,10 @@ export default class ShippingOrderList extends React.Component {
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
           formData={{
-            data: JSON.stringify({
-              tenantName: this.props.tenantName,
-              loginId: this.props.loginId,
-              whseCode: defaultWhse.code,
-              whseName: defaultWhse.name,
-            }),
+            tenantName: this.props.tenantName,
+            loginId: this.props.loginId,
+            whseCode: defaultWhse.code,
+            whseName: defaultWhse.name,
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}

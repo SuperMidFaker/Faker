@@ -48,16 +48,10 @@ export default class ImportDataPanel extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { endpoint, formData, children, visible, title, onUploaded, adaptors } = this.props;
+    const { endpoint, formData = {}, children, visible, title, onUploaded, adaptors } = this.props;
     const { importInfo, adaptor } = this.state;
     if (adaptor) {
-      if (formData.data) {
-        formData.data = JSON.parse(formData.data);
-        formData.data.adaptor = adaptor;
-        formData.data = JSON.stringify(formData.data);
-      } else {
-        formData.data = JSON.stringify({ adaptor });
-      }
+      formData.adaptor = adaptor;
     }
     return (
       <DockPanel title={title || '导入'} size="small" visible={visible} onClose={this.handleClose}>
@@ -70,7 +64,7 @@ export default class ImportDataPanel extends React.Component {
         }
         <div style={{ height: 300, marginBottom: 24 }}>
           <Dragger accept=".xls,.xlsx" action={endpoint} showUploadList={false}
-            data={formData} onChange={this.handleUploadFile} withCredentials
+            data={{ data: JSON.stringify(formData) }} onChange={this.handleUploadFile} withCredentials
           >
             <p className="ant-upload-drag-icon">
               <Icon type="inbox" />

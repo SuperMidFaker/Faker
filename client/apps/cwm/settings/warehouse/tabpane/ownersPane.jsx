@@ -211,15 +211,13 @@ export default class OwnersPane extends Component {
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
           formData={{
-            data: JSON.stringify({
-              tenantName: this.props.tenantName,
-              customsCode: this.props.customsCode,
-              loginId: this.props.loginId,
-              loginName: this.props.loginName,
-              whseCode,
-              whseName,
-              owner: this.state.seletedOwner,
-            }),
+            tenantName: this.props.tenantName,
+            customsCode: this.props.customsCode,
+            loginId: this.props.loginId,
+            loginName: this.props.loginName,
+            whseCode,
+            whseName,
+            owner: this.state.seletedOwner,
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}

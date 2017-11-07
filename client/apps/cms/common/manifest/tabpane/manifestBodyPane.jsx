@@ -794,6 +794,7 @@ export default class ManifestBodyPane extends React.Component {
     if (reloadHead) {
       this.props.loadBill(this.props.billSeqNo, this.props.tenantId, this.props.billHead.i_e_type);
     }
+    this.setState({ importPanelVisible: false });
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -972,7 +973,7 @@ export default class ManifestBodyPane extends React.Component {
         <ImportDataPanel adaptors={this.props.adaptors} title={importPanel.title}
           visible={importPanelVisible}
           endpoint={importPanel.endpoint}
-          formData={{ data: JSON.stringify({ bill_seq_no: this.props.billHead.bill_seq_no }) }}
+          formData={{ bill_seq_no: this.props.billHead.bill_seq_no }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}
           template={importPanel.template}

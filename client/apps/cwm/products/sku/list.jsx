@@ -363,12 +363,10 @@ export default class CWMSkuList extends React.Component {
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/sku/import`}
           formData={{
-            data: JSON.stringify({
-              ownerId: owner.id,
-              ownerTenantId: owner.partner_tenant_id,
-              name: owner.name,
-              loginId: this.props.loginId,
-            }),
+            ownerId: owner.id,
+            ownerTenantId: owner.partner_tenant_id,
+            name: owner.name,
+            loginId: this.props.loginId,
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.skuUploaded}
