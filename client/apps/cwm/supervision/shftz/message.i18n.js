@@ -35,11 +35,11 @@ const messages = defineMessages({
   },
   ftzBondedStock: {
     id: 'cwm.supervision.shftz.bonded.stock',
-    defaultMessage: '监管保税库存',
+    defaultMessage: '保税库存',
   },
   ftzNonbondedStock: {
     id: 'cwm.supervision.shftz.nonbonded.stock',
-    defaultMessage: '监管非保库存',
+    defaultMessage: '非保监管库存',
   },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',

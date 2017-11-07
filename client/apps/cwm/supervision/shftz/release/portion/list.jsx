@@ -246,7 +246,9 @@ export default class SHFTZReleaseList extends React.Component {
           )}
       </Select>
     </span>);
-    const bulkActions = <Button >发送报关申请</Button>;
+    const bulkActions = (<span>
+      {listFilter.status === 'completed' && <Button >集中报关</Button>}
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">

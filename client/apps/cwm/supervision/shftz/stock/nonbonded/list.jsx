@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
+import { Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -12,11 +12,9 @@ import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
-import ButtonToggle from 'client/components/ButtonToggle';
-import ModuleMenu from '../menu';
+import ModuleMenu from '../../menu';
 import QueryForm from './queryForm';
-import TasksPane from './tabpane/tasksPane';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
 
@@ -46,7 +44,7 @@ const { Sider, Content } = Layout;
   depth: 2,
   moduleName: 'cwm',
 })
-export default class SHFTZStockList extends React.Component {
+export default class SHFTZNonBondedStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     stockDatas: PropTypes.array.isRequired,
@@ -280,7 +278,7 @@ export default class SHFTZStockList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="stock" />
+            <ModuleMenu currentKey="nonbonded" />
           </div>
         </Sider>
         <Layout>
@@ -288,7 +286,7 @@ export default class SHFTZStockList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  保税库存查询
+                  非保监管库存
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
@@ -296,12 +294,7 @@ export default class SHFTZStockList extends React.Component {
               <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
                 {this.msg('export')}
               </Button>
-              <Badge dot style={{ backgroundColor: '#87d068' }}>
-                <ButtonToggle
-                  iconOn="hourglass" iconOff="hourglass"
-                  onClick={this.toggleRightSider}
-                />
-              </Badge>
+              <Button type="primary" icon="plus" style={{ marginLeft: 8 }} onClick={this.handleCompareTask}>新建出门单</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
@@ -313,16 +306,6 @@ export default class SHFTZStockList extends React.Component {
             />
           </Content>
         </Layout>
-        <Sider trigger={null} defaultCollapsed collapsible collapsed={this.state.rightSiderCollapsed}
-          width={480} collapsedWidth={0} className="right-sider"
-        >
-          <div className="right-sider-panel">
-            <div className="welo-page-header">
-              <h3>库存对比任务</h3>
-            </div>
-            <TasksPane collapsed={this.state.rightSiderCollapsed} />
-          </div>
-        </Sider>
       </Layout>
     );
   }

@@ -7,9 +7,8 @@ import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message
 import { getSuppliers } from 'common/reducers/cwmReceive';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
-import HeadForm from '../form/headForm';
 import messages from '../../../message.i18n';
-import { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
+import { loadManifestTemplates, closeNormalRelRegModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const Search = Input.Search;
@@ -19,10 +18,10 @@ const Option = Select.Option;
 @connect(
   state => ({
     tenantName: state.account.tenantName,
-    visible: state.cwmShFtz.normalDeclModal.visible,
+    visible: state.cwmShFtz.normalRelRegModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
-    ownerCusCode: state.cwmShFtz.normalDeclModal.ownerCusCode,
+    ownerCusCode: state.cwmShFtz.normalRelRegModal.ownerCusCode,
     normalRegs: state.cwmShFtz.batchout_regs,
     billTemplates: state.cwmShFtz.billTemplates,
     loginId: state.account.loginId,
@@ -53,10 +52,10 @@ const Option = Select.Option;
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
   }),
-  { loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
+  { loadManifestTemplates, closeNormalRelRegModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
 )
 @Form.create()
-export default class NormalDeclModal extends Component {
+export default class NormalRelRegModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     reload: PropTypes.func.isRequired,
@@ -221,7 +220,7 @@ export default class NormalDeclModal extends Component {
       dutyMode: '',
     });
     this.props.form.resetFields();
-    this.props.closeNormalDeclModal();
+    this.props.closeNormalRelRegModal();
   }
   handleTemplateChange = (template) => {
     this.setState({ template });
@@ -437,7 +436,7 @@ export default class NormalDeclModal extends Component {
       },
     };
     const title = (<div>
-      <span>新建普通出库报关</span>
+      <span>新建普通出库备案</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleBatchClear}>保存</Button>
@@ -447,9 +446,6 @@ export default class NormalDeclModal extends Component {
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
-          <HeadForm ownerCusCode={this.state.ownerCusCode} handleOwnerChange={this.handleOwnerChange} form={this.props.form} />
-        </Card>
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>

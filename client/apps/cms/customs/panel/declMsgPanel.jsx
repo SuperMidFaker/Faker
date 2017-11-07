@@ -24,8 +24,8 @@ export default class DeclMsgPanel extends React.Component {
     dataIndex: 'pre_entry_seq_no',
     width: 160,
   }, {
-    title: '发送人员',
-    dataIndex: 'sender',
+    title: '申报报文',
+    dataIndex: 'sent_file',
     width: 160,
   }, {
     title: '发送时间',
@@ -37,7 +37,7 @@ export default class DeclMsgPanel extends React.Component {
     dataIndex: 'pre_entry_seq_no',
     width: 160,
   }, {
-    title: '回执文件',
+    title: '回执报文',
     dataIndex: 'recv_file',
     width: 160,
   }, {

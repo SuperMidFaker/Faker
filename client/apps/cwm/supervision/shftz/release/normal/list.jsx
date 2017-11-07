@@ -18,7 +18,8 @@ import ModuleMenu from '../../menu';
 import { showDock } from 'common/reducers/cwmShippingOrder';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
+import NormalRelRegModal from './modal/normalRelRegModal';
+import { openNormalRelRegModal, loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 
@@ -38,7 +39,7 @@ const RadioButton = Radio.Button;
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
   }),
-  { loadReleaseRegDatas, switchDefaultWhse, showDock }
+  { openNormalRelRegModal, loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
@@ -185,6 +186,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
     },
     remotes: this.props.releaseList,
   })
+  handleCreateNormalRelReg = () => {
+    // const { listFilter, owners } = this.props;
+    // const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
+    this.props.openNormalRelRegModal();
+  }
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
     const { listFilter, whse, releaseList: { pageSize, current } } = this.props;
     const newfilter = filter || listFilter;
@@ -198,6 +204,9 @@ export default class SHFTZNormalRelRegList extends React.Component {
         message.error(result.error.message, 10);
       }
     });
+  }
+  handleNewNormalRelRegLoad = () => {
+    this.handleReleaseListLoad(1, this.props.whse.code, { ...this.props.listFilter, status: 'all' });
   }
   handleStatusChange = (ev) => {
     if (ev.target.value === this.props.listFilter.status) {
@@ -246,7 +255,9 @@ export default class SHFTZNormalRelRegList extends React.Component {
           )}
       </Select>
     </span>);
-    const bulkActions = <Button >发送报关申请</Button>;
+    const bulkActions = (<span>
+      {listFilter.status === 'pending' && <Button >合并备案</Button>}
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -279,6 +290,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
                 <RadioButton value="completed">备案完成</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
+            <PageHeader.Actions>
+              <Button type="primary" icon="plus" onClick={this.handleCreateNormalRelReg}>
+                {this.msg('create')}
+              </Button>
+            </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable
@@ -297,6 +313,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
             <OrderDockPanel />
             <DelegationDockPanel />
             <ShipmentDockPanel />
+            <NormalRelRegModal reload={this.handleNewNormalRelRegLoad} />
           </Content>
         </Layout>
       </Layout>

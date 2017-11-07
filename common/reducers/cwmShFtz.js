@@ -4,7 +4,8 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'SHOW_TRANSFER_IN_MODAL',
   'OPEN_BATCH_DECL_MODAL', 'CLOSE_BATCH_DECL_MODAL',
-  'OPEN_CLEARANCE_MODAL', 'CLOSE_CLEARANCE_MODAL',
+  'OPEN_NORMAL_DECL_MODAL', 'CLOSE_NORMAL_DECL_MODAL',
+  'OPEN_NORMAL_REL_REG_MODAL', 'CLOSE_NORMAL_REL_REG_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
   'LOAD_VTDETAILS', 'LOAD_VTDETAILS_SUCCEED', 'LOAD_VTDETAILS_FAIL',
@@ -68,9 +69,12 @@ const initialState = {
     visible: false,
     ownerCusCode: '',
   },
-  clearanceModal: {
+  normalDeclModal: {
     visible: false,
     ownerCusCode: '',
+  },
+  normalRelRegModal: {
+    visible: false,
   },
   batchout_regs: [],
   entryList: {
@@ -151,10 +155,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_BATCH_DECL_MODAL:
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: false } };
-    case actionTypes.OPEN_CLEARANCE_MODAL:
-      return { ...state, clearanceModal: { ...state.clearanceModal, visible: true, ...action.data } };
-    case actionTypes.CLOSE_CLEARANCE_MODAL:
-      return { ...state, clearanceModal: { ...state.clearanceModal, visible: false } };
+    case actionTypes.OPEN_NORMAL_DECL_MODAL:
+      return { ...state, normalDeclModal: { ...state.normalDeclModal, visible: true, ...action.data } };
+    case actionTypes.CLOSE_NORMAL_DECL_MODAL:
+      return { ...state, normalDeclModal: { ...state.normalDeclModal, visible: false } };
+    case actionTypes.OPEN_NORMAL_REL_REG_MODAL:
+      return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: true, ...action.data } };
+    case actionTypes.CLOSE_NORMAL_REL_REG_MODAL:
+      return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: false } };
     case actionTypes.ENTRY_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
@@ -345,14 +353,27 @@ export function closeBatchDeclModal() {
 
 export function openNormalDeclModal(modalInfo) {
   return {
-    type: actionTypes.OPEN_CLEARANCE_MODAL,
+    type: actionTypes.OPEN_NORMAL_DECL_MODAL,
     data: modalInfo,
   };
 }
 
 export function closeNormalDeclModal() {
   return {
-    type: actionTypes.CLOSE_CLEARANCE_MODAL,
+    type: actionTypes.CLOSE_NORMAL_DECL_MODAL,
+  };
+}
+
+export function openNormalRelRegModal(modalInfo) {
+  return {
+    type: actionTypes.OPEN_NORMAL_REL_REG_MODAL,
+    data: modalInfo,
+  };
+}
+
+export function closeNormalRelRegModal() {
+  return {
+    type: actionTypes.CLOSE_NORMAL_REL_REG_MODAL,
   };
 }
 

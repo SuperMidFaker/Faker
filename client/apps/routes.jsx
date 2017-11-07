@@ -80,6 +80,7 @@ import * as CWMSupSHFTZRelPortion from './cwm/supervision/shftz/release/portion'
 import * as CWMSupSHFTZNormalDecl from './cwm/supervision/shftz/decl/normal';
 import * as CWMSupSHFTZBatchDecl from './cwm/supervision/shftz/decl/batch';
 import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
+import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbonded';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
@@ -534,6 +535,7 @@ export default(store, cookie) => {
                 <Route path="stock" >
                   <IndexRoute component={CWMSupSHFTZStock.List} />
                   <Route path="task/:taskId" component={CWMSupSHFTZStock.Task} />
+                  <Route path="nonbonded" component={CWMSupSHFTZNonBondedStock.List} />
                 </Route>
                 <Route path="cargo" >
                   <IndexRoute component={CWMSupSHFTZCargo.List} />
