@@ -138,6 +138,11 @@ export default class CustomsList extends Component {
       }
     },
   }, {
+    title: <Tooltip title="商品项数"><Icon type="bars" /></Tooltip>,
+    dataIndex: 'detail_count',
+    width: 50,
+    render: dc => !isNaN(dc) ? dc : null,
+  }, {
     title: '类型',
     dataIndex: 'sheet_type',
     width: 100,
@@ -184,10 +189,13 @@ export default class CustomsList extends Component {
     dataIndex: 'order_no',
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
-    title: <Tooltip title="商品项数"><Icon type="bars" /></Tooltip>,
-    dataIndex: 'detail_count',
-    width: 50,
-    render: dc => !isNaN(dc) ? dc : null,
+    title: this.msg('packCount'),
+    width: 60,
+    dataIndex: 'pack_count',
+  }, {
+    title: this.msg('grossWt'),
+    width: 80,
+    dataIndex: 'gross_wt',
   }, {
     title: '状态',
     dataIndex: 'status',

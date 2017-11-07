@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
-import { createFilename } from 'client/util/dataTransform';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
   showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
@@ -139,16 +138,29 @@ export default class ManifestEditor extends React.Component {
     (result) => {
       if (result.error) {
         this.setState({ generating: false });
-        message.error(result.error.message, 10);
-      } else if (result.data.length > 0) {
-        notification.warning({
-          message: '表体数据不完整',
-          duration: null,
-          description: `序号为 ${result.data.join(',')} 的表体数据尚未填写完整`,
-        });
-        this.setState({ generating: false });
-        this.props.openMergeSplitModal();
-      } else if (result.data.length === 0) {
+        if (result.error.message.key === 'body-error') {
+          const incompGnos = result.error.message.incompleteGnos;
+          const uqGnos = result.error.message.unitqtyGnos;
+          if (incompGnos.length > 0) {
+            const msg = `序号为 ${incompGnos.join(',')} 的表体数据申报品名单位数量或国别或单价币制为空`;
+            notification.error({
+              message: '表体数据不完整',
+              duration: 0,
+              description: msg,
+            });
+          }
+          if (uqGnos.length > 0) {
+            const msg = `序号为 ${uqGnos.join(',')} 的法一法二申报单位相同,数量不一致`;
+            notification.error({
+              message: '表体单位数量错误',
+              duration: 0,
+              description: msg,
+            });
+          }
+        } else {
+          message.error(result.error.message, 10);
+        }
+      } else {
         this.setState({ generating: false });
         this.props.openMergeSplitModal();
       }
@@ -342,7 +354,8 @@ export default class ManifestEditor extends React.Component {
     }
   }
   handleDoctsDownload = () => {
-    window.open(`${API_ROOTS.default}v1/cms/manifest/docts/download/${createFilename('doctsDatas')}.xlsx?billSeqNo=${this.props.billHead.bill_seq_no}&tenantId=${this.props.tenantId}`);
+    const billSeqNo = this.props.billHead.bill_seq_no;
+    window.open(`${API_ROOTS.default}v1/cms/manifest/docts/download/doctsDatas_${billSeqNo}.xlsm?billSeqNo=${billSeqNo}`);
   }
   renderOverlayMenu(editable, revertable) {
     let lockMenuItem = null;

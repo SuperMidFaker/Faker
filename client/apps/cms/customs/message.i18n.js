@@ -271,11 +271,15 @@ export default defineMessages({
   },
   packCount: {
     id: 'cms.customs.decl.pack.count',
-    defaultMessage: '件数：',
+    defaultMessage: '件数',
+  },
+  grossWt: {
+    id: 'cms.customs.decl.gross.wt',
+    defaultMessage: '毛重',
   },
   contractNo: {
     id: 'cms.customs.decl.contract.no',
-    defaultMessage: '合同协议号：',
+    defaultMessage: '合同协议号',
   },
   containerId: {
     id: 'cms.customs.decl.tabpanes.container.id',

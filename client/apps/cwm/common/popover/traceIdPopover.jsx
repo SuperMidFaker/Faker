@@ -51,6 +51,10 @@ export default class TraceIdPopover extends Component {
     render: traxTime => traxTime && moment(traxTime).format('YYYY.MM.DD HH:mm'),
     sorter: (a, b) => a.transaction_timestamp - b.transaction_timestamp,
   }, {
+    title: '库位',
+    width: 80,
+    dataIndex: 'location',
+  }, {
     title: '追踪ID',
     width: 180,
     dataIndex: 'trace_id',
@@ -81,7 +85,7 @@ export default class TraceIdPopover extends Component {
     const { traceId } = this.props;
     const { dataSource } = this.state;
     const content = (
-      <div style={{ width: 780 }}>
+      <div style={{ width: 850 }}>
         <Table size="small" columns={this.column} dataSource={dataSource} rowKey="id" pagination={{ defaultPageSize: 10 }} />
       </div>
     );

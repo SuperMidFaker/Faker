@@ -122,6 +122,7 @@ function calculateTotal(bodies, currencies) {
   let totWetWt = 0;
   let totTrade = 0;
   let totPcs = 0;
+  const tradeCurrGroup = {};
   for (let i = 0; i < bodies.length; i++) {
     const body = bodies[i];
     if (body.gross_wt) {
@@ -134,12 +135,19 @@ function calculateTotal(bodies, currencies) {
       const currency = currencies.find(curr => curr.value === body.trade_curr);
       const rate = currency ? currency.rate_cny : 1;
       totTrade += Number(body.trade_total * rate);
+      if (parseFloat(rate) !== 1) {
+        if (tradeCurrGroup[currency.text]) {
+          tradeCurrGroup[currency.text].trade += body.trade_total;
+        } else {
+          tradeCurrGroup[currency.text] = { trade: body.trade_total };
+        }
+      }
     }
     if (body.qty_pcs) {
       totPcs += Number(body.qty_pcs);
     }
   }
-  return { totGrossWt, totWetWt, totTrade, totPcs };
+  return { totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup };
 }
 
 @injectIntl
@@ -234,6 +242,7 @@ export default class ManifestBodyPane extends React.Component {
       totWetWt: calresult.totWetWt,
       totTrade: calresult.totTrade,
       totPcs: calresult.totPcs,
+      tradeCurrGroup: calresult.tradeCurrGroup,
       tableMask: false,
       pagination: {
         current: 1,
@@ -265,6 +274,7 @@ export default class ManifestBodyPane extends React.Component {
         totWetWt: calresult.totWetWt,
         totTrade: calresult.totTrade,
         totPcs: calresult.totPcs,
+        tradeCurrGroup: calresult.tradeCurrGroup,
         pagination: { ...this.state.pagination, total: bodies.length },
       });
     }
@@ -620,6 +630,7 @@ export default class ManifestBodyPane extends React.Component {
             totWetWt: calresult.totWetWt,
             totTrade: calresult.totTrade,
             totPcs: calresult.totPcs,
+            tradeCurrGroup: calresult.tradeCurrGroup,
             bodies,
             pagination,
           });
@@ -640,6 +651,7 @@ export default class ManifestBodyPane extends React.Component {
             totWetWt: calresult.totWetWt,
             totTrade: calresult.totTrade,
             totPcs: calresult.totPcs,
+            tradeCurrGroup: calresult.tradeCurrGroup,
             bodies,
           });
         }
@@ -665,6 +677,7 @@ export default class ManifestBodyPane extends React.Component {
           totWetWt: calresult.totWetWt,
           totTrade: calresult.totTrade,
           totPcs: calresult.totPcs,
+          tradeCurrGroup: calresult.tradeCurrGroup,
           pagination,
         });
       }
@@ -726,6 +739,7 @@ export default class ManifestBodyPane extends React.Component {
         totWetWt: calresult.totWetWt,
         totTrade: calresult.totTrade,
         totPcs: calresult.totPcs,
+        tradeCurrGroup: calresult.tradeCurrGroup,
         bodies: datas,
       });
       notification.success({
@@ -918,7 +932,7 @@ export default class ManifestBodyPane extends React.Component {
   }
 
   render() {
-    const { totGrossWt, totWetWt, totTrade, totPcs, editBody } = this.state;
+    const { totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup, editBody } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const disabled = this.props.readonly;
     const rowSelection = {
@@ -948,7 +962,8 @@ export default class ManifestBodyPane extends React.Component {
             <Summary>
               <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
               <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
-              <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(2)}</Summary.Item>
+              <Summary.Item label="总金额(元)" addonAfter="元">{totTrade.toFixed(2)}</Summary.Item>
+              {Object.keys(tradeCurrGroup).map(curr => <Summary.Item label={`${curr}金额`} key={curr}>{tradeCurrGroup[curr].trade.toFixed(2)}</Summary.Item>)}
               <Summary.Item label="总个数">{totPcs}</Summary.Item>
             </Summary>
           </DataPane.Actions>
