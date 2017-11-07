@@ -66,7 +66,10 @@ export default class NormalDeclModal extends Component {
     ownerCusCode: '',
     relDateRange: [],
     relNo: '',
-    normalRegs: [],
+    normalRegs: [
+      { ftz_rel_no: 1, owner_name: '1', receiver_name: '1', id: '1', pre_entry_seq_no: '1' },
+      { ftz_rel_no: 2, owner_name: '2', receiver_name: '2', id: '2', pre_entry_seq_no: '2' },
+    ],
     regDetails: [],
     supplier: '',
     currency: '',
@@ -75,6 +78,8 @@ export default class NormalDeclModal extends Component {
     searchText: '',
     dutyMode: '1',
     destCountry: '142',
+    normalRowSel: [],
+    normalSelRows: [],
   }
   componentWillMount() {
     this.props.loadParams();
@@ -184,6 +189,18 @@ export default class NormalDeclModal extends Component {
       }
     });
   }
+  batchAdd = () => {
+    const { normalSelRows } = this.state;
+    const preEntrySeqNos = normalSelRows.map(item => item.pre_entry_seq_no);
+    const relNos = normalSelRows.map(item => item.ftz_rel_no);
+    this.props.loadBatchRegDetails(preEntrySeqNos).then((result) => {
+      if (!result.error) {
+        const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
+        const normalRegs = this.state.normalRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
+        this.setState({ regDetails, normalRegs, normalRowSel: [], normalSelRows: [] });
+      }
+    });
+  }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
     const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
@@ -219,6 +236,8 @@ export default class NormalDeclModal extends Component {
       template: undefined,
       destCountry: '',
       dutyMode: '',
+      normalRowSel: [],
+      normalSelRows: [],
     });
     this.props.form.resetFields();
     this.props.closeNormalDeclModal();
@@ -436,6 +455,23 @@ export default class NormalDeclModal extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const normalRowSel = {
+      selectedRowKeys: this.state.normalRowSel,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ normalRowSel: selectedRowKeys, normalSelRows: selectedRows });
+      },
+      selections: [{
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          const selectedRowKeys = this.state.normalRegs.map(item => item.id);
+          this.setState({
+            normalRowSel: selectedRowKeys,
+            normalSelRows: this.state.normalRegs,
+          });
+        },
+      }],
+    };
     const title = (<div>
       <span>新建普通出库报关</span>
       <div className="toolbar-right">
@@ -458,8 +494,12 @@ export default class NormalDeclModal extends Component {
                   <div className="toolbar">
                     <Input value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
                     <Button icon="search" onClick={this.handleNormalOutsQuery} />
+                    <div className={`bulk-actions ${this.state.normalRowSel.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.normalRowSel.length}项</h3>
+                      {this.state.normalRowSel.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
+                    </div>
                   </div>
-                  <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
+                  <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id" rowSelection={normalRowSel}
                     scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
