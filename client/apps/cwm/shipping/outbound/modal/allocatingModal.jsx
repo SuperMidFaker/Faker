@@ -35,6 +35,7 @@ const Option = Select.Option;
     outboundHead: state.cwmOutbound.outboundFormHead,
     inventoryDataLoading: state.cwmOutbound.inventoryDataLoading,
     allocatedDataLoading: state.cwmOutbound.allocatedDataLoading,
+    outboundProducts: state.cwmOutbound.outboundProducts,
   }),
   { closeAllocatingModal,
     loadProductInboundDetail,
@@ -487,7 +488,7 @@ export default class AllocatingModal extends Component {
     } else {
       const allocs = this.state.allocatedData.filter(ad => !ad.alloced);
       if (allocs.length > 0) {
-        this.props.manualAlloc(this.props.outboundNo, this.props.outboundProduct.seq_no,
+        this.props.manualAlloc(this.props.outboundNo, this.state.outboundProduct.seq_no,
         allocs.map(ad => ({
           trace_id: ad.trace_id,
           allocated_qty: ad.allocated_qty,
@@ -496,7 +497,10 @@ export default class AllocatingModal extends Component {
           if (result.error) {
             message.error(result.error.message);
           } else {
-            this.handleCancel();
+            message.info('保存成功');
+            const { outboundProduct, defaultWhse, outboundHead } = this.props;
+            this.props.loadProductInboundDetail(outboundProduct.product_no, defaultWhse.code, outboundHead.owner_partner_id);
+            this.props.loadAllocatedDetails(outboundProduct.outbound_no, outboundProduct.seq_no);
           }
         });
       } else {
@@ -566,8 +570,17 @@ export default class AllocatingModal extends Component {
       filters,
     });
   }
+  handleSeqNoChange = (value) => {
+    const { outboundProduct, defaultWhse, outboundHead, outboundProducts } = this.props;
+    const newOutboundProduct = outboundProducts.find(pro => pro.seq_no === value);
+    this.props.loadProductInboundDetail(newOutboundProduct.product_no, defaultWhse.code, outboundHead.owner_partner_id);
+    this.props.loadAllocatedDetails(outboundProduct.outbound_no, value);
+    this.setState({
+      outboundProduct: newOutboundProduct,
+    });
+  }
   render() {
-    const { outboundHead, editable } = this.props;
+    const { outboundHead, editable, outboundProducts } = this.props;
     const { outboundProduct, filterInventoryColumns, filterAllocatedColumns, filters } = this.state;
     const searchOptions = (
       <Select value={filters.searchType} allowClear style={{ width: 120 }} onSelect={this.handleSelectChangeType} onChange={this.handleSelectChangeType}>
@@ -622,7 +635,9 @@ export default class AllocatingModal extends Component {
         <Card bodyStyle={{ paddingBottom: 16 }} noHovering>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
-              <InfoItem label="商品货号" field={outboundProduct.product_no} />
+              商品货号：<Select style={{ width: 200 }} value={outboundProduct.product_no} onChange={this.handleSeqNoChange}>
+                {outboundProducts.map(pro => <Option value={pro.seq_no} key={pro.seq_no}>{pro.product_no}</Option>)}
+              </Select>
             </Col>
             <Col sm={12} md={8} lg={6}>
               <InfoItem label="中文品名" field={outboundProduct.name} />
