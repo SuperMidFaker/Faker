@@ -85,10 +85,10 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="单证号">
-              {getFieldDecorator('transaction_no', {
-                initialValue: filter.transaction_no,
-              })(<Input placeholder="入库/出库/库存移动单号" />)}
+            <FormItem {...formItemLayout} label="客户订单号">
+              {getFieldDecorator('ref_order_no', {
+                initialValue: filter.ref_order_no,
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span={3}>
@@ -111,6 +111,13 @@ export default class QueryForm extends React.Component {
               {getFieldDecorator('product_no', {
                 initialValue: filter.product_no,
               })(<Input placeholder="商品货号/SKU" />)}
+            </FormItem>
+          </Col>
+          <Col span={5}>
+            <FormItem {...formItemLayout} label="单证号">
+              {getFieldDecorator('transaction_no', {
+                initialValue: filter.transaction_no,
+              })(<Input placeholder="入库/出库/库存移动单号" />)}
             </FormItem>
           </Col>
           <Col span={5}>
