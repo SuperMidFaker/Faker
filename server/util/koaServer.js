@@ -1,10 +1,9 @@
-import koa from 'koa';
-import kLogger from 'koa-logger';
-import assets from 'koa-static';
-import path from 'path';
-import { isArray } from 'util';
-
-import { patch } from './responseResult';
+const koa = require('koa');
+const kLogger = require('koa-logger');
+const assets = require('koa-static');
+const path = require('path');
+const { isArray } = require('util');
+const { patch } = require('./responseResult');
 /**
  * create koa server with options
  * @param  {Object} options {
@@ -17,7 +16,7 @@ import { patch } from './responseResult';
  * }
  * @return {Object}         koa object
  */
-export default function create(options) {
+module.exports = function create(options) {
   const opts = options || {};
   const app = koa();
 
@@ -39,4 +38,4 @@ export default function create(options) {
   }
 
   return app;
-}
+};

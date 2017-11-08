@@ -1,13 +1,13 @@
 // import React from 'react';
 // import ReactDom from 'react-dom/server';
-import serialize from 'serialize-javascript';
+const serialize = require('serialize-javascript');
 // import { match } from 'react-router';
 // import { addLocaleData } from 'react-intl';
-import createStore from 'common/webReduxStore';
+const createStore = require('common/webReduxStore');
 // import appWrapped from 'client/common/appWrapped';
 // import fetchInitialState from '../util/fetch-initial-state';
-import { version } from '../../package.json';
-import thirdPart from './thirdPart';
+const { version } = require('../../package.json');
+const thirdPart = require('./thirdPart');
 
 let trackJs = '';
 // let routes;
@@ -87,7 +87,7 @@ function inlineRenderHtmls(store, content) {
   locale = locale && locale.split('-')[0];
   return locale || 'zh';
 } */
-export default function render(request/* , locale */) {
+module.exports = function render(request/* , locale */) {
   if (!__PROD__) {
     webpackIsomorphicTools.refresh();
   }
@@ -128,4 +128,4 @@ export default function render(request/* , locale */) {
       }
     }); */
   // });
-}
+};

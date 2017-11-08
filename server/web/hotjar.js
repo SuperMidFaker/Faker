@@ -20,4 +20,4 @@ const hotjar = `<script>
     })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
 </script>`;
 
-export default hotjar;
+module.exports = hotjar;
