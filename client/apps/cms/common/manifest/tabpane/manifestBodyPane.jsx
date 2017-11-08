@@ -792,7 +792,7 @@ export default class ManifestBodyPane extends React.Component {
       this.setState({ tableMask: false });
     });
     if (reloadHead) {
-      this.props.loadBill(this.props.billSeqNo, this.props.tenantId, this.props.billHead.i_e_type);
+      this.props.loadBill(this.props.billSeqNo);
     }
     this.setState({ importPanelVisible: false });
   }
