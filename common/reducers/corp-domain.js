@@ -6,6 +6,7 @@ const initialState = {
   name: '',
   code: '',
   logo: '',
+  subdomain: '', // set by server request query
 };
 
 const actions = [
@@ -37,14 +38,13 @@ export function checkCorpDomain(subdomain, tenantId) {
   };
 }
 
-export function loadCorpByDomain(cookie, subdomain) {
+export function loadCorpByDomain(subdomain) {
   return {
     [CLIENT_API]: {
       types: [actionTypes.CPD_LOAD, actionTypes.CPD_LOAD_SUCCEED, actionTypes.CPD_LOAD_FAIL],
       endpoint: 'public/v1/subdomain/corp',
       method: 'get',
       params: { subdomain },
-      cookie,
     },
   };
 }

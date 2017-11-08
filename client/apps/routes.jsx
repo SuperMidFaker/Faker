@@ -122,32 +122,24 @@ import { loadWhseContext } from 'common/reducers/cwmContext';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
 
-// todo IndexRedirect passed nginx added subdomain
-export default(store, cookie) => {
+export default(store) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
-      const query = nextState.location.query;
-      const { account: {
-          subdomain,
-        }, auth: {
-          isAuthed,
-        } } = store.getState();
-      if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
-        warning(!(subdomain !== null && query && query.subdomain && query.subdomain !== subdomain),
+      // const query = nextState.location.query;
+      const currState = store.getState();
+      const accountSubdomain = currState.account.subdomain;
+      const isAuthed = currState.auth.isAuthed;
+      const subdomain = currState.corpDomain.subdomain;
+      if (!isAuthed || (accountSubdomain && !__DEV__ && accountSubdomain !== subdomain)) {
+        warning(!(accountSubdomain && accountSubdomain !== subdomain),
           'subdomain is not equal to account subdomain, maybe there are tenants with same unique code');
-        const prevQuery = __DEV__ ? query : {};
-        replace({
-          pathname: '/login',
-          query: {
-            next: nextState.location.pathname,
-            ...prevQuery,
-          },
-        });
+        const query = { next: nextState.location.pathname };
+        replace({ pathname: '/login', query });
       }
       cb();
     }
     if (!isLoaded(store.getState(), 'account')) {
-      store.dispatch(loadAccount(cookie)).then(checkAuth);
+      store.dispatch(loadAccount()).then(checkAuth);
     } else {
       checkAuth();
     }
@@ -155,11 +147,12 @@ export default(store, cookie) => {
   const ensureCwmContext = (nextState, replace, cb) => {
     const storeState = store.getState();
     if (!storeState.cwmContext.loaded) {
-      store.dispatch(loadWhseContext(storeState.account.tenantId)).then(() => cb());
+      store.dispatch(loadWhseContext()).then(() => cb());
     } else {
       cb();
     }
   };
+  // IndexRedirect passed nginx will readd subdomain
   return (
     <Route path="/" component={Root}>
       <Route path="pub" component={PackPub}>

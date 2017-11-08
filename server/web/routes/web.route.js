@@ -1,9 +1,9 @@
 /* eslint no-console:0 */
 import renderHtml from '../htmlRender';
 
-function* renderWebPage() {
+function renderWebPage() {
   try {
-    this.body = yield renderHtml(this.request, this.cookies.get('locale'));
+    this.body = renderHtml(this.request/* , this.cookies.get('locale') */);
   } catch (e) {
     console.log('welogix plain render cause ', e, e.stack);
     if (e.length === 2 && e[0] === 301) {

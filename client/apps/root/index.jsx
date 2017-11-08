@@ -22,11 +22,14 @@ const AntdLocaleMap = {
   en: enUS,
 };
 
-function fetchData({ state, dispatch, cookie, location }) {
+function fetchData({ state, dispatch }) {
   const promises = [];
   if (!isLoaded(state, 'corpDomain')) {
-    const query = location.query;
-    const prom = dispatch(loadCorpByDomain(cookie, query.subdomain));
+    let subdomain = state.corpDomain.subdomain;
+    if (__DEV__ && !subdomain) {
+      subdomain = state.account.subdomain; // development subdomain fallback on login
+    }
+    const prom = dispatch(loadCorpByDomain(subdomain));
     promises.push(prom);
   }
   if (!isLoaded(state, 'preference')) {
