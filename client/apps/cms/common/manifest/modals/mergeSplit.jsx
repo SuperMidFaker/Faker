@@ -263,6 +263,10 @@ export default class MergeSplitModal extends React.Component {
           const title = '以下相同分拨出库明细会被拆分至不同报关单,将导致报关单与集中申报单内容不一致:';
           const msg = <span>{ids.join(',')} <br />请考虑去掉货号归并或者重新选择分拨出库项</span>;
           this.setState({ alertMsg: msg, alertTitle: title });
+        } else if (result.error.message.key === 'gross-less-netwt') {
+          const title = '净重毛重拆分失败';
+          const msg = '拆分生成的报关单存在毛重小于净重情况,请手工调整清单表体净毛重';
+          this.setState({ alertMsg: msg, alertTitle: title });
         } else {
           message.error(result.error.message, 10);
         }
