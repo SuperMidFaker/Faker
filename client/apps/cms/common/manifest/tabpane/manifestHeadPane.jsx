@@ -101,7 +101,7 @@ export default class ManifestHeadPane extends React.Component {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
   handleBillHeadReset = () => {
-    this.props.resetBillHead(this.props.formData).then((result) => {
+    this.props.resetBillHead(this.props.formData.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

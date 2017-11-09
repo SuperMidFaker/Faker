@@ -734,7 +734,7 @@ export function updateHeadNetWt(billSeqNo, netWt) {
   };
 }
 
-export function resetBill(billhead) {
+export function resetBill(headId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -744,12 +744,12 @@ export function resetBill(billhead) {
       ],
       endpoint: 'v1/cms/manifest/bill/reset',
       method: 'post',
-      data: billhead,
+      data: headId,
     },
   };
 }
 
-export function resetBillHead(datas) {
+export function resetBillHead(headId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -759,7 +759,7 @@ export function resetBillHead(datas) {
       ],
       endpoint: 'v1/cms/manifest/bill/reset/head',
       method: 'post',
-      data: datas,
+      data: { headId },
     },
   };
 }
