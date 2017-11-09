@@ -64,30 +64,6 @@ export default class ModuleCWM extends React.Component {
     });
     linkMenus.push({
       single: false,
-      key: 'cwm-shipping',
-      icon: 'logixon icon-shipping',
-      text: formatMsg(intl, 'shipping'),
-      sublinks: [{
-        key: 'cwm-shipping-0',
-        path: '/cwm/shipping/order',
-        text: formatMsg(intl, 'shippingOrder'),
-      }, {
-        key: 'cwm-shipping-1',
-        path: '/cwm/shipping/wave',
-        text: formatMsg(intl, 'shippingWave'),
-      }, {
-        key: 'cwm-shipping-2',
-        path: '/cwm/shipping/outbound',
-        text: formatMsg(intl, 'shippingOutbound'),
-      }, {
-        key: 'cwm-shipping-3',
-        path: '/cwm/shipping/load',
-        text: formatMsg(intl, 'shippingLoad'),
-      },
-      ],
-    });
-    linkMenus.push({
-      single: false,
       key: 'cwm-stock',
       path: '/cwm/stock',
       icon: 'logixon icon-stock',
@@ -113,6 +89,30 @@ export default class ModuleCWM extends React.Component {
         disabled: true,
         path: '/cwm/stock/counting',
         text: formatMsg(intl, 'counting'),
+      },
+      ],
+    });
+    linkMenus.push({
+      single: false,
+      key: 'cwm-shipping',
+      icon: 'logixon icon-shipping',
+      text: formatMsg(intl, 'shipping'),
+      sublinks: [{
+        key: 'cwm-shipping-0',
+        path: '/cwm/shipping/order',
+        text: formatMsg(intl, 'shippingOrder'),
+      }, {
+        key: 'cwm-shipping-1',
+        path: '/cwm/shipping/wave',
+        text: formatMsg(intl, 'shippingWave'),
+      }, {
+        key: 'cwm-shipping-2',
+        path: '/cwm/shipping/outbound',
+        text: formatMsg(intl, 'shippingOutbound'),
+      }, {
+        key: 'cwm-shipping-3',
+        path: '/cwm/shipping/load',
+        text: formatMsg(intl, 'shippingLoad'),
       },
       ],
     });

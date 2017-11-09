@@ -294,9 +294,9 @@ export default class NormalDeclDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={declStep}>
-                  <Step description="委托制单" />
-                  <Step description="已申报" />
-                  <Step description="报关放行" />
+                  <Step title="委托制单" />
+                  <Step title="已申报" />
+                  <Step title="报关放行" />
                 </Steps>
               </div>
             </Card>

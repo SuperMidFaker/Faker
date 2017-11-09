@@ -22,7 +22,6 @@ const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -78,7 +77,7 @@ export default class BatchDeclList extends React.Component {
     width: 200,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
-    title: '备案状态',
+    title: '状态',
     dataIndex: 'status',
     width: 120,
     render: (st) => {
@@ -97,10 +96,6 @@ export default class BatchDeclList extends React.Component {
       }
     },
   }, {
-    title: '报关委托编号',
-    width: 120,
-    dataIndex: 'delg_no',
-  }, {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
     width: 180,
@@ -114,10 +109,9 @@ export default class BatchDeclList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货单位',
-    width: 180,
-    dataIndex: 'receiver_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
+    title: '报关委托编号',
+    width: 120,
+    dataIndex: 'delg_no',
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
@@ -303,14 +297,12 @@ export default class BatchDeclList extends React.Component {
       <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-            search={`${data.partner_code}${data.name}`}
-          >{data.name}
-          </Option>)
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+          search={`${data.partner_code}${data.name}`}
+        >{data.name}
+        </Option>)
           )}
-        </OptGroup>
       </Select>
     </span>);
     return (

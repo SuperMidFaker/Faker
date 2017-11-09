@@ -443,7 +443,7 @@ export default class SHFTZEntryDetail extends Component {
         <Content className="page-content">
           {entryEditable && !this.state.sendable && <Alert message={this.state.alertInfo} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={3}>
                 <Description term="海关进库单号">
                   <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
@@ -470,9 +470,9 @@ export default class SHFTZEntryDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="待备案" />
-                  <Step description="已发送" />
-                  <Step description="备案完成" />
+                  <Step title="待备案" />
+                  <Step title="已发送" />
+                  <Step title="备案完成" />
                 </Steps>
               </div>
             </Card>

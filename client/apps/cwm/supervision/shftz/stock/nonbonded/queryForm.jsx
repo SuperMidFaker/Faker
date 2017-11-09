@@ -90,7 +90,7 @@ export default class QueryForm extends React.Component {
     return (
       <Form className="form-layout-compact">
         <Row gutter={16}>
-          <Col span={8}>
+          <Col span={6}>
             <FormItem {...formItemLayout} label={this.msg('owner')}>
               {getFieldDecorator('ownerCode', {
                 initialValue: filter.ownerCode,
@@ -100,12 +100,17 @@ export default class QueryForm extends React.Component {
               </Select>)}
             </FormItem>
           </Col>
-          <Col span={8}>
-            <FormItem {...formItemLayout} label={this.msg('billNo')}>
+          <Col span={6}>
+            <FormItem {...formItemLayout} label={this.msg('ftzEntNo')}>
               {getFieldDecorator('entNo')(<Input />)}
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
+            <FormItem {...formItemLayout} label={this.msg('ftzRelNo')}>
+              {getFieldDecorator('relNo')(<Input />)}
+            </FormItem>
+          </Col>
+          <Col span={6}>
             <FormItem>
               <Button type="primary" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>{this.msg('reset')}</Button>

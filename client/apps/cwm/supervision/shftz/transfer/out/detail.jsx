@@ -321,7 +321,7 @@ export default class SHFTZTransferOutDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="海关出库单号">
                   <EditableCell value={relReg.ftz_rel_no} editable={relEditable}
@@ -356,9 +356,9 @@ export default class SHFTZTransferOutDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>
-                  <Step description="待转出" />
-                  <Step description="已发送" />
-                  <Step description="已转出" />
+                  <Step title="待转出" />
+                  <Step title="已发送" />
+                  <Step title="已转出" />
                 </Steps>
               </div>
             </Card>

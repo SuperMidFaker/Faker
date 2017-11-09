@@ -67,7 +67,7 @@ export default class SHFTZStockList extends React.Component {
     fixed: 'left',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
-    title: this.msg('billNo'),
+    title: this.msg('ftzEntNo'),
     dataIndex: 'ftz_ent_no',
     width: 200,
   }, {

@@ -102,10 +102,10 @@ export default class CMSNodeCard extends React.Component {
         {children}
         <div className="card-footer">
           <Steps current={this.state.trigger} progressDot>
-            <Step description="接单" />
-            <Step description="制单" />
-            <Step description="申报" />
-            <Step description="放行" />
+            <Step title="接单" />
+            <Step title="制单" />
+            <Step title="申报" />
+            <Step title="放行" />
           </Steps>
         </div>
       </Card>

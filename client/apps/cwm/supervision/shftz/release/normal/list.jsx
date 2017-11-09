@@ -102,7 +102,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
       }
     },
   }, {
-    title: 'SO编号',
+    title: '关联编号',
     dataIndex: 'so_no',
     width: 160,
     render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,

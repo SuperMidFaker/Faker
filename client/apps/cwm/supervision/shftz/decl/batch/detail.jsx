@@ -399,11 +399,11 @@ export default class BatchDeclDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={applyStep}>
-                  <Step description="委托制单" />
-                  <Step description="报关申请" />
-                  <Step description="已发送" />
-                  <Step description="申请通过" />
-                  <Step description="报关放行" />
+                  <Step title="委托制单" />
+                  <Step title="报关申请" />
+                  <Step title="已发送" />
+                  <Step title="申请通过" />
+                  <Step title="报关放行" />
                 </Steps>
               </div>
             </Card>

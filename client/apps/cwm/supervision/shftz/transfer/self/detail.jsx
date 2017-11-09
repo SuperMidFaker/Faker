@@ -282,7 +282,7 @@ export default class SHFTZTransferSelfDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="货主">{entryAsn.owner_name}</Description>
                 <Description term="出库单号">{entryAsn.ftz_rel_no}</Description>
@@ -300,9 +300,9 @@ export default class SHFTZTransferSelfDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="待转出" />
-                  <Step description="终端处理" />
-                  <Step description="已转入" />
+                  <Step title="待转出" />
+                  <Step title="终端处理" />
+                  <Step title="已转入" />
                 </Steps>
               </div>
             </Card>

@@ -289,7 +289,7 @@ export default class SHFTZTransferInDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="海关进库单号">
                   <EditableCell value={entryRegs[0] && entryRegs[0].ftz_ent_no}
@@ -320,9 +320,9 @@ export default class SHFTZTransferInDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="待转入" />
-                  <Step description="已接收" />
-                  <Step description="已核对" />
+                  <Step title="待转入" />
+                  <Step title="已接收" />
+                  <Step title="已核对" />
                 </Steps>
               </div>
             </Card>

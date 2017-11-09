@@ -277,7 +277,7 @@ export default class OutboundDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={outboundHead.owner_name} />
@@ -315,12 +315,12 @@ export default class OutboundDetail extends Component {
             </Row>
             <div className="card-footer">
               <Steps progressDot current={outboundStep}>
-                <Step description="待出库" />
-                <Step description="分配" />
-                <Step description="拣货" />
-                <Step description="复核装箱" />
-                <Step description="发货" />
-                <Step description="已出库" />
+                <Step title="待出库" />
+                <Step title="分配" />
+                <Step title="拣货" />
+                <Step title="复核装箱" />
+                <Step title="发货" />
+                <Step title="已出库" />
               </Steps>
             </div>
           </Card>

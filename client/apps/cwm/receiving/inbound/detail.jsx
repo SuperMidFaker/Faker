@@ -171,7 +171,7 @@ export default class ReceiveInbound extends Component {
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
-          <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
             <DescriptionList col={4}>
               <Description term="货主">{inboundHead.owner_name}</Description>
               <Description term="ASN编号">{inboundHead.asn_no}</Description>
@@ -188,10 +188,10 @@ export default class ReceiveInbound extends Component {
             </DescriptionList>
             <div className="card-footer">
               <Steps progressDot current={currentStatus}>
-                <Step description="待入库" />
-                <Step description="收货" />
-                <Step description="上架" />
-                <Step description="已入库" />
+                <Step title="待入库" />
+                <Step title="收货" />
+                <Step title="上架" />
+                <Step title="已入库" />
               </Steps>
             </div>
           </Card>

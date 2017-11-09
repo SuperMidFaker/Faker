@@ -65,17 +65,33 @@ export default class SHFTZNonBondedStockList extends React.Component {
     fixed: 'left',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
-    title: this.msg('billNo'),
+    title: this.msg('productNo'),
+    width: 120,
+    dataIndex: 'product_no',
+  }, {
+    title: this.msg('hsCode'),
+    width: 120,
+    dataIndex: 'hscode',
+  }, {
+    title: this.msg('gName'),
+    width: 120,
+    dataIndex: 'name',
+  }, {
+    title: this.msg('ftzEntNo'),
     dataIndex: 'ftz_ent_no',
-    width: 200,
-  }, {
-    title: this.msg('billNo'),
-    dataIndex: 'ftz_rel_no',
-    width: 200,
-  }, {
-    title: this.msg('cusNo'),
     width: 180,
-    dataIndex: 'cus_decl_no',
+  }, {
+    title: this.msg('ftzRelNo'),
+    dataIndex: 'ftz_rel_no',
+    width: 180,
+  }, {
+    title: this.msg('进境报关单号'),
+    width: 180,
+    dataIndex: 'ent_cus_decl_no',
+  }, {
+    title: this.msg('出区报关单号'),
+    width: 180,
+    dataIndex: 'rel_cus_decl_no',
   }, {
     title: this.msg('detailId'),
     dataIndex: 'ftz_ent_detail_id',
@@ -140,33 +156,6 @@ export default class SHFTZNonBondedStockList extends React.Component {
     title: this.msg('location'),
     width: 120,
     dataIndex: 'location',
-  }, {
-    title: this.msg('tag'),
-    width: 120,
-    dataIndex: 'tag',
-  }, {
-    title: this.msg('orgCargoId'),
-    width: 120,
-    dataIndex: 'ftz_cargo_no',
-  }, {
-    title: this.msg('cargoType'),
-    width: 120,
-    dataIndex: 'cargo_type',
-    render: (type) => {
-      let text = '';
-      if (type) {
-        text = type === '13' ? '非分拨货物' : '分拨货物';
-      }
-      return <Tag>{text}</Tag>;
-    },
-  }, {
-    title: this.msg('hsCode'),
-    width: 120,
-    dataIndex: 'hscode',
-  }, {
-    title: this.msg('gName'),
-    width: 120,
-    dataIndex: 'name',
   }, {
     title: this.msg('model'),
     width: 120,
@@ -269,7 +258,7 @@ export default class SHFTZNonBondedStockList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder="搜索备件号/商品编码" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder="货号/商品编码" onInputSearch={this.handleSearch} />
     </span>);
     return (
       <Layout>
@@ -298,7 +287,6 @@ export default class SHFTZNonBondedStockList extends React.Component {
               <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
                 {this.msg('export')}
               </Button>
-              <Button type="primary" icon="plus" style={{ marginLeft: 8 }} onClick={this.handleCompareTask}>新建出门单</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

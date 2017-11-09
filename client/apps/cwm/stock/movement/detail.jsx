@@ -124,8 +124,8 @@ export default class MovementDetail extends Component {
             </Row>
             <div className="card-footer">
               <Steps progressDot current={movingStep}>
-                <Step description="未完成" />
-                <Step description="已完成" />
+                <Step title="未完成" />
+                <Step title="已完成" />
               </Steps>
             </div>
           </Card>

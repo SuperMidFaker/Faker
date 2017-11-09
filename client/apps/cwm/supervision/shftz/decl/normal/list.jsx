@@ -22,7 +22,6 @@ const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -68,7 +67,7 @@ export default class NormalDeclList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '出库报关编号',
+    title: '出库清关编号',
     dataIndex: 'normal_decl_no',
     width: 150,
     fixed: 'left',
@@ -76,14 +75,6 @@ export default class NormalDeclList extends React.Component {
     title: '出区提货单号',
     dataIndex: 'ftz_rel_no',
     width: 150,
-  }, {
-    title: '备案状态',
-    dataIndex: 'status',
-    width: 100,
-  }, {
-    title: '报关委托编号',
-    dataIndex: 'delg_no',
-    width: 120,
   }, {
     title: '报关单号',
     dataIndex: 'pre_entry_seq_no',
@@ -93,10 +84,14 @@ export default class NormalDeclList extends React.Component {
     dataIndex: 'decl_status',
     width: 100,
   }, {
-    title: '货主(经营单位)',
+    title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '清关委托编号',
+    dataIndex: 'delg_no',
+    width: 120,
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
@@ -250,12 +245,10 @@ export default class NormalDeclList extends React.Component {
       <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}
-          </Option>)
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}
+        </Option>)
             )}
-        </OptGroup>
       </Select>
     </span>);
     return (
