@@ -742,7 +742,7 @@ export default class ManifestBodyPane extends React.Component {
       });
       notification.success({
         message: '操作成功',
-        description: `总毛重: ${totGrossWt.toFixed(3)}千克已分摊`,
+        description: `总毛重: ${totGrossWt.toFixed(2)}千克已分摊`,
       });
     }
   }
@@ -956,7 +956,7 @@ export default class ManifestBodyPane extends React.Component {
           </DataPane.BulkActions>
           <DataPane.Actions>
             <Summary>
-              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(2)}</Summary.Item>
               <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
               <Summary.Item label="总金额(元)" addonAfter="元">{totTrade.toFixed(2)}</Summary.Item>
               {Object.keys(tradeCurrGroup).map(curr => <Summary.Item label={`${curr}金额`} key={curr}>{tradeCurrGroup[curr].trade.toFixed(2)}</Summary.Item>)}
