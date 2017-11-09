@@ -571,7 +571,7 @@ export default class CustomsList extends Component {
                 {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('customsDeclaration')}
+                {this.msg('customsDecl')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>

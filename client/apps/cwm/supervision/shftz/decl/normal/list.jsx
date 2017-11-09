@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm, Tooltip, Icon } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -73,7 +73,7 @@ export default class NormalDeclList extends React.Component {
     width: 150,
     fixed: 'left',
   }, {
-    title: <Tooltip title="普通出库的海关出库单号">提货单号 <small><Icon type="question-circle-o" /></small></Tooltip>,
+    title: '出区提货单号',
     dataIndex: 'ftz_rel_no',
     width: 150,
   }, {
@@ -93,7 +93,7 @@ export default class NormalDeclList extends React.Component {
     dataIndex: 'decl_status',
     width: 100,
   }, {
-    title: '提货单位(货主)',
+    title: '货主(经营单位)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,

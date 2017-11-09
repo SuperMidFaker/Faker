@@ -74,7 +74,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '海关出库单号/备案编号',
+    title: '出区提货单号/备案编号',
     dataIndex: 'ftz_rel_no',
     width: 200,
     fixed: 'left',
@@ -111,14 +111,14 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'cust_order_no',
     width: 180,
   }, {
-    title: '货主',
+    title: '货主(经营单位)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '仓储企业',
+    title: '提货单位',
     width: 180,
-    dataIndex: 'wh_ent_name',
+    dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
     title: '运输单位',
@@ -308,6 +308,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
               rowKey="id"
               loading={this.props.loading}
               indentSize={0}
+              defaultExpandAllRows
             />
             <ShippingDockPanel />
             <OrderDockPanel />

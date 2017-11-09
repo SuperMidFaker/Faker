@@ -445,7 +445,7 @@ export default class ManifestEditor extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Icon type="file-text" /> <NavLink to={path}>{this.msg('declManifest')}</NavLink>
+                  <NavLink to={path}>{this.msg('declManifest')}</NavLink>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>

@@ -69,6 +69,10 @@ export default class SHFTZNonBondedStockList extends React.Component {
     dataIndex: 'ftz_ent_no',
     width: 200,
   }, {
+    title: this.msg('billNo'),
+    dataIndex: 'ftz_rel_no',
+    width: 200,
+  }, {
     title: this.msg('cusNo'),
     width: 180,
     dataIndex: 'cus_decl_no',

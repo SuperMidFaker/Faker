@@ -395,17 +395,19 @@ export default class SHFTZNormalRelRegDetail extends Component {
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-              <DescriptionList col={3}>
-                <Description term="普通出库单号">{reg.ftz_rel_no}</Description>
-                <Description term="提货单位">{reg.owner_name}</Description>
-                <Description term="收货单位">{reg.receiver_name}</Description>
-                <Description term="创建时间">{reg.created_date && moment(reg.created_date).format('YYYY.MM.DD HH:mm')}</Description>
+              <DescriptionList col={4}>
+                <Description term="出区提货单号">{reg.ftz_rel_no}</Description>
+                <Description term="经营单位">{reg.owner_name}</Description>
+                <Description term="提货单位">{reg.receiver_name}</Description>
+                <Description term="发票号">{reg.invoice_no}</Description>
+                <Description term="报关单号">{reg.cus_decl_no}</Description>
+                <Description term="报关日期">{reg.created_date && moment(reg.created_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="运输单位">{reg.carrier_name}</Description>
                 <Description term="预计出区日期">
                   <EditableCell type="date" value={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
                   />
                 </Description>
-                <Description term="备案时间">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY.MM.DD HH:mm')}</Description>
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>

@@ -79,6 +79,10 @@ export default class ModuleCWM extends React.Component {
         key: 'cwm-shipping-2',
         path: '/cwm/shipping/outbound',
         text: formatMsg(intl, 'shippingOutbound'),
+      }, {
+        key: 'cwm-shipping-3',
+        path: '/cwm/shipping/load',
+        text: formatMsg(intl, 'shippingLoad'),
       },
       ],
     });
@@ -113,26 +117,11 @@ export default class ModuleCWM extends React.Component {
       ],
     });
     linkMenus.push({
-      single: false,
+      single: true,
       key: 'cwm-products',
       icon: 'logixon icon-sku',
+      path: '/cwm/products/sku',
       text: formatMsg(intl, 'products'),
-      sublinks: [{
-        key: 'cwm-products-0',
-        path: '/cwm/products/sku',
-        text: formatMsg(intl, 'productsSku'),
-      }, {
-        key: 'cwm-products-3',
-        disabled: true,
-        path: '/cwm/products/lotting',
-        text: formatMsg(intl, 'productsLotting'),
-      }, {
-        key: 'cwm-products-4',
-        disabled: true,
-        path: '/cwm/products/kitting',
-        text: formatMsg(intl, 'productsKitting'),
-      },
-      ],
     });
     linkMenus.push({
       single: false,

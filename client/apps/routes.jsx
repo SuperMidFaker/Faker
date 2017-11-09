@@ -65,6 +65,7 @@ import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingWave from './cwm/shipping/wave';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
+import * as CWMShippingLoad from './cwm/shipping/load';
 import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMStockTransactions from './cwm/stock/transactions';
 import * as CWMStockTransition from './cwm/stock/transition';
@@ -480,6 +481,7 @@ export default(store) => {
                 <IndexRoute component={CWMShippingOutbound.List} />
                 <Route path=":outboundNo" component={CWMShippingOutbound.Detail} />
               </Route>
+              <Route path="load" component={CWMShippingLoad.List} />
             </Route>
             <Route path="stock">
               <Route path="inventory" component={CWMStockInventory.List} />

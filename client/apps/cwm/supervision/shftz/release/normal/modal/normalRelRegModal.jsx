@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
 import { getSuppliers } from 'common/reducers/cwmReceive';
-import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
 import { loadManifestTemplates, closeNormalRelRegModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
@@ -91,8 +90,8 @@ export default class NormalRelRegModal extends Component {
 
   msg = key => formatMsg(this.props.intl, key);
   regDetailColumns = [{
-    title: '出库单号',
-    dataIndex: 'ftz_rel_no',
+    title: '海关入库单号',
+    dataIndex: 'ftz_ent_no',
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
@@ -111,19 +110,9 @@ export default class NormalRelRegModal extends Component {
     dataIndex: 'g_name',
     width: 150,
   }, {
-    title: '规格型号',
-    dataIndex: 'model',
-    render: o => <TrimSpan text={o} maxLen={30} />,
-    width: 240,
-  }, {
-    title: '原产国',
-    dataIndex: 'country',
-    width: 150,
-    render: (o) => {
-      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
-      const text = country ? `${country.value}| ${country.text}` : o;
-      return text && text.length > 0 && <Tag>{text}</Tag>;
-    },
+    title: '数量',
+    width: 100,
+    dataIndex: 'qty',
   }, {
     title: '单位',
     dataIndex: 'out_unit',
@@ -133,10 +122,6 @@ export default class NormalRelRegModal extends Component {
       const text = unit ? `${unit.value}| ${unit.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
-  }, {
-    title: '数量',
-    width: 100,
-    dataIndex: 'qty',
   }, {
     title: '毛重',
     width: 100,
@@ -157,14 +142,6 @@ export default class NormalRelRegModal extends Component {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
       const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
-    },
-  }, {
-    title: '目的国',
-    dataIndex: 'dest_country',
-    width: 150,
-    render: (o) => {
-      const country = this.props.tradeCountries.filter(cur => cur.value === o)[0];
-      return country ? <Tag>{`${country.value}| ${country.text}`}</Tag> : o;
     },
   }, {
     title: '删除',
@@ -366,8 +343,8 @@ export default class NormalRelRegModal extends Component {
     this.setState({ destCountry });
   }
   render() {
-    const { submitting, billTemplates, exemptions, tradeCountries } = this.props;
-    const { relNo, template, regDetails, dutyMode, destCountry } = this.state;
+    const { submitting, billTemplates, tradeCountries } = this.props;
+    const { relNo, template, regDetails, destCountry } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
@@ -377,47 +354,17 @@ export default class NormalRelRegModal extends Component {
       }
     });
     const normalRegColumns = [{
-      title: '出库单号',
+      title: '海关入库单号',
       dataIndex: 'ftz_rel_no',
       width: 180,
     }, {
-      title: '供货商',
-      dataIndex: 'supplier',
+      title: 'SO编号',
+      dataIndex: 'so_no',
       width: 150,
-      filterDropdown: (
-        <div className="filter-dropdown">
-          <Select allowClear onChange={this.handleSupplierChange} style={{ width: 150 }} value={this.state.supplier}>
-            {this.props.suppliers.map(data => (
-              <Option key={data.code} value={data.code}>
-                {data.name}
-              </Option>))}
-          </Select>
-        </div>
-      ),
-    }, {
-      title: '币制',
-      dataIndex: 'currency',
-      width: 80,
-      render: o => o && this.props.currencies.find(currency => currency.value === o).text,
-      filterDropdown: (
-        <div className="filter-dropdown">
-          <Select allowClear placeholder="币制" onChange={this.handleCurrencyChange} style={{ width: 80 }} value={this.state.currency}>
-            {this.props.currencies.map(data => (
-              <Option key={data.value} value={data.value}>
-                {data.text}
-              </Option>))}
-          </Select>
-        </div>
-      ),
     }, {
       title: '货主',
       dataIndex: 'owner_name',
       width: 150,
-    }, {
-      title: '成交方式',
-      dataIndex: 'trxn_mode',
-      width: 100,
-      render: o => o && this.props.trxModes.find(trx => trx.value === o).text,
     }, {
       title: '出库日期',
       width: 150,
@@ -449,7 +396,13 @@ export default class NormalRelRegModal extends Component {
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title={
+                <Select size="small" placeholder="业务单据类型" style={{ width: 160, fontSize: 16 }} >
+                  <Option key="so">出货订单</Option>
+                  <Option key="ftz_ent">海关入库单</Option>
+                  <Option key="bonded_stock">保税库存</Option>
+                </Select>} bodyStyle={{ padding: 0 }} noHovering
+              >
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Input value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
@@ -462,15 +415,11 @@ export default class NormalRelRegModal extends Component {
               </Card>
             </Col>
             <Col sm={24} md={16} lg={14}>
-              <Card title="出库报关明细" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="出库备案明细" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} onSearch={this.handleSearch} />
-                    <Select allowClear placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
-                      {exemptions.map(data => (
-                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
-                      ))}
-                    </Select>
+
                     <Select showSearch showArrow allowClear placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
                       {tradeCountries.map(data => (
                         <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
@@ -485,7 +434,7 @@ export default class NormalRelRegModal extends Component {
                     </div>
                   </div>
                   <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
-                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 500), 0), y: this.state.scrollY }}
+                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                   />
                 </div>
               </Card>
