@@ -485,9 +485,9 @@ export default class CustomsDeclBodyPane extends React.Component {
           <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
           <DataPane.Actions>
             <Summary>
-              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(2)}</Summary.Item>
               <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
-              <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(2)}</Summary.Item>
             </Summary>
           </DataPane.Actions>
         </DataPane.Toolbar>

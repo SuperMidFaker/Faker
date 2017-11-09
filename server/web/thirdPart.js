@@ -25,4 +25,4 @@ const stjs = `<script type='text/javascript'>
     })();
   </script>`;
 
-export default stjs;
+module.exports = stjs;

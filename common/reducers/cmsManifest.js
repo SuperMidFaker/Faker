@@ -230,7 +230,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, params: { ...state.params, ...retParam } };
     }
     case actionTypes.SAVE_MANIFEST_HEAD_SUCCEED:
-      return { ...state, billHead: action.result.data, billHeadFieldsChangeTimes: 0 }; // float become string
+      return { ...state, billHead: action.data.head, billHeadFieldsChangeTimes: 0 }; // float become string
     case actionTypes.OPEN_MS_MODAL:
       return { ...state, visibleMSModal: true };
     case actionTypes.CLOSE_MS_MODAL:
@@ -504,7 +504,7 @@ export function setPaneTabkey(tabkey) {
   };
 }
 
-export function loadBill(billSeqNo, tenantId, ieType) {
+export function loadBill(billSeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -514,7 +514,7 @@ export function loadBill(billSeqNo, tenantId, ieType) {
       ],
       endpoint: 'v1/cms/manifest/bill',
       method: 'get',
-      params: { billSeqNo, tenantId, ieType },
+      params: { billSeqNo },
     },
   };
 }
@@ -734,7 +734,7 @@ export function updateHeadNetWt(billSeqNo, netWt) {
   };
 }
 
-export function resetBill(billhead) {
+export function resetBill(headId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -744,12 +744,12 @@ export function resetBill(billhead) {
       ],
       endpoint: 'v1/cms/manifest/bill/reset',
       method: 'post',
-      data: billhead,
+      data: headId,
     },
   };
 }
 
-export function resetBillHead(datas) {
+export function resetBillHead(headId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -759,7 +759,7 @@ export function resetBillHead(datas) {
       ],
       endpoint: 'v1/cms/manifest/bill/reset/head',
       method: 'post',
-      data: datas,
+      data: { headId },
     },
   };
 }

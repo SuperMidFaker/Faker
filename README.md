@@ -90,7 +90,8 @@ server
 ## TODO
   test istanbul-cov
   connect-nav willreceive may fire multiple
-  RemoteTable better interface
   webpack-dev-middleware + server
   router async lazy load
   webpack build time reduce
+  remove server babel-register import reducers require babel
+  env test hmr locals[0] error

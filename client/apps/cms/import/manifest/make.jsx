@@ -6,13 +6,10 @@ import withPrivilege from 'client/common/decorators/withPrivilege';
 import { loadBill, loadCmsParams } from 'common/reducers/cmsManifest';
 import ManifestEditor from '../../common/manifest/editor';
 
-function fetchData({ dispatch, params, state }) {
+function fetchData({ dispatch, params }) {
   const promises = [];
-  promises.push(dispatch(loadBill(params.billno, state.account.tenantId, 'import')));
-  promises.push(dispatch(loadCmsParams({
-    ieType: 'import',
-    tenantId: state.account.tenantId,
-  })));
+  promises.push(dispatch(loadBill(params.billno)));
+  promises.push(dispatch(loadCmsParams()));
   return Promise.all(promises);
 }
 @connect(

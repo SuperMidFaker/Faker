@@ -217,7 +217,7 @@ export default class ManifestEditor extends React.Component {
       content: '点击确定将清空所有表头和表体数据',
       onOk() {
         return new Promise((resolve, reject) => {
-          self.props.resetBill(self.props.billHead).then(
+          self.props.resetBill(self.props.billHead.id).then(
             (result) => {
               if (result.error) {
                 message.error(result.error.message, 10);

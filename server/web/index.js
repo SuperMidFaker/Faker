@@ -1,10 +1,10 @@
 /* eslint no-undef:0 no-console:0 */
-import koaRoute from 'koa-router';
-import create from '../util/koaServer';
+const koaRoute = require('koa-router');
+const create = require('../util/koaServer');
 
 // for webpack target node build explicit import
-import webRoutes from './routes/web.route';
-import apiRoutes from './routes/intl.api';
+const webRoutes = require('./routes/web.route');
+const apiRoutes = require('./routes/intl.api');
 
 function loadRoutes(routes) {
   const kroute = koaRoute();
