@@ -13,7 +13,7 @@ import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
 import { loadRelDetails, loadParams, updateRelReg,
-  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt } from 'common/reducers/cwmShFtz';
+  fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, loadBatchDecl } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import EditableCell from 'client/components/EditableCell';
 import { format } from 'client/common/i18n/helpers';
@@ -64,7 +64,8 @@ function fetchData({ dispatch, params }) {
     fileRelPortionouts,
     queryPortionoutInfos,
     cancelRelReg,
-    editReleaseWt }
+    editReleaseWt,
+    loadBatchDecl }
 )
 @connectNav({
   depth: 3,
@@ -84,6 +85,7 @@ export default class SHFTZRelDetail extends Component {
     editable: false,
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     fullscreen: true,
+    decl: [],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -99,6 +101,13 @@ export default class SHFTZRelDetail extends Component {
         reg: nextProps.relRegs[0],
         tabKey: nextProps.relRegs[0].pre_entry_seq_no,
         editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
+      });
+      this.props.loadBatchDecl(nextProps.relRegs[0].ftz_rel_no).then((result) => {
+        if (!result.error) {
+          this.setState({
+            decl: result.data,
+          });
+        }
       });
       // }
     }
@@ -311,7 +320,7 @@ export default class SHFTZRelDetail extends Component {
   }]
   declColumns = [{
     title: '报关申请单号',
-    dataIndex: 'ftz_apply_no',
+    dataIndex: 'ftz_apply_nos',
     width: 200,
     render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
@@ -322,13 +331,11 @@ export default class SHFTZRelDetail extends Component {
       switch (st) {
         case 'manifest':
         case 'generated':
-          return (<Badge status="default" />);
+          return (<Badge status="default" text="未备案" />);
         case 'processing':
-          return (<Badge status="processing" text="已发送" />);
         case 'applied':
-          return (<Badge status="success" text="备案完成" />);
         case 'cleared':
-          return (<Badge status="success" text="已清关" />);
+          return (<Badge status="success" text="备案完成" />);
         default:
           return null;
       }
@@ -339,16 +346,28 @@ export default class SHFTZRelDetail extends Component {
     dataIndex: 'delg_no',
   }, {
     title: '报关单号',
-    dataIndex: 'cus_decl_no',
+    dataIndex: 'cus_decl_nos',
     width: 180,
   }, {
     title: '清关状态',
     width: 100,
-    dataIndex: 'decl_status',
+    render: (record) => {
+      switch (record.status) {
+        case 'manifest':
+        case 'generated':
+        case 'processing':
+        case 'applied':
+          return (<Badge status="default" text="未清关" />);
+        case 'cleared':
+          return (<Badge status="success" text="已清关" />);
+        default:
+          return null;
+      }
+    },
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const { reg } = this.state;
+    const { reg, decl } = this.state;
     if (relRegs.length === 0) {
       return null;
     }
@@ -458,12 +477,15 @@ export default class SHFTZRelDetail extends Component {
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
-                <TabPane tab="集中报关" key="batchDecl">
-                  <DataPane fullscreen={this.state.fullscreen}
-                    columns={this.declColumns}
-                    dataSource={reg.ftz_apply_nos} rowKey="id" loading={this.state.loading}
-                  />
-                </TabPane>
+                {
+                  reg.ftz_rel_no &&
+                  <TabPane tab="集中报关" key="batchDecl">
+                    <DataPane fullscreen={this.state.fullscreen}
+                      columns={this.declColumns}
+                      dataSource={decl} rowKey="id" loading={this.state.loading}
+                    />
+                  </TabPane>
+                }
               </Tabs>
             </MagicCard>
           </Form>
