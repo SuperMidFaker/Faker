@@ -57,6 +57,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_STOTASKS', 'LOAD_STOTASKS_SUCCEED', 'LOAD_STOTASKS_FAIL',
   'LOAD_STOCMPTASK', 'LOAD_STOCMPTASK_SUCCEED', 'LOAD_STOCMPTASK_FAIL',
   'LOAD_CUSSTOSS', 'LOAD_CUSSTOSS_SUCCEED', 'LOAD_CUSSTOSS_FAIL',
+  'LOAD_BATCH_DECL', 'LOAD_BATCH_DECL_SUCCEED', 'LOAD_BATCH_DECL_FAIL',
 ]);
 
 const initialState = {
@@ -1137,6 +1138,21 @@ export function loadCusStockSnapshot(taskId) {
       endpoint: 'v1/cwm/shftz/stock/task/cus',
       method: 'get',
       params: { taskId },
+    },
+  };
+}
+
+export function loadBatchDecl(ftzRelNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BATCH_DECL,
+        actionTypes.LOAD_BATCH_DECL_SUCCEED,
+        actionTypes.LOAD_BATCH_DECL_FAIL,
+      ],
+      endpoint: 'v1/cwm/batch/decl/load',
+      method: 'get',
+      params: { ftzRelNo },
     },
   };
 }

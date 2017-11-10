@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Table, Tabs } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { loadSendRecords } from 'common/reducers/cmsDeclare';
+import { loadSendRecords, loadReturnRecords } from 'common/reducers/cmsDeclare';
 
 const TabPane = Tabs.TabPane;
 
@@ -12,8 +12,9 @@ const TabPane = Tabs.TabPane;
   state => ({
     tenantId: state.account.tenantId,
     sendRecords: state.cmsDeclare.sendRecords,
+    returnRecords: state.cmsDeclare.returnRecords,
   }),
-  { loadSendRecords }
+  { loadSendRecords, loadReturnRecords }
 )
 export default class DeclMsgPanel extends React.Component {
   static propTypes = {
@@ -21,6 +22,7 @@ export default class DeclMsgPanel extends React.Component {
   }
   componentWillMount() {
     this.props.loadSendRecords();
+    this.props.loadReturnRecords();
   }
   sentColumns = [{
     title: '统一编号',
@@ -45,15 +47,16 @@ export default class DeclMsgPanel extends React.Component {
     width: 160,
   }, {
     title: '回执报文',
-    dataIndex: 'recv_file',
+    dataIndex: 'return_file',
     width: 160,
   }, {
     title: '接收时间',
-    dataIndex: 'recv_date',
+    dataIndex: 'return_date',
     width: 160,
+    render: o => moment(o).format('YYYY/MM/DD'),
   }];
   render() {
-    const { sendRecords } = this.props;
+    const { sendRecords, returnRecords } = this.props;
     return (
       <div className="right-sider-panel">
         <div className="panel-header">
@@ -65,7 +68,11 @@ export default class DeclMsgPanel extends React.Component {
               scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
             />
           </TabPane>
-          <TabPane tab="接收记录" key="recv"><Table size="middle" columns={this.recvColumns} /></TabPane>
+          <TabPane tab="接收记录" key="recv">
+            <Table size="middle" columns={this.recvColumns} dataSource={returnRecords}
+              scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+            />
+          </TabPane>
         </Tabs>
       </div>
     );
