@@ -18,7 +18,7 @@ export default class Strip extends Component {
     const keys = Object.keys(parts);
     return (
       keys.map((item, index) => (
-        <Tooltip title={`${hints[index]} ${parts[item]}`}>
+        <Tooltip title={`${hints[index]} ${parts[item]}`} key={item}>
           <div className={`strip-part ${item}-part`} style={{ width: `${parts[item] / total * 100}%` }} />
         </Tooltip>))
     );

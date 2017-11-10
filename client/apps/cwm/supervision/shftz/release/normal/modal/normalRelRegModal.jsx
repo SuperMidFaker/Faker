@@ -4,10 +4,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
-import { getSuppliers } from 'common/reducers/cwmReceive';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
-import { loadManifestTemplates, closeNormalRelRegModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl } from 'common/reducers/cwmShFtz';
+import { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails,
+  loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const Search = Input.Search;
@@ -20,10 +20,7 @@ const Option = Select.Option;
     visible: state.cwmShFtz.normalRelRegModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
-    ownerCusCode: state.cwmShFtz.normalRelRegModal.ownerCusCode,
-    normalRegs: state.cwmShFtz.batchout_regs,
-    billTemplates: state.cwmShFtz.billTemplates,
-    loginId: state.account.loginId,
+    normalSources: state.cwmShFtz.normalSources,
     loginName: state.account.username,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
@@ -33,46 +30,24 @@ const Option = Select.Option;
       value: cr.curr_code,
       text: cr.curr_name,
     })),
-    tradeCountries: state.cwmShFtz.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
-    })),
-    trxModes: state.cwmShFtz.params.trxModes.map(tm => ({
-      value: tm.trx_mode,
-      text: tm.trx_spec,
-    })),
-    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
-      value: ep.value,
-      text: ep.text,
-      search: `${ep.value}${ep.text}`,
-    })),
     submitting: state.cwmShFtz.submitting,
-    suppliers: state.cwmReceive.suppliers,
-    brokers: state.cwmWarehouse.brokers,
   }),
-  { loadManifestTemplates, closeNormalRelRegModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
+  { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails, loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg }
 )
-@Form.create()
 export default class NormalRelRegModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     reload: PropTypes.func.isRequired,
   }
   state = {
-    selectedRowKeys: [],
     ownerCusCode: '',
-    relDateRange: [],
-    relNo: '',
-    normalRegs: [],
-    regDetails: [],
-    supplier: '',
-    currency: '',
-    template: undefined,
-    ftzRelNo: '',
-    searchText: '',
-    dutyMode: '1',
-    destCountry: '142',
+    srcType: '',
+    srcFilter: { bill_no: '' },
+    normalSources: [],
+    relDetails: [],
+    selRelDetailKeys: [],
+    relDetailFilter: '',
+    normalRegColumns: null,
   }
   componentWillMount() {
     this.props.loadParams();
@@ -83,13 +58,73 @@ export default class NormalRelRegModal extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.normalRegs !== this.props.normalRegs) {
-      this.setState({ normalRegs: nextProps.normalRegs });
+    if (nextProps.normalSources !== this.props.normalSources) {
+      this.setState({ normalSources: nextProps.normalSources });
     }
   }
 
   msg = key => formatMsg(this.props.intl, key);
-  regDetailColumns = [{
+  soNormalSrcColumns = [{
+    title: 'SO编号',
+    dataIndex: 'so_no',
+    width: 150,
+  }, {
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
+  }, {
+    title: '出库日期',
+    width: 150,
+    dataIndex: 'ftz_rel_date',
+    render: o => o && moment(o).format('YYYY.MM.DD'),
+  }, {
+    title: '添加',
+    width: 80,
+    fixed: 'right',
+    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSoDetails(record)} />,
+  }]
+  ftzEntryNormalSrcColumns = [{
+    title: '海关入库单号',
+    dataIndex: 'ftz_ent_no',
+    width: 180,
+  }, {
+    title: '客户订单号',
+    dataIndex: 'po_no',
+  }, {
+    title: '添加',
+    width: 80,
+    fixed: 'right',
+    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddEntryDetails(record)} />,
+  }]
+  ftzEntryDetailNormalSrcColumns = [{
+    title: '海关入库单号',
+    dataIndex: 'ftz_ent_no',
+    width: 180,
+  }, {
+    title: '货号',
+    dataIndex: 'product_no',
+    width: 150,
+  }, {
+    title: '品名',
+    dataIndex: 'g_name',
+  }, {
+    title: '商品编码',
+    dataIndex: 'hscode',
+    width: 100,
+  }, {
+    title: '数量',
+    width: 100,
+    dataIndex: 'qty',
+  }, {
+    title: '净重',
+    width: 100,
+    dataIndex: 'net_wt',
+  }, {
+    title: '添加',
+    width: 80,
+    fixed: 'right',
+    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSrcDetail(record)} />,
+  }]
+  relDetailColumns = [{
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',
   }, {
@@ -115,7 +150,7 @@ export default class NormalRelRegModal extends Component {
     dataIndex: 'qty',
   }, {
     title: '单位',
-    dataIndex: 'out_unit',
+    dataIndex: 'unit',
     width: 100,
     render: (o) => {
       const unit = this.props.units.filter(cur => cur.value === o)[0];
@@ -149,244 +184,216 @@ export default class NormalRelRegModal extends Component {
     fixed: 'right',
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
-  handleAddReg = (row) => {
-    this.props.loadBatchRegDetails(row.pre_entry_seq_no).then((result) => {
+  handleAddSoDetails = (row) => {
+    this.props.loadSoRelDetails(row.so_no).then((result) => {
       if (!result.error) {
-        const relNo = row.ftz_rel_no;
-        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(
-          result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
-        const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
-        this.setState({ regDetails, normalRegs });
+        const relDetails = this.state.relDetails.filter(reg => reg.so_no !== row.so_no).concat(result.data);
+        const normalSources = this.state.normalSources.map(pr => pr.so_no === row.so_no ? { ...pr, added: true } : pr);
+        this.setState({ relDetails, normalSources });
       }
     });
   }
+  handleAddEntryDetails = (row) => {
+    this.props.loadNormalEntryRegDetails(row.ftz_ent_no).then((result) => {
+      if (!result.error) {
+        const relDetails = this.state.relDetails.filter(reg => reg.ftz_ent_no !== row.ftz_ent_no).concat(result.data);
+        const normalSources = this.state.normalSources.map(pr => pr.ftz_ent_no === row.ftz_ent_no ? { ...pr, added: true } : pr);
+        this.setState({ relDetails, normalSources });
+      }
+    });
+  }
+  handleAddSrcDetail = (row) => {
+    const relDetails = [...this.state.relDetails];
+    relDetails.push(row);
+    const normalSources = this.state.normalSources.map(pr => pr.id === row.id ? { ...pr, added: true } : pr);
+    this.setState({ relDetails, normalSources });
+  }
   handleDelDetail = (detail) => {
-    const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
-    const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
-    this.setState({ regDetails, normalRegs });
+    const relDetails = this.state.relDetails.filter(reg => reg.id !== detail.id);
+    const normalSources = this.state.normalSources.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
+    this.setState({ relDetails, normalSources });
   }
   batchDelete = () => {
-    const { selectedRowKeys, regDetails } = this.state;
-    const normalRegs = [...this.state.normalRegs];
+    const { selRelDetailKeys, relDetails } = this.state;
+    const normalSources = [...this.state.normalSources];
     const newRegDetails = [];
-    for (let i = 0; i < regDetails.length; i++) {
-      const detail = regDetails[i];
-      if (!selectedRowKeys.find(key => key === detail.id)) {
+    for (let i = 0; i < relDetails.length; i++) {
+      const detail = relDetails[i];
+      if (!selRelDetailKeys.find(key => key === detail.id)) {
         newRegDetails.push(detail);
       } else {
-        normalRegs.find(pr => pr.ftz_rel_no === detail.ftz_rel_no).added = false;
+        normalSources.find(pr => pr.ftz_rel_no === detail.ftz_rel_no).added = false;
       }
     }
     this.setState({
-      normalRegs,
-      regDetails: newRegDetails,
-      selectedRowKeys: [],
+      normalSources,
+      relDetails: newRegDetails,
+      selRelDetailKeys: [],
     });
   }
   handleCancel = () => {
     this.setState({ ownerCusCode: '',
-      normalRegs: [],
-      regDetails: [],
-      relNo: '',
-      relDateRange: [],
-      ftzRelNo: '',
-      supplier: '',
-      currency: '',
-      template: undefined,
-      destCountry: '',
-      dutyMode: '',
+      normalSources: [],
+      relDetails: [],
+      srcFilter: {},
+      relDetailFilter: '',
     });
-    this.props.form.resetFields();
     this.props.closeNormalRelRegModal();
   }
-  handleTemplateChange = (template) => {
-    this.setState({ template });
+  handleSrcFilterChange = (field, value) => {
+    const srcFilter = { ...this.state.srcFilter };
+    srcFilter[field] = value;
+    this.setState({ srcFilter });
   }
-  handleSupplierChange = (supplier) => {
-    this.setState({ supplier });
-    const { ownerCusCode, relNo, relDateRange, currency } = this.state;
-    const trxMode = this.props.form.getFieldValue('trxn_mode');
-    this.props.loadBatchOutRegs({
-      owner_cus_code: ownerCusCode,
-      whse_code: this.props.defaultWhse.code,
-      rel_type: 'normal',
-      rel_no: relNo,
-      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
-      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
-      currency,
-      supplier,
-      trxMode,
-    });
-  }
-  handleCurrencyChange = (currency) => {
-    this.setState({ currency });
-    const { ownerCusCode, relNo, relDateRange, supplier } = this.state;
-    const trxMode = this.props.form.getFieldValue('trxn_mode');
-    this.props.loadBatchOutRegs({
-      owner_cus_code: ownerCusCode,
-      whse_code: this.props.defaultWhse.code,
-      rel_type: 'normal',
-      rel_no: relNo,
-      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
-      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
-      currency,
-      supplier,
-      trxMode,
-    });
-  }
-  handleRelNoChange = (ev) => {
-    this.setState({ relNo: ev.target.value });
-  }
-  handleRelRangeChange = (relDateRange) => {
-    this.setState({ relDateRange });
-  }
-  handleFtzRelNoChange = (ev) => {
-    this.setState({ ftzRelNo: ev.target.value });
-  }
-  handleNormalOutsQuery = () => {
-    const { ownerCusCode, relNo, relDateRange, currency, supplier } = this.state;
-    const trxMode = this.props.form.getFieldValue('trxn_mode');
-    this.props.loadBatchOutRegs({
-      owner_cus_code: ownerCusCode,
-      whse_code: this.props.defaultWhse.code,
-      rel_type: 'normal',
-      rel_no: relNo,
-      start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
-      end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
-      currency,
-      supplier,
-      trxMode,
-    });
+  handleDetailFilterChange = (ev) => {
+    this.setState({ relDetailFilter: ev.target.value });
   }
   handleBatchClear = () => {
-    if (!this.state.ownerCusCode) {
-      message.error('货主未选定');
-      return;
-    }
     const detailIds = [];
     const relCountObj = {};
-    this.state.regDetails.forEach((regd) => {
+    this.state.relDetails.forEach((regd) => {
       detailIds.push(regd.id);
-      if (relCountObj[regd.ftz_rel_no]) {
-        relCountObj[regd.ftz_rel_no] += 1;
-      } else {
-        relCountObj[regd.ftz_rel_no] = 1;
+      if (regd.so_no) {
+        if (relCountObj[regd.so_no]) {
+          relCountObj[regd.so_no] += 1;
+        } else {
+          relCountObj[regd.so_no] = 1;
+        }
       }
     });
     const relCounts = Object.keys(relCountObj).map(relNo => ({
       rel_no: relNo,
       count: relCountObj[relNo],
     }));
-    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode).map(own => ({
-      partner_id: own.id,
-      tenant_id: own.partner_tenant_id,
-      customs_code: own.customs_code,
-      name: own.name,
-    }))[0];
-    const { loginId, loginName, tenantName } = this.props;
-    const { destCountry, dutyMode } = this.state;
-    this.props.form.validateFields((errors, values) => {
-      const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
-      const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id } : { name: tenantName };
-      this.props.beginNormalDecl({
-        ietype: values.ietype,
-        template: this.state.template,
-        detailIds,
-        relCounts,
-        owner,
-        loginId,
-        loginName,
-        broker,
-        trxnMode: values.trxn_mode,
-        destCountry,
-        dutyMode,
-      }).then((result) => {
-        if (!result.error) {
-          this.handleCancel();
-          this.props.reload();
-        } else {
-          message.error(result.error.message);
-        }
-      });
+    const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode)[0];
+    let createNormalReg;
+    if (this.state.srcType === 'so_no') {
+      createNormalReg = this.props.newNormalRegBySo;
+    } else {
+      createNormalReg = this.props.newNormalRegByEntryReg;
+    }
+    createNormalReg({ detailIds, relCounts, owner: owner.id, whse_code: this.props.defaultWhse.code }).then((result) => {
+      if (!result.error) {
+        this.handleCancel();
+        this.props.reload();
+      } else {
+        message.error(result.error.message);
+      }
     });
   }
   handleOwnerChange = (ownerCusCode) => {
-    this.props.loadBatchOutRegs({
-      owner_cus_code: ownerCusCode,
-      whse_code: this.props.defaultWhse.code,
-      rel_type: 'normal',
-    });
-    const owner = this.props.owners.find(ow => ow.customs_code === ownerCusCode);
     this.setState({
       ownerCusCode,
-      regDetails: [],
-      relNo: '',
-      relDateRange: [],
-      ftzRelNo: '',
-      template: undefined,
+      srcType: '',
+      normalSources: [],
+      srcFilter: {},
+      relDetails: [],
+      relDetailFilter: '',
     });
-    if (owner) {
-      this.props.loadManifestTemplates({
-        owner_partner_id: owner.id,
-        ietype: 0,
-      });
-      this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
+  }
+  handleSrcTypeChange = (value) => {
+    if (!this.state.ownerCusCode) {
+      message.info('选择货主');
+      return;
+    }
+    // so rel detail id entry detail id may equal
+    let normalRegColumns;
+    let relDetails = this.state.relDetails;
+    if (value === 'so_no') {
+      normalRegColumns = this.soNormalSrcColumns;
+      relDetails = [];
+    } else {
+      if (value === 'ftz_ent_no') {
+        normalRegColumns = this.ftzEntryNormalSrcColumns;
+      } else if (value === 'ftz_ent_stock') {
+        normalRegColumns = this.ftzEntryDetailNormalSrcColumns;
+      }
+      if (this.state.srcType === 'so_no') {
+        relDetails = [];
+      }
+    }
+    this.setState({ normalRegColumns, srcType: value, relDetails });
+    this.handleLoadNormalSrc(value, {
+      owner_cus_code: this.state.ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+    });
+  }
+  handleNormalSrcQuery = () => {
+    const { ownerCusCode, srcFilter, srcType } = this.state;
+    this.handleLoadNormalSrc(srcType, {
+      owner_cus_code: ownerCusCode,
+      whse_code: this.props.defaultWhse.code,
+      filter: srcFilter,
+    });
+  }
+  handleLoadNormalSrc = (srcType, query) => {
+    let loadNS;
+    const newQuery = query;
+    if (srcType === 'so_no') {
+      loadNS = this.props.loadNormalSoRegs;
+    } else if (srcType === 'ftz_ent_no') {
+      loadNS = this.props.loadNormalEntryRegs;
+    } else if (srcType === 'ftz_ent_stock') {
+      loadNS = this.props.loadNormalEntryDetails;
+      if (this.state.relDetails.length > 0) {
+        newQuery.filter = newQuery.filter || {};
+        newQuery.filter.detailIds = this.state.relDetails.map(rd => rd.id);
+      }
+    }
+    if (loadNS) {
+      newQuery.filter = JSON.stringify(newQuery.filter);
+      loadNS(newQuery);
     }
   }
-  handleSearch = (searchText) => {
-    this.setState({ searchText });
-  }
-  handleDutyModeChange = (dutyMode) => {
-    this.setState({ dutyMode });
-  }
-  handleDestCountryChange = (destCountry) => {
-    this.setState({ destCountry });
-  }
   render() {
-    const { submitting, billTemplates, tradeCountries } = this.props;
-    const { relNo, template, regDetails, destCountry } = this.state;
-    const dataSource = regDetails.filter((item) => {
-      if (this.state.ftzRelNo) {
-        const reg = new RegExp(this.state.ftzRelNo);
-        return reg.test(item.ftz_rel_no);
+    const { submitting, owners } = this.props;
+    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType } = this.state;
+    let normalRegColumns = this.state.normalRegColumns;
+    if (!normalRegColumns) {
+      normalRegColumns = this.ftzEntryNormalSrcColumns;
+    }
+    const dataSource = relDetails.filter((item) => {
+      if (relDetailFilter) {
+        const reg = new RegExp(relDetailFilter);
+        return reg.test(item.ftz_ent_no);
       } else {
         return true;
       }
     });
-    const normalRegColumns = [{
-      title: '海关入库单号',
-      dataIndex: 'ftz_rel_no',
-      width: 180,
-    }, {
-      title: 'SO编号',
-      dataIndex: 'so_no',
-      width: 150,
-    }, {
-      title: '货主',
-      dataIndex: 'owner_name',
-      width: 150,
-    }, {
-      title: '出库日期',
-      width: 150,
-      dataIndex: 'ftz_rel_date',
-      render: o => o && moment(o).format('YYYY.MM.DD'),
-    }, {
-      title: '添加',
-      width: 80,
-      fixed: 'right',
-      render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddReg(record)} />,
-    }];
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
+    const srcSearchTool = [];
+    if (srcType === 'so_no') {
+      srcSearchTool.push(
+        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户订单号"
+          onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+        />
+      );
+    } else if (srcType === 'ftz_ent_no') {
+      srcSearchTool.push(
+        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="海关入库单号"
+          onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+        />
+      );
+    } else if (srcType === 'ftz_ent_stock') {
+      srcSearchTool.push(
+        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="海关入库单号"
+          onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+        />,
+        <Input key="product_no" value={srcFilter.product_no} placeholder="货号"
+          onChange={ev => this.handleSrcFilterChange('product_no', ev.target.value)} style={{ width: 200, marginLeft: 8 }}
+        />,
+      );
+    }
+    const relDetailRowSelection = {
+      selectedRowKeys: selRelDetailKeys,
       onChange: (selectedRowKeys) => {
-        this.setState({ selectedRowKeys });
+        this.setState({ selRelDetailKeys: selectedRowKeys });
       },
     };
     const title = (<div>
       <span>新建普通出库备案</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleBatchClear}>保存</Button>
+        <Button type="primary" disabled={this.state.relDetails.length === 0} loading={submitting} onClick={this.handleBatchClear}>保存</Button>
       </div>
     </div>);
     return (
@@ -396,45 +403,42 @@ export default class NormalRelRegModal extends Component {
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title={
-                <Select size="small" placeholder="业务单据类型" style={{ width: 160, fontSize: 16 }} >
-                  <Option key="so">出货订单</Option>
-                  <Option key="ftz_ent">海关入库单</Option>
-                  <Option key="bonded_stock">保税库存</Option>
-                </Select>} bodyStyle={{ padding: 0 }} noHovering
+              <Card title={<div>
+                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200 }}>
+                  {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                </Select>
+                <Select size="small" value={srcType} placeholder="业务单据类型" style={{ width: 160, fontSize: 16, marginLeft: 20 }}
+                  onSelect={this.handleSrcTypeChange}
+                >
+                  <Option key="so_no">出货订单</Option>
+                  <Option key="ftz_ent_no">海关入库单</Option>
+                  <Option key="ftz_ent_stock">保税库存</Option>
+                </Select>
+              </div>} bodyStyle={{ padding: 0 }}
               >
                 <div className="table-panel table-fixed-layout">
-                  <div className="toolbar">
-                    <Input value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
-                    <Button icon="search" onClick={this.handleNormalOutsQuery} />
-                  </div>
-                  <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
+                  {srcSearchTool.length > 0 && <div className="toolbar">
+                    {srcSearchTool}
+                    <Button icon="search" onClick={this.handleNormalSrcQuery} style={{ marginLeft: 8 }} />
+                  </div>}
+                  <Table columns={normalRegColumns} dataSource={this.state.normalSources} rowKey="id"
                     scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
               </Card>
             </Col>
             <Col sm={24} md={16} lg={14}>
-              <Card title="出库备案明细" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="出库备案明细" bodyStyle={{ padding: 0 }}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} onSearch={this.handleSearch} />
-
-                    <Select showSearch showArrow allowClear placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
-                      {tradeCountries.map(data => (
-                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
-                      ))}
-                    </Select>
-                    <Select allowClear placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
-                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
-                    </Select>
-                    <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
-                      <h3>已选中{this.state.selectedRowKeys.length}项</h3>
-                      {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
+                    <Search placeholder="海关入库单号" style={{ width: 200 }} onChange={this.handleDetailFilterChange} value={relDetailFilter} />
+                    <div className={`bulk-actions ${selRelDetailKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{selRelDetailKeys.length}项</h3>
+                      {selRelDetailKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
                     </div>
                   </div>
-                  <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
-                    scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
+                  <Table columns={this.relDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={relDetailRowSelection}
+                    scroll={{ x: this.relDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0), y: this.state.scrollY }}
                   />
                 </div>
               </Card>

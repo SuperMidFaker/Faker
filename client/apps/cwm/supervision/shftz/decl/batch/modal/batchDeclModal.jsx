@@ -49,7 +49,6 @@ const Option = Select.Option;
     exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
       value: ep.value,
       text: ep.text,
-      search: `${ep.value}${ep.text}`,
     })),
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
@@ -77,7 +76,7 @@ export default class BatchDeclModal extends Component {
     selectedRows: [],
     destCountry: '142',
     dutyMode: '1',
-    portionRowSel: [],
+    portionRowSelKeys: [],
     portionSelRows: [],
   }
   componentWillMount() {
@@ -232,7 +231,7 @@ export default class BatchDeclModal extends Component {
       if (!result.error) {
         const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
         const portionRegs = this.state.portionRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
-        this.setState({ regDetails, portionRegs, portionRowSel: [], portionSelRows: [] });
+        this.setState({ regDetails, portionRegs, portionRowSelKeys: [], portionSelRows: [] });
       }
     });
   }
@@ -271,7 +270,7 @@ export default class BatchDeclModal extends Component {
       template: undefined,
       destCountry: '',
       dutyMode: '',
-      portionRowSel: [],
+      portionRowSelKeys: [],
       portionSelRows: [],
     });
     this.props.closeBatchDeclModal();
@@ -405,10 +404,10 @@ export default class BatchDeclModal extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
-    const portionRowSel = {
-      selectedRowKeys: this.state.portionRowSel,
+    const portionRowSelection = {
+      selectedRowKeys: this.state.portionRowSelKeys,
       onChange: (selectedRowKeys, selectedRows) => {
-        this.setState({ portionRowSel: selectedRowKeys, portionSelRows: selectedRows });
+        this.setState({ portionRowSelKeys: selectedRowKeys, portionSelRows: selectedRows });
       },
       selections: [{
         key: 'all-data',
@@ -416,7 +415,7 @@ export default class BatchDeclModal extends Component {
         onSelect: () => {
           const selectedRowKeys = this.state.portionRegs.map(item => item.id);
           this.setState({
-            portionRowSel: selectedRowKeys,
+            portionRowSelKeys: selectedRowKeys,
             portionSelRows: this.state.portionRegs,
           });
         },
@@ -453,12 +452,12 @@ export default class BatchDeclModal extends Component {
                   <div className="toolbar">
                     <Input placeholder="出库单号" value={relNo} onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
                     <Button icon="search" onClick={this.handlePortionOutsQuery} />
-                    <div className={`bulk-actions ${this.state.portionRowSel.length === 0 ? 'hide' : ''}`}>
-                      <h3>已选中{this.state.portionRowSel.length}项</h3>
-                      {this.state.portionRowSel.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
+                    <div className={`bulk-actions ${this.state.portionRowSelKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.portionRowSelKeys.length}项</h3>
+                      {this.state.portionRowSelKeys.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
                     </div>
                   </div>
-                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" rowSelection={portionRowSel}
+                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" rowSelection={portionRowSelection}
                     scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
@@ -469,11 +468,11 @@ export default class BatchDeclModal extends Component {
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
-                      onSearch={this.handleSearch} value={this.state.ftzRelNo}
+                      value={this.state.ftzRelNo}
                     />
-                    <Select allowClear placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
+                    <Select allowClear placeholder="征免方式" optionFilterProp="children" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
                       {exemptions.map(data => (
-                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
+                        <Option key={data.value}>{`${data.value}|${data.text}`}</Option>
                       ))}
                     </Select>
                     <Select showSearch showArrow allowClear placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>

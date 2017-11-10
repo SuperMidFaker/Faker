@@ -11,6 +11,12 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_VTDETAILS', 'LOAD_VTDETAILS_SUCCEED', 'LOAD_VTDETAILS_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
   'PARAMS_LOAD', 'PARAMS_LOAD_SUCCEED', 'PARAMS_LOAD_FAIL',
+  'LOAD_NSOREG', 'LOAD_NSOREG_SUCCEED', 'LOAD_NSOREG_FAIL',
+  'LOAD_NENREG', 'LOAD_NENREG_SUCCEED', 'LOAD_NENREG_FAIL',
+  'LOAD_NEDREG', 'LOAD_NEDREG_SUCCEED', 'LOAD_NEDREG_FAIL',
+  'LOAD_SORELD', 'LOAD_SORELD_SUCCEED', 'LOAD_SORELD_FAIL',
+  'LOAD_NENTD', 'LOAD_NENTD_SUCCEED', 'LOAD_NENTD_FAIL',
+  'NEW_NRER', 'NEW_NRER_SUCCEED', 'NEW_NRER_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
@@ -84,6 +90,7 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  normalSources: [],
   releaseList: {
     totalCount: 0,
     current: 1,
@@ -182,6 +189,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false };
     case actionTypes.RELEASE_REG_LOAD_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_NSOREG_SUCCEED:
+    case actionTypes.LOAD_NENREG_SUCCEED:
+    case actionTypes.LOAD_NEDREG_SUCCEED:
+      return { ...state, normalSources: action.result.data };
     case actionTypes.PRODUCT_CARGO_LOAD:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.PRODUCT_CARGO_LOAD_SUCCEED:
@@ -375,6 +386,94 @@ export function openNormalRelRegModal(modalInfo) {
 export function closeNormalRelRegModal() {
   return {
     type: actionTypes.CLOSE_NORMAL_REL_REG_MODAL,
+  };
+}
+
+export function loadNormalSoRegs(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NSOREG,
+        actionTypes.LOAD_NSOREG_SUCCEED,
+        actionTypes.LOAD_NSOREG_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/src/so',
+      method: 'get',
+      params: query,
+    },
+  };
+}
+export function loadNormalEntryRegs(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NENREG,
+        actionTypes.LOAD_NENREG_SUCCEED,
+        actionTypes.LOAD_NENREG_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/src/reg',
+      method: 'get',
+      params: query,
+    },
+  };
+}
+export function loadNormalEntryDetails(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NEDREG,
+        actionTypes.LOAD_NEDREG_SUCCEED,
+        actionTypes.LOAD_NEDREG_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/src/reg/detail',
+      method: 'get',
+      params: query,
+    },
+  };
+}
+
+export function loadSoRelDetails(soNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SORELD,
+        actionTypes.LOAD_SORELD_SUCCEED,
+        actionTypes.LOAD_SORELD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/load',
+      method: 'get',
+      params: { soNo },
+    },
+  };
+}
+
+export function loadNormalEntryRegDetails(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NENTD,
+        actionTypes.LOAD_NENTD_SUCCEED,
+        actionTypes.LOAD_NENTD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/load',
+      method: 'get',
+      params: { asnNo },
+    },
+  };
+}
+
+export function newNormalRegByEntryReg(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.NEW_NRER,
+        actionTypes.NEW_NRER_SUCCEED,
+        actionTypes.NEW_NRER_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/createby/entryreg',
+      method: 'post',
+      data,
+    },
   };
 }
 
