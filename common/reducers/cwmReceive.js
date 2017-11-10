@@ -41,6 +41,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'GET_SUPPLIERS', 'GET_SUPPLIERS_SUCCEED', 'GET_SUPPLIERS_FAIL',
   'GET_CROSS_ASNS', 'GET_CROSS_ASNS_SUCCEED', 'GET_CROSS_ASNS_FAIL',
   'GET_CROSS_ASNDS', 'GET_CROSS_ASNDS_SUCCEED', 'GET_CROSS_ASNDS_FAIL',
+  'GET_SKU_AVAIL', 'GET_SKU_AVAIL_SUCCEED', 'GET_SKU_AVAIL_FAIL',
 ]);
 
 const initialState = {
@@ -786,6 +787,21 @@ export function getCrossAsnDetails(asnNos) {
       endpoint: 'v1/cwm/cross/asn/details',
       method: 'get',
       params: { asnNos },
+    },
+  };
+}
+
+export function getSkuAvail(ownerPartnerId, productNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SKU_AVAIL,
+        actionTypes.GET_SKU_AVAIL_SUCCEED,
+        actionTypes.GET_SKU_AVAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/product/amount/get',
+      method: 'get',
+      params: { ownerPartnerId, productNo },
     },
   };
 }
