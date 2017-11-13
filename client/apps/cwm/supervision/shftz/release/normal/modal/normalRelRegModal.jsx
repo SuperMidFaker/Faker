@@ -7,7 +7,7 @@ import { Button, Card, Row, Col, Table, Form, Modal, Select, Tag, Input, message
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
 import { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails,
-  loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg } from 'common/reducers/cwmShFtz';
+  loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo } from 'common/reducers/cwmShFtz';
 
 const formatMsg = format(messages);
 const Search = Input.Search;
@@ -32,7 +32,7 @@ const Option = Select.Option;
     })),
     submitting: state.cwmShFtz.submitting,
   }),
-  { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails, loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg }
+  { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails, loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo }
 )
 export default class NormalRelRegModal extends Component {
   static propTypes = {
@@ -185,7 +185,7 @@ export default class NormalRelRegModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddSoDetails = (row) => {
-    this.props.loadSoRelDetails(row.so_no).then((result) => {
+    this.props.loadSoRelDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relDetails = this.state.relDetails.filter(reg => reg.so_no !== row.so_no).concat(result.data);
         const normalSources = this.state.normalSources.map(pr => pr.so_no === row.so_no ? { ...pr, added: true } : pr);
@@ -209,30 +209,42 @@ export default class NormalRelRegModal extends Component {
     this.setState({ relDetails, normalSources });
   }
   handleDelDetail = (detail) => {
-    const relDetails = this.state.relDetails.filter(reg => reg.id !== detail.id);
-    const normalSources = this.state.normalSources.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
+    const relDetails = this.state.relDetails.filter(reld => reld.id !== detail.id);
+    let normalSources;
+    if (this.state.srcType === 'so_no') {
+      normalSources = this.state.normalSources.map(pr => pr.so_no === detail.so_no ? { ...pr, added: false } : pr);
+    } else if (this.state.srcType === 'ftz_ent_no') {
+      normalSources = this.state.normalSources.map(pr => pr.ftz_ent_no === detail.ftz_ent_no ? { ...pr, added: false } : pr);
+    } else if (this.state.srcType === 'ftz_ent_stock') {
+      normalSources = this.state.normalSources.map(pr => pr.id === detail.id ? { ...pr, added: false } : pr);
+    }
     this.setState({ relDetails, normalSources });
   }
-  batchDelete = () => {
-    const { selRelDetailKeys, relDetails } = this.state;
+  handleRelBatchDelete = () => {
+    const { selRelDetailKeys, relDetails, srcType } = this.state;
     const normalSources = [...this.state.normalSources];
-    const newRegDetails = [];
+    const newRelDetails = [];
     for (let i = 0; i < relDetails.length; i++) {
       const detail = relDetails[i];
       if (!selRelDetailKeys.find(key => key === detail.id)) {
-        newRegDetails.push(detail);
-      } else {
-        normalSources.find(pr => pr.ftz_rel_no === detail.ftz_rel_no).added = false;
+        newRelDetails.push(detail);
+      } else if (srcType === 'so_no') {
+        normalSources.find(pr => pr.so_no === detail.so_no).added = false;
+      } else if (srcType === 'ftz_ent_no') {
+        normalSources.find(pr => pr.ftz_ent_no === detail.ftz_ent_no).added = false;
+      } else if (srcType === 'ftz_ent_stock') {
+        normalSources.find(pr => pr.id === detail.id).added = false;
       }
     }
     this.setState({
       normalSources,
-      relDetails: newRegDetails,
+      relDetails: newRelDetails,
       selRelDetailKeys: [],
     });
   }
   handleCancel = () => {
     this.setState({ ownerCusCode: '',
+      srcType: '',
       normalSources: [],
       relDetails: [],
       srcFilter: {},
@@ -248,22 +260,23 @@ export default class NormalRelRegModal extends Component {
   handleDetailFilterChange = (ev) => {
     this.setState({ relDetailFilter: ev.target.value });
   }
-  handleBatchClear = () => {
+  handleNormalRegSave = () => {
     const detailIds = [];
-    const relCountObj = {};
+    const soCountObj = {};
     this.state.relDetails.forEach((regd) => {
       detailIds.push(regd.id);
       if (regd.so_no) {
-        if (relCountObj[regd.so_no]) {
-          relCountObj[regd.so_no] += 1;
+        if (soCountObj[regd.so_no]) {
+          soCountObj[regd.so_no] += 1;
         } else {
-          relCountObj[regd.so_no] = 1;
+          soCountObj[regd.so_no] = 1;
         }
+   // } else if (regd.ftz_ent_no) {
       }
     });
-    const relCounts = Object.keys(relCountObj).map(relNo => ({
-      rel_no: relNo,
-      count: relCountObj[relNo],
+    const soCounts = Object.keys(soCountObj).map(relNo => ({
+      so_no: relNo,
+      count: soCountObj[relNo],
     }));
     const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode)[0];
     let createNormalReg;
@@ -272,7 +285,7 @@ export default class NormalRelRegModal extends Component {
     } else {
       createNormalReg = this.props.newNormalRegByEntryReg;
     }
-    createNormalReg({ detailIds, relCounts, owner: owner.id, whse_code: this.props.defaultWhse.code }).then((result) => {
+    createNormalReg({ detailIds, soCounts, owner: owner.id, whse_code: this.props.defaultWhse.code }).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -347,7 +360,7 @@ export default class NormalRelRegModal extends Component {
   }
   render() {
     const { submitting, owners } = this.props;
-    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType } = this.state;
+    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType, ownerCusCode } = this.state;
     let normalRegColumns = this.state.normalRegColumns;
     if (!normalRegColumns) {
       normalRegColumns = this.ftzEntryNormalSrcColumns;
@@ -393,7 +406,7 @@ export default class NormalRelRegModal extends Component {
       <span>新建普通出库备案</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" disabled={this.state.relDetails.length === 0} loading={submitting} onClick={this.handleBatchClear}>保存</Button>
+        <Button type="primary" disabled={this.state.relDetails.length === 0} loading={submitting} onClick={this.handleNormalRegSave}>保存</Button>
       </div>
     </div>);
     return (
@@ -404,7 +417,7 @@ export default class NormalRelRegModal extends Component {
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
               <Card title={<div>
-                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200, fontSize: 16 }}>
+                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200, fontSize: 16 }} value={ownerCusCode}>
                   {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
                 </Select>
                 <Select size="small" value={srcType} placeholder="业务单据类型" style={{ width: 160, fontSize: 16, marginLeft: 16 }}
@@ -434,7 +447,7 @@ export default class NormalRelRegModal extends Component {
                     <Search placeholder="海关入库单号" style={{ width: 200 }} onChange={this.handleDetailFilterChange} value={relDetailFilter} />
                     <div className={`bulk-actions ${selRelDetailKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{selRelDetailKeys.length}项</h3>
-                      {selRelDetailKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
+                      {selRelDetailKeys.length !== 0 && <Button onClick={this.handleRelBatchDelete}>批量删除</Button>}
                     </div>
                   </div>
                   <Table columns={this.relDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={relDetailRowSelection}

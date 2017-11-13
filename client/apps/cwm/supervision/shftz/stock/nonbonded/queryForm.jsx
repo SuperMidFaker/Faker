@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Form, Input, Select, Row, Col, notification } from 'antd';
-import { compareFtzStocks } from 'common/reducers/cwmShFtz';
+import { Button, Form, Input, Select, Row, Col } from 'antd';
 import { formatMsg } from '../message.i18n';
 
 const FormItem = Form.Item;
@@ -15,7 +14,7 @@ const Option = Select.Option;
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { compareFtzStocks }
+  { }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -43,41 +42,6 @@ export default class QueryForm extends React.Component {
       if (!err) {
         const formData = this.props.form.getFieldsValue();
         this.props.onSearch(formData);
-      }
-    });
-  }
-  handleCompareTask = (ev) => {
-    ev.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        const owner = this.props.owners.filter(own => own.customs_code === values.ownerCode)[0];
-        const formData = {
-          ftz_ent_no: values.entNo,
-          owner: { name: owner.name, customs_code: owner.customs_code },
-          ftz_whse_code: this.props.defaultWhse.ftz_whse_code,
-          whse_code: this.props.defaultWhse.code,
-        };
-        this.props.compareFtzStocks(formData).then((result) => {
-          if (result.error) {
-            if (result.error.message === 'WHSE_FTZ_UNEXIST') {
-              notification.error({
-                message: '操作失败',
-                description: '仓库监管系统未配置',
-              });
-            } else {
-              notification.error({
-                message: '操作失败',
-                description: result.error.message,
-                duration: 15,
-              });
-            }
-          } else {
-            notification.success({
-              message: '添加任务成功',
-              description: '请至侧边栏查看任务对比进度',
-            });
-          }
-        });
       }
     });
   }

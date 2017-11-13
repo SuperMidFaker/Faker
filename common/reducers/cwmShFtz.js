@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_SORELD', 'LOAD_SORELD_SUCCEED', 'LOAD_SORELD_FAIL',
   'LOAD_NENTD', 'LOAD_NENTD_SUCCEED', 'LOAD_NENTD_FAIL',
   'NEW_NRER', 'NEW_NRER_SUCCEED', 'NEW_NRER_FAIL',
+  'NEW_NRSO', 'NEW_NRSO_SUCCEED', 'NEW_NRSO_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
@@ -64,6 +65,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_STOCMPTASK', 'LOAD_STOCMPTASK_SUCCEED', 'LOAD_STOCMPTASK_FAIL',
   'LOAD_CUSSTOSS', 'LOAD_CUSSTOSS_SUCCEED', 'LOAD_CUSSTOSS_FAIL',
   'LOAD_BATCH_DECL', 'LOAD_BATCH_DECL_SUCCEED', 'LOAD_BATCH_DECL_FAIL',
+  'LOAD_NONBONDED_STOCKS', 'LOAD_NONBONDED_STOCKS_SUCCEED', 'LOAD_NONBONDED_STOCKS_FAIL',
 ]);
 
 const initialState = {
@@ -319,8 +321,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
     case actionTypes.LOAD_STOCKS:
+    case actionTypes.LOAD_NONBONDED_STOCKS:
       return { ...state, loading: true };
     case actionTypes.LOAD_STOCKS_SUCCEED:
+    case actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED:
       return { ...state, stockDatas: action.result.data, loading: false };
     case actionTypes.LOAD_STOCKS_FAIL:
       return { ...state, loading: false };
@@ -471,6 +475,21 @@ export function newNormalRegByEntryReg(data) {
         actionTypes.NEW_NRER_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/normal/createby/entryreg',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function newNormalRegBySo(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.NEW_NRSO,
+        actionTypes.NEW_NRSO_SUCCEED,
+        actionTypes.NEW_NRSO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/createby/so',
       method: 'post',
       data,
     },
@@ -1252,6 +1271,21 @@ export function loadBatchDecl(ftzRelNo) {
       endpoint: 'v1/cwm/batch/decl/load',
       method: 'get',
       params: { ftzRelNo },
+    },
+  };
+}
+
+export function loadNonbondedStocks(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NONBONDED_STOCKS,
+        actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED,
+        actionTypes.LOAD_NONBONDED_STOCKS_FAIL,
+      ],
+      endpoint: 'v1/cwm/nonbonded/stock/load',
+      method: 'get',
+      params,
     },
   };
 }

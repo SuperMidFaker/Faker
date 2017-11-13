@@ -2,11 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import FileSaver from 'file-saver';
-import XLSX from 'xlsx';
 import { Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
+import { loadNonbondedStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -38,7 +36,7 @@ const { Sider, Content } = Layout;
     })),
     loading: state.cwmShFtz.loading,
   }),
-  { loadFtzStocks, loadParams, switchDefaultWhse }
+  { loadNonbondedStocks, loadParams, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -52,10 +50,13 @@ export default class SHFTZNonBondedStockList extends React.Component {
   state = {
     filter: { ownerCode: '', entNo: '', whse_code: '' },
     selectedRowKeys: [],
-    rightSiderCollapsed: true,
   }
   componentWillMount() {
     this.props.loadParams();
+  }
+  onInputSearch = (product) => {
+    const filter = { ...this.state.filter, product };
+    this.handleStockQuery(filter);
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -194,10 +195,8 @@ export default class SHFTZNonBondedStockList extends React.Component {
     notification.info({ message: '当前仓库已切换' });
   }
   handleStockQuery = (filters) => {
-    const filter = { ...filters,
-      cus_whse_code: this.props.defaultWhse.ftz_whse_code,
-      whse_code: this.props.defaultWhse.code };
-    this.props.loadFtzStocks(filter).then((result) => {
+    const filter = { ...filters, whseCode: this.props.defaultWhse.code };
+    this.props.loadNonbondedStocks(filter).then((result) => {
       if (result.error) {
         if (result.error.message === 'WHSE_FTZ_UNEXIST') {
           notification.error({
@@ -219,36 +218,6 @@ export default class SHFTZNonBondedStockList extends React.Component {
     const filter = { ...this.state.filter, ...searchForm };
     this.handleStockQuery(filter);
   }
-  s2ab = (s) => { // todo
-    if (typeof ArrayBuffer !== 'undefined') {
-      const buf = new ArrayBuffer(s.length);
-      const view = new Uint8Array(buf);
-      for (let i = 0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
-    } else {
-      const buf = new Array(s.length);
-      for (let i = 0; i !== s.length; ++i) buf[i] = s.charCodeAt(i) & 0xFF;
-      return buf;
-    }
-  }
-
-  handleExportExcel = () => {
-    const csvData = [];
-    this.props.stockDatas.forEach((dt) => {
-      const out = {};
-      this.columns.forEach((col) => { out[col.title] = dt[col.dataIndex]; });
-      csvData.push(out);
-    });
-    const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
-    const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
-    wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
-    FileSaver.saveAs(new window.Blob([this.s2ab(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), 'shftzStocks.xlsx');
-  }
-  toggleRightSider = () => {
-    this.setState({
-      rightSiderCollapsed: !this.state.rightSiderCollapsed,
-    });
-  }
   render() {
     const columns = this.columns;
     const rowSelection = {
@@ -258,7 +227,7 @@ export default class SHFTZNonBondedStockList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder="货号/商品编码" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder="货号/商品编码" onInputSearch={this.onInputSearch} />
     </span>);
     return (
       <Layout>

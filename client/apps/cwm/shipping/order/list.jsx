@@ -125,7 +125,7 @@ export default class ShippingOrderList extends React.Component {
       if (bonded === 1) {
         const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === record.bonded_outtype)[0];
         if (regtype) {
-          return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
+          return (<Tag color={regtype.tagcolor}>{regtype.ftztext || '保税'}</Tag>);
         }
       } else if (bonded === -1) {
         return (<Tag>不限</Tag>);
@@ -182,7 +182,7 @@ export default class ShippingOrderList extends React.Component {
           {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
             && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
           {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />}</span>);
-        if (record.bonded_outtype) {
+        if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
           return (<span>
             {outbndActions}
             <span className="ant-divider" />
