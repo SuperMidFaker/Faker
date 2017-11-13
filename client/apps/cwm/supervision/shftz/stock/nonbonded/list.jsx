@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { loadNormalStocks, loadParams } from 'common/reducers/cwmShFtz';
+import { loadNonbondedStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
@@ -36,7 +36,7 @@ const { Sider, Content } = Layout;
     })),
     loading: state.cwmShFtz.loading,
   }),
-  { loadNormalStocks, loadParams, switchDefaultWhse }
+  { loadNonbondedStocks, loadParams, switchDefaultWhse }
 )
 @connectNav({
   depth: 2,
@@ -196,7 +196,7 @@ export default class SHFTZNonBondedStockList extends React.Component {
   }
   handleStockQuery = (filters) => {
     const filter = { ...filters, whseCode: this.props.defaultWhse.code };
-    this.props.loadNormalStocks(filter).then((result) => {
+    this.props.loadNonbondedStocks(filter).then((result) => {
       if (result.error) {
         if (result.error.message === 'WHSE_FTZ_UNEXIST') {
           notification.error({
