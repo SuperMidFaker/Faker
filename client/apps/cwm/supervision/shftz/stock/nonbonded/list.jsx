@@ -195,7 +195,7 @@ export default class SHFTZNonBondedStockList extends React.Component {
     notification.info({ message: '当前仓库已切换' });
   }
   handleStockQuery = (filters) => {
-    const filter = { ...filters, whse_code: this.props.defaultWhse.code };
+    const filter = { ...filters, whseCode: this.props.defaultWhse.code };
     this.props.loadNormalStocks(filter).then((result) => {
       if (result.error) {
         if (result.error.message === 'WHSE_FTZ_UNEXIST') {
