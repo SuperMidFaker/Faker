@@ -95,6 +95,8 @@ export default class DetailsPane extends Component {
     const { editable, temporaryDetails, detailEnable, units, currencies, form } = this.props;
     const { pagination } = this.state;
     const soType = form.getFieldValue('so_type');
+    const bonded = form.getFieldValue('bonded');
+    const regType = form.getFieldValue('reg_type');
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -192,7 +194,7 @@ export default class DetailsPane extends Component {
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
-        <AsnSelectModal />
+        <AsnSelectModal bonded={bonded} regType={regType} />
       </DataPane>
     );
   }
