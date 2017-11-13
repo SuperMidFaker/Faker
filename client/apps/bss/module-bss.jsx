@@ -46,38 +46,38 @@ export default class ModuleBMS extends React.Component {
     });
     linkMenus.push({
       single: false,
-      key: 'bss-receivable',
+      key: 'bss-revenue',
       icon: 'logixon icon-receivable',
-      text: formatMsg(intl, 'receivable'),
+      text: formatMsg(intl, 'revenue'),
       sublinks: [{
-        key: 'bss-receivable-0',
+        key: 'bss-revenue-0',
         path: '/bss/receivable/bill',
         text: formatMsg(intl, 'customerBill'),
       }, {
-        key: 'bss-receivable-1',
+        key: 'bss-revenue-1',
         path: '/bss/receivable/invoice',
         text: formatMsg(intl, 'receivableInvoice'),
       }, {
-        key: 'bss-receivable-2',
+        key: 'bss-revenue-2',
         path: '/bss/receivable/payment',
         text: formatMsg(intl, 'paymentReceived'),
       }],
     });
     linkMenus.push({
       single: false,
-      key: 'bss-payable',
+      key: 'bss-cost',
       icon: 'logixon icon-payable',
-      text: formatMsg(intl, 'payable'),
+      text: formatMsg(intl, 'cost'),
       sublinks: [{
-        key: 'bss-payable-0',
+        key: 'bss-cost-0',
         path: '/bss/payable/bill',
         text: formatMsg(intl, 'vendorBill'),
       }, {
-        key: 'bss-payable-1',
+        key: 'bss-cost-1',
         path: '/bss/payable/invoice',
         text: formatMsg(intl, 'payableInvoice'),
       }, {
-        key: 'bss-payable-2',
+        key: 'bss-cost-2',
         path: '/bss/payable/payment',
         text: formatMsg(intl, 'paymentMade'),
       }],

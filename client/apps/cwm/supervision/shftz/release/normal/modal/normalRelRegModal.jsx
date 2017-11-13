@@ -104,12 +104,12 @@ export default class NormalRelRegModal extends Component {
     dataIndex: 'product_no',
     width: 150,
   }, {
-    title: '品名',
-    dataIndex: 'g_name',
-  }, {
     title: '商品编码',
     dataIndex: 'hscode',
     width: 100,
+  }, {
+    title: '品名',
+    dataIndex: 'g_name',
   }, {
     title: '数量',
     width: 100,
@@ -404,10 +404,10 @@ export default class NormalRelRegModal extends Component {
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
               <Card title={<div>
-                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200 }}>
+                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200, fontSize: 16 }}>
                   {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
                 </Select>
-                <Select size="small" value={srcType} placeholder="业务单据类型" style={{ width: 160, fontSize: 16, marginLeft: 20 }}
+                <Select size="small" value={srcType} placeholder="业务单据类型" style={{ width: 160, fontSize: 16, marginLeft: 16 }}
                   onSelect={this.handleSrcTypeChange}
                 >
                   <Option key="so_no">出货订单</Option>

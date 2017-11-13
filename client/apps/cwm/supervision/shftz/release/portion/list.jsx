@@ -92,12 +92,19 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'status',
     width: 100,
     render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="终端处理" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+      switch (o) {
+        case 0:
+          return (<Badge status="default" text="待备案" />);
+        case 1:
+          return (<Badge status="processing" text="终端处理" />);
+        case 2:
+          return (<Badge status="processing" text="已备案" />);
+        case 3:
+          return (<Badge status="processing" text="已集中申请" />);
+        case 4:
+          return (<Badge status="success" text="已清关" />);
+        default:
+          break;
       }
     },
   }, {
@@ -278,7 +285,9 @@ export default class SHFTZReleaseList extends React.Component {
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">备案完成</RadioButton>
+                <RadioButton value="completed">已备案</RadioButton>
+                <RadioButton value="applied">已集中申请</RadioButton>
+                <RadioButton value="cleared">已清关</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>

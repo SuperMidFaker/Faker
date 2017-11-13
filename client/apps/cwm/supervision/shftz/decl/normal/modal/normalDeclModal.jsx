@@ -482,7 +482,7 @@ export default class NormalDeclModal extends Component {
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="出区提货单" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Input value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Tag, notification, Checkbox, message } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Radio, Tag, notification, Checkbox, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -23,6 +23,8 @@ const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 const Step = Steps.Step;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -294,6 +296,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
       const text = country ? `${country.value}| ${country.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  }, {
+    title: '报关单号',
+    width: 150,
+    dataIndex: 'cus_decl_no',
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
@@ -439,6 +445,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 dataSource={reg.details} rowKey="id" loading={this.state.loading}
               >
                 <DataPane.Toolbar>
+                  <RadioGroup onChange={this.handleViewChange} >
+                    <RadioButton value="splitted">拆分视图</RadioButton>
+                    <RadioButton value="merged">合并视图</RadioButton>
+                  </RadioGroup>
                   <DataPane.Extra>
                     <Summary>
                       <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>

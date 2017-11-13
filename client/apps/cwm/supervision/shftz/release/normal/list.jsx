@@ -93,33 +93,48 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'status',
     width: 100,
     render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="终端处理" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+      switch (o) {
+        case 0:
+          return (<Badge status="default" text="待备案" />);
+        case 1:
+          return (<Badge status="processing" text="终端处理" />);
+        case 2:
+          return (<Badge status="processing" text="已备案" />);
+        case 3:
+          return (<Badge status="processing" text="部分清关" />);
+        case 4:
+          return (<Badge status="processing" text="清关完成" />);
+        case 5:
+          return (<Badge status="processing" text="部分出区" />);
+        case 6:
+          return (<Badge status="success" text="出区完成" />);
+        default:
+          break;
       }
     },
   }, {
-    title: '关联编号',
-    dataIndex: 'so_no',
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
     width: 160,
-    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
-  }, {
-    title: '客户订单号',
-    dataIndex: 'cust_order_no',
-    width: 180,
   }, {
     title: '货主(经营单位)',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
+    title: '客户订单号',
+    dataIndex: 'cust_order_no',
+    width: 180,
+  }, {
     title: '提货单位',
     width: 180,
     dataIndex: 'receiver_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '关联编号',
+    dataIndex: 'so_no',
+    width: 160,
+    render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
   }, {
     title: '运输单位',
     width: 180,
@@ -158,8 +173,24 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
-    : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
+    render: (o, record) => {
+      switch (record.status) {
+        case 0:
+          return <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />;
+        case 1:
+          return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
+        case 2:
+          return <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />;
+        case 4:
+          return <RowUpdater onHit={this.handleDetail} label="出区确认" row={record} />;
+        case 5:
+          return <RowUpdater onHit={this.handleDetail} label="出区确认" row={record} />;
+        case 6:
+          return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
+        default:
+          break;
+      }
+    },
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);
@@ -256,7 +287,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
       </Select>
     </span>);
     const bulkActions = (<span>
+      {listFilter.status === 'pending' && <Button >批量发送</Button>}
       {listFilter.status === 'pending' && <Button >合并备案</Button>}
+      {listFilter.status === 'processing' && <Button >批量同步</Button>}
+      {listFilter.status === 'completed' && <Button >批量委托清关</Button>}
+      {listFilter.status === 'cleared' && <Button >批量出区确认</Button>}
     </span>);
     return (
       <Layout>
@@ -287,7 +322,9 @@ export default class SHFTZNormalRelRegList extends React.Component {
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">备案完成</RadioButton>
+                <RadioButton value="completed">已备案</RadioButton>
+                <RadioButton value="cleared">已清关</RadioButton>
+                <RadioButton value="exited">已出区</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>

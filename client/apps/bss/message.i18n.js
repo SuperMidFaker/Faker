@@ -18,36 +18,36 @@ const messages = defineMessages({
     id: 'bss.module.fee.statement',
     defaultMessage: '费用明细',
   },
-  receivable: {
-    id: 'bss.module.receivable',
-    defaultMessage: '应收',
+  revenue: {
+    id: 'bss.module.revenue',
+    defaultMessage: '营业收入',
   },
   customerBill: {
-    id: 'bss.module.receivable.customer.bill',
+    id: 'bss.module.revenue.customer.bill',
     defaultMessage: '客户账单',
   },
   receivableInvoice: {
-    id: 'bss.module.receivable.invoice',
+    id: 'bss.module.revenue.invoice',
     defaultMessage: '开票管理',
   },
   paymentReceived: {
-    id: 'bss.module.receivable.payment',
+    id: 'bss.module.revenue.payment',
     defaultMessage: '收款管理',
   },
-  payable: {
-    id: 'bss.module.payable',
-    defaultMessage: '应付',
+  cost: {
+    id: 'bss.module.cost',
+    defaultMessage: '成本支出',
   },
   vendorBill: {
-    id: 'bss.module.payable.vendor.bill',
+    id: 'bss.module.cost.vendor.bill',
     defaultMessage: '供应商账单',
   },
   payableInvoice: {
-    id: 'bss.module.payable.invoice',
+    id: 'bss.module.cost.invoice',
     defaultMessage: '发票管理',
   },
   paymentMade: {
-    id: 'bss.module.payable.payment',
+    id: 'bss.module.cost.payment',
     defaultMessage: '付款管理',
   },
   settings: {
