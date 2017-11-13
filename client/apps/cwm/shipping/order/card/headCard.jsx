@@ -155,7 +155,7 @@ export default class HeadCard extends Component {
                 rules: [{ required: bonded, message: '请选择监管方式' }],
               })(
                 <RadioGroup>
-                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext || cabr.text}</RadioButton>)}
                 </RadioGroup>
                   )}
             </FormItem>
