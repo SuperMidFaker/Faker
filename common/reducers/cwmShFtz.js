@@ -17,6 +17,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_SORELD', 'LOAD_SORELD_SUCCEED', 'LOAD_SORELD_FAIL',
   'LOAD_NENTD', 'LOAD_NENTD_SUCCEED', 'LOAD_NENTD_FAIL',
   'NEW_NRER', 'NEW_NRER_SUCCEED', 'NEW_NRER_FAIL',
+  'NEW_NRSO', 'NEW_NRSO_SUCCEED', 'NEW_NRSO_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
@@ -474,6 +475,21 @@ export function newNormalRegByEntryReg(data) {
         actionTypes.NEW_NRER_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/normal/createby/entryreg',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function newNormalRegBySo(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.NEW_NRSO,
+        actionTypes.NEW_NRSO_SUCCEED,
+        actionTypes.NEW_NRSO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/createby/so',
       method: 'post',
       data,
     },
