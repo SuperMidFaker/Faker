@@ -185,7 +185,7 @@ export default class NormalRelRegModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddSoDetails = (row) => {
-    this.props.loadSoRelDetails(row.so_no).then((result) => {
+    this.props.loadSoRelDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relDetails = this.state.relDetails.filter(reg => reg.so_no !== row.so_no).concat(result.data);
         const normalSources = this.state.normalSources.map(pr => pr.so_no === row.so_no ? { ...pr, added: true } : pr);
@@ -244,6 +244,7 @@ export default class NormalRelRegModal extends Component {
   }
   handleCancel = () => {
     this.setState({ ownerCusCode: '',
+      srcType: '',
       normalSources: [],
       relDetails: [],
       srcFilter: {},
@@ -359,7 +360,7 @@ export default class NormalRelRegModal extends Component {
   }
   render() {
     const { submitting, owners } = this.props;
-    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType } = this.state;
+    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType, ownerCusCode } = this.state;
     let normalRegColumns = this.state.normalRegColumns;
     if (!normalRegColumns) {
       normalRegColumns = this.ftzEntryNormalSrcColumns;
@@ -416,7 +417,7 @@ export default class NormalRelRegModal extends Component {
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
               <Card title={<div>
-                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200 }}>
+                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200 }} value={ownerCusCode}>
                   {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
                 </Select>
                 <Select size="small" value={srcType} placeholder="业务单据类型" style={{ width: 160, fontSize: 16, marginLeft: 20 }}
