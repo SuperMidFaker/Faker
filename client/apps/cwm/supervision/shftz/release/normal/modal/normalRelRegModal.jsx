@@ -271,7 +271,7 @@ export default class NormalRelRegModal extends Component {
         } else {
           soCountObj[regd.so_no] = 1;
         }
-        // } else if (regd.ftz_ent_no) {
+   // } else if (regd.ftz_ent_no) {
       }
     });
     const soCounts = Object.keys(soCountObj).map(relNo => ({

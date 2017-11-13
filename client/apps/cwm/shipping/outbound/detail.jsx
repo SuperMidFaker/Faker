@@ -199,12 +199,14 @@ export default class OutboundDetail extends Component {
     let regTag;
     let regTypes = [];
     if (outboundHead.bonded === 1) {
-      regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
-      regTypes = [{
-        tooltip: '海关监管',
-        type: outboundHead.bonded_outtype,
-        status: outboundHead.reg_status,
-      }];
+      regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype && sbr.tagcolor)[0];
+      if (regTag) {
+        regTypes = [{
+          tooltip: '海关监管',
+          type: outboundHead.bonded_outtype,
+          status: outboundHead.reg_status,
+        }];
+      }
     } else if (outboundHead.bonded === -1 && outboundHead.bonded_outtype.length > 0) {
       regTypes = outboundHead.bonded_outtype.map((type, index) => {
         const sreg = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === type)[0];
