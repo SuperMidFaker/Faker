@@ -87,6 +87,9 @@ export default class SHFTZNormalRelRegDetail extends Component {
     editable: false,
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     fullscreen: true,
+    view: 'splitted',
+    data: [],
+    merged: [],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -98,8 +101,25 @@ export default class SHFTZNormalRelRegDetail extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       // if (this.state.tabKey === '') {
+      const details = [...nextProps.relRegs[0].details];
+      const detailMap = new Map();
+      for (let i = 0; i < details.length; i++) {
+        const detail = details[i];
+        if (detailMap.has(detail.ftz_ent_detail_id)) {
+          const merged = detailMap.get(detail.ftz_ent_detail_id);
+          merged.qty += detail.qty;
+          merged.gross_wt += detail.gross_wt;
+          merged.net_wt += detail.net_wt;
+          merged.amount += detail.amount;
+          merged.freight += detail.fregith;
+        } else {
+          detailMap.set(detail.ftz_ent_detail_id, detail);
+        }
+      }
       this.setState({
         reg: nextProps.relRegs[0],
+        data: nextProps.relRegs[0].details,
+        merged: [...detailMap.values()],
         tabKey: nextProps.relRegs[0].pre_entry_seq_no,
         editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
       });
@@ -200,6 +220,19 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
+  }
+  handleViewChange = (e) => {
+    const { merged, reg } = this.state;
+    let data;
+    if (e.target.value === 'merged') {
+      data = merged;
+    } else {
+      data = reg.details;
+    }
+    this.setState({
+      view: e.target.value,
+      data,
+    });
   }
   columns = [{
     title: '行号',
@@ -303,7 +336,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const { reg } = this.state;
+    const { reg, data } = this.state;
     if (relRegs.length === 0) {
       return null;
     }
@@ -442,10 +475,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
               <DataPane header="备案明细" fullscreen={this.state.fullscreen}
                 columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                dataSource={data} rowKey="id" loading={this.state.loading}
               >
                 <DataPane.Toolbar>
-                  <RadioGroup onChange={this.handleViewChange} >
+                  <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                     <RadioButton value="splitted">拆分视图</RadioButton>
                     <RadioButton value="merged">合并视图</RadioButton>
                   </RadioGroup>
