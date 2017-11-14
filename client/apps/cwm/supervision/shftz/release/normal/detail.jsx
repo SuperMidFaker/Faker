@@ -88,7 +88,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     fullscreen: true,
     view: 'splitted',
-    data: [],
+    filingDetails: [],
     merged: [],
   }
   componentWillMount() {
@@ -111,14 +111,14 @@ export default class SHFTZNormalRelRegDetail extends Component {
           merged.gross_wt += detail.gross_wt;
           merged.net_wt += detail.net_wt;
           merged.amount += detail.amount;
-          merged.freight += detail.fregith;
+          merged.freight += detail.freight;
         } else {
           detailMap.set(detail.ftz_ent_detail_id, detail);
         }
       }
       this.setState({
         reg: nextProps.relRegs[0],
-        data: nextProps.relRegs[0].details,
+        filingDetails: nextProps.relRegs[0].details,
         merged: [...detailMap.values()],
         tabKey: nextProps.relRegs[0].pre_entry_seq_no,
         editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
@@ -223,15 +223,15 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   handleViewChange = (e) => {
     const { merged, reg } = this.state;
-    let data;
+    let filingDetails;
     if (e.target.value === 'merged') {
-      data = merged;
+      filingDetails = merged;
     } else {
-      data = reg.details;
+      filingDetails = reg.details;
     }
     this.setState({
       view: e.target.value,
-      data,
+      filingDetails,
     });
   }
   columns = [{
@@ -336,7 +336,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const { reg, data } = this.state;
+    const { reg, filingDetails } = this.state;
     if (relRegs.length === 0) {
       return null;
     }
@@ -475,7 +475,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
               <DataPane header="备案明细" fullscreen={this.state.fullscreen}
                 columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                dataSource={data} rowKey="id" loading={this.state.loading}
+                dataSource={filingDetails} rowKey="id" loading={this.state.loading}
               >
                 <DataPane.Toolbar>
                   <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
