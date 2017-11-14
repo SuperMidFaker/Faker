@@ -85,9 +85,9 @@ export default class BatchDeclList extends React.Component {
         case 'generated':
           return (<Badge status="default" text="委托制单" />);
         case 'processing':
-          return (<Badge status="processing" text="集中申请" />);
+          return (<Badge status="processing" text="已发送申请" />);
         case 'applied':
-          return (<Badge status="processing" text="申请完成" />);
+          return (<Badge status="processing" text="已发送申请" />);
         case 'cleared':
           return (<Badge status="success" text="已清关" />);
         default:
@@ -331,7 +331,7 @@ export default class BatchDeclList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
-                <RadioButton value="applying">集中申请</RadioButton>
+                <RadioButton value="applying">报关申请</RadioButton>
                 <RadioButton value="cleared">已清关</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
