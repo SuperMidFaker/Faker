@@ -101,12 +101,13 @@ export default class BatchDeclDetail extends Component {
     this.setState({ fullscreen });
   }
   regColumns = [{
-    title: '出库单号',
+    title: '分拨出库单号',
     dataIndex: 'ftz_rel_no',
+    width: 180,
   }, {
-    title: 'SO单号',
+    title: 'SO编号',
     dataIndex: 'so_no',
-    width: 250,
+    width: 180,
   }, {
     title: '供货商',
     width: 200,
@@ -131,8 +132,9 @@ export default class BatchDeclDetail extends Component {
     },
   }]
   relColumns = [{
-    title: '出库单号',
+    title: '分拨出库单号',
     dataIndex: 'ftz_rel_no',
+    width: 180,
   }, {
     title: '出库明细ID',
     dataIndex: 'ftz_rel_detail_id',
@@ -141,11 +143,6 @@ export default class BatchDeclDetail extends Component {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
   }, {
     title: '商品编码',
     dataIndex: 'hscode',
@@ -248,11 +245,6 @@ export default class BatchDeclDetail extends Component {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -428,7 +420,7 @@ export default class BatchDeclDetail extends Component {
                   </DataPane>
                 </TabPane>
                 {batchApplies.map(reg => (
-                  <TabPane tab={`申请单${reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
+                  <TabPane tab={`申请单${reg.ftz_apply_no || reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
                     <DataPane fullscreen={this.state.fullscreen}
                       columns={this.columns} rowSelection={rowSelection} indentSize={8}
                       dataSource={reg.details} rowKey="id" loading={this.state.loading}
@@ -436,7 +428,6 @@ export default class BatchDeclDetail extends Component {
                       <DataPane.Toolbar>
                         <Row type="flex">
                           <Col className="col-flex-primary info-group-inline">
-                            <InfoItem label="申请单号" field={reg.ftz_apply_no} width={370} />
                             <InfoItem label="报关单号" field={reg.cus_decl_no} width={370} />
                           </Col>
                           <Col className="col-flex-secondary">

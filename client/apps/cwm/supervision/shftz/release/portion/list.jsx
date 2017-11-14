@@ -77,6 +77,7 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'ftz_rel_no',
     width: 200,
     fixed: 'left',
+    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>,
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -122,30 +123,20 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '仓储企业',
-    width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
     title: '运输单位',
     width: 180,
     dataIndex: 'carrier_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '出口日期',
+    title: '备案日期',
     width: 120,
-    dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+    dataIndex: 'reg_date',
+    render: regDate => regDate && moment(regDate).format('YYYY.MM.DD'),
   }, {
-    title: '报关日期',
+    title: '报关申请日期',
     width: 120,
     dataIndex: 'cus_decl_date',
     render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
-  }, {
-    title: '预计出区日期',
-    width: 120,
-    dataIndex: 'ftz_rel_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
     title: '创建时间',
     width: 120,

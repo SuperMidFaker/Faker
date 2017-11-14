@@ -89,19 +89,18 @@ export default class NormalDeclDetail extends Component {
     this.setState({ fullscreen });
   }
   regColumns = [{
-    title: '出库单号',
+    title: '出区提货单号',
     dataIndex: 'ftz_rel_no',
+    width: 180,
   }, {
-    title: 'SO单号',
+    title: 'SO编号',
     dataIndex: 'so_no',
     width: 250,
   }, {
     title: '供货商',
-    width: 200,
     dataIndex: 'supplier',
   }, {
     title: '成交方式',
-    width: 100,
     dataIndex: 'trxn_mode',
     render: (o) => {
       const mode = this.props.trxModes.filter(cur => cur.value === o)[0];
@@ -110,7 +109,6 @@ export default class NormalDeclDetail extends Component {
     },
   }, {
     title: '币制',
-    width: 100,
     dataIndex: 'currency',
     render: (o) => {
       const currency = this.props.currencies.filter(cur => cur.value === o)[0];
@@ -119,17 +117,13 @@ export default class NormalDeclDetail extends Component {
     },
   }]
   columns = [{
-    title: '出库单号',
+    title: '出区提货单号',
     dataIndex: 'ftz_rel_no',
+    width: 180,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
   }, {
     title: '商品编码',
     dataIndex: 'hscode',
@@ -286,7 +280,7 @@ export default class NormalDeclDetail extends Component {
         <Content className="page-content">
           <Form layout="vertical">
             <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
-              <DescriptionList col={4}>
+              <DescriptionList col={6}>
                 <Description term="提货单位">{normalDecl.owner_name}</Description>
                 <Description term="报关代理">{normalDecl.customs_name}</Description>
                 <Description term="成交方式">{mode && `${mode.value}| ${mode.text}`}</Description>

@@ -314,7 +314,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
       },
     };
     const relType = CWM_SO_BONDED_REGTYPES[0];
-    const regStatus = relRegs[0].status;
+    const regStatus = reg.status;
     const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = regStatus === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
@@ -389,9 +389,11 @@ export default class SHFTZNormalRelRegDetail extends Component {
         }
           </PageHeader.Nav>
           <PageHeader.Actions>
+            {relEditable &&
             <Popover content={splitExtra} title="拆分选项" trigger="click" placement="bottomRight">
               <Button >拆分明细 <Icon type="down" /></Button>
             </Popover>
+            }
             {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&
             <Button type="primary" ghost={sent} icon="cloud-upload-o" onClick={this.handleSend} loading={submitting} disabled={!sendable}>{sendText}</Button>}
@@ -403,26 +405,41 @@ export default class SHFTZNormalRelRegDetail extends Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="出区提货单号">{reg.ftz_rel_no}</Description>
-                <Description term="经营单位">{reg.owner_cus_code}|{reg.owner_name}</Description>
+                <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
                 <Description term="提货单位">
                   <EditableCell value={reg.receiver_name}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'receiver_name', value)}
                   />
                 </Description>
+                <Description term="运输单位">
+                  <EditableCell value={reg.carrier_name}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'carrier_name', value)}
+                  />
+                </Description>
+                <Description term="报关单号">{reg.cus_decl_no}</Description>
                 <Description term="发票号">
                   <EditableCell value={reg.invoice_no}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
                   />
                 </Description>
-                <Description term="报关单号">{reg.cus_decl_no}</Description>
+                <Description term="封志">
+                  <EditableCell value={reg.seal_no}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
+                  />
+                </Description>
+                <Description term="唛头">
+                  <EditableCell value={reg.marks}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
+                  />
+                </Description>
+                <Description term="出口日期">
+                  <EditableCell type="date" value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
+                  />
+                </Description>
                 <Description term="报关日期">
                   <EditableCell type="date" value={reg.cus_decl_date && moment(reg.cus_decl_date).format('YYYY-MM-DD')}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="运输单位">
-                  <EditableCell value={reg.carrier_name}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'carrier_name', value)}
                   />
                 </Description>
                 <Description term="预计出区日期">

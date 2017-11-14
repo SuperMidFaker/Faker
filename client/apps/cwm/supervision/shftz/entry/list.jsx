@@ -82,6 +82,7 @@ export default class SHFTZEntryList extends React.Component {
     width: 200,
     dataIndex: 'ftz_ent_no',
     fixed: 'left',
+    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>,
   }, {
     title: '监管类型',
     width: 80,

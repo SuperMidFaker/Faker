@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
+// import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag, message, notification } from 'antd';
+import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Radio, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -24,6 +24,8 @@ const { Content } = Layout;
 const { Description } = DescriptionList;
 const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -428,8 +430,8 @@ export default class SHFTZRelDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
-            {queryable && <Tooltip title="向监管系统接口查询并同步分拨出库单明细数据" placement="bottom">
-              <Button loading={submitting} icon="sync" onClick={this.handleQuery}>同步数据</Button>
+            {queryable && <Tooltip title="向监管系统接口查询获取分拨出库单明细的监管ID" placement="bottom">
+              <Button loading={submitting} icon="sync" onClick={this.handleQuery}>获取监管ID</Button>
             </Tooltip>
             }
             {relEditable &&
@@ -440,16 +442,39 @@ export default class SHFTZRelDetail extends Component {
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
-              <DescriptionList col={3}>
+              <DescriptionList col={4}>
                 <Description term="分拨出库单号">
                   <EditableCell value={reg.ftz_rel_no} editable={relEditable}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_no', value)}
                   />
                 </Description>
-                <Description term="提货单位">{reg.owner_name}</Description>
+                <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
                 <Description term="运输单位">{reg.carrier_name}</Description>
-                <Description term="创建时间">{reg.created_date && moment(reg.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-                <Description term="备案时间">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="是否需加封">
+                  <EditableCell value={reg.need_seal}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'need_seal', value)}
+                  />
+                </Description>
+                <Description term="封志">
+                  <EditableCell value={reg.seal_no}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'seal_no', value)}
+                  />
+                </Description>
+                <Description term="唛头">
+                  <EditableCell value={reg.marks}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'marks', value)}
+                  />
+                </Description>
+                <Description term="发票号">
+                  <EditableCell value={reg.invoice_no}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'invoice_no', value)}
+                  />
+                </Description>
+                <Description term="凭单号">
+                  <EditableCell value={reg.voucher_no}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'voucher_no', value)}
+                  />
+                </Description>
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>
@@ -467,6 +492,10 @@ export default class SHFTZRelDetail extends Component {
                     dataSource={reg.details} rowKey="id" loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
+                      <RadioGroup onChange={this.handleViewChange} >
+                        <RadioButton value="splitted">拆分视图</RadioButton>
+                        <RadioButton value="merged">合并视图</RadioButton>
+                      </RadioGroup>
                       <DataPane.Extra>
                         <Summary>
                           <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>

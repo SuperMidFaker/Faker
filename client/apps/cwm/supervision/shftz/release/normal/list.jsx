@@ -78,6 +78,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'ftz_rel_no',
     width: 200,
     fixed: 'left',
+    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>,
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -117,7 +118,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'cus_decl_no',
     width: 160,
   }, {
-    title: '货主(经营单位)',
+    title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
@@ -321,8 +322,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">已备案</RadioButton>
+                <RadioButton value="completed">已发送备案</RadioButton>
                 <RadioButton value="cleared">已清关</RadioButton>
                 <RadioButton value="exited">已出区</RadioButton>
               </RadioGroup>

@@ -72,10 +72,9 @@ export default class BatchDeclList extends React.Component {
     width: 150,
     fixed: 'left',
   }, {
-    title: '报关申请单号',
-    dataIndex: 'ftz_apply_no',
-    width: 200,
-    render: o => <TrimSpan text={o} maxLen={20} />,
+    title: '分拨出库单数量',
+    dataIndex: 'portion_rel_count',
+    width: 120,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -84,11 +83,11 @@ export default class BatchDeclList extends React.Component {
       switch (st) {
         case 'manifest':
         case 'generated':
-          return (<Badge status="default" />);
+          return (<Badge status="default" text="委托制单" />);
         case 'processing':
-          return (<Badge status="processing" text="已发送" />);
+          return (<Badge status="processing" text="集中申请" />);
         case 'applied':
-          return (<Badge status="success" text="备案完成" />);
+          return (<Badge status="processing" text="申请完成" />);
         case 'cleared':
           return (<Badge status="success" text="已清关" />);
         default:
@@ -96,40 +95,28 @@ export default class BatchDeclList extends React.Component {
       }
     },
   }, {
+    title: '报关申请单号',
+    dataIndex: 'ftz_apply_no',
+    width: 200,
+    render: o => <TrimSpan text={o} maxLen={20} />,
+  }, {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
     width: 180,
-  }, {
-    title: '清关状态',
-    width: 100,
-    dataIndex: 'decl_status',
   }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '报关委托编号',
-    width: 120,
-    dataIndex: 'delg_no',
-  }, {
     title: '报关代理',
     dataIndex: 'broker_name',
     width: 150,
     render: o => <TrimSpan text={o} maxLen={14} />,
-
   }, {
-    title: '供货商',
-    dataIndex: 'supplier',
-    width: 100,
-  }, {
-    title: '成交方式',
-    dataIndex: 'trxn_mode',
-    width: 80,
-  }, {
-    title: '币制',
-    dataIndex: 'currency',
-    width: 80,
+    title: '报关委托编号',
+    width: 120,
+    dataIndex: 'delg_no',
   }, {
     title: '申请类型',
     dataIndex: 'apply_type',
@@ -146,6 +133,18 @@ export default class BatchDeclList extends React.Component {
           break;
       }
     },
+  }, {
+    title: '供货商',
+    dataIndex: 'supplier',
+    width: 100,
+  }, {
+    title: '成交方式',
+    dataIndex: 'trxn_mode',
+    width: 80,
+  }, {
+    title: '币制',
+    dataIndex: 'currency',
+    width: 80,
   }, {
     title: '申请日期',
     width: 120,
@@ -332,8 +331,7 @@ export default class BatchDeclList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
-                <RadioButton value="applying">报关申请</RadioButton>
-                <RadioButton value="declared">已申报</RadioButton>
+                <RadioButton value="applying">集中申请</RadioButton>
                 <RadioButton value="cleared">已清关</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>

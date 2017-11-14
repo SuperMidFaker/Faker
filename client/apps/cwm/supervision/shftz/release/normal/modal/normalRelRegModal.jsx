@@ -127,15 +127,11 @@ export default class NormalRelRegModal extends Component {
   relDetailColumns = [{
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',
+    width: 180,
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
   }, {
     title: '商品编码',
     dataIndex: 'hscode',
