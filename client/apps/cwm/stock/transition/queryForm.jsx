@@ -68,7 +68,7 @@ export default class QueryForm extends React.Component {
             <FormItem {...formItemLayout} label="货品">
               {getFieldDecorator('product_no', {
                 initialValue: filter.product_no,
-              })(<Input placeholder="商品货号/SKU" />)}
+              })(<Input placeholder="商品货号/SKU/中文品名" />)}
             </FormItem>
           </Col>
           <Col span={5}>
