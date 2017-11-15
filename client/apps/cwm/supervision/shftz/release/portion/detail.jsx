@@ -125,16 +125,16 @@ export default class SHFTZRelDetail extends Component {
     const detailMap = new Map();
     for (let i = 0; i < details.length; i++) {
       const detail = details[i];
-      if (detailMap.has(`${detail.hscode}${detail.g_name}`)) {
-        const merged = detailMap.get(`${detail.hscode}${detail.g_name}`);
-        detailMap.set(`${detail.hscode}${detail.g_name}`, Object.assign({}, merged,
+      if (detailMap.has(detail.ftz_ent_detail_id)) {
+        const merged = detailMap.get(detail.ftz_ent_detail_id);
+        detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, merged,
           { qty: (Number(merged.qty) + Number(detail.qty)).toFixed(2),
             gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(4),
             net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(4),
             amount: (Number(merged.amount) + Number(detail.amount)).toFixed(2),
             freight: (Number(merged.freight) + Number(detail.freight)).toFixed(2) }));
       } else {
-        detailMap.set(`${detail.hscode}${detail.g_name}`, detail);
+        detailMap.set(detail.ftz_ent_detail_id, detail);
       }
     }
     return detailMap;
