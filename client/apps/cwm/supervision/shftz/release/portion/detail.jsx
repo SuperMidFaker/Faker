@@ -129,8 +129,8 @@ export default class SHFTZRelDetail extends Component {
         const merged = detailMap.get(`${detail.hscode}${detail.g_name}`);
         detailMap.set(`${detail.hscode}${detail.g_name}`, Object.assign({}, merged,
           { qty: (Number(merged.qty) + Number(detail.qty)).toFixed(2),
-            gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(2),
-            net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(2),
+            gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(4),
+            net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(4),
             amount: (Number(merged.amount) + Number(detail.amount)).toFixed(2),
             freight: (Number(merged.freight) + Number(detail.freight)).toFixed(2) }));
       } else {

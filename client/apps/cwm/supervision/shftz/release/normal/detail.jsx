@@ -121,8 +121,8 @@ export default class SHFTZNormalRelRegDetail extends Component {
         const merged = detailMap.get(detail.ftz_ent_detail_id);
         detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, merged,
           { qty: (Number(merged.qty) + Number(detail.qty)).toFixed(2),
-            gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(2),
-            net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(2),
+            gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(4),
+            net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(4),
             amount: (Number(merged.amount) + Number(detail.amount)).toFixed(2),
             freight: (Number(merged.freight) + Number(detail.freight)).toFixed(2) }));
       } else {
