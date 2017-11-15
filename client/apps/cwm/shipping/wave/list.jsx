@@ -25,7 +25,6 @@ const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   dispatch(loadWaves({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmShippingOrder.wave.pageSize,
     current: state.cwmShippingOrder.wave.current,
     filters: state.cwmShippingOrder.waveFilters,
@@ -35,7 +34,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
@@ -53,7 +51,6 @@ function fetchData({ state, dispatch }) {
 export default class WaveList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -149,7 +146,6 @@ export default class WaveList extends React.Component {
   handleReload = (whseCode, current, filters) => {
     this.props.loadWaves({
       whseCode: whseCode || this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
       pageSize: this.props.wave.pageSize,
       current: current || this.props.wave.current,
       filters: filters || this.props.filters,
@@ -200,7 +196,6 @@ export default class WaveList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,
@@ -216,9 +211,9 @@ export default class WaveList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('wavePlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBar placeholder={this.msg('wavePlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={filters.ownerCode}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
@@ -231,7 +226,7 @@ export default class WaveList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
                     whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
                   }
@@ -243,7 +238,7 @@ export default class WaveList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">计划</RadioButton>
               <RadioButton value="outbound">已释放</RadioButton>

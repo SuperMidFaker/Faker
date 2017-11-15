@@ -178,8 +178,8 @@ export default class AdvUploadModal extends React.Component {
   render() {
     const { visible } = this.props;
     const footer = [
-      <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>,
-      <Button key="next" type="primary" size="large" onClick={this.handleOk} disabled={this.state.attachments.length === 0}>确定</Button>,
+      <Button key="cancel" type="ghost" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>,
+      <Button key="next" type="primary" onClick={this.handleOk} disabled={this.state.attachments.length === 0}>确定</Button>,
     ];
     return (
       <Modal maskClosable={false} visible={visible} title="导入代垫费用" footer={footer} onCancel={this.handleCancel} >

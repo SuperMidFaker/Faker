@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import FileSaver from 'file-saver';
 import XLSX from 'xlsx';
-import { Badge, Breadcrumb, Button, Card, Select, Layout, Tag, notification } from 'antd';
+import { Badge, Breadcrumb, Button, Card, Layout, Tag, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadFtzStocks, loadParams } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -19,14 +19,12 @@ import TasksPane from './tabpane/tasksPane';
 import { formatMsg } from './message.i18n';
 
 const { Sider, Content } = Layout;
-const Option = Select.Option;
 
 @injectIntl
 @connect(
   state => ({
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
     stockDatas: state.cwmShFtz.stockDatas,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
@@ -51,7 +49,6 @@ const Option = Select.Option;
 export default class SHFTZStockList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     stockDatas: PropTypes.array.isRequired,
   }
   state = {
@@ -70,7 +67,7 @@ export default class SHFTZStockList extends React.Component {
     fixed: 'left',
     render: o => <TrimSpan text={o} maxLen={8} />,
   }, {
-    title: this.msg('billNo'),
+    title: this.msg('ftzEntNo'),
     dataIndex: 'ftz_ent_no',
     width: 200,
   }, {
@@ -208,8 +205,7 @@ export default class SHFTZStockList extends React.Component {
   handleStockQuery = (filters) => {
     const filter = { ...filters,
       cus_whse_code: this.props.defaultWhse.ftz_whse_code,
-      whse_code: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId };
+      whse_code: this.props.defaultWhse.code };
     this.props.loadFtzStocks(filter).then((result) => {
       if (result.error) {
         if (result.error.message === 'WHSE_FTZ_UNEXIST') {
@@ -263,8 +259,6 @@ export default class SHFTZStockList extends React.Component {
     });
   }
   render() {
-    const { defaultWhse, whses } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
     const columns = this.columns;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -273,7 +267,7 @@ export default class SHFTZStockList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder="搜索备件号/商品编码" size="large" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder="搜索备件号/商品编码" onInputSearch={this.handleSearch} />
     </span>);
     return (
       <Layout>
@@ -294,21 +288,16 @@ export default class SHFTZStockList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
-                    {bondedWhses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  监管库存查询
+                  保税库存查询
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button size="large" icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
+              <Button icon="export" disabled={!this.props.stockDatas.length > 0} onClick={this.handleExportExcel}>
                 {this.msg('export')}
               </Button>
               <Badge dot style={{ backgroundColor: '#87d068' }}>
-                <ButtonToggle size="large"
+                <ButtonToggle
                   iconOn="hourglass" iconOff="hourglass"
                   onClick={this.toggleRightSider}
                 />

@@ -15,6 +15,7 @@ export default class DataPane extends React.Component {
   }
   static propTypes = {
     children: PropTypes.any,
+    header: PropTypes.string,
     fullscreen: PropTypes.bool,
     scrollOffset: PropTypes.number,
   }
@@ -40,9 +41,10 @@ export default class DataPane extends React.Component {
     }
   }
   render() {
-    const { baseCls, children, columns } = this.props;
+    const { baseCls, children, columns, header } = this.props;
     return (
       <div className={baseCls}>
+        {header ? <div className={`${baseCls}-header`}>{header}</div> : null}
         {children}
         <Table size="middle" {...this.props}
           pagination={{ defaultPageSize: 20, showSizeChanger: true, showTotal: total => `共 ${total} 条` }}

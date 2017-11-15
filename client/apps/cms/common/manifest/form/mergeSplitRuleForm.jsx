@@ -119,7 +119,7 @@ export default class MergeSplitForm extends React.Component {
                   {getFieldDecorator('merge_spl_hs', {
                     rules: [{ type: 'array' }],
                     initialValue: formData.splHsMergeArr,
-                  })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
+                  })(<Select mode="multiple" placeholder={this.msg('specialHscodeSort')}>
                     {mergeCategories.map(ct =>
                       <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
                   </Select>)}
@@ -135,7 +135,7 @@ export default class MergeSplitForm extends React.Component {
                   {getFieldDecorator('merge_spl_no', {
                     rules: [{ type: 'array' }],
                     initialValue: formData.splNoMergeArr,
-                  })(<Select size="large" mode="multiple">
+                  })(<Select mode="multiple">
                     { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
                   </Select>)}
                 </div>
@@ -158,7 +158,7 @@ export default class MergeSplitForm extends React.Component {
             <FormItem>
               {getFieldDecorator('split_percount', {
                 initialValue: formData.split_percount })(
-                  <Select size="large">
+                  <Select >
                     {
                       CMS_SPLIT_COUNT.map(sc => <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
                     }
@@ -173,7 +173,7 @@ export default class MergeSplitForm extends React.Component {
                     {getFieldDecorator('split_spl_category', {
                       rules: [{ type: 'array' }],
                       initialValue: formData.specialHsSortArr,
-                    })(<Select size="large" mode="multiple" placeholder={this.msg('specialHscodeSort')}>
+                    })(<Select mode="multiple" placeholder={this.msg('specialHscodeSort')}>
                       {splitCategories.map(ct =>
                         <Option value={ct.id} key={ct.id}>{ct.name}</Option>)}
                     </Select>)}

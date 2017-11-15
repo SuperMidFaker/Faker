@@ -153,7 +153,7 @@ export default class InventoryStockSearchForm extends React.Component {
           </FormItem>
         }
         <FormItem>
-          <Button type="primary" size="large" onClick={this.handleStockSearch} style={{ width: '100%' }}>{this.msg('query')}</Button>
+          <Button type="primary" onClick={this.handleStockSearch} style={{ width: '100%' }}>{this.msg('query')}</Button>
         </FormItem>
       </Form>
     );

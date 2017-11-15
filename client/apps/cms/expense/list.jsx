@@ -480,7 +480,7 @@ export default class ExpenseList extends Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const toolbarActions = (<SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />);
+    const toolbarActions = (<SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />);
     this.dataSource.remotes = expslist;
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -493,13 +493,13 @@ export default class ExpenseList extends Component {
               {this.msg('expense')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={listFilter.type} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={listFilter.type} onChange={this.handleRadioChange} >
             <RadioButton value="receivable">{this.msg('receivable')}</RadioButton>
             <RadioButton value="payable">{this.msg('payable')}</RadioButton>
             <RadioButton value="both">{this.msg('both')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
             <RadioButton value="all">{this.msg('allStatus')}</RadioButton>
             <RadioButton value="pending">{this.msg('statusPending')}</RadioButton>
             <RadioButton value="estimated">{this.msg('statusEstimated')}</RadioButton>
@@ -507,13 +507,13 @@ export default class ExpenseList extends Component {
             <RadioButton value="settled">{this.msg('statusSettled')}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
-            <Button size="large" icon="download" onClick={this.handleAdvModelEpt}>
+            <Button icon="download" onClick={this.handleAdvModelEpt}>
               {this.msg('eptAdvModel')}
             </Button>
-            <Button size="large" icon="upload" onClick={this.handleAdvFeesImport}>
+            <Button icon="upload" onClick={this.handleAdvFeesImport}>
               {this.msg('incExp')}
             </Button>
-            <Button size="large" icon="file-excel" onClick={this.handleExpExport}>
+            <Button icon="file-excel" onClick={this.handleExpExport}>
               {this.msg('eptExp')}
             </Button>
           </div>

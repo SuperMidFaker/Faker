@@ -458,12 +458,12 @@ export default class TrackingExceptionList extends React.Component {
     const columns = this.columns();
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('searchShipmtPH')} onInputSearch={this.handleSearchInput}
-        value={this.state.searchInput} size="large"
+        value={this.state.searchInput}
       />
       <span />
-      <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+      <CustomerSelect onChange={this.handleCustomerChange} />
       <span />
-      <MyShipmentsSelect onChange={this.handleShipmentViewSelect} size="large" />
+      <MyShipmentsSelect onChange={this.handleShipmentViewSelect} />
       <span />
       <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
     </span>);

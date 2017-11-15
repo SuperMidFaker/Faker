@@ -143,7 +143,7 @@ export default class ScvServiceProviderList extends React.Component {
       <ScvResourceWrapper menuKey="serviceprovider">
         <Content className="nav-content">
           <div className="toolbar">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleAddSp}>
+            <Button type="primary" icon="plus" onClick={this.handleAddSp}>
               添加服务商
             </Button>
           </div>

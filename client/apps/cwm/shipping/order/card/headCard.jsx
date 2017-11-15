@@ -21,7 +21,6 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -78,7 +77,7 @@ export default class HeadCard extends Component {
   handleSelect = (value) => {
     this.props.handleOwnerChange(true, value);
     this.props.loadSkuParams(value);
-    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, value);
+    this.props.getSuppliers(this.props.defaultWhse.code, value);
   }
   handleSoTypeChange = (value) => {
     const sotype = this.props.form.getFieldValue('so_type');
@@ -156,7 +155,7 @@ export default class HeadCard extends Component {
                 rules: [{ required: bonded, message: '请选择监管方式' }],
               })(
                 <RadioGroup>
-                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext || cabr.text}</RadioButton>)}
                 </RadioGroup>
                   )}
             </FormItem>

@@ -15,7 +15,6 @@ const { Content } = Layout;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     owner: state.cwmSku.owner,
     skuForm: state.cwmSku.skuForm,
@@ -59,7 +58,6 @@ export default class CreateProductSku extends Component {
           owner_partner_id: owner.id,
           owner_name: owner.name,
           owner_tenant_id: owner.partner_tenant_id,
-          wh_ent_tenant_id: this.props.tenantId,
           created_by: this.props.loginId,
         };
         this.props.createSku(formData).then((result) => {
@@ -95,10 +93,10 @@ export default class CreateProductSku extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

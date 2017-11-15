@@ -13,7 +13,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     customsCode: state.account.customsCode,
     tenantName: state.account.tenantName,
     owners: state.cwmContext.whseAttrs.owners,
@@ -33,7 +32,7 @@ export default class HeadForm extends React.Component {
     handleOwnerChange: PropTypes.func.isRequired,
   }
   componentWillMount() {
-    this.props.loadBrokers(this.props.defaultWhse.code, this.props.tenantId);
+    this.props.loadBrokers(this.props.defaultWhse.code);
   }
   handleFormReset = () => {
     this.props.form.resetFields();
@@ -50,7 +49,7 @@ export default class HeadForm extends React.Component {
       <Form className="form-layout-compact">
         <Row gutter={16}>
           <Col span={5}>
-            <FormItem label="提货单位">
+            <FormItem label="货主">
               {getFieldDecorator('owner', { initialValue: ownerCusCode,
                 rules: [{ required: true, message: '提货单位必选' }],
               })(

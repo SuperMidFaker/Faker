@@ -69,11 +69,11 @@ export default class DispatchConfirmModal extends Component {
     return (
       <Modal maskClosable={false} title="确认回单要求" visible={this.props.visible} onCancel={this.handleCancel}
         footer={[
-          <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel}>取消</Button>,
-          <Button key="dispatch" type="default" size="large" onClick={this.handleDispatch}>
+          <Button key="cancel" type="ghost" onClick={this.handleCancel}>取消</Button>,
+          <Button key="dispatch" type="default" onClick={this.handleDispatch}>
             确定
           </Button>,
-          <Button key="diapatchAndSend" type="primary" size="large" onClick={this.handleDispatchAndSend}>
+          <Button key="diapatchAndSend" type="primary" onClick={this.handleDispatchAndSend}>
             确定并发送
           </Button>,
         ]}

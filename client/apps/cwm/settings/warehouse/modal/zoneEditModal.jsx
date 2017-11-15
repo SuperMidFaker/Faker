@@ -36,11 +36,11 @@ export default class ZoneEditModal extends Component {
           (result) => {
             if (!result.error) {
               message.info('保存成功');
-              this.props.loadZones(whseCode, this.props.tenantId).then(
+              this.props.loadZones(whseCode).then(
                 (data) => {
                   if (!data.error) {
                     this.props.stateChange(data.data[0].zone_code, data.data);
-                    this.props.loadLocations(whseCode, data.data[0].zone_code, this.props.tenantId);
+                    this.props.loadLocations(whseCode, data.data[0].zone_code);
                     this.props.hideZoneModal();
                   }
                 }

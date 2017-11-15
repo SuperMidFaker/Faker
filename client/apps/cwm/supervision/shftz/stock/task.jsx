@@ -28,7 +28,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whse: state.cwmContext.defaultWhse,
     task: state.cwmShFtz.compareTask.task,
   }),

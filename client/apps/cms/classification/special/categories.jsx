@@ -257,7 +257,7 @@ export default class SpecialCategories extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-header-tools">
-              <Button size="large" icon="export" onClick={this.handleExportExcel}>
+              <Button icon="export" onClick={this.handleExportExcel}>
                 {this.msg('导出')}
               </Button>
               <Popover title="导入数据表格式如下" content={content}>
@@ -269,7 +269,7 @@ export default class SpecialCategories extends React.Component {
                     }),
                   }} onUploaded={this.handleUploaded}
                 >
-                  <Button type="primary" size="large" ghost><Icon type="upload" /> 导入</Button>
+                  <Button type="primary" ghost><Icon type="upload" /> 导入</Button>
                 </ExcelUploader>
               </Popover>
             </div>
@@ -278,7 +278,7 @@ export default class SpecialCategories extends React.Component {
             <div className="page-body">
               <div className="toolbar">
                 <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
-                  value={this.props.categoryHscodes.searchText} size="large"
+                  value={this.props.categoryHscodes.searchText}
                 />
                 <span />
               </div>

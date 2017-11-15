@@ -176,7 +176,7 @@ export default class BrokerList extends Component {
           </Breadcrumb>
           <div className="page-header-tools">
             <PrivilegeCover module="clearance" feature="resources" action="create">
-              <Button type="primary" size="large" onClick={this.handleAddBtnClick} icon="plus">新增</Button>
+              <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增</Button>
             </PrivilegeCover>
           </div>
         </Header>
@@ -184,7 +184,7 @@ export default class BrokerList extends Component {
           <div className="page-body">
             <div className="toolbar">
               <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
-                value={this.state.searchText} size="large"
+                value={this.state.searchText}
               />
             </div>
             <div className="panel-body table-panel table-fixed-layout">

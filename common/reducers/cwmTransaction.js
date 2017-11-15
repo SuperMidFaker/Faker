@@ -61,7 +61,7 @@ export function loadTransactions(params) {
   };
 }
 
-export function loadTraceTransactions(traceId, tenantId) {
+export function loadTraceTransactions(traceId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -71,7 +71,7 @@ export function loadTraceTransactions(traceId, tenantId) {
       ],
       endpoint: 'v1/cwm/stock/trace/transactions',
       method: 'get',
-      params: { traceId, tenantId },
+      params: { traceId },
     },
   };
 }

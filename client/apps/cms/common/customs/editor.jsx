@@ -279,7 +279,7 @@ export default class CustomsDeclEditor extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="file" /> <NavLink to={`/clearance/${ietype}/cusdecl/`}>{this.msg('customsDeclaration')}</NavLink>
+                <NavLink to={`/clearance/${ietype}/cusdecl/`}>{this.msg('customsDecl')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>
@@ -294,24 +294,24 @@ export default class CustomsDeclEditor extends React.Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             <Dropdown overlay={declEntryMenu}>
-              <Button size="large"><Icon type="link" />转至 <Icon type="down" /></Button>
+              <Button ><Icon type="link" />转至 <Icon type="down" /></Button>
             </Dropdown>
             <Dropdown overlay={printMenu}>
-              <Button size="large">
+              <Button >
                 <Icon type="printer" /> 打印
                 </Button>
             </Dropdown>
             { head.status === CMS_DECL_STATUS.proposed.value &&
-            <Button type="primary" size="large" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
+            <Button type="primary" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>
               }
             { head.status === CMS_DECL_STATUS.reviewed.value &&
-            <Button type="primary" size="large" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendDeclMsg')}</Button>
+            <Button type="primary" icon="mail" onClick={this.handleShowSendDeclModal}>{this.msg('sendDeclMsg')}</Button>
               }
             { head.status === CMS_DECL_STATUS.entered.value &&
-            <Button type="primary" size="large" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>
+            <Button type="primary" icon="flag" onClick={this.handleMarkReleasedModal} >{this.msg('markReleased')}</Button>
               }
             <Dropdown overlay={moreMenu}>
-              <Button size="large" icon="ellipsis" />
+              <Button icon="ellipsis" />
             </Dropdown>
           </PageHeader.Actions>
         </PageHeader>

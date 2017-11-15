@@ -95,7 +95,7 @@ export default class DeclReleasedModal extends React.Component {
       >
         <Form>
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <Input onChange={this.handleEntryNoChange} value={entryNo} size="large" />
+            <Input onChange={this.handleEntryNoChange} value={entryNo} />
           </FormItem>
           <FormItem label={this.state.ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker onChange={this.handleIEDateChange} value={this.state.ieTime && moment(this.state.ieTime)}

@@ -14,7 +14,6 @@ const Option = Select.Option;
   state => ({
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
   }),
   { compareFtzStocks }
 )
@@ -57,7 +56,6 @@ export default class QueryForm extends React.Component {
           owner: { name: owner.name, customs_code: owner.customs_code },
           ftz_whse_code: this.props.defaultWhse.ftz_whse_code,
           whse_code: this.props.defaultWhse.code,
-          tenant_id: this.props.tenantId,
         };
         this.props.compareFtzStocks(formData).then((result) => {
           if (result.error) {
@@ -92,7 +90,7 @@ export default class QueryForm extends React.Component {
     return (
       <Form className="form-layout-compact">
         <Row gutter={16}>
-          <Col span={8}>
+          <Col span={6}>
             <FormItem {...formItemLayout} label={this.msg('owner')}>
               {getFieldDecorator('ownerCode', {
                 initialValue: filter.ownerCode,
@@ -102,8 +100,8 @@ export default class QueryForm extends React.Component {
               </Select>)}
             </FormItem>
           </Col>
-          <Col span={8}>
-            <FormItem {...formItemLayout} label={this.msg('billNo')}>
+          <Col span={6}>
+            <FormItem {...formItemLayout} label={this.msg('ftzEntNo')}>
               {getFieldDecorator('entNo')(<Input />)}
             </FormItem>
           </Col>

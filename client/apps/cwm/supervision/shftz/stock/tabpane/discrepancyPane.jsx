@@ -157,7 +157,7 @@ export default class FTZDiscrepancyPane extends React.Component {
       <div className="table-panel table-fixed-layout">
         <DataTable scrollOffset={390} rowKey="id" noBorder expandedRowRender={this.expandedRowRender}
           columns={this.columns} dataSource={this.props.diffviews} toolbarActions={[
-            <Button size="large" icon="export" disabled={!this.props.diffviews.length > 0} onClick={this.handleExportExcel}>
+            <Button icon="export" disabled={!this.props.diffviews.length > 0} onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>,
           ]}

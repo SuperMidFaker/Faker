@@ -303,7 +303,7 @@ export default class BillingList extends React.Component {
     };
     const toolbarActions = (<span>
       <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-        value={this.props.billings.searchValue} size="large"
+        value={this.props.billings.searchValue}
       />
     </span>);
     return (
@@ -318,7 +318,7 @@ export default class BillingList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="primary" size="large" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
+            <Button type="primary" onClick={this.handleAddBtnClicked}>{this.msg('createBilling')}</Button>
             <ExportBillingExcel type={type} />
           </div>
         </Header>

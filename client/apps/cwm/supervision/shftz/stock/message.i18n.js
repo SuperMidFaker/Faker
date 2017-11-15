@@ -6,9 +6,13 @@ const messages = defineMessages({
     id: 'cwm.supervision.shftz.stock.owner',
     defaultMessage: '货主',
   },
-  billNo: {
-    id: 'cwm.supervision.shftz.stock.billNo',
-    defaultMessage: '海关进库单',
+  ftzEntNo: {
+    id: 'cwm.supervision.shftz.stock.ent.no',
+    defaultMessage: '海关进库单号',
+  },
+  ftzRelNo: {
+    id: 'cwm.supervision.shftz.stock.rel.no',
+    defaultMessage: '出区提货单号',
   },
   detailId: {
     id: 'cwm.supervision.shftz.stock.detailid',
@@ -20,7 +24,7 @@ const messages = defineMessages({
   },
   qty: {
     id: 'cwm.supervision.shftz.stock.qty',
-    defaultMessage: '申报数量',
+    defaultMessage: '数量',
   },
   money: {
     id: 'cwm.supervision.shftz.stock.money',

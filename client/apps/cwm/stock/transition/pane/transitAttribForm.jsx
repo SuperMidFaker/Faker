@@ -17,7 +17,6 @@ const formItemLayout = {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     ownerMovements: state.cwmMovement.ownerMovements,
   }),
   { loadOwnerUndoneMovements }
@@ -25,7 +24,6 @@ const formItemLayout = {
 export default class TransitForm extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     batched: PropTypes.bool.isRequired,
   }
   state = {
@@ -33,9 +31,9 @@ export default class TransitForm extends React.Component {
     movement_no: null,
   }
   componentWillReceiveProps(nextProps) {
-    const { detail, tenantId } = this.props;
+    const { detail } = this.props;
     if (nextProps.detail && nextProps.detail !== detail && nextProps.detail.owner_partner_id) {
-      this.props.loadOwnerUndoneMovements(nextProps.detail.owner_partner_id, nextProps.detail.whse_code, tenantId);
+      this.props.loadOwnerUndoneMovements(nextProps.detail.owner_partner_id, nextProps.detail.whse_code);
       this.setState({
         target_location: null,
         movement_no: null,

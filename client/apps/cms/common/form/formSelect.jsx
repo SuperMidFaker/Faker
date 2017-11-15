@@ -36,20 +36,21 @@ export class FormLocalSearchSelect extends React.Component {
           required={required}
         >
           { disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
-            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<Select
-              showSearch={!!searchKeyFn}
-              showArrow
-              allowClear
-              optionFilterProp={searchKeyFn ? 'search' : undefined}
-              placeholder={placeholder}
-            >
-              {
+            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
+              <Select mode="combobox" optionLabelProp="children"
+                showSearch={!!searchKeyFn}
+                showArrow
+                allowClear
+                optionFilterProp={searchKeyFn ? 'search' : undefined}
+                placeholder={placeholder}
+              >
+                {
               options.map(opt => (
                 <Option key={opt.value} search={searchKeyFn ? searchKeyFn(opt) : undefined}>
                   {opt.text}
                 </Option>))
             }
-            </Select>)}
+              </Select>)}
         </FormItem>
       </Col>
     );
@@ -92,7 +93,12 @@ export class FormRemoteSearchSelect extends React.Component {
         >
           {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
-              <Select disabled={disabled} showSearch allowClear onSearch={this.handleSearch} optionFilterProp="children">
+              <Select
+                mode="combobox"
+                optionLabelProp="children"
+                disabled={disabled}
+                showSearch allowClear onSearch={this.handleSearch} optionFilterProp="children"
+              >
                 {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
             }

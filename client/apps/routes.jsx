@@ -65,6 +65,7 @@ import * as CWMReceivingInbound from './cwm/receiving/inbound';
 import * as CWMShippingOrder from './cwm/shipping/order';
 import * as CWMShippingWave from './cwm/shipping/wave';
 import * as CWMShippingOutbound from './cwm/shipping/outbound';
+import * as CWMShippingLoad from './cwm/shipping/load';
 import * as CWMStockInventory from './cwm/stock/inventory';
 import * as CWMStockTransactions from './cwm/stock/transactions';
 import * as CWMStockTransition from './cwm/stock/transition';
@@ -80,6 +81,7 @@ import * as CWMSupSHFTZRelPortion from './cwm/supervision/shftz/release/portion'
 import * as CWMSupSHFTZNormalDecl from './cwm/supervision/shftz/decl/normal';
 import * as CWMSupSHFTZBatchDecl from './cwm/supervision/shftz/decl/batch';
 import * as CWMSupSHFTZStock from './cwm/supervision/shftz/stock';
+import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbonded';
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
@@ -107,38 +109,38 @@ import * as SCOFCustomers from './scof/customers';
 import * as SCOFVendors from './scof/vendors';
 import * as SCOFFlow from './scof/flow';
 import BSS from './bss/module-bss';
-import * as BSSSettlement from './bss/settlement';
+import * as BSSDashboard from './bss/dashboard';
+import * as BSSFeeSummary from './bss/fee/summary';
+import * as BSSFeeStatement from './bss/fee/statement';
+import * as BSSReceivableBill from './bss/receivable/bill';
+import * as BSSReceivableInvoice from './bss/receivable/invoice';
+import * as BSSPaymentReceived from './bss/receivable/payment';
+import * as BSSPayableBill from './bss/payable/bill';
+import * as BSSPayableInvoice from './bss/payable/invoice';
+import * as BSSPaymentMade from './bss/payable/payment';
 import { loadAccount } from 'common/reducers/account';
 import { loadWhseContext } from 'common/reducers/cwmContext';
 import { isLoaded } from 'client/common/redux-actions';
 import { DEFAULT_MODULES } from 'common/constants/module';
 
-// todo IndexRedirect passed nginx added subdomain
-export default(store, cookie) => {
+export default(store) => {
   const requireAuth = (nextState, replace, cb) => {
     function checkAuth() {
-      const query = nextState.location.query;
-      const { account: {
-          subdomain,
-        }, auth: {
-          isAuthed,
-        } } = store.getState();
-      if (!isAuthed || (subdomain !== null && query && query.subdomain && query.subdomain !== subdomain)) {
-        warning(!(subdomain !== null && query && query.subdomain && query.subdomain !== subdomain),
+      // const query = nextState.location.query;
+      const currState = store.getState();
+      const accountSubdomain = currState.account.subdomain;
+      const isAuthed = currState.auth.isAuthed;
+      const subdomain = currState.corpDomain.subdomain;
+      if (!isAuthed || (accountSubdomain && !__DEV__ && accountSubdomain !== subdomain)) {
+        warning(!(accountSubdomain && accountSubdomain !== subdomain),
           'subdomain is not equal to account subdomain, maybe there are tenants with same unique code');
-        const prevQuery = __DEV__ ? query : {};
-        replace({
-          pathname: '/login',
-          query: {
-            next: nextState.location.pathname,
-            ...prevQuery,
-          },
-        });
+        const query = { next: nextState.location.pathname };
+        replace({ pathname: '/login', query });
       }
       cb();
     }
     if (!isLoaded(store.getState(), 'account')) {
-      store.dispatch(loadAccount(cookie)).then(checkAuth);
+      store.dispatch(loadAccount()).then(checkAuth);
     } else {
       checkAuth();
     }
@@ -146,11 +148,12 @@ export default(store, cookie) => {
   const ensureCwmContext = (nextState, replace, cb) => {
     const storeState = store.getState();
     if (!storeState.cwmContext.loaded) {
-      store.dispatch(loadWhseContext(storeState.account.tenantId)).then(() => cb());
+      store.dispatch(loadWhseContext()).then(() => cb());
     } else {
       cb();
     }
   };
+  // IndexRedirect passed nginx will readd subdomain
   return (
     <Route path="/" component={Root}>
       <Route path="pub" component={PackPub}>
@@ -478,6 +481,7 @@ export default(store, cookie) => {
                 <IndexRoute component={CWMShippingOutbound.List} />
                 <Route path=":outboundNo" component={CWMShippingOutbound.Detail} />
               </Route>
+              <Route path="load" component={CWMShippingLoad.List} />
             </Route>
             <Route path="stock">
               <Route path="inventory" component={CWMStockInventory.List} />
@@ -526,6 +530,7 @@ export default(store, cookie) => {
                 <Route path="stock" >
                   <IndexRoute component={CWMSupSHFTZStock.List} />
                   <Route path="task/:taskId" component={CWMSupSHFTZStock.Task} />
+                  <Route path="nonbonded" component={CWMSupSHFTZNonBondedStock.List} />
                 </Route>
                 <Route path="cargo" >
                   <IndexRoute component={CWMSupSHFTZCargo.List} />
@@ -559,14 +564,30 @@ export default(store, cookie) => {
             <Route path="flow" component={SCOFFlow.ListPanel} />
           </Route>
           <Route path={DEFAULT_MODULES.bss.id} component={BSS}>
-            <IndexRedirect to="/bss/settlement/list" />
-            <Route path="settlement">
-              <Route path="fees" component={BSSSettlement.FeeList} />
-              <Route path="list" component={BSSSettlement.List} />
-              <Route path="create" component={BSSSettlement.Create} />
-              <Route path="check/:billingId" component={BSSSettlement.Check} />
-              <Route path="edit/:billingId" component={BSSSettlement.Edit} />
-              <Route path="view/:billingId" component={BSSSettlement.View} />
+            <IndexRedirect to="/bss/dashboard" />
+            <Route path="dashboard" component={BSSDashboard.Index} />
+            <Route path="fee">
+              <Route path="summary" >
+                <IndexRoute component={BSSFeeSummary.List} />
+                <Route path=":orderRelNo" component={BSSFeeSummary.Detail} />
+              </Route>
+              <Route path="statement" component={BSSFeeStatement.List} />
+            </Route>
+            <Route path="receivable">
+              <Route path="bill" >
+                <IndexRoute component={BSSReceivableBill.List} />
+                <Route path=":billNo" component={BSSReceivableBill.Detail} />
+              </Route>
+              <Route path="invoice" component={BSSReceivableInvoice.List} />
+              <Route path="payment" component={BSSPaymentReceived.List} />
+            </Route>
+            <Route path="payable">
+              <Route path="bill" >
+                <IndexRoute component={BSSPayableBill.List} />
+                <Route path=":billNo" component={BSSPayableBill.Detail} />
+              </Route>
+              <Route path="invoice" component={BSSPayableInvoice.List} />
+              <Route path="payment" component={BSSPaymentMade.List} />
             </Route>
           </Route>
         </Route>

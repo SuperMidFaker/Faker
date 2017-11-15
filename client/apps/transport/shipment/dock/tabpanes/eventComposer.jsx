@@ -336,7 +336,7 @@ export default class EventComposer extends React.Component {
                   desc = disp[step.date] ? `${step.text} ${moment(disp[step.date]).format('YYYY.MM.DD')}` : step.text;
                 }
               }
-              return (<Step description={desc} key={step.status} />);
+              return (<Step title={desc} key={step.status} />);
             })}
           </Steps>
         </div>

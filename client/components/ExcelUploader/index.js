@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Progress, Upload, Modal } from 'antd';
+import { Upload } from 'antd';
+import UploadMask from '../UploadMask';
 
 export default class ExcelUploader extends React.Component {
   static propTypes = {
@@ -10,57 +11,20 @@ export default class ExcelUploader extends React.Component {
     onUploaded: PropTypes.func,
   }
   state = {
-    uploadChangeCount: 0,
-    inUpload: false,
-    uploadPercent: 10,
-    uploadStatus: 'active',
-    errorMsg: '',
-    closable: false,
-    startTimestamp: 0,
+    importInfo: {},
   }
   handleImport = (info) => {
-    if (this.state.uploadChangeCount === 0) {
-      this.state.startTimestamp = Date.now();
-      this.state.uploadChangeCount++;
-      this.setState({ inUpload: true, uploadStatus: 'active', uploadPercent: 10 });
-    } else if (info.event) {
-      this.state.uploadChangeCount++;
-      this.setState({ uploadPercent: info.event.percent * 0.8 });
-    } else if (info.file.status === 'done') {
-      const response = info.file.response;
-      this.state.uploadChangeCount = 0;
-      if (response.status !== 200) {
-        this.setState({ uploadStatus: 'exception', errorMsg: response.msg, closable: true });
-      } else {
-        this.setState({ inUpload: false, uploadStatus: 'success' });
-        if (this.props.onUploaded) {
-          this.props.onUploaded(response.data);
-        }
-      }
-    } else if (info.file.status === 'error') {
-      let errorMsg = '文件处理超时,请考虑分批导入';
-      if (Date.now() - this.state.startTimestamp < 60 * 60 * 1000) { // 1min以内提示网络问题
-        errorMsg = '上传失败,请检查网络连接';
-      }
-      this.setState({ uploadStatus: 'exception', errorMsg, closable: true });
-      this.state.uploadChangeCount = 0;
-    }
+    this.setState({ importInfo: info });
   }
-  handleCancel = () => { this.setState({ inUpload: false, errorMsg: '', closable: false }); }
   render() {
-    const { endpoint, formData, children } = this.props;
-    const { inUpload, uploadPercent, uploadStatus, errorMsg, closable } = this.state;
+    const { endpoint, formData, children, onUploaded } = this.props;
+    const { importInfo } = this.state;
     return (
       <Upload accept=".xls,.xlsx" action={endpoint} showUploadList={false}
         data={formData} onChange={this.handleImport} withCredentials
       >
         {children}
-        <Modal maskClosable={false} closable={closable} footer={[]} visible={inUpload} onCancel={this.handleCancel}>
-          {errorMsg && <Alert message={errorMsg} showIcon type="error" /> }
-          <Progress type="circle" percent={uploadPercent} status={uploadStatus}
-            style={{ display: 'block', margin: '0 auto', width: '40%' }}
-          />
-        </Modal>
+        <UploadMask uploadInfo={importInfo} onUploaded={onUploaded} />
       </Upload>
     );
   }

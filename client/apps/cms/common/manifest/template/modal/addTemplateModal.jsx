@@ -82,7 +82,7 @@ export default class AddTemplateModal extends React.Component {
               showSearch
               placeholder="选择客户"
               optionFilterProp="children"
-              size="large"
+
               style={{ width: '100%' }}
             >
               {customers.map(data => (<Option key={data.id} value={data.id}

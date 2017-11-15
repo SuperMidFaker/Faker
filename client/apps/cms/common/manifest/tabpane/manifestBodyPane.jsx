@@ -7,20 +7,22 @@ import { loadBill, addNewBillBody, delBillBody, editBillBody, updateHeadNetWt, l
   deleteSelectedBodies, resetBillBody, openRuleModel, showEditBodyModal, showDeclElementsModal, updateBillBody } from 'common/reducers/cmsManifest';
 import { toggleDeclImportModal } from 'common/reducers/cmsManifestImport';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
-import { format } from 'client/common/i18n/helpers';
-import ExcelUploader from 'client/components/ExcelUploader';
+import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
-import { createFilename } from 'client/util/dataTransform';
-import AmountModel from '../modals/amountDivid';
-import RowUpdater from 'client/components/rowUpdater';
-import messages from '../../form/message.i18n';
-import RelateImportRuleModal from '../modals/relateImportRules';
-import { dividGrossWt } from './helper';
-import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import EditBodyModal from '../modals/editBodyModal';
 import DeclElementsModal from '../../modal/declElementsModal';
 import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
+import ImportDataPanel from 'client/components/ImportDataPanel';
+import AmountModel from '../modals/amountDivid';
+import RowUpdater from 'client/components/rowUpdater';
+import RelateImportRuleModal from '../modals/relateImportRules';
+import { dividGrossWt } from './helper';
+import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
+import { createFilename } from 'client/util/dataTransform';
+import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../form/message.i18n';
 
 const formatMsg = format(messages);
 const Option = Select.Option;
@@ -183,6 +185,7 @@ function calculateTotal(bodies, currencies) {
     loginId: state.account.loginId,
     billHead: state.cmsManifest.billHead,
     billMeta: state.cmsManifest.billMeta,
+    adaptors: state.saasLineFileAdaptor.adaptors,
   }),
   { loadBill,
     addNewBillBody,
@@ -202,6 +205,7 @@ function calculateTotal(bodies, currencies) {
     updateBillBody,
     getElementByHscode,
     toggleDeclImportModal,
+    loadAdaptors,
   }
 )
 export default class ManifestBodyPane extends React.Component {
@@ -252,12 +256,14 @@ export default class ManifestBodyPane extends React.Component {
         onChange: this.handlePageChange,
       },
       selectedRowKeys: [],
+      importPanelVisible: false,
+      importPanel: { endpoint: '', template: '', title: '' },
     };
   }
-  componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ scrollY: window.innerHeight - 320 });
-    }
+  componentDidMount() {
+    this.props.loadAdaptors(this.props.billHead.owner_cuspartner_id,
+      [LINE_FILE_ADAPTOR_MODELS.CMS_MANIFEST_BODY.key],
+      true);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
@@ -310,13 +316,13 @@ export default class ManifestBodyPane extends React.Component {
           );
         }
       },
-/*    }, {
+    }, {
       title: this.msg('emGNo'),
       width: 100,
       render: (o, record, index) =>
         (<ColumnInput field="em_g_no" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} edit={editBody}
-        />), */
+        />),
     }, {
       title: this.msg('codeT'),
       width: 110,
@@ -764,16 +770,9 @@ export default class ManifestBodyPane extends React.Component {
       this.handleNetWetSummary();
     }
   }
-  handleUnrelatedImportMenuClick = (e) => {
-    if (e.key === 'download') {
-      window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`);
-    }
-  }
   handleRelatedImportMenuClick = (e) => {
     if (e.key === 'rule') {
       this.props.openRuleModel();
-    } else if (e.key === 'downloadRelated') {
-      window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/related/model/download/${createFilename('relatedModel')}.xlsx`);
     } else if (e.key === 'refresh') {
       this.handleRelatedRefresh();
     }
@@ -782,8 +781,10 @@ export default class ManifestBodyPane extends React.Component {
     window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/export/${createFilename('billbodyExport')}.xlsx?billSeqNo=${this.props.billSeqNo}`);
   }
   handleBodyExportToItem = () => {
-    window.open(`${API_ROOTS.default}v1/cms/manifest/billbody/unclassified/to/item/export/${createFilename('bodyExportToItem')}.xlsx?billSeqNo=${
-      this.props.billSeqNo}&repoId=${this.props.billMeta.repoId}`);
+    const vurl = 'v1/cms/manifest/billbody/unclassified/to/item/export/';
+    const billSeqNo = this.props.billSeqNo;
+    const repoId = this.props.billMeta.repoId;
+    window.open(`${API_ROOTS.default}${vurl}${createFilename('bodyExportToItem')}.xlsx?billSeqNo=${billSeqNo}&repoId=${repoId}`);
   }
   handleReload = (reloadHead) => {
     this.setState({ tableMask: true });
@@ -791,8 +792,9 @@ export default class ManifestBodyPane extends React.Component {
       this.setState({ tableMask: false });
     });
     if (reloadHead) {
-      this.props.loadBill(this.props.billSeqNo, this.props.tenantId, this.props.billHead.i_e_type);
+      this.props.loadBill(this.props.billSeqNo);
     }
+    this.setState({ importPanelVisible: false });
   }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -848,6 +850,33 @@ export default class ManifestBodyPane extends React.Component {
   handleDeclBodyImport = () => {
     this.props.toggleDeclImportModal(true);
   }
+  handleUnrelatedImport = () => {
+    this.setState({ importPanelVisible: true,
+      importPanel: {
+        title: '直接导入',
+        endpoint: `${API_ROOTS.default}v1/cms/manifest/billbody/import`,
+        template: `${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`,
+      },
+    });
+  }
+  handleRelatedImport = () => {
+    this.setState({ importPanelVisible: true,
+      importPanel: {
+        title: '关联导入',
+        endpoint: `${API_ROOTS.default}v1/cms/manifest/billbody/related/import`,
+        template: `${API_ROOTS.default}v1/cms/manifest/billbody/related/model/download/${createFilename('relatedModel')}.xlsx`,
+      },
+    });
+  }
+  handleManualBodyImport = () => {
+    this.setState({ importPanelVisible: true,
+      importPanel: {
+        title: '手册导入',
+        endpoint: `${API_ROOTS.default}v1/cms/manifest/billbody/related/manual/import`,
+        template: `${API_ROOTS.default}v1/cms/manifest/billbody/model/download/${createFilename('billbodyModel')}.xlsx`,
+      },
+    });
+  }
   renderToolbar() {
     const { readonly, billMeta } = this.props;
     const dataToolsMenu = (
@@ -856,15 +885,10 @@ export default class ManifestBodyPane extends React.Component {
         <Menu.Item key="wtDivid">毛重分摊</Menu.Item>
         <Menu.Item key="wtSum">净重汇总</Menu.Item>
       </Menu>);
-    const unrelatedImportMenu = (
-      <Menu onClick={this.handleUnrelatedImportMenuClick}>
-        <Menu.Item key="download"><Icon type="file-excel" /> 下载导入模板</Menu.Item>
-      </Menu>);
     const relatedImportMenu = (
       <Menu onClick={this.handleRelatedImportMenuClick}>
         {this.state.bodies.length > 1 && billMeta.repoId !== null &&
         <Menu.Item key="refresh"><Icon type="retweet" /> 重新关联归类数据</Menu.Item>}
-        <Menu.Item key="downloadRelated"><Icon type="file-excel" /> 下载导入模板</Menu.Item>
         <Menu.Item key="rule"><Icon type="tool" /> 设置关联导入规则</Menu.Item>
       </Menu>);
     const exportMenu = (
@@ -874,65 +898,42 @@ export default class ManifestBodyPane extends React.Component {
       </Menu>);
     if (readonly) {
       return (<Dropdown overlay={exportMenu}>
-        <Button size="large">
+        <Button >
           <Icon type="export" /> 导出 <Icon type="down" />
         </Button>
       </Dropdown>);
     } else {
       return (<span>
-        <Button size="large" icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
-        <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/import`}
-          formData={{
-            data: JSON.stringify({
-              bill_seq_no: this.props.billSeqNo,
-              tenant_id: this.props.tenantId,
-              creater_login_id: this.props.loginId,
-            }),
-          }} onUploaded={this.handleReload}
-        >
-          <Dropdown.Button size="large" onClick={this.handleUnrelatedImport} overlay={unrelatedImportMenu} style={{ marginLeft: 8 }}>
-            <Icon type="upload" /> {this.msg('unrelatedImport')}
-          </Dropdown.Button>
-        </ExcelUploader>
-        <ExcelUploader endpoint={`${API_ROOTS.default}v1/cms/manifest/billbody/related/import`}
-          formData={{
-            data: JSON.stringify({
-              bill_seq_no: this.props.billHead.bill_seq_no,
-              tenant_id: this.props.tenantId,
-              creater_login_id: this.props.loginId,
-              delgNo: this.props.billHead.delg_no,
-              tradeCode: this.props.billHead.trade_co,
-            }),
-          }} onUploaded={this.handleReload}
-        >
-          <Dropdown.Button size="large" onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
-            <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
-          </Dropdown.Button>
-        </ExcelUploader>
-        <Button size="large" icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
+        <Button icon="plus-circle-o" onClick={this.handleAddBody}>添加</Button>
+        <Button icon="upload" onClick={this.handleUnrelatedImport} style={{ marginLeft: 8 }}>{this.msg('unrelatedImport')}</Button>
+        <Dropdown.Button onClick={this.handleRelatedImport} overlay={relatedImportMenu} style={{ marginLeft: 8 }}>
+          <Icon type="cloud-upload-o" /> {this.msg('relatedImport')}
+        </Dropdown.Button>
+        { this.props.billHead.manual_no &&
+        <Button icon="book" onClick={this.handleManualBodyImport} style={{ marginLeft: 8 }}>手册账册关联导入</Button>}
+        <Button icon="copy" onClick={this.handleDeclBodyImport} style={{ marginLeft: 8 }}>复制历史数据</Button>
         <Dropdown overlay={dataToolsMenu}>
-          <Button size="large" style={{ marginLeft: 8 }}>
+          <Button style={{ marginLeft: 8 }}>
             <Icon type="tool" /> <Icon type="down" />
           </Button>
         </Dropdown>
         <Dropdown overlay={exportMenu}>
-          <Button size="large" style={{ marginLeft: 8 }}>
+          <Button style={{ marginLeft: 8 }}>
             <Icon type="export" /> 导出 <Icon type="down" />
           </Button>
         </Dropdown>
         <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
-          <Button size="large" type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
+          <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
         </Popconfirm>
       </span>);
     }
   }
 
   render() {
-    const { totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup, editBody } = this.state;
-    const selectedRows = this.state.selectedRowKeys;
+    const { totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup, editBody, importPanelVisible, importPanel } = this.state;
     const disabled = this.props.readonly;
     const rowSelection = {
-      selectedRowKeys: selectedRows,
+      selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
@@ -969,6 +970,14 @@ export default class ManifestBodyPane extends React.Component {
         <EditBodyModal editBody={editBody} billSeqNo={this.props.billSeqNo} />
         <DeclElementsModal onOk={this.handleModelChange} />
         <ImportDeclaredBodyModal reload={() => this.handleReload(true)} />
+        <ImportDataPanel adaptors={this.props.adaptors} title={importPanel.title}
+          visible={importPanelVisible}
+          endpoint={importPanel.endpoint}
+          formData={{ bill_seq_no: this.props.billHead.bill_seq_no }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.handleReload}
+          template={importPanel.template}
+        />
       </DataPane>
     );
   }

@@ -41,6 +41,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/receive/', [
   'GET_SUPPLIERS', 'GET_SUPPLIERS_SUCCEED', 'GET_SUPPLIERS_FAIL',
   'GET_CROSS_ASNS', 'GET_CROSS_ASNS_SUCCEED', 'GET_CROSS_ASNS_FAIL',
   'GET_CROSS_ASNDS', 'GET_CROSS_ASNDS_SUCCEED', 'GET_CROSS_ASNDS_FAIL',
+  'GET_SKU_AVAIL', 'GET_SKU_AVAIL_SUCCEED', 'GET_SKU_AVAIL_FAIL',
 ]);
 
 const initialState = {
@@ -320,7 +321,7 @@ export function updateASN(data) {
   };
 }
 
-export function loadProducts(productNo, partnerId, tenantId) {
+export function loadProducts(productNo, partnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -330,7 +331,7 @@ export function loadProducts(productNo, partnerId, tenantId) {
       ],
       endpoint: 'v1/cwm/receive/productNos/load',
       method: 'get',
-      params: { productNo, partnerId, tenantId },
+      params: { productNo, partnerId },
     },
   };
 }
@@ -350,7 +351,7 @@ export function loadAsn(asnNo) {
   };
 }
 
-export function loadAsnLists({ whseCode, tenantId, pageSize, current, filters }) {
+export function loadAsnLists({ whseCode, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -360,7 +361,7 @@ export function loadAsnLists({ whseCode, tenantId, pageSize, current, filters })
       ],
       endpoint: 'v1/cwm/receive/asnLists/load',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -410,7 +411,7 @@ export function cancelAsn(asnNo) {
   };
 }
 
-export function loadInbounds({ whseCode, tenantId, pageSize, current, filters }) {
+export function loadInbounds({ whseCode, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -420,7 +421,7 @@ export function loadInbounds({ whseCode, tenantId, pageSize, current, filters })
       ],
       endpoint: 'v1/cwm/receive/inbounds/load',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -634,7 +635,7 @@ export function undoReceives(inboundNo, loginId, traceIds) {
   };
 }
 
-export function batchPutaways(traceIds, location, allocater, allocateDt, loginName, inboundNo, tenantId) {
+export function batchPutaways(traceIds, location, allocater, allocateDt, loginName, inboundNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -644,12 +645,12 @@ export function batchPutaways(traceIds, location, allocater, allocateDt, loginNa
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/batch',
       method: 'post',
-      data: { traceIds, location, allocater, allocateDt, loginName, inboundNo, tenantId },
+      data: { traceIds, location, allocater, allocateDt, loginName, inboundNo },
     },
   };
 }
 
-export function expressPutaways(loginId, loginName, inboundNo, tenantId) {
+export function expressPutaways(loginId, loginName, inboundNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -659,7 +660,7 @@ export function expressPutaways(loginId, loginName, inboundNo, tenantId) {
       ],
       endpoint: 'v1/cwm/inbound/product/putaway/express',
       method: 'post',
-      data: { loginName, loginId, inboundNo, tenantId },
+      data: { loginName, loginId, inboundNo },
     },
   };
 }
@@ -745,7 +746,7 @@ export function loadLotInfo(asnNo) {
   };
 }
 
-export function getSuppliers(tenantId, whseCode, ownerPartnerId) {
+export function getSuppliers(whseCode, ownerPartnerId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -755,12 +756,12 @@ export function getSuppliers(tenantId, whseCode, ownerPartnerId) {
       ],
       endpoint: 'v1/cwm/get/suppliers',
       method: 'get',
-      params: { tenantId, whseCode, ownerPartnerId },
+      params: { whseCode, ownerPartnerId },
     },
   };
 }
 
-export function getCrossAsns(whseCode) {
+export function getCrossAsns(whseCode, bonded, regType) {
   return {
     [CLIENT_API]: {
       types: [
@@ -770,7 +771,7 @@ export function getCrossAsns(whseCode) {
       ],
       endpoint: 'v1/cwm/cross/asns',
       method: 'get',
-      params: { whseCode },
+      params: { whseCode, bonded, regType },
     },
   };
 }
@@ -786,6 +787,21 @@ export function getCrossAsnDetails(asnNos) {
       endpoint: 'v1/cwm/cross/asn/details',
       method: 'get',
       params: { asnNos },
+    },
+  };
+}
+
+export function getSkuAvail(ownerPartnerId, productNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.GET_SKU_AVAIL,
+        actionTypes.GET_SKU_AVAIL_SUCCEED,
+        actionTypes.GET_SKU_AVAIL_FAIL,
+      ],
+      endpoint: 'v1/cwm/product/amount/get',
+      method: 'get',
+      params: { ownerPartnerId, productNo },
     },
   };
 }

@@ -35,7 +35,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadWhseContext(tenantId) {
+export function loadWhseContext() {
   return {
     [CLIENT_API]: {
       types: [
@@ -45,7 +45,6 @@ export function loadWhseContext(tenantId) {
       ],
       endpoint: 'v1/cwm/context/warehouses',
       method: 'get',
-      params: { tenantId },
     },
   };
 }
@@ -57,7 +56,7 @@ export function switchDefaultWhse(whno) {
   };
 }
 
-export function loadWhse(whseCode, tenantId) {
+export function loadWhse(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -67,12 +66,12 @@ export function loadWhse(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/context/warehouse',
       method: 'get',
-      params: { whse_code: whseCode, tenantId },
+      params: { whse_code: whseCode },
     },
   };
 }
 
-export function searchWhse(data, tenantId) {
+export function searchWhse(data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -82,7 +81,7 @@ export function searchWhse(data, tenantId) {
       ],
       endpoint: 'v1/cwm/search/whse',
       method: 'get',
-      params: { data, tenantId },
+      params: { data },
     },
   };
 }

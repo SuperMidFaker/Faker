@@ -95,6 +95,8 @@ export default class DetailsPane extends Component {
     const { editable, temporaryDetails, detailEnable, units, currencies, form } = this.props;
     const { pagination } = this.state;
     const soType = form.getFieldValue('so_type');
+    const bonded = form.getFieldValue('bonded');
+    const regType = form.getFieldValue('reg_type');
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -188,11 +190,11 @@ export default class DetailsPane extends Component {
           {editable && <Button icon="upload" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'}>导入</Button>}
           {editable && <Button disabled={(detailEnable && Number(soType) === 3) ? '' : 'disabled'} onClick={this.showAsnSelectModal}>选择ASN</Button>}
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
-            <Button size="large" onClick={this.handleBatchDelete} icon="delete" />
+            <Button onClick={this.handleBatchDelete} icon="delete" />
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
-        <AsnSelectModal />
+        <AsnSelectModal bonded={bonded} regType={regType} />
       </DataPane>
     );
   }

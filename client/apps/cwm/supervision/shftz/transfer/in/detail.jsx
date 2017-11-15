@@ -35,7 +35,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
@@ -96,10 +95,9 @@ export default class SHFTZTransferInDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleEnqueryPairing = () => {
     const asnNo = this.props.params.asnNo;
-    const tenantId = this.props.tenantId;
     const loginName = this.props.username;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, ftzWhseCode, tenantId, loginName).then((result) => {
+    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, ftzWhseCode, loginName).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
@@ -277,21 +275,21 @@ export default class SHFTZTransferInDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleInboundPage}>
+              <Button icon="link" onClick={this.handleInboundPage}>
                 {inbStatus && <Badge status={inbStatus.badge} text={inbStatus.text} />}
               </Button>
             </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {this.state.comparable && <Button type="primary" size="large" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>明细匹配核对</Button>}
+            {this.state.comparable && <Button type="primary" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>明细匹配核对</Button>}
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing &&
-              <Button type="primary" size="large" loading={submitting} onClick={this.handlePairingConfirmed}>核对通过</Button>}
+              <Button type="primary" loading={submitting} onClick={this.handlePairingConfirmed}>核对通过</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="海关进库单号">
                   <EditableCell value={entryRegs[0] && entryRegs[0].ftz_ent_no}
@@ -322,9 +320,9 @@ export default class SHFTZTransferInDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="待转入" />
-                  <Step description="已接收" />
-                  <Step description="已核对" />
+                  <Step title="待转入" />
+                  <Step title="已接收" />
+                  <Step title="已核对" />
                 </Steps>
               </div>
             </Card>

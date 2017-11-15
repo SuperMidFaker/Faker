@@ -226,7 +226,7 @@ export default class RegionCascader extends React.Component {
       <Row>
         {
           this.props.country !== undefined &&
-          <Select size="large" value={country} style={{ width: '100%', marginBottom: 8 }} onChange={this.handleCountryChange}>
+          <Select value={country} style={{ width: '100%', marginBottom: 8 }} onChange={this.handleCountryChange}>
             <OptGroup label={formatMsg(intl, 'selectCountry')}>
               {
               world.countries.map(ctry => <Option value={ctry.code} key={ctry.code}>{ctry.zh_cn}</Option>)
@@ -234,7 +234,7 @@ export default class RegionCascader extends React.Component {
             </OptGroup>
           </Select>
         }
-        <Cascader size="large" options={chinaRegions} disabled={disableCascader} style={{ width: '100%' }}
+        <Cascader options={chinaRegions} disabled={disableCascader} style={{ width: '100%' }}
           placeholder={formatMsg(intl, 'defaultCascaderRegion')}
           loadData={this.handleRegionLoad} changeOnSelect
           onChange={this.handleRegionChange} value={cascadeRegion} showSearch

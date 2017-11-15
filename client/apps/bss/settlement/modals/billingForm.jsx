@@ -94,7 +94,7 @@ export default class BillingForm extends React.Component {
             wrapperCol={{ span: 14 }}
           >
             {getFieldDecorator('partnerId')(
-              <Select id="select" size="large"
+              <Select id="select"
                 showSearch
                 placeholder=""
                 optionFilterProp="children"

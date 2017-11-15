@@ -1,9 +1,9 @@
 import { defineMessages } from 'react-intl';
 
 export default defineMessages({
-  customsDeclaration: {
-    id: 'cms.common.customs.management',
-    defaultMessage: '报关单证',
+  customsDecl: {
+    id: 'cms.common.customs.decl',
+    defaultMessage: '报关申报',
   },
   searchPlaceholder: {
     id: 'cms.common.customs.search.placeholder',

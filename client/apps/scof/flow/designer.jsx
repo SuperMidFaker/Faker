@@ -536,16 +536,16 @@ export default class FlowDesigner extends React.Component {
                 {currentFlow.name}
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <ButtonToggle size="large"
+            <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />
             <div className="page-header-tools">
-              <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+              <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
                 {this.msg('saveFlow')}
               </Button>
-              <ButtonToggle size="large"
+              <ButtonToggle
                 iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               />
@@ -612,7 +612,7 @@ export default class FlowDesigner extends React.Component {
               <Panel header={'更多'} key="more">
                 <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
                 <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteFlow}>
-                  <Button type="danger" size="large" icon="delete">删除流程</Button>
+                  <Button type="danger" icon="delete">删除流程</Button>
                 </Popconfirm>
               </Panel>
             </Collapse>

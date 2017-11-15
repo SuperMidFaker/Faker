@@ -72,10 +72,10 @@ export default class InstallQuickPass extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" icon="save" loading={this.state.submitting}
+            <Button type="primary" icon="save" loading={this.state.submitting}
               onClick={this.handleInstallBtnClick}
             >
               {this.msg('installApp')}

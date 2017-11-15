@@ -60,7 +60,7 @@ export default class ModuleEditor extends React.Component {
     return (
       <Modal maskClosable={false} title={formatMsg(intl, 'appEditorTitle')} visible={this.state.visible}
         onCancel={this.handleCancel} footer={[
-          <Button key="confirm" type="primary" size="large" onClick={this.handleCancel}>
+          <Button key="confirm" type="primary" onClick={this.handleCancel}>
             {formatGlobalMsg(intl, 'ok')}
           </Button>]
         }

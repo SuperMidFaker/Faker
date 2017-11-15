@@ -18,12 +18,11 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
-    visible: state.cwmShFtz.clearanceModal.visible,
+    visible: state.cwmShFtz.normalDeclModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
-    ownerCusCode: state.cwmShFtz.clearanceModal.ownerCusCode,
+    ownerCusCode: state.cwmShFtz.normalDeclModal.ownerCusCode,
     normalRegs: state.cwmShFtz.batchout_regs,
     billTemplates: state.cwmShFtz.billTemplates,
     loginId: state.account.loginId,
@@ -73,9 +72,10 @@ export default class NormalDeclModal extends Component {
     currency: '',
     template: undefined,
     ftzRelNo: '',
-    searchText: '',
     dutyMode: '1',
     destCountry: '142',
+    normalRowSelKeys: [],
+    normalSelRows: [],
   }
   componentWillMount() {
     this.props.loadParams();
@@ -185,6 +185,18 @@ export default class NormalDeclModal extends Component {
       }
     });
   }
+  batchAdd = () => {
+    const { normalSelRows } = this.state;
+    const preEntrySeqNos = normalSelRows.map(item => item.pre_entry_seq_no);
+    const relNos = normalSelRows.map(item => item.ftz_rel_no);
+    this.props.loadBatchRegDetails(preEntrySeqNos).then((result) => {
+      if (!result.error) {
+        const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
+        const normalRegs = this.state.normalRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
+        this.setState({ regDetails, normalRegs, normalRowSelKeys: [], normalSelRows: [] });
+      }
+    });
+  }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
     const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
@@ -220,6 +232,8 @@ export default class NormalDeclModal extends Component {
       template: undefined,
       destCountry: '',
       dutyMode: '',
+      normalRowSelKeys: [],
+      normalSelRows: [],
     });
     this.props.form.resetFields();
     this.props.closeNormalDeclModal();
@@ -232,7 +246,6 @@ export default class NormalDeclModal extends Component {
     const { ownerCusCode, relNo, relDateRange, currency } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -249,7 +262,6 @@ export default class NormalDeclModal extends Component {
     const { ownerCusCode, relNo, relDateRange, supplier } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -274,7 +286,6 @@ export default class NormalDeclModal extends Component {
     const { ownerCusCode, relNo, relDateRange, currency, supplier } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -340,7 +351,6 @@ export default class NormalDeclModal extends Component {
   }
   handleOwnerChange = (ownerCusCode) => {
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'normal',
@@ -357,14 +367,10 @@ export default class NormalDeclModal extends Component {
     if (owner) {
       this.props.loadManifestTemplates({
         owner_partner_id: owner.id,
-        tenant_id: this.props.tenantId,
         ietype: 0,
       });
-      this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
+      this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
     }
-  }
-  handleSearch = (searchText) => {
-    this.setState({ searchText });
   }
   handleDutyModeChange = (dutyMode) => {
     this.setState({ dutyMode });
@@ -442,8 +448,25 @@ export default class NormalDeclModal extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const normalRowSelection = {
+      selectedRowKeys: this.state.normalRowSelKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ normalRowSelKeys: selectedRowKeys, normalSelRows: selectedRows });
+      },
+      selections: [{
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          const selectedRowKeys = this.state.normalRegs.map(item => item.id);
+          this.setState({
+            normalRowSelKeys: selectedRowKeys,
+            normalSelRows: this.state.normalRegs,
+          });
+        },
+      }],
+    };
     const title = (<div>
-      <span>新建普通出库报关</span>
+      <span>新建普通出库清关</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleBatchClear}>保存</Button>
@@ -459,13 +482,17 @@ export default class NormalDeclModal extends Component {
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title="普通出库单" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="出区提货单" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Input size="large" value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
-                    <Button size="large" icon="search" onClick={this.handleNormalOutsQuery} />
+                    <Input value={relNo} placeholder="出库单号" onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
+                    <Button icon="search" onClick={this.handleNormalOutsQuery} />
+                    <div className={`bulk-actions ${this.state.normalRowSelKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.normalRowSelKeys.length}项</h3>
+                      {this.state.normalRowSelKeys.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
+                    </div>
                   </div>
-                  <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id"
+                  <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id" rowSelection={normalRowSelection}
                     scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
@@ -475,18 +502,18 @@ export default class NormalDeclModal extends Component {
               <Card title="出库报关明细" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} onSearch={this.handleSearch} />
-                    <Select allowClear size="large" placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
+                    <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange} />
+                    <Select allowClear placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
                       {exemptions.map(data => (
                         <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
                       ))}
                     </Select>
-                    <Select showSearch showArrow allowClear size="large" placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
+                    <Select showSearch showArrow allowClear placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
                       {tradeCountries.map(data => (
                         <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
                       ))}
                     </Select>
-                    <Select allowClear size="large" placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
+                    <Select allowClear placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
                       {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
                     </Select>
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

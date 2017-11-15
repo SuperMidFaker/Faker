@@ -14,7 +14,6 @@ const RangePicker = DatePicker.RangePicker;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     statsCard: state.cwmDashboard.statsCard,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
@@ -29,18 +28,18 @@ export default class StatsCard extends Component {
     }),
   }
   componentWillMount() {
-    const { defaultWhse, tenantId } = this.props;
-    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code, tenantId);
+    const { defaultWhse } = this.props;
+    this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.defaultWhse.code !== this.props.defaultWhse.code) {
-      const { defaultWhse, tenantId } = nextProps;
-      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code, tenantId);
+      const { defaultWhse } = nextProps;
+      this.props.loadStatsCard(moment(new Date()).format('YYYY-MM-DD'), moment(new Date()).format('YYYY-MM-DD'), defaultWhse.code);
     }
   }
   onDateChange = (data, dataString) => {
-    const { defaultWhse, tenantId } = this.props;
-    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code, tenantId);
+    const { defaultWhse } = this.props;
+    this.props.loadStatsCard(dataString[0], dataString[1], defaultWhse.code);
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
@@ -55,7 +54,7 @@ export default class StatsCard extends Component {
       <Card title={this.msg('stats')}
         extra={datePicker} noHovering bodyStyle={{ padding: 0 }}
       >
-        <Card.Grid style={{ width: '14%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('totalInbound')}</h4>
             <div className="data">
@@ -63,7 +62,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toReceive')}</h4>
             <div className="data">
@@ -71,7 +70,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('received')}</h4>
             <div className="data">
@@ -79,7 +78,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '14%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('totalOutbound')}</h4>
             <div className="data">
@@ -87,7 +86,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toAllocate')}</h4>
             <div className="data">
@@ -95,7 +94,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toPick')}</h4>
             <div className="data">
@@ -103,7 +102,7 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('toShip')}</h4>
             <div className="data">
@@ -111,11 +110,27 @@ export default class StatsCard extends Component {
             </div>
           </div>
         </Card.Grid>
-        <Card.Grid style={{ width: '12%' }} className="statistics-columns">
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
           <div className="statistics-cell">
             <h4>{this.msg('shippingCompleted')}</h4>
             <div className="data">
               <div className="data-num lg text-success">{statsCard.shipped}</div>
+            </div>
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('待同步入库备案')}</h4>
+            <div className="data">
+              <div className="data-num lg text-warning">{statsCard.entry}</div>
+            </div>
+          </div>
+        </Card.Grid>
+        <Card.Grid style={{ width: '20%' }} className="statistics-columns">
+          <div className="statistics-cell">
+            <h4>{this.msg('待同步分拨出库备案')}</h4>
+            <div className="data">
+              <div className="data-num lg text-warning">{statsCard.portions}</div>
             </div>
           </div>
         </Card.Grid>

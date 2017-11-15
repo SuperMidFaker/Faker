@@ -11,8 +11,7 @@ const formatMsg = format(messages);
 
 @injectIntl
 @connect(
-  state => ({
-    tenantId: state.account.tenantId,
+  () => ({
   }),
   { loadOutboundsByTraceId }
 )

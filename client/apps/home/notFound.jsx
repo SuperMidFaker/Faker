@@ -43,7 +43,7 @@ export default class NotFound extends React.Component {
                 description={formatMsg(intl, 'notFoundDesc')}
                 type="warning"
               />
-              <Button type="ghost" size="large" style={{ width: '100%' }} onClick={this.handleBackClick}>返回</Button>
+              <Button type="ghost" style={{ width: '100%' }} onClick={this.handleBackClick}>返回</Button>
             </Card>
           </div>
         </div>

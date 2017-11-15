@@ -19,6 +19,8 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SHOW_BATCH_SEND_MODAL', 'SHOW_BATCH_SEND_MODAL_SUCCEED', 'SHOW_BATCH_SEND_MODAL_FAIL',
   'CLOSE_BATCH_SEND_MODAL',
   'UPDATE_MARK', 'UPDATE_MARK_SUCCEED', 'UPDATE_MARK_FAIL',
+  'LOAD_SEND_RECORDS', 'LOAD_SEND_RECORDS_SUCCEED', 'LOAD_SEND_RECORDS_FAIL',
+  'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
 ]);
 
 const initialState = {
@@ -68,6 +70,8 @@ const initialState = {
   },
   customsResults: [],
   customsResultsLoading: false,
+  sendRecords: [],
+  returnRecords: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -110,6 +114,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchSendModal: { ...state.batchSendModal, data: action.result.data.custG, easilist: action.result.data.easilist } };
     case actionTypes.CLOSE_BATCH_SEND_MODAL:
       return { ...state, batchSendModal: { ...state.batchSendModal, visible: false } };
+    case actionTypes.LOAD_SEND_RECORDS_SUCCEED:
+      return { ...state, sendRecords: action.result.data };
+    case actionTypes.LOAD_RETURN_RECORDS_SUCCEED:
+      return { ...state, returnRecords: action.result.data };
     default:
       return state;
   }
@@ -351,3 +359,30 @@ export function updateMark(changeVal, entryHeadId) {
   };
 }
 
+export function loadSendRecords() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SEND_RECORDS,
+        actionTypes.LOAD_SEND_RECORDS_SUCCEED,
+        actionTypes.LOAD_SEND_RECORDS_FAIL,
+      ],
+      endpoint: 'v1/cms/send/records/load',
+      method: 'get',
+    },
+  };
+}
+
+export function loadReturnRecords() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_RETURN_RECORDS,
+        actionTypes.LOAD_RETURN_RECORDS_SUCCEED,
+        actionTypes.LOAD_RETURN_RECORDS_FAIL,
+      ],
+      endpoint: 'v1/cms/return/records/load',
+      method: 'get',
+    },
+  };
+}

@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.loginName,
   }),
   { freezeTransit }
@@ -46,13 +45,13 @@ export default class FreezePopover extends Component {
     });
   }
   handleConfirm = () => {
-    const { tenantId, loginName, traceId } = this.props;
+    const { loginName, traceId } = this.props;
     const { qty, reason } = this.state;
     if (!qty) {
       message.info('请输入冻结数量');
       return;
     }
-    this.props.freezeTransit([traceId], { reason }, loginName, tenantId, Number(qty)).then((result) => {
+    this.props.freezeTransit([traceId], { reason }, loginName, Number(qty)).then((result) => {
       if (!result.error) {
         this.props.reload();
         this.setState({

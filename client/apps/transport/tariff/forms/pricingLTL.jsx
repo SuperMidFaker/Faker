@@ -24,12 +24,12 @@ function IntervalInput(props) {
       <Row>
         <Col sm={11} style={{ paddingBottom: '8px' }}>
           <Input addonBefore="≥" addonAfter={unit} value={intervals[index]}
-            onChange={handleOddChange} size="large" readOnly={readonly}
+            onChange={handleOddChange} readOnly={readonly}
           />
         </Col>
         <Col sm={11} style={{ paddingLeft: '8px', paddingBottom: '8px' }}>
           <Input addonBefore="<" addonAfter={unit} value={intervals[index + 1]}
-            onChange={handleEvenChange} size="large" readOnly={readonly}
+            onChange={handleEvenChange} readOnly={readonly}
           />
         </Col>
       </Row>
@@ -39,12 +39,12 @@ function IntervalInput(props) {
       <Row>
         <Col sm={11} style={{ paddingBottom: '8px' }}>
           <Input addonBefore="≥" addonAfter={unit} value={intervals[index]}
-            onChange={handleOddChange} size="large" readOnly={readonly}
+            onChange={handleOddChange} readOnly={readonly}
           />
         </Col>
         <Col sm={11} style={{ paddingLeft: '8px', paddingBottom: '8px' }}>
           <Input addonBefore="<" addonAfter={unit} value={intervals[index + 1]}
-            onChange={handleEvenChange} size="large" readOnly={readonly}
+            onChange={handleEvenChange} readOnly={readonly}
           />
         </Col>
         <Col sm={1} style={{ paddingLeft: 8, paddingBottom: 8 }}>

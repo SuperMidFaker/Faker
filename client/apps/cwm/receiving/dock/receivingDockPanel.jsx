@@ -22,7 +22,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     dock: state.cwmReceive.dock,
     visible: state.cwmReceive.dock.visible,
     tabKey: state.cwmReceive.dock.tabKey,
@@ -42,7 +41,6 @@ const TabPane = Tabs.TabPane;
 export default class ReceivingDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     dock: PropTypes.object.isRequired,
@@ -120,7 +118,7 @@ export default class ReceivingDockPanel extends React.Component {
     const { uuid } = this.props;
     this.props.getShipmtOrderNo(uuid).then(
       (result) => {
-        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+        this.props.loadOrderDetail(result.data.order_no);
         this.props.hideDock();
       }
     );

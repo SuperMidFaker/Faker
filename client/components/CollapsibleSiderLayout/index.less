@@ -87,12 +87,12 @@
 }
 
 .ant-layout-sider >.ant-layout-sider-children > .ant-menu {
-  margin-bottom: 20px;
+  margin: 16px 0;
 }
 
 .ant-layout-sider.left-sider >.ant-layout-sider-children > .ant-menu > .ant-menu-item,
 .ant-layout-sider.left-sider >.ant-layout-sider-children > .ant-menu > .ant-menu-submenu {
-  margin: 16px 0;
+  margin: 8px 0;
 }
 
 .ant-layout-sider >.ant-layout-sider-children > .ant-menu > .ant-menu-item .nav-text,
@@ -194,7 +194,7 @@
   height: auto;
 }
 .left-sider-panel {
-  min-width: 280px;
+  /*min-width: 280px;*/
   overflow: hidden;
   &.ant-form {
     padding: 16px;
@@ -202,6 +202,14 @@
   .ant-collapse {
     border: none;
     border-radius: 0;
+  }
+  .ant-menu-item-group-title {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+  .ant-menu-inline .ant-menu-item {
+    margin-top: 0;
+    margin-bottom: 0;
   }
   .list-body {
     position: absolute;

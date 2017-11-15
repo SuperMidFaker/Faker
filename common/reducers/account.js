@@ -50,13 +50,12 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadAccount(cookie) {
+export function loadAccount() {
   return {
     [CLIENT_API]: {
       types: [actionTypes.ACC_LOAD, actionTypes.ACC_LOAD_SUCCEED, actionTypes.ACC_LOAD_FAIL],
       endpoint: 'v1/user/account',
       method: 'get',
-      cookie,
     },
   };
 }

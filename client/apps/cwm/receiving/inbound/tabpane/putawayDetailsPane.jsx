@@ -16,7 +16,6 @@ const Search = Input.Search;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
     inboundHead: state.cwmReceive.inboundFormHead,
@@ -122,7 +121,7 @@ export default class PutawayDetailsPane extends React.Component {
       title: '是否确认上架完成?',
       content: '默认将收货库位设为最终储存库位，确认上架后不能操作取消收货',
       onOk() {
-        return props.expressPutaways(props.loginId, props.loginName, props.inboundNo, props.tenantId);
+        return props.expressPutaways(props.loginId, props.loginName, props.inboundNo);
       },
       onCancel() {},
       okText: '确认上架',
@@ -216,7 +215,7 @@ export default class PutawayDetailsPane extends React.Component {
         dataSource={dataSource} rowKey="id" loading={this.props.loading}
       >
         <DataPane.Toolbar>
-          <Search size="large" placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button onClick={this.handleBatchPutAways} icon="check">
           批量上架确认

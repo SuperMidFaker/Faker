@@ -4,7 +4,7 @@ import { Modal, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
-import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers } from 'common/reducers/cwmReceive';
+import { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers, getSkuAvail } from 'common/reducers/cwmReceive';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -14,7 +14,6 @@ const InputGroup = Input.Group;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     visible: state.cwmReceive.detailModal.visible,
     temporaryDetails: state.cwmReceive.temporaryDetails,
     productNos: state.cwmReceive.productNos,
@@ -24,7 +23,7 @@ const InputGroup = Input.Group;
     suppliers: state.cwmReceive.suppliers,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers }
+  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers, getSkuAvail }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
@@ -40,6 +39,10 @@ export default class AddDetailModal extends Component {
     product: {},
     amount: 0,
     skus: [],
+    stock: '',
+    avail: '',
+    alock: '',
+    frozen: '',
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.product !== this.props.product) {
@@ -62,6 +65,10 @@ export default class AddDetailModal extends Component {
       product: {},
       amount: 0,
       skus: [],
+      stock: '',
+      avail: '',
+      alock: '',
+      frozen: '',
     });
     this.props.form.setFieldsValue({
       product_no: '',
@@ -73,7 +80,7 @@ export default class AddDetailModal extends Component {
   handleSearch = (value) => {
     if (value.length >= 3) {
       const { selectedOwner } = this.props;
-      this.props.loadProducts(value, selectedOwner, this.props.tenantId);
+      this.props.loadProducts(value, selectedOwner);
     }
   }
   submit = () => {
@@ -134,12 +141,22 @@ export default class AddDetailModal extends Component {
     }
   }
   handleSelect = (value) => {
-    const { products } = this.props;
+    const { products, selectedOwner } = this.props;
     const filterProducts = products.filter(item => item.product_no === value);
     const skus = filterProducts.map(fp => fp.product_sku);
     this.setState({
       product: filterProducts[0],
       skus,
+    });
+    this.props.getSkuAvail(selectedOwner, value).then((result) => {
+      if (!result.error) {
+        this.setState({
+          avail: result.data[0].avail_qty,
+          stock: result.data[0].stock_qty,
+          alloc: result.data[0].alloc_qty,
+          frozen: result.data[0].frozen_qty,
+        });
+      }
     });
   }
   handleUnitChange = (value) => {
@@ -171,7 +188,7 @@ export default class AddDetailModal extends Component {
   }
   render() {
     const { form: { getFieldDecorator }, visible, productNos, units, currencies } = this.props;
-    const { skus } = this.state;
+    const { skus, avail, stock, alloc, frozen } = this.state;
     const product = this.state.product;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -196,6 +213,18 @@ export default class AddDetailModal extends Component {
           </FormItem>
           <FormItem label="中文品名" {...formItemLayout}>
             <Input value={product.desc_cn} onChange={this.handleDescChange} />
+          </FormItem>
+          <FormItem label="库存数量" {...formItemLayout}>
+            <Input value={stock} disabled />
+          </FormItem>
+          <FormItem label="可用数量" {...formItemLayout}>
+            <Input value={avail} disabled />
+          </FormItem>
+          <FormItem label="分配数量" {...formItemLayout}>
+            <Input value={alloc} disabled />
+          </FormItem>
+          <FormItem label="冻结数量" {...formItemLayout}>
+            <Input value={frozen} disabled />
           </FormItem>
           <FormItem label="库别" {...formItemLayout}>
             {getFieldDecorator('virtual_whse', {

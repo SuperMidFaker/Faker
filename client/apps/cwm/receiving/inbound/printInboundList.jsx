@@ -146,7 +146,7 @@ export default class Print extends Component {
   render() {
     return (
       <Tooltip title="打印入库单" placement="bottom">
-        <Button size="large" icon="printer" onClick={this.handlePrint} />
+        <Button icon="printer" onClick={this.handlePrint} />
       </Tooltip>
     );
   }

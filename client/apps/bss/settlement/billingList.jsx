@@ -307,7 +307,7 @@ export default class BillingList extends React.Component {
           <span>{this.msg('billing')}</span>
           <div className="page-header-tools">
             <SearchBar placeholder="输入账单名称搜索" onInputSearch={this.handleSearchInput}
-              value={this.props.billings.searchValue} size="large"
+              value={this.props.billings.searchValue}
             />
           </div>
         </Header>

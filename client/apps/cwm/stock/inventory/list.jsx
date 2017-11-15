@@ -25,7 +25,6 @@ const Option = Select.Option;
   state => ({
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
     loading: state.cwmInventoryStock.loading,
     stocklist: state.cwmInventoryStock.list,
     displayedColumns: state.cwmInventoryStock.displayedColumns,
@@ -41,7 +40,6 @@ const Option = Select.Option;
 export default class StockInventoryList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
     stocklist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
@@ -181,9 +179,8 @@ export default class StockInventoryList extends React.Component {
     this.handleStockQuery(1, filter);
   }
   handleStockQuery = (currentPage, filter) => {
-    const { tenantId, listFilter, stocklist: { pageSize, current } } = this.props;
+    const { listFilter, stocklist: { pageSize, current } } = this.props;
     this.props.loadStocks({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       current: currentPage || current,
@@ -207,8 +204,8 @@ export default class StockInventoryList extends React.Component {
     this.handleStockQuery(1, filter);
   }
   handleExportExcel = () => {
-    const { tenantId, listFilter } = this.props;
-    window.open(`${API_ROOTS.default}v1/cwm/stock/exportInventoryExcel/${createFilename('inventory')}.xlsx?tenantId=${tenantId}&filters=${
+    const { listFilter } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/stock/exportInventoryExcel/${createFilename('inventory')}.xlsx?filters=${
       JSON.stringify(listFilter)}`);
   }
   handleDeselectRows = () => {
@@ -265,7 +262,6 @@ export default class StockInventoryList extends React.Component {
       }),
       getParams: (pagination, filters, sorter) => {
         const params = {
-          tenantId: this.props.tenantId,
           current: pagination.current,
           pageSize: pagination.pageSize,
           filter: JSON.stringify(listFilter),
@@ -294,7 +290,7 @@ export default class StockInventoryList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
                       whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
                     }
@@ -309,7 +305,7 @@ export default class StockInventoryList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" icon="export" onClick={this.handleExportExcel}>
+            <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
           </PageHeader.Actions>

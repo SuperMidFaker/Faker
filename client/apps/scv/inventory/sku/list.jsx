@@ -140,10 +140,10 @@ export default class SCVSkuList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button size="large" icon="cloud-upload">
+            <Button icon="cloud-upload">
               {this.msg('productImport')}
             </Button>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+            <Button type="primary" icon="plus" onClick={this.handleCreateBtnClick}>
               {this.msg('createSKU')}
             </Button>
           </div>
@@ -151,7 +151,7 @@ export default class SCVSkuList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} />
             </div>
             <div className="panel-body table-panel table-fixed-layout">
               <Table columns={this.columns} dataSource={this.dataSource} rowKey="id"

@@ -466,7 +466,7 @@ export default class TariffList extends React.Component {
       }];
     }
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" />
+      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
     </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -479,18 +479,18 @@ export default class TariffList extends React.Component {
               {this.msg('transportTariff')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleKindChange} value={this.state.kind} size="large">
+          <RadioGroup onChange={this.handleKindChange} value={this.state.kind} >
             <RadioButton value="all">全部</RadioButton>
             <RadioButton value="sale">销售价</RadioButton>
             <RadioButton value="cost">成本价</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup onChange={this.handleStatusChange} value={this.state.status} size="large">
+          <RadioGroup onChange={this.handleStatusChange} value={this.state.status} >
             <RadioButton value="draft">草稿箱</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
             <PrivilegeCover module="transport" feature="tariff" action="create">
-              <Button type="primary" size="large" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
+              <Button type="primary" icon="plus-circle-o" onClick={this.handleShowCreateTariffModal}>
                 {this.msg('tariffCreate')}
               </Button>
             </PrivilegeCover>

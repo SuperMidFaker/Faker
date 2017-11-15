@@ -81,13 +81,13 @@ export default class TMSNodeCard extends React.Component {
           <Button size="small" shape="circle" icon="right" />
         </Tooltip>) : null;
     const steps = [
-      <Step description="接单" key="accept" />,
-      <Step description="调度" key="dispatch" />,
-      <Step description="提货" key="pickup" />,
-      <Step description="送货" key="deliver" />,
+      <Step title="接单" key="accept" />,
+      <Step title="调度" key="dispatch" />,
+      <Step title="提货" key="pickup" />,
+      <Step title="送货" key="deliver" />,
     ];
     if (pod) {
-      steps.push(<Step description="回单" key="pod" />);
+      steps.push(<Step title="回单" key="pod" />);
     }
     return (
       <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 48 }} onClick={() => this.handleShipmtPreview(this.props.uuid)}>

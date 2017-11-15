@@ -109,7 +109,7 @@ export default class CwmSoForm extends Component {
                 <RadioGroup value={node.bonded_reg_type}
                   onChange={ev => this.handleCommonFieldChange('bonded_reg_type', ev.target.value)}
                 >
-                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext || cabr.text}</RadioButton>)}
                 </RadioGroup>
               </FormItem>
             </Col>

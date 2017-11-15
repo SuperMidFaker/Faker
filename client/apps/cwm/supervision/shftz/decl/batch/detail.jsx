@@ -35,7 +35,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     batchDecl: state.cwmShFtz.batch_decl,
@@ -102,12 +101,13 @@ export default class BatchDeclDetail extends Component {
     this.setState({ fullscreen });
   }
   regColumns = [{
-    title: '出库单号',
+    title: '分拨出库单号',
     dataIndex: 'ftz_rel_no',
+    width: 180,
   }, {
-    title: 'SO单号',
+    title: 'SO编号',
     dataIndex: 'so_no',
-    width: 250,
+    width: 180,
   }, {
     title: '供货商',
     width: 200,
@@ -132,8 +132,9 @@ export default class BatchDeclDetail extends Component {
     },
   }]
   relColumns = [{
-    title: '出库单号',
+    title: '分拨出库单号',
     dataIndex: 'ftz_rel_no',
+    width: 180,
   }, {
     title: '出库明细ID',
     dataIndex: 'ftz_rel_detail_id',
@@ -142,11 +143,6 @@ export default class BatchDeclDetail extends Component {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
   }, {
     title: '商品编码',
     dataIndex: 'hscode',
@@ -249,11 +245,6 @@ export default class BatchDeclDetail extends Component {
     title: '商品货号',
     dataIndex: 'product_no',
     width: 150,
-    render: (o) => {
-      if (o) {
-        return <Button>{o}</Button>;
-      }
-    },
   }, {
     title: '中文品名',
     dataIndex: 'g_name',
@@ -279,9 +270,8 @@ export default class BatchDeclDetail extends Component {
     const batchNo = this.props.params.batchNo;
     const batchDecl = this.props.batchDecl;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
-    const tenantId = this.props.tenantId;
     const loginId = this.props.loginId;
-    this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId, tenantId).then((result) => {
+    this.props.fileBatchApply(batchNo, batchDecl.whse_code, ftzWhseCode, loginId).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -310,7 +300,7 @@ export default class BatchDeclDetail extends Component {
   }
   handleQuery = () => {
     const batchNo = this.props.params.batchNo;
-    this.props.makeBatchApplied(batchNo, this.props.tenantId).then((result) => {
+    this.props.makeBatchApplied(batchNo).then((result) => {
       if (!result.error) {
         this.props.loadApplyDetails(batchNo);
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
@@ -381,13 +371,13 @@ export default class BatchDeclDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             <Tooltip title="报关清单" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleDelgManifest}>{batchDecl.delg_no}<Badge status="default" text="制单中" /></Button>
+              <Button icon="link" onClick={this.handleDelgManifest}>{batchDecl.delg_no}<Badge status="default" text="制单中" /></Button>
             </Tooltip>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {sent && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
+            {sent && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
             {sendText &&
-            <Button type="primary" ghost={sent} size="large" icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
@@ -401,11 +391,11 @@ export default class BatchDeclDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={applyStep}>
-                  <Step description="委托制单" />
-                  <Step description="报关申请" />
-                  <Step description="已发送" />
-                  <Step description="申请通过" />
-                  <Step description="报关放行" />
+                  <Step title="委托制单" />
+                  <Step title="报关申请" />
+                  <Step title="已发送" />
+                  <Step title="申请通过" />
+                  <Step title="报关放行" />
                 </Steps>
               </div>
             </Card>
@@ -430,7 +420,7 @@ export default class BatchDeclDetail extends Component {
                   </DataPane>
                 </TabPane>
                 {batchApplies.map(reg => (
-                  <TabPane tab={`申请单${reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
+                  <TabPane tab={`申请单${reg.ftz_apply_no || reg.pre_entry_seq_no}`} key={reg.pre_entry_seq_no}>
                     <DataPane fullscreen={this.state.fullscreen}
                       columns={this.columns} rowSelection={rowSelection} indentSize={8}
                       dataSource={reg.details} rowKey="id" loading={this.state.loading}
@@ -438,7 +428,6 @@ export default class BatchDeclDetail extends Component {
                       <DataPane.Toolbar>
                         <Row type="flex">
                           <Col className="col-flex-primary info-group-inline">
-                            <InfoItem label="申请单号" field={reg.ftz_apply_no} width={370} />
                             <InfoItem label="报关单号" field={reg.cus_decl_no} width={370} />
                           </Col>
                           <Col className="col-flex-secondary">

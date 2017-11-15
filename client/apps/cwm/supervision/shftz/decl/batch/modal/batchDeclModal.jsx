@@ -19,7 +19,6 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     visible: state.cwmShFtz.batchDeclModal.visible,
     submitting: state.cwmShFtz.submitting,
@@ -50,7 +49,6 @@ const Option = Select.Option;
     exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
       value: ep.value,
       text: ep.text,
-      search: `${ep.value}${ep.text}`,
     })),
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
@@ -78,6 +76,8 @@ export default class BatchDeclModal extends Component {
     selectedRows: [],
     destCountry: '142',
     dutyMode: '1',
+    portionRowSelKeys: [],
+    portionSelRows: [],
   }
   componentWillMount() {
     this.props.loadParams();
@@ -223,6 +223,18 @@ export default class BatchDeclModal extends Component {
       }
     });
   }
+  batchAdd = () => {
+    const { portionSelRows } = this.state;
+    const preEntrySeqNos = portionSelRows.map(item => item.pre_entry_seq_no);
+    const relNos = portionSelRows.map(item => item.ftz_rel_no);
+    this.props.loadBatchRegDetails(preEntrySeqNos).then((result) => {
+      if (!result.error) {
+        const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
+        const portionRegs = this.state.portionRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
+        this.setState({ regDetails, portionRegs, portionRowSelKeys: [], portionSelRows: [] });
+      }
+    });
+  }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_detail_id !== detail.ftz_rel_detail_id);
     const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
@@ -258,13 +270,14 @@ export default class BatchDeclModal extends Component {
       template: undefined,
       destCountry: '',
       dutyMode: '',
+      portionRowSelKeys: [],
+      portionSelRows: [],
     });
     this.props.closeBatchDeclModal();
     this.props.form.resetFields();
   }
   handleOwnerChange = (ownerCusCode) => {
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'portion',
@@ -283,11 +296,10 @@ export default class BatchDeclModal extends Component {
     if (owner) {
       this.props.loadManifestTemplates({
         owner_partner_id: owner.id,
-        tenant_id: this.props.tenantId,
         ietype: 0,
       });
     }
-    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, owner.id);
+    this.props.getSuppliers(this.props.defaultWhse.code, owner.id);
   }
   handleTemplateChange = (template) => {
     this.setState({ template });
@@ -301,7 +313,6 @@ export default class BatchDeclModal extends Component {
   handlePortionOutsQuery = () => {
     const { ownerCusCode, relNo, relDateRange } = this.state;
     this.props.loadBatchOutRegs({
-      tenantId: this.props.tenantId,
       owner_cus_code: ownerCusCode,
       whse_code: this.props.defaultWhse.code,
       rel_type: 'portion',
@@ -393,6 +404,23 @@ export default class BatchDeclModal extends Component {
         this.setState({ selectedRowKeys, selectedRows });
       },
     };
+    const portionRowSelection = {
+      selectedRowKeys: this.state.portionRowSelKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ portionRowSelKeys: selectedRowKeys, portionSelRows: selectedRows });
+      },
+      selections: [{
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          const selectedRowKeys = this.state.portionRegs.map(item => item.id);
+          this.setState({
+            portionRowSelKeys: selectedRowKeys,
+            portionSelRows: this.state.portionRegs,
+          });
+        },
+      }],
+    };
     const title = (<div>
       <span>新建分拨集中报关</span>
       <div className="toolbar-right">
@@ -422,10 +450,14 @@ export default class BatchDeclModal extends Component {
               <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Input size="large" placeholder="出库单号" value={relNo} onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
-                    <Button size="large" icon="search" onClick={this.handlePortionOutsQuery} />
+                    <Input placeholder="出库单号" value={relNo} onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
+                    <Button icon="search" onClick={this.handlePortionOutsQuery} />
+                    <div className={`bulk-actions ${this.state.portionRowSelKeys.length === 0 ? 'hide' : ''}`}>
+                      <h3>已选中{this.state.portionRowSelKeys.length}项</h3>
+                      {this.state.portionRowSelKeys.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
+                    </div>
                   </div>
-                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id"
+                  <Table columns={this.portionRegColumns} dataSource={this.state.portionRegs} rowKey="id" rowSelection={portionRowSelection}
                     scroll={{ x: this.portionRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
@@ -435,20 +467,20 @@ export default class BatchDeclModal extends Component {
               <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
-                    <Search size="large" placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
-                      onSearch={this.handleSearch} value={this.state.ftzRelNo}
+                    <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
+                      value={this.state.ftzRelNo}
                     />
-                    <Select allowClear size="large" placeholder="征免方式" optionFilterProp="search" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
+                    <Select allowClear placeholder="征免方式" optionFilterProp="children" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
                       {exemptions.map(data => (
-                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
+                        <Option key={data.value}>{`${data.value}|${data.text}`}</Option>
                       ))}
                     </Select>
-                    <Select showSearch showArrow allowClear size="large" placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
+                    <Select showSearch showArrow allowClear placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
                       {tradeCountries.map(data => (
                         <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
                       ))}
                     </Select>
-                    <Select allowClear size="large" placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
+                    <Select allowClear placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
                       {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
                     </Select>
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>

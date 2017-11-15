@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Modal, Form, Radio, Select, message } from 'antd';
-import { showSendDeclModal, getEasipassList, sendDecl } from 'common/reducers/cmsDeclare';
+import { showSendDeclModal, getEasipassList, sendDecl, loadSendRecords } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
@@ -27,7 +27,7 @@ const RadioButton = Radio.Button;
     agentCustCo: state.cmsDeclare.sendDeclModal.agentCustCo,
     loginName: state.account.username,
   }),
-  { showSendDeclModal, getEasipassList, sendDecl }
+  { showSendDeclModal, getEasipassList, sendDecl, loadSendRecords }
 )
 @Form.create()
 export default class SendDeclMsgModal extends React.Component {
@@ -72,6 +72,7 @@ export default class SendDeclMsgModal extends React.Component {
             message.info('发送成功');
             this.props.showSendDeclModal({ visible: false });
             this.props.reload();
+            this.props.loadSendRecords();
           }
         });
       }

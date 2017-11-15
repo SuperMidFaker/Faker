@@ -314,7 +314,7 @@ export default class MemberDepartmentView extends React.Component {
       selectMenuKeys.push(filters.dept_id.toString());
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
-          <Button size="large" type="primary" onClick={this.handleAddDepartMember} icon="user-add">
+          <Button type="primary" onClick={this.handleAddDepartMember} icon="user-add">
             {this.msg('newDeptMember')}
           </Button>
         </PrivilegeCover>);
@@ -322,7 +322,7 @@ export default class MemberDepartmentView extends React.Component {
       selectMenuKeys.push('members');
       contentHeadAction = (
         <PrivilegeCover module="corp" feature="personnel" action="create">
-          <Button size="large" type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="user-add">
+          <Button type="primary" onClick={() => this.handleNavigationTo('/corp/members/new')} icon="user-add">
             {this.msg('newUser')}
           </Button>
         </PrivilegeCover>);
@@ -330,7 +330,7 @@ export default class MemberDepartmentView extends React.Component {
     const departmentPopover = (
       <div>
         <Input value={this.state.departmentName} placeholder="部门名称" onChange={this.handleDepartNameChange} />
-        <Button size="large" type="primary" style={{ width: '100%', marginTop: 10 }} onClick={this.handleDeptCreate}>创建</Button>
+        <Button type="primary" style={{ width: '100%', marginTop: 10 }} onClick={this.handleDeptCreate}>创建</Button>
       </div>);
     return (
       <QueueAnim type={['bottom', 'up']}>
@@ -346,7 +346,7 @@ export default class MemberDepartmentView extends React.Component {
             <Layout className="main-wrapper">
               <Sider className="nav-sider">
                 <div className="nav-sider-head">
-                  <Search placeholder="搜索用户" onSearch={this.handleSearch} size="large" />
+                  <Search placeholder="搜索用户" onSearch={this.handleSearch} />
                 </div>
                 <Menu defaultOpenKeys={['deptMenu']} mode="inline" selectedKeys={selectMenuKeys}
                   onClick={this.handleMenuClick}
@@ -362,7 +362,7 @@ export default class MemberDepartmentView extends React.Component {
                   <Popover content={departmentPopover} placement="bottom" title="创建部门" trigger="click" visible={this.state.deptPopVisible}
                     onVisibleChange={this.handleDeptPopVisibleChange}
                   >
-                    <Button type="dashed" size="large" icon="plus-circle">创建部门</Button>
+                    <Button type="dashed" icon="plus-circle">创建部门</Button>
                   </Popover>
                 </div>
               </Sider>

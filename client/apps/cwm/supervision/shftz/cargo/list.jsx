@@ -34,7 +34,6 @@ function fetchData({ dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loading: state.cwmShFtz.loading,
     cargolist: state.cwmShFtz.cargolist,
@@ -73,7 +72,6 @@ function fetchData({ dispatch }) {
 export default class SHFTZCargoList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
   static contextTypes = {
@@ -165,7 +163,6 @@ export default class SHFTZCargoList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         whseCode: this.props.whse.code,
         owner: JSON.stringify(this.state.owner),
         pageSize: pagination.pageSize,
@@ -186,9 +183,8 @@ export default class SHFTZCargoList extends React.Component {
     this.props.editGname({ change, id });
   }
   handleCargoLoad = (currentPage, filter, owner) => {
-    const { tenantId, whse, listFilter, cargolist: { pageSize, current } } = this.props;
+    const { whse, listFilter, cargolist: { pageSize, current } } = this.props;
     this.props.loadProductCargo({
-      tenantId,
       whseCode: whse.code,
       owner: JSON.stringify(owner || this.state.owner),
       filter: JSON.stringify(filter || listFilter),
@@ -220,8 +216,8 @@ export default class SHFTZCargoList extends React.Component {
     this.handleCargoLoad(1, this.props.listFilter, record);
   }
   handleSyncProductSKUs = () => {
-    const { tenantId, whse } = this.props;
-    this.props.syncProdSKUS({ tenantId, owner: this.state.owner, whseCode: whse.code }).then((result) => {
+    const { whse } = this.props;
+    this.props.syncProdSKUS({ owner: this.state.owner, whseCode: whse.code }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -248,9 +244,8 @@ export default class SHFTZCargoList extends React.Component {
     });
   }
   handleCargoSend = () => {
-    const tenantId = this.props.tenantId;
     const whse = this.props.whse;
-    this.props.fileCargos(this.state.owner.customs_code, whse.code, whse.ftz_whse_code, tenantId).then((result) => {
+    this.props.fileCargos(this.state.owner.customs_code, whse.code, whse.ftz_whse_code).then((result) => {
       if (!result.error) {
         const filter = { ...this.props.listFilter, status: 'sent' };
         this.handleCargoLoad(1, filter);
@@ -258,7 +253,7 @@ export default class SHFTZCargoList extends React.Component {
     });
   }
   handleCargoConfirm = () => {
-    this.props.confirmCargos(this.state.owner.customs_code, this.props.whse.code, this.props.tenantId).then((result) => {
+    this.props.confirmCargos(this.state.owner.customs_code, this.props.whse.code).then((result) => {
       if (!result.error) {
         const filter = { ...this.props.listFilter, status: 'completed' };
         this.handleCargoLoad(1, filter);
@@ -270,7 +265,7 @@ export default class SHFTZCargoList extends React.Component {
     this.handleCargoLoad(1, filter);
   }
   render() {
-    const { cargolist, listFilter, loading, whses, whse, tenantId, loginId, submitting } = this.props;
+    const { cargolist, listFilter, loading, whses, whse, loginId, submitting } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
     const filterOwners = owners.filter(item => item.portion_enabled);
@@ -296,7 +291,7 @@ export default class SHFTZCargoList extends React.Component {
       columns.shift();
     }
     const toolbarActions = (<span>
-      <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
     </span>);
     return (
       <Layout>
@@ -315,7 +310,7 @@ export default class SHFTZCargoList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <SearchBar size="large" placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
+              <SearchBar placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
               <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false} onRowClick={this.handleRowClick}
@@ -330,7 +325,7 @@ export default class SHFTZCargoList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
                     {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                   </Select>
                 </Breadcrumb.Item>
@@ -340,7 +335,7 @@ export default class SHFTZCargoList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>
@@ -349,17 +344,17 @@ export default class SHFTZCargoList extends React.Component {
             </PageHeader.Nav>
             <PageHeader.Actions>
               {listFilter.status === 'pending' &&
-              <Button size="large" icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
+              <Button icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
               同步SKU
             </Button>
             }
               {listFilter.status === 'pending' &&
-              <Button type="primary" size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>
+              <Button type="primary" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>
                 发送备案
               </Button>
               }
               {listFilter.status === 'sent' &&
-              <Button type="primary" ghost size="large" icon="check" loading={submitting} onClick={this.handleCargoConfirm}>
+              <Button type="primary" ghost icon="check" loading={submitting} onClick={this.handleCargoConfirm}>
                 确认备案
               </Button>
               }
@@ -367,7 +362,6 @@ export default class SHFTZCargoList extends React.Component {
                 <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/shftz/cargo/filed/import`}
                   formData={{
                     data: JSON.stringify({
-                      tenantId,
                       loginId,
                       whseCode: whse.code,
                       ownerCusCode: owner.customs_code,
@@ -375,10 +369,10 @@ export default class SHFTZCargoList extends React.Component {
                     }),
                   }} onUploaded={this.handleFiledCargoImport}
                 >
-                  <Button size="large"><Icon type="upload" /> 导入备案料号</Button>
+                  <Button ><Icon type="upload" /> 导入备案料号</Button>
                 </ExcelUploader>
               </Popover>
-              <ButtonToggle size="large" iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
+              <ButtonToggle iconOn="tool" iconOff="tool" onClick={this.toggleRightSider} />
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

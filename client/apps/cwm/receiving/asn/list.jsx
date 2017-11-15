@@ -29,7 +29,6 @@ const RadioButton = Radio.Button;
 function fetchData({ state, dispatch }) {
   dispatch(loadAsnLists({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmReceive.asnlist.pageSize,
     current: state.cwmReceive.asnlist.current,
     filters: state.cwmReceive.asnFilters,
@@ -40,7 +39,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     tenantName: state.account.tenantName,
     customsCode: state.account.customsCode,
     whses: state.cwmContext.whses,
@@ -62,7 +60,6 @@ function fetchData({ state, dispatch }) {
 export default class ReceivingASNList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -152,19 +149,19 @@ export default class ReceivingASNList extends React.Component {
   }, {
     title: '预期到货日期',
     dataIndex: 'expect_receive_date',
-    width: 120,
+    width: 140,
     render: exprecdate => exprecdate && moment(exprecdate).format('YYYY.MM.DD'),
     sorter: (a, b) => new Date(a.expect_receive_date).getTime() - new Date(b.expect_receive_date).getTime(),
   }, {
     title: '实际入库时间',
     dataIndex: 'received_date',
-    width: 120,
+    width: 140,
     render: recdate => recdate && moment(recdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.received_date).getTime() - new Date(b.received_date).getTime(),
   }, {
     title: '创建时间',
     dataIndex: 'created_date',
-    width: 120,
+    width: 140,
     render: createdate => createdate && moment(createdate).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
   }, {
@@ -227,7 +224,6 @@ export default class ReceivingASNList extends React.Component {
     const filters = this.props.filters;
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
-      tenantId: this.props.tenantId,
       whseCode,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
@@ -283,7 +279,6 @@ export default class ReceivingASNList extends React.Component {
     const filters = this.props.filters;
     this.props.loadAsnLists({
       whseCode: value,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -294,7 +289,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -308,7 +302,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -319,7 +312,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: this.props.asnlist.current,
       filters,
@@ -330,7 +322,6 @@ export default class ReceivingASNList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadAsnLists({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.asnlist.pageSize,
       current: 1,
       filters,
@@ -362,7 +353,6 @@ export default class ReceivingASNList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,
@@ -377,21 +367,21 @@ export default class ReceivingASNList extends React.Component {
       columns.splice(6, 1);
     }
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('asnPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
-      <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
+      <SearchBar placeholder={this.msg('asnPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
+      <Select showSearch optionFilterProp="children" value={filters.ownerCode}
         onChange={this.handleOwnerChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
         {owners.map(owner => (<Option key={owner.id} value={owner.id}>{owner.name}</Option>))}
       </Select>
-      <Select showSearch optionFilterProp="children" size="large" value={filters.supplierCode}
+      <Select showSearch optionFilterProp="children" value={filters.supplierCode}
         onChange={this.handleSupplierChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部供货商</Option>
         {suppliers.filter(supplier => filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true)
         .map(supplier => (<Option key={supplier.code} value={supplier.code}>{supplier.name}</Option>))}
       </Select></span>);
-    const bulkActions = filters.status === 'pending' && <Button size="large" icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
+    const bulkActions = filters.status === 'pending' && <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
     /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
       : <a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>;
       */
@@ -401,7 +391,7 @@ export default class ReceivingASNList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
                     whses.map(warehouse => (<Option key={warehouse.code} value={warehouse.code}>{warehouse.name}</Option>))
                   }
@@ -413,7 +403,7 @@ export default class ReceivingASNList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">{CWM_ASN_STATUS.PENDING.text}</RadioButton>
               <RadioButton value="inbound">{CWM_ASN_STATUS.INBOUND.text}</RadioButton>
@@ -423,7 +413,7 @@ export default class ReceivingASNList extends React.Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             <PageHint />
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateASN}>
+            <Button type="primary" icon="plus" onClick={this.handleCreateASN}>
               {this.msg('createASN')}
             </Button>
           </PageHeader.Actions>

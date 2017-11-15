@@ -93,12 +93,12 @@ export default class ReceivingNoticeList extends React.Component {
               {this.msg('receivingNotice')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleStatusChange} size="large">
+          <RadioGroup onChange={this.handleStatusChange} >
             <RadioButton value="pending">{this.msg('pending')}</RadioButton>
             <RadioButton value="received">{this.msg('received')}</RadioButton>
           </RadioGroup>
           <div className="page-header-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick}>
+            <Button type="primary" icon="plus" onClick={this.handleCreateBtnClick}>
               {this.msg('createReceivingNotice')}
             </Button>
           </div>
@@ -106,7 +106,7 @@ export default class ReceivingNoticeList extends React.Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
               <div className="toolbar-right" />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>

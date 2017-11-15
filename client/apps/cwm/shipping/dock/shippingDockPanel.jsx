@@ -22,7 +22,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.username,
     dock: state.cwmShippingOrder.dock,
     visible: state.cwmShippingOrder.dock.visible,
@@ -37,7 +36,6 @@ const TabPane = Tabs.TabPane;
 export default class ShippingDockPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
     tabKey: PropTypes.string,
     dock: PropTypes.object.isRequired,
@@ -89,10 +87,10 @@ export default class ShippingDockPanel extends React.Component {
     });
   }
   closeOutbound = (pickedDealtype) => {
-    const { tenantId, loginName } = this.props;
+    const { loginName } = this.props;
     const { soHead } = this.state;
     this.props.closeOutbound({
-      so_no: soHead.so_no, tenantId, loginName, pickedDealtype,
+      so_no: soHead.so_no, loginName, pickedDealtype,
     }).then((result) => {
       this.setState({ closeModalVisible: true });
       if (result.error) {
@@ -119,7 +117,7 @@ export default class ShippingDockPanel extends React.Component {
     const { uuid } = this.props;
     this.props.getShipmtOrderNo(uuid).then(
       (result) => {
-        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+        this.props.loadOrderDetail(result.data.order_no);
         this.props.hideDock();
       }
     );
@@ -242,8 +240,8 @@ export default class ShippingDockPanel extends React.Component {
           onCancel={() => this.setState({ closeModalVisible: false })}
           title="请选择"
           footer={[
-            <Button key="back" size="large" onClick={() => this.closeOutbound('move')}>移库</Button>,
-            <Button key="submit" type="primary" size="large" onClick={() => this.closeOutbound('return')}>放回</Button>,
+            <Button key="back" onClick={() => this.closeOutbound('move')}>移库</Button>,
+            <Button key="submit" type="primary" onClick={() => this.closeOutbound('return')}>放回</Button>,
           ]}
         >
           <p>对已捡货物如何处理，移库：则会生成移库单，放回：则按原路退回至未分配状态</p>

@@ -22,12 +22,10 @@ const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     batchlist: state.cwmShFtz.batchApplyList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -44,7 +42,6 @@ const OptGroup = Select.OptGroup;
 export default class BatchDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -75,23 +72,22 @@ export default class BatchDeclList extends React.Component {
     width: 150,
     fixed: 'left',
   }, {
-    title: '报关申请单号',
-    dataIndex: 'ftz_apply_no',
-    width: 200,
-    render: o => <TrimSpan text={o} maxLen={20} />,
+    title: '分拨出库单数量',
+    dataIndex: 'portion_rel_count',
+    width: 120,
   }, {
-    title: '备案状态',
+    title: '状态',
     dataIndex: 'status',
     width: 120,
     render: (st) => {
       switch (st) {
         case 'manifest':
         case 'generated':
-          return (<Badge status="default" />);
+          return (<Badge status="default" text="委托制单" />);
         case 'processing':
-          return (<Badge status="processing" text="已发送" />);
+          return (<Badge status="processing" text="已发送申请" />);
         case 'applied':
-          return (<Badge status="success" text="备案完成" />);
+          return (<Badge status="processing" text="已发送申请" />);
         case 'cleared':
           return (<Badge status="success" text="已清关" />);
         default:
@@ -99,45 +95,28 @@ export default class BatchDeclList extends React.Component {
       }
     },
   }, {
-    title: '报关委托编号',
-    width: 120,
-    dataIndex: 'delg_no',
+    title: '报关申请单号',
+    dataIndex: 'ftz_apply_no',
+    width: 200,
+    render: o => <TrimSpan text={o} maxLen={20} />,
   }, {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
     width: 180,
-  }, {
-    title: '清关状态',
-    width: 100,
-    dataIndex: 'decl_status',
   }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '收货单位',
-    width: 180,
-    dataIndex: 'receiver_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
     title: '报关代理',
     dataIndex: 'broker_name',
     width: 150,
     render: o => <TrimSpan text={o} maxLen={14} />,
-
   }, {
-    title: '供货商',
-    dataIndex: 'supplier',
-    width: 100,
-  }, {
-    title: '成交方式',
-    dataIndex: 'trxn_mode',
-    width: 80,
-  }, {
-    title: '币制',
-    dataIndex: 'currency',
-    width: 80,
+    title: '报关委托编号',
+    width: 120,
+    dataIndex: 'delg_no',
   }, {
     title: '申请类型',
     dataIndex: 'apply_type',
@@ -154,6 +133,18 @@ export default class BatchDeclList extends React.Component {
           break;
       }
     },
+  }, {
+    title: '供货商',
+    dataIndex: 'supplier',
+    width: 100,
+  }, {
+    title: '成交方式',
+    dataIndex: 'trxn_mode',
+    width: 80,
+  }, {
+    title: '币制',
+    dataIndex: 'currency',
+    width: 80,
   }, {
     title: '申请日期',
     width: 120,
@@ -220,7 +211,6 @@ export default class BatchDeclList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -232,9 +222,8 @@ export default class BatchDeclList extends React.Component {
     remotes: this.props.batchlist,
   })
   handleBatchApplyLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, batchlist: { pageSize, current } } = this.props;
+    const { listFilter, whse, batchlist: { pageSize, current } } = this.props;
     this.props.loadBatchApplyList({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
@@ -293,8 +282,7 @@ export default class BatchDeclList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { listFilter, whses, whse, owners, batchlist } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
+    const { listFilter, owners, batchlist } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -303,19 +291,17 @@ export default class BatchDeclList extends React.Component {
     };
     this.dataSource.remotes = batchlist;
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('batchSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('batchSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-            search={`${data.partner_code}${data.name}`}
-          >{data.name}
-          </Option>)
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+          search={`${data.partner_code}${data.name}`}
+        >{data.name}
+        </Option>)
           )}
-        </OptGroup>
       </Select>
     </span>);
     return (
@@ -337,25 +323,20 @@ export default class BatchDeclList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
                   {this.msg('ftzBatchDecl')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="applying">报关申请</RadioButton>
-                <RadioButton value="cleared">报关放行</RadioButton>
+                <RadioButton value="cleared">已清关</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBatchDecl}>
+              <Button type="primary" icon="plus" onClick={this.handleCreateBatchDecl}>
                 {this.msg('create')}
               </Button>
             </PageHeader.Actions>

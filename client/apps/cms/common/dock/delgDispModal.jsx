@@ -155,7 +155,7 @@ export default class DelgDispModal extends Component {
             </Col>
             <Col span={18}>
               {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(
-                <Select size="large" showSearch showArrow optionFilterProp="searched"
+                <Select showSearch showArrow optionFilterProp="searched"
                   placeholder={this.msg('dispatchMessage')}
                 >
                   {

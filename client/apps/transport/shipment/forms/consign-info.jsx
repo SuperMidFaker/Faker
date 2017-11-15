@@ -211,7 +211,7 @@ export default class ConsignInfo extends React.Component {
       content = (
         <div>
           <FormItem label={this.msg(this.renderMsgKeys.name)}>
-            <Select allowClear size="large" showArrow value={fieldDefaults[name]} optionLabelProp="name"
+            <Select allowClear showArrow value={fieldDefaults[name]} optionLabelProp="name"
               onChange={this.handleConsignChange}
               onSearch={this.handleAutoInputChange}
               dropdownMatchSelectWidth={false}
@@ -253,7 +253,7 @@ export default class ConsignInfo extends React.Component {
         <Row gutter={16}>
           <Col sm={24} md={16}>
             <FormItem label={this.msg(this.renderMsgKeys.name)}>
-              <Select allowClear size="large" showArrow value={fieldDefaults[name]} optionLabelProp="name"
+              <Select allowClear showArrow value={fieldDefaults[name]} optionLabelProp="name"
                 onChange={this.handleConsignChange}
                 onSearch={this.handleAutoInputChange}
                 dropdownMatchSelectWidth={false}

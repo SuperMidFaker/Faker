@@ -107,10 +107,10 @@ export default class EditDelegation extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" onClick={this.handleSaveBtnClick} loading={submitting}>
+            <Button type="primary" onClick={this.handleSaveBtnClick} loading={submitting}>
               {this.msg('save')}
             </Button>
           </div>
@@ -131,7 +131,7 @@ export default class EditDelegation extends Component {
             <Col className="col-flex-primary" />
             <Col className="col-flex-secondary">
               <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleDelgDel()}>
-                <Button type="danger" size="large" ghost>删除</Button>
+                <Button type="danger" ghost>删除</Button>
               </Popconfirm>
             </Col>
           </Row>

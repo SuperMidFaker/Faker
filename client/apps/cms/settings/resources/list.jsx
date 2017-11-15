@@ -8,6 +8,7 @@ import { Layout, Table, Input, Breadcrumb, Tabs, Form } from 'antd';
 import TradersPane from './tabpane/tradersPane';
 import ManifestRulesPane from './tabpane/manifestRulesPane';
 import DocuTemplatesPane from './tabpane/docuTemplatesPane';
+import ImportAdaptorPane from './tabpane/importAdaptorPane';
 import { formatMsg } from './message.i18n';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -104,7 +105,7 @@ export default class ResourcesList extends Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} size="large" />
+              <Search onSearch={this.handleSearch} placeholder={this.msg('searchPlaceholder')} />
             </div>
             <div className="list-body">
               <Table size="middle" columns={columns} dataSource={this.state.customers} showHeader={false} onRowClick={this.handleRowClick}
@@ -133,6 +134,9 @@ export default class ResourcesList extends Component {
                 </TabPane>
                 <TabPane tab="随附单据模板" key="dock">
                   <DocuTemplatesPane />
+                </TabPane>
+                <TabPane tab="导入数据适配器" key="adaptor">
+                  <ImportAdaptorPane />
                 </TabPane>
               </Tabs>
             </div>

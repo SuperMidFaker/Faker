@@ -161,6 +161,10 @@ exports.CWM_SO_BONDED_REGTYPES = [{
   text: '不报关',
   ftztext: '区内转出',
   tagcolor: 'cyan',
+}, {
+  value: 'tbd',
+  text: '待定',
+  ftztext: '',
 }];
 
 exports.CWM_BATCH_APPLYTYPES = [{

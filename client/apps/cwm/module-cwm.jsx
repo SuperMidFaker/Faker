@@ -13,7 +13,6 @@ const formatMsg = format(messages);
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
   }),
@@ -65,26 +64,6 @@ export default class ModuleCWM extends React.Component {
     });
     linkMenus.push({
       single: false,
-      key: 'cwm-shipping',
-      icon: 'logixon icon-shipping',
-      text: formatMsg(intl, 'shipping'),
-      sublinks: [{
-        key: 'cwm-shipping-0',
-        path: '/cwm/shipping/order',
-        text: formatMsg(intl, 'shippingOrder'),
-      }, {
-        key: 'cwm-shipping-1',
-        path: '/cwm/shipping/wave',
-        text: formatMsg(intl, 'shippingWave'),
-      }, {
-        key: 'cwm-shipping-2',
-        path: '/cwm/shipping/outbound',
-        text: formatMsg(intl, 'shippingOutbound'),
-      },
-      ],
-    });
-    linkMenus.push({
-      single: false,
       key: 'cwm-stock',
       path: '/cwm/stock',
       icon: 'logixon icon-stock',
@@ -115,25 +94,34 @@ export default class ModuleCWM extends React.Component {
     });
     linkMenus.push({
       single: false,
-      key: 'cwm-products',
-      icon: 'logixon icon-sku',
-      text: formatMsg(intl, 'products'),
+      key: 'cwm-shipping',
+      icon: 'logixon icon-shipping',
+      text: formatMsg(intl, 'shipping'),
       sublinks: [{
-        key: 'cwm-products-0',
-        path: '/cwm/products/sku',
-        text: formatMsg(intl, 'productsSku'),
+        key: 'cwm-shipping-0',
+        path: '/cwm/shipping/order',
+        text: formatMsg(intl, 'shippingOrder'),
       }, {
-        key: 'cwm-products-3',
-        disabled: true,
-        path: '/cwm/products/lotting',
-        text: formatMsg(intl, 'productsLotting'),
+        key: 'cwm-shipping-1',
+        path: '/cwm/shipping/wave',
+        text: formatMsg(intl, 'shippingWave'),
       }, {
-        key: 'cwm-products-4',
-        disabled: true,
-        path: '/cwm/products/kitting',
-        text: formatMsg(intl, 'productsKitting'),
+        key: 'cwm-shipping-2',
+        path: '/cwm/shipping/outbound',
+        text: formatMsg(intl, 'shippingOutbound'),
+      }, {
+        key: 'cwm-shipping-3',
+        path: '/cwm/shipping/load',
+        text: formatMsg(intl, 'shippingLoad'),
       },
       ],
+    });
+    linkMenus.push({
+      single: true,
+      key: 'cwm-products',
+      icon: 'logixon icon-sku',
+      path: '/cwm/products/sku',
+      text: formatMsg(intl, 'products'),
     });
     linkMenus.push({
       single: false,
@@ -178,7 +166,7 @@ export default class ModuleCWM extends React.Component {
           window.localStorage.setItem('whse-code', nextProps.whse.code);
         }
       }
-      nextProps.loadWhse(nextProps.whse.code, nextProps.tenantId);
+      nextProps.loadWhse(nextProps.whse.code);
       const linkMenus = this.state.linkMenus.filter(lm => lm.key !== 'cwm-ftz');
       if (nextProps.whse.bonded) {
         linkMenus.splice(1, 0, {

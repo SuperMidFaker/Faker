@@ -146,7 +146,7 @@ export default class ShipmentDraftEdit extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button size="large" type="primary" loading={submitting} onClick={this.handleDraftAccept}>
+            <Button type="primary" loading={submitting} onClick={this.handleDraftAccept}>
               {this.msg('saveAndAccept')}
             </Button>
           </div>

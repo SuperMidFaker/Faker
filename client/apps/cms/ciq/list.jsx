@@ -270,7 +270,7 @@ export default class CiqDeclList extends Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+      <SearchBar placeholder={this.msg('ciqSearchPlaceholder')} onInputSearch={this.handleSearch} />
     </span>);
     return (
       <Layout>
@@ -283,7 +283,7 @@ export default class CiqDeclList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={listFilter.iotype} onChange={this.handleIOFilter} size="large">
+            <RadioGroup value={listFilter.iotype} onChange={this.handleIOFilter} >
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               <RadioButton value="import">{this.msg('import')}</RadioButton>
               <RadioButton value="export">{this.msg('export')}</RadioButton>

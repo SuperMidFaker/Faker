@@ -21,6 +21,8 @@ const initState = {
     outboundDetails: 0,
     pickings: 0,
     shipments: 0,
+    entry: 0,
+    portions: 0,
   },
 };
 
@@ -33,7 +35,7 @@ export default function reducer(state = initState, action) {
   }
 }
 
-export function loadStatsCard(startDate, endDate, whseCode, tenantId) {
+export function loadStatsCard(startDate, endDate, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -43,7 +45,7 @@ export function loadStatsCard(startDate, endDate, whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/stats',
       method: 'get',
-      params: { startDate, endDate, whseCode, tenantId },
+      params: { startDate, endDate, whseCode },
     },
   };
 }

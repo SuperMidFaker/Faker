@@ -14,7 +14,6 @@ const { Content, Sider } = Layout;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
     invTemplates: state.cmsInvoice.invTemplates,
@@ -29,7 +28,6 @@ const { Content, Sider } = Layout;
 export default class TemplatesList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     invTemplates: PropTypes.array.isRequired,
     docuType: PropTypes.number.isRequired,
   }
@@ -47,7 +45,7 @@ export default class TemplatesList extends Component {
     this.context.router.push({ pathname: to, query });
   }
   handleListLoad = (type) => {
-    this.props.loadInvTemplates({ tenantId: this.props.tenantId, docuType: type });
+    this.props.loadInvTemplates({ docuType: type });
   }
   handleCreateNew = () => {
     this.props.toggleInvTempModal(true);
@@ -123,7 +121,7 @@ export default class TemplatesList extends Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button type="primary" size="large" onClick={this.handleCreateNew} icon="plus">新增</Button>
+              <Button type="primary" onClick={this.handleCreateNew} icon="plus">新增</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content">

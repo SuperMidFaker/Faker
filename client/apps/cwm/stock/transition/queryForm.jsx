@@ -68,7 +68,7 @@ export default class QueryForm extends React.Component {
             <FormItem {...formItemLayout} label="货品">
               {getFieldDecorator('product_no', {
                 initialValue: filter.product_no,
-              })(<Input placeholder="商品货号/SKU" />)}
+              })(<Input placeholder="商品货号/SKU/中文品名" />)}
             </FormItem>
           </Col>
           <Col span={5}>
@@ -85,7 +85,7 @@ export default class QueryForm extends React.Component {
           </Col>
           <Col span={3}>
             <FormItem>
-              <Button type="primary" size="large" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
+              <Button type="primary" onClick={this.handleStockSearch}>{this.msg('inquiry')}</Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
             </FormItem>
           </Col>
@@ -138,7 +138,7 @@ export default class QueryForm extends React.Component {
             <FormItem {...formItemLayout} label="库位">
               {getFieldDecorator('location', {
                 initialValue: filter.location,
-              })(<LocationSelect size="large" />)}
+              })(<LocationSelect />)}
             </FormItem>
           </Col>
           <Col span={5}>

@@ -502,11 +502,11 @@ export default class AcceptList extends React.Component {
       </PrivilegeCover>
     );
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
+      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} />
       <span />
-      <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+      <CustomerSelect onChange={this.handleCustomerChange} />
       <span />
-      <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
+      <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
     </span>);
 
     return (
@@ -518,7 +518,7 @@ export default class AcceptList extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick} disabled>
+            <Button type="primary" icon="plus" onClick={this.handleCreateBtnClick} disabled>
               {this.msg('shipmtCreate')}
             </Button>
             <span><Tooltip title="此功能已由客户订单流中的创建订单替代" placement="left"><Icon type="question-circle-o" /></Tooltip></span>

@@ -213,7 +213,7 @@ export default class CreateBilling extends React.Component {
         <Header className="page-header">
           <span>{this.msg('createBilling')}</span>
           <div className="page-header-tools">
-            <Button type="primary" size="large" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
+            <Button type="primary" onClick={this.handleSave} loading={saving}>{this.msg('save')}</Button>
           </div>
         </Header>
         <Content className="main-content">

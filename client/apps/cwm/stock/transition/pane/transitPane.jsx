@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Button, message } from 'antd';
@@ -9,7 +8,6 @@ import { splitTransit, moveTransit } from 'common/reducers/cwmTransition';
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginName: state.account.username,
     detail: state.cwmTransition.transitionModal.detail,
   }),
@@ -18,7 +16,6 @@ import { splitTransit, moveTransit } from 'common/reducers/cwmTransition';
 export default class TransitPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   formValue = {
     target_location: null,
@@ -37,17 +34,17 @@ export default class TransitPane extends React.Component {
         transit[transitKey] = transitValues[transitKey];
       }
     });
-    const { loginName, tenantId } = this.props;
+    const { loginName } = this.props;
     let transitOp;
     if (this.formValue.target_location) {
       if (this.formValue.movement_no) {
         transitOp = this.props.moveTransit([this.props.detail.trace_id], transit, this.formValue.target_location,
-          this.formValue.movement_no, loginName, tenantId);
+          this.formValue.movement_no, loginName);
       } else {
         message.error('库存移动单未选');
       }
     } else if (valueChanged) {
-      transitOp = this.props.splitTransit([this.props.detail.trace_id], transit, loginName, tenantId);
+      transitOp = this.props.splitTransit([this.props.detail.trace_id], transit, loginName);
     }
     if (transitOp) {
       transitOp.then((result) => {

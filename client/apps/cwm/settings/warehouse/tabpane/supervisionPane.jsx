@@ -13,7 +13,6 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whseSupervisonApps: state.openIntegration.whseSupervisonApps,
   }),
   { loadWhseSupervisionApps, updateWhse }
@@ -26,7 +25,7 @@ export default class SupervisionPane extends Component {
   }
   state = { ftzAppId: '' }
   componentWillMount() {
-    this.props.loadWhseSupervisionApps(this.props.tenantId);
+    this.props.loadWhseSupervisionApps();
     if (this.props.ftzAppId) {
       this.setState({ ftzAppId: this.props.ftzAppId });
     }
@@ -68,7 +67,7 @@ export default class SupervisionPane extends Component {
             </Select>
           </FormItem>
           <FormItem >
-            <Button type="primary" size="large" onClick={this.handleSaveFtzApp}>保存</Button>
+            <Button type="primary" onClick={this.handleSaveFtzApp}>保存</Button>
           </FormItem>
         </Form>
       </div>

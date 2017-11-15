@@ -30,48 +30,56 @@ export default class ModuleBMS extends React.Component {
       text: formatMsg(intl, 'dashboard'),
     });
     linkMenus.push({
-      single: true,
-      key: 'bss-settlement',
-      path: '/bss/settlement',
-      icon: 'logixon icon-finance-o',
-      text: formatMsg(intl, 'settlement'),
-    });
-    linkMenus.push({
       single: false,
-      key: 'bss-receivable',
-      icon: 'logixon icon-receivable',
-      text: formatMsg(intl, 'receivable'),
+      key: 'bss-fee',
+      icon: 'logixon icon-finance-o',
+      text: formatMsg(intl, 'fee'),
       sublinks: [{
-        key: 'bss-receivable-0',
-        path: '/bss/receivable/bill',
-        text: formatMsg(intl, 'customerBill'),
+        key: 'bss-fee-0',
+        path: '/bss/fee/summary',
+        text: formatMsg(intl, 'feeSummary'),
       }, {
-        key: 'bss-receivable-1',
-        path: '/bss/receivable/invoice',
-        text: formatMsg(intl, 'receivableInvoice'),
-      }, {
-        key: 'bss-receivable-2',
-        path: '/bss/receivable/collection',
-        text: formatMsg(intl, 'collection'),
+        key: 'bss-fee-1',
+        path: '/bss/fee/statement',
+        text: formatMsg(intl, 'feeStatement'),
       }],
     });
     linkMenus.push({
       single: false,
-      key: 'bss-payable',
-      icon: 'logixon icon-payable',
-      text: formatMsg(intl, 'payable'),
+      key: 'bss-revenue',
+      icon: 'logixon icon-receivable',
+      text: formatMsg(intl, 'revenue'),
       sublinks: [{
-        key: 'bss-payable-0',
+        key: 'bss-revenue-0',
+        path: '/bss/receivable/bill',
+        text: formatMsg(intl, 'customerBill'),
+      }, {
+        key: 'bss-revenue-1',
+        path: '/bss/receivable/invoice',
+        text: formatMsg(intl, 'receivableInvoice'),
+      }, {
+        key: 'bss-revenue-2',
+        path: '/bss/receivable/payment',
+        text: formatMsg(intl, 'paymentReceived'),
+      }],
+    });
+    linkMenus.push({
+      single: false,
+      key: 'bss-cost',
+      icon: 'logixon icon-payable',
+      text: formatMsg(intl, 'cost'),
+      sublinks: [{
+        key: 'bss-cost-0',
         path: '/bss/payable/bill',
         text: formatMsg(intl, 'vendorBill'),
       }, {
-        key: 'bss-payable-1',
+        key: 'bss-cost-1',
         path: '/bss/payable/invoice',
         text: formatMsg(intl, 'payableInvoice'),
       }, {
-        key: 'bss-payable-2',
+        key: 'bss-cost-2',
         path: '/bss/payable/payment',
-        text: formatMsg(intl, 'payment'),
+        text: formatMsg(intl, 'paymentMade'),
       }],
     });
     linkMenus.push({

@@ -1007,11 +1007,11 @@ export default class DispatchList extends React.Component {
     let cols = this.buildCols();
 
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={this.state.searchValue} />
+      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={this.state.searchValue} />
       <span />
-      <CustomerSelect onChange={this.handleCustomerChange} size="large" />
+      <CustomerSelect onChange={this.handleCustomerChange} />
       <span />
-      <MyShipmentsSelect onChange={this.handleAdvancedSearch} size="large" />
+      <MyShipmentsSelect onChange={this.handleAdvancedSearch} />
       <span />
       <a onClick={this.toggleAdvancedSearch}>过滤选项</a>
     </span>);
@@ -1060,7 +1060,7 @@ export default class DispatchList extends React.Component {
               {this.msg('transportDispatch')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup onChange={this.handleStatusChange} value={status} size="large">
+          <RadioGroup onChange={this.handleStatusChange} value={status} >
             <RadioButton value="waiting">{this.msg('rdTextWaiting')}</RadioButton>
             <RadioButton value="dispatching">{this.msg('rdTextDispatching')}</RadioButton>
             <RadioButton value="dispatched">{this.msg('rdTextDispatched')}</RadioButton>

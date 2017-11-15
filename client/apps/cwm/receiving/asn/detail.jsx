@@ -21,7 +21,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
@@ -74,7 +73,7 @@ export default class ReceivingASNDetail extends Component {
     this.setState({ fullscreen });
   }
   handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName, suppliers } = this.props;
+    const { temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers } = this.props;
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
         const data = values;
@@ -85,7 +84,6 @@ export default class ReceivingASNDetail extends Component {
         data.ownerTenantId = owner.partner_tenant_id;
         data.temporaryDetails = temporaryDetails;
         data.whseCode = defaultWhse.code;
-        data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
         data.supplierCode = supplier && supplier.code;
@@ -121,7 +119,7 @@ export default class ReceivingASNDetail extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select
-                  size="large"
+
                   value={defaultWhse.code}
                   style={{ width: 160 }}
                   disabled
@@ -138,10 +136,10 @@ export default class ReceivingASNDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            {this.state.editable && <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            {this.state.editable && <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>}
-            {this.state.editable && <Button size="large" type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            {this.state.editable && <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
             </Button>}
           </PageHeader.Actions>

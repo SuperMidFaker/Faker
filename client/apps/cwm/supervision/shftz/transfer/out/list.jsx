@@ -31,7 +31,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     releaseList: state.cwmShFtz.releaseList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -48,7 +47,6 @@ const RadioButton = Radio.Button;
 export default class SHFTZTransferOutList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     releaseList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
@@ -169,7 +167,6 @@ export default class SHFTZTransferOutList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -181,10 +178,9 @@ export default class SHFTZTransferOutList extends React.Component {
     remotes: this.props.releaseList,
   })
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
+    const { listFilter, whse, releaseList: { pageSize, current } } = this.props;
     const newfilter = filter || listFilter;
     this.props.loadReleaseRegDatas({
-      tenantId,
       filter: JSON.stringify(newfilter),
       pageSize,
       currentPage: currentPage || current,
@@ -223,8 +219,7 @@ export default class SHFTZTransferOutList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { releaseList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
+    const { releaseList, listFilter, owners } = this.props;
     this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -233,9 +228,9 @@ export default class SHFTZTransferOutList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
@@ -264,17 +259,12 @@ export default class SHFTZTransferOutList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
                   {this.msg('ftzTransferOut')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部状态</RadioButton>
                 <RadioButton value="pending">待转出</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>

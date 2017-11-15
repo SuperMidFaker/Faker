@@ -80,12 +80,12 @@ export default class Forgot extends React.Component {
             )}
           </FormItem>
           <FormItem>
-            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsRequest(ev)}>
+            <Button type="primary" className="btn btn-block btn-lg" onClick={ev => this.handleSmsRequest(ev)}>
               {formatMsg(intl, 'verifyObtatin')}
             </Button>
           </FormItem>
           <FormItem>
-            <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
+            <Button type="ghost" className="btn btn-block" onClick={ev => this.handleSmsCancel(ev)}>
               {formatGlobalMsg(intl, 'cancel')}
             </Button>
           </FormItem>
@@ -114,12 +114,12 @@ export default class Forgot extends React.Component {
             )}
           </FormItem>
           <FormItem>
-            <Button type="primary" className="btn btn-block btn-lg" size="large" onClick={ev => this.handleSmsVerify(ev)}>
+            <Button type="primary" className="btn btn-block btn-lg" onClick={ev => this.handleSmsVerify(ev)}>
               {formatMsg(intl, 'finishVerify')}
             </Button>
           </FormItem>
           <FormItem>
-            <Button type="ghost" className="btn btn-block" size="large" onClick={ev => this.handleSmsCancel(ev)}>
+            <Button type="ghost" className="btn btn-block" onClick={ev => this.handleSmsCancel(ev)}>
               {formatGlobalMsg(intl, 'cancel')}
             </Button>
           </FormItem>

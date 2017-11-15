@@ -22,7 +22,6 @@ const confirm = Modal.confirm;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
     tenantName: state.account.tenantName,
@@ -164,7 +163,7 @@ export default class OwnersPane extends Component {
   handleOwnerLoad = () => {
     this.props.loadwhseOwners(this.props.whseCode, this.props.whseTenantId);
     if (this.props.whseCode === this.props.defaultWhse.code) {
-      this.props.loadWhse(this.props.whseCode, this.props.tenantId);
+      this.props.loadWhse(this.props.whseCode);
     }
   }
   handleInitData = (record) => {
@@ -178,11 +177,11 @@ export default class OwnersPane extends Component {
       importPanelVisible: true });
   }
   handleBackupData = (record) => {
-    const { tenantId, whseCode } = this.props;
-    window.open(`${API_ROOTS.default}v1/cwm/stock/backup/${createFilename('backup')}.xlsx?tenantId=${tenantId}&whseCode=${whseCode}&ownerPartnerId=${record.owner_partner_id}`);
+    const { whseCode } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/stock/backup/${createFilename('backup')}.xlsx?whseCode=${whseCode}&ownerPartnerId=${record.owner_partner_id}`);
   };
   handleEmptyData = (record) => {
-    const { tenantId, whseCode } = this.props;
+    const { whseCode } = this.props;
     const self = this;
     confirm({
       title: '确定要清空数据吗?',
@@ -191,7 +190,7 @@ export default class OwnersPane extends Component {
       okType: 'danger',
       cancelText: '否',
       onOk() {
-        self.props.clearTransition(whseCode, record.owner_partner_id, tenantId);
+        self.props.clearTransition(whseCode, record.owner_partner_id);
       },
     });
   };
@@ -200,7 +199,7 @@ export default class OwnersPane extends Component {
     return (
       <DataPane columns={this.columns} dataSource={whseOwners} rowKey="id">
         <DataPane.Toolbar>
-          <Button disabled={warehouse.whse_mode === 'PRI'} type="primary" size="large"
+          <Button disabled={warehouse.whse_mode === 'PRI'} type="primary"
             icon="plus-circle" onClick={() => this.props.showWhseOwnersModal()}
           >
             添加货主
@@ -212,16 +211,13 @@ export default class OwnersPane extends Component {
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/receiving/import/asn/stocks`}
           formData={{
-            data: JSON.stringify({
-              tenantId: this.props.tenantId,
-              tenantName: this.props.tenantName,
-              customsCode: this.props.customsCode,
-              loginId: this.props.loginId,
-              loginName: this.props.loginName,
-              whseCode,
-              whseName,
-              owner: this.state.seletedOwner,
-            }),
+            tenantName: this.props.tenantName,
+            customsCode: this.props.customsCode,
+            loginId: this.props.loginId,
+            loginName: this.props.loginName,
+            whseCode,
+            whseName,
+            owner: this.state.seletedOwner,
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}

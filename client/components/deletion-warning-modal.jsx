@@ -108,11 +108,11 @@ class WarningModal extends React.Component {
           <div className="ant-confirm-btns">
             {
             okCancel &&
-            <Button type="ghost" size="large" onClick={() => this.onCancel()}>
+            <Button type="ghost" onClick={() => this.onCancel()}>
               {cancelText}
             </Button>
           }
-            <Button type="primary" size="large" disabled={this.state.okDisabled}
+            <Button type="primary" disabled={this.state.okDisabled}
               loading={this.state.okLoading} onClick={() => this.onOk()}
             >
               {okText}

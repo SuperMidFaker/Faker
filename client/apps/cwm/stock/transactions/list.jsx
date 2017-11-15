@@ -23,7 +23,6 @@ const Option = Select.Option;
   state => ({
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
-    tenantId: state.account.tenantId,
     loading: state.cwmTransaction.loading,
     transactionlist: state.cwmTransaction.list,
     listFilter: state.cwmTransaction.listFilter,
@@ -38,7 +37,6 @@ const Option = Select.Option;
 export default class StockTransactionsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     loading: PropTypes.bool.isRequired,
     transactionlist: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
@@ -91,9 +89,8 @@ export default class StockTransactionsList extends React.Component {
     this.handleStockQuery(1, filter);
   }
   handleStockQuery = (currentPage, filter) => {
-    const { tenantId, sortFilter, listFilter, transactionlist: { pageSize, current } } = this.props;
+    const { sortFilter, listFilter, transactionlist: { pageSize, current } } = this.props;
     this.props.loadTransactions({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       current: currentPage || current,
@@ -106,8 +103,8 @@ export default class StockTransactionsList extends React.Component {
     this.handleStockQuery(1, filter);
   }
   handleExportExcel = () => {
-    const { tenantId, listFilter, sortFilter } = this.props;
-    window.open(`${API_ROOTS.default}v1/cwm/transactions/exportTransactionsExcel/${createFilename('transactions')}.xlsx?tenantId=${tenantId}&filters=${
+    const { listFilter, sortFilter } = this.props;
+    window.open(`${API_ROOTS.default}v1/cwm/transactions/exportTransactionsExcel/${createFilename('transactions')}.xlsx?filters=${
       JSON.stringify(listFilter)}&sorter=${JSON.stringify(sortFilter)}`);
   }
   render() {
@@ -160,7 +157,7 @@ export default class StockTransactionsList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))}
                 </Select>
               </Breadcrumb.Item>
@@ -170,7 +167,7 @@ export default class StockTransactionsList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" icon="export" onClick={this.handleExportExcel}>
+            <Button icon="export" onClick={this.handleExportExcel}>
               {this.msg('export')}
             </Button>
           </PageHeader.Actions>

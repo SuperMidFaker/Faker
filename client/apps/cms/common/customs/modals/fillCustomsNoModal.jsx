@@ -74,7 +74,7 @@ export default class FillCustomsNoModal extends React.Component {
       >
         <Form>
           <FormItem label="海关编号" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
-            <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} size="large" />
+            <Input onChange={this.handleEntryNoChange} value={this.state.entryNo} />
           </FormItem>
         </Form>
       </Modal>

@@ -4,16 +4,25 @@ import { createActionTypes } from 'client/common/redux-actions';
 const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'SHOW_TRANSFER_IN_MODAL',
   'OPEN_BATCH_DECL_MODAL', 'CLOSE_BATCH_DECL_MODAL',
-  'OPEN_CLEARANCE_MODAL', 'CLOSE_CLEARANCE_MODAL',
+  'OPEN_NORMAL_DECL_MODAL', 'CLOSE_NORMAL_DECL_MODAL',
+  'OPEN_NORMAL_REL_REG_MODAL', 'CLOSE_NORMAL_REL_REG_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
   'LOAD_VTDETAILS', 'LOAD_VTDETAILS_SUCCEED', 'LOAD_VTDETAILS_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
   'PARAMS_LOAD', 'PARAMS_LOAD_SUCCEED', 'PARAMS_LOAD_FAIL',
+  'LOAD_NSOREG', 'LOAD_NSOREG_SUCCEED', 'LOAD_NSOREG_FAIL',
+  'LOAD_NENREG', 'LOAD_NENREG_SUCCEED', 'LOAD_NENREG_FAIL',
+  'LOAD_NEDREG', 'LOAD_NEDREG_SUCCEED', 'LOAD_NEDREG_FAIL',
+  'LOAD_SORELD', 'LOAD_SORELD_SUCCEED', 'LOAD_SORELD_FAIL',
+  'LOAD_NENTD', 'LOAD_NENTD_SUCCEED', 'LOAD_NENTD_FAIL',
+  'NEW_NRER', 'NEW_NRER_SUCCEED', 'NEW_NRER_FAIL',
+  'NEW_NRSO', 'NEW_NRSO_SUCCEED', 'NEW_NRSO_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
   'UPDATE_ERFIELD', 'UPDATE_ERFIELD_SUCCEED', 'UPDATE_ERFIELD_FAIL',
+  'REFRSH_RFTZC', 'REFRSH_RFTZC_SUCCEED', 'REFRSH_RFTZC_FAIL',
   'FILE_ERS', 'FILE_ERS_SUCCEED', 'FILE_ERS_FAIL',
   'QUERY_ERI', 'QUERY_ERI_SUCCEED', 'QUERY_ERI_FAIL',
   'PAIR_ERP', 'PAIR_ERP_SUCCEED', 'PAIR_ERP_FAIL',
@@ -55,6 +64,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_STOTASKS', 'LOAD_STOTASKS_SUCCEED', 'LOAD_STOTASKS_FAIL',
   'LOAD_STOCMPTASK', 'LOAD_STOCMPTASK_SUCCEED', 'LOAD_STOCMPTASK_FAIL',
   'LOAD_CUSSTOSS', 'LOAD_CUSSTOSS_SUCCEED', 'LOAD_CUSSTOSS_FAIL',
+  'LOAD_BATCH_DECL', 'LOAD_BATCH_DECL_SUCCEED', 'LOAD_BATCH_DECL_FAIL',
+  'LOAD_NONBONDED_STOCKS', 'LOAD_NONBONDED_STOCKS_SUCCEED', 'LOAD_NONBONDED_STOCKS_FAIL',
 ]);
 
 const initialState = {
@@ -67,9 +78,12 @@ const initialState = {
     visible: false,
     ownerCusCode: '',
   },
-  clearanceModal: {
+  normalDeclModal: {
     visible: false,
     ownerCusCode: '',
+  },
+  normalRelRegModal: {
+    visible: false,
   },
   batchout_regs: [],
   entryList: {
@@ -78,6 +92,7 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  normalSources: [],
   releaseList: {
     totalCount: 0,
     current: 1,
@@ -150,10 +165,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_BATCH_DECL_MODAL:
       return { ...state, batchDeclModal: { ...state.batchDeclModal, visible: false } };
-    case actionTypes.OPEN_CLEARANCE_MODAL:
-      return { ...state, clearanceModal: { ...state.clearanceModal, visible: true, ...action.data } };
-    case actionTypes.CLOSE_CLEARANCE_MODAL:
-      return { ...state, clearanceModal: { ...state.clearanceModal, visible: false } };
+    case actionTypes.OPEN_NORMAL_DECL_MODAL:
+      return { ...state, normalDeclModal: { ...state.normalDeclModal, visible: true, ...action.data } };
+    case actionTypes.CLOSE_NORMAL_DECL_MODAL:
+      return { ...state, normalDeclModal: { ...state.normalDeclModal, visible: false } };
+    case actionTypes.OPEN_NORMAL_REL_REG_MODAL:
+      return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: true, ...action.data } };
+    case actionTypes.CLOSE_NORMAL_REL_REG_MODAL:
+      return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: false } };
     case actionTypes.ENTRY_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
@@ -172,6 +191,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false };
     case actionTypes.RELEASE_REG_LOAD_FAIL:
       return { ...state, loading: false };
+    case actionTypes.LOAD_NSOREG_SUCCEED:
+    case actionTypes.LOAD_NENREG_SUCCEED:
+    case actionTypes.LOAD_NEDREG_SUCCEED:
+      return { ...state, normalSources: action.result.data };
     case actionTypes.PRODUCT_CARGO_LOAD:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.PRODUCT_CARGO_LOAD_SUCCEED:
@@ -298,8 +321,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ENTRY_TRANS_LOAD_SUCCEED:
       return { ...state, transRegs: action.result.data };
     case actionTypes.LOAD_STOCKS:
+    case actionTypes.LOAD_NONBONDED_STOCKS:
       return { ...state, loading: true };
     case actionTypes.LOAD_STOCKS_SUCCEED:
+    case actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED:
       return { ...state, stockDatas: action.result.data, loading: false };
     case actionTypes.LOAD_STOCKS_FAIL:
       return { ...state, loading: false };
@@ -344,14 +369,130 @@ export function closeBatchDeclModal() {
 
 export function openNormalDeclModal(modalInfo) {
   return {
-    type: actionTypes.OPEN_CLEARANCE_MODAL,
+    type: actionTypes.OPEN_NORMAL_DECL_MODAL,
     data: modalInfo,
   };
 }
 
 export function closeNormalDeclModal() {
   return {
-    type: actionTypes.CLOSE_CLEARANCE_MODAL,
+    type: actionTypes.CLOSE_NORMAL_DECL_MODAL,
+  };
+}
+
+export function openNormalRelRegModal(modalInfo) {
+  return {
+    type: actionTypes.OPEN_NORMAL_REL_REG_MODAL,
+    data: modalInfo,
+  };
+}
+
+export function closeNormalRelRegModal() {
+  return {
+    type: actionTypes.CLOSE_NORMAL_REL_REG_MODAL,
+  };
+}
+
+export function loadNormalSoRegs(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NSOREG,
+        actionTypes.LOAD_NSOREG_SUCCEED,
+        actionTypes.LOAD_NSOREG_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/src/so',
+      method: 'get',
+      params: query,
+    },
+  };
+}
+export function loadNormalEntryRegs(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NENREG,
+        actionTypes.LOAD_NENREG_SUCCEED,
+        actionTypes.LOAD_NENREG_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/src/reg',
+      method: 'get',
+      params: query,
+    },
+  };
+}
+export function loadNormalEntryDetails(query) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NEDREG,
+        actionTypes.LOAD_NEDREG_SUCCEED,
+        actionTypes.LOAD_NEDREG_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/src/reg/detail',
+      method: 'get',
+      params: query,
+    },
+  };
+}
+
+export function loadSoRelDetails(soNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_SORELD,
+        actionTypes.LOAD_SORELD_SUCCEED,
+        actionTypes.LOAD_SORELD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/release/load',
+      method: 'get',
+      params: { soNo },
+    },
+  };
+}
+
+export function loadNormalEntryRegDetails(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NENTD,
+        actionTypes.LOAD_NENTD_SUCCEED,
+        actionTypes.LOAD_NENTD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/load',
+      method: 'get',
+      params: { asnNo },
+    },
+  };
+}
+
+export function newNormalRegByEntryReg(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.NEW_NRER,
+        actionTypes.NEW_NRER_SUCCEED,
+        actionTypes.NEW_NRER_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/createby/entryreg',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function newNormalRegBySo(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.NEW_NRSO,
+        actionTypes.NEW_NRSO_SUCCEED,
+        actionTypes.NEW_NRSO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/createby/so',
+      method: 'post',
+      data,
+    },
   };
 }
 
@@ -489,7 +630,22 @@ export function updateEntryReg(preRegNo, field, value, virtualTransfer) {
   };
 }
 
-export function fileEntryRegs(asnNo, whseCode, tenantId) {
+export function refreshEntryRegFtzCargos(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REFRSH_RFTZC,
+        actionTypes.REFRSH_RFTZC_SUCCEED,
+        actionTypes.REFRSH_RFTZC_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/refresh/cargono',
+      method: 'post',
+      data: { asnNo },
+    },
+  };
+}
+
+export function fileEntryRegs(asnNo, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -499,12 +655,12 @@ export function fileEntryRegs(asnNo, whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/file',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, tenantId },
+      data: { asn_no: asnNo, whse: whseCode },
     },
   };
 }
 
-export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, tenantId, loginName) {
+export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -514,7 +670,7 @@ export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, tenantId, login
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/query',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, tenantId, loginName },
+      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, loginName },
     },
   };
 }
@@ -534,7 +690,7 @@ export function checkEntryRegStatus(asnNo, status) {
   };
 }
 
-export function pairEntryRegProducts(asnNo, whseCode, ftzWhseCode, tenantId, loginName) {
+export function pairEntryRegProducts(asnNo, whseCode, ftzWhseCode, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -544,7 +700,7 @@ export function pairEntryRegProducts(asnNo, whseCode, ftzWhseCode, tenantId, log
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/matchpair',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, tenantId, loginName },
+      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, loginName },
     },
   };
 }
@@ -579,7 +735,7 @@ export function updateRelReg(preRegNo, field, value) {
   };
 }
 
-export function fileRelStockouts(soNo, whseCode, ftzWhseCode, tenantId) {
+export function fileRelStockouts(soNo, whseCode, ftzWhseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -589,12 +745,12 @@ export function fileRelStockouts(soNo, whseCode, ftzWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/stockouts',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode, tenantId },
+      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode },
     },
   };
 }
 
-export function fileRelTransfers(soNo, whseCode, ftzWhseCode, tenantId) {
+export function fileRelTransfers(soNo, whseCode, ftzWhseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -604,12 +760,12 @@ export function fileRelTransfers(soNo, whseCode, ftzWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/transfers',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode, tenantId },
+      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode },
     },
   };
 }
 
-export function fileRelPortionouts(soNo, whseCode, ftzWhseCode, tenantId) {
+export function fileRelPortionouts(soNo, whseCode, ftzWhseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -619,12 +775,12 @@ export function fileRelPortionouts(soNo, whseCode, ftzWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/release/file/portionouts',
       method: 'post',
-      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode, tenantId },
+      data: { so_no: soNo, whse_code: whseCode, ftzWhseCode },
     },
   };
 }
 
-export function queryPortionoutInfos(soNo, whseCode, ftzWhseCode, tenantId) {
+export function queryPortionoutInfos(soNo, whseCode, ftzWhseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -634,7 +790,7 @@ export function queryPortionoutInfos(soNo, whseCode, ftzWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/release/portionouts/query',
       method: 'post',
-      data: { so_no: soNo, whse: whseCode, ftzWhseCode, tenantId },
+      data: { so_no: soNo, whse: whseCode, ftzWhseCode },
     },
   };
 }
@@ -654,7 +810,7 @@ export function cancelRelReg(soNo) {
   };
 }
 
-export function fileCargos(ownerCusCode, whse, ftzWhseCode, tenantId) {
+export function fileCargos(ownerCusCode, whse, ftzWhseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -664,12 +820,12 @@ export function fileCargos(ownerCusCode, whse, ftzWhseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/product/file/cargos',
       method: 'post',
-      data: { owner_cus_code: ownerCusCode, whse, ftzWhseCode, tenantId },
+      data: { owner_cus_code: ownerCusCode, whse, ftzWhseCode },
     },
   };
 }
 
-export function confirmCargos(ownerCusCode, whse, tenantId) {
+export function confirmCargos(ownerCusCode, whse) {
   return {
     [CLIENT_API]: {
       types: [
@@ -679,7 +835,7 @@ export function confirmCargos(ownerCusCode, whse, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/product/confirm/cargos',
       method: 'post',
-      data: { owner_cus_code: ownerCusCode, whse, tenantId },
+      data: { owner_cus_code: ownerCusCode, whse },
     },
   };
 }
@@ -849,7 +1005,7 @@ export function loadApplyDetails(batchNo) {
   };
 }
 
-export function fileBatchApply(batchNo, whseCode, ftzWhseCode, loginId, tenantId) {
+export function fileBatchApply(batchNo, whseCode, ftzWhseCode, loginId) {
   return {
     [CLIENT_API]: {
       types: [
@@ -859,12 +1015,12 @@ export function fileBatchApply(batchNo, whseCode, ftzWhseCode, loginId, tenantId
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/file',
       method: 'post',
-      data: { batchNo, whseCode, ftzWhseCode, loginId, tenantId },
+      data: { batchNo, whseCode, ftzWhseCode, loginId },
     },
   };
 }
 
-export function makeBatchApplied(batchNo, tenantId) {
+export function makeBatchApplied(batchNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -874,7 +1030,7 @@ export function makeBatchApplied(batchNo, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/applied',
       method: 'post',
-      data: { batchNo, tenantId },
+      data: { batchNo },
     },
   };
 }
@@ -1059,7 +1215,7 @@ export function compareFtzStocks(data) {
   };
 }
 
-export function loadStockTasks(whseCode, tenantId) {
+export function loadStockTasks(whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -1069,7 +1225,7 @@ export function loadStockTasks(whseCode, tenantId) {
       ],
       endpoint: 'v1/cwm/shftz/stock/tasks',
       method: 'get',
-      params: { whseCode, tenantId },
+      params: { whseCode },
     },
   };
 }
@@ -1100,6 +1256,36 @@ export function loadCusStockSnapshot(taskId) {
       endpoint: 'v1/cwm/shftz/stock/task/cus',
       method: 'get',
       params: { taskId },
+    },
+  };
+}
+
+export function loadBatchDecl(ftzRelNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_BATCH_DECL,
+        actionTypes.LOAD_BATCH_DECL_SUCCEED,
+        actionTypes.LOAD_BATCH_DECL_FAIL,
+      ],
+      endpoint: 'v1/cwm/batch/decl/load',
+      method: 'get',
+      params: { ftzRelNo },
+    },
+  };
+}
+
+export function loadNonbondedStocks(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_NONBONDED_STOCKS,
+        actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED,
+        actionTypes.LOAD_NONBONDED_STOCKS_FAIL,
+      ],
+      endpoint: 'v1/cwm/nonbonded/stock/load',
+      method: 'get',
+      params,
     },
   };
 }

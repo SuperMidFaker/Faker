@@ -126,8 +126,8 @@ export default class AdvModelModal extends Component {
       },
     };
     const footer = [
-      <Button key="cancel" type="ghost" size="large" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>,
-      <Button key="next" type="primary" size="large" onClick={this.handleSave} disabled={this.state.selectedRowKeys.length === 0}>下载</Button>,
+      <Button key="cancel" type="ghost" onClick={this.handleCancel} style={{ marginRight: 10 }}>取消</Button>,
+      <Button key="next" type="primary" onClick={this.handleSave} disabled={this.state.selectedRowKeys.length === 0}>下载</Button>,
     ];
     return (
       <Modal maskClosable={false} visible={visibleAdvModal} title={this.msg('advModel')} onCancel={this.handleCancel} footer={footer} width={600}>

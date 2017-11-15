@@ -19,7 +19,6 @@ const Search = Input.Search;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
     outboundHead: state.cwmOutbound.outboundFormHead,
@@ -336,7 +335,7 @@ export default class OrderDetailsPane extends React.Component {
         dataSource={dataSource} rowKey={rowKey} loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search size="large" placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             {ButtonStatus === 'alloc' && (<Button loading={submitting} onClick={this.handleBatchAutoAlloc}>
               <MdIcon type="check-all" />批量自动分配

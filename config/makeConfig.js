@@ -1,6 +1,24 @@
 const path = require('path');
+const os = require('os');
+
 process.env.NODE_ENV = (process.env.NODE_ENV || 'development').trim();
 const env = process.env.NODE_ENV;
+
+function getIp() {
+  let ip = '';
+  const ins = os.networkInterfaces();
+  Object.keys(ins).forEach((key) => {
+    const arr = ins[key];
+    arr.forEach((nin) => {
+      if (!nin.internal &&
+        nin.family.toLowerCase() === 'ipv4') {
+        ip = nin.address;
+      }
+    });
+  });
+  return ip;
+}
+
 module.exports = (serverPort, dirName, appName) => {
   const config = new Map();
 
@@ -15,43 +33,36 @@ module.exports = (serverPort, dirName, appName) => {
   config.set('env', env);
   config.set('__DEVTOOLS__', env === 'development');
   config.set('__DEV__', __DEV__);
-  config.set('__PROD__', __PROD__);
+  config.set('__PROD__', __PROD__ || __STAGING__); // server rendering subdomain
 
   // ------------------------------------
   // Server
   // ------------------------------------
-  config.set('server_host', 'localhost');
+  let host = 'localhost';
+  if (__TEST_PROD__) {
+    host = getIp();
+  }
   config.set('server_port', serverPort);
+  config.set('API_ROOTS', {// todo how to make the port configurable
+    default: `http://${host}:3030/`,
+    mongo: `http://${host}:3032/`,
+    scv: `http://${host}:3034/`,
+    notify: `http://${host}:3100/`,
+    self: '/',
+  });
 
   // ------------------------------------
   // Webpack
   // ------------------------------------
   config.set('webpack_port', serverPort + 1);
-  config.set('webpack_dev_path', `http://${config.get('server_host')}:${config.get('webpack_port')}/`);
   config.set('webpack_dist', 'dist');
-  config.set('__PRODUCTIONS_ROOT_GROUP_ON_SERVER__', config.get('__PRODUCTIONS_ROOT_GROUP__'));
   config.set('CDN_URL', '');
   config.set('XLSX_CDN', 'https://welogix-cdn.b0.upaiyun.com/xlsx');
   if (__DEV__) {
-    config.set('webpack_public_path', `${config.get('webpack_dev_path')}${config.get('webpack_dist')}/`);
-    // todo how to make the port configurable
-    config.set('API_ROOTS', {
-      default: 'http://localhost:3030/',
-      mongo: 'http://localhost:3032/',
-      scv: 'http://localhost:3034/',
-      notify: 'http://localhost:3100/',
-      self: '/',
-    });
+    config.set('webpack_public_path', `http://${host}:${config.get('webpack_port')}/${config.get('webpack_dist')}/`);
   }
   if (__TEST_PROD__) {
     config.set('webpack_public_path', `/${config.get('webpack_dist')}/`);
-    config.set('API_ROOTS', {
-      default: 'http://localhost:3030/',
-      mongo: 'http://localhost:3032/',
-      scv: 'http://localhost:3034/',
-      notify: 'http://localhost:3100/',
-      self: '/',
-    });
   }
   if (__PROD__) {
     config.set('API_ROOTS', {

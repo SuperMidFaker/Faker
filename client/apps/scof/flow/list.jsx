@@ -149,7 +149,7 @@ export default class FlowList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search onSearch={this.handleSearch} size="large" />
+              <Search onSearch={this.handleSearch} />
             </div>
             <div className="list-body">
               <Table showHeader={false} size="middle" dataSource={flowList.data} columns={this.columns} onRowClick={this.handleRowClick}

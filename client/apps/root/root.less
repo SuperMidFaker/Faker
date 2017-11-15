@@ -19,7 +19,7 @@ img {
 }
 /* Override antd styles */
 // Override default font-size
-.ant-btn,
+
 .ant-checkbox-wrapper,
 .ant-dropdown-menu-item,
 .ant-dropdown-menu-submenu-title,
@@ -27,7 +27,6 @@ img {
 .ant-popover,
 .ant-select,
 .ant-select-dropdown,
-.ant-table,
 .ant-upload {
   font-size: 14px;
 }
@@ -84,6 +83,9 @@ img {
     .ant-steps-dot .ant-steps-main {
       margin-top: 2px;
     }
+    .ant-steps-item-title {
+      font-size: 14px;
+    }
   }
   &.with-card-footer {
     .ant-card-body {
@@ -95,7 +97,7 @@ img {
   }
 }
 .ant-card-extra {
-  top: 8px;
+  padding: 12px 0;
 }
 .ant-cascader-picker-label {
   z-index: 1;
@@ -209,6 +211,9 @@ img {
 .ant-table table {
   border-radius: 0;
 }
+.ant-table-thead > tr > th {
+  padding: 12px 8px;
+}
 .ant-table-placeholder {
   border-bottom: none;
 }
@@ -225,6 +230,9 @@ img {
 .ant-table-fixed-left,
 .ant-table-fixed-right {
   border-radius: 0;
+}
+.ant-table-pagination {
+  margin-right: 16px;
 }
 .ant-tabs-nav .ant-tabs-tab .icon {
     width: 14px;
@@ -335,6 +343,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
 .text-emphasis,
 .text-emphasis a {
   color: #404040;
+  font-weight: 600;
 }
 .text-success,
 .text-success a {
@@ -475,7 +484,8 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   .ant-breadcrumb {
     float: left;
     margin-right: 16px;
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 48px;
   }
   .ant-menu-horizontal {
     border-bottom: 0;
@@ -699,6 +709,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
   h3 {
     line-height: 32px;
+    margin-bottom: 0;
   }
   .ant-alert.ant-alert-no-icon {
     padding: 6px 16px;

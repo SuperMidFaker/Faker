@@ -15,7 +15,6 @@ const formatMsg = format(messages);
   state => ({
     visible: state.cwmShippingOrder.asnSelectModal.visible,
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
   }),
   { getCrossAsns, hideAsnSelectModal, addTemporary, clearTemporary, getCrossAsnDetails }
 )
@@ -27,14 +26,16 @@ export default class AddDetailModal extends Component {
     selectedRowKeys: [],
     dataSource: [],
   }
-  componentWillMount() {
-    this.props.getCrossAsns(this.props.whseCode).then((result) => {
-      if (!result.error) {
-        this.setState({
-          dataSource: result.data,
-        });
-      }
-    });
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.visible && nextProps.visible !== this.props.visible) {
+      this.props.getCrossAsns(this.props.whseCode, nextProps.bonded, nextProps.regType).then((result) => {
+        if (!result.error) {
+          this.setState({
+            dataSource: result.data,
+          });
+        }
+      });
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleCancel = () => {

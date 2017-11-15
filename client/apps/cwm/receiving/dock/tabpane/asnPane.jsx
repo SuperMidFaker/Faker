@@ -13,14 +13,12 @@ const Panel = Collapse.Panel;
 
 @injectIntl
 @connect(
-  state => ({
-    tenantId: state.account.tenantId,
+  () => ({
   }), { }
 )
 export default class ASNPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     asnHead: PropTypes.object.isRequired,
     asnBody: PropTypes.array.isRequired,
   }

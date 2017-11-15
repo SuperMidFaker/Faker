@@ -32,7 +32,6 @@ const OptGroup = Select.OptGroup;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     entryList: state.cwmShFtz.entryList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -49,7 +48,6 @@ const OptGroup = Select.OptGroup;
 export default class SHFTZTransferInList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     entryList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
@@ -172,7 +170,6 @@ export default class SHFTZTransferInList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -184,10 +181,9 @@ export default class SHFTZTransferInList extends React.Component {
     remotes: this.props.entryList,
   })
   handleEntryListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, whse, listFilter, entryList: { pageSize, current } } = this.props;
+    const { whse, listFilter, entryList: { pageSize, current } } = this.props;
     const newfilter = filter || listFilter;
     this.props.loadEntryRegDatas({
-      tenantId,
       filter: JSON.stringify(newfilter),
       pageSize,
       currentPage: currentPage || current,
@@ -229,8 +225,7 @@ export default class SHFTZTransferInList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { entryList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded === 1);
+    const { entryList, listFilter, owners } = this.props;
     this.dataSource.remotes = entryList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -239,9 +234,9 @@ export default class SHFTZTransferInList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('entrySearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('entrySearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <OptGroup>
@@ -270,17 +265,12 @@ export default class SHFTZTransferInList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
                   {this.msg('ftzTransferIn')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部状态</RadioButton>
                 <RadioButton value="pending">待转入</RadioButton>
                 <RadioButton value="processing">已接收</RadioButton>

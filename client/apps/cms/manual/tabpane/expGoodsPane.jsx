@@ -63,27 +63,27 @@ export default class ExpGoodsPane extends React.Component {
   columns = [{
     title: '序号',
     dataIndex: 'em_g_no',
-    width: 150,
+    width: 45,
   }, {
     title: '商品编码',
     dataIndex: 'code_s',
-    width: 150,
+    width: 80,
   }, {
     title: '附加编码',
     dataIndex: 'code_t',
-    width: 150,
+    width: 80,
   }, {
     title: '商品名称',
     dataIndex: 'g_name',
-    width: 160,
+    width: 200,
   }, {
     title: '规格型号',
     dataIndex: 'g_model',
-    width: 100,
+    width: 250,
   }, {
     title: '计量单位',
     dataIndex: 'g_unit',
-    width: 150,
+    width: 100,
     render: o => <TrimSpan text={this.props.units.find(u => u.value === o) && this.props.units.find(u => u.value === o).text} />,
   }, {
     title: '法定计量单位',
@@ -93,10 +93,11 @@ export default class ExpGoodsPane extends React.Component {
   }, {
     title: '申报数量',
     dataIndex: 'dec_qty',
+    width: 100,
   }, {
     title: '申报单价',
     dataIndex: 'dec_price',
-    width: 150,
+    width: 100,
   }, {
     title: '申报总价',
     dataIndex: 'dec_amount',
@@ -104,6 +105,7 @@ export default class ExpGoodsPane extends React.Component {
   }, {
     title: '币制',
     dataIndex: 'currency',
+    width: 100,
     render: o => <TrimSpan text={this.props.currencies.find(cu => cu.value === o) && this.props.currencies.find(cu => cu.value === o).text} />,
   }, {
     title: '产销国',
@@ -117,7 +119,6 @@ export default class ExpGoodsPane extends React.Component {
     render: o => <TrimSpan text={DELG_EXEMPTIONWAY.find(way => way.value === o) && DELG_EXEMPTIONWAY.find(way => way.value === o).text} />,
   }, {
     title: '备注',
-    width: 100,
     dataIndex: 'remark',
   }]
   render() {
@@ -134,7 +135,7 @@ export default class ExpGoodsPane extends React.Component {
         dataSource={dataSource} rowKey="id" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search size="large" placeholder="商品编码" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search placeholder="商品编码" style={{ width: 200 }} onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

@@ -441,27 +441,27 @@ export default class TradeItemList extends Component {
     if (selectedRows.length > 0) {
       if (listFilter.status === 'unclassified') {
         batchOperation = (<span>
-          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+          <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
           <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
-            <Button type="danger" size="large" icon="delete">
+            <Button type="danger" icon="delete">
             批量删除
           </Button>
           </Popconfirm></span>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
-          <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
+          <Dropdown.Button onClick={this.handleItemsPass} overlay={itemPassmenu}>
             <Icon type="check-circle-o" /> 批量通过
           </Dropdown.Button>
-          <Dropdown.Button size="large" onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
+          <Dropdown.Button onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
             <Icon type="close-circle-o" /> 批量拒绝
           </Dropdown.Button>
-          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+          <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
           <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
-            <Button type="danger" size="large" icon="delete">
+            <Button type="danger" icon="delete">
               批量删除
             </Button>
           </Popconfirm>
@@ -551,23 +551,23 @@ export default class TradeItemList extends Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
               <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
               <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
               <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
             </RadioGroup>
             <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleConflictRadio} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleConflictRadio} >
               <RadioButton value="conflicted"><Icon type="exclamation-circle-o" /> {this.msg('filterConflict')}</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
-              <Dropdown.Button size="large" onClick={this.handleDropdownButtonClick} overlay={importMenu}>
+              <Dropdown.Button onClick={this.handleDropdownButtonClick} overlay={importMenu}>
                 <Icon type="upload" /> {this.msg('importItems')}
               </Dropdown.Button>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+              <Button type="primary" icon="plus" onClick={this.handleAddItem}>
                 {this.msg('addItem')}
               </Button>
-              <ButtonToggle size="large"
+              <ButtonToggle
                 iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               />
@@ -576,7 +576,7 @@ export default class TradeItemList extends Component {
           <Content className="main-content layout-min-width layout-min-width-large">
             <div className="page-body">
               <div className="toolbar">
-                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />
+                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} />
                 <span />
                 <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                   <h3>已选中{this.state.selectedRowKeys.length}项</h3>

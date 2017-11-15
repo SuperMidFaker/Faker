@@ -631,7 +631,7 @@ export default class TransportForm extends Component {
           </Col>
           <Col sm={24} md={8}>
             <FormItem label={this.msg('personResponsible')} {...formItemLayout}>
-              <Select size="large" value={node.person_id} onChange={this.handlePersonChange}>
+              <Select value={node.person_id} onChange={this.handlePersonChange}>
                 {serviceTeam.map(st => <Option value={st.lid} key={st.lid}>{st.name}</Option>)}
               </Select>
             </FormItem>
@@ -642,7 +642,7 @@ export default class TransportForm extends Component {
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
-                <Select size="large" style={{ width: '50%' }} placeholder="选择包装方式"
+                <Select style={{ width: '50%' }} placeholder="选择包装方式"
                   value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}
                 >
                   {packagings.map(
@@ -671,7 +671,7 @@ export default class TransportForm extends Component {
           <Col sm={12}>
             <FormItem label="发货方" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
               <Row style={{ paddingRight: 8 }}>
-                <Select allowClear size="large" showArrow value={node.consigner_id} optionLabelProp="name"
+                <Select allowClear showArrow value={node.consigner_id} optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consigner_name', value)}
                   onSelect={value => this.handleConsignSelect('consigner_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -687,7 +687,7 @@ export default class TransportForm extends Component {
                 </Select>
               </Row>
               <Row style={{ marginTop: 10 }}>
-                <InputGroup size="large">
+                <InputGroup >
                   <Col span="12">
                     <Input value={consignerLocation} />
                   </Col>
@@ -700,7 +700,7 @@ export default class TransportForm extends Component {
                 </InputGroup>
               </Row>
               <Row style={{ marginTop: 10 }}>
-                <InputGroup size="large">
+                <InputGroup >
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consigner_contact}
                     onChange={e => this.handleChange('consigner_contact', e.target.value)}
                     placeholder="联系人"
@@ -720,7 +720,7 @@ export default class TransportForm extends Component {
           <Col sm={12}>
             <FormItem label="收货方" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
               <Row style={{ paddingRight: 8 }}>
-                <Select allowClear size="large" showArrow value={node.consignee_id} optionLabelProp="name"
+                <Select allowClear showArrow value={node.consignee_id} optionLabelProp="name"
                   onChange={value => this.handleConsignChange('consignee_name', value)}
                   onSelect={value => this.handleConsignSelect('consignee_name', value)}
                   dropdownMatchSelectWidth={false}
@@ -736,7 +736,7 @@ export default class TransportForm extends Component {
                 </Select>
               </Row>
               <Row style={{ marginTop: 10 }}>
-                <InputGroup size="large">
+                <InputGroup >
                   <Col span="12">
                     <Input value={consigneeLocation} />
                   </Col>
@@ -749,7 +749,7 @@ export default class TransportForm extends Component {
                 </InputGroup>
               </Row>
               <Row style={{ marginTop: 10 }}>
-                <InputGroup size="large">
+                <InputGroup >
                   <Input style={{ width: '33.33%' }} prefix={<Icon type="user" />} value={node.consignee_contact}
                     onChange={e => this.handleChange('consignee_contact', e.target.value)}
                     placeholder="联系人"

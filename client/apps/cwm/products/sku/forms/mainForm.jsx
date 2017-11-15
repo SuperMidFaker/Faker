@@ -156,7 +156,7 @@ export default class MainForm extends Component {
             <Col sm={24} lg={12}>
               <FormItem label={this.msg('unitPrice')}>
                 <InputGroup compact>
-                  <Select showSearch allowClear optionFilterProp="children" size="large" style={{ width: '40%' }}
+                  <Select showSearch allowClear optionFilterProp="children" style={{ width: '40%' }}
                     value={skuForm.currency} onChange={this.handleCurrChange}
                   >
                     {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}

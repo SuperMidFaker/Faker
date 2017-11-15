@@ -295,13 +295,13 @@ export default class ScvCustomsDeclList extends Component {
               {this.msg('customsDecl')}
             </Breadcrumb.Item>
           </Breadcrumb>
-          <RadioGroup value={customsFilters.ietype} onChange={this.handleIEChange} size="large">
+          <RadioGroup value={customsFilters.ietype} onChange={this.handleIEChange} >
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             <RadioButton value="import">{this.msg('clearanceImport')}</RadioButton>
             <RadioButton value="export">{this.msg('clearanceExport')}</RadioButton>
           </RadioGroup>
           <span />
-          <RadioGroup value={customsFilters.status} onChange={this.handleRadioChange} size="large">
+          <RadioGroup value={customsFilters.status} onChange={this.handleRadioChange} >
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             {Object.keys(CMS_DECL_STATUS).map(declkey =>
               <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
@@ -312,7 +312,7 @@ export default class ScvCustomsDeclList extends Component {
         <Content className="main-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('customsSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
+              <SearchBar placeholder={this.msg('customsSearchPlaceholder')} onInputSearch={this.handleSearch} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

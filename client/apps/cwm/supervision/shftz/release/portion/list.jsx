@@ -31,7 +31,6 @@ const RadioButton = Radio.Button;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     releaseList: state.cwmShFtz.releaseList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -48,7 +47,6 @@ const RadioButton = Radio.Button;
 export default class SHFTZReleaseList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     releaseList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
@@ -79,6 +77,7 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'ftz_rel_no',
     width: 200,
     fixed: 'left',
+    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>,
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -94,12 +93,23 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'status',
     width: 100,
     render: (o) => {
-      if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
-      } else if (o === 1) {
-        return (<Badge status="processing" text="终端处理" />);
-      } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+      switch (o) {
+        case 0:
+          return (<Badge status="default" text="待备案" />);
+        case 1:
+          return (<Badge status="processing" text="终端处理" />);
+        case 2:
+          return (<Badge status="processing" text="已备案" />);
+        case 3:
+          return (<Badge status="processing" text="部分集中申请" />);
+        case 4:
+          return (<Badge status="processing" text="已集中申请" />);
+        case 5:
+          return (<Badge status="processing" text="部分清关" />);
+        case 6:
+          return (<Badge status="success" text="已清关" />);
+        default:
+          break;
       }
     },
   }, {
@@ -117,30 +127,20 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '仓储企业',
-    width: 180,
-    dataIndex: 'wh_ent_name',
-    render: o => <TrimSpan text={o} maxLen={14} />,
-  }, {
     title: '运输单位',
     width: 180,
     dataIndex: 'carrier_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '出口日期',
+    title: '备案日期',
     width: 120,
-    dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+    dataIndex: 'ftz_reg_date',
+    render: regDate => regDate && moment(regDate).format('YYYY.MM.DD'),
   }, {
-    title: '报关日期',
+    title: '报关申请日期',
     width: 120,
     dataIndex: 'cus_decl_date',
     render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
-  }, {
-    title: '预计出区日期',
-    width: 120,
-    dataIndex: 'ftz_rel_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
     title: '创建时间',
     width: 120,
@@ -177,7 +177,6 @@ export default class SHFTZReleaseList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -189,10 +188,9 @@ export default class SHFTZReleaseList extends React.Component {
     remotes: this.props.releaseList,
   })
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, releaseList: { pageSize, current } } = this.props;
+    const { listFilter, whse, releaseList: { pageSize, current } } = this.props;
     const newfilter = filter || listFilter;
     this.props.loadReleaseRegDatas({
-      tenantId,
       filter: JSON.stringify(newfilter),
       pageSize,
       currentPage: currentPage || current,
@@ -231,8 +229,7 @@ export default class SHFTZReleaseList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { releaseList, listFilter, whses, whse, owners } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
+    const { releaseList, listFilter, owners } = this.props;
     this.dataSource.remotes = releaseList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -241,9 +238,9 @@ export default class SHFTZReleaseList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('releaseSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
@@ -251,7 +248,9 @@ export default class SHFTZReleaseList extends React.Component {
           )}
       </Select>
     </span>);
-    const bulkActions = <Button size="large">发送报关申请</Button>;
+    const bulkActions = (<span>
+      {listFilter.status === 'completed' && <Button >集中报关</Button>}
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -272,21 +271,18 @@ export default class SHFTZReleaseList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
                   {this.msg('ftzRelPortionReg')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">备案完成</RadioButton>
+                <RadioButton value="completed">已备案</RadioButton>
+                <RadioButton value="applied">已集中申请</RadioButton>
+                <RadioButton value="cleared">已清关</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>

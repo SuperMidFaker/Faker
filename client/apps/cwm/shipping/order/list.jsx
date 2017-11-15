@@ -32,7 +32,6 @@ const Option = Select.Option;
 function fetchData({ state, dispatch }) {
   dispatch(loadSos({
     whseCode: state.cwmContext.defaultWhse.code,
-    tenantId: state.account.tenantId,
     pageSize: state.cwmShippingOrder.solist.pageSize,
     current: state.cwmShippingOrder.solist.current,
     filters: state.cwmShippingOrder.soFilters,
@@ -42,7 +41,6 @@ function fetchData({ state, dispatch }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
@@ -63,7 +61,6 @@ function fetchData({ state, dispatch }) {
 export default class ShippingOrderList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -128,7 +125,7 @@ export default class ShippingOrderList extends React.Component {
       if (bonded === 1) {
         const regtype = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === record.bonded_outtype)[0];
         if (regtype) {
-          return (<Tag color={regtype.tagcolor}>{regtype.ftztext}</Tag>);
+          return (<Tag color={regtype.tagcolor}>{regtype.ftztext || '保税'}</Tag>);
         }
       } else if (bonded === -1) {
         return (<Tag>不限</Tag>);
@@ -152,18 +149,18 @@ export default class ShippingOrderList extends React.Component {
   }, {
     title: '要求出货日期',
     dataIndex: 'expect_shipping_date',
-    width: 120,
+    width: 140,
     render: o => o && moment(o).format('YYYY.MM.DD'),
     sorter: (a, b) => new Date(a.expect_shipping_date).getTime() - new Date(b.expect_shipping_date).getTime(),
   }, {
     title: '实际出库时间',
     dataIndex: 'shipped_date',
-    width: 120,
+    width: 140,
     render: o => o && moment(o).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.shipped_date).getTime() - new Date(b.shipped_date).getTime(),
   }, {
     title: '创建时间',
-    width: 120,
+    width: 140,
     dataIndex: 'created_date',
     render: o => moment(o).format('MM.DD HH:mm'),
     sorter: (a, b) => new Date(a.created_date).getTime() - new Date(b.created_date).getTime(),
@@ -185,7 +182,7 @@ export default class ShippingOrderList extends React.Component {
           {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
             && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
           {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />}</span>);
-        if (record.bonded_outtype) {
+        if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
           return (<span>
             {outbndActions}
             <span className="ant-divider" />
@@ -238,7 +235,6 @@ export default class ShippingOrderList extends React.Component {
   handleReload = () => {
     this.props.loadSos({
       whseCode: this.props.defaultWhse.code,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters: this.props.filters,
@@ -266,7 +262,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -280,7 +275,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -291,7 +285,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -302,7 +295,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -313,7 +305,6 @@ export default class ShippingOrderList extends React.Component {
     const whseCode = this.props.defaultWhse.code;
     this.props.loadSos({
       whseCode,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
@@ -325,16 +316,15 @@ export default class ShippingOrderList extends React.Component {
     const filters = this.props.filters;
     this.props.loadSos({
       whseCode: value,
-      tenantId: this.props.tenantId,
       pageSize: this.props.solist.pageSize,
       current: this.props.solist.current,
       filters,
     });
   }
   handleCreateWave = () => {
-    const { tenantId, tenantName, defaultWhse, loginId } = this.props;
+    const { tenantName, defaultWhse, loginId } = this.props;
     const { selectedRowKeys } = this.state;
-    this.props.createWave(selectedRowKeys, tenantId, tenantName, defaultWhse.code, loginId).then((result) => {
+    this.props.createWave(selectedRowKeys, tenantName, defaultWhse.code, loginId).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
@@ -373,7 +363,6 @@ export default class ShippingOrderList extends React.Component {
         const newfilters = { ...this.props.filters, ...tblfilters[0] };
         const params = {
           whseCode: this.props.defaultWhse.code,
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
           filters: newfilters,
@@ -405,9 +394,9 @@ export default class ShippingOrderList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('soPlaceholder')} size="large" onInputSearch={this.handleSearch} value={filters.name} />
+      <SearchBar placeholder={this.msg('soPlaceholder')} onInputSearch={this.handleSearch} value={filters.name} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" value={filters.ownerCode}
+      <Select showSearch optionFilterProp="children" value={filters.ownerCode}
         onChange={this.handleOwnerChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部货主</Option>
@@ -416,7 +405,7 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" size="large" value={filters.receiverCode}
+      <Select showSearch optionFilterProp="children" value={filters.receiverCode}
         onChange={this.handleReceiverChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部收货人</Option>
@@ -426,7 +415,7 @@ export default class ShippingOrderList extends React.Component {
           }
       </Select>
       <span />
-      <Select showSearch optionFilterProp="children" size="large" value={filters.carrierCode}
+      <Select showSearch optionFilterProp="children" value={filters.carrierCode}
         onChange={this.handleCarrierChange} dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all" key="all">全部承运人</Option>
@@ -437,9 +426,9 @@ export default class ShippingOrderList extends React.Component {
       </Select>
     </span>);
     const bulkActions = (<span>
-      {filters.status === 'pending' && <Button size="large" onClick={this.handleBatchRelease}>释放</Button>}
-      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.handleCreateWave}>创建波次计划</Button>}
-      {this.state.createWaveEnable && filters.status === 'pending' && <Button size="large" onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
+      {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}
+      {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.handleCreateWave}>创建波次计划</Button>}
+      {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
     </span>
     );
     return (
@@ -448,7 +437,7 @@ export default class ShippingOrderList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
+                <Select value={defaultWhse.code} placeholder="选择仓库" style={{ width: 160 }} onSelect={this.handleWhseChange}>
                   {
                     whses.map(warehouse => (<Option value={warehouse.code} key={warehouse.code}>{warehouse.name}</Option>))
                   }
@@ -460,7 +449,7 @@ export default class ShippingOrderList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="pending">订单接收</RadioButton>
               <RadioButton value="outbound">已释放</RadioButton>
@@ -468,13 +457,13 @@ export default class ShippingOrderList extends React.Component {
               <RadioButton value="completed">发货完成</RadioButton>
             </RadioGroup>
             <span />
-            <RadioGroup value={filters.status} onChange={this.handleStatusChange} size="large">
+            <RadioGroup value={filters.status} onChange={this.handleStatusChange} >
               <RadioButton value="inWave">已加入波次计划</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button size="large" onClick={() => { this.setState({ importPanelVisible: true }); }}>{this.msg('batchImport')}</Button>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreateSO}>
+            <Button onClick={() => { this.setState({ importPanelVisible: true }); }}>{this.msg('batchImport')}</Button>
+            <Button type="primary" icon="plus" onClick={this.handleCreateSO}>
               {this.msg('createSO')}
             </Button>
           </PageHeader.Actions>
@@ -493,13 +482,10 @@ export default class ShippingOrderList extends React.Component {
           visible={this.state.importPanelVisible}
           endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
           formData={{
-            data: JSON.stringify({
-              tenantId: this.props.tenantId,
-              tenantName: this.props.tenantName,
-              loginId: this.props.loginId,
-              whseCode: defaultWhse.code,
-              whseName: defaultWhse.name,
-            }),
+            tenantName: this.props.tenantName,
+            loginId: this.props.loginId,
+            whseCode: defaultWhse.code,
+            whseName: defaultWhse.name,
           }}
           onClose={() => { this.setState({ importPanelVisible: false }); }}
           onUploaded={this.handleReload}

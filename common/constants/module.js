@@ -432,7 +432,7 @@ const MODULE_CWM = {
   id: 'cwm',
   text: 'moduleCWM',
   defaultText: '保税仓储',
-  status: 'beta',
+  status: 'alpha',
   features: [
     {
       id: 'dashboard',
@@ -574,7 +574,7 @@ const MODULE_BSS = {
   id: 'bss',
   text: 'moduleBSS',
   defaultText: '结算中心',
-  status: 'alpha',
+  status: 'dev',
   features: [],
 };
 

@@ -215,7 +215,7 @@ export default class Dashboard extends React.Component {
     let radio = null;
     if (type === 'overtime') {
       radio = (
-        <RadioGroup onChange={this.handleStatusTypeChange} value={this.props.filters.statusType} size="large">
+        <RadioGroup onChange={this.handleStatusTypeChange} value={this.props.filters.statusType} >
           <RadioButton value="all">所有</RadioButton>
           <RadioButton value="intransit">在途</RadioButton>
           <RadioButton value="delivered">已送货</RadioButton>
@@ -228,7 +228,7 @@ export default class Dashboard extends React.Component {
           <span>{this.msg(type)}</span>
           {radio}
           <div className="page-header-tools">
-            <Button type="primary" size="large" ghost icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
+            <Button type="primary" ghost icon="export" onClick={this.handleExportExcel}>{this.msg('export')}</Button>
           </div>
         </Header>
         <Content className="main-content">

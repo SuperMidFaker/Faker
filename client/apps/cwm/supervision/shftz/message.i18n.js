@@ -11,7 +11,7 @@ const messages = defineMessages({
   },
   ftzNormalDecl: {
     id: 'cwm.supervision.shftz.normal.decl',
-    defaultMessage: '普通出库报关',
+    defaultMessage: '普通出库清关',
   },
   ftzRelPortionReg: {
     id: 'cwm.supervision.shftz.release.portion',
@@ -35,11 +35,11 @@ const messages = defineMessages({
   },
   ftzBondedStock: {
     id: 'cwm.supervision.shftz.bonded.stock',
-    defaultMessage: '监管保税库存',
+    defaultMessage: '保税库存',
   },
   ftzNonbondedStock: {
     id: 'cwm.supervision.shftz.nonbonded.stock',
-    defaultMessage: '监管非保库存',
+    defaultMessage: '非保监管库存',
   },
   ftzCargoReg: {
     id: 'cwm.supervision.shftz.cargo.reg',

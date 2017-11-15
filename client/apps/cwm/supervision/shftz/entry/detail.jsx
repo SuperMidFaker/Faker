@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
+import { Alert, Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -13,7 +13,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadParams, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -21,7 +21,6 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
 function fetchData({ dispatch, params }) {
@@ -35,7 +34,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
     entryRegs: state.cwmShFtz.entry_regs,
@@ -52,10 +50,9 @@ function fetchData({ dispatch, params }) {
       text: tc.cntry_name_cn,
     })),
     whse: state.cwmContext.defaultWhse,
-    owners: state.cwmContext.whseAttrs.owners,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
+  { loadEntryDetails, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
 )
 @connectNav({
   depth: 3,
@@ -70,10 +67,11 @@ export default class SHFTZEntryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    reg: {},
     sendable: false,
     queryable: false,
     fullscreen: true,
-    whyunsent: '',
+    alertInfo: '',
     tabKey: '',
     nonCargono: false,
   }
@@ -89,36 +87,71 @@ export default class SHFTZEntryDetail extends Component {
         const nonCusDeclRegs = nextProps.entryRegs.filter(er => !(er.cus_decl_no && er.ie_date && er.ftz_ent_date));
         if (nonCusDeclRegs.length === 0) {
           sendable = true;
+          nextProps.entryRegs.forEach((er) => {
+            const invalidDets = [];
+            for (let i = 0; i < er.details.length; i++) {
+              const det = er.details[i];
+              if (!det.country || !det.currency || !det.unit || !det.net_wt) {
+                invalidDets.push(det.asn_seq_no);
+              }
+            }
+            if (invalidDets.length > 0) {
+              sendable = false;
+              unsentReason = `${unsentReason ? '\n' : ''}${er.cus_decl_no}: 行号${invalidDets.join(',')}数据不完整`;
+            }
+          });
         } else {
-          unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}未申报`;
+          unsentReason = `${nonCusDeclRegs.map(reg => reg.pre_entry_seq_no).join(',')}报关单号或进口时间或入库时间为空`;
           sendable = false;
         }
       }
-      const newState = { queryable, sendable, whyunsent: unsentReason };
+      const newState = { queryable, sendable, alertInfo: unsentReason };
       if (this.state.tabKey === '') {
         newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
       }
-      const owner = nextProps.owners.filter(own => own.customs_code === nextProps.entryRegs[0].owner_cus_code)[0];
-      if (owner && owner.portion_enabled) {
-        for (let i = 0; i < this.props.entryRegs.length; i++) {
-          const nonCargono = this.props.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
+      if (nextProps.entryAsn.portion_enabled) {
+        for (let i = 0; i < nextProps.entryRegs.length; i++) {
+          const nonCargono = nextProps.entryRegs[i].details.filter(det => !det.ftz_cargo_no).length !== 0;
           if (nonCargono) {
             newState.nonCargono = true;
             break;
           }
         }
       }
-      this.setState(newState);
+      this.setState({
+        reg: nextProps.entryRegs[0],
+        alertInfo: unsentReason,
+        newState,
+      });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
+  handleRefreshFtzCargo = () => {
+    const asnNo = this.props.params.asnNo;
+    this.props.refreshEntryRegFtzCargos(asnNo).then((result) => {
+      if (!result.error) {
+        this.props.loadEntryDetails({ asnNo });
+        notification.success({
+          message: '操作成功',
+          description: '备件号刷新成功',
+          placement: 'topLeft',
+        });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+          duration: 15,
+        });
+      }
+    });
+  }
   handleSend = () => {
     if (this.state.nonCargono) {
       notification.warn({
         message: '货号未备案',
         description: '部分货号无备案料号, 是否以生成临时备案料号调用备案',
         btn: (<div>
-          <a role="presentation" onClick={this.handleRegSend}>直接备案</a>
+          <a role="presentation" onClick={() => this.handleRegSend(true)}>直接备案</a>
           <span className="ant-divider" />
           <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
         </div>),
@@ -126,13 +159,15 @@ export default class SHFTZEntryDetail extends Component {
         duration: 0,
       });
     } else {
-      this.handleRegSend();
+      this.handleRegSend(false);
     }
   }
-  handleRegSend = () => {
+  handleRegSend = (close) => {
+    if (close) {
+      notification.close('confirm-cargono');
+    }
     const asnNo = this.props.params.asnNo;
-    notification.close('confirm-cargono');
-    this.props.fileEntryRegs(asnNo, this.props.whse.code, this.props.tenantId).then((result) => {
+    this.props.fileEntryRegs(asnNo, this.props.whse.code).then((result) => {
       if (!result.error) {
         const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === this.props.entryAsn.bonded_intype)[0];
         this.props.loadEntryDetails({ asnNo });
@@ -168,7 +203,7 @@ export default class SHFTZEntryDetail extends Component {
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     const loginName = this.props.username;
-    this.props.queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, this.props.tenantId, loginName).then((result) => {
+    this.props.queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, loginName).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -214,7 +249,10 @@ export default class SHFTZEntryDetail extends Component {
     this.context.router.push('/cwm/supervision/shftz/cargo');
   }
   handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
+    this.setState({
+      tabKey,
+      reg: this.props.relRegs[tabKey],
+    });
   }
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateEntryReg(preRegNo, field, value).then((result) => {
@@ -344,6 +382,7 @@ export default class SHFTZEntryDetail extends Component {
   }]
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
+    const { reg } = this.state;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
@@ -355,9 +394,20 @@ export default class SHFTZEntryDetail extends Component {
         this.setState({ selectedRowKeys });
       },
     };
+    const tabList = [];
+    entryRegs.forEach((r, index) => tabList.push({ tab: r.ftz_ent_no || r.pre_entry_seq_no, key: index }));
+    const stat = reg.details && reg.details.reduce((acc, regd) => ({
+      total_qty: acc.total_qty + regd.qty,
+      total_amount: acc.total_amount + regd.amount,
+      total_net_wt: acc.total_net_wt + regd.net_wt,
+    }), {
+      total_qty: 0,
+      total_amount: 0,
+      total_net_wt: 0,
+    });
     return (
       <div>
-        <PageHeader>
+        <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
@@ -376,91 +426,71 @@ export default class SHFTZEntryDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleInboundPage}>
+              <Button icon="link" onClick={this.handleInboundPage}>
                 <Badge status={inbStatus.badge} text={inbStatus.text} />
               </Button>
             </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
-            {this.state.queryable && <Button size="large" icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
-            {this.state.nonCargono && <Button size="large" icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
+            {this.state.queryable && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
+            {this.state.nonCargono && <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
             {entryEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          {entryEditable && !this.state.sendable && <Alert message={this.state.whyunsent} type="info" showIcon closable />}
+          {entryEditable && !this.state.sendable && <Alert message={this.state.alertInfo} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
-              <DescriptionList col={4}>
-                <Description term="经营单位">{entryAsn.owner_name}</Description>
-                <Description term="收货单位">{entryAsn.wh_ent_tenant_name}</Description>
-                <Description term="创建时间">{entryAsn.created_date && moment(entryAsn.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-                <Description term="备案时间">{entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+              <DescriptionList col={3}>
+                <Description term="海关进库单号">
+                  <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
+                  />
+                </Description>
+                <Description term="报关单号">
+                  <EditableCell value={reg.cus_decl_no} editable={entryEditable}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
+                  />
+                </Description>
+                <Description term="经营单位">{reg.owner_name}</Description>
+                <Description term="进口日期">
+                  <EditableCell type="date" value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
+                  />
+                </Description>
+                <Description term="进库日期">
+                  <EditableCell type="date" value={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD')} editable={entryEditable}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
+                  />
+                </Description>
+                <Description term="备案时间">{reg.reg_date && moment(reg.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="待备案" />
-                  <Step description="已发送" />
-                  <Step description="备案完成" />
+                  <Step title="待备案" />
+                  <Step title="已发送" />
+                  <Step title="备案完成" />
                 </Steps>
               </div>
             </Card>
             <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                {entryRegs.map((reg) => {
-                  const stat = reg.details.reduce((acc, regd) => ({
-                    total_qty: acc.total_qty + regd.qty,
-                    total_amount: acc.total_amount + regd.amount,
-                    total_net_wt: acc.total_net_wt + regd.net_wt,
-                  }), {
-                    total_qty: 0,
-                    total_amount: 0,
-                    total_net_wt: 0,
-                  });
-                  return (
-                    <TabPane tab="备案明细" key={reg.pre_entry_seq_no}>
-                      <DataPane fullscreen={this.state.fullscreen}
-                        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
-                      >
-                        <DataPane.Toolbar>
-                          <DescriptionList size="small" col={5}>
-                            <Description term="海关进库单号">
-                              <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
-                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
-                              />
-                            </Description>
-                            <Description term="报关单号">
-                              <EditableCell value={reg.cus_decl_no} editable={entryEditable}
-                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'cus_decl_no', value)}
-                              />
-                            </Description>
-                            <Description term="进口日期">
-                              <EditableCell type="date" value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
-                              />
-                            </Description>
-                            <Description term="进库日期">
-                              <EditableCell type="date" value={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD')} editable={entryEditable}
-                                onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
-                              />
-                            </Description>
-                          </DescriptionList>
-                          <DataPane.Extra>
-                            <Summary>
-                              <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
-                              <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
-                              <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
-                            </Summary>
-                          </DataPane.Extra>
-                        </DataPane.Toolbar>
-                      </DataPane>
-                    </TabPane>);
-                })}
-              </Tabs>
+              <DataPane header="备案明细" fullscreen={this.state.fullscreen}
+                columns={this.columns} rowSelection={rowSelection} indentSize={0}
+                dataSource={reg.details} rowKey="id" loading={this.state.loading}
+              >
+                <DataPane.Toolbar>
+                  <DataPane.Extra>
+                    <Summary>
+                      <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>
+                      <Summary.Item label="总净重" addonAfter="KG">{stat && stat.total_net_wt.toFixed(3)}</Summary.Item>
+                      <Summary.Item label="总金额">{stat && stat.total_amount.toFixed(3)}</Summary.Item>
+                    </Summary>
+                  </DataPane.Extra>
+                </DataPane.Toolbar>
+              </DataPane>
             </MagicCard>
           </Form>
         </Content>

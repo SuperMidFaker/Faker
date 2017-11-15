@@ -13,7 +13,7 @@ import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import PackingRulePane from './panes/packingRulePane';
 import ApplyPackingRuleModal from './modal/applyPackingRuleModal';
 import PageHeader from 'client/components/PageHeader';
-import ExcelUploader from 'client/components/ExcelUploader';
+import ImportDataPanel from 'client/components/ImportDataPanel';
 import { formatMsg } from '../message.i18n';
 import moment from 'moment';
 
@@ -35,7 +35,6 @@ const Panel = Collapse.Panel;
     listFilter: state.cwmSku.listFilter,
     sortFilter: state.cwmSku.sortFilter,
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
   }),
   { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal }
 )
@@ -46,7 +45,6 @@ const Panel = Collapse.Panel;
 export default class CWMSkuList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
     owners: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
@@ -62,6 +60,7 @@ export default class CWMSkuList extends React.Component {
     rightSiderCollapsed: true,
     selectedRowKeys: [],
     tableOwners: [],
+    importPanelVisible: false,
   }
   componentWillMount() {
     if (!this.props.owner.id) {
@@ -222,7 +221,7 @@ export default class CWMSkuList extends React.Component {
     });
   }
   handleTradeItemsSync = () => {
-    this.props.syncTradeItemSkus(this.props.tenantId, this.props.owner.id, this.props.loginId)
+    this.props.syncTradeItemSkus(this.props.owner.id, this.props.loginId)
       .then((result) => {
         if (result.error) {
           if (result.error.message === 'NO_OWNER_REPO') {
@@ -274,7 +273,7 @@ export default class CWMSkuList extends React.Component {
     };
     this.dataSource.remotes = skulist;
     const toolbarActions = (<span>
-      <SearchBar size="large" placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.sku} />
+      <SearchBar placeholder={this.msg('productSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.sku} />
     </span>);
     const bulkActions = (<span>
       <Button onClick={this.handleApplyPackingRule}>采用包装规则</Button>
@@ -285,7 +284,7 @@ export default class CWMSkuList extends React.Component {
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
                   {whses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                 </Select>
               </Breadcrumb.Item>
@@ -296,7 +295,7 @@ export default class CWMSkuList extends React.Component {
           </div>
           <div className="left-sider-panel">
             <div className="toolbar">
-              <Search placeholder={this.msg('ownerSearch')} size="large" onSearch={this.handleOwnerSearch} />
+              <Search placeholder={this.msg('ownerSearch')} onSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
               <Table size="middle" columns={this.ownerColumns} showHeader={false} dataSource={this.state.tableOwners} rowKey="id"
@@ -320,27 +319,16 @@ export default class CWMSkuList extends React.Component {
             </PageHeader.Title>}
             {owner.id &&
             <PageHeader.Actions>
-              <Button size="large" icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>
+              <Button icon="sync" onClick={this.handleTradeItemsSync} loading={syncing}>
                 {this.msg('syncTradeItems')}
               </Button>
-              <ExcelUploader endpoint={`${API_ROOTS.default}v1/cwm/sku/import`}
-                formData={{
-                  data: JSON.stringify({
-                    ownerId: owner.id,
-                    ownerTenantId: owner.partner_tenant_id,
-                    name: owner.name,
-                    loginId: this.props.loginId,
-                  }),
-                }} onUploaded={this.skuUploaded}
-              >
-                <Button size="large" icon="upload" disabled={syncing}>
-                  {this.msg('productImport')}
-                </Button>
-              </ExcelUploader>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateBtnClick} disabled={syncing}>
+              <Button icon="upload" disabled={syncing} onClick={() => { this.setState({ importPanelVisible: true }); }}>
+                {this.msg('productImport')}
+              </Button>
+              <Button type="primary" icon="plus" onClick={this.handleCreateBtnClick} disabled={syncing}>
                 {this.msg('createSKU')}
               </Button>
-              <ButtonToggle size="large" iconOn="setting" iconOff="setting" onClick={this.toggleRightSider} />
+              <ButtonToggle iconOn="setting" iconOff="setting" onClick={this.toggleRightSider} />
             </PageHeader.Actions>}
           </PageHeader>
           <Content className="page-content" key="main">
@@ -371,6 +359,19 @@ export default class CWMSkuList extends React.Component {
             </Collapse>
           </div>
         </Sider>
+        <ImportDataPanel
+          visible={this.state.importPanelVisible}
+          endpoint={`${API_ROOTS.default}v1/cwm/sku/import`}
+          formData={{
+            ownerId: owner.id,
+            ownerTenantId: owner.partner_tenant_id,
+            name: owner.name,
+            loginId: this.props.loginId,
+          }}
+          onClose={() => { this.setState({ importPanelVisible: false }); }}
+          onUploaded={this.skuUploaded}
+          template={`${XLSX_CDN}/sku导入模板.xlsx`}
+        />
         <ApplyPackingRuleModal />
       </Layout>
     );

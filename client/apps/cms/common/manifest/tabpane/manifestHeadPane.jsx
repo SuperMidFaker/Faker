@@ -9,7 +9,7 @@ import {
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
 } from '../../form/headFormItems';
-import { loadSearchedParam, saveBillHead, resetBillHead } from 'common/reducers/cmsManifest';
+import { loadSearchedParam, resetBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
 import globalMessage from 'client/common/root.i18n';
 import messages from '../message.i18n';
@@ -30,10 +30,9 @@ const CODE_AS_STATE = {
 @connect(
   state => ({
     formRequire: state.cmsManifest.params,
-    billMeta: state.cmsManifest.billMeta,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
-  { loadSearchedParam, saveBillHead, resetBillHead }
+  { loadSearchedParam, resetBillHead }
 )
 export default class ManifestHeadPane extends React.Component {
   static propTypes = {
@@ -47,7 +46,30 @@ export default class ManifestHeadPane extends React.Component {
     onSave: PropTypes.func.isRequired,
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
   }
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      event.stopPropagation();
+      event.preventDefault();
+      const inputs = document.forms[0].elements;
+      for (let i = 0; i < inputs.length; i++) {
+        if (i === (inputs.length - 1)) {
+          inputs[0].focus();
+          inputs[0].select();
+          break;
+        } else if (event.target === inputs[i]) {
+          inputs[i + 1].focus();
+          inputs[i + 1].select();
+          break;
+        }
+      }
+    } else if (event.keyCode === 8) {
+      event.target.select();
+    }
+  }
   handleSheetSave = (ev) => {
     ev.stopPropagation();
     ev.preventDefault();
@@ -79,7 +101,7 @@ export default class ManifestHeadPane extends React.Component {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
   handleBillHeadReset = () => {
-    this.props.resetBillHead(this.props.formData).then((result) => {
+    this.props.resetBillHead(this.props.formData.id).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -89,7 +111,7 @@ export default class ManifestHeadPane extends React.Component {
   }
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl, billHeadFieldsChangeTimes, billMeta } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl, billHeadFieldsChangeTimes } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -102,7 +124,7 @@ export default class ManifestHeadPane extends React.Component {
       disabled: readonly,
       formData,
     };
-    const tradesOpt = formRequire.trades.filter(data => data.customer_partner_id === billMeta.customerId);
+    const tradesOpt = formRequire.trades.filter(data => data.customer_partner_id === formData.owner_cuspartner_id);
     return (
       <div className="pane">
         <div className="panel-header">

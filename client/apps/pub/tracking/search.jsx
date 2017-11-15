@@ -84,10 +84,10 @@ export default class TrackingSearch extends React.Component {
               <h2 className="tenant-name">运单追踪</h2>
             </div>
             <center>
-              <Input size="large" placeholder="请输入运单号或客户单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
+              <Input placeholder="请输入运单号或客户单号" value={this.state.searchText} style={{ height: '38px' }} onPressEnter={this.handleSearch}
                 onChange={this.handleInputChange}
               />
-              <Button type="primary" size="large" icon="search" style={{ height: '38px', width: '120px', marginTop: 24 }} onClick={this.handleSearch} >
+              <Button type="primary" icon="search" style={{ height: '38px', width: '120px', marginTop: 24 }} onClick={this.handleSearch} >
               查询
               </Button>
             </center>

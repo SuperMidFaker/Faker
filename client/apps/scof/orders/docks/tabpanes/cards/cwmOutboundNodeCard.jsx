@@ -104,9 +104,9 @@ export default class CWMOutboundNodeCard extends React.Component {
         {children}
         <div className="card-footer">
           <Steps current={this.state.trigger} progressDot>
-            <Step description="订单接收" />
-            <Step description="出库操作" />
-            <Step description="发货完成" />
+            <Step title="订单接收" />
+            <Step title="出库操作" />
+            <Step title="发货完成" />
           </Steps>
         </div>
       </Card>

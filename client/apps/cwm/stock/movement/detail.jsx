@@ -23,7 +23,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
@@ -98,7 +97,7 @@ export default class MovementDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <RadioGroup value={this.state.mode} onChange={this.handleMovingModeChange} size="large" disabled={movingStep === 1}>
+            <RadioGroup value={this.state.mode} onChange={this.handleMovingModeChange} disabled={movingStep === 1}>
               <Tooltip title="扫码模式"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
               <Tooltip title="手动模式"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>
@@ -125,8 +124,8 @@ export default class MovementDetail extends Component {
             </Row>
             <div className="card-footer">
               <Steps progressDot current={movingStep}>
-                <Step description="未完成" />
-                <Step description="已完成" />
+                <Step title="未完成" />
+                <Step title="已完成" />
               </Steps>
             </div>
           </Card>

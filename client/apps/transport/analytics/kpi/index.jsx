@@ -264,7 +264,7 @@ export default class Kpi extends React.Component {
             <div className="toolbar">
               <Search
                 placeholder="搜索"
-                onSearch={this.handleSearch} size="large"
+                onSearch={this.handleSearch}
               />
             </div>
             <div className="list-body">
@@ -285,7 +285,7 @@ export default class Kpi extends React.Component {
                 KPI分析
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <ButtonToggle size="large"
+            <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
@@ -306,9 +306,9 @@ export default class Kpi extends React.Component {
                   <a onClick={() => this.handleMonth(2)}>近3月</a>
                   <a onClick={() => this.handleMonth(5)} style={{ marginLeft: 20 }}>近6月</a>
                   <a onClick={() => this.handleMonth(11)} style={{ marginLeft: 20 }}>近一年</a>
-                  <MonthPicker size="large" allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} />
+                  <MonthPicker allowClear={false} value={moment(query.beginDate)} onChange={this.handleBeginDateChange} />
                   <span>~</span>
-                  <MonthPicker size="large" allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
+                  <MonthPicker allowClear={false} value={moment(query.endDate)} onChange={this.handleEndDateChange} />
                   <span style={{ marginLeft: 20 }}>结算日:</span>
                   <Select style={{ width: 70, marginLeft: 5 }} value={query.separationDate} onChange={this.handleSeparationDateChange}>
                     {this.renderSeparationDateOption()}

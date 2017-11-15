@@ -217,14 +217,14 @@ export default class ManifestTemplate extends Component {
             </Breadcrumb>
             <div className="page-header-tools">
               {operation === 'edit' &&
-              <Button size="large" type="ghost" onClick={this.handleCancel}>
+              <Button type="ghost" onClick={this.handleCancel}>
                 {this.msg('cancel')}
               </Button>}
               {operation === 'edit' &&
-              <Button size="large" type="primary" icon="save" onClick={this.handleSave} disabled={!this.state.changed}>
+              <Button type="primary" icon="save" onClick={this.handleSave} disabled={!this.state.changed}>
                 {this.msg('save')}
               </Button>}
-              <ButtonToggle size="large"
+              <ButtonToggle
                 iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               />

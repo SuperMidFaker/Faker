@@ -299,13 +299,13 @@ export default class OrderList extends React.Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup onChange={this.handleProgressChange} size="large" value={filters.progress}>
+            <RadioGroup onChange={this.handleProgressChange} value={filters.progress}>
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value="active">进行中</RadioButton>
               <RadioButton value="completed">已完成</RadioButton>
             </RadioGroup>
             <span />
-            <RadioGroup onChange={this.handleTransferChange} size="large" value={filters.transfer}>
+            <RadioGroup onChange={this.handleTransferChange} value={filters.transfer}>
               <RadioButton value="all">全部</RadioButton>
               <RadioButton value={SCOF_ORDER_TRANSFER[0].value}><Icon type={SCOF_ORDER_TRANSFER[0].icon} /> {SCOF_ORDER_TRANSFER[0].text}</RadioButton>
               <RadioButton value={SCOF_ORDER_TRANSFER[1].value}><Icon type={SCOF_ORDER_TRANSFER[1].icon} /> {SCOF_ORDER_TRANSFER[1].text}</RadioButton>
@@ -313,7 +313,7 @@ export default class OrderList extends React.Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button type="primary" size="large" icon="plus" onClick={this.handleCreate}>
+            <Button type="primary" icon="plus" onClick={this.handleCreate}>
               {this.msg('new')}
             </Button>
           </PageHeader.Actions>
@@ -321,9 +321,9 @@ export default class OrderList extends React.Component {
         <Content className="page-content" key="main">
           <div className="page-body">
             <div className="toolbar">
-              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} size="large" value={filters.order_no} />
+              <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={filters.order_no} />
               <span />
-              <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+              <Select showSearch optionFilterProp="children" style={{ width: 160 }}
                 onChange={this.handleClientSelectChange} value={filters.partnerId ? filters.partnerId : 'all'}
                 dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
@@ -332,7 +332,7 @@ export default class OrderList extends React.Component {
                 )}
               </Select>
               <span />
-              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} size="large" />
+              <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />
               <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                 <h3>已选中{this.state.selectedRowKeys.length}项</h3>
               </div>

@@ -12,7 +12,6 @@ const Search = Input.Search;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     waveDetails: state.cwmShippingOrder.waveDetails,
     reload: state.cwmShippingOrder.waveReload,
@@ -94,7 +93,7 @@ export default class OrderDetailsPane extends React.Component {
         dataSource={this.props.waveDetails} rowKey="wave_seq_no" loading={this.state.loading}
       >
         <DataPane.Toolbar>
-          <Search size="large" placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
         </DataPane.Toolbar>
       </DataPane>
     );

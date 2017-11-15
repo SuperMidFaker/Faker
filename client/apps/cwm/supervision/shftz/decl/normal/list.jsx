@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm, Tooltip, Icon } from 'antd';
+import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -22,12 +22,10 @@ const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     delglist: state.cwmShFtz.normalDelgList,
     listFilter: state.cwmShFtz.listFilter,
     whses: state.cwmContext.whses,
@@ -44,7 +42,6 @@ const OptGroup = Select.OptGroup;
 export default class NormalDeclList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     listFilter: PropTypes.object.isRequired,
     whses: PropTypes.arrayOf(PropTypes.shape({ code: PropTypes.string, name: PropTypes.string })),
   }
@@ -70,35 +67,31 @@ export default class NormalDeclList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '出库报关编号',
+    title: '出库清关编号',
     dataIndex: 'normal_decl_no',
     width: 150,
     fixed: 'left',
   }, {
-    title: <Tooltip title="普通出库的海关出库单号">提货单号 <small><Icon type="question-circle-o" /></small></Tooltip>,
-    dataIndex: 'ftz_rel_no',
+    title: '出区提货单号',
+    dataIndex: 'ftz_rel_nos',
     width: 150,
   }, {
-    title: '备案状态',
-    dataIndex: 'status',
-    width: 100,
-  }, {
-    title: '报关委托编号',
-    dataIndex: 'delg_no',
-    width: 120,
-  }, {
     title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
+    dataIndex: 'cus_decl_nos',
     width: 180,
   }, {
     title: '清关状态',
     dataIndex: 'decl_status',
     width: 100,
   }, {
-    title: '提货单位(货主)',
+    title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
+  }, {
+    title: '清关委托编号',
+    dataIndex: 'delg_no',
+    width: 120,
   }, {
     title: '报关代理',
     dataIndex: 'broker_name',
@@ -172,7 +165,6 @@ export default class NormalDeclList extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
         whseCode: this.props.whse.code,
@@ -184,9 +176,8 @@ export default class NormalDeclList extends React.Component {
     remotes: this.props.delglist,
   })
   handleNormalDelgLoad = (currentPage, whsecode, filter) => {
-    const { tenantId, listFilter, whse, delglist: { pageSize, current } } = this.props;
+    const { listFilter, whse, delglist: { pageSize, current } } = this.props;
     this.props.loadNormalDelgList({
-      tenantId,
       filter: JSON.stringify(filter || listFilter),
       pageSize,
       currentPage: currentPage || current,
@@ -240,8 +231,7 @@ export default class NormalDeclList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { listFilter, whses, whse, owners, delglist } = this.props;
-    const bondedWhses = whses.filter(wh => wh.bonded);
+    const { listFilter, owners, delglist } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -250,17 +240,15 @@ export default class NormalDeclList extends React.Component {
     };
     this.dataSource.remotes = delglist;
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('normalSearchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+      <SearchBar placeholder={this.msg('normalSearchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
       <span />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }} value={listFilter.ownerView}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}
-          </Option>)
-            )}
-        </OptGroup>
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (
+          <Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
+        )}
       </Select>
     </span>);
     return (
@@ -282,25 +270,20 @@ export default class NormalDeclList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select size="large" value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
-                    {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
-                  </Select>
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
                   {this.msg('ftzNormalDecl')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="manifesting">委托制单</RadioButton>
                 <RadioButton value="sent">已申报</RadioButton>
-                <RadioButton value="cleared">报关放行</RadioButton>
+                <RadioButton value="cleared">已清关</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>
-              <Button type="primary" size="large" icon="plus" onClick={this.handleCreateNormalDecl}>
+              <Button type="primary" icon="plus" onClick={this.handleCreateNormalDecl}>
                 {this.msg('create')}
               </Button>
             </PageHeader.Actions>

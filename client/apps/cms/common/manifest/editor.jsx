@@ -217,7 +217,7 @@ export default class ManifestEditor extends React.Component {
       content: '点击确定将清空所有表头和表体数据',
       onOk() {
         return new Promise((resolve, reject) => {
-          self.props.resetBill(self.props.billHead).then(
+          self.props.resetBill(self.props.billHead.id).then(
             (result) => {
               if (result.error) {
                 message.error(result.error.message, 10);
@@ -445,7 +445,7 @@ export default class ManifestEditor extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Icon type="file-text" /> <NavLink to={path}>{this.msg('declManifest')}</NavLink>
+                  <NavLink to={path}>{this.msg('declManifest')}</NavLink>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
                   <a onClick={() => this.handlePreview(billHead.delg_no)}>{billMeta.bill_seq_no}</a>
@@ -465,7 +465,7 @@ export default class ManifestEditor extends React.Component {
               {editable && getFieldDecorator('model', modelProps)(<Select
                 placeholder="选择制单规则"
                 optionFilterProp="search"
-                size="large"
+
                 onSelect={this.handleRuleReload}
                 onChange={this.handleRuleChange}
                 style={{ width: 200 }}
@@ -481,21 +481,21 @@ export default class ManifestEditor extends React.Component {
             }
               {billMeta.entries.length > 0 &&
               <Dropdown overlay={declEntryMenu}>
-                <Button size="large"><Icon type="link" />转至{declType}<Icon type="down" /></Button>
+                <Button ><Icon type="link" />转至{declType}<Icon type="down" /></Button>
               </Dropdown>
             }
 
               {billMeta.docts &&
-              <Button size="large" icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
+              <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
             }
               {sendable &&
-              <Button type="primary" size="large" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>
+              <Button type="primary" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>
             }
               {editable &&
-              (<Button type="primary" size="large" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
+              (<Button type="primary" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                 loading={this.state.generating} onClick={this.handleGenerateEntry}
               >{this.msg('generate')}{declType}</Button>) }
-              <Dropdown overlay={this.renderOverlayMenu(editable, revertable)}><Button size="large" icon="ellipsis" /></Dropdown>
+              <Dropdown overlay={this.renderOverlayMenu(editable, revertable)}><Button icon="ellipsis" /></Dropdown>
             </PageHeader.Actions>
           </PageHeader>
           <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>

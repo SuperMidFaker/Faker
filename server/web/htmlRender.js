@@ -1,19 +1,19 @@
-import React from 'react';
-import ReactDom from 'react-dom/server';
-import serialize from 'serialize-javascript';
-import { match } from 'react-router';
-import { addLocaleData } from 'react-intl';
-import createStore from 'common/webReduxStore';
-import appWrapped from 'client/common/appWrapped';
-import fetchInitialState from '../util/fetch-initial-state';
-import { version } from '../../package.json';
-import thirdPart from './thirdPart';
+// import React from 'react';
+// import ReactDom from 'react-dom/server';
+const serialize = require('serialize-javascript');
+// import { match } from 'react-router';
+// import { addLocaleData } from 'react-intl';
+const createStore = require('common/webReduxStore');
+// import appWrapped from 'client/common/appWrapped';
+// import fetchInitialState from '../util/fetch-initial-state';
+const { version } = require('../../package.json');
+const thirdPart = require('./thirdPart');
 
 let trackJs = '';
-let routes;
+// let routes;
 if (__PROD__) {
   trackJs = thirdPart;
-  routes = require('../../client/apps/routes');
+  // routes = require('../../client/apps/routes');
 }
 
 function renderAsHtml(pageCss, pageJs, content) {
@@ -45,6 +45,7 @@ function renderAsHtml(pageCss, pageJs, content) {
 <body>
   <div id="mount" class="full-container">${content}</div>
   <script src="${__CDN__}/assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+  <script src="https://a.alipayobjects.com/g/datavis/g2/2.3.13/index.js"></script>
   <script src="https://a.alipayobjects.com/g/datavis/g6/0.2.2/index.js"></script>
   ${pageJs}
 </body>
@@ -72,7 +73,7 @@ function inlineRenderHtmls(store, content) {
 }
 
 // https://github.com/koa-modules/locale/blob/master/index.js
-function getRequestLocale(request) {
+  /* function getRequestLocale(request) {
   const accept = request.acceptsLanguages() || '';
   const reg = /(^|,\s*)([a-z-]+)/gi;
   let m = reg.exec(accept);
@@ -85,20 +86,21 @@ function getRequestLocale(request) {
   }
   locale = locale && locale.split('-')[0];
   return locale || 'zh';
-}
-export default function render(request, locale) {
+} */
+module.exports = function render(request/* , locale */) {
   if (!__PROD__) {
     webpackIsomorphicTools.refresh();
   }
-  return new Promise((resolve, reject) => {
-    const url = request.url;
-    const cookie = request.get('cookie');
-    const store = createStore(undefined, request);
-    if (!__PROD__) {
-      return resolve(inlineRenderHtmls(store, ''));
-    }
+  // return new Promise((resolve, reject) => {
+    // const url = request.url;
+  const store = createStore(undefined, request);
+  store.getState().corpDomain.subdomain = request.query.subdomain;
+    // if (!__PROD__) {
+  return inlineRenderHtmls(store, ''); // resolve(inlineRenderHtmls(store, ''));
+    /* }
+    // const cookie = request.get('cookie');
     const curLocale = locale || getRequestLocale(request);
-    store.getState().intl = { locale: curLocale };
+    store.getState().prefrence = { locale: curLocale };
     match({ routes: routes(store, cookie), location: url }, (err, redirection, props) => {
       if (err) {
         reject([500], err);
@@ -124,6 +126,6 @@ export default function render(request, locale) {
             reject(e);
           });
       }
-    });
-  });
-}
+    }); */
+  // });
+};

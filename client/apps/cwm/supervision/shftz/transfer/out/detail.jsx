@@ -36,7 +36,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     relSo: state.cwmShFtz.rel_so,
@@ -97,11 +96,10 @@ export default class SHFTZTransferOutDetail extends Component {
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
-    const tenantId = this.props.tenantId;
     const ftzWhseCode = this.props.whse.ftz_whse_code;
     const whseCode = this.props.whse.code;
     const relType = CWM_SO_BONDED_REGTYPES[2].text;
-    this.props.fileRelTransfers(soNo, whseCode, ftzWhseCode, tenantId).then((result) => {
+    this.props.fileRelTransfers(soNo, whseCode, ftzWhseCode).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
           notification.warn({
@@ -275,11 +273,12 @@ export default class SHFTZTransferOutDetail extends Component {
     const relType = CWM_SO_BONDED_REGTYPES[2];
     const regStatus = relReg.status;
     const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
+    const outboundStatus = relSo.outbound_status || CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
     const sent = regStatus === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送转出';
     let sendable = true;
     let whyunsent;
-    if (relSo.outbound_status < CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
+    if (outboundStatus < CWM_OUTBOUND_STATUS.ALL_ALLOC.value) {
       sendable = false;
       whyunsent = '出库单配货未完成';
     } else if (!relReg.ftz_rel_date || !relReg.receiver_ftz_whse_code) {
@@ -311,19 +310,19 @@ export default class SHFTZTransferOutDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button size="large" icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
+              <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
             </Tooltip>}
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button size="large" icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
+            {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {relEditable &&
-            <Button type="primary" ghost={sent} size="large" icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
+            <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="海关出库单号">
                   <EditableCell value={relReg.ftz_rel_no} editable={relEditable}
@@ -358,9 +357,9 @@ export default class SHFTZTransferOutDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>
-                  <Step description="待转出" />
-                  <Step description="已发送" />
-                  <Step description="已转出" />
+                  <Step title="待转出" />
+                  <Step title="已发送" />
+                  <Step title="已转出" />
                 </Steps>
               </div>
             </Card>

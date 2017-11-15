@@ -62,7 +62,7 @@ export default class Dashboard extends React.Component {
                 </Breadcrumb.Item>
               </Breadcrumb>
               <div className="page-header-tools" style={{ marginRight: collapsed ? 0 : 330 }}>
-                <ButtonToggle size="large"
+                <ButtonToggle
                   iconOn="menu-unfold" iconOff="menu-fold"
                   onClick={this.toggle}
                 />

@@ -19,9 +19,12 @@
   }
 
   &-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     &-term {
       line-height: 32px;
-      padding-bottom: 8px;
+      /*padding-bottom: 8px;*/
       margin-right: 8px;
       color: @heading-color;
       white-space: nowrap;
@@ -38,7 +41,7 @@
     &-detail {
       line-height: 32px;
       width: 100%;
-      padding-bottom: 8px;
+      /*padding-bottom: 8px;*/
       color: @text-color;
       display: table-cell;
     }
@@ -58,6 +61,7 @@
   }
   &-sm {
     // offset the padding-bottom of last row
+    padding: 0;
     :global {
       .ant-row {
         margin-bottom: -8px;
@@ -69,7 +73,7 @@
     }
     .welo-desc-list-item {
       &-term, &-detail {
-        padding-bottom: 8px;
+        padding-bottom: 0;
       }
     }
   }

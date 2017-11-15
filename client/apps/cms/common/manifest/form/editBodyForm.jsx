@@ -124,6 +124,26 @@ export default class EditBodyForm extends Component {
       }
     }
   }
+  handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      event.stopPropagation();
+      event.preventDefault();
+      const inputs = document.forms[0].elements;
+      for (let i = 0; i < inputs.length; i++) {
+        if (i === (inputs.length - 1)) {
+          inputs[0].focus();
+          inputs[0].select();
+          break;
+        } else if (event.target === inputs[i]) {
+          inputs[i + 1].focus();
+          inputs[i + 1].select();
+          break;
+        }
+      }
+    } else if (event.keyCode === 8) {
+      event.target.select();
+    }
+  }
   handleSearch = (value) => {
     const { hscodes } = this.props;
     this.props.loadHscodes({

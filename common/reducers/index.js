@@ -34,6 +34,8 @@ import cmsManifestImport from './cmsManifestImport';
 import cmsInvoice from './cmsInvoice';
 import cmsQuote from './cmsQuote';
 import cmsResources from './cmsResources';
+import cmsBrokers from './cmsBrokers';
+import cmsTradeManual from './cmsTradeManual';
 import cmsPreferences from './cmsPreferences';
 import scofFlow from './scofFlow';
 import sofVendors from './sofVendors';
@@ -65,8 +67,7 @@ import cwmContext from './cwmContext';
 import cwmTransaction from './cwmTransaction';
 import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
-import cmsBrokers from './cmsBrokers';
-import cmsTradeManual from './cmsTradeManual';
+import saasLineFileAdaptor from './saasLineFileAdaptor';
 
 export default combineReducers({
   activities,
@@ -105,6 +106,12 @@ export default combineReducers({
   cmsQuote,
   cmsResources,
   cmsPreferences,
+  cmsExpense,
+  cmsBilling,
+  cmsTradeitem,
+  cmsHsCode,
+  cmsBrokers,
+  cmsTradeManual,
   scofFlow,
   sofVendors,
   scvInboundShipments,
@@ -115,10 +122,6 @@ export default combineReducers({
   scvTracking,
   scvClassification,
   scvClearance,
-  cmsExpense,
-  cmsBilling,
-  cmsTradeitem,
-  cmsHsCode,
   crmCustomers,
   crmOrders,
   crmBilling,
@@ -135,6 +138,5 @@ export default combineReducers({
   cwmInventoryStock,
   cwmTransition,
   cwmMovement,
-  cmsBrokers,
-  cmsTradeManual,
+  saasLineFileAdaptor,
 });

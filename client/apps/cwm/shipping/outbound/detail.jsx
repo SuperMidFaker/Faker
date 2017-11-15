@@ -33,7 +33,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -144,7 +143,7 @@ export default class OutboundDetail extends Component {
     this.setState({ fullscreen });
   }
   showExpressModal = () => {
-    this.props.loadShunfengConfig(this.props.tenantId).then((result) => {
+    this.props.loadShunfengConfig().then((result) => {
       if (result.error) {
         const key = `open${Date.now()}`;
         const btnClick = () => {
@@ -200,12 +199,14 @@ export default class OutboundDetail extends Component {
     let regTag;
     let regTypes = [];
     if (outboundHead.bonded === 1) {
-      regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype)[0];
-      regTypes = [{
-        tooltip: '海关监管',
-        type: outboundHead.bonded_outtype,
-        status: outboundHead.reg_status,
-      }];
+      regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype && sbr.tagcolor)[0];
+      if (regTag) {
+        regTypes = [{
+          tooltip: '海关监管',
+          type: outboundHead.bonded_outtype,
+          status: outboundHead.reg_status,
+        }];
+      }
     } else if (outboundHead.bonded === -1 && outboundHead.bonded_outtype.length > 0) {
       regTypes = outboundHead.bonded_outtype.map((type, index) => {
         const sreg = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === type)[0];
@@ -252,7 +253,7 @@ export default class OutboundDetail extends Component {
                 CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === reg.status)[0];
               if (regStatus) {
                 return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
-                  <Button size="large" icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
+                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>
                 </Tooltip>);
@@ -264,21 +265,21 @@ export default class OutboundDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {this.state.tabKey === 'pickingDetails' && <Dropdown overlay={printMenu}>
-              <Button size="large" icon="printer" />
+              <Button icon="printer" />
             </Dropdown>}
             <Tooltip title="打印顺丰速运面单" placement="bottom">
-              <Button size="large" onClick={this.showExpressModal} >
+              <Button onClick={this.showExpressModal} >
                 <Logixon type="sf-express" />
               </Button>
             </Tooltip>
-            <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} size="large" disabled={outboundStep === 5}>
+            <RadioGroup value={outboundHead.shipping_mode} onChange={this.handleShippingModeChange} disabled={outboundStep === 5}>
               <Tooltip title="扫码出库操作模式" placement="bottom"><RadioButton value="scan"><Icon type="scan" />{scanLabel}</RadioButton></Tooltip>
               <Tooltip title="手动出库操作模式" placement="bottom"><RadioButton value="manual"><Icon type="solution" />{manualLabel}</RadioButton></Tooltip>
             </RadioGroup>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={outboundHead.owner_name} />
@@ -316,12 +317,12 @@ export default class OutboundDetail extends Component {
             </Row>
             <div className="card-footer">
               <Steps progressDot current={outboundStep}>
-                <Step description="待出库" />
-                <Step description="分配" />
-                <Step description="拣货" />
-                <Step description="复核装箱" />
-                <Step description="发货" />
-                <Step description="已出库" />
+                <Step title="待出库" />
+                <Step title="分配" />
+                <Step title="拣货" />
+                <Step title="复核装箱" />
+                <Step title="发货" />
+                <Step title="已出库" />
               </Steps>
             </div>
           </Card>

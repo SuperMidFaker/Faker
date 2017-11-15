@@ -93,7 +93,7 @@ export default class ApiAuthList extends React.Component {
             />
             <div className="page-body" key="body">
               <div className="toolbar">
-                <Button type="primary" size="large" icon="plus" onClick={this.handleAddWarehouse}>
+                <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
                   {this.msg('generateAPICredential')}
                 </Button>
               </div>

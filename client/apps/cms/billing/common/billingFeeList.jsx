@@ -138,13 +138,13 @@ export default class BillingFeeList extends React.Component {
     if (operation === 'check') {
       return (
         <div className="page-header-tools">
-          <Button type="primary" size="large" onClick={this.handleAccept} loading={saving}>{this.msg('accept')}</Button>
+          <Button type="primary" onClick={this.handleAccept} loading={saving}>{this.msg('accept')}</Button>
         </div>
       );
     } else if (operation === 'edit') {
       return (
         <div className="page-header-tools">
-          <Button type="primary" size="large" onClick={this.handleEdit} loading={saving}>{this.msg('save')}</Button>
+          <Button type="primary" onClick={this.handleEdit} loading={saving}>{this.msg('save')}</Button>
         </div>
       );
     }

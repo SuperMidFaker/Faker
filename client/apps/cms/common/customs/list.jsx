@@ -507,7 +507,7 @@ export default class CustomsList extends Component {
     if (status === 'proposed') {
       bulkActions = (
         <PrivilegeCover module="clearance" feature="customs" action="edit">
-          <Button type="default" size="large" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
+          <Button type="default" onClick={() => this.handleListsReview(this.state.selectedRowKeys)}>
           批量复核
         </Button>
         </PrivilegeCover>);
@@ -515,12 +515,12 @@ export default class CustomsList extends Component {
       bulkActions = (
         <span>
           <PrivilegeCover module="clearance" feature="customs" action="edit">
-            <Button type="primary" size="large" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
+            <Button type="primary" onClick={() => this.handleListsSend(this.state.selectedRowKeys)}>
             批量发送
           </Button>
           </PrivilegeCover>
           <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleListsRecall(this.state.selectedRowKeys)}>
-            <Button size="large">
+            <Button >
             批量退回
           </Button>
           </Popconfirm>
@@ -531,8 +531,8 @@ export default class CustomsList extends Component {
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} />
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+      <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} />
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
         onChange={this.handleClientSelectChange} value={clientPid}
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
@@ -540,7 +540,7 @@ export default class CustomsList extends Component {
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
         </Option>))}
       </Select>
-      <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
         onChange={this.handleTradesSelectChange} defaultValue="all"
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
@@ -550,7 +550,7 @@ export default class CustomsList extends Component {
         >{data.name}</Option>)
         )}
       </Select>
-      <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+      <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
         onChange={this.handleViewChange}
       >
         <OptGroup label="常用视图">
@@ -558,7 +558,7 @@ export default class CustomsList extends Component {
           <Option value="my">我负责的委托</Option>
         </OptGroup>
       </Select>
-      <RangePicker size="large" value={dateVal}
+      <RangePicker value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       /></span>);
@@ -571,19 +571,19 @@ export default class CustomsList extends Component {
                 {this.props.ietype === 'import' ? this.msg('importOperation') : this.msg('exportOperation')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.msg('customsDeclaration')}
+                {this.msg('customsDecl')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} >
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               {Object.keys(CMS_DECL_STATUS).map(declkey =>
                 <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
             )}
             </RadioGroup>
             <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter} >
               <RadioButton value="inspect">{this.msg('customsCheck')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>

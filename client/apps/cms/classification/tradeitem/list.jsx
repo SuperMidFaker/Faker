@@ -650,27 +650,27 @@ export default class TradeItemList extends Component {
       if (listFilter.status === 'unclassified' ||
         (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[1].key)) {
         bulkActions = (<span>
-          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+          <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-            <Button type="danger" size="large" icon="delete">
+            <Button type="danger" icon="delete">
               批量删除
             </Button>
           </Popconfirm></span>);
       } else if (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[0].key) {
         bulkActions = (<span>
-          <Dropdown.Button size="large" onClick={this.handleItemsPass} overlay={itemPassmenu}>
+          <Dropdown.Button onClick={this.handleItemsPass} overlay={itemPassmenu}>
             <Icon type="check-circle-o" /> 批量通过
           </Dropdown.Button>
-          <Dropdown.Button size="large" onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
+          <Dropdown.Button onClick={this.handleItemsRefused} overlay={itemRefusedmenu}>
             <Icon type="close-circle-o" /> 批量拒绝
           </Dropdown.Button>
-          <Button size="large" icon="export" onClick={this.handleExportSelected} >
+          <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
           <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-            <Button type="danger" size="large" icon="delete">
+            <Button type="danger" icon="delete">
               批量删除
             </Button>
           </Popconfirm>
@@ -805,7 +805,7 @@ export default class TradeItemList extends Component {
         <Button disabled icon="arrow-down" onClick={() => this.handleDegrade(repo)} >切换为单库模式</Button>
       );
     }
-    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} size="large" />);
+    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} />);
     return (
       <Layout className="ant-layout-wrapper">
         <Sider width={280} className="menu-sider" key="sider" trigger={null}
@@ -830,7 +830,7 @@ export default class TradeItemList extends Component {
           </div>
           <div className="left-sider-panel" >
             <div className="toolbar">
-              <Search placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} size="large" />
+              <Search placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} />
             </div>
             <div className="list-body">
               <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
@@ -856,24 +856,24 @@ export default class TradeItemList extends Component {
               </Breadcrumb>
             }
               <span />
-              <ButtonToggle size="large"
+              <ButtonToggle
                 iconOn="menu-fold" iconOff="menu-unfold"
                 onClick={this.toggle}
                 toggle
               />
             </PageHeader.Title>
             <PageHeader.Nav>
-              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
                 <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
                 <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
                 <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
               </RadioGroup>
               <span />
-              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
                 <RadioButton value="stage"><Tooltip title="新来源归类区" placement="bottom"><Icon type="fork" /></Tooltip></RadioButton>
               </RadioGroup>
               <span />
-              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+              <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
                 <RadioButton value="uselessHs"><Tooltip title="税则改变归类区" placement="bottom"><Icon type="disconnect" /></Tooltip></RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
@@ -889,7 +889,7 @@ export default class TradeItemList extends Component {
                     }),
                   }} onUploaded={this.handleUploaded}
                 >
-                  <Dropdown.Button size="large" overlay={importMenu}>
+                  <Dropdown.Button overlay={importMenu}>
                     <Icon type="upload" /> {this.msg('importItems')}
                   </Dropdown.Button>
                 </ExcelUploader>
@@ -904,17 +904,17 @@ export default class TradeItemList extends Component {
                     }),
                   }} onUploaded={this.handleNewhsUploaded}
                 >
-                  <Dropdown.Button size="large" overlay={imptHsMenu}>
+                  <Dropdown.Button overlay={imptHsMenu}>
                     <Icon type="upload" /> {this.msg('imptNewHsItems')}
                   </Dropdown.Button>
                 </ExcelUploader>
               }
               {repo.permission === CMS_TRADE_REPO_PERMISSION.edit &&
-                <Button type="primary" size="large" icon="plus" onClick={this.handleAddItem}>
+                <Button type="primary" icon="plus" onClick={this.handleAddItem}>
                   {this.msg('addItem')}
                 </Button>
               }
-              <ButtonToggle size="large"
+              <ButtonToggle
                 iconOn="setting" iconOff="setting"
                 onClick={this.toggleRightSider}
               />
@@ -966,7 +966,7 @@ export default class TradeItemList extends Component {
                     showIcon
                   />
                   <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteRepo}>
-                    <Button type="danger" size="large" icon="delete">删除物料库</Button>
+                    <Button type="danger" icon="delete">删除物料库</Button>
                   </Popconfirm>
                 </Panel>)
               }

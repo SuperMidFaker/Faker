@@ -219,7 +219,7 @@ export function closeShippingModal() {
   };
 }
 
-export function loadOutbounds({ whseCode, tenantId, pageSize, current, filters }) {
+export function loadOutbounds({ whseCode, pageSize, current, filters }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -229,7 +229,7 @@ export function loadOutbounds({ whseCode, tenantId, pageSize, current, filters }
       ],
       endpoint: 'v1/cwm/outbounds',
       method: 'get',
-      params: { whseCode, tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
     },
   };
 }
@@ -397,7 +397,7 @@ export function loadPrintPickDetails(outboundNo) {
   };
 }
 
-export function pickConfirm(outboundNo, skulist, loginId, tenantId, pickedBy, pickedDate) {
+export function pickConfirm(outboundNo, skulist, loginId, pickedBy, pickedDate) {
   return {
     [CLIENT_API]: {
       types: [
@@ -407,7 +407,7 @@ export function pickConfirm(outboundNo, skulist, loginId, tenantId, pickedBy, pi
       ],
       endpoint: 'v1/cwm/outbounds/pick',
       method: 'post',
-      data: { outboundNo, skulist, loginId, tenantId, pickedBy, pickedDate },
+      data: { outboundNo, skulist, loginId, pickedBy, pickedDate },
     },
   };
 }
@@ -427,7 +427,7 @@ export function cancelPicked(outboundNo, skulist) {
   };
 }
 
-export function shipConfirm(outbounddata, skulist, loginName, tenantId, shippedBy, shippedDate) {
+export function shipConfirm(outbounddata, skulist, loginName, shippedBy, shippedDate) {
   return {
     [CLIENT_API]: {
       types: [
@@ -437,7 +437,7 @@ export function shipConfirm(outbounddata, skulist, loginName, tenantId, shippedB
       ],
       endpoint: 'v1/cwm/outbounds/ship',
       method: 'post',
-      data: { outbounddata, skulist, loginName, tenantId, shippedBy, shippedDate },
+      data: { outbounddata, skulist, loginName, shippedBy, shippedDate },
     },
   };
 }
@@ -523,7 +523,7 @@ export function toggleShunfengExpressModal(visible, config = {}) {
   };
 }
 
-export function loadExpressInfo(orderNo, tenantId) {
+export function loadExpressInfo(orderNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -533,7 +533,7 @@ export function loadExpressInfo(orderNo, tenantId) {
       ],
       endpoint: 'v1/cwm/outbounds/shunfeng/express',
       method: 'get',
-      params: { orderNo, tenantId },
+      params: { orderNo },
     },
   };
 }
@@ -553,7 +553,7 @@ export function addZD(data) {
   };
 }
 
-export function loadShunfengConfig(tenantId) {
+export function loadShunfengConfig() {
   return {
     [CLIENT_API]: {
       types: [
@@ -563,7 +563,6 @@ export function loadShunfengConfig(tenantId) {
       ],
       endpoint: 'v1/cwm/outbounds/shunfeng/config',
       method: 'get',
-      params: { tenantId },
     },
   };
 }

@@ -35,11 +35,9 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     entryAsn: state.cwmShFtz.entry_asn,
-    owners: state.cwmContext.whseAttrs.owners,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -159,14 +157,11 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   handleTransToWhs = () => {
-    const { params, entryAsn, tenantId, owners, whse } = this.props;
-    const owner = owners.find(own => own.name === entryAsn.owner_name);
+    const { params, entryAsn, whse } = this.props;
     this.props.transferToOwnWhse({
       asnNo: params.asnNo,
       whseCode: entryAsn.whse_code,
       ftzWhseCode: whse.ftz_whse_code,
-      tenantId,
-      owner,
     }).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
@@ -203,7 +198,6 @@ export default class SHFTZTransferSelfDetail extends Component {
       whse: entryAsn.whse_code,
       ftzWhseCode: this.props.whse.ftz_whse_code,
       username,
-      tenantId: this.props.tenantId,
     }).then((result) => {
       if (!result.error) {
         if (result.data.errorMsg) {
@@ -281,14 +275,14 @@ export default class SHFTZTransferSelfDetail extends Component {
           </PageHeader.Title>
           <PageHeader.Actions>
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
-              <Button size="large" icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
+              <Button icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent && entryAsn.ftz_ent_no &&
-              <Button size="large" icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
+              <Button icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="货主">{entryAsn.owner_name}</Description>
                 <Description term="出库单号">{entryAsn.ftz_rel_no}</Description>
@@ -306,9 +300,9 @@ export default class SHFTZTransferSelfDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step description="待转出" />
-                  <Step description="终端处理" />
-                  <Step description="已转入" />
+                  <Step title="待转出" />
+                  <Step title="终端处理" />
+                  <Step title="已转入" />
                 </Steps>
               </div>
             </Card>

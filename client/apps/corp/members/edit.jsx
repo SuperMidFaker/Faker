@@ -152,10 +152,10 @@ export default class CorpEdit extends React.Component {
               </Breadcrumb.Item>
             </Breadcrumb>
             <div className="page-header-tools">
-              <Button size="large" onClick={this.handleCancel} disabled={submitting}>
+              <Button onClick={this.handleCancel} disabled={submitting}>
                 {formatGlobalMsg(intl, 'cancel')}
               </Button>
-              <Button size="large" htmlType="submit" type="primary" loading={submitting}
+              <Button htmlType="submit" type="primary" loading={submitting}
                 title={msg('nonTenantEdit')}
               >
                 {formatGlobalMsg(intl, 'ok')}

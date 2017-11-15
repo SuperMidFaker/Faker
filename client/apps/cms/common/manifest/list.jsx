@@ -306,22 +306,22 @@ export default class ManifestList extends Component {
                 {this.msg('declManifest')}
               </Breadcrumb.Item>
             </Breadcrumb>
-            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} size="large">
+            <RadioGroup value={listFilter.status} onChange={this.handleRadioChange} >
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               <RadioButton value="wip">{this.msg('filterWIP')}</RadioButton>
               <RadioButton value="generated">{this.msg('filterGenerated')}</RadioButton>
             </RadioGroup>
             <div className="page-header-tools">
-              <ButtonToggle size="large" iconOff="book" iconOn="book" onClick={this.toggleRightSider} >模板</ButtonToggle>
+              <ButtonToggle iconOff="book" iconOn="book" onClick={this.toggleRightSider} >模板</ButtonToggle>
             </div>
           </Header>
           <Content className="main-content">
             <QueueAnim type={['bottom', 'up']}>
               <div className="page-body" key="body">
                 <div className="toolbar">
-                  <SearchBar placeholder={this.msg('searchPlaceholder')} size="large" onInputSearch={this.handleSearch} value={listFilter.filterNo} />
+                  <SearchBar placeholder={this.msg('searchPlaceholder')} onInputSearch={this.handleSearch} value={listFilter.filterNo} />
                   <span />
-                  <Select showSearch optionFilterProp="children" size="large" style={{ width: 160 }}
+                  <Select showSearch optionFilterProp="children" style={{ width: 160 }}
                     onChange={this.handleClientSelectChange} defaultValue="all"
                     dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
                   >
@@ -332,7 +332,7 @@ export default class ManifestList extends Component {
                     )}
                   </Select>
                   <span />
-                  <Select size="large" value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+                  <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
                     onChange={this.handleViewChange}
                   >
                     <OptGroup label="常用视图">
@@ -341,7 +341,7 @@ export default class ManifestList extends Component {
                     </OptGroup>
                   </Select>
                   <span />
-                  <RangePicker size="large"
+                  <RangePicker
                     ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
                     onChange={this.handleDateRangeChange}
                   />

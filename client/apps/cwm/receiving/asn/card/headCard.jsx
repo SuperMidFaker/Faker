@@ -21,7 +21,6 @@ const RadioGroup = Radio.Group;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     owners: state.cwmContext.whseAttrs.owners,
     defaultWhse: state.cwmContext.defaultWhse,
     suppliers: state.cwmReceive.suppliers,
@@ -39,7 +38,7 @@ export default class HeadCard extends Component {
       const { asnHead } = nextProps;
       if (asnHead) {
         this.props.loadSkuParams(asnHead.owner_partner_id);
-        this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, asnHead.owner_partner_id);
+        this.props.getSuppliers(this.props.defaultWhse.code, asnHead.owner_partner_id);
       }
     }
   }
@@ -74,7 +73,7 @@ export default class HeadCard extends Component {
   handleSelect = (value) => {
     this.props.handleOwnerChange(true, value);
     this.props.loadSkuParams(value);
-    this.props.getSuppliers(this.props.tenantId, this.props.defaultWhse.code, value);
+    this.props.getSuppliers(this.props.defaultWhse.code, value);
   }
   render() {
     const { form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse } = this.props;

@@ -34,6 +34,10 @@ const messages = defineMessages({
     id: 'cwm.module.shipping.outbound',
     defaultMessage: '出库单',
   },
+  shippingLoad: {
+    id: 'cwm.module.shipping.load',
+    defaultMessage: '装车单',
+  },
   stock: {
     id: 'cwm.module.stock',
     defaultMessage: '在库',

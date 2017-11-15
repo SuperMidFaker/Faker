@@ -15,9 +15,8 @@ const Option = Select.Option;
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.transport;
 
-function fetchData({ dispatch, state }) {
+function fetchData({ dispatch }) {
   return dispatch(loadPartners({
-    tenantId: state.account.tenantId,
     role,
     businessType,
   }));
@@ -29,7 +28,6 @@ function fetchData({ dispatch, state }) {
 @connect(
   state => ({
     loginId: state.account.loginId,
-    tenantId: state.account.tenantId,
     whseOwners: state.cwmWarehouse.whseOwners,
     visible: state.cwmWarehouse.carrierModal.visible,
     carrier: state.cwmWarehouse.carrierModal.carrier,
@@ -56,20 +54,20 @@ export default class SuppliersModal extends Component {
     this.props.form.resetFields();
   }
   handleAdd = () => {
-    const { tenantId, whseCode, loginId, whseOwners, carrier } = this.props;
+    const { whseCode, loginId, whseOwners, carrier } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const ownerTenantId = whseOwners.find(owner => owner.owner_partner_id === values.owner_partner_id).owner_tenant_id;
         if (carrier.id) {
           this.props.updateCarrier(values, carrier.id, loginId).then(() => {
-            this.props.loadCarriers(whseCode, tenantId);
+            this.props.loadCarriers(whseCode);
             this.props.toggleCarrierModal(false);
             this.props.form.resetFields();
           });
         } else {
-          this.props.addCarrier(values, tenantId, whseCode, loginId, ownerTenantId).then((result) => {
+          this.props.addCarrier(values, whseCode, loginId, ownerTenantId).then((result) => {
             if (!result.error) {
-              this.props.loadCarriers(whseCode, tenantId);
+              this.props.loadCarriers(whseCode);
               this.props.toggleCarrierModal(false);
               this.props.form.resetFields();
             }

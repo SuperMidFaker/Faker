@@ -14,7 +14,6 @@ const InputGroup = Input.Group;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     packings: state.cwmSku.params.packings,
     skuRule: state.cwmSku.skuRule,
   }),
@@ -34,7 +33,7 @@ export default class SKUPopover extends Component {
   handleVisibleChange = (visible) => {
     this.setState({ visible });
     if (visible && Object.keys(this.state.sku).length === 0) {
-      this.props.loadSkuRule(this.props.ownerPartnerId, this.props.sku, this.props.tenantId);
+      this.props.loadSkuRule(this.props.ownerPartnerId, this.props.sku);
     }
   }
   render() {

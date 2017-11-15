@@ -23,7 +23,6 @@ const TabPane = Tabs.TabPane;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     username: state.account.username,
     tenantName: state.account.tenantName,
@@ -71,7 +70,7 @@ export default class CreateShippingOrder extends Component {
     this.setState({ fullscreen });
   }
   handleSaveBtnClick = () => {
-    const { temporaryDetails, defaultWhse, owners, tenantId, loginId, tenantName } = this.props;
+    const { temporaryDetails, defaultWhse, owners, loginId, tenantName } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -84,7 +83,6 @@ export default class CreateShippingOrder extends Component {
         data.ownerTenantId = owner.partner_tenant_id;
         data.temporaryDetails = temporaryDetails;
         data.whseCode = defaultWhse.code;
-        data.tenantId = tenantId;
         data.loginId = loginId;
         data.tenantName = tenantName;
         this.props.createSO(data).then(
@@ -131,7 +129,7 @@ export default class CreateShippingOrder extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                 <Select
-                  size="large"
+
                   value={defaultWhse.code}
                   style={{ width: 160 }}
                   disabled
@@ -148,10 +146,10 @@ export default class CreateShippingOrder extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button size="large" type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
-            <Button size="large" type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

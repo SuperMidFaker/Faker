@@ -184,7 +184,7 @@ export default class CustomizeTracking extends React.Component {
             <div className="toolbar">
               <Search
                 placeholder={this.msg('searchPlaceholder')}
-                onSearch={this.handleSearch} size="large"
+                onSearch={this.handleSearch}
               />
             </div>
             <div className="list-body">
@@ -206,13 +206,13 @@ export default class CustomizeTracking extends React.Component {
                 {tracking.name}
               </Breadcrumb.Item>
             </Breadcrumb>}
-            <ButtonToggle size="large"
+            <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}
               toggle
             />
             <div className="page-header-tools">
-              <Button type="primary" size="large" ghost disabled={this.state.trackings.length === 0} onClick={this.handleEdit}>跟踪表设置</Button>
+              <Button type="primary" ghost disabled={this.state.trackings.length === 0} onClick={this.handleEdit}>跟踪表设置</Button>
             </div>
           </Header>
           <Content className="main-content layout-fixed-width layout-fixed-width-lg">
