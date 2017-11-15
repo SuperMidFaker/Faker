@@ -88,6 +88,9 @@ export default class SHFTZRelDetail extends Component {
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     fullscreen: true,
     decl: [],
+    view: 'splitted',
+    filingDetails: [],
+    merged: [],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -99,8 +102,26 @@ export default class SHFTZRelDetail extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       // if (this.state.tabKey === '') {
+      const details = [...nextProps.relRegs[0].details];
+      const detailMap = new Map();
+      for (let i = 0; i < details.length; i++) {
+        const detail = details[i];
+        if (detailMap.has(`${detail.hscode}${detail.g_name}`)) {
+          const merged = detailMap.get(`${detail.hscode}${detail.g_name}`);
+          detailMap.set(`${detail.hscode}${detail.g_name}`, Object.assign({}, merged,
+            { qty: merged.qty + detail.qty,
+              gross_wt: merged.gross_wt + detail.gross_wt,
+              net_wt: merged.net_wt + detail.net_wt,
+              amount: merged.amount + detail.amount,
+              freight: merged.freight + detail.freight }));
+        } else {
+          detailMap.set(`${detail.hscode}${detail.g_name}`, detail);
+        }
+      }
       this.setState({
         reg: nextProps.relRegs[0],
+        filingDetails: nextProps.relRegs[0].details,
+        merged: [...detailMap.values()],
         tabKey: nextProps.relRegs[0].pre_entry_seq_no,
         editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
       });
@@ -219,6 +240,20 @@ export default class SHFTZRelDetail extends Component {
   }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
+  }
+  handleViewChange = (e) => {
+    const { merged, reg } = this.state;
+    console.log(merged);
+    let filingDetails;
+    if (e.target.value === 'merged') {
+      filingDetails = merged;
+    } else {
+      filingDetails = reg.details;
+    }
+    this.setState({
+      view: e.target.value,
+      filingDetails,
+    });
   }
   columns = [{
     title: '行号',
@@ -369,7 +404,7 @@ export default class SHFTZRelDetail extends Component {
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const { reg, decl } = this.state;
+    const { reg, decl, filingDetails } = this.state;
     if (relRegs.length === 0) {
       return null;
     }
@@ -489,10 +524,10 @@ export default class SHFTZRelDetail extends Component {
                 <TabPane tab="备案明细" key="regDetails">
                   <DataPane fullscreen={this.state.fullscreen}
                     columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                    dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                    dataSource={filingDetails} rowKey="id" loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <RadioGroup onChange={this.handleViewChange} >
+                      <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                         <RadioButton value="splitted">拆分视图</RadioButton>
                         <RadioButton value="merged">合并视图</RadioButton>
                       </RadioGroup>

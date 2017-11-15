@@ -107,11 +107,12 @@ export default class SHFTZNormalRelRegDetail extends Component {
         const detail = details[i];
         if (detailMap.has(detail.ftz_ent_detail_id)) {
           const merged = detailMap.get(detail.ftz_ent_detail_id);
-          merged.qty += detail.qty;
-          merged.gross_wt += detail.gross_wt;
-          merged.net_wt += detail.net_wt;
-          merged.amount += detail.amount;
-          merged.freight += detail.freight;
+          detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, merged,
+            { qty: merged.qty + detail.qty,
+              gross_wt: merged.gross_wt + detail.gross_wt,
+              net_wt: merged.net_wt + detail.net_wt,
+              amount: merged.amount + detail.amount,
+              freight: merged.freight + detail.freight }));
         } else {
           detailMap.set(detail.ftz_ent_detail_id, detail);
         }
@@ -477,7 +478,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 </Description>
                 <Description term="预计出区日期">
                   <EditableCell type="date" value={reg.ftz_rel_date && moment(reg.ftz_rel_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
+                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
                   />
                 </Description>
               </DescriptionList>
