@@ -88,6 +88,9 @@ export default class SHFTZRelDetail extends Component {
     groupVals: ['supplier', 'trxn_mode', 'currency'],
     fullscreen: true,
     decl: [],
+    view: 'splitted',
+    filingDetails: [],
+    merged: [],
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -99,8 +102,12 @@ export default class SHFTZRelDetail extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       // if (this.state.tabKey === '') {
+      const details = [...nextProps.relRegs[0].details];
+      const detailMap = this.getMerged(details);
       this.setState({
         reg: nextProps.relRegs[0],
+        filingDetails: nextProps.relRegs[0].details,
+        merged: [...detailMap.values()],
         tabKey: nextProps.relRegs[0].pre_entry_seq_no,
         editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
       });
@@ -113,6 +120,24 @@ export default class SHFTZRelDetail extends Component {
       });
       // }
     }
+  }
+  getMerged = (details) => {
+    const detailMap = new Map();
+    for (let i = 0; i < details.length; i++) {
+      const detail = details[i];
+      if (detailMap.has(detail.ftz_ent_detail_id)) {
+        const merged = detailMap.get(detail.ftz_ent_detail_id);
+        detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, merged,
+          { qty: (Number(merged.qty) + Number(detail.qty)).toFixed(2),
+            gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(4),
+            net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(4),
+            amount: (Number(merged.amount) + Number(detail.amount)).toFixed(2),
+            freight: (Number(merged.freight) + Number(detail.freight)).toFixed(2) }));
+      } else {
+        detailMap.set(detail.ftz_ent_detail_id, detail);
+      }
+    }
+    return detailMap;
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
@@ -196,9 +221,13 @@ export default class SHFTZRelDetail extends Component {
     });
   }
   handleTabChange = (tabKey) => {
+    const detailMap = this.getMerged(this.props.relRegs[tabKey].details);
     this.setState({
+      view: 'splitted',
       tabKey,
       reg: this.props.relRegs[tabKey],
+      filingDetails: this.props.relRegs[tabKey].details,
+      merged: [...detailMap.values()],
     });
   }
   handleInfoSave = (preRegNo, field, value) => {
@@ -219,6 +248,19 @@ export default class SHFTZRelDetail extends Component {
   }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
+  }
+  handleViewChange = (e) => {
+    const { merged, reg } = this.state;
+    let filingDetails;
+    if (e.target.value === 'merged') {
+      filingDetails = merged;
+    } else {
+      filingDetails = reg.details;
+    }
+    this.setState({
+      view: e.target.value,
+      filingDetails,
+    });
   }
   columns = [{
     title: '行号',
@@ -369,7 +411,7 @@ export default class SHFTZRelDetail extends Component {
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const { reg, decl } = this.state;
+    const { reg, decl, filingDetails } = this.state;
     if (relRegs.length === 0) {
       return null;
     }
@@ -489,10 +531,10 @@ export default class SHFTZRelDetail extends Component {
                 <TabPane tab="备案明细" key="regDetails">
                   <DataPane fullscreen={this.state.fullscreen}
                     columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                    dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                    dataSource={filingDetails} rowKey="id" loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
-                      <RadioGroup onChange={this.handleViewChange} >
+                      <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
                         <RadioButton value="splitted">拆分视图</RadioButton>
                         <RadioButton value="merged">合并视图</RadioButton>
                       </RadioGroup>
