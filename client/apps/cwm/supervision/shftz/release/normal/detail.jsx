@@ -102,21 +102,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
     if (nextProps.relRegs !== this.props.relRegs && nextProps.relRegs.length > 0) {
       // if (this.state.tabKey === '') {
       const details = [...nextProps.relRegs[0].details];
-      const detailMap = new Map();
-      for (let i = 0; i < details.length; i++) {
-        const detail = details[i];
-        if (detailMap.has(detail.ftz_ent_detail_id)) {
-          const merged = detailMap.get(detail.ftz_ent_detail_id);
-          detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, merged,
-            { qty: merged.qty + detail.qty,
-              gross_wt: merged.gross_wt + detail.gross_wt,
-              net_wt: merged.net_wt + detail.net_wt,
-              amount: merged.amount + detail.amount,
-              freight: merged.freight + detail.freight }));
-        } else {
-          detailMap.set(detail.ftz_ent_detail_id, detail);
-        }
-      }
+      const detailMap = this.getMerged(details);
       this.setState({
         reg: nextProps.relRegs[0],
         filingDetails: nextProps.relRegs[0].details,
@@ -126,6 +112,24 @@ export default class SHFTZNormalRelRegDetail extends Component {
       });
       // }
     }
+  }
+  getMerged = (details) => {
+    const detailMap = new Map();
+    for (let i = 0; i < details.length; i++) {
+      const detail = details[i];
+      if (detailMap.has(detail.ftz_ent_detail_id)) {
+        const merged = detailMap.get(detail.ftz_ent_detail_id);
+        detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, merged,
+          { qty: (Number(merged.qty) + Number(detail.qty)).toFixed(2),
+            gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(2),
+            net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(2),
+            amount: (Number(merged.amount) + Number(detail.amount)).toFixed(2),
+            freight: (Number(merged.freight) + Number(detail.freight)).toFixed(2) }));
+      } else {
+        detailMap.set(detail.ftz_ent_detail_id, detail);
+      }
+    }
+    return detailMap;
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
@@ -186,9 +190,13 @@ export default class SHFTZNormalRelRegDetail extends Component {
     });
   }
   handleTabChange = (tabKey) => {
+    const detailMap = this.getMerged(this.props.relRegs[tabKey].details);
     this.setState({
+      view: 'splitted',
       tabKey,
       reg: this.props.relRegs[tabKey],
+      filingDetails: this.props.relRegs[tabKey].details,
+      merged: [...detailMap.values()],
     });
   }
   handleInfoSave = (preRegNo, field, value) => {
