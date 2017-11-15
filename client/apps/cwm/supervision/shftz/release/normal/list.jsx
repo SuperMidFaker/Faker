@@ -102,12 +102,16 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 2:
           return (<Badge status="processing" text="已备案" />);
         case 3:
-          return (<Badge status="processing" text="部分清关" />);
+          return (<Badge status="processing" text="部分制单" />);
         case 4:
-          return (<Badge status="processing" text="清关完成" />);
+          return (<Badge status="processing" text="制单中" />);
         case 5:
-          return (<Badge status="processing" text="部分出区" />);
+          return (<Badge status="processing" text="部分清关" />);
         case 6:
+          return (<Badge status="processing" text="清关完成" />);
+        case 7:
+          return (<Badge status="processing" text="部分出区" />);
+        case 8:
           return (<Badge status="success" text="出区完成" />);
         default:
           break;
@@ -157,6 +161,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'ftz_rel_date',
     render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
+    title: '备案日期',
+    width: 120,
+    dataIndex: 'ftz_reg_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
+  }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_time',
@@ -181,12 +190,13 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 1:
           return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
         case 2:
-          return <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />;
+        case 3:
         case 4:
-          return <RowUpdater onHit={this.handleDetail} label="出区确认" row={record} />;
+          return <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />;
         case 5:
-          return <RowUpdater onHit={this.handleDetail} label="出区确认" row={record} />;
         case 6:
+        case 7:
+        case 8:
           return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
         default:
           break;

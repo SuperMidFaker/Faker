@@ -424,11 +424,12 @@ export default class SHFTZRelDetail extends Component {
     const relType = CWM_SO_BONDED_REGTYPES[1];
     const regStatus = relRegs[0].status;
     const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
+    const outboundStatus = relSo.outbound_status || CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
     const sent = regStatus === CWM_SHFTZ_APIREG_STATUS.processing;
     const sendText = sent ? '重新发送' : '发送备案';
     let sendable = true;
     let whyunsent = '';
-    if (relSo.outbound_status < CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
+    if (outboundStatus < CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
       sendable = false;
       whyunsent = '出库单未配货';
     }

@@ -73,11 +73,11 @@ export default class NormalDeclList extends React.Component {
     fixed: 'left',
   }, {
     title: '出区提货单号',
-    dataIndex: 'ftz_rel_no',
+    dataIndex: 'ftz_rel_nos',
     width: 150,
   }, {
     title: '报关单号',
-    dataIndex: 'pre_entry_seq_no',
+    dataIndex: 'cus_decl_nos',
     width: 180,
   }, {
     title: '清关状态',
@@ -246,9 +246,9 @@ export default class NormalDeclList extends React.Component {
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
-        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}
-        </Option>)
-            )}
+        {owners.map(data => (
+          <Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
+        )}
       </Select>
     </span>);
     return (

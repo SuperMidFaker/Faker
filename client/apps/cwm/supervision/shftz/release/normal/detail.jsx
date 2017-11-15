@@ -349,12 +349,14 @@ export default class SHFTZNormalRelRegDetail extends Component {
     if (relRegs.length === 0) {
       return null;
     }
+    console.log(filingDetails);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    const outboundStatus = relSo.outbound_status || CWM_OUTBOUND_STATUS.ALL_ALLOC.value;
     const relType = CWM_SO_BONDED_REGTYPES[0];
     const regStatus = reg.status;
     const relEditable = regStatus < CWM_SHFTZ_APIREG_STATUS.completed;
@@ -362,7 +364,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
     const sendText = sent ? '重新发送' : '发送备案';
     let sendable = true;
     let whyunsent = '';
-    if (relSo.outbound_status < CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
+    if (outboundStatus < CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value) {
       sendable = false;
       whyunsent = '出库单未配货';
     }
@@ -380,7 +382,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
     }
     const outStatus = relSo.outbound_no && CWM_OUTBOUND_STATUS_INDICATOR.filter(status => status.value === relSo.outbound_status)[0];
     let splitExtra = null;
-    if (relSo.outbound_status >= CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value && regStatus < CWM_SHFTZ_APIREG_STATUS.processing) {
+    if (outboundStatus >= CWM_OUTBOUND_STATUS.PARTIAL_ALLOC.value && regStatus < CWM_SHFTZ_APIREG_STATUS.processing) {
       splitExtra = (<Form layout="inline">
         <Form.Item>
           <Checkbox.Group onChange={this.handleCheckChange} value={this.state.groupVals}>
@@ -489,6 +491,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_rel_date', new Date(value))}
                   />
                 </Description>
+                <Description term="备案日期">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY-MM-DD')}</Description>
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={regStatus}>
