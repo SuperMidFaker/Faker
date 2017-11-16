@@ -44,17 +44,6 @@ export default class PickupDeliverPopover extends React.Component {
     visible: false,
     warningMessage: '',
   }
-  componentDidMount() {
-    const { shipmtNo } = this.props;
-    window.$(document).click((event) => {
-      const pickupDeliverClicked = window.$(event.target).closest(`.pickupDeliver${shipmtNo}`).length > 0;
-      const antPopoverClicked = window.$(event.target).closest('.ant-popover').length > 0;
-      const calenderClicked = window.$(event.target).closest('.ant-calendar-picker-container').length > 0;
-      if (!pickupDeliverClicked && !calenderClicked && !antPopoverClicked && this.state.visible) {
-        this.handleClose();
-      }
-    });
-  }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleOk = () => {
     this.props.form.validateFields((errors) => {
@@ -172,7 +161,7 @@ export default class PickupDeliverPopover extends React.Component {
       </Form>
     );
     return (
-      <Popover title={`${title} ${shipmtNo}`}
+      <Popover title={<div>{title} {shipmtNo}<Button shape="circle" icon="close" onClick={this.handleClose} /></div>}
         placement="rightTop"
         trigger="click"
         content={content}

@@ -8,8 +8,8 @@ import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { RangePicker } = DatePicker;
-@injectIntl
 
+@injectIntl
 export default class RangePickerPopover extends Component {
   static propTypes = {
     intl: intlShape.isRequired,

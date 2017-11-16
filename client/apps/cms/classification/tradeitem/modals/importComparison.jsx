@@ -74,7 +74,7 @@ export default class ImportComparisonModal extends React.Component {
       });
     }
     if (nextProps.visibleCompareModal && nextProps.visibleCompareModal !== this.props.visibleCompareModal) {
-      this.handleTempItemsLoad();
+      this.handleTempItemsLoad(1, nextProps.data);
     }
     if (nextProps.tempItems !== this.props.tempItems) {
       this.setState({
@@ -92,9 +92,9 @@ export default class ImportComparisonModal extends React.Component {
     });
     this.handleTempItemsLoad(current);
   }
-  handleTempItemsLoad = (currentPage) => {
+  handleTempItemsLoad = (currentPage, uuid) => {
     this.props.loadTempItems({
-      uuid: this.state.uuid,
+      uuid: uuid || this.state.uuid,
       pageSize: this.props.tempItems.pageSize,
       currentPage: currentPage || this.props.tempItems.current,
     }).then((result) => {
