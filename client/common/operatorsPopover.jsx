@@ -47,8 +47,8 @@ export default class OperatorsPopover extends React.Component {
         }
       }
       this.props.loadOperators(this.props.partnerId, this.props.tenantId);
+      this.setState({ visible });
     }
-    this.setState({ visible });
   }
   handleSelect = ({ key, label }) => {
     this.setState({
@@ -74,14 +74,15 @@ export default class OperatorsPopover extends React.Component {
       button = (<span style={{ color: '#108ee9', background: 'transparent' }}><Icon type="check-square-o" />{this.msg('accepting')}</span>);
     }
     return (
-      <Popover visible={visible} onVisibleChange={this.handlePopVisibleChange} content={
-        <div style={{ width: 120 }}>
+      <Popover visible={visible} onVisibleChange={this.handlePopVisibleChange} trigger="click" content={
+        <div style={{ width: 140 }}>
           <FormItem label={this.msg(label)} >
             <Select labelInValue style={{ width: '100%' }} onSelect={this.handleSelect}>
               {operators.map(op => <Option key={`${op.lid}${op.name}`} value={op.lid}>{op.name}</Option>)}
             </Select>
           </FormItem>
           <Button type="primary" onClick={() => { handleAccept(record, this.state.lid, this.state.name); this.setState({ visible: false }); }} >确定</Button>
+          <Button style={{ marginLeft: 8 }} onClick={() => this.setState({ visible: false })} >取消</Button>
         </div>
       }
       >
