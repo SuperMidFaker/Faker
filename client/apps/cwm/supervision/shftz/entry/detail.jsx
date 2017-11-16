@@ -118,11 +118,8 @@ export default class SHFTZEntryDetail extends Component {
           }
         }
       }
-      this.setState({
-        reg: nextProps.entryRegs[0],
-        alertInfo: unsentReason,
-        newState,
-      });
+      newState.reg = nextProps.entryRegs[0];
+      this.setState(newState);
     }
   }
   msg = key => formatMsg(this.props.intl, key)
