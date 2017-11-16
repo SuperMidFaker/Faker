@@ -101,8 +101,12 @@ export default class SHFTZReleaseList extends React.Component {
         case 2:
           return (<Badge status="processing" text="已备案" />);
         case 3:
-          return (<Badge status="processing" text="已集中申请" />);
+          return (<Badge status="processing" text="部分集中申请" />);
         case 4:
+          return (<Badge status="processing" text="已集中申请" />);
+        case 5:
+          return (<Badge status="processing" text="部分清关" />);
+        case 6:
           return (<Badge status="success" text="已清关" />);
         default:
           break;
@@ -130,7 +134,7 @@ export default class SHFTZReleaseList extends React.Component {
   }, {
     title: '备案日期',
     width: 120,
-    dataIndex: 'reg_date',
+    dataIndex: 'ftz_reg_date',
     render: regDate => regDate && moment(regDate).format('YYYY.MM.DD'),
   }, {
     title: '报关申请日期',
