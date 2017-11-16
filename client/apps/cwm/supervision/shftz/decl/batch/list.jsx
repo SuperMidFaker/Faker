@@ -82,16 +82,17 @@ export default class BatchDeclList extends React.Component {
     render: (st) => {
       switch (st) {
         case 'manifest':
-        case 'generated':
           return (<Badge status="default" text="委托制单" />);
+        case 'generated':
+          return (<Badge status="default" text="待报关申请" />);
         case 'processing':
           return (<Badge status="processing" text="已发送申请" />);
         case 'applied':
-          return (<Badge status="processing" text="已发送申请" />);
+          return (<Badge status="processing" text="申请完成" />);
         case 'cleared':
           return (<Badge status="success" text="已清关" />);
         default:
-          return null;
+          break;
       }
     },
   }, {

@@ -323,7 +323,7 @@ export default defineMessages({
   },
   emGNo: {
     id: 'cms.forms.table.em.gno',
-    defaultMessage: '项号',
+    defaultMessage: '备案序号',
   },
   codeT: {
     id: 'cms.forms.table.codet',

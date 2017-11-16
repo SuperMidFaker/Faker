@@ -451,7 +451,8 @@ export default class SHFTZRelDetail extends Component {
                 <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
                 <Description term="运输单位">{reg.carrier_name}</Description>
                 <Description term="是否需加封">
-                  <EditableCell value={reg.need_seal}
+                  <EditableCell type="select" value={reg.need_seal}
+                    options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'need_seal', value)}
                   />
                 </Description>

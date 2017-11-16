@@ -334,9 +334,9 @@ export default class BatchDeclDetail extends Component {
       applyStep = 2;
       sendText = '重新发送';
     } else if (batchDecl.status === 'applied') {
-      applyStep = 3;
+      applyStep = 2;
     } else if (batchDecl.status === 'cleared') {
-      applyStep = 4;
+      applyStep = 3;
     }
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -375,7 +375,7 @@ export default class BatchDeclDetail extends Component {
             </Tooltip>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {sent && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
+            {sent && <Button icon="check" loading={submitting} onClick={this.handleQuery}>标记申请完成</Button>}
             {sendText &&
             <Button type="primary" ghost={sent} icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
           </PageHeader.Actions>
@@ -392,10 +392,9 @@ export default class BatchDeclDetail extends Component {
               <div className="card-footer">
                 <Steps progressDot current={applyStep}>
                   <Step title="委托制单" />
-                  <Step title="报关申请" />
-                  <Step title="已发送" />
-                  <Step title="申请通过" />
-                  <Step title="报关放行" />
+                  <Step title="待报关申请" />
+                  <Step title="已发送申请" />
+                  <Step title="已清关" />
                 </Steps>
               </div>
             </Card>

@@ -299,7 +299,7 @@ export default class MergeSplitModal extends React.Component {
       <Modal maskClosable={false} title="生成报关建议书" width={800} onCancel={this.handleCancel} onOk={this.handleOk}
         visible={this.props.visible}
       >
-        <Form>
+        <Form className="form-layout-compact">
           {alertMsg && <Alert message={alertTitle} description={alertMsg} type="error" showIcon />}
           <Row gutter={16}>
             <Col span="24">

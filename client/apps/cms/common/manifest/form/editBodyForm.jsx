@@ -243,6 +243,8 @@ export default class EditBodyForm extends Component {
               })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} disabled />)}
             </FormItem>
           </Col>
+        </Row>
+        <Row gutter={16}>
           <Col sm={24} lg={6}>
             <FormItem label={this.msg('quantity')}>
               {getFieldDecorator('g_qty', {
@@ -281,6 +283,8 @@ export default class EditBodyForm extends Component {
               })(<Input onChange={this.handleTradeTotChange} />)}
             </FormItem>
           </Col>
+        </Row>
+        <Row gutter={16}>
           <Col sm={24} lg={6}>
             <FormItem label={this.msg('currency')}>
               {getFieldDecorator('trade_curr', {
@@ -349,6 +353,8 @@ export default class EditBodyForm extends Component {
                 )}
             </FormItem>
           </Col>
+        </Row>
+        <Row gutter={16}>
           <Col sm={24} lg={6}>
             <FormItem label={this.msg('grosswt')}>
               {getFieldDecorator('gross_wt', {
@@ -384,6 +390,8 @@ export default class EditBodyForm extends Component {
               </Select>)}
             </FormItem>
           </Col>
+        </Row>
+        <Row gutter={16}>
           <Col sm={24} lg={6}>
             <FormItem label={this.msg('qty1')}>
               {getFieldDecorator('qty_1', {
@@ -424,6 +432,8 @@ export default class EditBodyForm extends Component {
               </Select>)}
             </FormItem>
           </Col>
+        </Row>
+        <Row gutter={16}>
           <Col sm={24} lg={12}>
             <FormItem label={this.msg('versionNo')}>
               {getFieldDecorator('version_no', {
