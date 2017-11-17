@@ -349,6 +349,9 @@ export default class BatchDeclModal extends Component {
     const { loginId, loginName, tenantName } = this.props;
     const { template, groupVals, destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
+      if (errors) {
+        return;
+      }
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
       const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id } : { name: tenantName };
       this.props.beginBatchDecl({

@@ -76,6 +76,11 @@ export default class SHFTZEntryList extends React.Component {
     const filter = { ...listFilter, status, type: 'bonded', ownerView };
     this.handleEntryListLoad(null, null, filter);
   }
+  componentWillReceiveProps(nextprops) {
+    if (nextprops.whse.code !== this.props.whse.code) {
+      this.handleEntryListLoad(1, nextprops.whse.code, this.props.listFilter);
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: '海关进库单号/备案编号',
