@@ -10,7 +10,7 @@ import PageHint from 'client/components/PageHint';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal } from 'common/reducers/cmsDeclare';
+import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
@@ -32,7 +32,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 const Option = Select.Option;
@@ -63,7 +63,8 @@ const RangePicker = DatePicker.RangePicker;
     showSendDeclModal,
     showPreviewer,
     openDeclReleasedModal,
-    showBatchSendModal }
+    showBatchSendModal,
+    showDeclMsgDock }
 )
 @connectNav({
   depth: 2,
@@ -87,7 +88,6 @@ export default class CustomsList extends Component {
     selectedRows: [],
     selectedRowKeys: [],
     searchInput: '',
-    rightSiderCollapsed: true,
   }
   componentDidMount() {
     let filters = { status: 'all', filterDate: [] };
@@ -528,9 +528,7 @@ export default class CustomsList extends Component {
     this.handleTableLoad(1, filters);
   }
   toggleRightSider = () => {
-    this.setState({
-      rightSiderCollapsed: !this.state.rightSiderCollapsed,
-    });
+    this.props.showDeclMsgDock();
   }
   render() {
     const { customslist, listFilter, trades } = this.props;
@@ -663,17 +661,7 @@ export default class CustomsList extends Component {
             <BatchSendModal reload={this.handleTableLoad} />
           </Content>
         </Layout>
-        <Sider
-          trigger={null}
-          defaultCollapsed
-          collapsible
-          collapsed={this.state.rightSiderCollapsed}
-          width={480}
-          collapsedWidth={0}
-          className="right-sider"
-        >
-          <DeclMsgPanel />
-        </Sider>
+        <DeclMsgPanel />
         <DelegationDockPanel />
         <OrderDockPanel />
         <ShipmentDockPanel />

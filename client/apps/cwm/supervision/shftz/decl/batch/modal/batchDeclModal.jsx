@@ -326,6 +326,10 @@ export default class BatchDeclModal extends Component {
       message.error('货主未选定');
       return;
     }
+    if (!this.props.form.getFieldValue('broker')) {
+      message.error('报关代理未选定');
+      return;
+    }
     const detailIds = [];
     const relCountObj = {};
     this.state.regDetails.forEach((regd) => {

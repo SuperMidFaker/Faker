@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
+import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -17,8 +18,9 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
+    listFilter: state.cwmShFtz.listFilter,
   }),
-  { switchDefaultWhse }
+  { switchDefaultWhse, loadEntryRegDatas }
 )
 export default class ModuleMenu extends React.Component {
   static propTypes = {
@@ -30,9 +32,33 @@ export default class ModuleMenu extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleWhseChange = (value) => {
+    const path = this.context.router.location.pathname;
     this.props.switchDefaultWhse(value);
     message.info('当前仓库已切换');
-    this.context.router.push('/cwm/supervision/shftz/entry');
+    if (path === '/cwm/supervision/shftz/entry') {
+      const listFilter = this.props.listFilter;
+      let status = listFilter.status;
+      if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
+        status = 'all';
+      }
+      let type = listFilter.type;
+      if (['all', 'bonded', 'export'].filter(stkey => stkey === type).length === 0) {
+        type = 'all';
+      }
+      let ownerView = listFilter.ownerView;
+      if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
+        ownerView = 'all';
+      }
+      const filter = { ...listFilter, status, type: 'bonded', ownerView };
+      this.props.loadEntryRegDatas({
+        filter: JSON.stringify(filter),
+        pageSize: 20,
+        currentPage: 1,
+        whseCode: value,
+      });
+    } else {
+      this.context.router.push('/cwm/supervision/shftz/entry');
+    }
   }
   render() {
     const { whses, whse } = this.props;
