@@ -57,7 +57,7 @@ export default class DeclMsgPanel extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        text: this.state.sendText,
+        preEntrySeqNo: this.state.sendText,
         pageSize: pagination.pageSize,
         current: pagination.current,
       };
@@ -78,7 +78,7 @@ export default class DeclMsgPanel extends React.Component {
     }),
     getParams: (pagination) => {
       const params = {
-        text: this.state.recvText,
+        preEntrySeqNo: this.state.recvText,
         pageSize: pagination.pageSize,
         current: pagination.current,
       };
@@ -132,12 +132,22 @@ export default class DeclMsgPanel extends React.Component {
     });
   }
   handleSearchSend = () => {
+    const { sendRecords } = this.props;
     const { sendText } = this.state;
-    this.props.loadSendRecords(sendText);
+    this.props.loadSendRecords({
+      preEntrySeqNo: sendText,
+      current: sendRecords.current,
+      pageSize: sendRecords.pageSize,
+    });
   }
   handleSearchRecv = () => {
+    const { returnRecords } = this.props;
     const { recvText } = this.state;
-    this.props.loadReturnRecords(recvText);
+    this.props.loadReturnRecords({
+      preEntrySeqNo: recvText,
+      current: returnRecords.current,
+      pageSize: returnRecords.pageSize,
+    });
   }
   hideDeclMsgModal = () => {
     this.props.hideDeclMsgModal();
