@@ -34,12 +34,12 @@ export default class DeclMsgPanel extends React.Component {
   componentWillMount() {
     const { sendRecords, returnRecords } = this.props;
     this.props.loadSendRecords({
-      text: '',
+      preEntrySeqNo: '',
       current: sendRecords.current,
       pageSize: sendRecords.pageSize,
     });
     this.props.loadReturnRecords({
-      text: '',
+      preEntrySeqNo: '',
       current: returnRecords.current,
       pageSize: returnRecords.pageSize,
     });
@@ -148,10 +148,12 @@ export default class DeclMsgPanel extends React.Component {
     .get(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`)
     .withCredentials()
     .type('text/xml')
-    .end((res, req) => {
-      me.setState({
-        text: req.text,
-      });
+    .end((err, req) => {
+      if (!err) {
+        me.setState({
+          text: req.text,
+        });
+      }
     });
     this.props.showDeclMsgModal();
   }
