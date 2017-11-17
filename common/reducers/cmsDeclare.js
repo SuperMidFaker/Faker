@@ -385,7 +385,7 @@ export function updateMark(changeVal, entryHeadId) {
   };
 }
 
-export function loadSendRecords({ text, current, pageSize }) {
+export function loadSendRecords({ preEntrySeqNo, current, pageSize }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -395,12 +395,12 @@ export function loadSendRecords({ text, current, pageSize }) {
       ],
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
-      params: { text, current, pageSize },
+      params: { preEntrySeqNo, current, pageSize },
     },
   };
 }
 
-export function loadReturnRecords({ text, current, pageSize }) {
+export function loadReturnRecords({ preEntrySeqNo, current, pageSize }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -410,7 +410,7 @@ export function loadReturnRecords({ text, current, pageSize }) {
       ],
       endpoint: 'v1/cms/return/records/load',
       method: 'get',
-      params: { text, current, pageSize },
+      params: { preEntrySeqNo, current, pageSize },
     },
   };
 }
