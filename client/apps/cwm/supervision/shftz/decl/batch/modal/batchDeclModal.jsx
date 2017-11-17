@@ -326,10 +326,6 @@ export default class BatchDeclModal extends Component {
       message.error('货主未选定');
       return;
     }
-    if (!this.props.form.getFieldValue('broker')) {
-      message.error('报关代理未选定');
-      return;
-    }
     const detailIds = [];
     const relCountObj = {};
     this.state.regDetails.forEach((regd) => {
@@ -353,6 +349,9 @@ export default class BatchDeclModal extends Component {
     const { loginId, loginName, tenantName } = this.props;
     const { template, groupVals, destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
+      if (errors) {
+        return;
+      }
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
       const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id } : { name: tenantName };
       this.props.beginBatchDecl({
