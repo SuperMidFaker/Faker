@@ -19,6 +19,7 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SHOW_BATCH_SEND_MODAL', 'SHOW_BATCH_SEND_MODAL_SUCCEED', 'SHOW_BATCH_SEND_MODAL_FAIL',
   'CLOSE_BATCH_SEND_MODAL',
   'UPDATE_MARK', 'UPDATE_MARK_SUCCEED', 'UPDATE_MARK_FAIL',
+  'LOAD_PESEND_RECORDS', 'LOAD_PESEND_RECORDS_SUCCEED', 'LOAD_PESEND_RECORDS_FAIL',
   'LOAD_SEND_RECORDS', 'LOAD_SEND_RECORDS_SUCCEED', 'LOAD_SEND_RECORDS_FAIL',
   'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
@@ -396,6 +397,21 @@ export function loadSendRecords({ preEntrySeqNo, current, pageSize }) {
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
       params: { preEntrySeqNo, current, pageSize },
+    },
+  };
+}
+
+export function loadLatestSendRecord(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PESEND_RECORDS,
+        actionTypes.LOAD_PESEND_RECORDS_SUCCEED,
+        actionTypes.LOAD_PESEND_RECORDS_FAIL,
+      ],
+      endpoint: 'v1/cms/send/records/load',
+      method: 'get',
+      params: { preEntrySeqNo, current: 1, pageSize: 1 },
     },
   };
 }
