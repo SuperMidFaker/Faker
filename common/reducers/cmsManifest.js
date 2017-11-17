@@ -557,7 +557,7 @@ export function loadEntry(billSeqNo, preEntrySeqNo, tenantId) {
         actionTypes.LOAD_CUSTOMS_DECL_SUCCEED,
         actionTypes.LOAD_CUSTOMS_DECL_FAIL,
       ],
-      endpoint: 'v1/cms/manifest/entry',
+      endpoint: 'v1/cms/customs/entry',
       method: 'get',
       params: { billSeqNo, preEntrySeqNo, tenantId },
     },

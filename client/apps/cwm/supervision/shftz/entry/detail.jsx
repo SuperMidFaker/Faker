@@ -517,7 +517,7 @@ export default class SHFTZEntryDetail extends Component {
   }]
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
-    const { reg } = this.state;
+    const { reg, alertInfo } = this.state;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
@@ -577,7 +577,7 @@ export default class SHFTZEntryDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          {entryEditable && !this.state.sendable && <Alert message={this.state.alertInfo} type="info" showIcon closable />}
+          {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={3}>

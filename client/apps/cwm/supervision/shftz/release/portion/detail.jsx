@@ -550,7 +550,7 @@ export default class SHFTZRelDetail extends Component {
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
-                {regStatus === CWM_SHFTZ_APIREG_STATUS.completed &&
+                {regStatus >= CWM_SHFTZ_APIREG_STATUS.completed &&
                   <TabPane tab="集中报关" key="batchDecl">
                     <DataPane fullscreen={this.state.fullscreen}
                       columns={this.declColumns}
