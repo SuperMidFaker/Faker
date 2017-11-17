@@ -6,7 +6,6 @@ import { intlShape, injectIntl } from 'react-intl';
 import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
@@ -20,7 +19,7 @@ const Option = Select.Option;
     whse: state.cwmContext.defaultWhse,
     listFilter: state.cwmShFtz.listFilter,
   }),
-  { switchDefaultWhse, loadEntryRegDatas }
+  { switchDefaultWhse }
 )
 export default class ModuleMenu extends React.Component {
   static propTypes = {
