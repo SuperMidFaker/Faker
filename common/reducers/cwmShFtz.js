@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'OPEN_NORMAL_REL_REG_MODAL', 'CLOSE_NORMAL_REL_REG_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
+  'ENTRY_MGDETAILS_LOAD', 'ENTRY_MGDETAILS_LOAD_SUCCEED', 'ENTRY_MGDETAILS_LOAD_FAIL',
   'LOAD_VTDETAILS', 'LOAD_VTDETAILS_SUCCEED', 'LOAD_VTDETAILS_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
   'PARAMS_LOAD', 'PARAMS_LOAD_SUCCEED', 'PARAMS_LOAD_FAIL',
@@ -535,6 +536,21 @@ export function loadEntryDetails(params) {
         actionTypes.ENTRY_DETAILS_LOAD_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/entryreg/details/load',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadEntryMergedDetail(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.ENTRY_MGDETAILS_LOAD,
+        actionTypes.ENTRY_MGDETAILS_LOAD_SUCCEED,
+        actionTypes.ENTRY_MGDETAILS_LOAD_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entryreg/merged/details',
       method: 'get',
       params,
     },

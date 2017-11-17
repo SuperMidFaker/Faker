@@ -13,7 +13,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadEntryDetails, loadParams, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
+import { loadEntryDetails, loadEntryMergedDetail, loadParams, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_INBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -52,7 +52,7 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
+  { loadEntryDetails, loadEntryMergedDetail, updateEntryReg, refreshEntryRegFtzCargos, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
 )
 @connectNav({
   depth: 3,
@@ -74,6 +74,23 @@ export default class SHFTZEntryDetail extends Component {
     alertInfo: '',
     tabKey: '',
     nonCargono: false,
+  }
+  componentDidMount() {
+    let script;
+    if (!document.getElementById('pdfmake-min')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-min';
+      script.src = `${__CDN__}/assets/pdfmake/pdfmake.min.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+    if (!document.getElementById('pdfmake-vfsfont')) {
+      script = document.createElement('script');
+      script.id = 'pdfmake-vfsfont';
+      script.src = `${__CDN__}/assets/pdfmake/vfs_fonts.js`;
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
@@ -158,6 +175,127 @@ export default class SHFTZEntryDetail extends Component {
     } else {
       this.handleRegSend(false);
     }
+  }
+  handleEntryRegsPrint = () => {
+    if (this.state.nonCargono) {
+      notification.warn({
+        message: '货号未备案',
+        description: '部分货号无备案料号, 是否以生成临时备案料号打印备案',
+        btn: (<div>
+          <a role="presentation" onClick={() => this.handleRegPrint(true)}>直接打印</a>
+          <span className="ant-divider" />
+          <a role="presentation" onClick={this.handleCargoAdd}>添加对应备案料号</a>
+        </div>),
+        key: 'confirm-cargono',
+        duration: 0,
+      });
+    } else {
+      this.handleRegPrint(false);
+    }
+  }
+  handleDocDef = (mergeDetails) => {
+    const docDefinition = {
+      content: [],
+      pageOrientation: 'landscape',
+      pageSize: 'A4',
+      pageMargins: [20, 15],
+      styles: {
+        title: {
+          fontSize: 18,
+          bold: true,
+          alignment: 'center',
+          width: '100%',
+          margin: [0, 0, 0, 8],
+        },
+        header: {
+          fontSize: 10,
+          margin: [0, 3, 0, 4],
+        },
+        table: {
+          fontSize: 11,
+          color: 'black',
+          alignment: 'center',
+          margin: [2, 2, 2, 2],
+        },
+        tableHeader: {
+          fontSize: 11,
+          bold: true,
+          color: 'black',
+          alignment: 'center',
+          margin: [2, 5, 2, 5],
+        },
+        footer: {
+          fontSize: 8,
+        },
+      },
+      defaultStyle: {
+        font: 'yahei',
+      },
+    };
+    docDefinition.content = mergeDetails.map((mEntryReg) => {
+      const details = mEntryReg.details;
+      let num = 0;
+      if (details.length > 23) {
+        num = 30 - (details.length - 23) % 30;
+      } else {
+        num = 23 - details.length;
+      }
+      return [
+        [
+          { columns: [
+        { text: `报关单号:  ${mEntryReg.cus_decl_no || ''}`, style: 'header' },
+          ] },
+        ],
+        {
+          style: 'table',
+          table: {
+            widths: [30, 120, 80, 100, '*', '*', '*', '*', '*'],
+            body: [[{ text: '项号', style: 'tableHeader' },
+              { text: '备件号', style: 'tableHeader' },
+              { text: '商品编码', style: 'tableHeader' },
+              { text: '品名', style: 'tableHeader' },
+              { text: '毛重', style: 'tableHeader' },
+              { text: '净重', style: 'tableHeader' },
+              { text: '数量', style: 'tableHeader' },
+              { text: '金额', style: 'tableHeader' },
+              { text: '单位', style: 'tableHeader' }]].concat(details.map(det => ([
+                det.decl_g_no, det.ftz_cargo_no, det.hscode, det.g_name, det.gross_wt, det.net_wt, det.qty, det.amount, det.unit,
+              ]))),
+          },
+          layout: {
+            vLineWidth(i, node) {
+              return (i === 0 || i === node.table.widths.length - 1 || i === node.table.widths.length) ? 1.2 : 0.5;
+            },
+            hLineWidth(i, node) {
+              return (i === 0 || i === 1 || i === node.table.body.length - 1 || i === node.table.body.length) ? 1.2 : 0.5;
+            },
+            paddingBottom(i, node) { return (node.table.body[i][0].text === '') ? 10 * num : 1; },
+          },
+        },
+        [{ columns: [{ text: moment().format('YY/MM/DD HH:mm'), fontSize: 9, alignment: 'right' }] }],
+      ];
+    });
+    docDefinition.footer = (currentPage, pageCount) => ({ text: `第 ${currentPage.toString()}页，共 ${pageCount}页`, alignment: 'center', style: 'footer' });
+    return docDefinition;
+  }
+  handleRegPrint = () => {
+    this.props.loadEntryMergedDetail({ asnNo: this.props.params.asnNo }).then((result) => {
+      if (!result.error) {
+        const mergeDetails = result.data;
+        const docDefinition = this.handleDocDef(mergeDetails);
+        window.pdfMake.fonts = {
+          yahei: {
+            normal: 'msyh.ttf',
+            bold: 'msyh.ttf',
+            italics: 'msyh.ttf',
+            bolditalics: 'msyh.ttf',
+          },
+        };
+        window.pdfMake.createPdf(docDefinition).open();
+      } else {
+        message.error(result.error.message);
+      }
+    });
   }
   handleRegSend = (close) => {
     if (close) {
@@ -248,7 +386,7 @@ export default class SHFTZEntryDetail extends Component {
   handleTabChange = (tabKey) => {
     this.setState({
       tabKey,
-      reg: this.props.relRegs[tabKey],
+      reg: this.props.entryRegs[tabKey],
     });
   }
   handleInfoSave = (preRegNo, field, value) => {
@@ -433,6 +571,7 @@ export default class SHFTZEntryDetail extends Component {
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {this.state.queryable && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
             {this.state.nonCargono && <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
+            {this.state.sendable && <Button icon="printer" onClick={this.handleEntryRegsPrint}>进区预录入单</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
           </PageHeader.Actions>
