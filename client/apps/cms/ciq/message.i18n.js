@@ -30,56 +30,56 @@ export default defineMessages({
     id: 'cms.ciq.decl.delg.no',
     defaultMessage: '委托编号',
   },
-  preEntryNo: {
-    id: 'cms.ciq.decl.delg.preEntry.no',
+  ciqDeclNo: {
+    id: 'cms.ciq.decl.no',
     defaultMessage: '报检号/统一编号',
   },
-  clrStatus: {
-    id: 'cms.ciq.decl.clr.status',
-    defaultMessage: '通关状态',
+  custOrderNo: {
+    id: 'cms.ciq.decl.cust.order.no',
+    defaultMessage: '客户单号',
   },
-  ciqNo: {
-    id: 'cms.ciq.decl.ciqNo',
-    defaultMessage: '通关单号',
+  ciqDeclCode: {
+    id: 'cms.ciq.decl.code',
+    defaultMessage: '报检类型',
   },
   status: {
-    id: 'cms.ciq.decl.delg.status',
+    id: 'cms.ciq.decl.status',
     defaultMessage: '状态',
+  },
+  orgCode: {
+    id: 'cms.ciq.decl.org.code',
+    defaultMessage: '报检地',
+  },
+  consignorCname: {
+    id: 'cms.ciq.decl.consignor.cname',
+    defaultMessage: '发货人',
+  },
+  consigneeCname: {
+    id: 'cms.ciq.decl.consignee.cname',
+    defaultMessage: '收货人',
+  },
+  ciqDeclDate: {
+    id: 'cms.ciq.decl.date',
+    defaultMessage: '报检日期',
+  },
+  ciqQualityInsp: {
+    id: 'cms.ciq.decl.quality.insp',
+    defaultMessage: '品质查验',
+  },
+  ciqApInsp: {
+    id: 'cms.ciq.decl.ap.insp',
+    defaultMessage: '动植检查验',
+  },
+  declRegNo: {
+    id: 'cms.ciq.decl.reg.no',
+    defaultMessage: '报检单位',
   },
   opColumn: {
     id: 'cms.ciq.decl.delg.opColumn',
     defaultMessage: '操作',
   },
-  ciqNoFillModalTitle: {
-    id: 'cms.ciq.decl.modal.ciqnofill.title',
-    defaultMessage: '填写通关单号',
-  },
-  successfulOperation: {
-    id: 'cms.ciq.decl.modal.successful.operation',
-    defaultMessage: '操作成功',
-  },
-  save: {
-    id: 'cms.ciq.decl.save',
-    defaultMessage: '保存',
-  },
-  processDate: {
-    id: 'cms.ciq.decl.process.date',
-    defaultMessage: '更新时间',
-  },
   ciqFinish: {
     id: 'cms.ciq.decl.ciq.finish',
     defaultMessage: '完成',
-  },
-  qualityCheck: {
-    id: 'cms.ciq.decl.quality.check',
-    defaultMessage: '品质查验',
-  },
-  anipkCheck: {
-    id: 'cms.ciq.decl.ap.check',
-    defaultMessage: '动植检查验',
-  },
-  ciqAgent: {
-    id: 'cms.ciq.decl.agent',
-    defaultMessage: '报检单位',
   },
 });

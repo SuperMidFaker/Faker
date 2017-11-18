@@ -228,6 +228,10 @@ export default class OrderList extends React.Component {
       title: '进度状态',
       render: (o, record) => <ProgressColumn order={record} />,
     }, {
+      title: '创建人员',
+      dataindex: 'created_by',
+      width: 100,
+    }, {
       title: '操作',
       width: 80,
       fixed: 'right',

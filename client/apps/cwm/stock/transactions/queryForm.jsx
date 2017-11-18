@@ -85,7 +85,7 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="客户订单号">
+            <FormItem {...formItemLayout} label="客户单号">
               {getFieldDecorator('ref_order_no', {
                 initialValue: filter.ref_order_no,
               })(<Input />)}

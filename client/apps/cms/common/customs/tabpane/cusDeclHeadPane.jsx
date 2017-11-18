@@ -26,7 +26,7 @@ const FormItem = Form.Item;
   }),
   { fillEntryId, updateMark }
 )
-export default class CustomsDeclHeadPane extends React.Component {
+export default class CusDeclHeadPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,

@@ -120,7 +120,7 @@ export default class SHFTZEntryList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'po_no',
     width: 160,
   }, {

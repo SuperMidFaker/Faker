@@ -105,7 +105,7 @@ export default class SHFTZTransferInList extends React.Component {
     width: 160,
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'po_no',
     width: 160,
   }, {

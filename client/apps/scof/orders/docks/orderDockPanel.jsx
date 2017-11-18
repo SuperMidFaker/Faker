@@ -90,9 +90,6 @@ export default class OrderDockPanel extends React.Component {
     const { order } = this.props;
     return (
       <Tabs defaultActiveKey="flow" onChange={this.handleTabChange}>
-        <TabPane tab={this.msg('tabFlow')} key="flow">
-          <FlowPane />
-        </TabPane>
         <TabPane tab={this.msg('tabOrder')} key="order">
           <OrderPane />
           {
@@ -106,6 +103,9 @@ export default class OrderDockPanel extends React.Component {
                 </Tooltip>
               </div>) : null
           }
+        </TabPane>
+        <TabPane tab={this.msg('tabFlow')} key="flow">
+          <FlowPane />
         </TabPane>
         <TabPane tab={this.msg('tabBilling')} key="billing" disabled>
           <BillingPane />
@@ -127,13 +127,13 @@ export default class OrderDockPanel extends React.Component {
           <InfoItem label="客户" field={order.customer_name} />
         </Col>
         <Col span="6">
-          <InfoItem label="客户订单号" field={order.cust_order_no} />
+          <InfoItem label="客户单号" field={order.cust_order_no} />
         </Col>
         <Col span="4">
           <InfoItem label="货物流向" addonBefore={transfer && <Icon type={transfer.icon} />} field={transfer && transfer.text} />
         </Col>
         <Col span="6">
-          <InfoItem label="接单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />
+          <InfoItem label="订单日期" addonBefore={<Icon type="calendar" />} field={moment(order.delg_time).format('YYYY.MM.DD')} />
         </Col>
       </Row>);
   }
@@ -142,7 +142,7 @@ export default class OrderDockPanel extends React.Component {
     const { order, visible } = this.props;
     return (
       <DockPanel size="large" visible={visible} onClose={this.props.hideDock}
-        title={order.shipmt_order_no}
+        title={`订单关联号:${order.shipmt_order_no}`}
         status={this.renderStatus(order.order_status)} statusText={this.renderStatusMsg(order.order_status)}
         extra={this.renderExtra()}
         // alert={this.renderAlert()}

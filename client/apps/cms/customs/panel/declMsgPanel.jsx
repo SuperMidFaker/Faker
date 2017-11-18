@@ -121,14 +121,14 @@ export default class DeclMsgPanel extends React.Component {
   hideDock = () => {
     this.props.hideDeclMsgDock();
   }
-  searchSend = (value) => {
+  searchSend = (e) => {
     this.setState({
-      sendText: value,
+      sendText: e.target.value,
     });
   }
-  searchRecv = (value) => {
+  searchRecv = (e) => {
     this.setState({
-      recvText: value,
+      recvText: e.target.value,
     });
   }
   handleSearchSend = () => {
@@ -175,7 +175,7 @@ export default class DeclMsgPanel extends React.Component {
       <Tabs defaultActiveKey="sent">
         <TabPane tab="发送记录" key="sent">
           <div className="toolbar">
-            <Search style={{ width: 160 }} onChange={this.searchSend} onSearch={this.handleSearchSend} />
+            <Search style={{ width: 160 }} value={this.state.sendText} onChange={this.searchSend} onSearch={this.handleSearchSend} />
           </div>
           <Table size="middle" columns={this.sentColumns} dataSource={this.sendDataSource} scrollOffset="400" rowkey="sent_file"
             scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
@@ -183,7 +183,7 @@ export default class DeclMsgPanel extends React.Component {
         </TabPane>
         <TabPane tab="接收记录" key="recv">
           <div className="toolbar">
-            <Search style={{ width: 160 }} onChange={this.searchRecv} onSearch={this.handleSearchRecv} />
+            <Search style={{ width: 160 }} value={this.state.recvText} onChange={this.searchRecv} onSearch={this.handleSearchRecv} />
           </div>
           <Table size="middle" columns={this.recvColumns} dataSource={this.recvDataSource} scrollOffset="400" rowkey="return_file"
             scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}

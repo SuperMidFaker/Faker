@@ -123,7 +123,7 @@ export default class SOPane extends React.Component {
                   <InfoItem label="SO类型" field={soHead.so_type && CWM_SO_TYPES.find(item => item.value === soHead.so_type).text} />
                 </Col>
                 <Col span="8">
-                  <InfoItem label="客户订单号" field={soHead.cust_order_no} />
+                  <InfoItem label="客户单号" field={soHead.cust_order_no} />
                 </Col>
                 <Col span="8">
                   <InfoItem label="货物属性" field={soHead.bonded ? '保税' : '非保税'} />

@@ -48,7 +48,7 @@ export default class OrderListPane extends Component {
       dataIndex: 'order_rel_no',
       width: 150,
     }, {
-      title: '客户订单号',
+      title: '客户单号',
       dataIndex: 'cust_order_no',
       width: 150,
     }, {
