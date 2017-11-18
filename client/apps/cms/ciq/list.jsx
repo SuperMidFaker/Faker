@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag } from 'antd';
+import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
-import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+// import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCiqDecls, setInspect, setCiqFinish } from 'common/reducers/cmsDeclare';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
@@ -17,7 +17,6 @@ import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
-import CiqnoFillModal from '../common/ciq/modals/ciqNoFill';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -68,50 +67,19 @@ export default class CiqDeclList extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: this.msg('delgNo'),
-    dataIndex: 'delg_no',
-    width: 120,
+    title: this.msg('ciqDeclNo'),
+    dataIndex: 'ciq_decl_no',
+    width: 180,
     fixed: 'left',
-    render: (o, record) => (
-      <a onClick={ev => this.handlePreview(record, ev)}>
-        {o}
-      </a>),
   }, {
-    title: this.msg('orderNo'),
-    width: 180,
-    dataIndex: 'order_no',
-    render: o => <TrimSpan text={o} maxLen={20} />,
+    title: <Tooltip title="申报项数"><Icon type="bars" /></Tooltip>,
+    dataIndex: 'detail_count',
+    width: 50,
+    render: dc => !isNaN(dc) ? dc : null,
   }, {
-    title: this.msg('preEntryNo'),
-    dataIndex: 'pre_entry_seq_no',
-    width: 180,
-  }, {
-    title: this.msg('ciqNo'),
-    width: 180,
-    dataIndex: 'ciq_no',
-    render: (o, record) => {
-      if (record.id) {
-        if (o) {
-          return o;
-        } else if (record.ciq_status !== 1 && (record.ciq_type === 'LA' || record.ciq_type === 'LB')) {
-          return (
-            <PrivilegeCover module="clearance" feature={this.props.ietype} action="edit">
-              <RowUpdater onHit={this.handleCiqNoFill} row={record}
-                label={<Icon type="edit" />}
-              />
-            </PrivilegeCover>
-          );
-        } else {
-          return '-';
-        }
-      } else {
-        return '-';
-      }
-    },
-  }, {
-    title: '报检类别',
+    title: this.msg('ciqDeclCode'),
     width: 100,
-    dataIndex: 'ciqdecl_type',
+    dataIndex: 'ciq_decl_code',
     render: (o) => {
       if (o === 'NL') {
         return <Tag color="cyan">包装检疫</Tag>;
@@ -121,45 +89,62 @@ export default class CiqDeclList extends Component {
       return <span />;
     },
   }, {
-    title: '报检状态',
-    dataIndex: 'ciqdecl_status',
+    title: this.msg('delgNo'),
+    dataIndex: 'delg_no',
+    width: 120,
+    render: (o, record) => (
+      <a onClick={ev => this.handlePreview(record, ev)}>
+        {o}
+      </a>),
+  }, {
+    title: this.msg('custOrderNo'),
+    width: 180,
+    dataIndex: 'cust_order_no',
+    render: o => <TrimSpan text={o} maxLen={20} />,
+  }, {
+    title: this.msg('status'),
+    dataIndex: 'status',
     width: 100,
   }, {
-    title: '报检日期',
+    title: this.msg('orgCode'),
+    dataIndex: 'org_code',
+    width: 100,
+  }, {
+    title: this.msg('ciqDeclDate'),
+    dataIndex: 'ciq_decl_date',
     width: 120,
     render: (o, record) => (record.id ?
       record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
   }, {
-    title: this.msg('qualityCheck'),
+    title: this.msg('ciqQualityInsp'),
     dataIndex: 'ciq_quality_inspect',
     width: 80,
     render: (o, record) =>
       <ColumnSwitch field="pzcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
   }, {
-    title: this.msg('anipkCheck'),
+    title: this.msg('ciqApInsp'),
     dataIndex: 'ciq_ap_inspect',
     width: 100,
     render: (o, record) =>
       <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
   }, {
-    title: '发货人',
+    title: this.msg('consignorCname'),
     dataIndex: 'consignor',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
-    title: '收货人',
-    dataIndex: 'consignee',
+    title: this.msg('consigneeCname'),
+    dataIndex: 'consignee_cname',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
-    title: this.msg('ciqAgent'),
-    dataIndex: 'ciqdecl_org',
+    title: this.msg('declRegNo'),
+    dataIndex: 'decl_reg_no',
     width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
-    title: '报检地',
-    dataIndex: 'ciqdecl_place',
-    width: 100,
+    title: this.msg('报检人员'),
+    dataIndex: 'declared_by',
+    width: 180,
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
@@ -296,7 +281,6 @@ export default class CiqDeclList extends Component {
             columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={ciqdeclList.loading}
             onRowClick={this.handleRowClick}
           />
-          <CiqnoFillModal reload={this.handleTableLoad} />
         </Content>
         <DelegationDockPanel />
       </Layout>

@@ -69,7 +69,7 @@ export default class NormalRelRegModal extends Component {
     dataIndex: 'so_no',
     width: 150,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'cust_order_no',
   }, {
     title: '出库日期',
@@ -87,7 +87,7 @@ export default class NormalRelRegModal extends Component {
     dataIndex: 'ftz_ent_no',
     width: 180,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'po_no',
   }, {
     title: '添加',
@@ -372,7 +372,7 @@ export default class NormalRelRegModal extends Component {
     const srcSearchTool = [];
     if (srcType === 'so_no') {
       srcSearchTool.push(
-        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户订单号"
+        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户单号"
           onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
         />
       );

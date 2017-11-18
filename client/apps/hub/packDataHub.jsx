@@ -44,6 +44,11 @@ export default class DataHubPack extends React.Component {
                     <Icon type="appstore-o" />整合管理
                   </NavLink>
                 </Menu.Item>
+                <Menu.Item key="adapter">
+                  <NavLink to="/hub/adapter">
+                    <Icon type="usb" />数据适配
+                  </NavLink>
+                </Menu.Item>
               </MenuItemGroup>
               <MenuItemGroup key="api" title="接口">
                 <Menu.Item key="auth">
@@ -53,7 +58,7 @@ export default class DataHubPack extends React.Component {
                 </Menu.Item>
                 <Menu.Item key="webhook">
                   <NavLink to="/hub/api/webhook">
-                    提醒目标Webhook
+                    <Icon type="wifi" />提醒目标Webhook
                   </NavLink>
                 </Menu.Item>
               </MenuItemGroup>

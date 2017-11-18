@@ -90,7 +90,7 @@ export default class TMSNodeCard extends React.Component {
       steps.push(<Step title="回单" key="pod" />);
     }
     return (
-      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 48 }} onClick={() => this.handleShipmtPreview(this.props.uuid)}>
+      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handleShipmtPreview(this.props.uuid)}>
         <Row>
           <Col span="8">
             <InfoItem label="发货方" field={consignerName} />

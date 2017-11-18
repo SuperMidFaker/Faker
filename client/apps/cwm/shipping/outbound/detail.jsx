@@ -290,7 +290,7 @@ export default class OutboundDetail extends Component {
               </Col>
                 }
               <Col sm={24} lg={4}>
-                <InfoItem label="客户订单号" field={outboundHead.cust_order_no} />
+                <InfoItem label="客户单号" field={outboundHead.cust_order_no} />
               </Col>
               <Col sm={12} lg={3}>
                 <InfoItem label="订单总数" field={outboundHead.total_qty} />

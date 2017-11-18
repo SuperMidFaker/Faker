@@ -212,7 +212,7 @@ export default class FeeSummaryDetail extends Component {
                 <DescriptionList col={2}>
                   <Description term="订单关联号">{summary.owner_name}</Description>
                   <Description term="订单日期">{summary.created_date && moment(summary.created_date).format('YYYY.MM.DD HH:mm')}</Description>
-                  <Description term="客户订单号">{summary.asn_no}</Description>
+                  <Description term="客户单号">{summary.asn_no}</Description>
                   <Description term="客户">{summary.total_expect_qty}</Description>
                 </DescriptionList>
               </Col>

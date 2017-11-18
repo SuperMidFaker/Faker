@@ -35,7 +35,7 @@ export default defineMessages({
   },
   orderNo: {
     id: 'cms.customs.decl.order.no',
-    defaultMessage: '客户订单号',
+    defaultMessage: '客户单号',
   },
   declNo: {
     id: 'cms.customs.decl.decl.no',

@@ -88,7 +88,7 @@ export default class ShippingOrderList extends React.Component {
         {o}
       </a>),
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'cust_order_no',
     width: 180,
   }, {

@@ -71,8 +71,8 @@ export default class CorpPack extends React.Component {
       );
     }
     dataMenu.push(
-      <Menu.Item key="logs" disabled>
-        <NavLink to="/corp/data/logs">
+      <Menu.Item key="logs">
+        <NavLink to="/corp/logs">
           <Icon type="exception" />操作日志
         </NavLink>
       </Menu.Item>

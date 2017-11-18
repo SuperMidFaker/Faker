@@ -146,7 +146,7 @@ export default class ReceiveDetailsPane extends React.Component {
     className: 'cell-align-center',
     render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'po_no',
     width: 150,
   }, {

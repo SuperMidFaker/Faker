@@ -44,7 +44,7 @@ export default class OutboundPickPrint extends Component {
       ] },
       { columns: [
         { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
-        { text: `客户订单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
+        { text: `客户单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
         { text: `订单数量:  ${outboundHead.total_alloc_qty || ''}`, style: 'header' },
       ] },
       { columns: [

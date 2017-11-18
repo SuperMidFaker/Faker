@@ -277,9 +277,13 @@ const messages = defineMessages({
     id: 'scof.orders.status.transporting',
     defaultMessage: '运输',
   },
+  processing: {
+    id: 'scof.orders.status.processing',
+    defaultMessage: '进行中',
+  },
   finished: {
     id: 'scof.orders.status.finished',
-    defaultMessage: '完结',
+    defaultMessage: '已完成',
   },
   clearance: {
     id: 'scof.orders.previewer.clearance',
@@ -663,15 +667,15 @@ const messages = defineMessages({
   },
   tabOrder: {
     id: 'scof.orders.dock.tab.order',
-    defaultMessage: '订单',
+    defaultMessage: '订单信息',
   },
   tabFlow: {
     id: 'scof.orders.dock.tab.flow',
-    defaultMessage: '流程',
+    defaultMessage: '流程节点',
   },
   tabBilling: {
     id: 'scof.orders.dock.tab.billing',
-    defaultMessage: '计费',
+    defaultMessage: '计费结算',
   },
 });
 

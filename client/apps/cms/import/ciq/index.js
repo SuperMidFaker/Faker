@@ -1,1 +1,0 @@
-export CiqList from './ciqlist';
