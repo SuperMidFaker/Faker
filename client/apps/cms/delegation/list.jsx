@@ -16,7 +16,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/SearchBar';
 import RowUpdater from 'client/components/rowUpdater';
-import { MdIcon } from 'client/components/FontIcon';
+import { Logixon, MdIcon, Fontello } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal, loadFormRequire } from 'common/reducers/cmsDelegation';
 import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'common/reducers/cmsDelgInfoHub';
@@ -141,6 +141,20 @@ export default class DelegationList extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
+    title: <Logixon type="dan" />,
+    dataIndex: 'order_rel_no',
+    width: 36,
+    fixed: 'left',
+    render: (o, record) => {
+      if (record.status === 0) {
+        return <Fontello type="circle" color="blue" />;
+      } else if (record.status === 1) {
+        return <Fontello type="circle" color="green" />;
+      } else {
+        return <Fontello type="circle" color="gray" />;
+      }
+    },
+  }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
     width: 120,
