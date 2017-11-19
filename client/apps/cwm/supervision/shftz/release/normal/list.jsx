@@ -146,25 +146,24 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'carrier_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '出口日期',
+    title: '备案日期',
     width: 120,
-    dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+    dataIndex: 'ftz_reg_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
     title: '报关日期',
     width: 120,
     dataIndex: 'cus_decl_date',
     render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
   }, {
-    title: '预计出区日期',
+    title: '出区日期',
     width: 120,
-    dataIndex: 'ftz_rel_date',
+    dataIndex: 'exit_date',
     render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
-    title: '备案日期',
-    width: 120,
-    dataIndex: 'ftz_reg_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
   }, {
     title: '创建时间',
     width: 120,
@@ -174,10 +173,6 @@ export default class SHFTZNormalRelRegList extends React.Component {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
-  }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

@@ -129,13 +129,13 @@ export default class NormalDeclList extends React.Component {
       }
     },
   }, {
-    title: '创建时间',
-    width: 120,
-    render: (o, record) => record.delg_time && moment(record.delg_time).format('MM.DD HH:mm'),
-  }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+  }, {
+    title: '创建时间',
+    width: 120,
+    render: (o, record) => record.delg_time && moment(record.delg_time).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

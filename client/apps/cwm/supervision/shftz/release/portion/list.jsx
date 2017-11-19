@@ -142,6 +142,10 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'cus_decl_date',
     render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
   }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+  }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_time',
@@ -150,10 +154,6 @@ export default class SHFTZReleaseList extends React.Component {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
-  }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

@@ -156,7 +156,7 @@ export default class BatchDeclList extends React.Component {
       }
     },
   }, {
-    title: '报关日期',
+    title: '申报日期',
     width: 120,
     dataIndex: 'decl_date',
     render: (o) => {
@@ -174,6 +174,10 @@ export default class BatchDeclList extends React.Component {
       }
     },
   }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+  }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_time',
@@ -182,10 +186,6 @@ export default class BatchDeclList extends React.Component {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
-  }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
