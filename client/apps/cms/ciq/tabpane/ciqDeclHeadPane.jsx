@@ -106,7 +106,7 @@ export default class CiqDeclHeadPane extends React.Component {
     };
     return (
       <div className="pane">
-        <Form layout="horizontal">
+        <Form layout="horizontal" hideRequiredMark>
           <div className="panel-header">
             <Row>
               <Col span="6">

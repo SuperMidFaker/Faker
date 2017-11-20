@@ -382,7 +382,7 @@ export default class BatchDeclDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
               <DescriptionList col={4}>
                 <Description term="货主">{batchDecl.owner_name}</Description>
                 <Description term="收货单位">{batchDecl.receiver_name}</Description>

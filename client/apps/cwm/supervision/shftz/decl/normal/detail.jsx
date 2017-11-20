@@ -279,7 +279,7 @@ export default class NormalDeclDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
               <DescriptionList col={6}>
                 <Description term="提货单位">{normalDecl.owner_name}</Description>
                 <Description term="报关代理">{normalDecl.customs_name}</Description>

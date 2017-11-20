@@ -381,7 +381,7 @@ export default class CiqDeclGoodsPane extends React.Component {
     return (
       <div className="pane">
         <div className="pane-content">
-          <Form layout="horizontal" className="form-layout-multi-col">
+          <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
             <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} style={{ marginBottom: 0 }} noHovering>
               <Row>
                 <Col span="6">

@@ -138,7 +138,7 @@ export default class ManifestHeadPane extends React.Component {
           </Popconfirm>}
         </div>
         <div className="pane-content form-layout-multi-col">
-          <Form layout="horizontal">
+          <Form layout="horizontal" hideRequiredMark>
             <Card bodyStyle={{ padding: 16 }} noHovering>
               <Row>
                 <Col span="8">
