@@ -94,7 +94,11 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '申报报文',
     dataIndex: 'sent_file',
-    render: o => <a onClick={() => this.showDeclMsgModal(o)}>{o}</a>,
+    render: o => <a onClick={() => this.showDeclMsgModal('send', o)}><TrimSpan text={o} maxLen={50} tailer={20} /></a>,
+  }, {
+    title: '通道',
+    dataIndex: 'ep_code',
+    width: 100,
   }, {
     title: '发送人员',
     dataIndex: 'sender_name',
@@ -112,7 +116,7 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '回执报文',
     dataIndex: 'return_file',
-    render: o => <TrimSpan text={o} maxLen={70} tailer={20} />,
+    render: o => <a onClick={() => this.showDeclMsgModal('return', o)}><TrimSpan text={o} maxLen={70} tailer={20} /></a>,
   }, {
     title: '接收时间',
     dataIndex: 'return_date',
@@ -153,10 +157,16 @@ export default class DeclMsgPanel extends React.Component {
   hideDeclMsgModal = () => {
     this.props.hideDeclMsgModal();
   }
-  showDeclMsgModal = (filename) => {
+  showDeclMsgModal = (type, filename) => {
     const me = this;
+    let url = '';
+    if (type === 'send') {
+      url = `${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`;
+    } else {
+      url = `${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`;
+    }
     superAgent
-    .get(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`)
+    .get(url)
     .withCredentials()
     .type('text/xml')
     .end((err, req) => {
