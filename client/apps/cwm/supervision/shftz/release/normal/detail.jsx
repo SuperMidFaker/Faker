@@ -553,10 +553,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <Tabs defaultActiveKey="regd">
-              <TabPane tab="备案明细" key="regd">
-                <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-                  <DataPane header="备案明细" fullscreen={this.state.fullscreen}
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+              <Tabs defaultActiveKey="regd">
+                <TabPane tab="备案明细" key="regd">
+                  <DataPane fullscreen={this.state.fullscreen}
                     columns={this.columns} rowSelection={rowSelection} indentSize={8}
                     dataSource={filingDetails} rowKey="id" loading={this.state.loading}
                   >
@@ -574,17 +574,15 @@ export default class SHFTZNormalRelRegDetail extends Component {
                       </DataPane.Extra>
                     </DataPane.Toolbar>
                   </DataPane>
-                </MagicCard>
-              </TabPane>
-              <TabPane tab="出区明细" key="exitd">
-                <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-                  <DataPane header="出区明细" fullscreen={this.state.fullscreen}
+                </TabPane>
+                <TabPane tab="出区明细" key="exitd">
+                  <DataPane fullscreen={this.state.fullscreen}
                     columns={this.exitColumns} rowSelection={rowSelection} indentSize={8}
                     dataSource={exitDetails} rowKey="id" loading={this.state.loading}
                   />
-                </MagicCard>
-              </TabPane>
-            </Tabs>
+                </TabPane>
+              </Tabs>
+            </MagicCard>
           </Form>
         </Content>
       </div>
