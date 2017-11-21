@@ -94,15 +94,9 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '申报报文',
     dataIndex: 'sent_file',
-<<<<<<< HEAD
     render: o => <a onClick={() => this.showDeclMsgModal('send', o)}><TrimSpan text={o} maxLen={50} tailer={20} /></a>,
   }, {
     title: '通道',
-=======
-    render: o => <a onClick={() => this.showDeclMsgModal('send', o)}>{o}</a>,
-  }, {
-    title: 'ep_code',
->>>>>>> modified declMsgPanel
     dataIndex: 'ep_code',
     width: 100,
   }, {
@@ -122,12 +116,7 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '回执报文',
     dataIndex: 'return_file',
-<<<<<<< HEAD
     render: o => <a onClick={() => this.showDeclMsgModal('return', o)}><TrimSpan text={o} maxLen={70} tailer={20} /></a>,
-=======
-    width: 160,
-    render: o => <a onClick={() => this.showDeclMsgModal('return', o)}>{o}</a>,
->>>>>>> modified declMsgPanel
   }, {
     title: '接收时间',
     dataIndex: 'return_date',
