@@ -52,6 +52,7 @@ function fetchData({ state, dispatch }) {
     solist: state.cwmShippingOrder.solist,
     loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
+    userMembers: state.account.userMembers,
   }),
   { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease }
 )
@@ -169,6 +170,7 @@ export default class ShippingOrderList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => o && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

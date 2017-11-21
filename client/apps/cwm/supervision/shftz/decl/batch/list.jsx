@@ -32,6 +32,7 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList, batchDelgCancel }
 )
@@ -177,13 +178,14 @@ export default class BatchDeclList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => o && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '创建时间',
     width: 120,
     dataIndex: 'created_time',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
+    render: (o, record) => {
+      if (record.created_date) {
+        return `${moment(record.created_date).format('MM.DD HH:mm')}`;
       }
     },
   }, {
