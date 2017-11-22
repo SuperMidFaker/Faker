@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
+import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Select, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
+import RowUpdater from 'client/components/rowUpdater';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -68,6 +69,7 @@ export default class SHFTZEntryDetail extends Component {
   }
   state = {
     reg: {},
+    selectedRowKeys: [],
     sendable: false,
     queryable: false,
     fullscreen: true,
@@ -412,6 +414,7 @@ export default class SHFTZEntryDetail extends Component {
     title: '行号',
     dataIndex: 'asn_seq_no',
     width: 70,
+    fixed: 'left',
   }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -514,6 +517,12 @@ export default class SHFTZEntryDetail extends Component {
       const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  }, {
+    title: '操作',
+    dataIndex: 'OPS_COL',
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => record.qty > 1 && <RowUpdater onHit={this.handleQtySplit} label="数量拆分" row={record} />,
   }]
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
@@ -540,6 +549,8 @@ export default class SHFTZEntryDetail extends Component {
       total_amount: 0,
       total_net_wt: 0,
     });
+    const qtySplitPopover = (<span><InputNumber min={2} max={10} defaultValue={2} /><Button>确定</Button></span>);
+    const movePopover = (<span><Select style={{ width: 160 }} /><Button>确定</Button></span>);
     return (
       <div>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
@@ -571,7 +582,7 @@ export default class SHFTZEntryDetail extends Component {
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
             {this.state.queryable && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
             {this.state.nonCargono && <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
-            {this.state.sendable && <Button icon="printer" onClick={this.handleEntryRegsPrint}>进区预录入单</Button>}
+            {this.state.sendable && <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
             {entryEditable &&
             <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
           </PageHeader.Actions>
@@ -618,6 +629,15 @@ export default class SHFTZEntryDetail extends Component {
                 dataSource={reg.details} rowKey="id" loading={this.state.loading}
               >
                 <DataPane.Toolbar>
+                  <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+                    <Button onClick={this.handleItemSplit}>按项拆分</Button>
+                    <Popover placement="bottom" title="份数" content={qtySplitPopover} trigger="click">
+                      <Button onClick={this.handleAverageQtySplit}>按数量平均拆分</Button> {/* TODO:需排除选择项的数量等于1 */}
+                    </Popover>
+                    <Popover placement="bottom" content={movePopover} trigger="click"> {/* TODO:已拆分后显示此按钮 */}
+                      <Button onClick={this.handleMoveInto}>移到至...</Button>
+                    </Popover>
+                  </DataPane.BulkActions>
                   <DataPane.Extra>
                     <Summary>
                       <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>

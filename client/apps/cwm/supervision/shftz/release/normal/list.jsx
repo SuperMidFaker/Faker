@@ -178,7 +178,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 150,
     fixed: 'right',
     render: (o, record) => {
       switch (record.status) {
@@ -189,7 +189,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 2:
         case 3:
         case 4:
-          return <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />;
+          return (<span>
+            <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />
+          </span>);
         case 5:
         case 6:
         case 7:
