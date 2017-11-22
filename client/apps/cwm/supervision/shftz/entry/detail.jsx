@@ -549,8 +549,8 @@ export default class SHFTZEntryDetail extends Component {
     const { reg, alertInfo } = this.state;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
-    const sendText = sent ? '重新发送' : '发送备案';
+    // const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
+    // const sendText = sent ? '重新发送' : '发送备案';
     const inbStatus = entryAsn.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -599,16 +599,20 @@ export default class SHFTZEntryDetail extends Component {
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed &&
-              <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
+            {/*
+              entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed &&
+              <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>
+            */}
             {this.state.queryable &&
               <Button icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
             {this.state.nonCargono &&
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
-            {this.state.sendable &&
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
-            {entryEditable &&
-              <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
+            {/*
+              entryEditable &&
+              <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>
+            */}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
@@ -641,9 +645,9 @@ export default class SHFTZEntryDetail extends Component {
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step title="待备案" />
-                  <Step title="已发送" />
-                  <Step title="备案完成" />
+                  <Step title="待进区" />
+                  <Step title="已备案" />
+                  <Step title="已进区" />
                 </Steps>
               </div>
             </Card>

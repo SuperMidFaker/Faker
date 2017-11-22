@@ -103,9 +103,9 @@ export default class SHFTZEntryList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
+        return (<Badge status="default" text="待进区" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="终端处理" />);
+        return (<Badge status="processing" text="已备案" />);
       } else if (o === 2) {
         return (<Badge status="success" text="已进区" />);
       }
@@ -171,8 +171,7 @@ export default class SHFTZEntryList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
-      : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -300,23 +299,23 @@ export default class SHFTZEntryList extends React.Component {
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
-                <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="processing">终端处理</RadioButton>
+                <RadioButton value="pending">待进区</RadioButton>
+                <RadioButton value="processing">已备案</RadioButton>
                 <RadioButton value="completed">已进区</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable
+              defaultExpandAllRows
               toolbarActions={toolbarActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
-              indentSize={8}
+              indentSize={0}
               rowKey="id"
-              defaultExpandedRowKeys={['1']}
               loading={this.props.loading}
             />
             <ReceivingDockPanel />
