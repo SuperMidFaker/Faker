@@ -40,7 +40,8 @@ export default class TodoAcceptPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.filter.tabKey === 'todoAccept' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
-      this.props.filter.type !== nextProps.filter.type || this.props.filter.tabKey !== nextProps.filter.tabKey)) {
+      this.props.filter.type !== nextProps.filter.type || this.props.filter.tabKey !== nextProps.filter.tabKey ||
+      nextProps.filter.srTenantId !== this.props.filter.srTenantId || nextProps.filter.srPartnerId !== this.props.filter.srPartnerId)) {
       this.handleTableLoad(nextProps);
     }
   }
@@ -49,6 +50,8 @@ export default class TodoAcceptPane extends Component {
       tenantId: this.props.tenantId,
       filters: {
         viewStatus: props.filter.viewStatus,
+        sr_tenant_id: props.filter.srTenantId,
+        sr_partner_id: props.filter.srPartnerId,
         loginId: props.loginId,
         status: this.state.type,
       },
@@ -97,6 +100,8 @@ export default class TodoAcceptPane extends Component {
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
           filters: {
             viewStatus: this.props.filter.viewStatus,
+            sr_tenant_id: this.props.filter.srTenantId,
+            sr_partner_id: this.props.filter.srPartnerId,
             loginId: this.props.loginId,
             status: this.state.type,
           },

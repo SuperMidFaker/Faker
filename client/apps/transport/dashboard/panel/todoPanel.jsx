@@ -7,6 +7,7 @@ import TodoAcceptPane from './pane/todoAcceptPane';
 import TodoTrackingPane from './pane/todoTrackingPane';
 import TodoPodPane from './pane/todoPodPane';
 import MyShipmentsSelect from '../../common/myShipmentsSelect';
+import CustomerSelect from '../../common/customerSelect';
 import { countTotal } from 'common/reducers/shipment';
 import { formatMsg } from '../message.i18n';
 
@@ -33,6 +34,8 @@ export default class TodoPanel extends Component {
     this.state = {
       viewStatus: 'all',
       tabKey: 'todoAccept',
+      srTenantId: null,
+      srPartnerId: null,
     };
   }
   componentDidMount() {
@@ -46,6 +49,11 @@ export default class TodoPanel extends Component {
   }
   handleTabChange = (tabKey) => {
     this.setState({ tabKey });
+  }
+  handleCustomerChange = (srPartnerId, srTenantId) => {
+    this.setState({ srTenantId, srPartnerId: srPartnerId !== -1 ? srPartnerId : null }, () => {
+      this.handleCount();
+    });
   }
   handleCount = () => {
     const { tenantId, loginId } = this.props;
@@ -64,14 +72,25 @@ export default class TodoPanel extends Component {
       { name: 'loginId', value: loginId },
       { name: 'type', value: 'todoAll' },
     ];
+    if (this.state.srTenantId !== null) {
+      acceptFilters.sr_tenant_id = this.state.srTenantId;
+      trackingFilters.push({ name: 'sr_tenant_id', value: this.state.srTenantId });
+      podFilters.push({ name: 'sr_tenant_id', value: this.state.srTenantId });
+    }
+    if (this.state.srPartnerId !== null) {
+      acceptFilters.sr_partner_id = this.state.srPartnerId;
+      trackingFilters.push({ name: 'sr_partner_id', value: this.state.srPartnerId });
+      podFilters.push({ name: 'sr_partner_id', value: this.state.srPartnerId });
+    }
     this.props.countTotal({ tenantId, acceptFilters, trackingFilters, podFilters });
   }
   render() {
     const { todos } = this.props;
-    const { viewStatus, tabKey } = this.state;
-    const filter = { viewStatus, tabKey };
+    const { viewStatus, tabKey, srTenantId, srPartnerId } = this.state;
+    const filter = { viewStatus, tabKey, srTenantId, srPartnerId };
     const extra = (
       <div>
+        <CustomerSelect onChange={this.handleCustomerChange} style={{ marginRight: 8 }} />
         <MyShipmentsSelect onChange={this.handleShipmentViewSelect} onInitialize={this.handleShipmentViewSelect} />
       </div>);
     return (
