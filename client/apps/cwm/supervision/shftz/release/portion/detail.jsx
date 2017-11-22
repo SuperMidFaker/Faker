@@ -484,7 +484,7 @@ export default class SHFTZRelDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="分拨出库单号">
                   <EditableCell value={reg.ftz_rel_no} editable={relEditable}
@@ -528,7 +528,7 @@ export default class SHFTZRelDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="regDetails">
                 <TabPane tab="备案明细" key="regDetails">
                   <DataPane fullscreen={this.state.fullscreen}
@@ -537,8 +537,8 @@ export default class SHFTZRelDetail extends Component {
                   >
                     <DataPane.Toolbar>
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
-                        <RadioButton value="splitted">归并前明细</RadioButton>
-                        <RadioButton value="merged">归并后明细</RadioButton>
+                        <RadioButton value="splitted">拆分明细</RadioButton>
+                        <RadioButton value="merged">合并明细</RadioButton>
                       </RadioGroup>
                       <DataPane.Extra>
                         <Summary>

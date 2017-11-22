@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, Select, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
+import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, Select, Steps, Button, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
-import RowUpdater from 'client/components/rowUpdater';
+// import RowUpdater from 'client/components/rowUpdater';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -25,6 +25,7 @@ const { Description } = DescriptionList;
 const Step = Steps.Step;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Option = Select.Option;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -70,7 +71,9 @@ export default class SHFTZEntryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    reg: {},
+    reg: {
+      details: [],
+    },
     selectedRowKeys: [],
     sendable: false,
     queryable: false,
@@ -394,6 +397,7 @@ export default class SHFTZEntryDetail extends Component {
       tabKey,
       reg: this.props.entryRegs[tabKey],
     });
+    this.handleDeselectRows();
   }
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateEntryReg(preRegNo, field, value).then((result) => {
@@ -537,12 +541,14 @@ export default class SHFTZEntryDetail extends Component {
       const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  /*
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
     render: (o, record) => record.qty > 1 && <RowUpdater onHit={this.handleQtySplit} label="数量拆分" row={record} />,
+  */
   }]
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
@@ -569,8 +575,12 @@ export default class SHFTZEntryDetail extends Component {
       total_amount: 0,
       total_net_wt: 0,
     });
-    const qtySplitPopover = (<span><InputNumber min={2} max={10} defaultValue={2} /><Button>确定</Button></span>);
-    const movePopover = (<span><Select style={{ width: 160 }} /><Button>确定</Button></span>);
+    const qtySplitPopover = (<span><InputNumber min={2} max={5} defaultValue={2} /><Button type="primary" style={{ marginLeft: 8 }}>确定</Button></span>);
+    const movePopover = (<span>
+      <Select style={{ width: 240 }} value={reg.pre_entry_seq_no}>
+        {entryRegs.map(opt => <Option key={opt.pre_entry_seq_no}>{opt.ftz_ent_no || opt.pre_entry_seq_no}</Option>)}
+      </Select>
+    </span>);
     return (
       <div>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
@@ -591,11 +601,10 @@ export default class SHFTZEntryDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
+            {entryAsn.inbound_no &&
               <Button icon="link" onClick={this.handleInboundPage}>
-                <Badge status={inbStatus.badge} text={inbStatus.text} />
+                关联入库操作 <Badge status={inbStatus.badge} text={inbStatus.text} />
               </Button>
-            </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
@@ -618,7 +627,7 @@ export default class SHFTZEntryDetail extends Component {
         <Content className="page-content">
           {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={3}>
                 <Description term="进区凭单号">
                   <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
@@ -631,17 +640,9 @@ export default class SHFTZEntryDetail extends Component {
                   />
                 </Description>
                 <Description term="经营单位">{reg.owner_name}</Description>
-                <Description term="进口日期">
-                  <EditableCell type="date" value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="进库日期">
-                  <EditableCell type="date" value={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD')} editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="备案时间">{reg.reg_date && moment(reg.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="报关日期">{reg.cus_decl_date && moment(reg.cus_decl_date).format('YYYY.MM.DD')}</Description>
+                <Description term="备案更新时间">{reg.reg_date && moment(reg.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="进区更新时间">{reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
@@ -651,7 +652,7 @@ export default class SHFTZEntryDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <DataPane header="备案明细" fullscreen={this.state.fullscreen}
                 columns={this.columns} rowSelection={rowSelection} indentSize={0}
                 dataSource={reg.details} rowKey="id" loading={this.state.loading}
@@ -662,13 +663,16 @@ export default class SHFTZEntryDetail extends Component {
                     <RadioButton value="merged">归并后明细</RadioButton>
                   </RadioGroup>
                   <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
-                    <Button onClick={this.handleItemSplit}>按项拆分</Button>
+                    {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending && reg.details.length > 1 &&
+                    <Button onClick={this.handleItemSplit} disabled={this.state.selectedRowKeys.length === reg.details.length}>按项拆分</Button>}
+                    {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
                     <Popover placement="bottom" title="份数" content={qtySplitPopover} trigger="click">
                       <Button onClick={this.handleAverageQtySplit}>按数量平均拆分</Button> {/* TODO:需排除选择项的数量等于1 */}
-                    </Popover>
+                    </Popover>}
+                    {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending && entryRegs.length > 1 &&
                     <Popover placement="bottom" content={movePopover} trigger="click"> {/* TODO:已拆分后显示此按钮 */}
                       <Button onClick={this.handleMoveInto}>移到至...</Button>
-                    </Popover>
+                    </Popover>}
                   </DataPane.BulkActions>
                   <DataPane.Extra>
                     <Summary>

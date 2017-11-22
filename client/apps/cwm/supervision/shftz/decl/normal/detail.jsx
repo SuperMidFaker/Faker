@@ -279,7 +279,7 @@ export default class NormalDeclDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={6}>
                 <Description term="提货单位">{normalDecl.owner_name}</Description>
                 <Description term="报关代理">{normalDecl.customs_name}</Description>
@@ -294,7 +294,7 @@ export default class NormalDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />

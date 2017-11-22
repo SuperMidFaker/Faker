@@ -106,7 +106,7 @@ export default class PodPanel extends React.Component {
           showIcon
         />
         }
-        <Card bodyStyle={{ padding: 16 }} noHovering>
+        <Card bodyStyle={{ padding: 16 }} hoverable={false}>
           {(disp.pod_status === '' || disp.pod_status === SHIPMENT_POD_STATUS.unsubmit || rejectedByClient) &&
           <SubmitPODForm rejected={rejectedByClient} />
           }

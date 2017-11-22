@@ -173,7 +173,7 @@ export default class StockTransactionsList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
+          <Card hoverable={false} bodyStyle={{ paddingBottom: 8 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}

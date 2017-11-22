@@ -336,7 +336,7 @@ export default class TrackingDetail extends React.Component {
         <Row>
           <Col lg={15} sm={24}>
             <Content className="main-content">
-              <Card title="运输进度" style={{ width: '100%' }} noHovering>
+              <Card title="运输进度" style={{ width: '100%' }} hoverable={false}>
                 {this.renderSteps()}
                 {deliverDelayException &&
                   <Alert
@@ -348,7 +348,7 @@ export default class TrackingDetail extends React.Component {
               </Card>
               <Row>
                 <Col lg={12} sm={24}>
-                  <Card bodyStyle={{ padding: 0 }} noHovering>
+                  <Card bodyStyle={{ padding: 0 }} hoverable={false}>
                     <Collapse defaultActiveKey={['1', '2', '3']}>
                       <Panel header="发货方" key="1">
                         <p><strong>{shipmt.consigner_name || ''}</strong></p>
@@ -369,7 +369,7 @@ export default class TrackingDetail extends React.Component {
                   </Card>
                 </Col>
                 <Col lg={12} sm={24}>
-                  <Card id="tracing-timeline" title="追踪详情" noHovering>
+                  <Card id="tracing-timeline" title="追踪详情" hoverable={false}>
                     <TrackingTimeline points={tracking.points} />
                   </Card>
                 </Col>

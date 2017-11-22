@@ -289,7 +289,7 @@ export default class SHFTZTransferInDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="进区凭单号">
                   <EditableCell value={entryRegs[0] && entryRegs[0].ftz_ent_no}
@@ -326,7 +326,7 @@ export default class SHFTZTransferInDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {entryRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({

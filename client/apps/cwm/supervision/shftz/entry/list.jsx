@@ -135,21 +135,30 @@ export default class SHFTZEntryList extends React.Component {
     width: 160,
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '进口日期',
+    title: '报关日期',
     width: 120,
-    dataIndex: 'ie_date',
+    dataIndex: 'cus_decl_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
-    title: '进库日期',
+    title: '备案更新时间',
+    width: 120,
+    dataIndex: 'reg_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '进区更新时间',
     width: 120,
     dataIndex: 'ftz_ent_date',
     render: (o) => {
       if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
+        return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {

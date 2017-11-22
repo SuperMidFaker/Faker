@@ -382,7 +382,7 @@ export default class CiqDeclGoodsPane extends React.Component {
       <div className="pane">
         <div className="pane-content">
           <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} style={{ marginBottom: 0 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} style={{ marginBottom: 0 }} hoverable={false}>
               <Row>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'HS编码'} required >

@@ -298,14 +298,14 @@ export default class TransferSelfModal extends Component {
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card title="入库单" extra={extraForm} bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="入库单" extra={extraForm} bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.entryRegColumns} dataSource={this.state.transRegs} rowKey="id"
               scroll={{ x: this.entryRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>
         </Card>
-        <Card title="入库单明细" extra={detailStatForm} bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="入库单明细" extra={detailStatForm} bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
               scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

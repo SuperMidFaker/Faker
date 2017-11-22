@@ -82,7 +82,7 @@ export default class WaveDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} noHovering>
+          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={6}>
                 <InfoItem label="波次号" field={this.props.params.waveNo} />
@@ -105,7 +105,7 @@ export default class WaveDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="orderDetails">
               <TabPane tab="发货明细" key="orderDetails">
                 <OrderDetailsPane waveNo={this.props.params.waveNo} fullscreen={this.state.fullscreen} />

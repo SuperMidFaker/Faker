@@ -315,7 +315,7 @@ export default class MovementModal extends Component {
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card bodyStyle={{ padding: 16 }} noHovering>
+        <Card bodyStyle={{ padding: 16 }} hoverable={false}>
           <Form layout="inline">
             <FormItem label="货主">
               <Select onChange={this.handleOwnerChange} style={{ width: 300 }} placeholder="请选择货主">
@@ -332,14 +332,14 @@ export default class MovementModal extends Component {
             </FormItem>
           </Form>
         </Card>
-        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.stocksColumns} dataSource={stocks} rowKey="id"
               scroll={{ x: this.stocksColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>
         </Card>
-        <Card title="库存移动明细" bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="库存移动明细" bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={this.movementColumns} dataSource={movements.map((movement, index) => ({ ...movement, index }))} rowKey="index"
               scroll={{ x: this.movementColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

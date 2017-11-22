@@ -70,7 +70,7 @@ export default class SHFTZStockTask extends Component {
           </PageHeader.Title>
         </PageHeader>
         <Content className="page-content" key="main">
-          <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
+          <Card hoverable={false} bodyStyle={{ paddingBottom: 8 }}>
             <Row gutter={16} className="info-group-underline">
               <Col sm={12} lg={8}>
                 <InfoItem label="货主单位" field={`${task.owner_cus_code} | ${task.owner_name}`} />
@@ -80,7 +80,7 @@ export default class SHFTZStockTask extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard noHovering bodyStyle={{ padding: 0 }}>
+          <MagicCard hoverable={false} bodyStyle={{ padding: 0 }}>
             <Tabs defaultActiveKey="comparison">
               <TabPane tab="对比视图" key="comparison">
                 <ComaprisonPane />

@@ -382,7 +382,7 @@ export default class BatchDeclDetail extends Component {
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="货主">{batchDecl.owner_name}</Description>
                 <Description term="收货单位">{batchDecl.receiver_name}</Description>
@@ -398,7 +398,7 @@ export default class BatchDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />

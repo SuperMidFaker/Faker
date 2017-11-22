@@ -128,7 +128,7 @@ export default class CustomsDeclPane extends React.Component {
     return (
       <div className="pane-content tab-pane table-list">
         <Spin spinning={customsSpinning}>
-          <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }} noHovering>
+          <Card title={manifestProgress} extra={this.renderManifestAction()} bodyStyle={{ padding: 16 }} hoverable={false}>
             <Row gutter={16} className="info-group-underline">
               <Col span="6">
                 {/* <InfoItem type="dropdown" label="操作人员" addonBefore={<Avatar size="small">{bill.preparer_name}</Avatar>} */}

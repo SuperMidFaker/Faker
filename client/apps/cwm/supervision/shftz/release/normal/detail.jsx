@@ -498,7 +498,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="出区提货单号">{reg.ftz_rel_no}</Description>
                 <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
@@ -562,8 +562,8 @@ export default class SHFTZNormalRelRegDetail extends Component {
                   >
                     <DataPane.Toolbar>
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
-                        <RadioButton value="splitted">归并前明细</RadioButton>
-                        <RadioButton value="merged">归并后明细</RadioButton>
+                        <RadioButton value="splitted">拆分明细</RadioButton>
+                        <RadioButton value="merged">合并明细</RadioButton>
                       </RadioGroup>
                       <DataPane.Extra>
                         <Summary>

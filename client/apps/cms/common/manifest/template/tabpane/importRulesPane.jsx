@@ -62,7 +62,7 @@ export default class ImportRulesPane extends Component {
           </FormItem>
         </div>
         <div className="pane-content">
-          <Card noHovering>
+          <Card hoverable={false}>
             <Row gutter={20}>
               <Col sm={24} lg={12}>
                 <FormItem label={'商品名称'} {...formItemLayout} >

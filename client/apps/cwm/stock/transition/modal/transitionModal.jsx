@@ -59,20 +59,20 @@ export default class TransitionModal extends React.Component {
           <Form>
             <Row gutter={24}>
               <Col span={12}>
-                <Card title="属性调整" noHovering>
+                <Card title="属性调整" hoverable={false}>
                   <TransitPane form={form} />
                 </Card>
               </Col>
               <Col span={6}>
-                <Card title="数量调整" noHovering>
+                <Card title="数量调整" hoverable={false}>
                   <AdjustPane />
                 </Card>
-                <Card title="状态调整" noHovering>
+                <Card title="状态调整" hoverable={false}>
                   <FreezePane />
                 </Card>
               </Col>
               <Col span={6}>
-                <Card title="库存事务记录" noHovering>
+                <Card title="库存事务记录" hoverable={false}>
                   <LogsPane traceId={this.props.detail.trace_id} />
                 </Card>
               </Col>

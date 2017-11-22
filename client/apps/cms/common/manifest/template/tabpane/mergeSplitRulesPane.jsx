@@ -52,7 +52,7 @@ export default class MergeSplitRulesPane extends React.Component {
           </FormItem>
         </div>
         <div className="pane-content">
-          <Card bodyStyle={{ padding: 0 }} noHovering>
+          <Card bodyStyle={{ padding: 0 }} hoverable={false}>
             <MergeSplitForm form={form} formData={formData} />
           </Card>
         </div>
