@@ -537,8 +537,8 @@ export default class SHFTZRelDetail extends Component {
                   >
                     <DataPane.Toolbar>
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
-                        <RadioButton value="splitted">拆分视图</RadioButton>
-                        <RadioButton value="merged">合并视图</RadioButton>
+                        <RadioButton value="splitted">归并前明细</RadioButton>
+                        <RadioButton value="merged">归并后明细</RadioButton>
                       </RadioGroup>
                       <DataPane.Extra>
                         <Summary>

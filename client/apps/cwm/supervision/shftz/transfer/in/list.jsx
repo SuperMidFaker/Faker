@@ -75,7 +75,7 @@ export default class SHFTZTransferInList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '海关进库单号',
+    title: '进区凭单号',
     width: 200,
     dataIndex: 'ftz_ent_no',
     fixed: 'left',

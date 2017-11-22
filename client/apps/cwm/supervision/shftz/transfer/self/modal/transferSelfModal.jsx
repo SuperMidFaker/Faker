@@ -77,7 +77,7 @@ export default class TransferSelfModal extends Component {
     dataIndex: 'asn_no',
     width: 180,
   }, {
-    title: '海关进库单号',
+    title: '进区凭单号',
     width: 200,
     dataIndex: 'ftz_ent_no',
   }, {
@@ -258,7 +258,7 @@ export default class TransferSelfModal extends Component {
               </Option>))}
           </Select>
         </FormItem>
-        <FormItem label="海关进库单号">
+        <FormItem label="进区凭单号">
           <Input value={entryRegNo} onChange={this.handleEntryNoChange} />
         </FormItem>
         <FormItem label="入库日期">

@@ -84,7 +84,7 @@ export default class SHFTZEntryList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '海关进库单号/备案编号',
+    title: '进区凭单号/备案编号',
     width: 200,
     dataIndex: 'ftz_ent_no',
     fixed: 'left',
@@ -107,7 +107,7 @@ export default class SHFTZEntryList extends React.Component {
       } else if (o === 1) {
         return (<Badge status="processing" text="终端处理" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+        return (<Badge status="success" text="已进区" />);
       }
     },
   }, {
@@ -302,7 +302,7 @@ export default class SHFTZEntryList extends React.Component {
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">备案完成</RadioButton>
+                <RadioButton value="completed">已进区</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>

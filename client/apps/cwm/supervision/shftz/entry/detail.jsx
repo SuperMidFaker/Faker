@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Select, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
+import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, Select, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -23,6 +23,8 @@ const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 const Step = Steps.Step;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -76,6 +78,8 @@ export default class SHFTZEntryDetail extends Component {
     alertInfo: '',
     tabKey: '',
     nonCargono: false,
+    filingDetails: [],
+    merged: [],
   }
   componentDidMount() {
     let script;
@@ -407,8 +411,24 @@ export default class SHFTZEntryDetail extends Component {
   handleInboundPage = () => {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
+  }
+  handleViewChange = (e) => {
+    const { merged, reg } = this.state;
+    let filingDetails;
+    if (e.target.value === 'merged') {
+      filingDetails = merged;
+    } else {
+      filingDetails = reg.details;
+    }
+    this.setState({
+      view: e.target.value,
+      filingDetails,
+    });
   }
   columns = [{
     title: '行号',
@@ -579,12 +599,16 @@ export default class SHFTZEntryDetail extends Component {
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
-            {this.state.queryable && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
-            {this.state.nonCargono && <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
-            {this.state.sendable && <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed &&
+              <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
+            {this.state.queryable &&
+              <Button icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
+            {this.state.nonCargono &&
+              <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
+            {this.state.sendable &&
+              <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
             {entryEditable &&
-            <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
+              <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
@@ -592,7 +616,7 @@ export default class SHFTZEntryDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
               <DescriptionList col={3}>
-                <Description term="海关进库单号">
+                <Description term="进区凭单号">
                   <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
                   />
@@ -629,6 +653,10 @@ export default class SHFTZEntryDetail extends Component {
                 dataSource={reg.details} rowKey="id" loading={this.state.loading}
               >
                 <DataPane.Toolbar>
+                  <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
+                    <RadioButton value="splitted">归并前明细</RadioButton>
+                    <RadioButton value="merged">归并后明细</RadioButton>
+                  </RadioGroup>
                   <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
                     <Button onClick={this.handleItemSplit}>按项拆分</Button>
                     <Popover placement="bottom" title="份数" content={qtySplitPopover} trigger="click">
