@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Form, Table, Row, Col } from 'antd';
 import EditableCell from 'client/components/EditableCell';
-import { hideAdaptorDetailModal, updateColumnField, updateStateLine } from 'common/reducers/saasLineFileAdaptor';
+import { hideAdaptorDetailModal, updateColumnField, updateStartLine } from 'common/reducers/saasLineFileAdaptor';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -14,7 +14,7 @@ const formItemLayout = {
 @connect(state => ({
   adaptor: state.saasLineFileAdaptor.adaptor,
   visible: state.saasLineFileAdaptor.adaptorDetailModal.visible,
-}), { hideAdaptorDetailModal, updateColumnField, updateStateLine })
+}), { hideAdaptorDetailModal, updateColumnField, updateStartLine })
 
 export default class AdaptorDetailModal extends Component {
   state = {
