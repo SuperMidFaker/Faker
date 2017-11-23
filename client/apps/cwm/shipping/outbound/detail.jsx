@@ -279,7 +279,7 @@ export default class OutboundDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={outboundHead.owner_name} />
@@ -326,7 +326,7 @@ export default class OutboundDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="订单明细" key="orderDetails">
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} fullscreen={this.state.fullscreen} />

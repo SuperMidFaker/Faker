@@ -311,7 +311,7 @@ export default class StockInventoryList extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+          <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
             <QueryForm onSearch={this.handleSearch} />
           </Card>
           <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} handleDeselectRows={this.handleDeselectRows}

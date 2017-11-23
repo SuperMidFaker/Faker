@@ -82,7 +82,7 @@ export default class MainInfoCard extends React.Component {
       }
     }
     return (
-      <Card bodyStyle={{ padding: 16 }} noHovering>
+      <Card bodyStyle={{ padding: 16 }} hoverable={false}>
         <Row gutter={16} className="info-group-underline">
           <Col span="8">
             <InfoItem label="运输方式" addonBefore={transMode && <MdIcon type={transMode.icon} />}

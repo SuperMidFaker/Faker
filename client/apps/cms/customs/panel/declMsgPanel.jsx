@@ -5,6 +5,7 @@ import { Tabs, Input, Modal } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
+import TrimSpan from 'client/components/trimSpan';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsDeclare';
 
@@ -93,30 +94,34 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '申报报文',
     dataIndex: 'sent_file',
-    render: o => <a onClick={() => this.showDeclMsgModal(o)}>{o}</a>,
+    render: o => <a onClick={() => this.showDeclMsgModal('send', o)}><TrimSpan text={o} maxLen={50} tailer={20} /></a>,
+  }, {
+    title: '通道',
+    dataIndex: 'ep_code',
+    width: 100,
   }, {
     title: '发送人员',
     dataIndex: 'sender_name',
-    width: 160,
+    width: 100,
   }, {
     title: '发送时间',
     dataIndex: 'sent_date',
-    width: 160,
-    render: o => moment(o).format('YYYY/MM/DD HH:mm'),
+    width: 140,
+    render: o => moment(o).format('YYYY.MM.DD HH:mm'),
   }];
   recvColumns = [{
     title: '统一编号',
     dataIndex: 'pre_entry_seq_no',
-    width: 160,
+    width: 170,
   }, {
     title: '回执报文',
     dataIndex: 'return_file',
-    width: 160,
+    render: o => <a onClick={() => this.showDeclMsgModal('return', o)}><TrimSpan text={o} maxLen={70} tailer={20} /></a>,
   }, {
     title: '接收时间',
     dataIndex: 'return_date',
-    width: 160,
-    render: o => moment(o).format('YYYY/MM/DD HH:mm'),
+    width: 140,
+    render: o => moment(o).format('YYYY.MM.DD HH:mm'),
   }];
   hideDock = () => {
     this.props.hideDeclMsgDock();
@@ -152,10 +157,16 @@ export default class DeclMsgPanel extends React.Component {
   hideDeclMsgModal = () => {
     this.props.hideDeclMsgModal();
   }
-  showDeclMsgModal = (filename) => {
+  showDeclMsgModal = (type, filename) => {
     const me = this;
+    let url = '';
+    if (type === 'send') {
+      url = `${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`;
+    } else {
+      url = `${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`;
+    }
     superAgent
-    .get(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`)
+    .get(url)
     .withCredentials()
     .type('text/xml')
     .end((err, req) => {
@@ -175,7 +186,7 @@ export default class DeclMsgPanel extends React.Component {
       <Tabs defaultActiveKey="sent">
         <TabPane tab="发送记录" key="sent">
           <div className="toolbar">
-            <Search style={{ width: 160 }} value={this.state.sendText} onChange={this.searchSend} onSearch={this.handleSearchSend} />
+            <Search style={{ width: 200 }} value={this.state.sendText} onChange={this.searchSend} onSearch={this.handleSearchSend} />
           </div>
           <Table size="middle" columns={this.sentColumns} dataSource={this.sendDataSource} scrollOffset="400" rowkey="sent_file"
             scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
@@ -183,7 +194,7 @@ export default class DeclMsgPanel extends React.Component {
         </TabPane>
         <TabPane tab="接收记录" key="recv">
           <div className="toolbar">
-            <Search style={{ width: 160 }} value={this.state.recvText} onChange={this.searchRecv} onSearch={this.handleSearchRecv} />
+            <Search style={{ width: 200 }} value={this.state.recvText} onChange={this.searchRecv} onSearch={this.handleSearchRecv} />
           </div>
           <Table size="middle" columns={this.recvColumns} dataSource={this.recvDataSource} scrollOffset="400" rowkey="return_file"
             scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
@@ -195,7 +206,7 @@ export default class DeclMsgPanel extends React.Component {
   render() {
     const { visible, modalVisible } = this.props;
     return (
-      <DockPanel title="报文收发记录" visible={visible} onClose={this.hideDock}>
+      <DockPanel title="报文收发记录" size="large" visible={visible} onClose={this.hideDock}>
         {visible && this.renderTabs()}
         <Modal width="800" maskClosable={false} visible={modalVisible} title="declMsg" onCancel={this.hideDeclMsgModal} onOk={this.hideDeclMsgModal}>
           <pre>{this.state.text}</pre>

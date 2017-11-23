@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   ftzEntNo: {
     id: 'cwm.supervision.shftz.stock.ent.no',
-    defaultMessage: '海关进库单号',
+    defaultMessage: '进区凭单号',
   },
   ftzRelNo: {
     id: 'cwm.supervision.shftz.stock.rel.no',

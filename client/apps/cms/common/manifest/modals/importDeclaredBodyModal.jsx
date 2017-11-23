@@ -300,7 +300,7 @@ export default class ImportDeclaredBodyModal extends Component {
         footer={null} visible={this.props.visible}
       >
         {/*
-        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact" layout="inline">
             <Row gutter={16}>
               <Col span={5}>
@@ -325,7 +325,7 @@ export default class ImportDeclaredBodyModal extends Component {
         <Form layout="inline">
           <Row gutter={16}>
             <Col span={12}>
-              <Card title="来源报关单" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="来源报关单" bodyStyle={{ padding: 0 }} hoverable={false}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <FormItem>
@@ -350,7 +350,7 @@ export default class ImportDeclaredBodyModal extends Component {
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} hoverable={false}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search placeholder="报关单号" style={{ width: 200 }} onChange={this.handleAddedEntryNoChange}

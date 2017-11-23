@@ -124,29 +124,27 @@ export default class SendDeclsModal extends React.Component {
       declList = CMS_EXPORT_DECL_TYPE;
     }
     const columns = [{
-      title: this.msg('preEntryNo'),
+      title: this.msg('统一编号'),
       width: 150,
       dataIndex: 'pre_entry_seq_no',
     }, {
       title: this.msg('declType'),
-      width: 150,
       render: (o, record, index) =>
         (<ColumnSelect field="declType"
           onChange={this.handleEditChange} options={declList} record={record} index={index}
         />),
     }, {
       title: 'EDI',
-      width: 150,
       render: (o, record, index) =>
         (<ColumnSelect field="easipass"
           onChange={this.handleEditChange} options={easipassOpt} record={record} index={index}
         />),
     }];
     return (
-      <Modal maskClosable={false} title={this.msg('sendAllPackets')} visible={visible}
+      <Modal maskClosable={false} title={this.msg('sendAllPackets')} visible={visible} width={800}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Table rowKey="id" columns={columns} dataSource={this.state.bodies} />
+        <Table size="middle" rowKey="id" columns={columns} dataSource={this.state.bodies} />
       </Modal>
     );
   }

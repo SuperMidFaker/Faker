@@ -70,7 +70,7 @@ export default class ManualDetail extends Component {
           </PageHeader.Title>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} noHovering>
+          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
             <Row gutter={16} className="info-group-underline">
               <Col sm={12} lg={8}>
                 <InfoItem label="企业内部编号" field={manualHead.cop_manaul_no} />
@@ -92,7 +92,7 @@ export default class ManualDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <Card bodyStyle={{ padding: 0 }} noHovering>
+          <Card bodyStyle={{ padding: 0 }} hoverable={false}>
             <Tabs defaultActiveKey="imgoods">
               <TabPane tab="料件表" key="imgoods">
                 <ImpGoodsPane manualNo={this.props.params.id} />

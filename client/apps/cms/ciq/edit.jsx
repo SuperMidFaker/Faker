@@ -10,7 +10,7 @@ import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal }
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import CiqDeclHeadPane from './tabpane/ciqDeclHeadPane';
-import CiqDeclBodyPane from './tabpane/ciqDeclBodyPane';
+import CiqDeclGoodsPane from './tabpane/ciqDeclGoodsPane';
 // import ContainersPane from './tabpane/containersPane';
 // import AttachedDocsPane from './tabpane/attachedDocsPane';
 // import AttachedCertsPane from './tabpane/attachedCertsPane';
@@ -117,7 +117,7 @@ export default class CiqDeclEdit extends React.Component {
       </TabPane>);
     tabs.push(
       <TabPane tab="商品信息" key="body">
-        <CiqDeclBodyPane ioType={this.props.params.ioType} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
+        <CiqDeclGoodsPane ioType={this.props.params.ioType} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
       </TabPane>);
     return (
       <Layout>
@@ -145,7 +145,7 @@ export default class CiqDeclEdit extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large">
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="header">
               {tabs}
             </Tabs>

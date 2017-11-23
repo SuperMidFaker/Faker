@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Tag, Tooltip, message, notification } from 'antd';
+import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, Select, Steps, Button, Card, Tag, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
+// import RowUpdater from 'client/components/rowUpdater';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
@@ -22,6 +23,9 @@ const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
 const Step = Steps.Step;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
+const Option = Select.Option;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -67,13 +71,18 @@ export default class SHFTZEntryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    reg: {},
+    reg: {
+      details: [],
+    },
+    selectedRowKeys: [],
     sendable: false,
     queryable: false,
     fullscreen: true,
     alertInfo: '',
     tabKey: '',
     nonCargono: false,
+    filingDetails: [],
+    merged: [],
   }
   componentDidMount() {
     let script;
@@ -388,6 +397,7 @@ export default class SHFTZEntryDetail extends Component {
       tabKey,
       reg: this.props.entryRegs[tabKey],
     });
+    this.handleDeselectRows();
   }
   handleInfoSave = (preRegNo, field, value) => {
     this.props.updateEntryReg(preRegNo, field, value).then((result) => {
@@ -405,13 +415,30 @@ export default class SHFTZEntryDetail extends Component {
   handleInboundPage = () => {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
   }
+  handleDeselectRows = () => {
+    this.setState({ selectedRowKeys: [] });
+  }
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
+  }
+  handleViewChange = (e) => {
+    const { merged, reg } = this.state;
+    let filingDetails;
+    if (e.target.value === 'merged') {
+      filingDetails = merged;
+    } else {
+      filingDetails = reg.details;
+    }
+    this.setState({
+      view: e.target.value,
+      filingDetails,
+    });
   }
   columns = [{
     title: '行号',
     dataIndex: 'asn_seq_no',
     width: 70,
+    fixed: 'left',
   }, {
     title: '备案料号',
     dataIndex: 'ftz_cargo_no',
@@ -514,14 +541,22 @@ export default class SHFTZEntryDetail extends Component {
       const text = currency ? `${currency.value}| ${currency.text}` : o;
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
+  /*
+  }, {
+    title: '操作',
+    dataIndex: 'OPS_COL',
+    width: 100,
+    fixed: 'right',
+    render: (o, record) => record.qty > 1 && <RowUpdater onHit={this.handleQtySplit} label="数量拆分" row={record} />,
+  */
   }]
   render() {
     const { entryAsn, entryRegs, whse, submitting } = this.props;
     const { reg, alertInfo } = this.state;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
     const entryEditable = entryAsn.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
-    const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
-    const sendText = sent ? '重新发送' : '发送备案';
+    // const sent = entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
+    // const sendText = sent ? '重新发送' : '发送备案';
     const inbStatus = entryAsn.inbound_no && CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -540,6 +575,12 @@ export default class SHFTZEntryDetail extends Component {
       total_amount: 0,
       total_net_wt: 0,
     });
+    const qtySplitPopover = (<span><InputNumber min={2} max={5} defaultValue={2} /><Button type="primary" style={{ marginLeft: 8 }}>确定</Button></span>);
+    const movePopover = (<span>
+      <Select style={{ width: 240 }} value={reg.pre_entry_seq_no}>
+        {entryRegs.map(opt => <Option key={opt.pre_entry_seq_no}>{opt.ftz_ent_no || opt.pre_entry_seq_no}</Option>)}
+      </Select>
+    </span>);
     return (
       <div>
         <PageHeader tabList={tabList} onTabChange={this.handleTabChange}>
@@ -560,28 +601,35 @@ export default class SHFTZEntryDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
+            {entryAsn.inbound_no &&
               <Button icon="link" onClick={this.handleInboundPage}>
-                <Badge status={inbStatus.badge} text={inbStatus.text} />
+                关联入库操作 <Badge status={inbStatus.badge} text={inbStatus.text} />
               </Button>
-            </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed && <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>}
-            {this.state.queryable && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>同步入库明细</Button>}
-            {this.state.nonCargono && <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
-            {this.state.sendable && <Button icon="printer" onClick={this.handleEntryRegsPrint}>进区预录入单</Button>}
-            {entryEditable &&
-            <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>}
+            {/*
+              entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.completed &&
+              <Button icon="close" loading={submitting} onClick={this.handleCancelReg}>回退备案</Button>
+            */}
+            {this.state.queryable &&
+              <Button icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
+            {this.state.nonCargono &&
+              <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
+              <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
+            {/*
+              entryEditable &&
+              <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>
+            */}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           {entryEditable && alertInfo && <Alert message={alertInfo} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={3}>
-                <Description term="海关进库单号">
+                <Description term="进区凭单号">
                   <EditableCell value={reg.ftz_ent_no} editable={entryEditable}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_no', value)}
                   />
@@ -592,32 +640,40 @@ export default class SHFTZEntryDetail extends Component {
                   />
                 </Description>
                 <Description term="经营单位">{reg.owner_name}</Description>
-                <Description term="进口日期">
-                  <EditableCell type="date" value={reg.ie_date && moment(reg.ie_date).format('YYYY-MM-DD')} editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ie_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="进库日期">
-                  <EditableCell type="date" value={reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD')} editable={entryEditable}
-                    onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
-                  />
-                </Description>
-                <Description term="备案时间">{reg.reg_date && moment(reg.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="报关日期">{reg.cus_decl_date && moment(reg.cus_decl_date).format('YYYY.MM.DD')}</Description>
+                <Description term="备案更新时间">{reg.reg_date && moment(reg.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="进区更新时间">{reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
               </DescriptionList>
               <div className="card-footer">
                 <Steps progressDot current={entryAsn.reg_status}>
-                  <Step title="待备案" />
-                  <Step title="已发送" />
-                  <Step title="备案完成" />
+                  <Step title="待进区" />
+                  <Step title="已备案" />
+                  <Step title="已进区" />
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <DataPane header="备案明细" fullscreen={this.state.fullscreen}
                 columns={this.columns} rowSelection={rowSelection} indentSize={0}
                 dataSource={reg.details} rowKey="id" loading={this.state.loading}
               >
                 <DataPane.Toolbar>
+                  <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
+                    <RadioButton value="splitted">归并前明细</RadioButton>
+                    <RadioButton value="merged">归并后明细</RadioButton>
+                  </RadioGroup>
+                  <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
+                    {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending && reg.details.length > 1 &&
+                    <Button onClick={this.handleItemSplit} disabled={this.state.selectedRowKeys.length === reg.details.length}>按项拆分</Button>}
+                    {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
+                    <Popover placement="bottom" title="份数" content={qtySplitPopover} trigger="click">
+                      <Button onClick={this.handleAverageQtySplit}>按数量平均拆分</Button> {/* TODO:需排除选择项的数量等于1 */}
+                    </Popover>}
+                    {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending && entryRegs.length > 1 &&
+                    <Popover placement="bottom" content={movePopover} trigger="click"> {/* TODO:已拆分后显示此按钮 */}
+                      <Button onClick={this.handleMoveInto}>移到至...</Button>
+                    </Popover>}
+                  </DataPane.BulkActions>
                   <DataPane.Extra>
                     <Summary>
                       <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>

@@ -206,7 +206,7 @@ export default class FeeSummaryDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16 }} noHovering>
+          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
             <Row type="flex">
               <Col span={14}>
                 <DescriptionList col={2}>
@@ -236,7 +236,7 @@ export default class FeeSummaryDetail extends Component {
               </Col>
             </Row>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="receiveDetails">
               <TabPane tab="应收明细" key="receiveDetails" >
                 <DataPane fullscreen={this.state.fullscreen}

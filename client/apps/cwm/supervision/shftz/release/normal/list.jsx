@@ -38,6 +38,7 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { openNormalRelRegModal, loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
@@ -146,42 +147,38 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'carrier_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '出口日期',
+    title: '备案日期',
     width: 120,
-    dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+    dataIndex: 'ftz_reg_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
     title: '报关日期',
     width: 120,
     dataIndex: 'cus_decl_date',
     render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
   }, {
-    title: '预计出区日期',
+    title: '出区日期',
     width: 120,
-    dataIndex: 'ftz_rel_date',
+    dataIndex: 'exit_date',
     render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
-    title: '备案日期',
-    width: 120,
-    dataIndex: 'ftz_reg_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+    render: o => o && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '创建时间',
     width: 120,
-    dataIndex: 'created_time',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
-  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 150,
     fixed: 'right',
     render: (o, record) => {
       switch (record.status) {
@@ -192,7 +189,11 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 2:
         case 3:
         case 4:
-          return <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />;
+          return (<span>
+            <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />
+          </span>);
         case 5:
         case 6:
         case 7:

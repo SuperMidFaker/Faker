@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -21,7 +22,7 @@ import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import ImportDataPanel from 'client/components/ImportDataPanel';
-import PageHeader from 'client/components/PageHeader';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -51,6 +52,7 @@ function fetchData({ state, dispatch }) {
     solist: state.cwmShippingOrder.solist,
     loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
+    userMembers: state.account.userMembers,
   }),
   { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease }
 )
@@ -168,6 +170,7 @@ export default class ShippingOrderList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => o && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

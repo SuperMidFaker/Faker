@@ -428,7 +428,7 @@ export default class ReceivingModal extends Component {
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} noHovering>
+        <Card bodyStyle={{ paddingBottom: 16 }} hoverable={false}>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
               <InfoItem label="商品货号" field={inboundProduct.product_no} />
@@ -450,7 +450,7 @@ export default class ReceivingModal extends Component {
             </Col>
           </Row>
         </Card>
-        <Card bodyStyle={{ padding: 0 }} noHovering>
+        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
           <Table size="middle" columns={columns}
             dataSource={this.state.dataSource.map((item, index) => ({ ...item, index }))} rowKey="index" footer={footer}
             loading={this.state.loading} scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0) }}

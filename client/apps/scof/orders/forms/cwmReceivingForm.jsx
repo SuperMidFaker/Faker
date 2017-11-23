@@ -75,7 +75,7 @@ export default class CwmReceivingForm extends Component {
     const whseCode = node.t_whse_code || (node.whse_code ? `${node.wh_ent_tenant_id}-${node.whse_code}` : '');
     // todo required
     return (
-      <Card noHovering bodyStyle={{ padding: 16 }}>
+      <Card hoverable={false} bodyStyle={{ padding: 16 }}>
         <Row gutter={16}>
           <Col sm={24} lg={8}>
             <FormItem label="仓库" {...formItemLayout} required>

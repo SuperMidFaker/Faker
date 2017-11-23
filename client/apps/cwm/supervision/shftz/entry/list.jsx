@@ -38,6 +38,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { loadEntryRegDatas, switchDefaultWhse, showDock }
 )
@@ -83,7 +84,7 @@ export default class SHFTZEntryList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '海关进库单号/备案编号',
+    title: '进区凭单号/备案编号',
     width: 200,
     dataIndex: 'ftz_ent_no',
     fixed: 'left',
@@ -102,11 +103,11 @@ export default class SHFTZEntryList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
+        return (<Badge status="default" text="待进区" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="终端处理" />);
+        return (<Badge status="processing" text="已备案" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+        return (<Badge status="success" text="已进区" />);
       }
     },
   }, {
@@ -134,27 +135,27 @@ export default class SHFTZEntryList extends React.Component {
     width: 160,
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '进口日期',
+    title: '报关日期',
     width: 120,
-    dataIndex: 'ie_date',
+    dataIndex: 'cus_decl_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
-    title: '进库日期',
+    title: '备案更新时间',
+    width: 120,
+    dataIndex: 'reg_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '进区更新时间',
     width: 120,
     dataIndex: 'ftz_ent_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
-      }
-    },
-  }, {
-    title: '创建时间',
-    width: 120,
-    dataIndex: 'created_time',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
@@ -164,13 +165,22 @@ export default class SHFTZEntryList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => o && this.props.userMembers.find(member => member.login_id === o).name,
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
-      : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -298,23 +308,23 @@ export default class SHFTZEntryList extends React.Component {
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
-                <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">备案完成</RadioButton>
+                <RadioButton value="pending">待进区</RadioButton>
+                <RadioButton value="processing">已备案</RadioButton>
+                <RadioButton value="completed">已进区</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable
+              defaultExpandAllRows
               toolbarActions={toolbarActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
-              indentSize={8}
+              indentSize={0}
               rowKey="id"
-              defaultExpandedRowKeys={['1']}
               loading={this.props.loading}
             />
             <ReceivingDockPanel />

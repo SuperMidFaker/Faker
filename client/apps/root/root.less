@@ -119,6 +119,11 @@ img {
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   padding-right: 16px;
 }
+.ant-form-hide-required-mark {
+  .ant-form-item-required {
+    font-weight: 600;
+  }
+}
 .ant-form-item > label {
   padding-right: 10px;
 }
@@ -934,7 +939,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     background-color: #f7f7f7;
   }
   .pane-content {
-    padding: 8px 16px;
+    padding: 16px 16px 8px;
   }
 }
 .pane-header {
@@ -986,7 +991,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   }
 }
 .form-layout-multi-col {
+  .ant-col-5,
   .ant-col-6,
+  .ant-col-8,
   .ant-col-12, {
     height: 48px;
   }

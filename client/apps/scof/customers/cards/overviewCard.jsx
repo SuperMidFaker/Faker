@@ -24,7 +24,7 @@ export default class OverviewCard extends React.Component {
   render() {
     const { customer } = this.props;
     return (
-      <Card noHovering bodyStyle={{ padding: 0 }}>
+      <Card hoverable={false} bodyStyle={{ padding: 0 }}>
         <div style={{ padding: 24 }}>
           <Avatar shape="square" icon="global" />
           <h2 style={{ display: 'inline-block', marginLeft: 8 }}>{customer.name}</h2>

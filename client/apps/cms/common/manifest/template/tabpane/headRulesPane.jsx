@@ -86,7 +86,7 @@ export default class HeadRulesPane extends React.Component {
     return (
       <div className="pane">
         <div className="pane-content form-layout-multi-col">
-          <Card bodyStyle={{ padding: 16 }} noHovering>
+          <Card bodyStyle={{ padding: 16 }} hoverable={false}>
             <Row>
               <Col span="8">
                 <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
@@ -173,7 +173,7 @@ export default class HeadRulesPane extends React.Component {
               </Col>
             </Row>
           </Card>
-          <Card noHovering>
+          <Card hoverable={false}>
             <Row>
               <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
             </Row>

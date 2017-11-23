@@ -391,7 +391,7 @@ export default class DetailPane extends React.Component {
     const shipmtModeExtra = (<span>时效: {shipmt.transit_time}{this.msg('day')}/里程: {charges.revenue.miles}公里</span>);
     return (
       <div className="pane-content tab-pane">
-        <Card bodyStyle={{ padding: 0 }} noHovering>
+        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
           <Collapse bordered={false} defaultActiveKey={['main', 'mode', 'cargo']}>
             <Panel header={<span>{this.msg('shipmtSchedule')} {shipmtModeExtra}<span className="pull-right">{changeDropdown}</span></span>} key="main">
               <div className="trans_schedule">
@@ -653,7 +653,7 @@ export default class DetailPane extends React.Component {
           </Collapse>
           {/* <Card
           bodyStyle={{ padding: 16 }}
-          title="运单" noHovering
+          title="运单" hoverable={false}
           extra={<span>
             <Button icon="environment-o"
               onClick={() => this.context.router.push(`/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.public_key}`)}

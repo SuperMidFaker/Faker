@@ -264,7 +264,7 @@ export default class AllocatingModal extends Component {
     width: 100,
     render: o => <TrimSpan text={o} maxLen={15} />,
   }, {
-    title: '海关进库单号',
+    title: '进区凭单号',
     dataIndex: 'ftz_ent_no',
     width: 100,
     render: o => <TrimSpan text={o} maxLen={15} />,
@@ -346,7 +346,7 @@ export default class AllocatingModal extends Component {
     className: 'cell-align-center',
     render: portion => portion ? <Tag color="green">可分拨</Tag> : '否',
   }, {
-    title: '海关进库单号',
+    title: '进区凭单号',
     dataIndex: 'ftz_ent_no',
     width: 150,
   }, {
@@ -588,7 +588,7 @@ export default class AllocatingModal extends Component {
         <Option value="serial_no">序列号</Option>
         <Option value="po_no">采购订单号</Option>
         <Option value="asn_no">ASN编号</Option>
-        <Option value="ftz_ent_no">海关进库单号</Option>
+        <Option value="ftz_ent_no">进区凭单号</Option>
         <Option value="in_cus_decl_no">报关单号</Option>
       </Select>
     );
@@ -632,7 +632,7 @@ export default class AllocatingModal extends Component {
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         visible={this.props.visible} footer={null}
       >
-        <Card bodyStyle={{ paddingBottom: 16 }} noHovering>
+        <Card bodyStyle={{ paddingBottom: 16 }} hoverable={false}>
           <Row className="info-group-inline">
             <Col sm={12} md={8} lg={4}>
               商品货号：<Select style={{ width: 200 }} value={outboundProduct.product_no} onChange={this.handleSeqNoChange}>
@@ -655,7 +655,7 @@ export default class AllocatingModal extends Component {
             </Col>}
           </Row>
         </Card>
-        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="库存记录" extra={inventoryQueryForm} bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={filterInventoryColumns} dataSource={this.state.inventoryData.map((data, index) => ({ ...data, index }))}
               scroll={{ x: filterInventoryColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
@@ -663,7 +663,7 @@ export default class AllocatingModal extends Component {
             />
           </div>
         </Card>
-        <Card title="分配明细" bodyStyle={{ padding: 0 }} noHovering>
+        <Card title="分配明细" bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
             <Table size="middle" columns={filterAllocatedColumns} dataSource={this.state.allocatedData.map((data, index) => ({ ...data, index }))}
               scroll={{ x: filterAllocatedColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}

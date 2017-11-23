@@ -145,7 +145,7 @@ export default class TrackingPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <EventComposer sourceType={sourceType} />
-        <Card bodyStyle={{ padding: 0 }} noHovering>
+        <Card bodyStyle={{ padding: 0 }} hoverable={false}>
           <Collapse bordered={false} defaultActiveKey={['timeline']}>
             <Panel header={timelineHeader} key="timeline">
               <Timeline>

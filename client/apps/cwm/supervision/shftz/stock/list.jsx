@@ -305,7 +305,7 @@ export default class SHFTZStockList extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <Card noHovering bodyStyle={{ paddingBottom: 8 }}>
+            <Card hoverable={false} bodyStyle={{ paddingBottom: 8 }}>
               <QueryForm onSearch={this.handleSearch} filter={this.state.filter} />
             </Card>
             <DataTable toolbarActions={toolbarActions} selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390} loading={this.props.loading}

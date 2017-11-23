@@ -322,7 +322,7 @@ export default class SHFTZTransferOutDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="海关出库单号">
                   <EditableCell value={relReg.ftz_rel_no} editable={relEditable}
@@ -363,7 +363,7 @@ export default class SHFTZTransferOutDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 {relRegs.map((reg) => {
                   const stat = reg.details.reduce((acc, regd) => ({

@@ -32,6 +32,7 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { openNormalDeclModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
 )
@@ -129,13 +130,14 @@ export default class NormalDeclList extends React.Component {
       }
     },
   }, {
-    title: '创建时间',
-    width: 120,
-    render: (o, record) => record.delg_time && moment(record.delg_time).format('MM.DD HH:mm'),
-  }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => o && this.props.userMembers.find(member => member.login_id === o).name,
+  }, {
+    title: '创建时间',
+    width: 120,
+    render: (o, record) => record.delg_time && moment(record.delg_time).format('MM.DD HH:mm'),
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

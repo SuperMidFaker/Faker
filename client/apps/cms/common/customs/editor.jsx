@@ -316,7 +316,7 @@ export default class CustomsDeclEditor extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large readonly">
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="header">
               {tabs}
             </Tabs>
