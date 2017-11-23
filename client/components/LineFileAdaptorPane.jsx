@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { notification, Table, Button, Layout, Popconfirm, Form, Input, Select, Tooltip, Modal } from 'antd';
-import { loadAdaptors, addAdaptor, loadAdaptor, updateColumnField, delAdaptor } from 'common/reducers/saasLineFileAdaptor';
+import { notification, Table, Button, Layout, Popconfirm, Form, Input, Select, Tooltip, Modal, Col, Row } from 'antd';
+import { loadAdaptors, addAdaptor, loadAdaptor, updateColumnField, delAdaptor, updateStateLine } from 'common/reducers/saasLineFileAdaptor';
 import EditableCell from 'client/components/EditableCell';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -22,7 +22,7 @@ const formItemLayout = {
   adaptors: state.saasLineFileAdaptor.adaptors,
   loadingAdaptor: state.saasLineFileAdaptor.loadingAdaptor,
   adaptor: state.saasLineFileAdaptor.adaptor,
-}), { loadAdaptors, addAdaptor, loadAdaptor, updateColumnField, delAdaptor })
+}), { loadAdaptors, addAdaptor, loadAdaptor, updateColumnField, delAdaptor, updateStateLine })
 export default class LineFileAdaptorPane extends Component {
   static propTyps = {
     owner: PropTypes.shape({ id: PropTypes.number, partner_tenant_id: PropTypes.number }).isRequired,
@@ -215,6 +215,13 @@ export default class LineFileAdaptorPane extends Component {
         <Modal maskClosable={false} title={adaptor.name} width="100%" wrapClassName="fullscreen-modal"
           footer={null} onCancel={this.handleEditCancel} visible={editAdaptor}
         >
+          <Row>
+            <Col span={5}>
+              <FormItem label="起始行" {...formItemLayout}>
+                <EditableCell value={adaptor.start_line} style={{ width: 160 }} cellTrigger onSave={value => this.props.updateStateLine(adaptor.code, value)} />
+              </FormItem>
+            </Col>
+          </Row>
           <Table dataSource={lineData} columns={lineColumns} loadingAdaptor={loadingAdaptor}
             scroll={{ x: scrollX, y: 600 }} pagination={false}
           />
