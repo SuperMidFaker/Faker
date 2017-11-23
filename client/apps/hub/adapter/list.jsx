@@ -14,7 +14,7 @@ import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadAdaptors, loadAdaptor, showAdaptorDetailModal, delAdaptor, showAdaptorModal } from 'common/reducers/saasLineFileAdaptor';
 import { loadPartners } from 'common/reducers/partner';
 import messages from './message.i18n';
-import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
+import { PARTNER_ROLES } from 'common/constants';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -49,7 +49,6 @@ export default class ApiAuthList extends React.Component {
     this.props.loadAdaptors();
     this.props.loadPartners({
       role: PARTNER_ROLES.CUS,
-      businessType: PARTNER_BUSINESSE_TYPES.clearance,
     });
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values);

@@ -79,7 +79,7 @@ export default class AdaptorDetailModal extends Component {
         <Row>
           <Col span={5}>
             <FormItem label="起始行" {...formItemLayout}>
-              <EditableCell value={adaptor.start_line} style={{ width: 160 }} cellTrigger onSave={value => this.props.updateStateLine(adaptor.code, value)} />
+              <EditableCell value={adaptor.start_line} style={{ width: 160 }} cellTrigger onSave={value => this.props.updateStartLine(adaptor.code, value)} />
             </FormItem>
           </Col>
         </Row>

@@ -82,7 +82,7 @@ export function loadAdaptor(code) {
   };
 }
 
-export function updateStateLine(code, value) {
+export function updateStartLine(code, value) {
   return {
     [CLIENT_API]: {
       types: [
