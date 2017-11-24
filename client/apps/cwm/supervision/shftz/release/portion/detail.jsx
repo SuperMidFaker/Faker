@@ -139,6 +139,15 @@ export default class SHFTZRelDetail extends Component {
     }
     return detailMap;
   }
+  getStep = (status) => {
+    if (status < 3) {
+      return status;
+    } else if (status === 3 || status === 4) {
+      return 3;
+    } else if (status === 5 || status === 6) {
+      return 4;
+    }
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
@@ -521,10 +530,12 @@ export default class SHFTZRelDetail extends Component {
                 </Description>
               </DescriptionList>
               <div className="card-footer">
-                <Steps progressDot current={regStatus}>
+                <Steps progressDot current={this.getStep(regStatus)}>
                   <Step title="待备案" />
-                  <Step title="已发送" />
-                  <Step title="备案完成" />
+                  <Step title="终端处理" />
+                  <Step title="已备案" />
+                  <Step title="已集中申请" />
+                  <Step title="已清关" />
                 </Steps>
               </div>
             </Card>

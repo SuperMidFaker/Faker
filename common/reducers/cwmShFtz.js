@@ -19,6 +19,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_NENTD', 'LOAD_NENTD_SUCCEED', 'LOAD_NENTD_FAIL',
   'NEW_NRER', 'NEW_NRER_SUCCEED', 'NEW_NRER_FAIL',
   'NEW_NRSO', 'NEW_NRSO_SUCCEED', 'NEW_NRSO_FAIL',
+  'OPEN_NTFO_MODAL', 'CLOSE_NTFO_MODAL',
+  'NEW_TRSO', 'NEW_TRSO_SUCCEED', 'NEW_TRSO_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
@@ -86,6 +88,7 @@ const initialState = {
   normalRelRegModal: {
     visible: false,
   },
+  newTransfOutModal: { visible: false },
   batchout_regs: [],
   entryList: {
     totalCount: 0,
@@ -174,6 +177,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_NORMAL_REL_REG_MODAL:
       return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: false } };
+    case actionTypes.OPEN_NTFO_MODAL:
+      return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: true } };
+    case actionTypes.CLOSE_NTFO_MODAL:
+      return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: false } };
     case actionTypes.ENTRY_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
@@ -242,6 +249,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUERY_OWNTRANF:
     case actionTypes.VIRTUAL_TRANS_SAVE:
     case actionTypes.COMPARE_FTZST:
+    case actionTypes.NEW_NRER:
+    case actionTypes.NEW_NRSO:
+    case actionTypes.NEW_TRSO:
       return { ...state, submitting: true };
     case actionTypes.FILE_RSO_FAIL:
     case actionTypes.FILE_RTS_FAIL:
@@ -277,6 +287,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
     case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
     case actionTypes.COMPARE_FTZST_FAIL:
+    case actionTypes.NEW_NRER_SUCCEED:
+    case actionTypes.NEW_NRER_FAIL:
+    case actionTypes.NEW_NRSO_SUCCEED:
+    case actionTypes.NEW_NRSO_FAIL:
+    case actionTypes.NEW_TRSO_SUCCEED:
+    case actionTypes.NEW_TRSO_FAIL:
       return { ...state, submitting: false };
     case actionTypes.FILE_RSO_SUCCEED:
     case actionTypes.FILE_RTS_SUCCEED:
@@ -491,6 +507,33 @@ export function newNormalRegBySo(data) {
         actionTypes.NEW_NRSO_FAIL,
       ],
       endpoint: 'v1/cwm/shftz/normal/createby/so',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function openNewTransfOutModal() {
+  return {
+    type: actionTypes.OPEN_NTFO_MODAL,
+  };
+}
+
+export function closeNewTransfOutModal() {
+  return {
+    type: actionTypes.CLOSE_NTFO_MODAL,
+  };
+}
+
+export function newTransfOutRegBySo(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.NEW_TRSO,
+        actionTypes.NEW_TRSO_SUCCEED,
+        actionTypes.NEW_TRSO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/transf/out/createby/so',
       method: 'post',
       data,
     },

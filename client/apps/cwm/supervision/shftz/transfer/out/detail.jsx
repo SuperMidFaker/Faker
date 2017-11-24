@@ -283,7 +283,7 @@ export default class SHFTZTransferOutDetail extends Component {
       whyunsent = '出库单配货未完成';
     } else if (!relReg.ftz_rel_date || !relReg.receiver_ftz_whse_code) {
       sendable = false;
-      whyunsent = '预计出区时间或者收货单位未填';
+      whyunsent = '出库时间或者收货单位未填';
     }
     const recvOpts = receivers.map(recv => ({ key: recv.code, text: `${recv.customs_code} | ${recv.name} | ${recv.ftz_whse_code}` }));
     const receiver = receivers.filter(recv => recv.customs_code === relReg.receiver_cus_code &&

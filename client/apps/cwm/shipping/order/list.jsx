@@ -15,9 +15,10 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
+import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
@@ -53,8 +54,9 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
     userMembers: state.account.userMembers,
+    adaptors: state.saasLineFileAdaptor.adaptors,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease }
+  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, loadAdaptors }
 )
 @connectNav({
   depth: 2,
@@ -73,6 +75,9 @@ export default class ShippingOrderList extends React.Component {
     searchInput: '',
     createWaveEnable: true,
     importPanelVisible: false,
+  }
+  componentDidMount() {
+    this.props.loadAdaptors('', [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key], true);
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.solist.loaded && !nextProps.solist.loading) {
@@ -276,6 +281,7 @@ export default class ShippingOrderList extends React.Component {
   handleOwnerChange = (value) => {
     const filters = { ...this.props.filters, ownerCode: value };
     const whseCode = this.props.defaultWhse.code;
+    this.props.loadAdaptors(`${value === 'all' ? '' : value}`, [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key], true);
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
@@ -483,6 +489,7 @@ export default class ShippingOrderList extends React.Component {
         <ShipmentDockPanel />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
+          adaptors={this.props.adaptors}
           endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
           formData={{
             tenantName: this.props.tenantName,

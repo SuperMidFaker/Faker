@@ -15,7 +15,7 @@ import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import NavLink from 'client/components/NavLink';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
@@ -65,10 +65,13 @@ export default class CiqDeclList extends Component {
     selectedRowKeys: [],
     searchInput: '',
   }
+  componentDidMount() {
+    this.handleTableLoad();
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
     title: this.msg('ciqDeclNo'),
-    dataIndex: 'ciq_decl_no',
+    dataIndex: 'pre_entry_seq_no',
     width: 180,
     fixed: 'left',
   }, {
@@ -129,21 +132,21 @@ export default class CiqDeclList extends Component {
       <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
   }, {
     title: this.msg('consignorCname'),
-    dataIndex: 'consignor',
+    dataIndex: 'ciq_consignor_name_cn',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('consigneeCname'),
-    dataIndex: 'consignee_cname',
+    dataIndex: 'ciq_consignee_name_cn',
     width: 180,
     render: o => <TrimSpan text={o} maxLen={12} />,
   }, {
     title: this.msg('declRegNo'),
-    dataIndex: 'decl_reg_no',
+    dataIndex: 'agent_name',
     width: 180,
   }, {
     title: this.msg('报检人员'),
-    dataIndex: 'declared_by',
+    dataIndex: 'agent_ciq_person',
     width: 180,
   }, {
     title: this.msg('opColumn'),
@@ -151,17 +154,8 @@ export default class CiqDeclList extends Component {
     width: 100,
     fixed: 'right',
     render: (o, record) => {
-      if (record.ciq_status < 2) {
-        return (
-          <span>
-            <RowUpdater onHit={this.handleCiqFinish} label={this.msg('ciqFinish')} row={record} />
-          </span>
-        );
-      } else {
-        return (
-          <span>{this.msg('ciqFinish')}</span>
-        );
-      }
+      const ioPart = record.i_e_type === 0 ? 'in' : 'out';
+      return <NavLink to={`/clearance/ciqdecl/${ioPart}/${record.pre_entry_seq_no}`}>详情</NavLink>;
     },
   }]
   dataSource = new DataTable.DataSource({
@@ -177,7 +171,6 @@ export default class CiqDeclList extends Component {
     }),
     getParams: (pagination) => {
       const params = {
-        ietype: this.props.ietype,
         tenantId: this.props.tenantId,
         pageSize: pagination.pageSize,
         currentPage: pagination.current,
@@ -212,7 +205,6 @@ export default class CiqDeclList extends Component {
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
     this.props.loadCiqDecls({
-      ietype: this.props.ietype,
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
       pageSize: this.props.ciqdeclList.pageSize,
