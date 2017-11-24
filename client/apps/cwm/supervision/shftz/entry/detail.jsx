@@ -189,7 +189,7 @@ export default class SHFTZEntryDetail extends Component {
     if (this.state.nonCargono) {
       notification.warn({
         message: '货号未备案',
-        description: '部分货号无备案料号, 是否以生成临时备案料号打印备案',
+        description: '部分分拨货号无备件号, 是否以生成临时备件号入非分拨',
         btn: (<div>
           <a role="presentation" onClick={() => this.handleRegPrint(true)}>直接打印</a>
           <span className="ant-divider" />
@@ -444,6 +444,11 @@ export default class SHFTZEntryDetail extends Component {
     dataIndex: 'ftz_cargo_no',
     width: 160,
   }, {
+    title: '分拨',
+    dataIndex: 'cargo_type',
+    width: 80,
+    render: cargo => cargo === '14' ? '可分拨' : '非分拨',
+  }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
     width: 120,
@@ -616,6 +621,14 @@ export default class SHFTZEntryDetail extends Component {
               <Button icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
             {this.state.nonCargono &&
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
+            {/* this.state.sendable &&
+            <Popover placement="bottom" title="份数" content={<span>
+              <InputNumber min={entryRegs.length + 1} max={5} defaultValue={entryRegs.length + 1} />
+              <Button type="primary" style={{ marginLeft: 8 }}>确定</Button>
+            </span>} trigger="click"
+            >
+              <Button onClick={this.handleAverageQtySplit}>拆分进库凭单</Button>
+            </Popover> */}
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
             {/*
@@ -640,8 +653,8 @@ export default class SHFTZEntryDetail extends Component {
                   />
                 </Description>
                 <Description term="经营单位">{reg.owner_name}</Description>
-                <Description term="报关日期">{reg.cus_decl_date && moment(reg.cus_decl_date).format('YYYY.MM.DD')}</Description>
-                <Description term="备案更新时间">{reg.reg_date && moment(reg.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="进出口日期">{reg.ie_date && moment(reg.ie_date).format('YYYY.MM.DD')}</Description>
+                <Description term="备案更新时间">{entryAsn.reg_date && moment(entryAsn.reg_date).format('YYYY.MM.DD HH:mm')}</Description>
                 <Description term="进区更新时间">{reg.ftz_ent_date && moment(reg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
               </DescriptionList>
               <div className="card-footer">

@@ -231,8 +231,6 @@ export default class SHFTZNormalRelRegList extends React.Component {
     remotes: this.props.releaseList,
   })
   handleCreateNormalRelReg = () => {
-    // const { listFilter, owners } = this.props;
-    // const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
     this.props.openNormalRelRegModal();
   }
   handleReleaseListLoad = (currentPage, whsecode, filter) => {

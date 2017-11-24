@@ -16,12 +16,10 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
-    tenantName: state.account.tenantName,
     visible: state.cwmShFtz.normalRelRegModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     normalSources: state.cwmShFtz.normalSources,
-    loginName: state.account.username,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
