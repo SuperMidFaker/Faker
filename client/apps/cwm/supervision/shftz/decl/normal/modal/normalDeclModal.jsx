@@ -22,6 +22,7 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantName: state.account.tenantName,
+    customsCode: state.account.customsCode,
     visible: state.cwmShFtz.normalDeclModal.visible,
     defaultWhse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,

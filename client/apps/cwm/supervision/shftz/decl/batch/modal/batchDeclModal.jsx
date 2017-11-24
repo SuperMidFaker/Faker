@@ -7,6 +7,7 @@ import { Button, Card, Table, Form, Modal, Radio, Row, Col, Select, Tag, Input, 
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
+import { loadBrokers } from 'common/reducers/cwmWarehouse';
 import { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
 import { getSuppliers } from 'common/reducers/cwmReceive';
 
@@ -21,6 +22,7 @@ const RadioButton = Radio.Button;
 @connect(
   state => ({
     tenantName: state.account.tenantName,
+    customsCode: state.account.customsCode,
     visible: state.cwmShFtz.batchDeclModal.visible,
     submitting: state.cwmShFtz.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -54,7 +56,7 @@ const RadioButton = Radio.Button;
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
   }),
-  { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers }
+  { loadBrokers, loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers }
 )
 @Form.create()
 export default class BatchDeclModal extends Component {
@@ -82,6 +84,7 @@ export default class BatchDeclModal extends Component {
   }
   componentWillMount() {
     this.props.loadParams();
+    this.props.loadBrokers(this.props.defaultWhse.code);
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: (window.innerHeight - 460),
