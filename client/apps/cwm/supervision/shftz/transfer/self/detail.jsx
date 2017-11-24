@@ -276,7 +276,7 @@ export default class SHFTZTransferSelfDetail extends Component {
           <PageHeader.Actions>
             {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent && entryAsn.ftz_ent_no &&
+            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing && entryAsn.ftz_ent_no &&
               <Button icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
