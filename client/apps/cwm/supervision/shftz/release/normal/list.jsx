@@ -99,13 +99,13 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 0:
           return (<Badge status="default" text="待备案" />);
         case 1:
-          return (<Badge status="processing" text="终端处理" />);
+          return (<Badge status="processing" text="已发送" />);
         case 2:
           return (<Badge status="processing" text="已备案" />);
         case 3:
-          return (<Badge status="processing" text="部分制单" />);
+          return (<Badge status="processing" text="部分委托" />);
         case 4:
-          return (<Badge status="processing" text="制单中" />);
+          return (<Badge status="processing" text="全部委托" />);
         case 5:
           return (<Badge status="processing" text="部分清关" />);
         case 6:
@@ -122,6 +122,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
     width: 160,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '货主',
     width: 180,
@@ -187,13 +188,13 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 1:
           return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
         case 2:
-        case 3:
-        case 4:
           return (<span>
             <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />
             <span className="ant-divider" />
             <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />
           </span>);
+        case 3:
+        case 4:
         case 5:
         case 6:
         case 7:
@@ -333,7 +334,8 @@ export default class SHFTZNormalRelRegList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="completed">已发送备案</RadioButton>
+                <RadioButton value="completed">已备案</RadioButton>
+                <RadioButton value="delegated">已委托</RadioButton>
                 <RadioButton value="cleared">已清关</RadioButton>
                 <RadioButton value="exited">已出区</RadioButton>
               </RadioGroup>

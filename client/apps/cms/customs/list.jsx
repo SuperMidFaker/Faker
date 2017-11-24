@@ -558,7 +558,7 @@ export default class CustomsList extends Component {
     this.props.showDeclMsgDock();
   }
   render() {
-    const { customslist, listFilter, trades } = this.props;
+    const { customslist, listFilter } = this.props;
     this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -617,7 +617,8 @@ export default class CustomsList extends Component {
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
         </Option>))}
       </Select>
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
+      {/*
+        <Select showSearch optionFilterProp="children" style={{ width: 160 }}
         onChange={this.handleTradesSelectChange} defaultValue="all"
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
@@ -627,6 +628,7 @@ export default class CustomsList extends Component {
         >{data.name}</Option>)
         )}
       </Select>
+      */}
       <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
         onChange={this.handleViewChange}
       >

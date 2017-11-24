@@ -27,7 +27,6 @@ const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -114,7 +113,7 @@ export default class SHFTZEntryList extends React.Component {
     title: '报关单号',
     dataIndex: 'pre_entry_seq_no',
     width: 180,
-    render: (preno, row) => row.cus_decl_no || preno,
+    render: (preno, row) => row.cus_decl_no ? <span className="text-emphasis">{row.cus_decl_no}</span> : <span className="text-normal">{preno}</span>,
   }, {
     title: '货主',
     width: 180,
@@ -273,14 +272,12 @@ export default class SHFTZEntryList extends React.Component {
       <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-            search={`${data.partner_code}${data.name}`}
-          >{data.name}
-          </Option>)
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+          search={`${data.partner_code}${data.name}`}
+        >{data.name}
+        </Option>)
           )}
-        </OptGroup>
       </Select></span>);
     return (
       <Layout>

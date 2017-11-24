@@ -134,6 +134,17 @@ export default class SHFTZNormalRelRegDetail extends Component {
     }
     return detailMap;
   }
+  getStep = (status) => {
+    if (status < 3) {
+      return status;
+    } else if (status === 3 || status === 4) {
+      return 3;
+    } else if (status === 5 || status === 6) {
+      return 4;
+    } else if (status === 7 || status === 8) {
+      return 5;
+    }
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
@@ -546,10 +557,13 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 <Description term="备案日期">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY-MM-DD')}</Description>
               </DescriptionList>
               <div className="card-footer">
-                <Steps progressDot current={regStatus}>
+                <Steps progressDot current={this.getStep(regStatus)}>
                   <Step title="待备案" />
                   <Step title="已发送" />
-                  <Step title="备案完成" />
+                  <Step title="已备案" />
+                  <Step title="已委托" />
+                  <Step title="已清关" />
+                  <Step title="已出区" />
                 </Steps>
               </div>
             </Card>

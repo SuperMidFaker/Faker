@@ -75,14 +75,16 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '出区提货单号',
     dataIndex: 'ftz_rel_nos',
-    width: 150,
+    width: 180,
+    render: o => <span className="text-emphasis"><TrimSpan text={o} maxLen={20} /></span>,
   }, {
     title: '报关单号',
     dataIndex: 'cus_decl_nos',
     width: 180,
+    render: o => <span className="text-emphasis"><TrimSpan text={o} maxLen={18} /></span>,
   }, {
-    title: '清关状态',
-    dataIndex: 'decl_status',
+    title: '状态',
+    dataIndex: 'status',
     width: 100,
   }, {
     title: '货主',

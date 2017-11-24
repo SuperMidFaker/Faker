@@ -77,10 +77,10 @@ export default class ApiAuthList extends React.Component {
     width: 200,
   }, {
     title: this.msg('适配对象'),
-    width: 200,
+    width: 250,
     dataIndex: 'biz_model',
   }, {
-    title: this.msg('scope'),
+    title: this.msg('适用范围'),
     dataIndex: 'owner_partner_id',
     render: (o) => {
       if (o) {
@@ -90,8 +90,8 @@ export default class ApiAuthList extends React.Component {
       }
     },
   }, {
-    title: this.msg('opColumn'),
-    width: 100,
+    title: this.msg('操作'),
+    width: 150,
     render: (_, record) => {
       let editDiv = null;
       if (record.active) {
@@ -110,7 +110,7 @@ export default class ApiAuthList extends React.Component {
         <span className="ant-divider" />
         <PrivilegeCover module="clearance" feature="resources" action="delete">
           <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDel(record.code)}>
-            <Button icon="delete" />
+            <Button type="danger" icon="delete" />
           </Popconfirm>
         </PrivilegeCover>
       </span>
@@ -128,7 +128,7 @@ export default class ApiAuthList extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Icon type="api" /> 数据适配
+                <Icon type="usb" /> 数据适配
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
@@ -142,7 +142,6 @@ export default class ApiAuthList extends React.Component {
         <Content className="page-content" key="main">
           <DataTable
             columns={this.columns} dataSource={this.props.adaptors} rowKey="id"
-            locale={{ emptyText: '没有当前状态的ASN' }}
           />
         </Content>
         <AdaptorModal />

@@ -100,11 +100,12 @@ export default class BatchDeclList extends React.Component {
     title: '报关申请单号',
     dataIndex: 'ftz_apply_no',
     width: 200,
-    render: o => <TrimSpan text={o} maxLen={20} />,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
     width: 180,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '货主',
     width: 180,
