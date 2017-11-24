@@ -89,6 +89,10 @@ export default class ShippingModal extends Component {
             this.props.loadOutboundHead(this.props.outboundNo);
             this.props.resetState();
             this.props.loadShipDetails(this.props.outboundNo);
+          } else if (result.error.message === 'normal_relno_empty') {
+            message.error('对应保税普通出库未完成备案');
+          } else if (result.error.message === 'normal_cusdeclno_empty') {
+            message.error('对应保税普通出库未完成清关');
           } else {
             message.error(result.error.message);
           }
