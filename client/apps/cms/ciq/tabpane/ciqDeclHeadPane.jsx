@@ -106,7 +106,7 @@ export default class CiqDeclHeadPane extends React.Component {
     };
     return (
       <div className="pane">
-        <Form layout="horizontal" hideRequiredMark>
+        <Form layout="horizontal" colon={false} hideRequiredMark>
           <div className="panel-header">
             <Row>
               <Col span="6">
@@ -130,29 +130,29 @@ export default class CiqDeclHeadPane extends React.Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
               <Row>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'报检类别'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'报检类别'} required >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'报检机构'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'报检机构'} required >
                     <Input prefix={<Icon type="safety" />} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'口岸机构'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'口岸机构'} required >
                     <Input prefix={<Icon type="safety" />} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'报检日期'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'报检日期'} required >
                     <DatePicker style={{ width: '100%' }} />
                   </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem {...formItemSpan2Layout} label={'报检单位'} required >
+                  <FormItem {...formItemSpan2Layout} colon={false} label={'报检单位'} required >
                     <InputGroup compact>
                       <Input placeholder="报检登记号" style={{ width: '30%' }} />
                       <Input placeholder="中文名称" style={{ width: '70%' }} />
@@ -160,7 +160,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'报检员'} >
+                  <FormItem {...formItemLayout} colon={false} label={'报检员'} >
                     <InputGroup compact>
                       <Input placeholder="编码" style={{ width: '50%' }} />
                       <Input placeholder="姓名" style={{ width: '50%' }} />
@@ -168,7 +168,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'联系人'} >
+                  <FormItem {...formItemLayout} colon={false} label={'联系人'} >
                     <InputGroup compact>
                       <Input placeholder="姓名" style={{ width: '50%' }} />
                       <Input placeholder="电话" style={{ width: '50%' }} />
@@ -178,7 +178,7 @@ export default class CiqDeclHeadPane extends React.Component {
               </Row>
               {ioType === 'in' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'收货人'} required >
+                  <FormItem {...formItemSpan3Layout} colon={false} label={'收货人'} required >
                     <InputGroup compact>
                       <Select placeholder="收货人代码" style={{ width: '20%' }} />
                       <Input placeholder="收货人中文" style={{ width: '40%' }} />
@@ -187,14 +187,14 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'企业性质'} >
+                  <FormItem {...formItemLayout} colon={false} label={'企业性质'} >
                     <Input />
                   </FormItem>
                 </Col>
               </Row>}
               {ioType === 'in' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'发货人'} >
+                  <FormItem {...formItemSpan3Layout} colon={false} label={'发货人'} >
                     <InputGroup compact>
                       <Select placeholder="发货人代码" style={{ width: '20%' }} />
                       <Input placeholder="发货人中文" style={{ width: '40%' }} />
@@ -203,14 +203,14 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'发货人地址'} >
+                  <FormItem {...formItemLayout} colon={false} label={'发货人地址'} >
                     <Input />
                   </FormItem>
                 </Col>
               </Row>}
               {ioType === 'out' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'发货人'} required >
+                  <FormItem {...formItemSpan3Layout} colon={false} label={'发货人'} required >
                     <InputGroup compact>
                       <Select placeholder="发货人代码" style={{ width: '20%' }} />
                       <Input placeholder="发货人中文" style={{ width: '40%' }} />
@@ -219,14 +219,14 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'企业性质'} >
+                  <FormItem {...formItemLayout} colon={false} label={'企业性质'} >
                     <Input />
                   </FormItem>
                 </Col>
               </Row>}
               {ioType === 'out' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'收货人'} >
+                  <FormItem {...formItemSpan3Layout} colon={false} label={'收货人'} >
                     <InputGroup compact>
                       <Select placeholder="收货人代码" style={{ width: '20%' }} />
                       <Input placeholder="收货人中文" style={{ width: '40%' }} />
@@ -235,7 +235,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'收货人地址'} >
+                  <FormItem {...formItemLayout} colon={false} label={'收货人地址'} >
                     <Input />
                   </FormItem>
                 </Col>
@@ -244,179 +244,179 @@ export default class CiqDeclHeadPane extends React.Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
               <Row>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'运输方式'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'运输方式'} required >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'运输工具名称'} >
+                  <FormItem {...formItemLayout} colon={false} label={'运输工具名称'} >
                     <Input />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'运输工具号码'} >
+                  <FormItem {...formItemLayout} colon={false} label={'运输工具号码'} >
                     <Input />
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'提货单号'} >
+                  <FormItem {...formItemLayout} colon={false} label={'提货单号'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'提/运单号'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'提/运单号'} required >
                     <Input />
                   </FormItem>
                 </Col>}
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'合同号'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'合同号'} required >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'贸易方式'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'贸易方式'} required >
                     <Input />
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'贸易国别'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'贸易国别'} required >
                     <Input />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'启运口岸'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'启运口岸'} required >
                     <Input />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'启运国家'} >
+                  <FormItem {...formItemLayout} colon={false} label={'启运国家'} >
                     <Input />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'施检机构'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'施检机构'} required >
                     <Input prefix={<Icon type="safety" />} />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'输往国家/地区'} >
+                  <FormItem {...formItemLayout} colon={false} label={'输往国家/地区'} >
                     <Input />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'停经口岸'} >
+                  <FormItem {...formItemLayout} colon={false} label={'停经口岸'} >
                     <Input />
                   </FormItem>
                 </Col>}
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={ioType === 'in' ? '入境口岸' : '离境口岸'} required >
+                  <FormItem {...formItemLayout} colon={false} label={ioType === 'in' ? '入境口岸' : '离境口岸'} required >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'目的地'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'目的地'} required >
                     <Input />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'目的机构'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'目的机构'} required >
                     <Input prefix={<Icon type="safety" />} />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'到达口岸'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'到达口岸'} required >
                     <Input />
                   </FormItem>
                 </Col>}
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'存放地点'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'存放地点'} required >
                     <Input />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'领证机构'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'领证机构'} required >
                     <Input prefix={<Icon type="safety" />} />
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'启运日期'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'启运日期'} required >
                     <DatePicker style={{ width: '100%' }} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'到货日期'} required >
+                  <FormItem {...formItemLayout} colon={false} label={'到货日期'} required >
                     <DatePicker style={{ width: '100%' }} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'卸毕日期'} >
+                  <FormItem {...formItemLayout} colon={false} label={'卸毕日期'} >
                     <DatePicker style={{ width: '100%' }} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'索赔截止日期'} >
+                  <FormItem {...formItemLayout} colon={false} label={'索赔截止日期'} >
                     <DatePicker style={{ width: '100%' }} />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'发货日期'} >
+                  <FormItem {...formItemLayout} colon={false} label={'发货日期'} >
                     <DatePicker style={{ width: '100%' }} />
                   </FormItem>
                 </Col>}
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'报关海关'} >
+                  <FormItem {...formItemLayout} colon={false} label={'报关海关'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'海关注册号'} >
+                  <FormItem {...formItemLayout} colon={false} label={'海关注册号'} >
                     <Input />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'关联报检号'} >
+                  <FormItem {...formItemLayout} colon={false} label={'关联报检号'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'关联理由'} >
+                  <FormItem {...formItemLayout} colon={false} label={'关联理由'} >
                     <Input />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'分运单号'} >
+                  <FormItem {...formItemLayout} colon={false} label={'分运单号'} >
                     <Input />
                   </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
-                  <FormItem {...formItemSpan2Layout} label={'特殊业务标识'} >
+                  <FormItem {...formItemSpan2Layout} colon={false} label={'特殊业务标识'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="12">
-                  <FormItem {...formItemSpan2Layout} label={'特殊通关模式'} >
+                  <FormItem {...formItemSpan2Layout} colon={false} label={'特殊通关模式'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="12">
-                  <FormItem {...formItemSpan2Layout} label={'特殊检验检疫要求'} >
+                  <FormItem {...formItemSpan2Layout} colon={false} label={'特殊检验检疫要求'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="12">
-                  <FormItem {...formItemSpan2Layout} label={'标记号码'} >
+                  <FormItem {...formItemSpan2Layout} colon={false} label={'标记号码'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="12">
-                  <FormItem {...formItemSpan2Layout} label={'所需单证'} >
+                  <FormItem {...formItemSpan2Layout} colon={false} label={'所需单证'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>
                 <Col span="12">
-                  <FormItem {...formItemSpan2Layout} label={'随附单据'} >
+                  <FormItem {...formItemSpan2Layout} colon={false} label={'随附单据'} >
                     <Select mode="combobox" />
                   </FormItem>
                 </Col>

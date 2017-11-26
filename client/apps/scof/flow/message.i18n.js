@@ -84,11 +84,11 @@ const messages = defineMessages({
   },
   cmsDelegation: {
     id: 'scof.flow.biz.cms.delegation',
-    defaultMessage: '委托',
+    defaultMessage: '清关委托',
   },
   cmsDeclManifest: {
     id: 'scof.flow.biz.cms.decl.manifest',
-    defaultMessage: '清单',
+    defaultMessage: '申报清单',
   },
   cmsCustomsDecl: {
     id: 'scof.flow.biz.cms.customs.decl',
@@ -148,11 +148,11 @@ const messages = defineMessages({
   },
   customsEasipass: {
     id: 'scof.flow.biz.cms.customs.easipass',
-    defaultMessage: 'EDI EP',
+    defaultMessage: '亿通EDI',
   },
   customsQuickpass: {
     id: 'scof.flow.biz.cms.customs.quickpass',
-    defaultMessage: 'QP',
+    defaultMessage: 'QP预录入',
   },
   consigner: {
     id: 'scof.flow.biz.tms.consigner',

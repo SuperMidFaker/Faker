@@ -5,7 +5,7 @@ import XLSX from 'xlsx';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Table, Button } from 'antd';
-import DataTable from 'client/components/DataTable';
+import DataPane from 'client/components/DataPane';
 import { string2Bytes } from 'client/util/dataTransform';
 import { formatMsg } from '../message.i18n';
 
@@ -116,7 +116,7 @@ export default class FTZDiscrepancyPane extends React.Component {
         el.serial_no = ins[0].serial_no;
       }
     }
-    return <Table columns={this.expColumns} dataSource={entrylist} rowKey="key" noBorder />;
+    return <Table size="small" columns={this.expColumns} dataSource={entrylist} rowKey="key" />;
   }
   handleExportExcel = () => {
     const csvData = [];
@@ -154,15 +154,16 @@ export default class FTZDiscrepancyPane extends React.Component {
   }
   render() {
     return (
-      <div className="table-panel table-fixed-layout">
-        <DataTable scrollOffset={390} rowKey="id" noBorder expandedRowRender={this.expandedRowRender}
-          columns={this.columns} dataSource={this.props.diffviews} toolbarActions={[
-            <Button icon="export" disabled={!this.props.diffviews.length > 0} onClick={this.handleExportExcel}>
-              {this.msg('export')}
-            </Button>,
-          ]}
-        />
-      </div>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} expandedRowRender={this.expandedRowRender}
+        dataSource={this.props.diffviews} rowKey="id"
+      >
+        <DataPane.Toolbar>
+          <Button icon="export" disabled={!this.props.diffviews.length > 0} onClick={this.handleExportExcel}>
+            {this.msg('export')}
+          </Button>
+        </DataPane.Toolbar>
+      </DataPane>
     );
   }
 }

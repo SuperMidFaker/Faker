@@ -144,7 +144,7 @@ export class RelationAutoCompSelect extends React.Component {
     const custOpt = options.filter(op => op.custcode !== null && op.custcode.length > 0);
     const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 19 }} label={label} required>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 19 }} colon={false} label={label} required>
         <Row gutter={4}>
           <Col span="7">
             <FormItem style={{ marginBottom: 0 }}>
@@ -670,7 +670,7 @@ function FeeFormItem(props) {
     searchKeyFn: opt => opt.search,
   };
   return (
-    <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label}>
+    <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} colon={false} label={label}>
       <Row gutter={4}>
         <Col span={10}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />

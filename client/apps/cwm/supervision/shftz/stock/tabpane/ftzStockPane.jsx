@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Tag } from 'antd';
 import { loadCusStockSnapshot } from 'common/reducers/cwmShFtz';
-import DataTable from 'client/components/DataTable';
+import DataPane from 'client/components/DataPane';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -178,11 +178,10 @@ export default class FTZStockPane extends React.Component {
       },
     };
     return (
-      <div className="table-panel table-fixed-layout">
-        <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}
-          columns={this.columns} dataSource={this.props.cusStockSnapshot} rowSelection={rowSelection} rowKey="id" noBorder
-        />
-      </div>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys}
+        dataSource={this.props.cusStockSnapshot} rowKey="id"
+      />
     );
   }
 }

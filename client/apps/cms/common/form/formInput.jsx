@@ -30,7 +30,7 @@ export default class FormInput extends React.Component {
     const initialValue = formData && formData[field] && String(formData[field]);
     return (
       <Col span={outercol}>
-        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
+        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} colon={false} label={label}
           hasFeedback={hasFeedback} required={required}
         >
           {disabled ?

@@ -32,7 +32,7 @@ export class FormLocalSearchSelect extends React.Component {
     const filterOpt = options.filter(opt => opt.value === initialValue)[0];
     return (
       <Col span={outercol}>
-        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
+        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} colon={false} label={label}
           required={required}
         >
           { disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
