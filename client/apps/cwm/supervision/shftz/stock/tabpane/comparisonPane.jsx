@@ -2,7 +2,7 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import DataTable from 'client/components/DataTable';
+import DataPane from 'client/components/DataPane';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
@@ -72,11 +72,10 @@ export default class FTZComparisonPane extends React.Component {
       },
     };
     return (
-      <div className="table-panel table-fixed-layout">
-        <DataTable selectedRowKeys={this.state.selectedRowKeys} scrollOffset={390}
-          columns={this.columns} dataSource={this.props.views} rowSelection={rowSelection} rowKey="id" noBorder
-        />
-      </div>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={this.columns} rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys}
+        dataSource={this.props.views} rowKey="id"
+      />
     );
   }
 }

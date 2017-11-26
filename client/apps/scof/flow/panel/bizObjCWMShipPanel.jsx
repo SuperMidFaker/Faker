@@ -33,7 +33,7 @@ export default class FlowCwmShippingPanel extends Component {
     const { form, node, graph } = this.props;
     const model = node.get('model');
     return (
-      <Form layout="vertical">
+      <Form layout="vertical" className="form-layout-compact">
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={this.msg('flowNodeCWMShip')} bodyStyle={{ padding: 0 }}>

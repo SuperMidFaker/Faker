@@ -79,6 +79,7 @@ export default class SHFTZTransferOutList extends React.Component {
     width: 200,
     dataIndex: 'ftz_rel_no',
     fixed: 'left',
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',

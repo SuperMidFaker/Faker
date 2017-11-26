@@ -51,7 +51,7 @@ export default class FlowCmsNodePanel extends Component {
     const model = node.get('model');
     const title = model.kind === 'export' ? this.msg('flowNodeExport') : this.msg('flowNodeImport');
     return (
-      <Form layout="vertical">
+      <Form layout="vertical" className="form-layout-compact">
         <Row gutter={16}>
           <Col sm={24} md={8}>
             <Card title={title} bodyStyle={{ padding: 0 }}>

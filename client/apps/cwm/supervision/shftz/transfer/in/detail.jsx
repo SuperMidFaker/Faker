@@ -291,7 +291,7 @@ export default class SHFTZTransferInDetail extends Component {
           <Form layout="vertical">
             <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
-                <Description term="进区凭单号">
+                <Description term="海关入库单号">
                   <EditableCell value={entryRegs[0] && entryRegs[0].ftz_ent_no}
                     onSave={value => this.handleInfoSave(entryRegs[0].ftz_ent_no, 'ftz_ent_no', value)}
                   />

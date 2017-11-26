@@ -24,7 +24,7 @@ export default class FlowEdgePanel extends Component {
   render() {
     const { model, source, target, onAdd, onDel, onUpdate } = this.props;
     return (
-      <Form layout="vertical">
+      <Form layout="vertical" className="form-layout-compact">
         <Card title={this.msg('flowEdge')} bodyStyle={{ padding: 16 }}>
           <Row gutter={16}>
             <Col sm={24} md={8}>

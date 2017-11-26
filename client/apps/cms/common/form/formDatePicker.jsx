@@ -30,7 +30,7 @@ export default class FormDatePicker extends React.Component {
     }
     return (
       <Col span={outercol}>
-        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
+        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} colon={false} label={label}
           required={required} style={{ marginBottom: 0 }}
         >
           {disabled ?

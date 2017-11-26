@@ -106,7 +106,7 @@ export default class DeclElementsModal extends Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
         >
-          <Form className="form-layout-multi-col">
+          <Form className="form-layout-compact">
             <FormItem>
               <TextArea value={model} disabled={disabled} autosize />
             </FormItem>
