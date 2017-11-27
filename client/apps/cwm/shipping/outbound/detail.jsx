@@ -202,7 +202,7 @@ export default class OutboundDetail extends Component {
       regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype && sbr.tagcolor)[0];
       if (regTag) {
         regTypes = [{
-          tooltip: '海关监管',
+          tooltip: '关联监管备案',
           type: outboundHead.bonded_outtype,
           status: outboundHead.reg_status,
         }];
@@ -253,7 +253,7 @@ export default class OutboundDetail extends Component {
                 CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === reg.status)[0];
               if (regStatus) {
                 return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
-                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
+                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 8 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>
                 </Tooltip>);

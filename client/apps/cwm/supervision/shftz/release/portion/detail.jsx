@@ -475,10 +475,11 @@ export default class SHFTZRelDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
-            </Tooltip>
-        }
+            {relSo.outbound_no &&
+            <Button icon="link" onClick={this.handleOutboundPage}>
+              关联出库操作 <Badge status={outStatus.badge} text={outStatus.text} />
+            </Button>
+            }
           </PageHeader.Nav>
           <PageHeader.Actions>
             {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}

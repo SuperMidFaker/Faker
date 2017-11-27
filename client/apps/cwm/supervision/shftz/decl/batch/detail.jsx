@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tooltip, notification } from 'antd';
+import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -370,9 +370,7 @@ export default class BatchDeclDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <Tooltip title="报关清单" placement="bottom">
-              <Button icon="link" onClick={this.handleDelgManifest}>{batchDecl.delg_no}<Badge status="default" text="制单中" /></Button>
-            </Tooltip>
+            <Button icon="link" onClick={this.handleDelgManifest}>关联申报清单 <Badge status="default" text="制单中" /></Button>
           </PageHeader.Nav>
           <PageHeader.Actions>
             {sent && <Button icon="check" loading={submitting} onClick={this.handleQuery}>标记申请完成</Button>}
