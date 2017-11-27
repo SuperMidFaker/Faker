@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag, Tooltip } from 'antd';
+import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -271,9 +271,7 @@ export default class NormalDeclDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <Tooltip title="报关清单" placement="bottom">
-              <Button icon="link" onClick={this.handleDelgManifest}><Badge status="default" text={declStatusText} /></Button>
-            </Tooltip>
+            <Button icon="link" onClick={this.handleDelgManifest}>关联申报清单 <Badge status="default" text={declStatusText} /></Button>
           </PageHeader.Nav>
           <PageHeader.Actions />
         </PageHeader>

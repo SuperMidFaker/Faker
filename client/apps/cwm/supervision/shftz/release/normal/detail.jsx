@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Tabs, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Radio, Tag, notification, Checkbox, message } from 'antd';
+import { Alert, Badge, Tabs, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Radio, Tag, notification, Checkbox, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -490,10 +490,11 @@ export default class SHFTZNormalRelRegDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
-            </Tooltip>
-        }
+            {relSo.outbound_no &&
+            <Button icon="link" onClick={this.handleOutboundPage}>
+              关联出库操作 <Badge status={outStatus.badge} text={outStatus.text} />
+            </Button>
+            }
           </PageHeader.Nav>
           <PageHeader.Actions>
             {relEditable &&

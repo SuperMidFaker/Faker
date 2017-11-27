@@ -135,11 +135,10 @@ export default class ReceiveInbound extends Component {
             {!!inboundHead.bonded && entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
           </PageHeader.Title>
           <PageHeader.Nav>
-            {!!inboundHead.bonded && <Tooltip title="海关监管" placement="bottom">
+            {!!inboundHead.bonded &&
               <Button icon="link" onClick={this.handleRegPage}>
-                <Badge status={regStatus.badge} text={regStatus.text} />
+                关联监管备案 <Badge status={regStatus.badge} text={regStatus.text} />
               </Button>
-            </Tooltip>
             }
           </PageHeader.Nav>
           <PageHeader.Actions>

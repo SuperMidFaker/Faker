@@ -447,7 +447,7 @@ export default class SHFTZEntryDetail extends Component {
     title: '分拨',
     dataIndex: 'cargo_type',
     width: 80,
-    render: cargo => cargo === '14' ? '可分拨' : '非分拨',
+    render: cargo => cargo === '14' ? <Tag color="green">可分拨</Tag> : <Tag>非分拨</Tag>,
   }, {
     title: '入库明细ID',
     dataIndex: 'ftz_ent_detail_id',
