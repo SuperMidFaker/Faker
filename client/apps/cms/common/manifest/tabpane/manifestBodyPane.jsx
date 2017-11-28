@@ -233,9 +233,11 @@ export default class ManifestBodyPane extends React.Component {
   constructor(props) {
     super(props);
     const bodies = props.data;
+    /*
     if (!props.readonly) {
       bodies.push({ id: '__ops' });
     }
+    */
     const calresult = calculateTotal(bodies, props.currencies);
     this.state = {
       editIndex: -1,
@@ -268,9 +270,9 @@ export default class ManifestBodyPane extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       const bodies = [...nextProps.data];
-      if (!nextProps.readonly) {
-        bodies.push({ id: '__ops' });
-      }
+      // if (!nextProps.readonly) {
+        // bodies.push({ id: '__ops' });
+      // }
       const calresult = calculateTotal(bodies, this.props.currencies);
       this.setState({
         bodies,
@@ -285,8 +287,8 @@ export default class ManifestBodyPane extends React.Component {
   }
   getColumns() {
     const { readonly, units, countries, currencies, exemptions, hscodeData } = this.props;
-    const { editIndex, bodies, editBody, pagination } = this.state;
-    const totalCount = bodies.length;
+    const { editIndex, editBody } = this.state;
+    // const totalCount = bodies.length;
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
@@ -501,36 +503,22 @@ export default class ManifestBodyPane extends React.Component {
       width: 100,
       render: freight => freight > 0 ? freight : null,
     }, {
-      width: 40,
+      width: 80,
       className: 'cell-align-center',
       fixed: 'right',
       render: (o, record, index) => {
         if (readonly) {
-          return <span />;
-        } else if (index === editIndex) {
-          return (
-            <span>
-              <RowUpdater onHit={this.handleSave} label={<Icon type="save" />}
-                row={record} index={index}
-              />
-              <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCancel} label={<Icon type="close" />} />
-            </span>
-          );
-        } else if (index + 1 + (pagination.current - 1) * pagination.pageSize === totalCount) {
-          return (
-            <span>
-              <RowUpdater onHit={this.handleEditBody} label={<Icon type="plus" />}
-                index={index} row={{}}
-              />
-            </span>
-          );
+          return (<span />);
         } else {
           return (
             <span>
-              <RowUpdater onHit={this.handleDel} label={<Icon type="delete" />}
+              <RowUpdater onHit={this.handleEditBody} label={<Icon type="edit" />}
                 row={record} index={index}
               />
+              <span className="ant-divider" />
+              <Popconfirm placement="left" title="确认删除?" onConfirm={() => this.handleDel(record, index)}>
+                <a role="presentation"><Icon type="delete" /></a>
+              </Popconfirm>
             </span>
           );
         }
