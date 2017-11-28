@@ -76,6 +76,11 @@ export default class TraderList extends Component {
       dataIndex: 'customs_code',
       key: 'customs_code',
       width: 120,
+    }, {
+      title: '检验检疫代码',
+      dataIndex: 'ciq_code',
+      key: 'ciq_code',
+      width: 120,
   /*
     }, {
       title: '注册海关',

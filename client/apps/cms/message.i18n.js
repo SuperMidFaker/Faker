@@ -111,7 +111,7 @@ const messages = defineMessages({
   },
   preferences: {
     id: 'cms.module.settings.preferences',
-    defaultMessage: '偏好设置',
+    defaultMessage: '参数设定',
   },
 });
 export default messages;

@@ -93,7 +93,7 @@ export default class AdvModelModal extends Component {
   handleSave = () => {
     const { datas, selectedRowKeys } = this.state;
     const csvData = [
-      ['订单号', '清单编号', '报关单号'],
+      ['客户单号', '清单编号', '报关单号'],
       ['NO_DD', 'NO_QD', 'NO_BGD'],
     ];
     for (let i = 0; i < selectedRowKeys.length; i++) {

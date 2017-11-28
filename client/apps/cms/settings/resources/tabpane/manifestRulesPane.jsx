@@ -82,13 +82,15 @@ export default class ManifestRulesPane extends React.Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        width: 60,
+        width: 100,
         render: (_, record) => {
           const ietype = record.i_e_type === 0 ? 'import' : 'export';
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
               <span>
                 <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
+                <span className="ant-divider" />
+                <a onClick={() => this.handleClone(record)}><Icon type="copy" /></a>
                 <span className="ant-divider" />
                 <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
                   <a><Icon type="delete" /></a>

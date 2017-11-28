@@ -106,7 +106,7 @@ export default class ManifestList extends Component {
     dataIndex: 'bl_wb_no',
     width: 220,
   }, {
-    title: '订单号',
+    title: '客户单号',
     width: 160,
     dataIndex: 'order_no',
   }, {

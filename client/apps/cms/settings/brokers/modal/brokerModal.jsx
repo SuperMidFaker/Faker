@@ -12,6 +12,10 @@ const Option = Select.Option;
 
 const role = PARTNER_ROLES.SUP;
 const businessType = PARTNER_BUSINESSE_TYPES.clearance;
+const formItemLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 14 },
+};
 
 function fetchData({ dispatch, state }) {
   return dispatch(loadPartners({
@@ -45,6 +49,7 @@ export default class BrokerModal extends React.Component {
   state = {
     name: '',
     customsCode: '',
+    ciqCode: '',
     partnerUniqueCode: '',
   }
   componentWillReceiveProps(nextProps) {
@@ -122,21 +127,24 @@ export default class BrokerModal extends React.Component {
   }
   render() {
     const { visible, operation, partners, brokers } = this.props;
-    const { name, customsCode, partnerUniqueCode } = this.state;
+    const { name, customsCode, ciqCode, partnerUniqueCode } = this.state;
     const filterPartners = partners.filter(partner => !brokers.find(broker => broker.comp_partner_id === partner.id));
     return (
       <Modal maskClosable={false} title={operation === 'add' ? '新增报关报检代理' : '修改报关报检代理'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
-        <Form layout="vertical">
-          {visible && <FormItem label="企业名称" required>
+        <Form layout="horizontal">
+          {visible && <FormItem label="企业名称" required {...formItemLayout}>
             <Select mode="combobox" value={name} onChange={this.handleNameChange} style={{ width: '100%' }} onSelect={this.handleSelect}>
               {filterPartners.map(partner => (<Option value={partner.name} key={partner.name}>{partner.name}</Option>))}
             </Select>
           </FormItem>}
-          <FormItem label="统一社会信用代码" required>
+          <FormItem label="统一社会信用代码" required {...formItemLayout}>
             <Input required value={partnerUniqueCode} onChange={this.handleUniqueCodeChange} />
           </FormItem>
-          <FormItem label="海关编码" required>
+          <FormItem label="海关编码" required {...formItemLayout}>
             <Input value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} />
+          </FormItem>
+          <FormItem label="检验检疫代码" {...formItemLayout}>
+            <Input value={ciqCode} onChange={e => this.setState({ ciqCode: e.target.value })} />
           </FormItem>
         </Form>
       </Modal>

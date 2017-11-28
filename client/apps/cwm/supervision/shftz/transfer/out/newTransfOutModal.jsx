@@ -245,7 +245,7 @@ export default class NewTransfOutModal extends Component {
       },
     };
     const title = (<div>
-      <span>新建区内转出备案</span>
+      <span>新建区内移库转出</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
         <Button type="primary" disabled={this.state.relDetails.length === 0} loading={submitting} onClick={this.handleTransfOutSave}>保存</Button>
@@ -278,7 +278,7 @@ export default class NewTransfOutModal extends Component {
               </Card>
             </Col>
             <Col sm={24} md={16} lg={14}>
-              <Card title="出库备案明细" bodyStyle={{ padding: 0 }}>
+              <Card title="转出明细" bodyStyle={{ padding: 0 }}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search placeholder="海关入库单号" style={{ width: 200 }} onChange={this.handleDetailFilterChange} value={relDetailFilter} />

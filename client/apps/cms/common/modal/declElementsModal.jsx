@@ -92,8 +92,8 @@ export default class DeclElementsModal extends Component {
     const { form: { getFieldDecorator }, disabled, name } = this.props;
     const { model, others } = this.state;
     const formItemLayout = {
-      labelCol: { span: 12 },
-      wrapperCol: { span: 12 },
+      labelCol: { span: 8 },
+      wrapperCol: { span: 16 },
     };
     const element = this.props.element ? this.props.element.split(';') : [];
     const gModel = this.props.gModel ? this.props.gModel.split('|') : [];
@@ -108,13 +108,13 @@ export default class DeclElementsModal extends Component {
         >
           <Form className="form-layout-compact">
             <FormItem>
-              <TextArea value={model} disabled={disabled} autosize />
+              <TextArea value={model} disabled autosize />
             </FormItem>
             <Alert message="根据海关规定应填报以下要素" type="info" closable />
             {element.map((item, index) => {
               if (item && index >= 1) {
                 return (
-                  <FormItem {...formItemLayout} label={item}>
+                  <FormItem {...formItemLayout} label={item} key={item}>
                     {getFieldDecorator(item, {
                       initialValue: gModel[index - 1] || '',
                     })(
@@ -124,7 +124,7 @@ export default class DeclElementsModal extends Component {
                 );
               } else if (item && index === 0) {
                 return (
-                  <FormItem {...formItemLayout} label={item}>
+                  <FormItem {...formItemLayout} label={item} key={item}>
                     <Input disabled value={name} />
                   </FormItem>
                 );
@@ -135,7 +135,6 @@ export default class DeclElementsModal extends Component {
             <FormItem {...formItemLayout} label="其他">
               <Input value={others} disabled={disabled} onChange={this.handleOthersChange} />
             </FormItem>
-
           </Form>
         </Modal>
       </div>
