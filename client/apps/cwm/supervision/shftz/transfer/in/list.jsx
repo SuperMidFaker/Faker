@@ -208,7 +208,7 @@ export default class SHFTZTransferInList extends React.Component {
     this.context.router.push('/cwm/ftz/receive/reg');
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/transfer/in/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/transfer/in/${row.pre_ftz_ent_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {

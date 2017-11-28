@@ -179,7 +179,7 @@ export default class TransferSelfModal extends Component {
     render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
   }]
   handleAddReg = (row) => {
-    this.props.loadVtransferRegDetails({ preEntrySeqNo: row.pre_entry_seq_no }).then((result) => {
+    this.props.loadVtransferRegDetails({ ftzEntNo: row.ftz_ent_no }).then((result) => {
       if (!result.error) {
         const entNo = row.ftz_ent_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(
@@ -212,7 +212,7 @@ export default class TransferSelfModal extends Component {
     this.props.loadEntryTransRegs({
       ownerCusCode,
       whseCode: this.props.defaultWhse.code,
-      preSeqNo: entryRegNo,
+      ftzEntNo: entryRegNo,
       start_date: relDateRange.length === 2 ? relDateRange[0].valueOf() : undefined,
       end_date: relDateRange.length === 2 ? relDateRange[1].valueOf() : undefined,
     });

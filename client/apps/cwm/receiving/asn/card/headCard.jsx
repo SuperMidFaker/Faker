@@ -163,7 +163,7 @@ export default class HeadCard extends Component {
               <FormItem label="进区凭单号">
                 {getFieldDecorator('transfer_in_bills', {
                   initialValue: asnHead && asnHead.transfer_in_bills,
-                })(<Input placeholder="多个进库单号以逗号分隔" />)}
+                })(<Input />)}
               </FormItem>
             </Col>
           }

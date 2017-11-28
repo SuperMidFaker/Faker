@@ -89,10 +89,12 @@ export default class ReceiveInbound extends Component {
   handleTabChange = (activeTab) => {
     this.setState({ activeTab });
   }
-  handleRegPage = () => {
+  handleRegPage = () => { // todo
+    /*
     const link = this.props.inboundHead.bonded_intype === 'transfer' ? `/cwm/supervision/shftz/transfer/in/${this.props.inboundHead.asn_no}`
       : `/cwm/supervision/shftz/entry/${this.props.inboundHead.asn_no}`;
     this.context.router.push(link);
+    */
   }
   render() {
     const { defaultWhse, inboundHead } = this.props;

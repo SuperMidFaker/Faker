@@ -65,10 +65,6 @@ export default class SHFTZEntryList extends React.Component {
     if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
-    let type = listFilter.type;
-    if (['all', 'bonded', 'export'].filter(stkey => stkey === type).length === 0) {
-      type = 'all';
-    }
     let ownerView = listFilter.ownerView;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
@@ -238,7 +234,7 @@ export default class SHFTZEntryList extends React.Component {
     this.context.router.push('/cwm/ftz/receive/reg');
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/entry/${row.pre_entry_seq_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {

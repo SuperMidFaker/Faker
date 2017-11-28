@@ -184,17 +184,7 @@ export default class ReceivingASNList extends React.Component {
           {record.status === CWM_ASN_STATUS.INBOUND.value && <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />}
           {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowUpdater onHit={this.handleInbound} label="差异处理" row={record} />}
           {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleInbound} label="入库详情" row={record} />}</span>);
-        if (record.bonded) {
-          return (<span>
-            {inbndActions}
-            <span className="ant-divider" />
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleSupervision} label="海关备案" row={record} />
-              : <RowUpdater onHit={this.handleSupervision} label="备案详情" row={record} />}
-          </span>
-          );
-        } else {
-          return (<span>{inbndActions}</span>);
-        }
+        return (<span>{inbndActions}</span>);
       }
     },
   }]
