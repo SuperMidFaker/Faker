@@ -37,7 +37,8 @@ export class FormLocalSearchSelect extends React.Component {
         >
           { disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
-              <Select mode="combobox" optionLabelProp="children"
+              <Select
+                optionLabelProp="children"
                 showSearch={!!searchKeyFn}
                 showArrow
                 allowClear
@@ -88,16 +89,18 @@ export class FormRemoteSearchSelect extends React.Component {
     const filterOpt = options.filter(opt => opt.value === initialValue)[0];
     return (
       <Col span={outercol}>
-        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} label={label}
+        <FormItem labelCol={{ span: col }} wrapperCol={{ span: 24 - col }} colon={false} label={label}
           required={required} style={{ marginBottom: 0 }}
         >
           {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
             getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
               <Select
-                mode="combobox"
                 optionLabelProp="children"
                 disabled={disabled}
-                showSearch allowClear onSearch={this.handleSearch} optionFilterProp="children"
+                showSearch
+                allowClear
+                onSearch={this.handleSearch}
+                optionFilterProp="children"
               >
                 {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)

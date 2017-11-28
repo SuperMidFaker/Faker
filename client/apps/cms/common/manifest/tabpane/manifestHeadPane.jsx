@@ -47,7 +47,7 @@ export default class ManifestHeadPane extends React.Component {
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
   }
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+    // document.addEventListener('keydown', this.handleKeyDown);
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleKeyDown = (event) => {
@@ -138,7 +138,7 @@ export default class ManifestHeadPane extends React.Component {
           </Popconfirm>}
         </div>
         <div className="pane-content form-layout-multi-col">
-          <Form layout="horizontal" colon={false} hideRequiredMark>
+          <Form layout="horizontal" hideRequiredMark>
             <Card bodyStyle={{ padding: 16 }} hoverable={false}>
               <Row>
                 <Col span="8">
