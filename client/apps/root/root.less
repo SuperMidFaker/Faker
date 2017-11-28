@@ -222,6 +222,9 @@ img {
 .ant-table-placeholder {
   border-bottom: none;
 }
+.ant-table-bordered .ant-table-body > table,
+.ant-table-bordered .ant-table-fixed-left table, 
+.ant-table-bordered .ant-table-fixed-right table,
 .ant-table-bordered .ant-table-header>table {
   border: none;
 }
@@ -989,6 +992,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   .ant-form-item {
     margin-bottom: 8px;
   }
+  .has-error .ant-form-explain, .has-error .ant-form-split {
+    display: none;
+  }
 }
 .form-layout-multi-col {
   .ant-col-5,
@@ -1003,6 +1009,9 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   .ant-form-item-label {
     text-align: left;
     padding-left: 16px;
+  }
+  .has-error .ant-form-explain, .has-error .ant-form-split {
+    display: none;
   }
 }
 .form-row {

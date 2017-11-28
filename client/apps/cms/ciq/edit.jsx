@@ -105,7 +105,6 @@ export default class CiqDeclEdit extends React.Component {
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
     const declEntryMenu = (
       <Menu onClick={this.handleLinkMenuClick}>
-        <Menu.Item key="manifest">申报清单</Menu.Item>
         {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
           <Icon type="file" /> 关联报关单{bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
         )}
@@ -142,6 +141,7 @@ export default class CiqDeclEdit extends React.Component {
             <Dropdown overlay={declEntryMenu}>
               <Button ><Icon type="link" />转至 <Icon type="down" /></Button>
             </Dropdown>
+            <Button icon="file-excel">九城商检导出</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large">

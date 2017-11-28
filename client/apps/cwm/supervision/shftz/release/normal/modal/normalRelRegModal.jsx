@@ -85,6 +85,10 @@ export default class NormalRelRegModal extends Component {
     dataIndex: 'ftz_ent_no',
     width: 180,
   }, {
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
+    width: 150,
+  }, {
     title: '客户单号',
     dataIndex: 'po_no',
   }, {
@@ -97,6 +101,10 @@ export default class NormalRelRegModal extends Component {
     title: '海关入库单号',
     dataIndex: 'ftz_ent_no',
     width: 180,
+  }, {
+    title: '报关单号',
+    dataIndex: 'cus_decl_no',
+    width: 150,
   }, {
     title: '货号',
     dataIndex: 'product_no',

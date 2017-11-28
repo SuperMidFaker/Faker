@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Card, Form, Switch } from 'antd';
+import { Card, Col, Form, Switch } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadHsCodeCategories } from 'common/reducers/cmsHsCode';
 import { format } from 'client/common/i18n/helpers';
@@ -45,16 +45,18 @@ export default class MergeSplitRulesPane extends React.Component {
     const { mergeSplit } = this.state;
     const { form, form: { getFieldDecorator }, formData } = this.props;
     return (
-      <div className="pane">
+      <div className="pane form-layout-compact">
         <div className="panel-header">
           <FormItem>{getFieldDecorator('set_merge_split')(
             <Switch checked={mergeSplit} onChange={this.handleOnChange} checkedChildren={'启用'} unCheckedChildren={'关闭'} />)}
           </FormItem>
         </div>
         <div className="pane-content">
-          <Card bodyStyle={{ padding: 0 }} hoverable={false}>
-            <MergeSplitForm form={form} formData={formData} />
-          </Card>
+          <Col sm={24} lg={12}>
+            <Card bodyStyle={{ padding: 0 }} hoverable={false}>
+              <MergeSplitForm form={form} formData={formData} />
+            </Card>
+          </Col>
         </div>
       </div>
     );

@@ -35,7 +35,7 @@ export default defineMessages({
   },
   searchPlaceholder: {
     id: 'cms.delegation.search.placeholder',
-    defaultMessage: '委托编号/提运单号/订单号',
+    defaultMessage: '委托编号/提运单号/客户单号',
   },
   delegationManagement: {
     id: 'cms.delegation.management',
@@ -115,7 +115,7 @@ export default defineMessages({
   },
   orderNo: {
     id: 'cms.delegation.order.no',
-    defaultMessage: '订单号',
+    defaultMessage: '客户单号',
   },
   voyageNo: {
     id: 'cms.delegation.voyage.no',

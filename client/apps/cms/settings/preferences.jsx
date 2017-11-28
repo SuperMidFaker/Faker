@@ -64,7 +64,7 @@ export default class Preferences extends Component {
                 设置
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-                偏好设置
+                参数设定
             </Breadcrumb.Item>
           </Breadcrumb>
         </Header>
@@ -76,6 +76,7 @@ export default class Preferences extends Component {
               <Radio style={radioStyle} value="ALL">同时显示</Radio>
             </RadioGroup>
           </Card>
+          <Card title="报检规则" />
         </Content>
       </Layout>
     );

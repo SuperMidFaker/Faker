@@ -6,7 +6,7 @@ import { toggleBusinessUnitModal, addBusinessUnit, updateBusinessUnit } from 'co
 
 const FormItem = Form.Item;
 const formItemLayout = {
-  labelCol: { span: 6 },
+  labelCol: { span: 8 },
   wrapperCol: { span: 14 },
 };
 
@@ -38,6 +38,7 @@ export default class TraderModal extends React.Component {
     name: '',
     code: '',
     customsCode: '',
+    ciqCode: '',
     type: '',
   }
   componentWillReceiveProps(nextProps) {
@@ -87,7 +88,7 @@ export default class TraderModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { name, code, customsCode } = this.state;
+    const { name, code, customsCode, ciqCode } = this.state;
     return (
       <Modal maskClosable={false} title={this.props.operation === 'add' ? '新增收发货人' : '修改收发货人'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="horizontal">
@@ -99,6 +100,9 @@ export default class TraderModal extends React.Component {
           </FormItem>
           <FormItem label="海关编码" {...formItemLayout}>
             <Input required value={customsCode} onChange={e => this.setState({ customsCode: e.target.value })} placeholder="10位海关编码" />
+          </FormItem>
+          <FormItem label="检验检疫代码" {...formItemLayout}>
+            <Input required value={ciqCode} onChange={e => this.setState({ ciqCode: e.target.value })} placeholder="检验检疫代码" />
           </FormItem>
         </Form>
       </Modal>

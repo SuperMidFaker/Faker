@@ -239,7 +239,7 @@ export default class DelegationDockPanel extends React.Component {
           />
         </Col>
         <Col span="6">
-          <InfoItem label="订单号"
+          <InfoItem label="客户单号"
             field={delegation.order_no}
           />
         </Col>
