@@ -500,11 +500,11 @@ export default(store) => {
                 <IndexRedirect to="/cwm/supervision/shftz/entry" />
                 <Route path="entry" >
                   <IndexRoute component={CWMSupSHFTZEntry.List} />
-                  <Route path=":asnNo" component={CWMSupSHFTZEntry.Detail} />
+                  <Route path=":preEntrySeqNo" component={CWMSupSHFTZEntry.Detail} />
                 </Route>
                 <Route path="transfer/in" >
                   <IndexRoute component={CWMSupSHFTZTransferIn.List} />
-                  <Route path=":asnNo" component={CWMSupSHFTZTransferIn.Detail} />
+                  <Route path=":preFtzEntNo" component={CWMSupSHFTZTransferIn.Detail} />
                 </Route>
                 <Route path="transfer/self" >
                   <IndexRoute component={CWMSupSHFTZTransferSelf.List} />

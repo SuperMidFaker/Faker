@@ -206,6 +206,11 @@ export default class SHFTZRelDetail extends Component {
           message: '操作失败',
           description: '仓库监管系统未配置',
         });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
+        });
       }
     });
   }
