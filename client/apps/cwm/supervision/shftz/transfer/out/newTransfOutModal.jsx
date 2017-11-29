@@ -59,7 +59,7 @@ export default class NewTransfOutModal extends Component {
       this.setState({ transferSource: nextProps.transferSource });
     }
   }
-
+  srcAddedMap = {}
   soSrcColumns = [{
     title: 'SO编号',
     dataIndex: 'so_no',
@@ -76,7 +76,8 @@ export default class NewTransfOutModal extends Component {
     title: '添加',
     width: 80,
     fixed: 'right',
-    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSoDetails(record)} />,
+    render: (o, record) => !this.srcAddedMap[record.so_no] &&
+    <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSoDetails(record)} />,
   }]
   relDetailColumns = [{
     title: '海关入库单号',
@@ -132,35 +133,33 @@ export default class NewTransfOutModal extends Component {
     title: '删除',
     width: 80,
     fixed: 'right',
-    render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
+    render: (o, record) => (<Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} />),
   }]
   handleAddSoDetails = (row) => {
     this.props.loadSoRelDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relDetails = this.state.relDetails.filter(reg => reg.so_no !== row.so_no).concat(result.data);
-        const transferSource = this.state.transferSource.map(pr => pr.so_no === row.so_no ? { ...pr, added: true } : pr);
-        this.setState({ relDetails, transferSource });
+        this.srcAddedMap[row.so_no] = true;
+        this.setState({ relDetails });
       }
     });
   }
   handleDelDetail = (detail) => {
     const relDetails = this.state.relDetails.filter(reld => reld.id !== detail.id);
-    const transferSource = this.state.transferSource.map(pr => pr.so_no === detail.so_no ? { ...pr, added: false } : pr);
-    this.setState({ relDetails, transferSource });
+    this.srcAddedMap[detail.so_no] = false;
+    this.setState({ relDetails });
   }
   handleRelBatchDelete = () => {
     const { selRelDetailKeys, relDetails } = this.state;
-    const transferSource = [...this.state.transferSource];
     const newRelDetails = [];
     for (let i = 0; i < relDetails.length; i++) {
       const detail = relDetails[i];
       if (!selRelDetailKeys.find(key => key === detail.id)) {
         newRelDetails.push(detail);
       }
-      transferSource.find(pr => pr.so_no === detail.so_no).added = false;
+      this.srcAddedMap[detail.so_no] = false;
     }
     this.setState({
-      transferSource,
       relDetails: newRelDetails,
       selRelDetailKeys: [],
     });
@@ -173,6 +172,7 @@ export default class NewTransfOutModal extends Component {
       srcFilter: {},
       relDetailFilter: '',
     });
+    this.srcAddedMap = {};
     this.props.closeNewTransfOutModal();
   }
   handleSrcFilterChange = (field, value) => {
