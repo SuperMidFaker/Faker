@@ -209,8 +209,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, cargolist: action.result.data.list, cargoRule: action.result.data.rule, loading: false };
     case actionTypes.UPDATE_ERFIELD_SUCCEED: {
       const regs = state.entry_regs.map((er) => {
-        if (er.pre_entry_seq_no === action.data.pre_entry_seq_no) {
-          return { ...er, [action.data.field]: action.data.value };
+        if (er.pre_ftz_ent_no === action.data.preFtzEntNo) {
+          return { ...er, [action.data.field]: action.data.value, ...action.result.data };
         } else {
           return er;
         }

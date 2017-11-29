@@ -130,6 +130,8 @@ export default class SHFTZEntryDetail extends Component {
         }
       }
       newState.reg = nextProps.entryRegs[0];
+      newState.filingDetails = newState.reg.details;
+      newState.view = 'splitted';
       this.setState(newState);
     }
   }
@@ -214,7 +216,8 @@ export default class SHFTZEntryDetail extends Component {
     this.props.entryRegs.forEach((er) => {
       wb.SheetNames.push(er.pre_ftz_ent_no);
       const mergedRegDetails = [];
-      er.details.sort((era, erb) => era.ent_g_no - erb.ent_g_no).forEach((erd) => {
+      const details = [...er.details];
+      details.sort((era, erb) => era.ent_g_no - erb.ent_g_no).forEach((erd) => {
         if (mergedRegDetails[erd.ent_g_no - 1]) {
           mergedRegDetails[erd.ent_g_no - 1].qty += erd.qty;
           mergedRegDetails[erd.ent_g_no - 1].net_wt += erd.net_wt;
@@ -315,6 +318,8 @@ export default class SHFTZEntryDetail extends Component {
     this.setState({
       tabKey,
       reg: this.props.entryRegs[tabKey],
+      filingDetails: this.props.entryRegs[tabKey].details,
+      view: 'splitted',
     });
     this.handleDeselectRows();
   }
@@ -340,21 +345,51 @@ export default class SHFTZEntryDetail extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleViewChange = (e) => {
-    const { merged, reg } = this.state;
-    let filingDetails;
-    if (e.target.value === 'merged') {
-      filingDetails = merged;
-    } else {
-      filingDetails = reg.details;
+  handleViewChange = (ev) => {
+    const { reg } = this.state;
+    const details = [...reg.details];
+    let filingDetails = details;
+    if (ev.target.value === 'merged') {
+      filingDetails = [];
+      details.sort((era, erb) => era.ent_g_no - erb.ent_g_no).forEach((erd) => {
+        if (filingDetails[erd.ent_g_no - 1]) {
+          filingDetails[erd.ent_g_no - 1].qty += erd.qty;
+          filingDetails[erd.ent_g_no - 1].stock_qty += erd.stock_qty;
+          filingDetails[erd.ent_g_no - 1].net_wt += erd.net_wt;
+          filingDetails[erd.ent_g_no - 1].stock_netwt += erd.stock_netwt;
+          filingDetails[erd.ent_g_no - 1].gross_wt += erd.gross_wt;
+          filingDetails[erd.ent_g_no - 1].stock_grosswt += erd.stock_grosswt;
+          filingDetails[erd.ent_g_no - 1].amount += erd.amount;
+          filingDetails[erd.ent_g_no - 1].stock_amount += erd.stock_amount;
+          filingDetails[erd.ent_g_no - 1].amount_usd += erd.amount_usd;
+          filingDetails[erd.ent_g_no - 1].stock_amountusd += erd.stock_amountusd;
+          filingDetails[erd.ent_g_no - 1].freight += erd.freight;
+          filingDetails[erd.ent_g_no - 1].stock_freight += erd.stock_freight;
+        } else {
+          filingDetails.push(Object.assign({}, erd, {
+            asn_seq_no: null,
+            product_no: null,
+          }));
+        }
+      });
+      filingDetails = filingDetails.map(fld => Object.assign({}, fld, {
+        net_wt: parseFloat(fld.net_wt.toFixed(6)),
+        stock_netwt: parseFloat(fld.stock_netwt.toFixed(6)),
+        gross_wt: parseFloat(fld.gross_wt.toFixed(6)),
+        stock_grosswt: parseFloat(fld.stock_grosswt.toFixed(6)),
+        amount: parseFloat(fld.amount.toFixed(2)),
+        stock_amount: parseFloat(fld.stock_amount.toFixed(2)),
+        freight: parseFloat(fld.freight.toFixed(2)),
+        stock_freight: parseFloat(fld.stock_freight.toFixed(2)),
+      }));
     }
     this.setState({
-      view: e.target.value,
+      view: ev.target.value,
       filingDetails,
     });
   }
   handleSplitNumber = (value) => {
-    this.setState({ split: value });
+    this.setState({ splitNum: value });
   }
   handleRegSequenceSplit = () => {
     const splitNum = this.state.splitNum;
@@ -364,7 +399,7 @@ export default class SHFTZEntryDetail extends Component {
         this.props.loadEntryDetails({ preEntrySeqNo });
         notification.success({
           message: '操作成功',
-          description: `成功拆分为${splitNum}进区凭单`,
+          description: `成功拆分为${splitNum}份进区凭单`,
         });
       } else {
         notification.error({
@@ -490,7 +525,7 @@ export default class SHFTZEntryDetail extends Component {
   }]
   render() {
     const { primaryEntryReg, entryRegs, whse, submitting } = this.props;
-    const { reg, alertInfo, splitNum } = this.state;
+    const { reg, alertInfo, splitNum, filingDetails } = this.state;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === primaryEntryReg.ftz_ent_type)[0];
     const entryEditable = primaryEntryReg.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;
@@ -504,7 +539,7 @@ export default class SHFTZEntryDetail extends Component {
     };
     const tabList = [];
     entryRegs.forEach((r, index) => tabList.push({ tab: r.ftz_ent_no || r.pre_ftz_ent_no, key: index }));
-    const stat = reg.details && reg.details.reduce((acc, regd) => ({
+    const stat = filingDetails && filingDetails.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.qty,
       total_amount: acc.total_amount + regd.amount,
       total_net_wt: acc.total_net_wt + regd.net_wt,
@@ -534,7 +569,7 @@ export default class SHFTZEntryDetail extends Component {
                 {entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.props.params.asnNo}
+                {primaryEntryReg.cus_decl_no || this.props.params.preEntrySeqNo}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
@@ -556,11 +591,11 @@ export default class SHFTZEntryDetail extends Component {
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
             { entryRegs.length === 1 && entryEditable &&
             <Popover placement="bottom" title="份数" content={<span>
-              <InputNumber min={2} max={entryRegs[0].details.length} value={splitNum} />
-              <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleSplitNumber}>确定</Button>
+              <InputNumber min={2} max={entryRegs[0].details.length} value={splitNum} onChange={this.handleSplitNumber} />
+              <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
             </span>} trigger="click"
             >
-              <Button onClick={this.handleRegSequenceSplit}>拆分进库凭单</Button>
+              <Button>拆分进库凭单</Button>
             </Popover>}
             {primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
@@ -590,7 +625,7 @@ export default class SHFTZEntryDetail extends Component {
                 <Description term="进区更新时间">{primaryEntryReg.ftz_ent_date && moment(primaryEntryReg.ftz_ent_date).format('YYYY-MM-DD HH:mm')}</Description>
               </DescriptionList>
               <div className="card-footer">
-                <Steps progressDot current={primaryEntryReg.reg_status}>
+                <Steps progressDot current={reg.status}>
                   <Step title="待进区" />
                   <Step title="已备案" />
                   <Step title="已进区" />
@@ -600,7 +635,7 @@ export default class SHFTZEntryDetail extends Component {
             <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <DataPane header="备案明细" fullscreen={this.state.fullscreen}
                 columns={this.columns} rowSelection={rowSelection} indentSize={0}
-                dataSource={reg.details} rowKey="id" loading={this.state.loading}
+                dataSource={filingDetails} rowKey="id" loading={this.state.loading}
               >
                 <DataPane.Toolbar>
                   <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
