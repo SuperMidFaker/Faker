@@ -148,7 +148,7 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
-    render: o => o && this.props.userMembers.find(member => member.login_id === o).name,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
