@@ -58,12 +58,13 @@ export default class BrokerModal extends React.Component {
         name: nextProps.broker.comp_name,
         customsCode: nextProps.broker.customs_code,
         partnerUniqueCode: nextProps.broker.comp_code,
+        ciqCode: nextProps.broker.ciqCode,
       });
     }
   }
   handleOk = () => {
     const { broker, operation } = this.props;
-    const { name, customsCode, partnerUniqueCode } = this.state;
+    const { name, customsCode, partnerUniqueCode, ciqCode } = this.state;
     if (name === '') {
       message.error('请填写企业名称');
     } else if (operation === 'add' && partnerUniqueCode === '') {
@@ -75,7 +76,7 @@ export default class BrokerModal extends React.Component {
     } else if (customsCode && customsCode.length !== 10) {
       message.error(`海关编码必须为10位, 当前${customsCode.length}位`);
     } else if (operation === 'edit') {
-      this.props.editBroker(broker.id, name, customsCode, partnerUniqueCode).then((result) => {
+      this.props.editBroker(broker.id, name, customsCode, partnerUniqueCode, ciqCode).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
