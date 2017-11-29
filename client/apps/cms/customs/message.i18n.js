@@ -39,7 +39,7 @@ export default defineMessages({
   },
   declNo: {
     id: 'cms.customs.decl.decl.no',
-    defaultMessage: '报关单号/统一编号',
+    defaultMessage: '报关单号/内部编号',
   },
   entryId: {
     id: 'cms.customs.decl.decl.entryId',
