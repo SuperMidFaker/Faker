@@ -8,7 +8,7 @@ import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
-import { loadCiqDeclGoods, showGoodsModal } from 'common/reducers/cmsDeclare';
+import { loadCiqDeclGoods, showGoodsModal } from 'common/reducers/cmsCiqDeclare';
 import GoodsModal from '../modal/goodsModal';
 import messages from '../message.i18n';
 
@@ -37,11 +37,12 @@ function calculateTotal(bodies) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    currencies: state.cmsDeclare.ciqParams.currencies,
-    ports: state.cmsDeclare.ciqParams.ports,
-    countries: state.cmsDeclare.ciqParams.countries,
-    units: state.cmsDeclare.ciqParams.units,
+    currencies: state.cmsCiqDeclare.ciqParams.currencies,
+    ports: state.cmsCiqDeclare.ciqParams.ports,
+    countries: state.cmsCiqDeclare.ciqParams.countries,
+    units: state.cmsCiqDeclare.ciqParams.units,
     loginId: state.account.loginId,
+    ciqDeclGoods: state.cmsCiqDeclare.ciqDeclGoods,
   }), { showDeclElementsModal, getElementByHscode, loadCiqDeclGoods, showGoodsModal }
 )
 export default class CiqDeclGoodsPane extends React.Component {
@@ -60,7 +61,6 @@ export default class CiqDeclGoodsPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bodies: [],
       pagination: {
         current: 1,
         total: 0,
@@ -79,7 +79,6 @@ export default class CiqDeclGoodsPane extends React.Component {
       if (!result.error) {
         const calresult = calculateTotal(result.data);
         this.setState({
-          bodies: result.data,
           totQty: calresult.totQty,
           totWet: calresult.totWet,
           totStdQty: calresult.totStdQty,
@@ -189,14 +188,14 @@ export default class CiqDeclGoodsPane extends React.Component {
     this.props.showGoodsModal(record);
   }
   render() {
-    const { ioType } = this.props;
+    const { ioType, ciqDeclGoods } = this.props;
     const { totQty, totWet, totStdQty } = this.state;
     const columns = this.getColumns();
     return (
       <div className="pane">
         <DataPane fullscreen={this.props.fullscreen}
           columns={columns} bordered scrollOffset={312} onRowClick={this.handleOnRowClick}
-          dataSource={this.state.bodies} rowKey="id" loading={this.state.loading}
+          dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
         >
           <DataPane.Toolbar>
             <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
