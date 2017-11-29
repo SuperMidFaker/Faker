@@ -9,7 +9,8 @@ import PageHint from 'client/components/PageHint';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCiqDecls, setInspect, setCiqFinish } from 'common/reducers/cmsDeclare';
+import { setInspect } from 'common/reducers/cmsDeclare';
+import { loadCiqDecls } from 'common/reducers/cmsCiqDeclare';
 import { createFilename } from 'client/util/dataTransform';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
@@ -46,10 +47,10 @@ ColumnSwitch.propTypes = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    ciqdeclList: state.cmsDeclare.ciqdeclList,
-    listFilter: state.cmsDeclare.cjqListFilter,
+    ciqdeclList: state.cmsCiqDeclare.ciqdeclList,
+    listFilter: state.cmsCiqDeclare.cjqListFilter,
   }),
-  { loadCiqDecls, openCiqModal, setCiqFinish, setInspect, showPreviewer }
+  { loadCiqDecls, openCiqModal, setInspect, showPreviewer }
 )
 @connectNav({
   depth: 2,
@@ -212,9 +213,6 @@ export default class CiqDeclList extends Component {
         this.handleTableLoad();
       }
     });
-  }
-  handleCiqFinish = (row) => {
-    this.props.setCiqFinish(row.entry_id, row.delg_no);
   }
   handleTableLoad = (currentPage, filter) => {
     this.setState({ expandedKeys: [] });
