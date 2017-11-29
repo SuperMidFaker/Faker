@@ -239,6 +239,9 @@ export default class SHFTZTransferInDetail extends Component {
   }
   render() {
     const { transfInReg, entryRegs, whse, submitting } = this.props;
+    if (entryRegs.length !== 1) {
+      return null;
+    }
     const entType = CWM_ASN_BONDED_REGTYPES[2];
     const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === transfInReg.inbound_status)[0];
     const rowSelection = {

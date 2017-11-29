@@ -9,6 +9,7 @@ import { closeNewTransfOutModal, loadParams, loadNormalSoRegs,
 
 const Search = Input.Search;
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 @injectIntl
 @connect(
@@ -25,6 +26,8 @@ const Option = Select.Option;
       value: cr.curr_code,
       text: cr.curr_name,
     })),
+    receivers: state.cwmContext.whseAttrs.receivers.filter(recv =>
+        recv.customs_code && recv.ftz_whse_code && recv.name),
     submitting: state.cwmShFtz.submitting,
   }),
   { closeNewTransfOutModal, loadParams, loadNormalSoRegs, loadSoRelDetails, newTransfOutRegBySo }
@@ -36,6 +39,7 @@ export default class NewTransfOutModal extends Component {
   }
   state = {
     ownerCusCode: '',
+    receiverCode: '',
     srcFilter: { bill_no: '' },
     transferSource: [],
     relDetails: [],
@@ -163,6 +167,7 @@ export default class NewTransfOutModal extends Component {
   }
   handleCancel = () => {
     this.setState({ ownerCusCode: '',
+      receiverCode: '',
       transferSource: [],
       relDetails: [],
       srcFilter: {},
@@ -196,7 +201,7 @@ export default class NewTransfOutModal extends Component {
       count: soCountObj[relNo],
     }));
     const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode)[0];
-    this.props.newTransfOutRegBySo({ detailIds, soCounts, owner: owner.id, whse_code: this.props.defaultWhse.code }).then((result) => {
+    this.props.newTransfOutRegBySo({ detailIds, soCounts, owner: owner.id, whse_code: this.props.defaultWhse.code, receiver: this.state.receiverCode }).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -219,17 +224,17 @@ export default class NewTransfOutModal extends Component {
       filter: {},
     });
   }
+  handleReceiverChange = (receiverCode) => {
+    this.setState({ receiverCode });
+  }
   handleRegSrcQuery = () => {
-    const { ownerCusCode, srcFilter } = this.state;
-    this.props.loadNormalSoRegs({
-      owner_cus_code: ownerCusCode,
-      whse_code: this.props.defaultWhse.code,
-      filter: srcFilter,
-    });
+    const { srcFilter } = this.state;
+    const transferSource = this.props.transferSource.filter(tfs => !srcFilter.bill_no || tfs.cust_order_no === srcFilter.bill_no);
+    this.setState({ transferSource });
   }
   render() {
-    const { submitting, owners } = this.props;
-    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, ownerCusCode } = this.state;
+    const { submitting, owners, receivers } = this.props;
+    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, ownerCusCode, receiverCode } = this.state;
     const dataSource = relDetails.filter((item) => {
       if (relDetailFilter) {
         const reg = new RegExp(relDetailFilter);
@@ -255,15 +260,24 @@ export default class NewTransfOutModal extends Component {
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
+        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
+          <Form layout="inline" className="form-layout-compact">
+            <FormItem label="货主">
+              <Select onChange={this.handleOwnerChange} value={ownerCusCode} allowClear style={{ width: 200 }}>
+                {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+              </Select>
+            </FormItem>
+            <FormItem label="收货仓库">
+              <Select onChange={this.handleReceiverChange} value={receiverCode} allowClear style={{ width: 200 }}>
+                {receivers.map(recv => (<Option key={recv.code} value={recv.code}>{recv.customs_code} | {recv.name} | {recv.ftz_whse_code}</Option>))}
+              </Select>
+            </FormItem>
+          </Form>
+        </Card>
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title={
-                <Select size="small" placeholder="货主" onChange={this.handleOwnerChange} style={{ width: 200, fontSize: 16 }} value={ownerCusCode}>
-                  {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
-                </Select>
-              } bodyStyle={{ padding: 0 }}
-              >
+              <Card title="出库单" bodyStyle={{ padding: 0 }}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户单号"

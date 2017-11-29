@@ -4,6 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Card, DatePicker, Table, Form, Modal, Select, Tag, Input, message } from 'antd';
+import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import { loadParams, showTransferInModal, loadEntryTransRegs, loadVtransferRegDetails, saveVirtualTransfer } from 'common/reducers/cwmShFtz';
 
@@ -247,7 +248,7 @@ export default class TransferSelfModal extends Component {
 
   render() {
     const { submitting } = this.props;
-    const { entryRegNo, relDateRange, transRegs, ownerCusCode } = this.state;
+    const { entryRegNo, relDateRange, transRegs, ownerCusCode, regDetails } = this.state;
     const extraForm = (
       <Form layout="inline">
         <FormItem label="货主">
@@ -270,10 +271,10 @@ export default class TransferSelfModal extends Component {
       <span>新建监管库存转移</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" disabled={this.state.regDetails.length === 0} loading={submitting} onClick={this.handleSaveTrans}>保存</Button>
+        <Button type="primary" disabled={regDetails.length === 0} loading={submitting} onClick={this.handleSaveTrans}>保存</Button>
       </div>
     </div>);
-    const stat = transRegs.reduce((acc, regd) => ({
+    const stat = regDetails.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
       total_netwt: acc.total_netwt + regd.stock_netwt,
@@ -283,31 +284,26 @@ export default class TransferSelfModal extends Component {
       total_netwt: 0,
     });
     const detailStatForm = (
-      <Form layout="inline">
-        <FormItem label="总数量">
-          <Input defaultValue={stat.total_qty} />
-        </FormItem>
-        <FormItem label="总净重">
-          <Input defaultValue={stat.total_netwt} />
-        </FormItem>
-        <FormItem label="总金额">
-          <Input defaultValue={stat.total_amount} />
-        </FormItem>
-      </Form>);
+      <Summary>
+        <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+        <Summary.Item label="总净重" addonAfter="KG">{stat.total_netwt.toFixed(3)}</Summary.Item>
+        <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+      </Summary>
+      );
     return (
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
         <Card title="入库单" extra={extraForm} bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.entryRegColumns} dataSource={this.state.transRegs} rowKey="id"
+            <Table size="middle" columns={this.entryRegColumns} dataSource={transRegs} rowKey="ftz_ent_no"
               scroll={{ x: this.entryRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>
         </Card>
         <Card title="入库单明细" extra={detailStatForm} bodyStyle={{ padding: 0 }} hoverable={false}>
           <div className="table-panel table-fixed-layout">
-            <Table size="middle" columns={this.regDetailColumns} dataSource={this.state.regDetails} rowKey="id"
+            <Table size="middle" columns={this.regDetailColumns} dataSource={regDetails} rowKey="id"
               scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
             />
           </div>
