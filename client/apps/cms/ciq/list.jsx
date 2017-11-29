@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Button } from 'antd';
+import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
+import PageHint from 'client/components/PageHint';
 import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
@@ -76,6 +77,7 @@ export default class CiqDeclList extends Component {
     dataIndex: 'pre_entry_seq_no',
     width: 180,
     fixed: 'left',
+    render: (o, record) => record.ciq_decl_no ? <span className="text-emphasis">{record.ciq_decl_no}</span> : <span className="text-normal">{o}</span>,
   }, {
     title: <Tooltip title="申报项数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -96,7 +98,7 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('ciqClNo'),
     dataIndex: 'ciq_cl_no',
-    width: 100,
+    width: 180,
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',
@@ -287,9 +289,7 @@ export default class CiqDeclList extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Button icon="export">
-              {this.msg('导出')}
-            </Button>
+            <PageHint />
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
