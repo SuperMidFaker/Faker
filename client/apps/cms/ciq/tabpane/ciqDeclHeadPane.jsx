@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
-import { Card, DatePicker, Form, Icon, Input, Select, Row, Col, message } from 'antd';
+import { Card, DatePicker, Form, Icon, Input, Select, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import { fillEntryId } from 'common/reducers/cmsManifest';
-import { updateMark } from 'common/reducers/cmsDeclare';
+import { updateMark, loadCiqDeclHead, loadCiqParams } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -17,8 +18,13 @@ const InputGroup = Input.Group;
 @connect(
   state => ({
     formRequire: state.cmsManifest.params,
+    organizetions: state.cmsDeclare.ciqParams.organizetions,
+    currencies: state.cmsDeclare.ciqParams.currencies,
+    ports: state.cmsDeclare.ciqParams.ports,
+    countries: state.cmsDeclare.ciqParams.countries,
+    units: state.cmsDeclare.ciqParams.units,
   }),
-  { fillEntryId, updateMark }
+  { fillEntryId, updateMark, loadCiqDeclHead, loadCiqParams }
 )
 export default class CiqDeclHeadPane extends React.Component {
   static propTypes = {
@@ -30,50 +36,26 @@ export default class CiqDeclHeadPane extends React.Component {
     fillEntryId: PropTypes.func.isRequired,
     updateMark: PropTypes.func.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
+  state = {
+    head: {},
+  }
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
-  }
-  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
-  handleKeyDown = (event) => {
-    if (event.keyCode === 13) {
-      event.stopPropagation();
-      event.preventDefault();
-      const inputs = document.forms[0].elements;
-      for (let i = 0; i < inputs.length; i++) {
-        if (i === (inputs.length - 1)) {
-          inputs[0].focus();
-          inputs[0].select();
-          break;
-        } else if (event.target === inputs[i]) {
-          inputs[i + 1].focus();
-          inputs[i + 1].select();
-          break;
-        }
-      }
-    } else if (event.keyCode === 8) {
-      event.target.select();
-    }
-  }
-  handleEntryFill = (entryNo) => {
-    const { formData } = this.props;
-    this.props.fillEntryId({
-      entryNo,
-      entryHeadId: formData.id,
-      billSeqNo: formData.bill_seq_no,
-      delgNo: formData.delg_no,
-    }).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
+    this.props.loadCiqDeclHead(this.context.router.params.declNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          head: result.data,
+        });
       }
     });
+    this.props.loadCiqParams();
   }
-  handleMarkFill = (val, field) => {
-    const change = {};
-    change[field] = val;
-    this.props.updateMark(change, this.props.formData.id);
-  }
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   render() {
-    const { formData, ioType } = this.props;
+    const { ioType, organizetions, countries, ports } = this.props;
+    const { head } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -110,18 +92,18 @@ export default class CiqDeclHeadPane extends React.Component {
           <div className="panel-header">
             <Row>
               <Col span="6">
-                <InfoItem size="small" field={formData.pre_entry_id}
+                <InfoItem size="small" field={head.pre_entry_seq_no}
                   addonBefore={this.msg('统一编号')}
                 />
               </Col>
               <Col span="6">
-                <InfoItem size="small" field={formData.entry_id} placeholder="点击回填"
-                  addonBefore={this.msg('报检号')} editable={!formData.entry_id} onEdit={this.handleEntryFill}
+                <InfoItem size="small" field={head.ciq_decl_no} placeholder="点击回填"
+                  addonBefore={this.msg('报检号')}
                 />
               </Col>
               <Col span="6">
-                <InfoItem size="small" field={formData.entry_id} placeholder="点击回填"
-                  addonBefore={this.msg('通关单号')} editable={!formData.entry_id} onEdit={this.handleEntryFill}
+                <InfoItem size="small" field={head.ciq_customs_no} placeholder="点击回填"
+                  addonBefore={this.msg('通关单号')}
                 />
               </Col>
             </Row>
@@ -131,12 +113,12 @@ export default class CiqDeclHeadPane extends React.Component {
               <Row>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'报检类别'} required >
-                    <Select mode="combobox" />
+                    <Input value={head.ciq_decl_type} />
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'报检机构'} required >
-                    <Input prefix={<Icon type="safety" />} />
+                    <Input prefix={<Icon type="safety" />} value={head.ciq_org_code && organizetions.find(org => org.org_code === head.ciq_org_code)} />
                   </FormItem>
                 </Col>
                 <Col span="6">
@@ -154,24 +136,24 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} colon={false} label={'报检单位'} required >
                     <InputGroup compact>
-                      <Input placeholder="报检登记号" style={{ width: '30%' }} />
-                      <Input placeholder="中文名称" style={{ width: '70%' }} />
+                      <Input placeholder="报检登记号" value={head.agent_ciq_code} style={{ width: '30%' }} />
+                      <Input placeholder="中文名称" value={head.agent_name} style={{ width: '70%' }} />
                     </InputGroup>
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'报检员'} >
                     <InputGroup compact>
-                      <Input placeholder="编码" style={{ width: '50%' }} />
-                      <Input placeholder="姓名" style={{ width: '50%' }} />
+                      <Input placeholder="编码" value={head.agent_ciq_person_certno} style={{ width: '50%' }} />
+                      <Input placeholder="姓名" value={head.agent_ciq_person} style={{ width: '50%' }} />
                     </InputGroup>
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'联系人'} >
                     <InputGroup compact>
-                      <Input placeholder="姓名" style={{ width: '50%' }} />
-                      <Input placeholder="电话" style={{ width: '50%' }} />
+                      <Input placeholder="姓名" value={head.agent_ciq_contact} style={{ width: '50%' }} />
+                      <Input placeholder="电话" value={head.agent_ciq_tel} style={{ width: '50%' }} />
                     </InputGroup>
                   </FormItem>
                 </Col>
@@ -180,9 +162,9 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="18">
                   <FormItem {...formItemSpan3Layout} colon={false} label={'收货人'} required >
                     <InputGroup compact>
-                      <Select placeholder="收货人代码" style={{ width: '20%' }} />
-                      <Input placeholder="收货人中文" style={{ width: '40%' }} />
-                      <Input placeholder="收货人英文" style={{ width: '40%' }} />
+                      <Input placeholder="收货人代码" style={{ width: '20%' }} />
+                      <Input placeholder="收货人中文" value={head.ciq_consignor_name_cn} style={{ width: '40%' }} />
+                      <Input placeholder="收货人英文" value={head.ciq_consignor_name_en} style={{ width: '40%' }} />
                     </InputGroup>
                   </FormItem>
                 </Col>
@@ -196,15 +178,15 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="18">
                   <FormItem {...formItemSpan3Layout} colon={false} label={'发货人'} >
                     <InputGroup compact>
-                      <Select placeholder="发货人代码" style={{ width: '20%' }} />
-                      <Input placeholder="发货人中文" style={{ width: '40%' }} />
-                      <Input placeholder="发货人英文" style={{ width: '40%' }} />
+                      <Input placeholder="发货人代码" value={head.ciq_consignor_code} style={{ width: '20%' }} />
+                      <Input placeholder="发货人中文" value={head.ciq_consignor_name_cn} style={{ width: '40%' }} />
+                      <Input placeholder="发货人英文" value={head.ciq_consignor_name_en} style={{ width: '40%' }} />
                     </InputGroup>
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'发货人地址'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'发货人地址'} >
+                    <Input value={head.ciq_consignor_addr} />
                   </FormItem>
                 </Col>
               </Row>}
@@ -212,9 +194,9 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="18">
                   <FormItem {...formItemSpan3Layout} colon={false} label={'发货人'} required >
                     <InputGroup compact>
-                      <Select placeholder="发货人代码" style={{ width: '20%' }} />
-                      <Input placeholder="发货人中文" style={{ width: '40%' }} />
-                      <Input placeholder="发货人英文" style={{ width: '40%' }} />
+                      <Input placeholder="发货人代码" value={head.ciq_consignor_code} style={{ width: '20%' }} />
+                      <Input placeholder="发货人中文" value={head.ciq_consignor_name_cn} style={{ width: '40%' }} />
+                      <Input placeholder="发货人英文" value={head.ciq_consignor_name_en} style={{ width: '40%' }} />
                     </InputGroup>
                   </FormItem>
                 </Col>
@@ -228,15 +210,15 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="18">
                   <FormItem {...formItemSpan3Layout} colon={false} label={'收货人'} >
                     <InputGroup compact>
-                      <Select placeholder="收货人代码" style={{ width: '20%' }} />
-                      <Input placeholder="收货人中文" style={{ width: '40%' }} />
-                      <Input placeholder="收货人英文" style={{ width: '40%' }} />
+                      <Input placeholder="收货人代码" value={head.ciq_consignee_code} style={{ width: '20%' }} />
+                      <Input placeholder="收货人中文" value={head.ciq_consignee_name_cn} style={{ width: '40%' }} />
+                      <Input placeholder="收货人英文" value={head.ciq_consignee_name_en} style={{ width: '40%' }} />
                     </InputGroup>
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'收货人地址'} >
-                    <Input />
+                    <Input value={head.ciq_consignee_addr} />
                   </FormItem>
                 </Col>
               </Row>}
@@ -245,67 +227,67 @@ export default class CiqDeclHeadPane extends React.Component {
               <Row>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'运输方式'} required >
-                    <Select mode="combobox" />
+                    <Input value={head.traf_mode} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'运输工具名称'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'运输工具名称'} >
+                    <Input value={head.traf_name} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'运输工具号码'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'运输工具号码'} >
+                    <Input value={head.traf_mean_no} />
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'提货单号'} >
-                    <Select mode="combobox" />
+                  <FormItem {...formItemLayout} label={'提货单号'} >
+                    <Input value={head.delivery_order} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'提/运单号'} required >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'提/运单号'} required >
+                    <Input value={head.bill_lad_no} />
                   </FormItem>
                 </Col>}
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'合同号'} required >
-                    <Select mode="combobox" />
+                  <FormItem {...formItemLayout} label={'合同号'} required >
+                    <Input value={head.contr_no} />
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'贸易方式'} required >
-                    <Input />
+                    <Input value={head.ciq_trade_mode} />
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'贸易国别'} required >
-                    <Input />
+                    <Input value={countries.find(cou => cou.country_code === head.ciq_trade_country) && countries.find(cou => cou.country_code === head.ciq_trade_country).country_cn_name} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'启运口岸'} required >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'启运口岸'} required >
+                    <Input value={ports.find(port => port.port_code === head.ciq_desp_dest_port) && ports.find(port => port.port_code === head.ciq_desp_dest_port).port_cname} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'启运国家'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'启运国家'} >
+                    <Input value={countries.find(cou => cou.country_code === head.ciq_desp_dest_country) && countries.find(cou => cou.country_code === head.ciq_desp_dest_country).country_cn_name} />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'施检机构'} required >
-                    <Input prefix={<Icon type="safety" />} />
+                    <Input prefix={<Icon type="safety" />} value={head.ciq_insp_orgcode} />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'输往国家/地区'} >
-                    <Input />
+                    <Input value={head.ciq_desp_dest_country} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'停经口岸'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'停经口岸'} >
+                    <Input value={ports.find(port => port.port_code === head.ciq_stop_port) && ports.find(port => port.port_code === head.ciq_stop_port).port_cname} />
                   </FormItem>
                 </Col>}
                 <Col span="6">
@@ -314,13 +296,13 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'目的地'} required >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'目的地'} required >
+                    <Input value={head.dest_code} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'目的机构'} required >
-                    <Input prefix={<Icon type="safety" />} />
+                  <FormItem {...formItemLayout} label={'目的机构'} required >
+                    <Input prefix={<Icon type="safety" />} value={head.ciq_purp_orgcode} />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
@@ -329,33 +311,33 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>}
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'存放地点'} required >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'存放地点'} required >
+                    <Input value={head.goods_place} />
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} colon={false} label={'领证机构'} required >
-                    <Input prefix={<Icon type="safety" />} />
+                    <Input prefix={<Icon type="safety" />} value={head.ciq_vsa_orgcode} />
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'启运日期'} required >
-                    <DatePicker style={{ width: '100%' }} />
+                  <FormItem {...formItemLayout} label={'启运日期'} required >
+                    <DatePicker style={{ width: '100%' }} value={head.desp_date ? moment(head.desp_date, 'YYYY/MM/DD') : ''} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'到货日期'} required >
-                    <DatePicker style={{ width: '100%' }} />
+                  <FormItem {...formItemLayout} label={'到货日期'} required >
+                    <DatePicker style={{ width: '100%' }} value={head.arrival_date ? moment(head.arrival_date, 'YYYY/MM/DD') : ''} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'卸毕日期'} >
-                    <DatePicker style={{ width: '100%' }} />
+                  <FormItem {...formItemLayout} label={'卸毕日期'} >
+                    <DatePicker style={{ width: '100%' }} value={head.cmpl_dschrg_date ? moment(head.cmpl_dschrg_date, 'YYYY/MM/DD') : ''} />
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'索赔截止日期'} >
-                    <DatePicker style={{ width: '100%' }} />
+                  <FormItem {...formItemLayout} label={'索赔截止日期'} >
+                    <DatePicker style={{ width: '100%' }} value={head.counter_claim_date ? moment(head.counter_claim_date, 'YYYY/MM/DD') : ''} />
                   </FormItem>
                 </Col>}
                 {ioType === 'out' && <Col span="6">
@@ -364,50 +346,50 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>}
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'报关海关'} >
-                    <Select mode="combobox" />
+                  <FormItem {...formItemLayout} label={'报关海关'} >
+                    <Input value={head.decl_port} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'海关注册号'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'海关注册号'} >
+                    <Input value={head.customs_reg_no} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'关联报检号'} >
-                    <Select mode="combobox" />
+                  <FormItem {...formItemLayout} label={'关联报检号'} >
+                    <Input value={head.correl_ciq_decl_no} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'关联理由'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'关联理由'} >
+                    <Input value={head.correl_reason_flag} />
                   </FormItem>
                 </Col>
                 <Col span="6">
-                  <FormItem {...formItemLayout} colon={false} label={'分运单号'} >
-                    <Input />
+                  <FormItem {...formItemLayout} label={'分运单号'} >
+                    <Input value={head.split_bill_lad_no} />
                   </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} colon={false} label={'特殊业务标识'} >
-                    <Select mode="combobox" />
+                    <Input value={head.special_decl_flag} />
                   </FormItem>
                 </Col>
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} colon={false} label={'特殊通关模式'} >
-                    <Select mode="combobox" />
+                    <Input value={head.spec_pass_flag} />
                   </FormItem>
                 </Col>
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} colon={false} label={'特殊检验检疫要求'} >
-                    <Select mode="combobox" />
+                    <Input value={head.specl_insp_qura_re} />
                   </FormItem>
                 </Col>
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} colon={false} label={'标记号码'} >
-                    <Select mode="combobox" />
+                    <Input value={head.mark_no} />
                   </FormItem>
                 </Col>
                 <Col span="12">
@@ -417,7 +399,7 @@ export default class CiqDeclHeadPane extends React.Component {
                 </Col>
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} colon={false} label={'随附单据'} >
-                    <Select mode="combobox" />
+                    <Input value={head.atta_collect_name} />
                   </FormItem>
                 </Col>
               </Row>
