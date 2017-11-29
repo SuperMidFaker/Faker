@@ -9,7 +9,8 @@ import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import AddManifestRuleModal from '../modal/addManifestRuleModal';
-import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
+import ManifestRuleCloneModal from '../modal/manifestRuleCloneModal';
+import { loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal } from 'common/reducers/cmsManifest';
 import { CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 
 const { Content } = Layout;
@@ -22,7 +23,7 @@ const formatMsg = format(messages);
     billtemplates: state.cmsManifest.billtemplates,
     customer: state.cmsResources.customer,
   }),
-  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal }
+  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal }
 )
 
 export default class ManifestRulesPane extends React.Component {
@@ -55,6 +56,9 @@ export default class ManifestRulesPane extends React.Component {
   }
   handleAddBtnClicked = () => {
     this.props.toggleBillTempModal(true, 'add');
+  }
+  handleClone = (record) => {
+    this.props.showManifestRulesCloneModal(record.id, record.i_e_type);
   }
   render() {
     const columns = [
@@ -113,6 +117,7 @@ export default class ManifestRulesPane extends React.Component {
           <Table size="middle" columns={columns} dataSource={datas} rowKey="id" />
         </div>
         <AddManifestRuleModal customer={this.props.customer} />
+        <ManifestRuleCloneModal />
       </Content>
     );
   }
