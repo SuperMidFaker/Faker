@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip } from 'antd';
+import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
+import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCiqDecls, setInspect, setCiqFinish } from 'common/reducers/cmsDeclare';
+import { createFilename } from 'client/util/dataTransform';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { intlShape, injectIntl } from 'react-intl';
@@ -44,7 +46,7 @@ ColumnSwitch.propTypes = {
   state => ({
     tenantId: state.account.tenantId,
     ciqdeclList: state.cmsDeclare.ciqdeclList,
-    listFilter: state.cmsDeclare.listFilter,
+    listFilter: state.cmsDeclare.cjqListFilter,
   }),
   { loadCiqDecls, openCiqModal, setCiqFinish, setInspect, showPreviewer }
 )
@@ -159,7 +161,13 @@ export default class CiqDeclList extends Component {
     fixed: 'right',
     render: (o, record) => {
       const ioPart = record.i_e_type === 0 ? 'in' : 'out';
-      return <NavLink to={`/clearance/ciqdecl/${ioPart}/${record.pre_entry_seq_no}`}>详情</NavLink>;
+      return (
+        <span>
+          <NavLink to={`/clearance/ciqdecl/${ioPart}/${record.pre_entry_seq_no}`}>详情</NavLink>
+          <span className="ant-divider" />
+          <RowUpdater onHit={this.exportCjqDecl} label="导出" row={record} />
+        </span>
+      );
     },
   }]
   dataSource = new DataTable.DataSource({
@@ -241,6 +249,14 @@ export default class CiqDeclList extends Component {
     }
     return newFilters;
   }
+  handleIEFilter = (e) => {
+    const { listFilter, ciqdeclList } = this.props;
+    const newFilters = { ...listFilter, ieType: e.target.value };
+    this.handleTableLoad(ciqdeclList.current, newFilters);
+  }
+  exportCjqDecl = (row) => {
+    window.open(`${API_ROOTS.default}v1/cms/clearance/ciqdecl/${createFilename('ciqdecl')}.xlsx?preEntrySeqNo=${row.pre_entry_seq_no}`);
+  }
   render() {
     const { ciqdeclList, listFilter } = this.props;
     this.dataSource.remotes = ciqdeclList;
@@ -264,12 +280,17 @@ export default class CiqDeclList extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <RadioGroup value={listFilter.iotype} onChange={this.handleIOFilter} >
+            <RadioGroup value={listFilter.ieType} onChange={this.handleIEFilter} >
               <RadioButton value="all">{this.msg('all')}</RadioButton>
               <RadioButton value="import">{this.msg('import')}</RadioButton>
               <RadioButton value="export">{this.msg('export')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
+          <PageHeader.Actions>
+            <Button icon="export">
+              {this.msg('导出')}
+            </Button>
+          </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}
