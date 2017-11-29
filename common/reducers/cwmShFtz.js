@@ -69,6 +69,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_CUSSTOSS', 'LOAD_CUSSTOSS_SUCCEED', 'LOAD_CUSSTOSS_FAIL',
   'LOAD_BATCH_DECL', 'LOAD_BATCH_DECL_SUCCEED', 'LOAD_BATCH_DECL_FAIL',
   'LOAD_NONBONDED_STOCKS', 'LOAD_NONBONDED_STOCKS_SUCCEED', 'LOAD_NONBONDED_STOCKS_FAIL',
+  'LOAD_ASNENT', 'LOAD_ASNENT_SUCCEED', 'LOAD_ASNENT_FAIL',
 ]);
 
 const initialState = {
@@ -1327,7 +1328,7 @@ export function loadBatchDecl(ftzRelNo) {
         actionTypes.LOAD_BATCH_DECL_SUCCEED,
         actionTypes.LOAD_BATCH_DECL_FAIL,
       ],
-      endpoint: 'v1/cwm/batch/decl/load',
+      endpoint: 'v1/cwm/shftz/batch/decl/load',
       method: 'get',
       params: { ftzRelNo },
     },
@@ -1342,9 +1343,24 @@ export function loadNonbondedStocks(params) {
         actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED,
         actionTypes.LOAD_NONBONDED_STOCKS_FAIL,
       ],
-      endpoint: 'v1/cwm/nonbonded/stock/load',
+      endpoint: 'v1/cwm/shftz/nonbonded/stock/load',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadAsnEntries(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ASNENT,
+        actionTypes.LOAD_ASNENT_SUCCEED,
+        actionTypes.LOAD_ASNENT_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/reg/byasn',
+      method: 'get',
+      params: { asnNo },
     },
   };
 }
