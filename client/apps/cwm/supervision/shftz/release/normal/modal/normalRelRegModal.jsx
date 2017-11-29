@@ -60,7 +60,9 @@ export default class NormalRelRegModal extends Component {
       this.setState({ normalSources: nextProps.normalSources });
     }
   }
-
+  soNormalSrcAddedMap = {}
+  entNormalSrcAddedMap = {}
+  entDetailNormalSrcAddedMap = {}
   msg = key => formatMsg(this.props.intl, key);
   soNormalSrcColumns = [{
     title: 'SO编号',
@@ -78,7 +80,8 @@ export default class NormalRelRegModal extends Component {
     title: '添加',
     width: 80,
     fixed: 'right',
-    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSoDetails(record)} />,
+    render: (o, record) => !this.soNormalSrcAddedMap[record.so_no] &&
+    <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSoDetails(record)} />,
   }]
   ftzEntryNormalSrcColumns = [{
     title: '海关入库单号',
@@ -95,7 +98,8 @@ export default class NormalRelRegModal extends Component {
     title: '添加',
     width: 80,
     fixed: 'right',
-    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddEntryDetails(record)} />,
+    render: (o, record) => !this.entNormalSrcAddedMap[record.ftz_ent_no]
+    && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddEntryDetails(record)} />,
   }]
   ftzEntryDetailNormalSrcColumns = [{
     title: '海关入库单号',
@@ -128,7 +132,8 @@ export default class NormalRelRegModal extends Component {
     title: '添加',
     width: 80,
     fixed: 'right',
-    render: (o, record) => !record.added && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSrcDetail(record)} />,
+    render: (o, record) => !this.entDetailNormalSrcAddedMap[record.id]
+    && <Button type="primary" size="small" icon="plus" onClick={() => this.handleAddSrcDetail(record)} />,
   }]
   relDetailColumns = [{
     title: '海关入库单号',
@@ -184,14 +189,14 @@ export default class NormalRelRegModal extends Component {
     title: '删除',
     width: 80,
     fixed: 'right',
-    render: (o, record) => (<span><Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} /></span>),
+    render: (o, record) => (<Button type="danger" size="small" ghost icon="minus" onClick={() => this.handleDelDetail(record)} />),
   }]
   handleAddSoDetails = (row) => {
     this.props.loadSoRelDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relDetails = this.state.relDetails.filter(reg => reg.so_no !== row.so_no).concat(result.data);
-        const normalSources = this.state.normalSources.map(pr => pr.so_no === row.so_no ? { ...pr, added: true } : pr);
-        this.setState({ relDetails, normalSources });
+        this.soNormalSrcAddedMap[row.so_no] = true;
+        this.setState({ relDetails });
       }
     });
   }
@@ -199,47 +204,44 @@ export default class NormalRelRegModal extends Component {
     this.props.loadNormalEntryRegDetails(row.ftz_ent_no).then((result) => {
       if (!result.error) {
         const relDetails = this.state.relDetails.filter(reg => reg.ftz_ent_no !== row.ftz_ent_no).concat(result.data);
-        const normalSources = this.state.normalSources.map(pr => pr.ftz_ent_no === row.ftz_ent_no ? { ...pr, added: true } : pr);
-        this.setState({ relDetails, normalSources });
+        this.entNormalSrcAddedMap[row.ftz_ent_no] = true;
+        this.setState({ relDetails });
       }
     });
   }
   handleAddSrcDetail = (row) => {
     const relDetails = [...this.state.relDetails];
     relDetails.push(row);
-    const normalSources = this.state.normalSources.map(pr => pr.id === row.id ? { ...pr, added: true } : pr);
-    this.setState({ relDetails, normalSources });
+    this.entDetailNormalSrcAddedMap[row.id] = true;
+    this.setState({ relDetails });
   }
   handleDelDetail = (detail) => {
     const relDetails = this.state.relDetails.filter(reld => reld.id !== detail.id);
-    let normalSources;
     if (this.state.srcType === 'so_no') {
-      normalSources = this.state.normalSources.map(pr => pr.so_no === detail.so_no ? { ...pr, added: false } : pr);
+      this.soNormalSrcAddedMap[detail.so_no] = false;
     } else if (this.state.srcType === 'ftz_ent_no') {
-      normalSources = this.state.normalSources.map(pr => pr.ftz_ent_no === detail.ftz_ent_no ? { ...pr, added: false } : pr);
+      this.entNormalSrcAddedMap[detail.ftz_ent_no] = false;
     } else if (this.state.srcType === 'ftz_ent_stock') {
-      normalSources = this.state.normalSources.map(pr => pr.id === detail.id ? { ...pr, added: false } : pr);
+      this.entDetailNormalSrcAddedMap[detail.id] = false;
     }
-    this.setState({ relDetails, normalSources });
+    this.setState({ relDetails });
   }
   handleRelBatchDelete = () => {
     const { selRelDetailKeys, relDetails, srcType } = this.state;
-    const normalSources = [...this.state.normalSources];
     const newRelDetails = [];
     for (let i = 0; i < relDetails.length; i++) {
       const detail = relDetails[i];
       if (!selRelDetailKeys.find(key => key === detail.id)) {
         newRelDetails.push(detail);
       } else if (srcType === 'so_no') {
-        normalSources.find(pr => pr.so_no === detail.so_no).added = false;
+        this.soNormalSrcAddedMap[detail.so_no] = false;
       } else if (srcType === 'ftz_ent_no') {
-        normalSources.find(pr => pr.ftz_ent_no === detail.ftz_ent_no).added = false;
+        this.entNormalSrcAddedMap[detail.ftz_ent_no] = false;
       } else if (srcType === 'ftz_ent_stock') {
-        normalSources.find(pr => pr.id === detail.id).added = false;
+        this.entDetailNormalSrcAddedMap[detail.id] = false;
       }
     }
     this.setState({
-      normalSources,
       relDetails: newRelDetails,
       selRelDetailKeys: [],
     });
@@ -253,6 +255,9 @@ export default class NormalRelRegModal extends Component {
       relDetailFilter: '',
     });
     this.props.closeNormalRelRegModal();
+    this.soNormalSrcAddedMap = {};
+    this.entNormalSrcAddedMap = {};
+    this.entDetailNormalSrcAddedMap = {};
   }
   handleSrcFilterChange = (field, value) => {
     const srcFilter = { ...this.state.srcFilter };
@@ -327,19 +332,41 @@ export default class NormalRelRegModal extends Component {
         relDetails = [];
       }
     }
-    this.setState({ normalRegColumns, srcType: value, relDetails });
+    this.setState({ normalRegColumns, srcType: value, relDetails, srcFilter: {} });
     this.handleLoadNormalSrc(value, {
       owner_cus_code: this.state.ownerCusCode,
       whse_code: this.props.defaultWhse.code,
     });
   }
   handleNormalSrcQuery = () => {
-    const { ownerCusCode, srcFilter, srcType } = this.state;
-    this.handleLoadNormalSrc(srcType, {
-      owner_cus_code: ownerCusCode,
-      whse_code: this.props.defaultWhse.code,
-      filter: srcFilter,
+    const { srcFilter, srcType } = this.state;
+    const normalSources = this.props.normalSources.filter((ns) => {
+      if (srcType === 'so_no') {
+        if (!srcFilter.bill_no) {
+          return true;
+        }
+        return ns.cust_order_no === srcFilter.bill_no;
+      } else if (srcType === 'ftz_ent_no') {
+        if (!srcFilter.bill_no) {
+          return true;
+        }
+        return ns.ftz_ent_no === srcFilter.bill_no;
+      } else if (srcType === 'ftz_ent_stock') {
+        let filtered = true;
+        if (srcFilter.bill_no) {
+          filtered = filtered && ns.ftz_ent_no === srcFilter.bill_no;
+        }
+        if (srcFilter.product_no) {
+          filtered = filtered && ns.product_no === srcFilter.product_no;
+        }
+        if (srcFilter.name) {
+          filtered = filtered && ns.g_name === srcFilter.name;
+        }
+        return filtered;
+      }
+      return false;
     });
+    this.setState({ normalSources });
   }
   handleLoadNormalSrc = (srcType, query) => {
     let loadNS;
@@ -395,6 +422,9 @@ export default class NormalRelRegModal extends Component {
         />,
         <Input key="product_no" value={srcFilter.product_no} placeholder="货号"
           onChange={ev => this.handleSrcFilterChange('product_no', ev.target.value)} style={{ width: 200, marginLeft: 8 }}
+        />,
+        <Input key="name" value={srcFilter.name} placeholder="品名"
+          onChange={ev => this.handleSrcFilterChange('name', ev.target.value)} style={{ width: 200, marginLeft: 8 }}
         />,
       );
     }
