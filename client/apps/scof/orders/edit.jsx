@@ -4,14 +4,21 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, message, Layout } from 'antd';
+import { notification, Breadcrumb, Button, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
-import { loadFormRequires, loadOrder, editOrder } from 'common/reducers/crmOrders';
+import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/crmOrders';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
+
+const VALIDATE_MSG = {
+  no_customer: '请选择客户',
+  no_goods_type: '请选择货物类型',
+  no_flowid: '请选择流程',
+  cust_order_no_exist: '客户订单号已存在',
+};
 
 function fetchData({ state, location, dispatch }) {
   const proms = [
@@ -29,21 +36,15 @@ function fetchData({ state, location, dispatch }) {
 })
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    username: state.account.username,
     tenantName: state.account.tenantName,
     formData: state.crmOrders.formData,
     saving: state.crmOrders.orderSaving,
   }),
-  { editOrder }
+  { editOrder, validateOrder }
 )
 export default class EditOrder extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    username: PropTypes.string.isRequired,
     tenantName: PropTypes.string.isRequired,
     formData: PropTypes.object.isRequired,
     editOrder: PropTypes.func.isRequired,
@@ -53,23 +54,47 @@ export default class EditOrder extends Component {
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSave = () => {
-    const { formData, tenantId, loginId, username, tenantName } = this.props;
-    if (formData.customer_name === '') {
-      message.error('请选择客户');
-    } else if (formData.cust_shipmt_goods_type === null) {
-      message.error('请选择货物类型');
-    } else if (!formData.flow_id) {
-      message.error('请选择流程');
-    } else {
-      this.props.editOrder({ formData, tenantId, loginId, username, tenantName }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功');
-          this.context.router.push('/scof/orders');
-        }
-      });
+    const { formData } = this.props;
+    this.props.validateOrder(formData).then((result) => {
+      if (result.error) {
+        notification.error({
+          description: result.error.message,
+          duration: 15,
+        });
+      } else if (result.data.level === 'error') {
+        notification.error({
+          description: VALIDATE_MSG[result.data.msgkey],
+          duration: 15,
+        });
+      } else if (result.data.level === 'warn') {
+        notification.warn({
+          description: VALIDATE_MSG[result.data.msgkey],
+          btn: (<div>
+            <a role="presentation" onClick={() => this.handleEdit(true)}>继续创建</a>
+            <span className="ant-divider" />
+            <a role="presentation" onClick={() => notification.close('confirm-submit')}>取消</a>
+          </div>),
+          key: 'confirm-submit',
+          duration: 0,
+        });
+      } else {
+        this.handleEdit();
+      }
+    });
+  }
+  handleEdit = (close) => {
+    if (close) {
+      notification.close('confirm-submit');
     }
+    const { formData, tenantName } = this.props;
+    this.props.editOrder({ formData, tenantName }).then((result) => {
+      if (result.error) {
+        notification.error({ description: result.error.message });
+      } else {
+        notification.info({ description: '保存成功' });
+        this.context.router.push('/scof/orders');
+      }
+    });
   }
   handleCancelBtnClick = () => {
     this.context.router.goBack();
