@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Col, DatePicker, Form, Row, Input, Select, Modal } from 'antd';
-import { hideGoodsModal } from 'common/reducers/cmsDeclare';
+import { hideGoodsModal } from 'common/reducers/cmsCiqDeclare';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -11,10 +11,10 @@ const InputGroup = Input.Group;
 
 @connect(
   state => ({
-    visible: state.cmsDeclare.goodsModal.visible,
-    data: state.cmsDeclare.goodsModal.data,
-    countries: state.cmsDeclare.ciqParams.countries,
-    units: state.cmsDeclare.ciqParams.units,
+    visible: state.cmsCiqDeclare.goodsModal.visible,
+    data: state.cmsCiqDeclare.goodsModal.data,
+    countries: state.cmsCiqDeclare.ciqParams.countries,
+    units: state.cmsCiqDeclare.ciqParams.units,
   }),
   { hideGoodsModal }
 )
