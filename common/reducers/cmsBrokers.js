@@ -65,7 +65,7 @@ export function addBroker(name, customsCode, code, loginId, loginName, id, ciqCo
   };
 }
 
-export function editBroker(id, name, customsCode, code) {
+export function editBroker(id, name, customsCode, code, ciqCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -75,7 +75,7 @@ export function editBroker(id, name, customsCode, code) {
       ],
       endpoint: 'v1/cms/broker/edit',
       method: 'post',
-      data: { id, name, customsCode, code },
+      data: { id, name, customsCode, code, ciqCode },
     },
   };
 }

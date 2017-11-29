@@ -52,7 +52,7 @@ export default class TraderModal extends React.Component {
   }
   handleOk = () => {
     const { businessUnit } = this.props;
-    const { name, code, customsCode } = this.state;
+    const { name, code, customsCode, ciqCode } = this.state;
     if (name === '') {
       message.error('请填写企业名称');
     } else if (code === '' && customsCode === '') {
@@ -62,7 +62,7 @@ export default class TraderModal extends React.Component {
     } else if (customsCode && customsCode.length !== 10) {
       message.error('海关编码必须为10位');
     } else if (this.props.operation === 'edit') {
-      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode).then((result) => {
+      this.props.updateBusinessUnit(businessUnit.id, name, code, customsCode, ciqCode).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }
