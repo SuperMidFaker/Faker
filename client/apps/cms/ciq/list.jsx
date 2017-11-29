@@ -84,7 +84,7 @@ export default class CiqDeclList extends Component {
   }, {
     title: this.msg('ciqDeclCode'),
     width: 100,
-    dataIndex: 'ciq_decl_code',
+    dataIndex: 'ciq_decl_type',
     render: (o) => {
       if (o === 'NL') {
         return <Tag color="cyan">包装检疫</Tag>;
@@ -93,6 +93,10 @@ export default class CiqDeclList extends Component {
       }
       return <span />;
     },
+  }, {
+    title: this.msg('ciqClNo'),
+    dataIndex: 'ciq_cl_no',
+    width: 100,
   }, {
     title: this.msg('delgNo'),
     dataIndex: 'delg_no',

@@ -20,7 +20,7 @@ export default defineMessages({
   },
   ciqSearchPlaceholder: {
     id: 'cms.ciq.decl.ciq.search.placeholder',
-    defaultMessage: '报检号/统一编号/通关单号',
+    defaultMessage: '报检号/通关单号/内部编号',
   },
   entryId: {
     id: 'cms.ciq.decl.delg.entryId',
@@ -32,7 +32,11 @@ export default defineMessages({
   },
   ciqDeclNo: {
     id: 'cms.ciq.decl.no',
-    defaultMessage: '报检号/统一编号',
+    defaultMessage: '报检号/内部编号',
+  },
+  ciqClNo: {
+    id: 'cms.ciq.cl.no',
+    defaultMessage: '通关单号',
   },
   custOrderNo: {
     id: 'cms.ciq.decl.cust.order.no',
