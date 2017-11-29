@@ -58,7 +58,7 @@ export default class BrokerModal extends React.Component {
         name: nextProps.broker.comp_name,
         customsCode: nextProps.broker.customs_code,
         partnerUniqueCode: nextProps.broker.comp_code,
-        ciqCode: nextProps.broker.ciqCode,
+        ciqCode: nextProps.broker.ciq_code,
       });
     }
   }

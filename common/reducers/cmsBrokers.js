@@ -29,10 +29,10 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function toggleBrokerModal(visible, operation = '') {
+export function toggleBrokerModal(visible, operation = '', broker = {}) {
   return {
     type: actionTypes.ALTER_BROKER,
-    data: { visible, operation },
+    data: { visible, operation, broker },
   };
 }
 

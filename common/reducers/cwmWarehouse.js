@@ -848,7 +848,7 @@ export function loadBrokers(whseCode) {
   };
 }
 
-export function toggleBrokerModal(visible, type, broker = {}) {
+export function toggleBrokerModal(visible, broker = {}) {
   return {
     type: actionTypes.TOGGLE_BROKER_MODAL,
     data: { visible, broker },
