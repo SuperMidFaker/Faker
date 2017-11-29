@@ -24,6 +24,10 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
   'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
   'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
+  'LOAD_CIQ_DECL_HEAD', 'LOAD_CIQ_DECL_HEAD_SUCCEED', 'LOAD_CIQ_DECL_HEAD_FAIL',
+  'LOAD_CIQ_DECL_GOODS', 'LOAD_CIQ_DECL_GOODS_SUCCEED', 'LOAD_CIQ_DECL_GOODS_FAIL',
+  'LOAD_CIQ_PARAMS', 'LOAD_CIQ_PARAMS_SUCCEED', 'LOAD_CIQ_PARAMS_FAIL',
+  'SHOW_GOODS_MODAL', 'HIDE_GOODS_MODAL',
 ]);
 
 const initialState = {
@@ -43,6 +47,9 @@ const initialState = {
     current: 1,
     pageSize: 20,
     data: [],
+  },
+  cjqListFilter: {
+    ieType: 'all',
   },
   customslist: {
     totalCount: 0,
@@ -91,6 +98,17 @@ const initialState = {
   declMsgModal: {
     visible: false,
   },
+  ciqParams: {
+    organizations: [],
+    countries: [],
+    ports: [],
+    currencies: [],
+    units: [],
+  },
+  goodsModal: {
+    visible: false,
+    data: {},
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -98,7 +116,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CIQ_DECLS:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: true } };
     case actionTypes.LOAD_CIQ_DECLS_SUCCEED:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data } };
+      return { ...state,
+        ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data },
+        cjqListFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
     case actionTypes.LOAD_CUSTOMS_DECLS:
@@ -145,6 +165,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, declMsgModal: { ...state.declMsgModal, visible: true } };
     case actionTypes.HIDE_DECL_MSG_MODAL:
       return { ...state, declMsgModal: { ...state.declMsgModal, visible: false } };
+    case actionTypes.LOAD_CIQ_PARAMS_SUCCEED:
+      return { ...state, ciqParams: { ...action.result.data } };
+    case actionTypes.SHOW_GOODS_MODAL:
+      return { ...state, goodsModal: { ...state.goodsModal, visible: true, data: action.record } };
+    case actionTypes.HIDE_GOODS_MODAL:
+      return { ...state, goodsModal: { ...state.goodsModal, visible: false, data: {} } };
     default:
       return state;
   }
@@ -452,5 +478,62 @@ export function showDeclMsgModal() {
 export function hideDeclMsgModal() {
   return {
     type: actionTypes.HIDE_DECL_MSG_MODAL,
+  };
+}
+
+export function loadCiqDeclHead(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CIQ_DECL_HEAD,
+        actionTypes.LOAD_CIQ_DECL_HEAD_SUCCEED,
+        actionTypes.LOAD_CIQ_DECL_HEAD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/decl/head/load',
+      method: 'get',
+      params: { preEntrySeqNo },
+    },
+  };
+}
+
+export function loadCiqDeclGoods(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CIQ_DECL_GOODS,
+        actionTypes.LOAD_CIQ_DECL_GOODS_SUCCEED,
+        actionTypes.LOAD_CIQ_DECL_GOODS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/decl/goods/load',
+      method: 'get',
+      params: { preEntrySeqNo },
+    },
+  };
+}
+
+export function loadCiqParams() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CIQ_PARAMS,
+        actionTypes.LOAD_CIQ_PARAMS_SUCCEED,
+        actionTypes.LOAD_CIQ_PARAMS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/params/load',
+      method: 'get',
+    },
+  };
+}
+
+export function showGoodsModal(record) {
+  return {
+    type: actionTypes.SHOW_GOODS_MODAL,
+    record,
+  };
+}
+
+export function hideGoodsModal() {
+  return {
+    type: actionTypes.HIDE_GOODS_MODAL,
   };
 }
