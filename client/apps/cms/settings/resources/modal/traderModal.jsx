@@ -47,6 +47,7 @@ export default class TraderModal extends React.Component {
       code: nextProps.businessUnit.comp_code || '',
       customsCode: nextProps.businessUnit.customs_code || '',
       type: nextProps.businessUnit.relation_type || '',
+      ciqCode: nextProps.businessUnit.ciq_code || '',
     });
   }
   handleOk = () => {
@@ -73,8 +74,8 @@ export default class TraderModal extends React.Component {
   }
   handleAddPartner = () => {
     const { tenantId, loginId, loginName, customer } = this.props;
-    const { name, code, customsCode, type } = this.state;
-    this.props.addBusinessUnit({ name, code, customsCode, type, tenantId, loginId, loginName, customerPartnerId: customer.id }).then((result1) => {
+    const { name, code, customsCode, type, ciqCode } = this.state;
+    this.props.addBusinessUnit({ name, code, customsCode, type, tenantId, loginId, loginName, customerPartnerId: customer.id, ciqCode }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message, 10);
       } else {
