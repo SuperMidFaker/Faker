@@ -910,9 +910,11 @@ export default class ManifestBodyPane extends React.Component {
             <Icon type="export" /> 导出 <Icon type="down" />
           </Button>
         </Dropdown>
-        <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
+        {/*
+          <Popconfirm title="确定清空表体数据?" onConfirm={this.handleBodyReset}>
           <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
         </Popconfirm>
+        */}
       </span>);
     }
   }

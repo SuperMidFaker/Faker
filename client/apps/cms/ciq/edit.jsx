@@ -47,15 +47,15 @@ export default class CiqDeclEdit extends React.Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleManifestVisit = () => {
+  handleCusDeclVisit = () => {
     const { ciqDeclHead } = this.props;
-    const pathname = `/clearance/${this.context.router.params.ioType === 'in' ? 'import' : 'export'}/manifest/view/${ciqDeclHead.bill_seq_no}`;
+    const pathname = `/clearance/${this.context.router.params.ioType === 'in' ? 'import' : 'export'}/cusdecl/${ciqDeclHead.bill_seq_no}/${this.props.router.params.declNo}`;
     this.context.router.push({ pathname });
   }
   render() {
     const declEntryMenu = (
-      <Menu onClick={this.handleManifestVisit}>
-        <Menu.Item><Icon type="file" />申报清单</Menu.Item>
+      <Menu onClick={this.handleCusDeclVisit}>
+        <Menu.Item><Icon type="file" />关联报关单</Menu.Item>
       </Menu>);
     const tabs = [];
     tabs.push(
@@ -84,6 +84,7 @@ export default class CiqDeclEdit extends React.Component {
               <Button ><Icon type="link" />转至 <Icon type="down" /></Button>
             </Dropdown>
             <Button icon="file-excel">九城商检导出</Button>
+            <Button type="primary" icon="save">保存</Button>
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large">
