@@ -87,10 +87,10 @@ export default class BrokerModal extends React.Component {
     }
   }
   handleAddPartner = () => {
-    const { name, customsCode, partnerUniqueCode } = this.state;
+    const { name, customsCode, partnerUniqueCode, ciqCode } = this.state;
     const { loginId, username, partners } = this.props;
     const broker = partners.find(partner => partner.name === name);
-    this.props.addBroker(name, customsCode, partnerUniqueCode, loginId, username, broker.id).then((result1) => {
+    this.props.addBroker(name, customsCode, partnerUniqueCode, loginId, username, broker.id, ciqCode).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message);
       } else {
@@ -108,6 +108,7 @@ export default class BrokerModal extends React.Component {
       name: '',
       customsCode: '',
       partnerUniqueCode: '',
+      ciqCode: '',
     });
   }
   handleSelect = (value) => {
