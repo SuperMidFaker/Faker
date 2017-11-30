@@ -68,7 +68,7 @@ export default class CusDeclHeadPane extends React.Component {
     const editable = formData.status < CMS_DECL_STATUS.sent.value;
     return (
       <div className="pane">
-        <Form layout="horizontal" colon={false} hideRequiredMark>
+        <Form layout="horizontal" hideRequiredMark>
           <div className="panel-header">
             <Row>
               <Col span="6">

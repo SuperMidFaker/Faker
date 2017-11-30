@@ -10,13 +10,13 @@ import messages from '../message.i18n';
 import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import CategoryHscodeList from './categoryHscodeList';
-import SearchBar from 'client/components/SearchBar';
+import PageHeader from 'client/components/PageHeader';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import '../index.less';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const TabPane = Tabs.TabPane;
 
 function fetchData({ state, dispatch }) {
@@ -129,10 +129,6 @@ export default class SpecialCategories extends React.Component {
     const hscodeCategories = this.props.hscodeCategories.filter(ct => ct.type === type);
     this.setState({ type, hscodeCategories, hscodeCategory: hscodeCategories[0] || {} });
   }
-  handleSearch = (value) => {
-    const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
-    this.props.loadCategoryHsCode({ categoryId, current, pageSize, searchText: value });
-  }
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
   }
@@ -183,7 +179,7 @@ export default class SpecialCategories extends React.Component {
     }, {
       dataIndex: 'option',
       key: 'option',
-      width: 60,
+      width: 80,
       render: (col, row, index) => {
         if (this.state.editIndex === index) {
           if (row.id === -1) {
@@ -250,13 +246,15 @@ export default class SpecialCategories extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {hscodeCategory.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {hscodeCategory.name}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
               <Button icon="export" onClick={this.handleExportExcel}>
                 {this.msg('导出')}
               </Button>
@@ -272,20 +270,10 @@ export default class SpecialCategories extends React.Component {
                   <Button type="primary" ghost><Icon type="upload" /> 导入</Button>
                 </ExcelUploader>
               </Popover>
-            </div>
-          </Header>
-          <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
-                  value={this.props.categoryHscodes.searchText}
-                />
-                <span />
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <CategoryHscodeList hscodeCategory={hscodeCategory} />
-              </div>
-            </div>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content" key="main">
+            <CategoryHscodeList hscodeCategory={hscodeCategory} />
           </Content>
         </Layout>
       </Layout>

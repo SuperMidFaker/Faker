@@ -7,7 +7,7 @@ import { Icon, Table, Button, Layout, Popconfirm, Tag, message } from 'antd';
 import NavLink from 'client/components/NavLink';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import AddManifestRuleModal from '../modal/addManifestRuleModal';
 import ManifestRuleCloneModal from '../modal/manifestRuleCloneModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal } from 'common/reducers/cmsManifest';

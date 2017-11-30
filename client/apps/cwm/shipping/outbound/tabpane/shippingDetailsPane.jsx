@@ -58,7 +58,7 @@ export default class ShippingDetailsPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 160,
+    width: 200,
   }, {
     title: '发货数量',
     dataIndex: 'shipped_qty',

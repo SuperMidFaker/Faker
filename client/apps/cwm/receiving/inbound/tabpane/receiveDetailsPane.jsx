@@ -107,7 +107,7 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '货品',
     dataIndex: 'product_sku',
-    width: 150,
+    width: 220,
     fixed: 'left',
     render: o => (<SKUPopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {

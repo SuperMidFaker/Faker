@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Icon, Popconfirm, Input, message } from 'antd';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
+import SearchBar from 'client/components/SearchBar';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -76,10 +77,14 @@ export default class SpecialCategoryHsCodeList extends React.Component {
       this.handleTableLoad();
     });
   }
+  handleSearch = (value) => {
+    const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
+    this.props.loadCategoryHsCode({ categoryId, current, pageSize, searchText: value });
+  }
   render() {
     const { hscode } = this.state;
     const { hscodeCategory } = this.props;
-    const categoryHscodesDataSource = new Table.DataSource({
+    const categoryHscodesDataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadCategoryHsCode(params),
       resolve: (result) => {
         if (result.data.length === result.pageSize) return result.data;
@@ -124,10 +129,11 @@ export default class SpecialCategoryHsCodeList extends React.Component {
       }
       return col;
     };
+    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch}
+      value={this.props.categoryHscodes.searchText}
+    />);
     return (
-      <Table size="middle" dataSource={categoryHscodesDataSource} columns={columns} rowKey="id" bordered
-        scroll={{ x: columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-      />
+      <DataTable toolbarActions={toolbarActions} dataSource={categoryHscodesDataSource} columns={columns} rowKey="id" bordered />
     );
   }
 }

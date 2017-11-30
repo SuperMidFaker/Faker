@@ -195,8 +195,8 @@ export default class AddDetailModal extends Component {
       wrapperCol: { span: 16 },
     };
     return (
-      <Modal maskClosable={false} onCancel={this.handleCancel} visible={visible} title="货品明细" onOk={this.submit}>
-        <Form layout="horizontal">
+      <Modal width={800} maskClosable={false} onCancel={this.handleCancel} visible={visible} title="货品明细" onOk={this.submit}>
+        <Form layout="horizontal" className="form-layout-compact">
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
@@ -214,17 +214,27 @@ export default class AddDetailModal extends Component {
           <FormItem label="中文品名" {...formItemLayout}>
             <Input value={product.desc_cn} onChange={this.handleDescChange} />
           </FormItem>
-          <FormItem label="库存数量" {...formItemLayout}>
-            <Input value={stock} disabled />
+          <FormItem label="库存/可用/分配/冻结数量" {...formItemLayout}>
+            <InputGroup compact>
+              <Input style={{ width: '25%' }} value={stock} disabled />
+              <Input style={{ width: '25%' }} value={avail} disabled />
+              <Input style={{ width: '25%' }} value={alloc} disabled />
+              <Input style={{ width: '25%' }} value={frozen} disabled />
+            </InputGroup>
           </FormItem>
-          <FormItem label="可用数量" {...formItemLayout}>
-            <Input value={avail} disabled />
-          </FormItem>
-          <FormItem label="分配数量" {...formItemLayout}>
-            <Input value={alloc} disabled />
-          </FormItem>
-          <FormItem label="冻结数量" {...formItemLayout}>
-            <Input value={frozen} disabled />
+          <FormItem label="订单数量" {...formItemLayout}>
+            <InputGroup compact>
+              {getFieldDecorator('order_qty', {
+                rules: [{ required: true, message: '请输入订单数量' }],
+              })(
+                <Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />
+              )}
+              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit}
+                style={{ width: '30%' }} onChange={this.handleUnitChange}
+              >
+                {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
+              </Select>
+            </InputGroup>
           </FormItem>
           <FormItem label="库别" {...formItemLayout}>
             {getFieldDecorator('virtual_whse', {
@@ -257,23 +267,9 @@ export default class AddDetailModal extends Component {
           <FormItem label="供货商" {...formItemLayout}>
             {getFieldDecorator('supplier', {
               initialValue: product.supplier,
-            })(<Select showSearch optionFilterProp="searchText">
+            })(<Select showSearch allowClear optionFilterProp="searchText">
               {this.props.suppliers.map(supplier => <Option searchText={`${supplier.name}${supplier.code}`} value={supplier.name} key={supplier.name}>{supplier.name}</Option>)}
             </Select>)}
-          </FormItem>
-          <FormItem label="订单数量" {...formItemLayout}>
-            <InputGroup compact>
-              {getFieldDecorator('order_qty', {
-                rules: [{ required: true, message: '请输入订单数量' }],
-              })(
-                <Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />
-              )}
-              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit}
-                style={{ width: '30%' }} onChange={this.handleUnitChange}
-              >
-                {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
-              </Select>
-            </InputGroup>
           </FormItem>
           <FormItem label="金额" {...formItemLayout}>
             <InputGroup compact>

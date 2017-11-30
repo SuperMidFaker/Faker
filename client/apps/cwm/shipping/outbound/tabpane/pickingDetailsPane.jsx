@@ -69,9 +69,9 @@ export default class PickingDetailsPane extends React.Component {
     width: 50,
     className: 'cell-align-center',
   }, {
-    title: 'SKU',
+    title: '商品货号',
     dataIndex: 'product_sku',
-    width: 140,
+    width: 200,
     render: (o) => {
       if (o) {
         return <SKUPopover ownerPartnerId={this.props.outboundHead.owner_partner_id} sku={o} />;

@@ -9,6 +9,28 @@ import { loadWhseSupervisionApps } from 'common/reducers/openIntegration';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 14,
+      offset: 6,
+    },
+  },
+};
 
 @injectIntl
 @connect(
@@ -56,9 +78,16 @@ export default class SupervisionPane extends Component {
     const { whseSupervisonApps } = this.props;
     return (
       <div style={{ padding: 24 }}>
-        <Form layout="inline">
-          <FormItem label="保税监管系统">
-            <Select placeholder="请选择保税监管系统" allowClear style={{ width: 300 }}
+        <Form layout="horizontal">
+          <FormItem label="主管海关" {...formItemLayout}>
+            <Select
+              optionLabelProp="children"
+              showArrow
+              allowClear
+            />
+          </FormItem>
+          <FormItem label="保税监管系统" {...formItemLayout}>
+            <Select placeholder="请选择保税监管系统" allowClear
               value={this.state.ftzAppId} onSelect={this.handleFtzAppSelect}
             >
               {whseSupervisonApps.map(wsa =>
@@ -66,7 +95,7 @@ export default class SupervisionPane extends Component {
               )}
             </Select>
           </FormItem>
-          <FormItem >
+          <FormItem {...tailFormItemLayout}>
             <Button type="primary" onClick={this.handleSaveFtzApp}>保存</Button>
           </FormItem>
         </Form>
