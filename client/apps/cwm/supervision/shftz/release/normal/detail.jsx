@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Alert, Badge, Tabs, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Radio, Tag, notification, Checkbox, message } from 'antd';
@@ -13,7 +14,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
+import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, exportNormalExitByRel,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -38,8 +39,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
-    username: state.account.username,
     relSo: state.cwmShFtz.rel_so,
     relRegs: state.cwmShFtz.rel_regs,
     units: state.cwmShFtz.params.units.map(un => ({
@@ -64,6 +63,7 @@ function fetchData({ dispatch, params }) {
   { loadRelDetails,
     updateRelReg,
     fileRelStockouts,
+    exportNormalExitByRel,
     fileRelPortionouts,
     queryPortionoutInfos,
     cancelRelReg,
@@ -235,7 +235,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   handleDetailSplit = () => {
     const soNo = this.props.params.soNo;
-    this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals, loginId: this.props.loginId }).then((result) => {
+    this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals }).then((result) => {
       if (!result.error) {
         message.success('明细已拆分');
         this.props.loadRelDetails(soNo, 'normal');
@@ -258,6 +258,20 @@ export default class SHFTZNormalRelRegDetail extends Component {
       view: e.target.value,
       filingDetails,
       exitDetails,
+    });
+  }
+  handleExportExitVoucher = () => {
+    const reg = this.state.reg;
+    this.props.exportNormalExitByRel(reg.ftz_rel_no).then((resp) => {
+      if (!resp.error) {
+        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
+          `${reg.ftz_rel_no}_出区凭单.xlsx`);
+      } else {
+        notification.error({
+          message: '导出失败',
+          description: resp.error.message,
+        });
+      }
     });
   }
   columns = [{
@@ -594,7 +608,14 @@ export default class SHFTZNormalRelRegDetail extends Component {
                   <DataPane fullscreen={this.state.fullscreen}
                     columns={this.exitColumns} rowSelection={rowSelection} indentSize={8}
                     dataSource={exitDetails} rowKey="id" loading={this.state.loading}
-                  />
+                  >
+                    {exitDetails.length > 0 &&
+                    <DataPane.Toolbar>
+                      <DataPane.Actions>
+                        <Button type="primary" onClick={this.handleExportExitVoucher}>导出出区凭单</Button>
+                      </DataPane.Actions>
+                    </DataPane.Toolbar>}
+                  </DataPane>
                 </TabPane>
               </Tabs>
             </MagicCard>

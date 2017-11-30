@@ -30,6 +30,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/outbound/', [
   'LOAD_SHUNFENG_EXPRESS', 'LOAD_SHUNFENG_EXPRESS_SUCCEED', 'LOAD_SHUNFENG_EXPRESS_FAIL',
   'LOAD_SHUNFENG_CONFIG', 'LOAD_SHUNFENG_CONFIG_SUCCEED', 'LOAD_SHUNFENG_CONFIG_FAIL',
   'LOAD_TRACEID_OUTBOUND', 'LOAD_TRACEID_OUTBOUND_SUCCEED', 'LOAD_TRACEID_OUTBOUND_FAIL',
+  'EXPORT_NEBSO', 'EXPORT_NEBSO_SUCCEED', 'EXPORT_NEBSO_FAIL',
 ]);
 
 const initialState = {
@@ -578,6 +579,21 @@ export function loadOutboundsByTraceId(traceId) {
       endpoint: 'v1/cwm/traceid/outbounds',
       method: 'get',
       params: { traceId },
+    },
+  };
+}
+
+export function exportNormalExitBySo(sonos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXPORT_NEBSO,
+        actionTypes.EXPORT_NEBSO_SUCCEED,
+        actionTypes.EXPORT_NEBSO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/exit/voucher/exportbyso',
+      method: 'post',
+      data: { sonos },
     },
   };
 }
