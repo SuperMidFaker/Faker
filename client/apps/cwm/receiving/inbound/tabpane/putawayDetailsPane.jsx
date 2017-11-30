@@ -67,7 +67,7 @@ export default class PutawayDetailsPane extends React.Component {
   }, {
     title: '货品',
     dataIndex: 'product_sku',
-    width: 200,
+    width: 220,
     render: o => (<SKUPopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {
     title: '收货数量',

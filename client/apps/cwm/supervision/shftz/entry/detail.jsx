@@ -595,7 +595,7 @@ export default class SHFTZEntryDetail extends Component {
               <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
             </span>} trigger="click"
             >
-              <Button>拆分进区凭单</Button>
+              <Button disabled={entryRegs[0].details.length === 1}>拆分进区凭单</Button>
             </Popover>}
             {primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}

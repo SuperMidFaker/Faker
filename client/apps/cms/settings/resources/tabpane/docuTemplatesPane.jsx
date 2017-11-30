@@ -5,7 +5,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Table, Button, Icon, Layout, Menu, Popconfirm, Popover, Upload, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import withPrivilege from 'client/common/decorators/withPrivilege';
 import InvTemplateModal from '../templates/modals/newTemplate';
 import { toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile } from 'common/reducers/cmsInvoice';

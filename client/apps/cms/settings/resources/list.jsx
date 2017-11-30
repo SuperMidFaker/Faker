@@ -8,7 +8,7 @@ import { Layout, Table, Input, Breadcrumb, Tabs, Form } from 'antd';
 import TradersPane from './tabpane/tradersPane';
 import ManifestRulesPane from './tabpane/manifestRulesPane';
 import DocuTemplatesPane from './tabpane/docuTemplatesPane';
-import { formatMsg } from './message.i18n';
+import { formatMsg } from '../message.i18n';
 import { loadPartners } from 'common/reducers/partner';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { setResTabkey, setCustomer } from 'common/reducers/cmsResources';
@@ -95,10 +95,10 @@ export default class ResourcesList extends Component {
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                设置
+                {this.msg('settings')}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                资源设置
+                {this.msg('resources')}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
