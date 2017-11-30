@@ -261,7 +261,7 @@ export default class SHFTZEntryDetail extends Component {
       wb.Sheets[er.pre_ftz_ent_no] = XLSX.utils.json_to_sheet(csvData);
     });
     const primaryEntryReg = this.props.primaryEntryReg;
-    FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), `${primaryEntryReg.cus_decl_no}_进区凭单.xlsx`);
+    FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }), `进区凭单_${primaryEntryReg.cus_decl_no}.xlsx`);
   }
   handleQuery = () => {
     const preEntrySeqNo = this.props.params.preEntrySeqNo;

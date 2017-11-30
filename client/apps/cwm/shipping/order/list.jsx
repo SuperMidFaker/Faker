@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
@@ -18,6 +19,7 @@ import messages from '../message.i18n';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
+import { exportNormalExitBySo } from 'common/reducers/cwmOutbound';
 import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
@@ -56,7 +58,7 @@ function fetchData({ state, dispatch }) {
     userMembers: state.account.userMembers,
     adaptors: state.saasLineFileAdaptor.adaptors,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, loadAdaptors }
+  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, exportNormalExitBySo, loadAdaptors }
 )
 @connectNav({
   depth: 2,
@@ -346,6 +348,24 @@ export default class ShippingOrderList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  handleExportExitVoucher = () => {
+    const { selectedRows } = this.state;
+    this.props.exportNormalExitBySo(selectedRows.map(sr => sr.so_no)).then((resp) => {
+      if (!resp.error) {
+        let xlsxno = selectedRows.slice(0, 2).map(sr => sr.so_no).join('_');
+        if (selectedRows.length > 2) {
+          xlsxno = `${xlsxno}等`;
+        }
+        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
+          `${xlsxno}_出区凭单.xlsx`);
+      } else {
+        notification.error({
+          message: '导出失败',
+          description: resp.error.message,
+        });
+      }
+    });
+  }
   render() {
     const { whses, defaultWhse, owners, receivers, carriers, filters, loading } = this.props;
     let columns = this.columns;
@@ -436,6 +456,7 @@ export default class ShippingOrderList extends React.Component {
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}
+      {(filters.status === 'partial' || filters.status === 'completed') && <Button onClick={this.handleExportExitVoucher}>导出出区凭单</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.handleCreateWave}>创建波次计划</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
     </span>

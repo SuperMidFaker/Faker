@@ -70,6 +70,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_BATCH_DECL', 'LOAD_BATCH_DECL_SUCCEED', 'LOAD_BATCH_DECL_FAIL',
   'LOAD_NONBONDED_STOCKS', 'LOAD_NONBONDED_STOCKS_SUCCEED', 'LOAD_NONBONDED_STOCKS_FAIL',
   'LOAD_ASNENT', 'LOAD_ASNENT_SUCCEED', 'LOAD_ASNENT_FAIL',
+  'EXPORT_NEBREL', 'EXPORT_NEBREL_SUCCEED', 'EXPORT_NEBREL_FAIL',
 ]);
 
 const initialState = {
@@ -1361,6 +1362,21 @@ export function loadAsnEntries(asnNo) {
       endpoint: 'v1/cwm/shftz/entry/reg/byasn',
       method: 'get',
       params: { asnNo },
+    },
+  };
+}
+
+export function exportNormalExitByRel(relno) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXPORT_NEBREL,
+        actionTypes.EXPORT_NEBREL_SUCCEED,
+        actionTypes.EXPORT_NEBREL_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/exit/voucher/exportbyrel',
+      method: 'post',
+      data: { relno },
     },
   };
 }
