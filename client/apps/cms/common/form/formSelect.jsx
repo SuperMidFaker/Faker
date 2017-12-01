@@ -80,6 +80,12 @@ export class FormRemoteSearchSelect extends React.Component {
       onSearch(field, value);
     }
   }
+  handleSelect = (value) => {
+    const { onSelect } = this.props;
+    if (onSelect) {
+      onSelect(value);
+    }
+  }
   render() {
     const {
       outercol, label, col, field, required, disabled,
@@ -101,6 +107,7 @@ export class FormRemoteSearchSelect extends React.Component {
                 allowClear
                 onSearch={this.handleSearch}
                 optionFilterProp="children"
+                onSelect={this.handleSelect}
               >
                 {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
