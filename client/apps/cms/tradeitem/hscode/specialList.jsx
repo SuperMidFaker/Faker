@@ -6,10 +6,9 @@ import { Icon, Popconfirm, Input, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
-
+import messages from '../../message.i18n';
 import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'common/reducers/cmsHsCode';
-import { hscodeColumns } from '../hscode/hscodeColumns';
+import { hscodeColumns } from './hscodeColumns';
 
 const formatMsg = format(messages);
 @injectIntl
@@ -21,7 +20,7 @@ const formatMsg = format(messages);
   { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode }
 )
 
-export default class SpecialCategoryHsCodeList extends React.Component {
+export default class HSCodeSpecialList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

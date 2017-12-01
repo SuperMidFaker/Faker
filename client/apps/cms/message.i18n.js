@@ -67,7 +67,7 @@ const messages = defineMessages({
   },
   tradeItem: {
     id: 'cms.module.classification.trade.item',
-    defaultMessage: '企业物料库',
+    defaultMessage: '物料归类',
   },
   hscode: {
     id: 'cms.module.classification.hscode',

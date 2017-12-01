@@ -34,7 +34,7 @@ const initialState = {
   reposLoading: false,
   tradeItemsLoading: false,
   listFilter: {
-    status: 'pending',
+    status: 'classified',
     sortField: '',
     sortOrder: '',
   },

@@ -8,15 +8,15 @@ import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon, Input } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
-import '../index.less';
 import ExcelUploader from 'client/components/ExcelUploader';
 import PageHeader from 'client/components/PageHeader';
 import DataTable from 'client/components/DataTable';
 import { createFilename } from 'client/util/dataTransform';
 import { hscodeColumns } from './hscodeColumns';
+import ModuleMenu from '../menu';
 
 const formatMsg = format(messages);
-const { Content } = Layout;
+const { Sider, Content } = Layout;
 const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class HsCodeList extends Component {
+export default class HSCodeList extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -147,16 +147,25 @@ export default class HsCodeList extends Component {
     );
     const toolbarActions = (<Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 400 }} />);
     return (
-      <Layout className="ant-layout-wrapper">
+      <Layout>
+        <Sider width={200} className="menu-sider" key="sider">
+          <div className="page-header">
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('tradeitem')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </div>
+          <div className="left-sider-panel">
+            <ModuleMenu currentKey="hscodeQuery" />
+          </div>
+        </Sider>
         <Layout>
           <PageHeader>
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  {this.msg('classification')}
-                </Breadcrumb.Item>
-                <Breadcrumb.Item>
-                  {this.msg('hscodeInquiry')}
+                  {this.msg('hscodeQuery')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>

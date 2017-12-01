@@ -55,9 +55,10 @@ import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
-import * as CMSTradeItem from './cms/classification/tradeitem';
-import * as CMSClassificationHsCode from './cms/classification/hscode';
-import * as CMSClassificationSpecial from './cms/classification/special';
+import * as CMSTradeItem from './cms/tradeitem';
+import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
+import * as CMSTradeItemRepo from './cms/tradeitem/repo';
+import * as CMSTradeItemTask from './cms/tradeitem/task';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -389,8 +390,21 @@ export default(store) => {
                 <Route path="edit/:id" component={CMSTradeItem.Edit} />
                 <Route path="newSrc/:id" component={CMSTradeItem.NewSrc} />
               </Route>
-              <Route path="hscode" component={CMSClassificationHsCode.List} />
-              <Route path="special" component={CMSClassificationSpecial.Categories} />
+            </Route>
+            <Route path="tradeitem">
+              <IndexRedirect to="/clearance/tradeitem/repo" />
+              <Route path="repo">
+                <IndexRoute component={CMSTradeItemRepo.List} />
+                <Route path=":repoId" component={CMSTradeItemRepo.Content} />
+              </Route>
+              <Route path="task/:cat" component={CMSTradeItemTask.List} />
+              <Route path="hscode">
+                <IndexRoute component={CMSTradeItemHSCode.List} />
+                <Route path="special" component={CMSTradeItemHSCode.Special} />
+                <Route path="changes" component={CMSTradeItemHSCode.Changes} />
+              </Route>
+              <Route path="config" component={CMSTradeItem.Config} />
+              <Route path="audit" component={CMSTradeItem.Audit} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
