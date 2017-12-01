@@ -55,7 +55,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
     case actionTypes.LOAD_CIQ_PARAMS_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, ...action.result.data } };
+      return { ...state,
+        ciqParams: { ...state.ciqParams,
+          units: [...action.result.data.units],
+          currencies: [...action.result.data.currencies],
+          chinaPorts: [...action.result.data.chinaPorts],
+          organizations: [...action.result.data.organizations, ...state.ciqParams.fixedOrganizations],
+          countries: [...action.result.data.countries, ...state.ciqParams.countries],
+          worldPorts: [...action.result.data.worldPorts, ...state.ciqParams.worldPorts] } };
     case actionTypes.SHOW_GOODS_MODAL:
       return { ...state, goodsModal: { ...state.goodsModal, visible: true, data: action.record } };
     case actionTypes.HIDE_GOODS_MODAL:
@@ -67,6 +74,9 @@ export default function reducer(state = initialState, action) {
           organizations: [...state.ciqParams.organizations, ...action.result.data.organizations],
           countries: [...state.ciqParams.countries, ...action.result.data.countries],
           worldPorts: [...state.ciqParams.worldPorts, ...action.result.data.worldports],
+          fixedOrganizations: [...action.result.data.organizations],
+          fixedCountries: [...action.result.data.countries],
+          fixedWorldPorts: [...action.result.data.worldports],
         } };
     case actionTypes.LOAD_CIQ_DECL_GOODS_SUCCEED:
       return { ...state, ciqDeclGoods: action.result.data };

@@ -62,9 +62,6 @@ export default class CiqDeclHeadPane extends React.Component {
     this.props.loadCiqDeclHead(this.context.router.params.declNo).then((result) => {
       if (!result.error) {
         this.props.loadBusinessUnits({ customerPartnerId: this.props.ciqDeclHead.owner_cuspartner_id });
-        this.props.setFixedCountry(result.data.countries);
-        this.props.setFixedOrganizations(result.data.organizations);
-        this.props.setFixedWorldPorts(result.data.worldports);
       }
     });
     this.props.loadCiqParams();
