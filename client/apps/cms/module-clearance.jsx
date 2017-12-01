@@ -120,19 +120,6 @@ export default class Clearance extends React.Component {
         }],
       });
     }
-    if (hasPermission(privileges, { module: 'clearance', feature: 'import' })) {
-      linkMenus.push({
-        single: false,
-        key: 'cms-classification',
-        icon: 'logixon icon-resource',
-        text: formatMsg(intl, 'classification'),
-        sublinks: [{
-          key: 'cms-classification-0',
-          path: '/clearance/classification/tradeitem',
-          text: formatMsg(intl, 'tradeItem'),
-        }],
-      });
-    }
     if (hasPermission(privileges, { module: 'clearance', feature: 'delegation' })) {
       linkMenus.push({
         single: true,

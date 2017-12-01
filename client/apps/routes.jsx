@@ -409,7 +409,6 @@ export default(store) => {
                 <Route path="special" component={CMSTradeItemHSCode.Special} />
                 <Route path="changes" component={CMSTradeItemHSCode.Changes} />
               </Route>
-              <Route path="config" component={CMSTradeItem.Config} />
               <Route path="audit" component={CMSTradeItem.Audit} />
             </Route>
           </Route>

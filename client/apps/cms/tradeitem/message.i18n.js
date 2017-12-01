@@ -10,9 +10,13 @@ const messages = defineMessages({
     id: 'cms.tradeitem.repo.list',
     defaultMessage: '物料库列表',
   },
-  tradeItemTask: {
-    id: 'cms.tradeitem.task',
-    defaultMessage: '归类任务',
+  taskWorkspace: {
+    id: 'cms.tradeitem.task.workspace',
+    defaultMessage: '归类工作区',
+  },
+  createTask: {
+    id: 'cms.tradeitem.task.create',
+    defaultMessage: '新建归类任务',
   },
   taskUnclassified: {
     id: 'cms.tradeitem.task.unclassified',
@@ -22,12 +26,16 @@ const messages = defineMessages({
     id: 'cms.tradeitem.task.conflict',
     defaultMessage: '归类冲突',
   },
+  taskInvalid: {
+    id: 'cms.tradeitem.task.invalid',
+    defaultMessage: '归类失效',
+  },
   taskPending: {
     id: 'cms.tradeitem.task.pending',
     defaultMessage: '待审核',
   },
-  hscode: {
-    id: 'cms.tradeitem.hscode',
+  hscodeCustoms: {
+    id: 'cms.tradeitem.hscode.customs',
     defaultMessage: '海关税则',
   },
   hscodeQuery: {
@@ -110,9 +118,17 @@ const messages = defineMessages({
     id: 'cms.tradeitem.opColumn',
     defaultMessage: '操作',
   },
+  addRepo: {
+    id: 'cms.tradeitem.repo.add',
+    defaultMessage: '新增物料库',
+  },
   create: {
     id: 'cms.tradeitem.create',
     defaultMessage: '新建',
+  },
+  manageItems: {
+    id: 'cms.tradeitem.repo.manage.items',
+    defaultMessage: '料件管理',
   },
 });
 

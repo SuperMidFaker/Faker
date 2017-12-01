@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Table, Button, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Layout, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import SearchBar from 'client/components/SearchBar';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -12,7 +14,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
 import { formatMsg } from '../message.i18n';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const rowSelection = {
   onSelect() {},
 };
@@ -126,12 +128,12 @@ export default class BrokerList extends Component {
         title: '海关编码',
         dataIndex: 'customs_code',
         key: 'customs_code',
-        width: 200,
+        width: 150,
       }, {
         title: '检验检疫代码',
         dataIndex: 'ciq_code',
         key: 'ciq_code',
-        width: 200,
+        width: 150,
       }, {
         title: '是否供应商',
         dataIndex: 'comp_partner_id',
@@ -161,6 +163,7 @@ export default class BrokerList extends Component {
         dataIndex: 'status',
         key: 'status',
         width: 100,
+        fixed: 'right',
         render: (_, record, index) => {
           if (record.status === 1) {
             return this.renderEditAndStopOperations(record, index);
@@ -170,35 +173,32 @@ export default class BrokerList extends Component {
         },
       },
     ];
+    const toolbarActions = (<SearchBar placeholder="搜索" onInputSearch={this.handleSearch}
+      value={this.state.searchText}
+    />);
     return (
       <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('settings')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('brokers')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('settings')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('brokers')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <PrivilegeCover module="clearance" feature="resources" action="create">
-              <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增</Button>
+              <Button type="primary" onClick={this.handleAddBtnClick} icon="plus">新增代理</Button>
             </PrivilegeCover>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <SearchBar placeholder="名称/海关编码/统一社会信用代码" onInputSearch={this.handleSearch}
-                value={this.state.searchText}
-              />
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
-            </div>
-            <BrokerModal onOk={this.handleReload} />
-          </div>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable toolbarActions={toolbarActions} dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
+
+          <BrokerModal onOk={this.handleReload} />
         </Content>
       </QueueAnim>
     );

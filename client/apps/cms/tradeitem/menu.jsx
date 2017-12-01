@@ -41,18 +41,24 @@ export default class ModuleMenu extends React.Component {
           <Menu.Item key="repoList">
             <NavLink to="/clearance/tradeitem/repo"><Icon type="database" /> {this.msg('repoList')}</NavLink>
           </Menu.Item>
-          <Menu.SubMenu key="g_task" title={<span><Icon type="exception" /> {this.msg('tradeItemTask')}</span>}>
+          <Menu.SubMenu key="g_task" title={<span><Icon type="exception" /> {this.msg('taskWorkspace')}</span>}>
+            <Menu.Item key="createTask">
+              <NavLink to="/clearance/tradeitem/task/create"><Icon type="plus" />{this.msg('createTask')}</NavLink>
+            </Menu.Item>
             <Menu.Item key="unclassified">
               <NavLink to="/clearance/tradeitem/task/unclassified">{this.msg('taskUnclassified')}</NavLink>
             </Menu.Item>
             <Menu.Item key="conflict">
               <NavLink to="/clearance/tradeitem/task/conflict">{this.msg('taskConflict')}</NavLink>
             </Menu.Item>
+            <Menu.Item key="invalid">
+              <NavLink to="/clearance/tradeitem/task/invalid">{this.msg('taskInvalid')}</NavLink>
+            </Menu.Item>
             <Menu.Item key="pending">
               <NavLink to="/clearance/tradeitem/task/pending">{this.msg('taskPending')}</NavLink>
             </Menu.Item>
           </Menu.SubMenu>
-          <Menu.SubMenu key="g_hscode" title={<span><Icon type="book" /> {this.msg('hscode')}</span>}>
+          <Menu.SubMenu key="g_hscode" title={<span><Icon type="book" /> {this.msg('hscodeCustoms')}</span>}>
             <Menu.Item key="hscodeQuery">
               <NavLink to="/clearance/tradeitem/hscode">{this.msg('hscodeQuery')}</NavLink>
             </Menu.Item>
@@ -63,9 +69,6 @@ export default class ModuleMenu extends React.Component {
               <NavLink to="/clearance/tradeitem/hscode/changes">{this.msg('hscodeChanges')}</NavLink>
             </Menu.Item>
           </Menu.SubMenu>
-          <Menu.Item key="config">
-            <NavLink to="/clearance/tradeitem/config"><Icon type="tool" /> {this.msg('config')}</NavLink>
-          </Menu.Item>
           <Menu.Item key="audit">
             <NavLink to="/clearance/tradeitem/audit"><Icon type="file-text" /> {this.msg('audit')}</NavLink>
           </Menu.Item>
