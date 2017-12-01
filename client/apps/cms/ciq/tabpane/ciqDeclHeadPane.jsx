@@ -2,44 +2,99 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Card, DatePicker, Form, Icon, Input, Select, Row, Col } from 'antd';
+import { Card, DatePicker, Form, Input, Select, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
-import { loadCiqDeclHead, loadCiqParams } from 'common/reducers/cmsCiqDeclare';
+import { loadCiqDeclHead, loadCiqParams, searchOrganizations, searchWorldPorts,
+   searchChinaPorts, searchCountries } from 'common/reducers/cmsCiqDeclare';
+import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
+import { loadBusinessUnits } from 'common/reducers/cmsResources';
+import { FormRemoteSearchSelect } from '../../common/form/formSelect';
+import { RelationAutoCompSelect } from '../../common/form/headFormItems';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+import { CIQ_IMPORT_DECL_TYPE, CIQ_EXPORT_DECL_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
+const Option = Select.Option;
 
 @injectIntl
 @connect(
   state => ({
-    organizetions: state.cmsCiqDeclare.ciqParams.organizetions,
+    organizations: state.cmsCiqDeclare.ciqParams.organizations,
     currencies: state.cmsCiqDeclare.ciqParams.currencies,
-    ports: state.cmsCiqDeclare.ciqParams.ports,
+    worldPorts: state.cmsCiqDeclare.ciqParams.worldPorts,
+    chinaPorts: state.cmsCiqDeclare.ciqParams.chinaPorts,
     countries: state.cmsCiqDeclare.ciqParams.countries,
     units: state.cmsCiqDeclare.ciqParams.units,
     ciqDeclHead: state.cmsCiqDeclare.ciqDeclHead,
+    brokers: state.cmsBrokers.brokers,
+    businessUnits: state.cmsResources.businessUnits,
   }),
-  { loadCiqDeclHead, loadCiqParams }
+  { loadCiqDeclHead,
+    loadCiqParams,
+    searchOrganizations,
+    searchWorldPorts,
+    searchChinaPorts,
+    searchCountries,
+    loadCmsBrokers,
+    loadBusinessUnits }
 )
 export default class CiqDeclHeadPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ioType: PropTypes.string.isRequired,
+    form: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   componentDidMount() {
-    this.props.loadCiqDeclHead(this.context.router.params.declNo);
+    this.props.loadCiqDeclHead(this.context.router.params.declNo).then((result) => {
+      if (!result.error) {
+        this.props.loadBusinessUnits({ customerPartnerId: this.props.ciqDeclHead.owner_cuspartner_id });
+      }
+    });
     this.props.loadCiqParams();
+    this.props.loadCmsBrokers();
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
+  handleSearchOrg = (field, value) => {
+    this.props.searchOrganizations(value);
+  }
+  handleSearchWorldPorts = (field, value) => {
+    this.props.searchWorldPorts(value);
+  }
+  handleSearchChinaPorts = (field, value) => {
+    this.props.searchChinaPorts(value);
+  }
+  handleSearchCountries = (field, value) => {
+    this.props.searchCountries(value);
+  }
+  handleAgentSelect = (value) => {
+    const { form, brokers } = this.props;
+    const broker = brokers.find(bk => bk.ciq_code === value);
+    form.setFieldsValue({ agent_name: broker.comp_name });
+  };
+  handleConsigneeSelect = (cnameField, codeField, enameField, value) => {
+    const { businessUnits, form } = this.props;
+    const consignee = businessUnits.find(unit => unit.ciq_code === value);
+    form.setFieldsValue({
+      [cnameField]: consignee.comp_name,
+    });
+  }
+  handleConsignorSelect = (cnameField, codeField, enameField, value) => {
+    const { businessUnits, form } = this.props;
+    const consignor = businessUnits.find(unit => unit.ciq_code === value);
+    form.setFieldsValue({
+      [cnameField]: consignor.comp_name,
+    });
+  }
   render() {
-    const { ioType, organizetions, countries, ports, ciqDeclHead } = this.props;
+    const { ioType, organizations, countries, worldPorts, chinaPorts, ciqDeclHead, form,
+       form: { getFieldDecorator }, brokers, intl, businessUnits } = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -59,17 +114,6 @@ export default class CiqDeclHeadPane extends React.Component {
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 20 },
-      },
-      colon: false,
-    };
-    const formItemSpan3Layout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 3 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 21 },
       },
       colon: false,
     };
@@ -94,20 +138,41 @@ export default class CiqDeclHeadPane extends React.Component {
             <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
               <Row>
                 <Col span="6">
-                  <FormItem {...formItemLayout} label={'报检类别'} required >
-                    <Input value={ciqDeclHead.ciq_decl_type} />
-                  </FormItem>
+                  {ioType === 'in' && <FormItem {...formItemLayout} label={'报检类别'} required >
+                    {getFieldDecorator('ciq_decl_type', {
+                      initialValue: ciqDeclHead.ciq_decl_type,
+                    })(
+                      <Select>
+                        {CIQ_IMPORT_DECL_TYPE.map(type => <Option value={type.value}>{type.text}</Option>)}
+                      </Select>
+                    )}
+                  </FormItem>}
+                  {ioType === 'out' && <FormItem {...formItemLayout} label={'报检类别'} required >
+                    {getFieldDecorator('ciq_decl_type', {
+                      initialValue: ciqDeclHead.ciq_decl_type,
+                    })(
+                      <Select>
+                        {CIQ_EXPORT_DECL_TYPE.map(type => <Option value={type.value}>{type.text}</Option>)}
+                      </Select>
+                    )}
+                  </FormItem>}
                 </Col>
-                <Col span="6">
-                  <FormItem {...formItemLayout} label={'报检机构'} required >
-                    <Input prefix={<Icon type="safety" />} value={ciqDeclHead.ciq_org_code && organizetions.find(org => org.org_code === ciqDeclHead.ciq_org_code)} />
-                  </FormItem>
-                </Col>
-                <Col span="6">
-                  <FormItem {...formItemLayout} label={'口岸机构'} required >
-                    <Input prefix={<Icon type="safety" />} />
-                  </FormItem>
-                </Col>
+                <FormRemoteSearchSelect outercol="6" label="报检机构" col="8" field="ciq_org_code"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={organizations.map(org => ({
+                    value: org.org_code,
+                    text: `${org.org_code} | ${org.org_name}`,
+                    search: `${org.org_code}${org.org_name}`,
+                  }))} onSearch={this.handleSearchOrg}
+                />
+                <FormRemoteSearchSelect outercol="6" label="口岸机构" col="8" field="ciq_insp_orgcode"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={organizations.map(org => ({
+                    value: org.org_code,
+                    text: `${org.org_code} | ${org.org_name}`,
+                    search: `${org.org_code}${org.org_name}`,
+                  }))} onSearch={this.handleSearchOrg}
+                />
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'报检日期'} required >
                     <DatePicker style={{ width: '100%' }} />
@@ -118,8 +183,20 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} label={'报检单位'} required >
                     <InputGroup compact>
-                      <Input placeholder="报检登记号" value={ciqDeclHead.agent_ciq_code} style={{ width: '30%' }} />
-                      <Input placeholder="中文名称" value={ciqDeclHead.agent_name} style={{ width: '70%' }} />
+                      {getFieldDecorator('agent_ciq_code', {
+                        initialValue: ciqDeclHead.agent_ciq_code,
+                      })(
+                        <Select style={{ width: '30%' }} onSelect={this.handleAgentSelect}>
+                          {brokers.map(bk => (<Option value={bk.ciq_code}>
+                            {bk.ciq_code}
+                          </Option>))}
+                        </Select>
+                      )}
+                      {getFieldDecorator('agent_name', {
+                        initialValue: ciqDeclHead.agent_name,
+                      })(
+                        <Input style={{ width: '70%' }} />
+                      )}
                     </InputGroup>
                   </FormItem>
                 </Col>
@@ -142,13 +219,14 @@ export default class CiqDeclHeadPane extends React.Component {
               </Row>
               {ioType === 'in' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'收货人'} required >
-                    <InputGroup compact>
-                      <Input placeholder="收货人代码" style={{ width: '20%' }} />
-                      <Input placeholder="收货人中文" value={ciqDeclHead.ciq_consignor_name_cn} style={{ width: '40%' }} />
-                      <Input placeholder="收货人英文" value={ciqDeclHead.ciq_consignor_name_en} style={{ width: '40%' }} />
-                    </InputGroup>
-                  </FormItem>
+                  <RelationAutoCompSelect labelCol="3" label="收货人" formData={ciqDeclHead} custCodeField="ciq_consignee_code" codeField="ciq_consignee_name_cn"
+                    nameField="ciq_consignee_name_en" getFieldDecorator={form.getFieldDecorator} getFieldValue={form.getFieldValue}
+                    options={businessUnits.map(bu => ({
+                      custcode: bu.ciq_code,
+                      name: bu.comp_name,
+                      code: bu.customs_code,
+                    }))} intl={intl} onSelect={this.handleConsigneeSelect}
+                  />
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'企业资质'} >
@@ -158,13 +236,14 @@ export default class CiqDeclHeadPane extends React.Component {
               </Row>}
               {ioType === 'in' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'发货人'} >
-                    <InputGroup compact>
-                      <Input placeholder="发货人代码" value={ciqDeclHead.ciq_consignor_code} style={{ width: '20%' }} />
-                      <Input placeholder="发货人中文" value={ciqDeclHead.ciq_consignor_name_cn} style={{ width: '40%' }} />
-                      <Input placeholder="发货人英文" value={ciqDeclHead.ciq_consignor_name_en} style={{ width: '40%' }} />
-                    </InputGroup>
-                  </FormItem>
+                  <RelationAutoCompSelect labelCol="3" label="发货人" formData={ciqDeclHead} custCodeField="ciq_consignor_code" codeField="ciq_consignor_name_cn"
+                    nameField="ciq_consignor_name_en" getFieldDecorator={form.getFieldDecorator} getFieldValue={form.getFieldValue}
+                    options={businessUnits.map(bu => ({
+                      custcode: bu.ciq_code,
+                      name: bu.comp_name,
+                      code: bu.customs_code,
+                    }))} intl={intl} onSelect={this.handleConsignorSelect}
+                  />
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'发货人地址'} >
@@ -174,13 +253,14 @@ export default class CiqDeclHeadPane extends React.Component {
               </Row>}
               {ioType === 'out' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'发货人'} required >
-                    <InputGroup compact>
-                      <Input placeholder="发货人代码" value={ciqDeclHead.ciq_consignor_code} style={{ width: '20%' }} />
-                      <Input placeholder="发货人中文" value={ciqDeclHead.ciq_consignor_name_cn} style={{ width: '40%' }} />
-                      <Input placeholder="发货人英文" value={ciqDeclHead.ciq_consignor_name_en} style={{ width: '40%' }} />
-                    </InputGroup>
-                  </FormItem>
+                  <RelationAutoCompSelect labelCol="3" label="发货人" formData={ciqDeclHead} custCodeField="ciq_consignor_code" codeField="ciq_consignor_name_cn"
+                    nameField="ciq_consignor_name_en" getFieldDecorator={form.getFieldDecorator} getFieldValue={form.getFieldValue}
+                    options={businessUnits.map(bu => ({
+                      custcode: bu.ciq_code,
+                      name: bu.comp_name,
+                      code: bu.customs_code,
+                    }))} intl={intl} onSelect={this.handleConsignorSelect}
+                  />
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'企业性质'} >
@@ -190,13 +270,14 @@ export default class CiqDeclHeadPane extends React.Component {
               </Row>}
               {ioType === 'out' && <Row>
                 <Col span="18">
-                  <FormItem {...formItemSpan3Layout} label={'收货人'} >
-                    <InputGroup compact>
-                      <Input placeholder="收货人代码" value={ciqDeclHead.ciq_consignee_code} style={{ width: '20%' }} />
-                      <Input placeholder="收货人中文" value={ciqDeclHead.ciq_consignee_name_cn} style={{ width: '40%' }} />
-                      <Input placeholder="收货人英文" value={ciqDeclHead.ciq_consignee_name_en} style={{ width: '40%' }} />
-                    </InputGroup>
-                  </FormItem>
+                  <RelationAutoCompSelect labelCol="3" label="收货人" formData={ciqDeclHead} custCodeField="ciq_consignee_code" codeField="ciq_consignee_name_cn"
+                    nameField="ciq_consignee_name_en" getFieldDecorator={form.getFieldDecorator} getFieldValue={form.getFieldValue}
+                    options={businessUnits.map(bu => ({
+                      custcode: bu.ciq_code,
+                      name: bu.comp_name,
+                      code: bu.customs_code,
+                    }))} intl={intl} onSelect={this.handleConsigneeSelect}
+                  />
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'收货人地址'} >
@@ -242,66 +323,104 @@ export default class CiqDeclHeadPane extends React.Component {
                     <Input value={ciqDeclHead.ciq_trade_mode} />
                   </FormItem>
                 </Col>
-                {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'贸易国别'} required >
-                    <Input value={countries.find(cou => cou.country_code === ciqDeclHead.ciq_trade_country) && countries.find(cou => cou.country_code === ciqDeclHead.ciq_trade_country).country_cn_name} />
-                  </FormItem>
-                </Col>}
-                {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'启运口岸'} required >
-                    <Input value={ports.find(port => port.port_code === ciqDeclHead.ciq_desp_dest_port) && ports.find(port => port.port_code === ciqDeclHead.ciq_desp_dest_port).port_cname} />
-                  </FormItem>
-                </Col>}
-                {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'启运国家'} >
-                    <Input value={countries.find(cou => cou.country_code === ciqDeclHead.ciq_desp_dest_country) && countries.find(cou => cou.country_code === ciqDeclHead.ciq_desp_dest_country).country_cn_name} />
-                  </FormItem>
-                </Col>}
-                {ioType === 'out' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'施检机构'} required >
-                    <Input prefix={<Icon type="safety" />} value={ciqDeclHead.ciq_insp_orgcode} />
-                  </FormItem>
-                </Col>}
-                {ioType === 'out' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'输往国家/地区'} >
-                    <Input value={ciqDeclHead.ciq_desp_dest_country} />
-                  </FormItem>
-                </Col>}
-                {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'停经口岸'} >
-                    <Input value={ports.find(port => port.port_code === ciqDeclHead.ciq_stop_port) && ports.find(port => port.port_code === ciqDeclHead.ciq_stop_port).port_cname} />
-                  </FormItem>
-                </Col>}
-                <Col span="6">
-                  <FormItem {...formItemLayout} label={ioType === 'in' ? '入境口岸' : '离境口岸'} required >
-                    <Select mode="combobox" />
-                  </FormItem>
-                </Col>
+                {ioType === 'in' &&
+                <FormRemoteSearchSelect outercol="6" label="贸易国家" col="8" field="ciq_trade_country"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={countries.map(coun => ({
+                    value: coun.country_code,
+                    text: `${coun.country_code} | ${coun.country_cn_name}`,
+                    search: `${coun.country_code}${coun.country_cn_name}`,
+                  }))} onSearch={this.handleSearchCountries}
+                />}
+                {ioType === 'in' &&
+                <FormRemoteSearchSelect outercol="6" label="启运口岸" col="8" field="ciq_desp_dest_port"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={worldPorts.map(port => ({
+                    value: port.port_code,
+                    text: `${port.port_code} | ${port.port_cname}`,
+                    search: `${port.port_code}${port.port_cname}`,
+                  }))} onSearch={this.handleSearchWorldPorts}
+                />}
+                {ioType === 'in' &&
+                <FormRemoteSearchSelect outercol="6" label="启运国家" col="8" field="ciq_desp_dest_country"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={countries.map(coun => ({
+                    value: coun.country_code,
+                    text: `${coun.country_code} | ${coun.country_cn_name}`,
+                    search: `${coun.country_code}${coun.country_cn_name}`,
+                  }))} onSearch={this.handleSearchCountries}
+                />}
+                {ioType === 'out' &&
+                <FormRemoteSearchSelect outercol="6" label="施检机构" col="8" field="ciq_insp_orgcode"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={organizations.map(org => ({
+                    value: org.org_code,
+                    text: `${org.org_code} | ${org.org_name}`,
+                    search: `${org.org_code}${org.org_name}`,
+                  }))} onSearch={this.handleSearchOrg}
+                />}
+                {ioType === 'out' &&
+                  <FormRemoteSearchSelect outercol="6" label="输往国家/地区" col="8" field="ciq_desp_dest_country"
+                    getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                    options={countries.map(coun => ({
+                      value: coun.country_code,
+                      text: `${coun.country_code} | ${coun.country_cn_name}`,
+                      search: `${coun.country_code}${coun.country_cn_name}`,
+                    }))} onSearch={this.handleSearchCountries}
+                  />}
+                {ioType === 'in' &&
+                <FormRemoteSearchSelect outercol="6" label="停经口岸" col="8" field="ciq_stop_port"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={worldPorts.map(port => ({
+                    value: port.port_code,
+                    text: `${port.port_code} | ${port.port_cname}`,
+                    search: `${port.port_code}${port.port_cname}`,
+                  }))} onSearch={this.handleSearchWorldPorts}
+                />}
+                <FormRemoteSearchSelect outercol="6" label={ioType === 'in' ? '入境口岸' : '离境口岸'} col="8" field="ciq_entry_exit_port"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={chinaPorts.map(port => ({
+                    value: port.port_code,
+                    text: `${port.port_code} | ${port.port_cname}`,
+                    search: `${port.port_code}${port.port_cname}`,
+                  }))} onSearch={this.handleSearchChinaPorts}
+                />
                 {ioType === 'in' && <Col span="6">
                   <FormItem {...formItemLayout} label={'目的地'} required >
                     <Input value={ciqDeclHead.dest_code} />
                   </FormItem>
                 </Col>}
-                {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'目的机构'} required >
-                    <Input prefix={<Icon type="safety" />} value={ciqDeclHead.ciq_purp_orgcode} />
-                  </FormItem>
-                </Col>}
-                {ioType === 'out' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'到达口岸'} required >
-                    <Input />
-                  </FormItem>
-                </Col>}
+                {ioType === 'in' &&
+                <FormRemoteSearchSelect outercol="6" label="目的机构" col="8" field="ciq_purp_orgcode"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={organizations.map(org => ({
+                    value: org.org_code,
+                    text: `${org.org_code} | ${org.org_name}`,
+                    search: `${org.org_code}${org.org_name}`,
+                  }))} onSearch={this.handleSearchOrg}
+                />}
+                {ioType === 'out' &&
+                <FormRemoteSearchSelect outercol="6" label="到达口岸" col="8" field="ciq_desp_dest_port"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={worldPorts.map(port => ({
+                    value: port.port_code,
+                    text: `${port.port_code} | ${port.port_cname}`,
+                    search: `${port.port_code}${port.port_cname}`,
+                  }))} onSearch={this.handleSearchWorldPorts}
+                />}
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'存放地点'} required >
                     <Input value={ciqDeclHead.goods_place} />
                   </FormItem>
                 </Col>
-                <Col span="6">
-                  <FormItem {...formItemLayout} label={'领证机构'} required >
-                    <Input prefix={<Icon type="safety" />} value={ciqDeclHead.ciq_vsa_orgcode} />
-                  </FormItem>
-                </Col>
+                <FormRemoteSearchSelect outercol="6" label="领证机构" col="8" field="ciq_vsa_orgcode"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={organizations.map(org => ({
+                    value: org.org_code,
+                    text: `${org.org_code} | ${org.org_name}`,
+                    search: `${org.org_code}${org.org_name}`,
+                  }))} onSearch={this.handleSearchOrg}
+                />
                 {ioType === 'in' && <Col span="6">
                   <FormItem {...formItemLayout} label={'启运日期'} required >
                     <DatePicker style={{ width: '100%' }} value={ciqDeclHead.desp_date ? moment(ciqDeclHead.desp_date, 'YYYY/MM/DD') : ''} />

@@ -443,3 +443,16 @@ export const CMS_DOCU_TYPE = {
 export const SPECIAL_COPNO_TERM = [
   { value: 'A', text: '特殊货号' },
 ];
+
+export const CIQ_IMPORT_DECL_TYPE = [
+  { value: 13, text: '入境检验检疫' },
+  { value: 14, text: '入境流向' },
+  { value: 15, text: '入境验证' },
+];
+
+export const CIQ_EXPORT_DECL_TYPE = [
+  { value: 21, text: '出境预检' },
+  { value: 24, text: '入境流向' },
+  { value: 25, text: '入境验证' },
+  { value: 28, text: '入境验证' },
+];

@@ -136,7 +136,7 @@ export class RelationAutoCompSelect extends React.Component {
   render() {
     const {
       label, codeField, custCodeField, nameField, formData, disabled, options,
-      getFieldDecorator, codeRules, nameRules,
+      getFieldDecorator, codeRules, nameRules, labelCol,
     } = this.props;
     const initialCodeValue = formData && formData[codeField] || '';
     const initialCustCodeValue = formData && formData[custCodeField] || '';
@@ -144,7 +144,7 @@ export class RelationAutoCompSelect extends React.Component {
     const custOpt = options.filter(op => op.custcode !== null && op.custcode.length > 0);
     const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 19 }} colon={false} label={label} required>
+      <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 19 }} colon={false} label={label} required>
         <Row gutter={4}>
           <Col span="7">
             <FormItem style={{ marginBottom: 0 }}>
