@@ -70,7 +70,7 @@ export default class EditOrder extends Component {
         notification.warn({
           description: VALIDATE_MSG[result.data.msgkey],
           btn: (<div>
-            <a role="presentation" onClick={() => this.handleEdit(true)}>继续创建</a>
+            <a role="presentation" onClick={() => this.handleEdit(true)}>继续保存</a>
             <span className="ant-divider" />
             <a role="presentation" onClick={() => notification.close('confirm-submit')}>取消</a>
           </div>),

@@ -185,3 +185,14 @@ exports.NODE_NOTIFY_CONTENTS = [
   { key: 'cust_invoice_no', text: '发票号' },
   { key: 'cust_contract_no', text: '合同号' },
 ];
+
+exports.SCOF_BIZ_OBJECT_KEY = {
+  SOF_ORDER: { key: 'sofOrder', defaultText: '订单' },
+  CMS_DELEGATION: { key: 'cmsDelegation', defaultText: '委托' },
+  CMS_MANIFEST: { key: 'cmsManifest', defaultText: '清单' },
+  CMS_CUSTOMS: { key: 'cmsCustomsDecl', defaultText: '报关单' },
+  TMS_SHIPMENT: { key: 'tmsShipment', defaultText: '运单' },
+  CWM_RECEIVING: { key: 'cwmReceiving', defaultText: 'ASN' },
+  CWM_SHIPPING: { key: 'cwmShipping', defaultText: '出货订单' },
+  // CWM_SO_NORMAL: 'cwmSoNormal',
+};

@@ -126,3 +126,4 @@ export * from './classification';
 export * from './scv';
 export * from './cwm';
 export * from './lineAdaptor';
+export * from './operationLog';
