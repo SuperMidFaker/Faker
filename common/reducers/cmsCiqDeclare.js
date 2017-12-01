@@ -7,6 +7,11 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'LOAD_CIQ_DECL_GOODS', 'LOAD_CIQ_DECL_GOODS_SUCCEED', 'LOAD_CIQ_DECL_GOODS_FAIL',
   'LOAD_CIQ_PARAMS', 'LOAD_CIQ_PARAMS_SUCCEED', 'LOAD_CIQ_PARAMS_FAIL',
   'SHOW_GOODS_MODAL', 'HIDE_GOODS_MODAL',
+  'SEARCH_ORGANIZATIONS', 'SEARCH_ORGANIZATIONS_SUCCEED', 'SEARCH_ORGANIZATIONS_FAIL',
+  'SEARCH_WORLDPORTS', 'SEARCH_WORLDPORTS_SUCCEED', 'SEARCH_WORLDPORTS_FAIL',
+  'SEARCH_CHINAPORTS', 'SEARCH_CHINAPORTS_SUCCEED', 'SEARCH_CHINAPORTS_FAIL',
+  'SEARCH_COUNTRIES', 'SEARCH_COUNTRIES_SUCCEED', 'SEARCH_COUNTRIES_FAIL',
+  'UPDATE_CIQ_HEAD', 'UPDATE_CIQ_HEAD_SUCCEED', 'UPDATE_CIQ_HEAD_FAIL',
 ]);
 
 const initialState = {
@@ -22,7 +27,8 @@ const initialState = {
   ciqParams: {
     organizations: [],
     countries: [],
-    ports: [],
+    worldPorts: [],
+    chinaPorts: [],
     currencies: [],
     units: [],
   },
@@ -51,9 +57,21 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_GOODS_MODAL:
       return { ...state, goodsModal: { ...state.goodsModal, visible: false, data: {} } };
     case actionTypes.LOAD_CIQ_DECL_HEAD_SUCCEED:
-      return { ...state, ciqDeclHead: action.result.data };
+      return { ...state,
+        ciqDeclHead: action.result.data.head,
+        ciqParams: { ...state.ciqParams,
+          organizations: [...state.ciqParams.organizations, ...action.result.data.organizations],
+          countries: [...state.ciqParams.countries, ...action.result.data.countries] } };
     case actionTypes.LOAD_CIQ_DECL_GOODS_SUCCEED:
       return { ...state, ciqDeclGoods: action.result.data };
+    case actionTypes.SEARCH_ORGANIZATIONS_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, organizations: [...action.result.data] } };
+    case actionTypes.SEARCH_WORLDPORTS_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, worldPorts: [...action.result.data] } };
+    case actionTypes.SEARCH_CHINAPORTS_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, chinaPorts: [...action.result.data] } };
+    case actionTypes.SEARCH_COUNTRIES_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, countries: [...action.result.data] } };
     default:
       return state;
   }
@@ -128,5 +146,80 @@ export function showGoodsModal(record) {
 export function hideGoodsModal() {
   return {
     type: actionTypes.HIDE_GOODS_MODAL,
+  };
+}
+
+export function searchOrganizations(searchText) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_ORGANIZATIONS,
+        actionTypes.SEARCH_ORGANIZATIONS_SUCCEED,
+        actionTypes.SEARCH_ORGANIZATIONS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/organizations/search',
+      method: 'get',
+      params: { searchText },
+    },
+  };
+}
+
+export function searchWorldPorts(searchText) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_WORLDPORTS,
+        actionTypes.SEARCH_WORLDPORTS_SUCCEED,
+        actionTypes.SEARCH_WORLDPORTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/worldports/search',
+      method: 'get',
+      params: { searchText },
+    },
+  };
+}
+
+export function searchChinaPorts(searchText) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_CHINAPORTS,
+        actionTypes.SEARCH_CHINAPORTS_SUCCEED,
+        actionTypes.SEARCH_CHINAPORTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/chinaports/search',
+      method: 'get',
+      params: { searchText },
+    },
+  };
+}
+
+export function searchCountries(searchText) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_COUNTRIES,
+        actionTypes.SEARCH_COUNTRIES_SUCCEED,
+        actionTypes.SEARCH_COUNTRIES_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/countries/search',
+      method: 'get',
+      params: { searchText },
+    },
+  };
+}
+
+export function updateCiqHead(preEntrySeqNo, data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CIQ_HEAD,
+        actionTypes.UPDATE_CIQ_HEAD_SUCCEED,
+        actionTypes.UPDATE_CIQ_HEAD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/head/update',
+      method: 'post',
+      data: { preEntrySeqNo, data },
+    },
   };
 }
