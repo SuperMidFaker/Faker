@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Form, Card, Col, DatePicker, Row, Input } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../../../message.i18n';
 import moment from 'moment';
 
 const formatMsg = format(messages);

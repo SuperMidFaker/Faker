@@ -58,6 +58,7 @@ import * as CMSBrokers from './cms/settings/brokers';
 import * as CMSTradeItem from './cms/tradeitem';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
 import * as CMSTradeItemRepo from './cms/tradeitem/repo';
+import * as CMSTradeItemRepoItem from './cms/tradeitem/repo/item';
 import * as CMSTradeItemTask from './cms/tradeitem/task';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
@@ -396,6 +397,11 @@ export default(store) => {
               <Route path="repo">
                 <IndexRoute component={CMSTradeItemRepo.List} />
                 <Route path=":repoId" component={CMSTradeItemRepo.Content} />
+                <Route path="item">
+                  <Route path="add" component={CMSTradeItemRepoItem.Add} />
+                  <Route path="edit/:id" component={CMSTradeItemRepoItem.Edit} />
+                  <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
+                </Route>
               </Route>
               <Route path="task/:cat" component={CMSTradeItemTask.List} />
               <Route path="hscode">

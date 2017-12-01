@@ -309,7 +309,7 @@ export default class RepoContent extends Component {
       if (this.props.repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
         if (record.status === TRADE_ITEM_STATUS.unclassified) {
           return (<span>
-            <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+            <NavLink to={`/clearance/tradeitem/repo/item/edit/${record.id}`}>
               <Icon type="edit" /> {this.msg('modify')}
             </NavLink>
             <span className="ant-divider" />
@@ -321,7 +321,7 @@ export default class RepoContent extends Component {
           if (this.props.auditWay === SYNC_AUDIT_METHODS[1].key) {
             const options = record.master_rejected ?
               (<span>
-                <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                <NavLink to={`/clearance/tradeitem/repo/item/edit/${record.id}`}>
                   <Icon type="edit" /> {this.msg('modify')}
                 </NavLink>
                 <span className="ant-divider" />
@@ -345,7 +345,7 @@ export default class RepoContent extends Component {
                 <Dropdown overlay={(
                   <Menu>
                     <Menu.Item key="edit">
-                      <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+                      <NavLink to={`/clearance/tradeitem/repo/item/edit/${record.id}`}>
                         <Icon type="edit" /> {this.msg('modify')}
                       </NavLink>
                     </Menu.Item>
@@ -364,18 +364,18 @@ export default class RepoContent extends Component {
         } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id === this.props.tenantId) {
           return (
             <span>
-              <NavLink to={`/clearance/classification/tradeitem/edit/${record.id}`}>
+              <NavLink to={`/clearance/tradeitem/repo/item/edit/${record.id}`}>
                 <Icon type="edit" /> {this.msg('modify')}
               </NavLink>
               <span className="ant-divider" />
-              <NavLink to={`/clearance/classification/tradeitem/newSrc/${record.id}`}>
+              <NavLink to={`/clearance/tradeitem/repo/item/fork/${record.id}`}>
                 <Tooltip title={this.msg('addNewSrc')} placement="bottom"><Icon type="file-add" /></Tooltip>
               </NavLink>
             </span>
           );
         } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== this.props.tenantId) {
           return (
-            <NavLink to={`/clearance/classification/tradeitem/newSrc/${record.id}`}>
+            <NavLink to={`/clearance/tradeitem/repo/item/fork/${record.id}`}>
               <Tooltip title={this.msg('addNewSrc')} placement="bottom"><Icon type="file-add" /></Tooltip>
             </NavLink>
           );
@@ -455,7 +455,7 @@ export default class RepoContent extends Component {
 
 
   handleAddItem = () => {
-    this.context.router.push('/clearance/classification/tradeitem/create');
+    this.context.router.push('/clearance/tradeitem/repo/item/add');
   }
   handleMenuClick = (e) => {
     if (e.key === 'export') {

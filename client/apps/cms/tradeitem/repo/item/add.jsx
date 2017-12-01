@@ -1,47 +1,42 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Form, Layout, Button, Row, Col, message } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
-import BasicForm from './forms/basicForm';
-import SiderForm from './forms/siderForm';
-import { loadTradeItem, itemNewSrcSave } from 'common/reducers/cmsTradeitem';
+import ItemForm from './form/itemForm';
+import SiderForm from './form/siderForm';
+import { createTradeItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
-function fetchData({ dispatch, params }) {
-  const promises = [];
-  const itemId = parseInt(params.id, 10);
-  promises.push(dispatch(loadTradeItem(itemId, 'newSrc')));
-  return Promise.all(promises);
-}
-
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    itemData: state.cmsTradeitem.itemData,
     tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
+    repoId: state.cmsTradeitem.repoId,
   }),
-  { itemNewSrcSave }
+  { createTradeItem }
 )
 @connectNav({
   depth: 3,
   moduleName: 'clearance',
 })
 @Form.create()
-export default class NewSrcTradeItem extends Component {
+export default class CreateTradeItem extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     form: PropTypes.object.isRequired,
-    itemData: PropTypes.object,
+    tenantId: PropTypes.number.isRequired,
+    loginId: PropTypes.number.isRequired,
+    loginName: PropTypes.string.isRequired,
+    repoId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -50,13 +45,12 @@ export default class NewSrcTradeItem extends Component {
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const value = this.props.form.getFieldsValue();
-        if (value.hscode === this.props.itemData.hscode && value.g_name === this.props.itemData.g_name) {
-          return message.error('请修改商品编码或中文品名', 5);
-        }
-        const specialMark = value.specialMark.join('/');
-        const item = { ...this.props.itemData, ...value, special_mark: specialMark, created_tenant_id: this.props.tenantId };
-        this.props.itemNewSrcSave({ item }).then((result) => {
+        const { repoId, tenantId, loginId, loginName } = this.props;
+        const item = this.props.form.getFieldsValue();
+        item.special_mark = item.specialMark.join('/');
+        this.props.createTradeItem({
+          item, repoId, tenantId, loginId, loginName,
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -83,7 +77,7 @@ export default class NewSrcTradeItem extends Component {
               {this.msg('tradeItemMaster')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              {this.msg('editItem')}
+              {this.msg('newItem')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
@@ -99,7 +93,7 @@ export default class NewSrcTradeItem extends Component {
           <Form layout="vertical">
             <Row gutter={16}>
               <Col sm={24} md={16}>
-                <BasicForm action="newSrc" form={form} />
+                <ItemForm action="create" form={form} />
               </Col>
               <Col sm={24} md={8}>
                 <SiderForm form={form} />

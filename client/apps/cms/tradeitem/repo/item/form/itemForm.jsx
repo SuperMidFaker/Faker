@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Form, Select, Input, Card, Col, Row, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
+import messages from '../../../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import { SPECIAL_COPNO_TERM } from 'common/constants';
 
@@ -57,7 +57,7 @@ function getFieldInits(formData) {
   }),
   { loadHscodes }
 )
-export default class BasicForm extends Component {
+export default class ItemForm extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
