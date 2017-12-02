@@ -8,7 +8,7 @@ const Option = Select.Option;
 export class FormLocalSearchSelect extends React.Component {
   static propTypes = {
     outercol: PropTypes.number,
-    label: PropTypes.string,
+    label: PropTypes.any,
     col: PropTypes.number,
     field: PropTypes.string,
     placeholder: PropTypes.string,
@@ -61,7 +61,7 @@ export class FormLocalSearchSelect extends React.Component {
 export class FormRemoteSearchSelect extends React.Component {
   static propTypes = {
     outercol: PropTypes.number,
-    label: PropTypes.string,
+    label: PropTypes.any,
     col: PropTypes.number,
     field: PropTypes.string,
     disabled: PropTypes.bool,

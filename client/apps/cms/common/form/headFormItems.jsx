@@ -994,8 +994,7 @@ export class CiqCodeAutoCompSelect extends React.Component {
   static propTypes = {
     label: PropTypes.string.isRequired,
     codeField: PropTypes.string.isRequired,
-    custCodeField: PropTypes.string.isRequired,
-    nameField: PropTypes.string.isRequired,
+    cnameField: PropTypes.string,
     formData: PropTypes.object,
     disabled: PropTypes.bool,
     getFieldDecorator: PropTypes.func.isRequired,
@@ -1021,9 +1020,9 @@ export class CiqCodeAutoCompSelect extends React.Component {
     const initialEnameValue = formData && formData[enameField] || '';
     const custOpt = options.filter(op => op.ciqcode !== null && op.ciqcode.length > 0);
     return (
-      <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 19 }} colon={false} label={label} required>
+      <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 21 }} colon={false} label={label} required>
         <Row gutter={4}>
-          <Col span="7">
+          <Col span="4">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
                 <Input disabled value={initialCodeValue} />
@@ -1046,7 +1045,7 @@ export class CiqCodeAutoCompSelect extends React.Component {
                   </Select>)}
             </FormItem>
           </Col>
-          <Col span="7">
+          <Col span="10">
             <FormItem style={{ marginBottom: 0 }}>
               {disabled ?
                 <Input disabled value={initialCnameValue} />

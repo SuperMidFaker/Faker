@@ -279,7 +279,7 @@ export default class CustomsDeclEditor extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <NavLink to={`/clearance/${ietype}/cusdecl/`}>{this.msg('customsDecl')}</NavLink>
+                <NavLink to="/clearance/cusdecl/">{this.msg('customsDecl')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>
