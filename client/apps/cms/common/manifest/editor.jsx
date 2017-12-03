@@ -507,7 +507,7 @@ export default class ManifestEditor extends React.Component {
               {editable &&
               (<Button type="primary" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                 loading={this.state.generating} onClick={this.handleGenerateEntry}
-              >{this.msg('generate')}{declType}</Button>) }
+              >{this.msg('generateCDP')}</Button>) }
               {editable &&
               <Button type="primary" icon="save" onClick={this.handleBillSave} disabled={billHeadFieldsChangeTimes === 0}>保存</Button>}
               <Dropdown overlay={this.renderOverlayMenu(editable, revertable)}><Button icon="ellipsis" /></Dropdown>

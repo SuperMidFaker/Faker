@@ -11,7 +11,7 @@ import Container from './container';
 import ClearanceForm from './clearanceForm';
 import TransportForm from './transportForm';
 import CwmReceivingForm from './cwmReceivingForm';
-import CwmSoForm from './cwmSoForm';
+import CwmShippingForm from './cwmShippingForm';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -216,7 +216,7 @@ export default class OrderForm extends Component {
       } else if (node.kind === 'cwmrec') {
         steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<CwmReceivingForm formData={order} index={i} operation={operation} />} />);
       } else if (node.kind === 'cwmship') {
-        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<CwmSoForm formData={order} index={i} operation={operation} />} />);
+        steps.push(<Step key={node.node_uuid} title={node.name} status="process" description={<CwmShippingForm formData={order} index={i} operation={operation} />} />);
       }
     }
     return steps;
@@ -252,7 +252,7 @@ export default class OrderForm extends Component {
       </ul>
     );
     return (
-      <Form layout="horizontal" className="order-flow-form">
+      <Form layout="horizontal" className="order-flow-form form-layout-compact">
         <Card title={<span>客户
           <Select placeholder="请选择客户" showSearch allowClear optionFilterProp="children"
             value={formData.customer_partner_id}

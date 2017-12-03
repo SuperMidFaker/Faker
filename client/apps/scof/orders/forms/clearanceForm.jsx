@@ -6,6 +6,7 @@ import { TRANS_MODE, WRAP_TYPE, DECL_I_TYPE, DECL_E_TYPE } from 'common/constant
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
+import { Ikons } from 'client/components/FontIcon';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
@@ -100,8 +101,9 @@ export default class ClearanceForm extends Component {
     };
     const node = formData.node;
     const declWays = node.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
+    const iconType = node.kind === 'export' ? 'logout' : 'login';
     return (
-      <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} hoverable={false}>
+      <Card title={<Ikons type={iconType} />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} hoverable={false}>
         <Row style={{ marginBottom: 8 }}>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('declareWay')} {...formItemLayout}>

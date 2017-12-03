@@ -6,12 +6,13 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { notification, Breadcrumb, Button, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
+import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/crmOrders';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const VALIDATE_MSG = {
   no_customer: '请选择客户',
@@ -102,25 +103,27 @@ export default class EditOrder extends Component {
   render() {
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('shipmentOrders')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('editOrder')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('shipmentOrders')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('editOrder')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>
               {this.msg('save')}
             </Button>
-          </div>
-        </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content">
           <OrderForm operation="edit" />
         </Content>
       </div>

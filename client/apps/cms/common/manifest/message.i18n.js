@@ -125,9 +125,9 @@ export default defineMessages({
     id: 'cms.manifest.new.declaration',
     defaultMessage: '制作报关单',
   },
-  generate: {
-    id: 'cms.manifest.generate',
-    defaultMessage: '生成',
+  generateCDP: {
+    id: 'cms.manifest.generate.cdp',
+    defaultMessage: '生成报关建议书',
   },
   saveAsTemplate: {
     id: 'cms.manifest.saveas.template',

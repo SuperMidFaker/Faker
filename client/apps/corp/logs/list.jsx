@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Button, DatePicker, Icon, Input, Layout, Select } from 'antd';
+import { Breadcrumb, Button, DatePicker, Input, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import PageHeader from 'client/components/PageHeader';
@@ -84,10 +84,10 @@ export default class LogsList extends React.Component {
     title: '时间',
     dataIndex: 'created_date',
     width: 150,
-    render: actdate => actdate && moment(actdate).format('YYYY.MM.DD'),
+    render: actdate => actdate && moment(actdate).format('YYYY.MM.DD HH:mm'),
   }, {
     title: 'IP地址',
-    width: 250,
+    width: 200,
     dataIndex: 'ip',
     render: (ip, row) => row.ip_region ? `${ip} ${row.ip_region}` : ip,
   }, {
@@ -134,8 +134,7 @@ export default class LogsList extends React.Component {
       remotes: logList,
     });
     const toolbarActions = (<span>
-      <Icon type="user" />
-      <Select value={searchFilter.user} style={{ width: 100 }} showArrow={false} showSearch
+      <Select placeholder="操作人员" value={searchFilter.user} style={{ width: 100 }} showArrow={false} showSearch
         onChange={value => this.handleFilterChange('user', value)} allowClear
       >
         {userMembers.map(usm => <Option key={String(usm.login_id)} value={String(usm.login_id)}>{usm.name}</Option>)}

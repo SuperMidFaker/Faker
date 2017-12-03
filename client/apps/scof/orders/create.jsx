@@ -4,14 +4,15 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { notification, BackTop, Breadcrumb, Button, Layout } from 'antd';
+import { notification, Breadcrumb, Button, Layout } from 'antd';
 import OrderForm from './forms/orderForm';
+import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, submitOrder, validateOrder } from 'common/reducers/crmOrders';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const VALIDATE_MSG = {
   no_customer: '请选择客户',
   no_goods_type: '请选择货物类型',
@@ -99,30 +100,31 @@ export default class CreateOrder extends Component {
   }
   render() {
     return (
-      <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('shipmentOrders')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('createOrder')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+      <Layout>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('shipmentOrders')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('createOrder')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button type="ghost" onClick={this.handleCancelBtnClick}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>
               {this.msg('save')}
             </Button>
-          </div>
-        </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content">
           <OrderForm operation="create" />
-          <BackTop />
         </Content>
-      </div>
+      </Layout>
     );
   }
 }
