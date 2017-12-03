@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { notification, Breadcrumb, Button, Layout } from 'antd';
+import { Breadcrumb, Button, Layout, message, notification } from 'antd';
 import OrderForm from './forms/orderForm';
 import PageHeader from 'client/components/PageHeader';
 import { loadFormRequires, loadOrder, editOrder, validateOrder } from 'common/reducers/crmOrders';
@@ -59,16 +59,19 @@ export default class EditOrder extends Component {
     this.props.validateOrder(formData).then((result) => {
       if (result.error) {
         notification.error({
+          message: '错误信息',
           description: result.error.message,
           duration: 15,
         });
       } else if (result.data.level === 'error') {
         notification.error({
+          message: '错误信息',
           description: VALIDATE_MSG[result.data.msgkey],
           duration: 15,
         });
       } else if (result.data.level === 'warn') {
         notification.warn({
+          message: '警告信息',
           description: VALIDATE_MSG[result.data.msgkey],
           btn: (<div>
             <a role="presentation" onClick={() => this.handleEdit(true)}>继续保存</a>
@@ -90,9 +93,12 @@ export default class EditOrder extends Component {
     const { formData, tenantName } = this.props;
     this.props.editOrder({ formData, tenantName }).then((result) => {
       if (result.error) {
-        notification.error({ description: result.error.message });
+        notification.error({
+          message: '错误信息',
+          description: result.error.message },
+        );
       } else {
-        notification.info({ description: '保存成功' });
+        message.success('保存成功');
         this.context.router.push('/scof/orders');
       }
     });
