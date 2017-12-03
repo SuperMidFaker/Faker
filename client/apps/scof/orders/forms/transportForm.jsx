@@ -9,6 +9,7 @@ import { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleA
 import { uuidWithoutDash } from 'client/common/uuid';
 import { GOODS_TYPES, PRESET_TRANSMODES, CONTAINER_PACKAGE_TYPE, COURIERS, TARIFF_METER_METHODS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
+import { MdIcon } from 'client/components/FontIcon';
 import * as Location from 'client/util/location';
 import AddLineModal from 'client/apps/scof/flow/modal/addLineModal';
 import AddLocationModal from 'client/apps/scof/flow/modal/addLocationModal';
@@ -594,7 +595,7 @@ export default class TransportForm extends Component {
       );
     }
     return (
-      <Card extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} hoverable={false}>
+      <Card title={<MdIcon type="truck" />} extra={<a role="presentation" onClick={this.handleShipmentRelate}><Icon type="sync" /> 提取货运信息</a>} bodyStyle={{ padding: 16 }} hoverable={false}>
         {
           !this.state.isLineIntariff && <Row>
             <Alert message={<div>发货/收货地址不在报价协议的线路里 <a onClick={this.handleShowAddLineModal}>添加到报价协议</a></div>} type="warning" showIcon />

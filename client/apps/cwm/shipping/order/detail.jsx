@@ -147,12 +147,7 @@ export default class CreateShippingOrder extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <Select
-
-                  value={defaultWhse.code}
-                  style={{ width: 160 }}
-                  disabled
-                >
+                <Select value={defaultWhse.code} style={{ width: 160 }} disabled>
                   <Option value={defaultWhse.code}>{defaultWhse.name}</Option>
                 </Select>
               </Breadcrumb.Item>

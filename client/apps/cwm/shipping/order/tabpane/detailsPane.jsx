@@ -194,7 +194,7 @@ export default class DetailsPane extends Component {
           </DataPane.BulkActions>
         </DataPane.Toolbar>
         <AddDetailModal product={this.state.editRecord} edit={this.state.edit} selectedOwner={this.props.selectedOwner} />
-        <AsnSelectModal bonded={bonded} regType={regType} />
+        <AsnSelectModal bonded={bonded} regType={regType} ownerPartnerId={form.getFieldValue('owner_partner_id')} />
       </DataPane>
     );
   }

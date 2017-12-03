@@ -12,6 +12,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'SEARCH_CHINAPORTS', 'SEARCH_CHINAPORTS_SUCCEED', 'SEARCH_CHINAPORTS_FAIL',
   'SEARCH_COUNTRIES', 'SEARCH_COUNTRIES_SUCCEED', 'SEARCH_COUNTRIES_FAIL',
   'UPDATE_CIQ_HEAD', 'UPDATE_CIQ_HEAD_SUCCEED', 'UPDATE_CIQ_HEAD_FAIL',
+  'SET_FIXED_COUNTRY', 'SET_FIXED_ORGANIZATIONS', 'SET_FIXED_WORLDPORTS',
 ]);
 
 const initialState = {
@@ -31,6 +32,9 @@ const initialState = {
     chinaPorts: [],
     currencies: [],
     units: [],
+    fixedCountries: [],
+    fixedOrganizations: [],
+    fixedWorldPorts: [],
   },
   goodsModal: {
     visible: false,
@@ -51,7 +55,14 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
     case actionTypes.LOAD_CIQ_PARAMS_SUCCEED:
-      return { ...state, ciqParams: { ...action.result.data } };
+      return { ...state,
+        ciqParams: { ...state.ciqParams,
+          units: [...action.result.data.units],
+          currencies: [...action.result.data.currencies],
+          chinaPorts: [...action.result.data.chinaPorts],
+          organizations: [...action.result.data.organizations, ...state.ciqParams.fixedOrganizations],
+          countries: [...action.result.data.countries, ...state.ciqParams.countries],
+          worldPorts: [...action.result.data.worldPorts, ...state.ciqParams.worldPorts] } };
     case actionTypes.SHOW_GOODS_MODAL:
       return { ...state, goodsModal: { ...state.goodsModal, visible: true, data: action.record } };
     case actionTypes.HIDE_GOODS_MODAL:
@@ -61,17 +72,28 @@ export default function reducer(state = initialState, action) {
         ciqDeclHead: action.result.data.head,
         ciqParams: { ...state.ciqParams,
           organizations: [...state.ciqParams.organizations, ...action.result.data.organizations],
-          countries: [...state.ciqParams.countries, ...action.result.data.countries] } };
+          countries: [...state.ciqParams.countries, ...action.result.data.countries],
+          worldPorts: [...state.ciqParams.worldPorts, ...action.result.data.worldports],
+          fixedOrganizations: [...action.result.data.organizations],
+          fixedCountries: [...action.result.data.countries],
+          fixedWorldPorts: [...action.result.data.worldports],
+        } };
     case actionTypes.LOAD_CIQ_DECL_GOODS_SUCCEED:
       return { ...state, ciqDeclGoods: action.result.data };
     case actionTypes.SEARCH_ORGANIZATIONS_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, organizations: [...action.result.data] } };
+      return { ...state, ciqParams: { ...state.ciqParams, organizations: [...action.result.data, ...state.ciqParams.fixedOrganizations] } };
     case actionTypes.SEARCH_WORLDPORTS_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, worldPorts: [...action.result.data] } };
+      return { ...state, ciqParams: { ...state.ciqParams, worldPorts: [...action.result.data, ...state.ciqParams.fixedWorldPorts] } };
     case actionTypes.SEARCH_CHINAPORTS_SUCCEED:
       return { ...state, ciqParams: { ...state.ciqParams, chinaPorts: [...action.result.data] } };
     case actionTypes.SEARCH_COUNTRIES_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, countries: [...action.result.data] } };
+      return { ...state, ciqParams: { ...state.ciqParams, countries: [...action.result.data, ...state.ciqParams.fixedCountries] } };
+    case actionTypes.SET_FIXED_COUNTRY:
+      return { ...state, ciqParams: { ...state.ciqParams, fixedCountries: [...action.records] } };
+    case actionTypes.SET_FIXED_ORGANIZATIONS:
+      return { ...state, ciqParams: { ...state.ciqParams, fixedOrganizations: [...action.records] } };
+    case actionTypes.SET_FIXED_WORLDPORTS:
+      return { ...state, ciqParams: { ...state.ciqParams, fixedWorldPorts: [...action.records] } };
     default:
       return state;
   }
@@ -221,5 +243,26 @@ export function updateCiqHead(preEntrySeqNo, data) {
       method: 'post',
       data: { preEntrySeqNo, data },
     },
+  };
+}
+
+export function setFixedCountry(records) {
+  return {
+    type: actionTypes.SET_FIXED_COUNTRY,
+    records,
+  };
+}
+
+export function setFixedOrganizations(records) {
+  return {
+    type: actionTypes.SET_FIXED_ORGANIZATIONS,
+    records,
+  };
+}
+
+export function setFixedWorldPorts(records) {
+  return {
+    type: actionTypes.SET_FIXED_WORLDPORTS,
+    records,
   };
 }

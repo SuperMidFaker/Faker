@@ -8,7 +8,7 @@ const Option = Select.Option;
 export class FormLocalSearchSelect extends React.Component {
   static propTypes = {
     outercol: PropTypes.number,
-    label: PropTypes.string,
+    label: PropTypes.any,
     col: PropTypes.number,
     field: PropTypes.string,
     placeholder: PropTypes.string,
@@ -61,7 +61,7 @@ export class FormLocalSearchSelect extends React.Component {
 export class FormRemoteSearchSelect extends React.Component {
   static propTypes = {
     outercol: PropTypes.number,
-    label: PropTypes.string,
+    label: PropTypes.any,
     col: PropTypes.number,
     field: PropTypes.string,
     disabled: PropTypes.bool,
@@ -78,6 +78,12 @@ export class FormRemoteSearchSelect extends React.Component {
     const { onSearch, field } = this.props;
     if (onSearch) {
       onSearch(field, value);
+    }
+  }
+  handleSelect = (value) => {
+    const { onSelect } = this.props;
+    if (onSelect) {
+      onSelect(value);
     }
   }
   render() {
@@ -101,6 +107,7 @@ export class FormRemoteSearchSelect extends React.Component {
                 allowClear
                 onSearch={this.handleSearch}
                 optionFilterProp="children"
+                onSelect={this.handleSelect}
               >
                 {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
