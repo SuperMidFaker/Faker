@@ -2,7 +2,6 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
-  'LOAD_CIQ_DECLS', 'LOAD_CIQ_DECLS_SUCCEED', 'LOAD_CIQ_DECLS_FAIL',
   'LOAD_CUSTOMS_DECLS', 'LOAD_CUSTOMS_DECLS_SUCCEED', 'LOAD_CUSTOMS_DECLS_FAIL',
   'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
   'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
@@ -19,8 +18,11 @@ const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'SHOW_BATCH_SEND_MODAL', 'SHOW_BATCH_SEND_MODAL_SUCCEED', 'SHOW_BATCH_SEND_MODAL_FAIL',
   'CLOSE_BATCH_SEND_MODAL',
   'UPDATE_MARK', 'UPDATE_MARK_SUCCEED', 'UPDATE_MARK_FAIL',
+  'LOAD_PESEND_RECORDS', 'LOAD_PESEND_RECORDS_SUCCEED', 'LOAD_PESEND_RECORDS_FAIL',
   'LOAD_SEND_RECORDS', 'LOAD_SEND_RECORDS_SUCCEED', 'LOAD_SEND_RECORDS_FAIL',
   'LOAD_RETURN_RECORDS', 'LOAD_RETURN_RECORDS_SUCCEED', 'LOAD_RETURN_RECORDS_FAIL',
+  'SHOW_DECL_MSG_DOCK', 'HIDE_DECL_MSG_DOCK',
+  'SHOW_DECL_MSG_MODAL', 'HIDE_DECL_MSG_MODAL',
 ]);
 
 const initialState = {
@@ -34,12 +36,6 @@ const initialState = {
     name: '',
     sortField: '',
     sortOrder: '',
-  },
-  ciqdeclList: {
-    totalCount: 0,
-    current: 1,
-    pageSize: 20,
-    data: [],
   },
   customslist: {
     totalCount: 0,
@@ -70,18 +66,28 @@ const initialState = {
   },
   customsResults: [],
   customsResultsLoading: false,
-  sendRecords: [],
-  returnRecords: [],
+  sendRecords: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
+  },
+  returnRecords: {
+    totalCount: 0,
+    pageSize: 10,
+    current: 1,
+    data: [],
+  },
+  declMsgDock: {
+    visible: false,
+  },
+  declMsgModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.LOAD_CIQ_DECLS:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: true } };
-    case actionTypes.LOAD_CIQ_DECLS_SUCCEED:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data } };
-    case actionTypes.LOAD_CIQ_DECLS_FAIL:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
     case actionTypes.LOAD_CUSTOMS_DECLS:
       return { ...state, customslist: { ...state.customslist, loading: true } };
     case actionTypes.LOAD_CUSTOMS_DECLS_SUCCEED:
@@ -115,9 +121,17 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_BATCH_SEND_MODAL:
       return { ...state, batchSendModal: { ...state.batchSendModal, visible: false } };
     case actionTypes.LOAD_SEND_RECORDS_SUCCEED:
-      return { ...state, sendRecords: action.result.data };
+      return { ...state, sendRecords: { ...action.result.data } };
     case actionTypes.LOAD_RETURN_RECORDS_SUCCEED:
-      return { ...state, returnRecords: action.result.data };
+      return { ...state, returnRecords: { ...action.result.data } };
+    case actionTypes.SHOW_DECL_MSG_DOCK:
+      return { ...state, declMsgDock: { ...state.declMsgDock, visible: true } };
+    case actionTypes.HIDE_DECL_MSG_DOCK:
+      return { ...state, declMsgDock: { ...state.declMsgDock, visible: false } };
+    case actionTypes.SHOW_DECL_MSG_MODAL:
+      return { ...state, declMsgModal: { ...state.declMsgModal, visible: true } };
+    case actionTypes.HIDE_DECL_MSG_MODAL:
+      return { ...state, declMsgModal: { ...state.declMsgModal, visible: false } };
     default:
       return state;
   }
@@ -149,21 +163,6 @@ export function loadDeclHead(delgNo) {
       endpoint: 'v1/cms/declare/get/declheads',
       method: 'get',
       params: { delgNo },
-    },
-  };
-}
-
-export function loadCiqDecls(params) {
-  return {
-    [CLIENT_API]: {
-      types: [
-        actionTypes.LOAD_CIQ_DECLS,
-        actionTypes.LOAD_CIQ_DECLS_SUCCEED,
-        actionTypes.LOAD_CIQ_DECLS_FAIL,
-      ],
-      endpoint: 'v1/cms/declare/get/ciqDecls',
-      method: 'get',
-      params,
     },
   };
 }
@@ -359,7 +358,7 @@ export function updateMark(changeVal, entryHeadId) {
   };
 }
 
-export function loadSendRecords() {
+export function loadSendRecords({ preEntrySeqNo, current, pageSize }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -369,11 +368,27 @@ export function loadSendRecords() {
       ],
       endpoint: 'v1/cms/send/records/load',
       method: 'get',
+      params: { preEntrySeqNo, current, pageSize },
     },
   };
 }
 
-export function loadReturnRecords() {
+export function loadLatestSendRecord(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_PESEND_RECORDS,
+        actionTypes.LOAD_PESEND_RECORDS_SUCCEED,
+        actionTypes.LOAD_PESEND_RECORDS_FAIL,
+      ],
+      endpoint: 'v1/cms/send/records/load',
+      method: 'get',
+      params: { preEntrySeqNo, current: 1, pageSize: 1 },
+    },
+  };
+}
+
+export function loadReturnRecords({ preEntrySeqNo, current, pageSize }) {
   return {
     [CLIENT_API]: {
       types: [
@@ -383,6 +398,31 @@ export function loadReturnRecords() {
       ],
       endpoint: 'v1/cms/return/records/load',
       method: 'get',
+      params: { preEntrySeqNo, current, pageSize },
     },
+  };
+}
+
+export function showDeclMsgDock() {
+  return {
+    type: actionTypes.SHOW_DECL_MSG_DOCK,
+  };
+}
+
+export function hideDeclMsgDock() {
+  return {
+    type: actionTypes.HIDE_DECL_MSG_DOCK,
+  };
+}
+
+export function showDeclMsgModal() {
+  return {
+    type: actionTypes.SHOW_DECL_MSG_MODAL,
+  };
+}
+
+export function hideDeclMsgModal() {
+  return {
+    type: actionTypes.HIDE_DECL_MSG_MODAL,
   };
 }

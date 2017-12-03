@@ -356,7 +356,7 @@ export default class ShunfengExpressModal extends Component {
       <Modal maskClosable={false} title={title} visible={this.props.visible} width="100%" closable={false} wrapClassName="fullscreen-modal" footer={null}>
         <Row gutter={24}>
           <Col span={16}>
-            <Card title="订单信息" noHovering>
+            <Card title="订单信息" hoverable={false}>
               <Row className="form-row">
                 <Col span={12}>
                   <FormItem label="快递类型" {...formItemLayout} required>
@@ -500,7 +500,7 @@ export default class ShunfengExpressModal extends Component {
           </Col>
           <Col span={8}>
             <Card title="快递单号"
-              extra={<Button type="primary" onClick={this.orderExpress} loading={this.state.mailnoLoading}>获取单号</Button>} noHovering
+              extra={<Button type="primary" onClick={this.orderExpress} loading={this.state.mailnoLoading}>获取单号</Button>} hoverable={false}
             >
               <Table dataSource={dataSource} columns={columns} showHeader={false} size="small" pagination={false} />
               <br />

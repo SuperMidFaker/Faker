@@ -57,6 +57,8 @@ const actionTypes = createActionTypes('@@welogix/cms/manifest/', [
   'CHANGE_TEMP_INFO', 'CHANGE_TEMP_INFO_SUCCEED', 'CHANGE_TEMP_INFO_FAIL',
   'SHOW_DECL_ELEMENTS_MODAL', 'HIDE_DECL_ELEMENTS_MODAL',
   'UPDATE_BILLBODY', 'UPDATE_BILLBODY_SUCCEED', 'UPDATE_BILLBODY_FAIL',
+  'SHOW_MANIFEST_RULES_CLONE_MODAL', 'HIDE_MANIFEST_RULES_CLONE_MODAL',
+  'CLONE_MANIFEST_RULES', 'CLONE_MANIFEST_RULES_SUCCEED', 'CLONE_MANIFEST_RULES_FAIL',
 ]);
 
 const initialState = {
@@ -146,6 +148,11 @@ const initialState = {
     id: '',
     disabled: false,
     name: '',
+  },
+  manifestRulesCloneModal: {
+    visible: false,
+    templateId: '',
+    ietype: '',
   },
 };
 
@@ -328,6 +335,16 @@ export default function reducer(state = initialState, action) {
           name: action.name } };
     case actionTypes.HIDE_DECL_ELEMENTS_MODAL:
       return { ...state, declElementsModal: { ...state.declElementsModal, visible: false } };
+    case actionTypes.SHOW_MANIFEST_RULES_CLONE_MODAL:
+      return { ...state,
+        manifestRulesCloneModal: {
+          ...state.manifestRulesCloneModal,
+          visible: true,
+          templateId: action.templateId,
+          ietype: action.ietype,
+        } };
+    case actionTypes.HIDE_MANIFEST_RULES_CLONE_MODAL:
+      return { ...state, manifestRulesCloneModal: { ...state.manifestRulesCloneModal, visible: false } };
     default:
       return state;
   }
@@ -557,7 +574,7 @@ export function loadEntry(billSeqNo, preEntrySeqNo, tenantId) {
         actionTypes.LOAD_CUSTOMS_DECL_SUCCEED,
         actionTypes.LOAD_CUSTOMS_DECL_FAIL,
       ],
-      endpoint: 'v1/cms/manifest/entry',
+      endpoint: 'v1/cms/customs/entry',
       method: 'get',
       params: { billSeqNo, preEntrySeqNo, tenantId },
     },
@@ -1121,5 +1138,34 @@ export function showDeclElementsModal(element, id, gModel, disabled, name) {
 export function hideDeclElementsModal() {
   return {
     type: actionTypes.HIDE_DECL_ELEMENTS_MODAL,
+  };
+}
+
+export function showManifestRulesCloneModal(templateId, ietype) {
+  return {
+    type: actionTypes.SHOW_MANIFEST_RULES_CLONE_MODAL,
+    templateId,
+    ietype,
+  };
+}
+
+export function hideManifestRulesCloneModal() {
+  return {
+    type: actionTypes.HIDE_MANIFEST_RULES_CLONE_MODAL,
+  };
+}
+
+export function cloneManifestRules(name, templateId, userName) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.CLONE_MANIFEST_RULES,
+        actionTypes.CLONE_MANIFEST_RULES_SUCCEED,
+        actionTypes.CLONE_MANIFEST_RULES_FAIL,
+      ],
+      endpoint: 'v1/cms/setting/manifest/rules/clone',
+      method: 'post',
+      data: { name, templateId, userName },
+    },
   };
 }

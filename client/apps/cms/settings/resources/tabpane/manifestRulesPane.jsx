@@ -7,9 +7,10 @@ import { Icon, Table, Button, Layout, Popconfirm, Tag, message } from 'antd';
 import NavLink from 'client/components/NavLink';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import messages from '../../message.i18n';
 import AddManifestRuleModal from '../modal/addManifestRuleModal';
-import { loadBillemplates, deleteTemplate, toggleBillTempModal } from 'common/reducers/cmsManifest';
+import ManifestRuleCloneModal from '../modal/manifestRuleCloneModal';
+import { loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal } from 'common/reducers/cmsManifest';
 import { CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
 
 const { Content } = Layout;
@@ -22,7 +23,7 @@ const formatMsg = format(messages);
     billtemplates: state.cmsManifest.billtemplates,
     customer: state.cmsResources.customer,
   }),
-  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal }
+  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal }
 )
 
 export default class ManifestRulesPane extends React.Component {
@@ -56,6 +57,9 @@ export default class ManifestRulesPane extends React.Component {
   handleAddBtnClicked = () => {
     this.props.toggleBillTempModal(true, 'add');
   }
+  handleClone = (record) => {
+    this.props.showManifestRulesCloneModal(record.id, record.i_e_type);
+  }
   render() {
     const columns = [
       {
@@ -82,13 +86,15 @@ export default class ManifestRulesPane extends React.Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        width: 60,
+        width: 100,
         render: (_, record) => {
           const ietype = record.i_e_type === 0 ? 'import' : 'export';
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
               <span>
                 <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
+                <span className="ant-divider" />
+                <a onClick={() => this.handleClone(record)}><Icon type="copy" /></a>
                 <span className="ant-divider" />
                 <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
                   <a><Icon type="delete" /></a>
@@ -111,6 +117,7 @@ export default class ManifestRulesPane extends React.Component {
           <Table size="middle" columns={columns} dataSource={datas} rowKey="id" />
         </div>
         <AddManifestRuleModal customer={this.props.customer} />
+        <ManifestRuleCloneModal />
       </Content>
     );
   }

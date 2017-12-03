@@ -25,7 +25,7 @@ function CreateActionForm(props) {
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
         <a role="presentation"><Icon type="delete" /></a>
-      </Popconfirm>)}
+      </Popconfirm>)} bodyStyle={{ padding: 16 }}
     >
       <Row gutter={16}>
         <Col sm={24} lg={8}>
@@ -85,7 +85,7 @@ function ExecuteActionForm(props) {
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
         <a role="presentation"><Icon type="delete" /></a>
-      </Popconfirm>)}
+      </Popconfirm>)} bodyStyle={{ padding: 16 }}
     >
       <Row gutter={16}>
         <Col sm={24} lg={8}>
@@ -152,7 +152,7 @@ function NotifyActionForm(props) {
     <Card extra={(
       <Popconfirm title={msg('deleteConfirm')} onConfirm={handleDel}>
         <a role="presentation"><Icon type="delete" /></a>
-      </Popconfirm>)}
+      </Popconfirm>)} bodyStyle={{ padding: 16 }}
     >
       <Row gutter={16}>
         <Col sm={24} lg={8}>
@@ -182,7 +182,6 @@ function NotifyActionForm(props) {
             </Select>
           </FormItem>
         </Col>
-
         <Col sm={24} lg={24}>
           <FormItem label={msg('notifyContent')}>
             <Mention
@@ -356,7 +355,7 @@ export default class AddTriggerModal extends React.Component {
         width={800} visible={visible}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
-        <Form layout="vertical">
+        <Form layout="vertical" className="form-layout-compact">
           {actions.map((action, index) => {
             let actionForm = null;
             switch (action.type) {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
+import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -15,12 +15,13 @@ import DelegationDockPanel from '../../../../../cms/common/dock/delegationDockPa
 import ShipmentDockPanel from '../../../../../transport/shipment/dock/shipmentDockPanel';
 import PageHeader from 'client/components/PageHeader';
 import ModuleMenu from '../../menu';
+import NewTransfOutModal from './newTransfOutModal';
 import { showDock } from 'common/reducers/cwmShippingOrder';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-import { loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
+import { openNewTransfOutModal, loadReleaseRegDatas } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
@@ -37,8 +38,9 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
-  { loadReleaseRegDatas, switchDefaultWhse, showDock }
+  { openNewTransfOutModal, loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
 @connectNav({
   depth: 2,
@@ -77,6 +79,7 @@ export default class SHFTZTransferOutList extends React.Component {
     width: 200,
     dataIndex: 'ftz_rel_no',
     fixed: 'left',
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '监管类型',
     dataIndex: 'ftz_rel_type',
@@ -106,7 +109,7 @@ export default class SHFTZTransferOutList extends React.Component {
     width: 160,
     render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'cust_order_no',
     width: 180,
   }, {
@@ -135,7 +138,7 @@ export default class SHFTZTransferOutList extends React.Component {
   }, {
     title: '创建时间',
     width: 120,
-    dataIndex: 'created_time',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
@@ -145,6 +148,7 @@ export default class SHFTZTransferOutList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -202,11 +206,6 @@ export default class SHFTZTransferOutList extends React.Component {
     const link = `/cwm/supervision/shftz/transfer/out/${row.so_no}`;
     this.context.router.push(link);
   }
-  handleWhseChange = (value) => {
-    this.props.switchDefaultWhse(value);
-    message.info('当前仓库已切换');
-    this.handleReleaseListLoad(1, value);
-  }
   handleSearch = (searchVal) => {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
     this.handleReleaseListLoad(1, this.props.whse.code, filters);
@@ -217,6 +216,9 @@ export default class SHFTZTransferOutList extends React.Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
+  }
+  handleCreateTransfOut = () => {
+    this.props.openNewTransfOutModal();
   }
   render() {
     const { releaseList, listFilter, owners } = this.props;
@@ -271,6 +273,11 @@ export default class SHFTZTransferOutList extends React.Component {
                 <RadioButton value="completed">已转出</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
+            <PageHeader.Actions>
+              <Button type="primary" icon="plus" onClick={this.handleCreateTransfOut}>
+                {this.msg('create')}
+              </Button>
+            </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable
@@ -288,6 +295,7 @@ export default class SHFTZTransferOutList extends React.Component {
             <OrderDockPanel />
             <DelegationDockPanel />
             <ShipmentDockPanel />
+            <NewTransfOutModal reload={this.handleReleaseListLoad} />
           </Content>
         </Layout>
       </Layout>

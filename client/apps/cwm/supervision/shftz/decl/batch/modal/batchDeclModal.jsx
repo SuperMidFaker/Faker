@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, Table, Form, Modal, Row, Col, Select, Tag, Input, message, Checkbox } from 'antd';
+import { Button, Card, Table, Form, Modal, Radio, Row, Col, Select, Tag, Input, message, Checkbox } from 'antd';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
-import HeadForm from '../form/headForm';
 import messages from '../../../message.i18n';
+import { loadBrokers } from 'common/reducers/cwmWarehouse';
 import { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl } from 'common/reducers/cwmShFtz';
 import { getSuppliers } from 'common/reducers/cwmReceive';
 
@@ -15,11 +15,14 @@ const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Search = Input.Search;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 
 @injectIntl
 @connect(
   state => ({
     tenantName: state.account.tenantName,
+    customsCode: state.account.customsCode,
     visible: state.cwmShFtz.batchDeclModal.visible,
     submitting: state.cwmShFtz.submitting,
     defaultWhse: state.cwmContext.defaultWhse,
@@ -53,7 +56,7 @@ const Option = Select.Option;
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
   }),
-  { loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers }
+  { loadBrokers, loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers }
 )
 @Form.create()
 export default class BatchDeclModal extends Component {
@@ -81,6 +84,7 @@ export default class BatchDeclModal extends Component {
   }
   componentWillMount() {
     this.props.loadParams();
+    this.props.loadBrokers(this.props.defaultWhse.code);
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
       this.setState({
         scrollY: (window.innerHeight - 460),
@@ -349,6 +353,9 @@ export default class BatchDeclModal extends Component {
     const { loginId, loginName, tenantName } = this.props;
     const { template, groupVals, destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
+      if (errors) {
+        return;
+      }
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
       const broker = fbroker ? { name: fbroker.name, partner_id: fbroker.partner_id, tenant_id: fbroker.partner_tenant_id } : { name: tenantName };
       this.props.beginBatchDecl({
@@ -387,7 +394,7 @@ export default class BatchDeclModal extends Component {
     this.setState({ destCountry });
   }
   render() {
-    const { submitting, billTemplates, exemptions, tradeCountries } = this.props;
+    const { form: { getFieldDecorator }, owners, brokers, customsCode, tenantName, submitting, billTemplates, exemptions, tradeCountries } = this.props;
     const { relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
@@ -441,13 +448,83 @@ export default class BatchDeclModal extends Component {
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}
       >
-        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
-          <HeadForm form={this.props.form} ownerCusCode={ownerCusCode} handleOwnerChange={this.handleOwnerChange} />
+        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
+          <Form className="form-layout-compact">
+            <Row gutter={16}>
+              <Col span={4}>
+                <FormItem label="货主">
+                  {getFieldDecorator('owner', { initialValue: ownerCusCode,
+                    rules: [{ required: true, message: '收货单位必选' }],
+                  })(
+                    <Select placeholder="请选择收货单位" onChange={this.handleOwnerChange} showSearch optionFilterProp="children" >
+                      {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                    </Select>)}
+                </FormItem>
+              </Col>
+              <Col span={4}>
+                <FormItem label="报关代理">
+                  {getFieldDecorator('broker', { rules: [{ required: true, message: '报关代理必选' }] })(
+                    <Select placeholder="请选择报关代理" >
+                      {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(
+                        <Option value={customsCode} key={customsCode}>{tenantName}</Option>
+                  )}
+                    </Select>)}
+                </FormItem>
+              </Col>
+              <Col span={4}>
+                <FormItem label="报关申请类型">
+                  {getFieldDecorator('apply_type', {
+                    initialValue: '0',
+                  })(
+                    <Select placeholder="请选择报关申请类型">
+                      <Option value="0" key="0">普通报关申请单</Option>
+                      <Option value="1" key="1">跨关区报关申请单</Option>
+                      <Option value="2" key="2">保展报关申请单</Option>
+                    </Select>)}
+                </FormItem>
+              </Col>
+              <Col span={3}>
+                <FormItem label="进出口标识">
+                  {getFieldDecorator('ietype', { initialValue: 'import' })(
+                    <RadioGroup>
+                      <RadioButton value="import">进口</RadioButton>
+                      <RadioButton value="export">出口</RadioButton>
+                    </RadioGroup>)}
+                </FormItem>
+              </Col>
+              <Col span={3}>
+                <FormItem label="征免方式">
+                  <Select allowClear optionFilterProp="children" value={dutyMode} onChange={this.handleDutyModeChange}>
+                    {exemptions.map(data => (
+                      <Option key={data.value}>{`${data.value}|${data.text}`}</Option>
+                      ))}
+                  </Select>
+                </FormItem>
+              </Col>
+
+              <Col span={3}>
+                <FormItem label="最终目的国">
+                  <Select showSearch showArrow allowClear optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange}>
+                    {tradeCountries.map(data => (
+                      <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
+            ))}
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col span={3}>
+                <FormItem label="制单规则">
+                  <Select allowClear onChange={this.handleTemplateChange} value={template}>
+                    {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
+                  </Select>
+                </FormItem>
+              </Col>
+            </Row>
+          </Form>
         </Card>
         <Form layout="inline">
           <Row gutter={8}>
             <Col sm={24} md={8} lg={10}>
-              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="分拨出库单" bodyStyle={{ padding: 0 }} hoverable={false}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Input placeholder="出库单号" value={relNo} onChange={this.handleRelNoChange} style={{ width: 200, marginRight: 8 }} />
@@ -464,25 +541,12 @@ export default class BatchDeclModal extends Component {
               </Card>
             </Col>
             <Col sm={24} md={16} lg={14}>
-              <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="集中报关明细" extra={detailExtra} bodyStyle={{ padding: 0 }} hoverable={false}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search placeholder="出库单号" style={{ width: 200 }} onChange={this.handleFtzRelNoChange}
                       value={this.state.ftzRelNo}
                     />
-                    <Select allowClear placeholder="征免方式" optionFilterProp="children" value={dutyMode} onChange={this.handleDutyModeChange} style={{ width: 100, marginRight: 8 }} >
-                      {exemptions.map(data => (
-                        <Option key={data.value}>{`${data.value}|${data.text}`}</Option>
-                      ))}
-                    </Select>
-                    <Select showSearch showArrow allowClear placeholder="最终目的国" optionFilterProp="search" value={destCountry} onChange={this.handleDestCountryChange} style={{ width: 100, marginRight: 8 }}>
-                      {tradeCountries.map(data => (
-                        <Option key={data.value} search={`${data.search}`} >{`${data.value}|${data.text}`}</Option>
-                      ))}
-                    </Select>
-                    <Select allowClear placeholder="制单规则" onChange={this.handleTemplateChange} style={{ width: 160 }} value={template}>
-                      {billTemplates && billTemplates.map(data => (<Option key={data.name} value={data.id}>{data.name}</Option>))}
-                    </Select>
                     <div className={`bulk-actions ${this.state.selectedRowKeys.length === 0 ? 'hide' : ''}`}>
                       <h3>已选中{this.state.selectedRowKeys.length}项</h3>
                       {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}

@@ -443,3 +443,29 @@ export const CMS_DOCU_TYPE = {
 export const SPECIAL_COPNO_TERM = [
   { value: 'A', text: '特殊货号' },
 ];
+
+export const CIQ_IN_DECL_TYPE = [
+  { value: 13, text: '入境检验检疫' },
+  { value: 14, text: '入境流向' },
+  { value: 15, text: '入境验证' },
+];
+
+export const CIQ_OUT_DECL_TYPE = [
+  { value: 21, text: '出境预检' },
+  { value: 24, text: '入境流向' },
+  { value: 25, text: '入境验证' },
+  { value: 28, text: '入境验证' },
+];
+
+export const CIQ_SPECIAL_DECL_FLAG = [
+  { value: 1, text: '国际赛事' },
+  { value: 2, text: '特殊进出军工物资' },
+  { value: 3, text: '国际援助物资' },
+  { value: 4, text: '国际会议' },
+];
+
+export const CIQ_SPECIAL_PASS_FLAG = [
+  { value: 1, text: '直通放行' },
+  { value: 2, text: '外交礼遇' },
+  { value: 3, text: '转关' },
+];

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Card, Table, Switch, Form, Modal, Row, Col, Radio, Select, Tag, Input, message } from 'antd';
+import { Button, Card, Table, Switch, Form, Modal, Row, Col, Radio, Select, Tag, Tooltip, Input, message } from 'antd';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../../message.i18n';
 import { toggleDeclImportModal, loadDeclEntries, loadEntryGnoDetails, importDeclBodies } from 'common/reducers/cmsManifestImport';
@@ -289,7 +289,9 @@ export default class ImportDeclaredBodyModal extends Component {
       <span>复制历史数据</span>
       <div className="toolbar-right">
         <Button onClick={this.handleCancel}>取消</Button>
-        <Button type="primary" ghost loading={submitting} disabled={entryDetails.length === 0 || !filtered} onClick={() => this.handleDeclImport('mark')}>复制并标记</Button>
+        <Tooltip title="标记过的项将不能再次被复制">
+          <Button type="primary" ghost loading={submitting} disabled={entryDetails.length === 0 || !filtered} onClick={() => this.handleDeclImport('mark')}>复制并标记</Button>
+        </Tooltip>
         <Button type="primary" loading={submitting} disabled={entryDetails.length === 0} onClick={() => this.handleDeclImport('copy')}>复制</Button>
       </div>
     </div>);
@@ -300,7 +302,7 @@ export default class ImportDeclaredBodyModal extends Component {
         footer={null} visible={this.props.visible}
       >
         {/*
-        <Card noHovering bodyStyle={{ paddingBottom: 16 }}>
+        <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact" layout="inline">
             <Row gutter={16}>
               <Col span={5}>
@@ -325,7 +327,7 @@ export default class ImportDeclaredBodyModal extends Component {
         <Form layout="inline">
           <Row gutter={16}>
             <Col span={12}>
-              <Card title="来源报关单" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="来源报关单" bodyStyle={{ padding: 0 }} hoverable={false}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <FormItem>
@@ -350,7 +352,7 @@ export default class ImportDeclaredBodyModal extends Component {
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} noHovering>
+              <Card title="选取报关单表体" bodyStyle={{ padding: 0 }} hoverable={false}>
                 <div className="table-panel table-fixed-layout">
                   <div className="toolbar">
                     <Search placeholder="报关单号" style={{ width: 200 }} onChange={this.handleAddedEntryNoChange}

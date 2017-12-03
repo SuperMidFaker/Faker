@@ -34,6 +34,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { loadEntryRegDatas, switchDefaultWhse, showTransferInModal, deleteVirtualTransfer }
 )
@@ -78,10 +79,12 @@ export default class SHFTZTransferSelfList extends React.Component {
     title: '转出出库单号',
     width: 220,
     dataIndex: 'ftz_rel_no',
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '转入进库单号',
     width: 220,
     dataIndex: 'ftz_ent_no',
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '状态',
     dataIndex: 'status',
@@ -122,7 +125,7 @@ export default class SHFTZTransferSelfList extends React.Component {
   }, {
     title: '创建时间',
     width: 120,
-    dataIndex: 'created_time',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
@@ -132,6 +135,7 @@ export default class SHFTZTransferSelfList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

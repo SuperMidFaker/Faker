@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tooltip, notification } from 'antd';
+import { Tag, Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -334,9 +334,9 @@ export default class BatchDeclDetail extends Component {
       applyStep = 2;
       sendText = '重新发送';
     } else if (batchDecl.status === 'applied') {
-      applyStep = 3;
+      applyStep = 2;
     } else if (batchDecl.status === 'cleared') {
-      applyStep = 4;
+      applyStep = 3;
     }
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -370,19 +370,17 @@ export default class BatchDeclDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <Tooltip title="报关清单" placement="bottom">
-              <Button icon="link" onClick={this.handleDelgManifest}>{batchDecl.delg_no}<Badge status="default" text="制单中" /></Button>
-            </Tooltip>
+            <Button icon="link" onClick={this.handleDelgManifest}>关联申报清单 <Badge status="default" text="制单中" /></Button>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {sent && <Button icon="sync" loading={submitting} onClick={this.handleQuery}>申请完成</Button>}
+            {sent && <Button icon="check" loading={submitting} onClick={this.handleQuery}>标记申请完成</Button>}
             {sendText &&
             <Button type="primary" ghost={sent} icon="export" onClick={this.handleSend} loading={submitting}>{sendText}</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="货主">{batchDecl.owner_name}</Description>
                 <Description term="收货单位">{batchDecl.receiver_name}</Description>
@@ -392,14 +390,13 @@ export default class BatchDeclDetail extends Component {
               <div className="card-footer">
                 <Steps progressDot current={applyStep}>
                   <Step title="委托制单" />
-                  <Step title="报关申请" />
-                  <Step title="已发送" />
-                  <Step title="申请通过" />
-                  <Step title="报关放行" />
+                  <Step title="待报关申请" />
+                  <Step title="已发送申请" />
+                  <Step title="已清关" />
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
                 <TabPane tab="分拨出库单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />

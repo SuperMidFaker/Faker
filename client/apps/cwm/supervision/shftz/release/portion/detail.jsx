@@ -139,6 +139,15 @@ export default class SHFTZRelDetail extends Component {
     }
     return detailMap;
   }
+  getStep = (status) => {
+    if (status < 3) {
+      return status;
+    } else if (status === 3 || status === 4) {
+      return 3;
+    } else if (status === 5 || status === 6) {
+      return 4;
+    }
+  }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
     const soNo = this.props.params.soNo;
@@ -196,6 +205,11 @@ export default class SHFTZRelDetail extends Component {
         notification.error({
           message: '操作失败',
           description: '仓库监管系统未配置',
+        });
+      } else {
+        notification.error({
+          message: '操作失败',
+          description: result.error.message,
         });
       }
     });
@@ -466,10 +480,11 @@ export default class SHFTZRelDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
-            </Tooltip>
-        }
+            {relSo.outbound_no &&
+            <Button icon="link" onClick={this.handleOutboundPage}>
+              关联出库操作 <Badge status={outStatus.badge} text={outStatus.text} />
+            </Button>
+            }
           </PageHeader.Nav>
           <PageHeader.Actions>
             {regStatus === CWM_SHFTZ_APIREG_STATUS.completed && <Button loading={submitting} icon="close" onClick={this.handleCancelReg}>回退备案</Button>}
@@ -484,7 +499,7 @@ export default class SHFTZRelDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="分拨出库单号">
                   <EditableCell value={reg.ftz_rel_no} editable={relEditable}
@@ -494,7 +509,8 @@ export default class SHFTZRelDetail extends Component {
                 <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
                 <Description term="运输单位">{reg.carrier_name}</Description>
                 <Description term="是否需加封">
-                  <EditableCell value={reg.need_seal}
+                  <EditableCell type="select" value={reg.need_seal}
+                    options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
                     onSave={value => this.handleInfoSave(reg.pre_entry_seq_no, 'need_seal', value)}
                   />
                 </Description>
@@ -520,14 +536,16 @@ export default class SHFTZRelDetail extends Component {
                 </Description>
               </DescriptionList>
               <div className="card-footer">
-                <Steps progressDot current={regStatus}>
+                <Steps progressDot current={this.getStep(regStatus)}>
                   <Step title="待备案" />
-                  <Step title="已发送" />
-                  <Step title="备案完成" />
+                  <Step title="终端处理" />
+                  <Step title="已备案" />
+                  <Step title="已集中申请" />
+                  <Step title="已清关" />
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="regDetails">
                 <TabPane tab="备案明细" key="regDetails">
                   <DataPane fullscreen={this.state.fullscreen}
@@ -536,8 +554,8 @@ export default class SHFTZRelDetail extends Component {
                   >
                     <DataPane.Toolbar>
                       <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
-                        <RadioButton value="splitted">拆分视图</RadioButton>
-                        <RadioButton value="merged">合并视图</RadioButton>
+                        <RadioButton value="splitted">拆分明细</RadioButton>
+                        <RadioButton value="merged">合并明细</RadioButton>
                       </RadioGroup>
                       <DataPane.Extra>
                         <Summary>
@@ -549,7 +567,7 @@ export default class SHFTZRelDetail extends Component {
                     </DataPane.Toolbar>
                   </DataPane>
                 </TabPane>
-                {regStatus === CWM_SHFTZ_APIREG_STATUS.completed &&
+                {regStatus >= CWM_SHFTZ_APIREG_STATUS.completed &&
                   <TabPane tab="集中报关" key="batchDecl">
                     <DataPane fullscreen={this.state.fullscreen}
                       columns={this.declColumns}

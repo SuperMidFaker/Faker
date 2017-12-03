@@ -191,7 +191,7 @@ export default class CollapsibleSiderLayout extends PureComponent {
             }
           </Menu>
         </Sider>
-        <Layout>
+        <Layout style={{ minWidth: 1024 }}>
           {childContent}
         </Layout>
       </Layout>

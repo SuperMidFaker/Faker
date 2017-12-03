@@ -41,7 +41,8 @@ export default class TodoPODPane extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.filter.tabKey === 'todoPod' && (this.props.filter.viewStatus !== nextProps.filter.viewStatus ||
-      this.props.filter.type !== nextProps.filter.type || this.props.filter.tabKey !== nextProps.filter.tabKey)) {
+      this.props.filter.type !== nextProps.filter.type || this.props.filter.tabKey !== nextProps.filter.tabKey ||
+      nextProps.filter.srTenantId !== this.props.filter.srTenantId || nextProps.filter.srPartnerId !== this.props.filter.srPartnerId)) {
       this.handleTableLoad(nextProps);
     }
   }
@@ -50,6 +51,8 @@ export default class TodoPODPane extends Component {
       tenantId: this.props.tenantId,
       filters: [
         { name: 'viewStatus', value: props.filter.viewStatus },
+        { name: 'sr_tenant_id', value: props.filter.srTenantId },
+        { name: 'sr_partner_id', value: props.filter.srPartnerId },
         { name: 'loginId', value: props.loginId },
         { name: 'type', value: this.state.type },
       ],
@@ -100,6 +103,8 @@ export default class TodoPODPane extends Component {
           sortOrder: sorter.order === 'descend' ? 'desc' : 'asc',
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
+            { name: 'sr_tenant_id', value: this.props.filter.srTenantId },
+            { name: 'sr_partner_id', value: this.props.filter.srPartnerId },
             { name: 'loginId', value: this.props.loginId },
             { name: 'type', value: this.state.type },
           ],

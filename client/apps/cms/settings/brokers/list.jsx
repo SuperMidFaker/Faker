@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Table, Button, Layout, Popconfirm } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
@@ -9,6 +10,7 @@ import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } from 'common/reducers/cmsBrokers';
+import { formatMsg } from '../message.i18n';
 
 const { Header, Content } = Layout;
 const rowSelection = {
@@ -20,6 +22,7 @@ function fetchData({ dispatch }) {
 }
 
 @connectFetch()(fetchData)
+@injectIntl
 @connect(state => ({
   tenantId: state.account.tenantId,
   brokers: state.cmsBrokers.brokers,
@@ -29,9 +32,13 @@ function fetchData({ dispatch }) {
   moduleName: 'clearance',
 })
 export default class BrokerList extends Component {
+  static propTypes = {
+    intl: intlShape.isRequired,
+  }
   state = {
     searchText: '',
   }
+  msg = formatMsg(this.props.intl)
   handleEditBtnClick = (broker) => {
     this.props.toggleBrokerModal(true, 'edit', broker);
   }
@@ -168,10 +175,10 @@ export default class BrokerList extends Component {
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              设置
+              {this.msg('settings')}
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              报关报检代理
+              {this.msg('brokers')}
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">

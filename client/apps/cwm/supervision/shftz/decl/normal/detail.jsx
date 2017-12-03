@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag, Tooltip } from 'antd';
+import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Table, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
@@ -271,15 +271,13 @@ export default class NormalDeclDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            <Tooltip title="报关清单" placement="bottom">
-              <Button icon="link" onClick={this.handleDelgManifest}><Badge status="default" text={declStatusText} /></Button>
-            </Tooltip>
+            <Button icon="link" onClick={this.handleDelgManifest}>关联申报清单 <Badge status="default" text={declStatusText} /></Button>
           </PageHeader.Nav>
           <PageHeader.Actions />
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ paddingBottom: 48 }} noHovering>
+            <Card bodyStyle={{ paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={6}>
                 <Description term="提货单位">{normalDecl.owner_name}</Description>
                 <Description term="报关代理">{normalDecl.customs_name}</Description>
@@ -294,7 +292,7 @@ export default class NormalDeclDetail extends Component {
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="details">
                 <TabPane tab="提货单列表" key="list">
                   <Table size="middle" columns={this.regColumns} dataSource={regs} indentSize={8} rowKey="ftz_rel_no" />

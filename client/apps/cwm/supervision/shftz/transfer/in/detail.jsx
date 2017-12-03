@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Badge, Breadcrumb, Form, Layout, Tabs, Steps, Button, Card, Col, Row, Tag, Tooltip, message, notification } from 'antd';
+import { Badge, Breadcrumb, Form, Layout, Steps, Button, Card, Col, Row, Tag, Tooltip, message, notification } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -21,12 +21,11 @@ import messages from '../../message.i18n';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const { Description } = DescriptionList;
-const TabPane = Tabs.TabPane;
 const Step = Steps.Step;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
-  promises.push(dispatch(loadEntryDetails({ asnNo: params.asnNo })));
+  promises.push(dispatch(loadEntryDetails({ preEntrySeqNo: params.preFtzEntNo })));
   promises.push(dispatch(loadParams()));
   return Promise.all(promises);
 }
@@ -37,7 +36,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     loginId: state.account.loginId,
     username: state.account.username,
-    entryAsn: state.cwmShFtz.entry_asn,
+    transfInReg: state.cwmShFtz.entry_asn,
     entryRegs: state.cwmShFtz.entry_regs,
     owners: state.cwmContext.whseAttrs.owners,
     units: state.cwmShFtz.params.units.map(un => ({
@@ -71,7 +70,6 @@ export default class SHFTZTransferInDetail extends Component {
   }
   state = {
     comparable: false,
-    tabKey: '',
     fullscreen: true,
   }
   componentWillMount() {
@@ -83,21 +81,18 @@ export default class SHFTZTransferInDetail extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entryRegs !== this.props.entryRegs && nextProps.entryRegs.length > 0) {
-      const comparable = nextProps.entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
+      const comparable = nextProps.transfInReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
         nextProps.entryRegs.filter(er => !er.ftz_ent_no).length === 0; // 入库单号全部已知可查询入库明细
-      const newState = { comparable };
-      if (this.state.tabKey === '') {
-        newState.tabKey = nextProps.entryRegs[0].pre_entry_seq_no;
-      }
-      this.setState(newState);
+      this.setState({ comparable });
     }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleEnqueryPairing = () => {
-    const asnNo = this.props.params.asnNo;
+    const preFtzEntNo = this.props.params.preFtzEntNo;
     const loginName = this.props.username;
-    const ftzWhseCode = this.props.whse.ftz_whse_code;
-    this.props.pairEntryRegProducts(asnNo, this.props.entryAsn.whse_code, ftzWhseCode, loginName).then((result) => {
+    const whse = this.props.whse;
+    const transfInReg = this.props.transfInReg;
+    this.props.pairEntryRegProducts(preFtzEntNo, transfInReg.asn_no, whse.code, whse.ftz_whse_code, loginName).then((result) => {
       if (!result.error) {
         if (result.data.remainFtzStocks.length > 0 || result.data.remainProducts.length > 0) {
           let remainFtzMsg = result.data.remainFtzStocks.map(rfs =>
@@ -122,7 +117,7 @@ export default class SHFTZTransferInDetail extends Component {
             description: '货号明细ID配对完成',
           });
         }
-        this.props.loadEntryDetails({ asnNo });
+        this.props.loadEntryDetails({ preEntrySeqNo: preFtzEntNo });
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
           message: '操作失败',
@@ -213,11 +208,9 @@ export default class SHFTZTransferInDetail extends Component {
       return text && text.length > 0 && <Tag>{text}</Tag>;
     },
   }]
-  handleTabChange = (tabKey) => {
-    this.setState({ tabKey });
-  }
-  handleInfoSave = (preRegNo, field, value) => {
-    this.props.updateEntryReg(preRegNo, field, value).then((result) => {
+  handleInfoSave = (field, value) => {
+    const preFtzEntNo = this.props.params.preFtzEntNo;
+    this.props.updateEntryReg(preFtzEntNo, field, value).then((result) => {
       if (result.error) {
         notification.error({
           message: '操作失败',
@@ -230,11 +223,11 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   handleInboundPage = () => {
-    this.context.router.push(`/cwm/receiving/inbound/${this.props.entryAsn.inbound_no}`);
+    this.context.router.push(`/cwm/receiving/inbound/${this.props.transfInReg.inbound_no}`);
   }
   handlePairingConfirmed = () => {
-    const asnNo = this.props.params.asnNo;
-    this.props.checkEntryRegStatus(asnNo, CWM_SHFTZ_APIREG_STATUS.completed).then((result) => {
+    const preFtzEntNo = this.props.params.preFtzEntNo;
+    this.props.checkEntryRegStatus(preFtzEntNo, CWM_SHFTZ_APIREG_STATUS.completed).then((result) => {
       if (result.error) {
         notification.error({
           message: '操作失败',
@@ -245,15 +238,28 @@ export default class SHFTZTransferInDetail extends Component {
     });
   }
   render() {
-    const { entryAsn, entryRegs, whse, submitting } = this.props;
-    const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === entryAsn.bonded_intype)[0];
-    const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === entryAsn.inbound_status)[0];
+    const { transfInReg, entryRegs, whse, submitting } = this.props;
+    if (entryRegs.length !== 1) {
+      return null;
+    }
+    const entType = CWM_ASN_BONDED_REGTYPES[2];
+    const inbStatus = CWM_INBOUND_STATUS_INDICATOR.filter(status => status.value === transfInReg.inbound_status)[0];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
+    const reg = entryRegs[0];
+    const stat = reg.details.reduce((acc, regd) => ({
+      total_qty: acc.total_qty + regd.stock_qty,
+      total_amount: acc.total_amount + regd.stock_amount,
+      total_net_wt: acc.total_net_wt + regd.stock_netwt,
+    }), {
+      total_qty: 0,
+      total_amount: 0,
+      total_net_wt: 0,
+    });
     return (
       <div>
         <PageHeader>
@@ -266,15 +272,15 @@ export default class SHFTZTransferInDetail extends Component {
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
+                <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                {this.props.params.asnNo}
+                {this.props.params.preFtzEntNo}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {entryAsn.inbound_no && <Tooltip title="入库操作" placement="bottom">
+            {transfInReg.inbound_no && <Tooltip title="入库操作" placement="bottom">
               <Button icon="link" onClick={this.handleInboundPage}>
                 {inbStatus && <Badge status={inbStatus.badge} text={inbStatus.text} />}
               </Button>
@@ -283,88 +289,67 @@ export default class SHFTZTransferInDetail extends Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {this.state.comparable && <Button type="primary" icon="sync" loading={submitting} onClick={this.handleEnqueryPairing}>明细匹配核对</Button>}
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.processing &&
+            {transfInReg.reg_status === CWM_SHFTZ_APIREG_STATUS.processing &&
               <Button type="primary" loading={submitting} onClick={this.handlePairingConfirmed}>核对通过</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
-                <Description term="海关进库单号">
-                  <EditableCell value={entryRegs[0] && entryRegs[0].ftz_ent_no}
-                    onSave={value => this.handleInfoSave(entryRegs[0].ftz_ent_no, 'ftz_ent_no', value)}
+                <Description term="海关入库单号">
+                  <EditableCell value={transfInReg.ftz_ent_no}
+                    onSave={value => this.handleInfoSave('ftz_ent_no', value)}
                   />
                 </Description>
-                <Description term="收货单位海关编码">{entryRegs[0] && entryRegs[0].owner_cus_code}</Description>
-                <Description term="收货单位">{entryRegs[0] && entryRegs[0].owner_name}</Description>
-                <Description term="收货仓库号">{entryRegs[0] && entryRegs[0].receiver_ftz_whse_code}</Description>
+                <Description term="收货单位海关编码">{transfInReg.owner_cus_code}</Description>
+                <Description term="收货单位">{transfInReg.owner_name}</Description>
+                <Description term="收货仓库号">{transfInReg.receiver_ftz_whse_code}</Description>
                 <Description term="海关出库单号">
-                  <EditableCell value={entryRegs[0] && entryRegs[0].ftz_rel_no}
-                    onSave={value => this.handleInfoSave(entryRegs[0].ftz_rel_no, 'ftz_rel_no', value)}
+                  <EditableCell value={transfInReg.ftz_rel_no}
+                    onSave={value => this.handleInfoSave('ftz_rel_no', value)}
                   />
                 </Description>
-                <Description term="发货单位海关编码">{entryRegs[0] && entryRegs[0].sender_cus_code}</Description>
-                <Description term="发货单位">{entryRegs[0] && entryRegs[0].sender_name}</Description>
-                <Description term="发货仓库号">{entryRegs[0] && entryRegs[0].sender_ftz_whse_code}</Description>
+                <Description term="发货单位海关编码">{transfInReg.sender_cus_code}</Description>
+                <Description term="发货单位">{transfInReg.sender_name}</Description>
+                <Description term="发货仓库号">{transfInReg.sender_ftz_whse_code}</Description>
                 <Description term="进库日期">
-                  <EditableCell type="date" value={entryRegs[0] && entryRegs[0].ftz_ent_date && moment(entryRegs[0].ftz_ent_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(entryRegs[0].ftz_ent_date, 'ftz_ent_date', new Date(value))}
+                  <EditableCell type="date" value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
+                    onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
                   />
                 </Description>
                 <Description term="转入完成时间">
-                  <EditableCell type="date" value={entryRegs[0] && entryRegs[0].ftz_ent_date && moment(entryRegs[0].ftz_ent_date).format('YYYY-MM-DD')}
-                    onSave={value => this.handleInfoSave(entryRegs[0].pre_entry_seq_no, 'ftz_ent_date', new Date(value))}
+                  <EditableCell type="date" value={transfInReg.ftz_ent_date && moment(transfInReg.ftz_ent_date).format('YYYY-MM-DD')}
+                    onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
                   />
                 </Description>
               </DescriptionList>
               <div className="card-footer">
-                <Steps progressDot current={entryAsn.reg_status}>
+                <Steps progressDot current={transfInReg.reg_status}>
                   <Step title="待转入" />
                   <Step title="已接收" />
                   <Step title="已核对" />
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-              <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
-                {entryRegs.map((reg) => {
-                  const stat = reg.details.reduce((acc, regd) => ({
-                    total_qty: acc.total_qty + regd.stock_qty,
-                    total_amount: acc.total_amount + regd.stock_amount,
-                    total_net_wt: acc.total_net_wt + regd.stock_netwt,
-                  }), {
-                    total_qty: 0,
-                    total_amount: 0,
-                    total_net_wt: 0,
-                  });
-                  const totCol = (
-                    <Summary>
-                      <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
-                      <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
-                      <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
-                    </Summary>
-                  );
-                  return (
-                    <TabPane tab="转入明细" key={reg.pre_entry_seq_no}>
-                      <DataPane fullscreen={this.state.fullscreen}
-                        columns={this.columns} rowSelection={rowSelection} indentSize={0}
-                        dataSource={reg.details} rowKey="id" loading={this.state.loading}
-                      >
-                        <DataPane.Toolbar>
-                          <Row type="flex">
-                            <Col className="col-flex-primary info-group-inline" />
-
-
-                            <Col className="col-flex-secondary">
-                              {totCol}
-                            </Col>
-                          </Row>
-                        </DataPane.Toolbar>
-                      </DataPane>
-                    </TabPane>);
-                })}
-              </Tabs>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+              <DataPane fullscreen={this.state.fullscreen}
+                columns={this.columns} rowSelection={rowSelection} indentSize={0}
+                dataSource={reg.details} rowKey="id" loading={this.state.loading}
+              >
+                <DataPane.Toolbar>
+                  <Row type="flex">
+                    <Col className="col-flex-primary info-group-inline" />
+                    <Col className="col-flex-secondary">
+                      <Summary>
+                        <Summary.Item label="总数量">{stat.total_qty}</Summary.Item>
+                        <Summary.Item label="总净重" addonAfter="KG">{stat.total_net_wt.toFixed(3)}</Summary.Item>
+                        <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
+                      </Summary>
+                    </Col>
+                  </Row>
+                </DataPane.Toolbar>
+              </DataPane>
             </MagicCard>
           </Form>
         </Content>

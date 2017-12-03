@@ -38,7 +38,7 @@ export default class CMSCustomsDeclPane extends Component {
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
         <Panel header={this.msg('bizProperties')} key="properties">
           <Row gutter={16}>
-            <Col sm={24} lg={8}>
+            <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsDeclType')}>
                 {getFieldDecorator('ep_dec_type', {
                   initialValue: model.ep_dec_type,
@@ -47,7 +47,7 @@ export default class CMSCustomsDeclPane extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
+            <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsDeclChannel')}>
                 {getFieldDecorator('dec_channel', {
                   initialValue: model.dec_channel,
@@ -61,7 +61,7 @@ export default class CMSCustomsDeclPane extends Component {
                   )}
               </FormItem>
             </Col>
-            { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.EP.value && <Col sm={24} lg={8}>
+            { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.EP.value && <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsEasipass')}>
                 {getFieldDecorator('ep_app_uuid', {
                   initialValue: model.ep_app_uuid,
@@ -73,7 +73,7 @@ export default class CMSCustomsDeclPane extends Component {
               </FormItem>
             </Col>
             }
-            { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.QP.value && <Col sm={24} lg={8}>
+            { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.QP.value && <Col sm={24} lg={12}>
               <FormItem label={this.msg('customsQuickpass')}>
                 {getFieldDecorator('ep_app_uuid', {
                   initialValue: model.ep_app_uuid,

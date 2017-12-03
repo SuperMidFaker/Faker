@@ -96,7 +96,7 @@ const messages = defineMessages({
   },
   orderNo: {
     id: 'cms.expense.order.no',
-    defaultMessage: '订单号',
+    defaultMessage: '客户单号',
   },
   bLNo: {
     id: 'cms.expense.bill.lading.no',

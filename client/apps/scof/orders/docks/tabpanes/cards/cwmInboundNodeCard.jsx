@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { routerShape } from 'react-router';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Col, Row, Icon, Steps, message } from 'antd';
+import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadOrderNodesTriggers, hideDock, getAsnFromFlow } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmReceive';
@@ -20,7 +20,6 @@ const Step = Steps.Step;
 )
 export default class CWMInboundNodeCard extends React.Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
     children: PropTypes.any,
   }
   static contextTypes = {
@@ -79,30 +78,25 @@ export default class CWMInboundNodeCard extends React.Component {
     this.context.router.push(`/cwm/receiving/inbound/${this.props.asn.inbound_no}`);
   }
   render() {
-    const { title, children, asn } = this.props;
+    const { children, asn } = this.props;
     if (!asn) {
       return;
     }
     return (
-      <Card title={<span>{title}</span>} extra={asn.inbound_no &&
+      <Card title={<span>{`ASN编号:${asn.asn_no || '尚未创建'}`}</span>} extra={asn.inbound_no &&
         <Tooltip title="进入详情">
           <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleInbound} />
-        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 48 }}
+        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
         onClick={this.handlePreview} disabled
       >
         <Row>
           <Col span="8">
-            <InfoItem label="ASN编号" addonBefore={<Icon type="tag-o" />}
-              field={asn.asn_no}
-            />
-          </Col>
-          <Col span="8">
-            <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="仓库"
               field={asn.whse_name}
             />
           </Col>
           <Col span="8">
-            <InfoItem label="货物属性" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="货物属性"
               field={asn.bonded ? '保税' : '非保税'}
             />
           </Col>

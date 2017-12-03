@@ -37,6 +37,7 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
@@ -118,7 +119,7 @@ export default class SHFTZReleaseList extends React.Component {
     width: 160,
     render: (o, record) => <a onClick={() => this.handlePreview(o, record.outbound_no)}>{o}</a>,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'cust_order_no',
     width: 180,
   }, {
@@ -142,18 +143,19 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'cus_decl_date',
     render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
   }, {
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+  }, {
     title: '创建时间',
     width: 120,
-    dataIndex: 'created_time',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
-  }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

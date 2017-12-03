@@ -31,7 +31,7 @@ const messages = defineMessages({
   },
   ftzTransferSelf: {
     id: 'cwm.supervision.shftz.transfer.self',
-    defaultMessage: '内部移库',
+    defaultMessage: '本库转让',
   },
   ftzBondedStock: {
     id: 'cwm.supervision.shftz.bonded.stock',
@@ -47,7 +47,7 @@ const messages = defineMessages({
   },
   entrySearchPlaceholder: {
     id: 'cms.supervision.shftz.entry.search.placeholder',
-    defaultMessage: 'ASN编号/报关单号/海关进库单号',
+    defaultMessage: 'ASN编号/报关单号/进区凭单号',
   },
   releaseSearchPlaceholder: {
     id: 'cms.supervision.shftz.release.search.placeholder',

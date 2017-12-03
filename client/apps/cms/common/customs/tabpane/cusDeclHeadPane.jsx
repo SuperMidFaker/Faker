@@ -26,7 +26,7 @@ const FormItem = Form.Item;
   }),
   { fillEntryId, updateMark }
 )
-export default class CustomsDeclHeadPane extends React.Component {
+export default class CusDeclHeadPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     ietype: PropTypes.string.isRequired,
@@ -68,7 +68,7 @@ export default class CustomsDeclHeadPane extends React.Component {
     const editable = formData.status < CMS_DECL_STATUS.sent.value;
     return (
       <div className="pane">
-        <Form layout="horizontal">
+        <Form layout="horizontal" hideRequiredMark>
           <div className="panel-header">
             <Row>
               <Col span="6">
@@ -84,7 +84,7 @@ export default class CustomsDeclHeadPane extends React.Component {
             </Row>
           </div>
           <div className="pane-content form-layout-multi-col">
-            <Card bodyStyle={{ padding: 16 }} noHovering>
+            <Card bodyStyle={{ padding: 16 }} hoverable={false}>
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
@@ -144,30 +144,30 @@ export default class CustomsDeclHeadPane extends React.Component {
               </Row>
               <Row className="info-group info-group-inline">
                 <Col span="5">
-                  <FormItem label={this.msg('contractNo')} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ marginBottom: 0 }}>
+                  <FormItem label={this.msg('contractNo')} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} colon={false} style={{ marginBottom: 0 }}>
                     <EditableCell field="contr_no" value={formData.contr_no} onSave={this.handleMarkFill} disabled={!editable} />
                   </FormItem>
                 </Col>
                 <Col span="3">
-                  <FormItem label={this.msg('packCount')} labelCol={{ span: 10 }} wrapperCol={{ span: 14 }} style={{ marginBottom: 0 }}>
+                  <FormItem label={this.msg('packCount')} labelCol={{ span: 10 }} wrapperCol={{ span: 14 }} colon={false} style={{ marginBottom: 0 }}>
                     <EditableCell field="pack_count" value={formData.pack_count} onSave={this.handleMarkFill} disabled={!editable} />
                   </FormItem>
                 </Col>
                 <Col span={16}>
-                  <FormItem label={this.msg('certMark')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
+                  <FormItem label={this.msg('certMark')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} colon={false} style={{ marginBottom: 0 }}>
                     <EditableCell field="cert_mark" value={formData.cert_mark} onSave={this.handleMarkFill} disabled={!editable} />
                   </FormItem>
                 </Col>
               </Row>
               <Row>
                 <Col span={16} offset={8}>
-                  <FormItem label={this.msg('markNotes')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} style={{ marginBottom: 0 }}>
+                  <FormItem label={this.msg('markNotes')} labelCol={{ span: 3 }} wrapperCol={{ span: 21 }} colon={false} style={{ marginBottom: 0 }}>
                     <EditableCell field="note" value={formData.note} onSave={this.handleMarkFill} disabled={!editable} />
                   </FormItem>
                 </Col>
               </Row>
             </Card>
-            <Card bodyStyle={{ padding: 16 }} noHovering>
+            <Card bodyStyle={{ padding: 16 }} hoverable={false}>
               <Row>
                 <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
               </Row>

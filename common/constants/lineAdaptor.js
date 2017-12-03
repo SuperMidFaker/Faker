@@ -79,4 +79,69 @@ exports.LINE_FILE_ADAPTOR_MODELS = {
       label: '工缴费',
     }],
   },
+  CWM_SHIPPING_ORDER: {
+    key: 'CWM_SHIPPING_ORDER',
+    name: 'SO模版',
+    columns: [{
+      field: 'owner_code',
+      label: '客户代码',
+    }, {
+      field: 'cust_order_no',
+      label: '客户订单号',
+    }, {
+      field: 'product_no',
+      label: '商品货号',
+    }, {
+      field: 'name',
+      label: '品名',
+    }, {
+      field: 'order_qty',
+      label: '数量',
+    }, {
+      field: 'virtual_whse',
+      label: '库别',
+    }, {
+      field: 'po_no',
+      label: '进库订单号',
+    }, {
+      field: 'external_no',
+      label: '批次号',
+    }, {
+      field: 'serial_no',
+      label: '产品序列号',
+    }, {
+      field: 'receiver_name',
+      label: '收货方',
+    }, {
+      field: 'receiver_contact',
+      label: '联系人',
+    }, {
+      field: 'receiver_address',
+      label: '收件详细地址',
+    }, {
+      field: 'receiver_phone',
+      label: '联系电话',
+    }, {
+      field: 'receiver_number',
+      label: '手机号',
+    }, {
+      field: 'receiver_post_code',
+      label: '邮政编码',
+    }, {
+      field: 'expect_shipping_date',
+      label: '要求出货日期',
+    }, {
+      field: 'bonded',
+      label: '货物属性',
+    }, {
+      field: 'amount',
+      label: '金额',
+    }, {
+      field: 'bonded_outtype',
+      label: '监管方式',
+    }, {
+      field: 'supplier',
+      label: '供货商',
+    }],
+  },
 };

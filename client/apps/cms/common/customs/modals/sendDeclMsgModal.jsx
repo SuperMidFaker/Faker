@@ -1,18 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Modal, Form, Radio, Select, message } from 'antd';
-import { showSendDeclModal, getEasipassList, sendDecl, loadSendRecords } from 'common/reducers/cmsDeclare';
+import { Card, Modal, Form, Radio, Select, message } from 'antd';
+import DescriptionList from 'client/components/DescriptionList';
+import { showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl } from 'common/reducers/cmsDeclare';
+import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const Description = DescriptionList.Description;
 
 @injectIntl
 @connect(
@@ -27,7 +30,7 @@ const RadioButton = Radio.Button;
     agentCustCo: state.cmsDeclare.sendDeclModal.agentCustCo,
     loginName: state.account.username,
   }),
-  { showSendDeclModal, getEasipassList, sendDecl, loadSendRecords }
+  { showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl }
 )
 @Form.create()
 export default class SendDeclMsgModal extends React.Component {
@@ -45,6 +48,7 @@ export default class SendDeclMsgModal extends React.Component {
     reload: PropTypes.func.isRequired,
   }
   state = {
+    preSentRecord: {},
     easipassList: [],
     quickpassList: [],
   }
@@ -52,6 +56,10 @@ export default class SendDeclMsgModal extends React.Component {
     if (nextProps.visible && !this.props.visible) {
       this.props.getEasipassList(nextProps.tenantId, nextProps.agentCustCo).then((result) => {
         this.setState({ easipassList: result.data });
+      });
+      // 保证每次打开时发送记录更新
+      this.props.loadLatestSendRecord(nextProps.preEntrySeqNo).then((result) => {
+        this.setState({ preSentRecord: result.data.data[0] });
       });
     }
   }
@@ -72,7 +80,7 @@ export default class SendDeclMsgModal extends React.Component {
             message.info('发送成功');
             this.props.showSendDeclModal({ visible: false });
             this.props.reload();
-            this.props.loadSendRecords();
+            // this.props.loadSendRecords();
           }
         });
       }
@@ -81,7 +89,7 @@ export default class SendDeclMsgModal extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible, form: { getFieldDecorator, getFieldValue }, ietype, defaultDecl } = this.props;
-    const { easipassList, quickpassList } = this.state;
+    const { preSentRecord, easipassList, quickpassList } = this.state;
     let declList = [];
     if (ietype === 'import') {
       declList = CMS_IMPORT_DECL_TYPE;
@@ -93,6 +101,14 @@ export default class SendDeclMsgModal extends React.Component {
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Form>
+          {preSentRecord &&
+          <Card bodyStyle={{ padding: 16 }}>
+            <DescriptionList col={2}>
+              <Description term="上次发送时间" key={preSentRecord.sent_date}>{moment(preSentRecord.sent_date).format('YY.MM.DD HH:mm')}</Description>
+              <Description term="发送人" key={preSentRecord.sender_name}>{preSentRecord.sender_name}</Description>
+            </DescriptionList>
+          </Card>
+          }
           <FormItem>
             {getFieldDecorator('declChannel', { initialValue: defaultDecl && defaultDecl.channel })(
               <RadioGroup>

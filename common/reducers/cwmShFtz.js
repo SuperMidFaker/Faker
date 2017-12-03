@@ -8,6 +8,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'OPEN_NORMAL_REL_REG_MODAL', 'CLOSE_NORMAL_REL_REG_MODAL',
   'ENTRY_REG_LOAD', 'ENTRY_REG_LOAD_SUCCEED', 'ENTRY_REG_LOAD_FAIL',
   'ENTRY_DETAILS_LOAD', 'ENTRY_DETAILS_LOAD_SUCCEED', 'ENTRY_DETAILS_LOAD_FAIL',
+  'SPLIT_CUSED', 'SPLIT_CUSED_SUCCEED', 'SPLIT_CUSED_FAIL',
   'LOAD_VTDETAILS', 'LOAD_VTDETAILS_SUCCEED', 'LOAD_VTDETAILS_FAIL',
   'RELEASE_REG_LOAD', 'RELEASE_REG_LOAD_SUCCEED', 'RELEASE_REG_LOAD_FAIL',
   'PARAMS_LOAD', 'PARAMS_LOAD_SUCCEED', 'PARAMS_LOAD_FAIL',
@@ -18,6 +19,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_NENTD', 'LOAD_NENTD_SUCCEED', 'LOAD_NENTD_FAIL',
   'NEW_NRER', 'NEW_NRER_SUCCEED', 'NEW_NRER_FAIL',
   'NEW_NRSO', 'NEW_NRSO_SUCCEED', 'NEW_NRSO_FAIL',
+  'OPEN_NTFO_MODAL', 'CLOSE_NTFO_MODAL',
+  'NEW_TRSO', 'NEW_TRSO_SUCCEED', 'NEW_TRSO_FAIL',
   'PRODUCT_CARGO_LOAD', 'PRODUCT_CARGO_LOAD_SUCCEED', 'PRODUCT_CARGO_LOAD_FAIL',
   'UPDATE_CARGO_RULE', 'UPDATE_CARGO_RULE_SUCCEED', 'UPDATE_CARGO_RULE_FAIL',
   'SYNC_SKU', 'SYNC_SKU_SUCCEED', 'SYNC_SKU_FAIL',
@@ -66,6 +69,8 @@ const actionTypes = createActionTypes('@@welogix/cwm/shftz/', [
   'LOAD_CUSSTOSS', 'LOAD_CUSSTOSS_SUCCEED', 'LOAD_CUSSTOSS_FAIL',
   'LOAD_BATCH_DECL', 'LOAD_BATCH_DECL_SUCCEED', 'LOAD_BATCH_DECL_FAIL',
   'LOAD_NONBONDED_STOCKS', 'LOAD_NONBONDED_STOCKS_SUCCEED', 'LOAD_NONBONDED_STOCKS_FAIL',
+  'LOAD_ASNENT', 'LOAD_ASNENT_SUCCEED', 'LOAD_ASNENT_FAIL',
+  'EXPORT_NEBREL', 'EXPORT_NEBREL_SUCCEED', 'EXPORT_NEBREL_FAIL',
 ]);
 
 const initialState = {
@@ -85,6 +90,7 @@ const initialState = {
   normalRelRegModal: {
     visible: false,
   },
+  newTransfOutModal: { visible: false },
   batchout_regs: [],
   entryList: {
     totalCount: 0,
@@ -173,6 +179,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: true, ...action.data } };
     case actionTypes.CLOSE_NORMAL_REL_REG_MODAL:
       return { ...state, normalRelRegModal: { ...state.normalRelRegModal, visible: false } };
+    case actionTypes.OPEN_NTFO_MODAL:
+      return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: true } };
+    case actionTypes.CLOSE_NTFO_MODAL:
+      return { ...state, newTransfOutModal: { ...state.newTransfOutModal, visible: false } };
     case actionTypes.ENTRY_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
@@ -201,8 +211,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, cargolist: action.result.data.list, cargoRule: action.result.data.rule, loading: false };
     case actionTypes.UPDATE_ERFIELD_SUCCEED: {
       const regs = state.entry_regs.map((er) => {
-        if (er.pre_entry_seq_no === action.data.pre_entry_seq_no) {
-          return { ...er, [action.data.field]: action.data.value };
+        if (er.pre_ftz_ent_no === action.data.preFtzEntNo) {
+          return { ...er, [action.data.field]: action.data.value, ...action.result.data };
         } else {
           return er;
         }
@@ -241,6 +251,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.QUERY_OWNTRANF:
     case actionTypes.VIRTUAL_TRANS_SAVE:
     case actionTypes.COMPARE_FTZST:
+    case actionTypes.NEW_NRER:
+    case actionTypes.NEW_NRSO:
+    case actionTypes.NEW_TRSO:
       return { ...state, submitting: true };
     case actionTypes.FILE_RSO_FAIL:
     case actionTypes.FILE_RTS_FAIL:
@@ -276,6 +289,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.VIRTUAL_TRANS_SAVE_SUCCEED:
     case actionTypes.VIRTUAL_TRANS_SAVE_FAIL:
     case actionTypes.COMPARE_FTZST_FAIL:
+    case actionTypes.NEW_NRER_SUCCEED:
+    case actionTypes.NEW_NRER_FAIL:
+    case actionTypes.NEW_NRSO_SUCCEED:
+    case actionTypes.NEW_NRSO_FAIL:
+    case actionTypes.NEW_TRSO_SUCCEED:
+    case actionTypes.NEW_TRSO_FAIL:
       return { ...state, submitting: false };
     case actionTypes.FILE_RSO_SUCCEED:
     case actionTypes.FILE_RTS_SUCCEED:
@@ -496,6 +515,33 @@ export function newNormalRegBySo(data) {
   };
 }
 
+export function openNewTransfOutModal() {
+  return {
+    type: actionTypes.OPEN_NTFO_MODAL,
+  };
+}
+
+export function closeNewTransfOutModal() {
+  return {
+    type: actionTypes.CLOSE_NTFO_MODAL,
+  };
+}
+
+export function newTransfOutRegBySo(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.NEW_TRSO,
+        actionTypes.NEW_TRSO_SUCCEED,
+        actionTypes.NEW_TRSO_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/transf/out/createby/so',
+      method: 'post',
+      data,
+    },
+  };
+}
+
 export function loadEntryRegDatas(params) {
   return {
     [CLIENT_API]: {
@@ -537,6 +583,21 @@ export function loadEntryDetails(params) {
       endpoint: 'v1/cwm/shftz/entryreg/details/load',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function splitCustomEntryDetails(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SPLIT_CUSED,
+        actionTypes.SPLIT_CUSED_SUCCEED,
+        actionTypes.SPLIT_CUSED_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entryreg/details/split/byseq',
+      method: 'post',
+      data,
     },
   };
 }
@@ -615,7 +676,7 @@ export function syncProdSKUS(data) {
   };
 }
 
-export function updateEntryReg(preRegNo, field, value, virtualTransfer) {
+export function updateEntryReg(preFtzEntNo, field, value, virtualTransfer) {
   return {
     [CLIENT_API]: {
       types: [
@@ -625,12 +686,12 @@ export function updateEntryReg(preRegNo, field, value, virtualTransfer) {
       ],
       endpoint: 'v1/cwm/shftz/entry/field/value',
       method: 'post',
-      data: { pre_entry_seq_no: preRegNo, field, value, virtualTransfer },
+      data: { preFtzEntNo, field, value, virtualTransfer },
     },
   };
 }
 
-export function refreshEntryRegFtzCargos(asnNo) {
+export function refreshEntryRegFtzCargos(asnNo, preEntrySeqNo) {
   return {
     [CLIENT_API]: {
       types: [
@@ -640,12 +701,12 @@ export function refreshEntryRegFtzCargos(asnNo) {
       ],
       endpoint: 'v1/cwm/shftz/entry/refresh/cargono',
       method: 'post',
-      data: { asnNo },
+      data: { asnNo, preEntrySeqNo },
     },
   };
 }
 
-export function fileEntryRegs(asnNo, whseCode) {
+export function fileEntryRegs(asnNo, preEntrySeqNo, whseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -655,12 +716,12 @@ export function fileEntryRegs(asnNo, whseCode) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/file',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode },
+      data: { asnNo, preEntrySeqNo, whse: whseCode },
     },
   };
 }
 
-export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, loginName) {
+export function queryEntryRegInfos(asnNo, preEntrySeqNo, whseCode, ftzWhseCode) {
   return {
     [CLIENT_API]: {
       types: [
@@ -670,12 +731,12 @@ export function queryEntryRegInfos(asnNo, whseCode, ftzWhseCode, loginName) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/query',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, loginName },
+      data: { asnNo, preEntrySeqNo, whse: whseCode, ftzWhseCode },
     },
   };
 }
 
-export function checkEntryRegStatus(asnNo, status) {
+export function checkEntryRegStatus(preEntrySeqNo, status) {
   return {
     [CLIENT_API]: {
       types: [
@@ -685,12 +746,12 @@ export function checkEntryRegStatus(asnNo, status) {
       ],
       endpoint: 'v1/cwm/shftz/entry/reg/put/status',
       method: 'post',
-      data: { asnNo, status },
+      data: { preEntrySeqNo, status },
     },
   };
 }
 
-export function pairEntryRegProducts(asnNo, whseCode, ftzWhseCode, loginName) {
+export function pairEntryRegProducts(preFtzEntNo, asnNo, whseCode, ftzWhseCode, loginName) {
   return {
     [CLIENT_API]: {
       types: [
@@ -700,7 +761,7 @@ export function pairEntryRegProducts(asnNo, whseCode, ftzWhseCode, loginName) {
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/matchpair',
       method: 'post',
-      data: { asn_no: asnNo, whse: whseCode, ftzWhseCode, loginName },
+      data: { preFtzEntNo, asnNo, whse: whseCode, ftzWhseCode, loginName },
     },
   };
 }
@@ -1268,7 +1329,7 @@ export function loadBatchDecl(ftzRelNo) {
         actionTypes.LOAD_BATCH_DECL_SUCCEED,
         actionTypes.LOAD_BATCH_DECL_FAIL,
       ],
-      endpoint: 'v1/cwm/batch/decl/load',
+      endpoint: 'v1/cwm/shftz/batch/decl/load',
       method: 'get',
       params: { ftzRelNo },
     },
@@ -1283,9 +1344,39 @@ export function loadNonbondedStocks(params) {
         actionTypes.LOAD_NONBONDED_STOCKS_SUCCEED,
         actionTypes.LOAD_NONBONDED_STOCKS_FAIL,
       ],
-      endpoint: 'v1/cwm/nonbonded/stock/load',
+      endpoint: 'v1/cwm/shftz/nonbonded/stock/load',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadAsnEntries(asnNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ASNENT,
+        actionTypes.LOAD_ASNENT_SUCCEED,
+        actionTypes.LOAD_ASNENT_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/entry/reg/byasn',
+      method: 'get',
+      params: { asnNo },
+    },
+  };
+}
+
+export function exportNormalExitByRel(relno) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXPORT_NEBREL,
+        actionTypes.EXPORT_NEBREL_SUCCEED,
+        actionTypes.EXPORT_NEBREL_FAIL,
+      ],
+      endpoint: 'v1/cwm/shftz/normal/exit/voucher/exportbyrel',
+      method: 'post',
+      data: { relno },
     },
   };
 }

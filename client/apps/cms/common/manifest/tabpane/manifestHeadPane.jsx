@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Card, Form, Row, Col, Popconfirm, message } from 'antd';
+import { Card, Form, Row, Col } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormInput from '../../form/formInput';
 import {
@@ -11,11 +11,9 @@ import {
 } from '../../form/headFormItems';
 import { loadSearchedParam, resetBillHead } from 'common/reducers/cmsManifest';
 import { format } from 'client/common/i18n/helpers';
-import globalMessage from 'client/common/root.i18n';
 import messages from '../message.i18n';
 
 const formatMsg = format(messages);
-const formatGlobalMsg = format(globalMessage);
 
 const CODE_AS_STATE = {
   trade_co: 'trades',
@@ -47,7 +45,7 @@ export default class ManifestHeadPane extends React.Component {
     billHeadFieldsChangeTimes: PropTypes.number.isRequired,
   }
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
+    // document.addEventListener('keydown', this.handleKeyDown);
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleKeyDown = (event) => {
@@ -100,18 +98,9 @@ export default class ManifestHeadPane extends React.Component {
   handlePortSearch = (field, search) => {
     this.props.loadSearchedParam({ paramType: 'port', search });
   }
-  handleBillHeadReset = () => {
-    this.props.resetBillHead(this.props.formData.id).then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        this.props.form.resetFields();
-      }
-    });
-  }
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl, billHeadFieldsChangeTimes } = this.props;
+    const { form, readonly, formData, formRequire, ietype, intl } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,
@@ -127,19 +116,22 @@ export default class ManifestHeadPane extends React.Component {
     const tradesOpt = formRequire.trades.filter(data => data.customer_partner_id === formData.owner_cuspartner_id);
     return (
       <div className="pane">
-        <div className="panel-header">
-          {!readonly &&
+        {
+            /*
+            !readonly &&
           <Button type="primary" onClick={this.handleSheetSave} icon="save" disabled={billHeadFieldsChangeTimes === 0}>
             {formatGlobalMsg(this.props.intl, 'save')}
-          </Button>}
-          {!readonly &&
+          </Button>
+          */}
+        {/*
+            !readonly &&
           <Popconfirm title={'是否确认清空表头数据?'} onConfirm={this.handleBillHeadReset}>
             <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>清空</Button>
-          </Popconfirm>}
-        </div>
+          </Popconfirm>
+          */}
         <div className="pane-content form-layout-multi-col">
-          <Form layout="horizontal">
-            <Card bodyStyle={{ padding: 16 }} noHovering>
+          <Form layout="horizontal" hideRequiredMark>
+            <Card bodyStyle={{ padding: 16 }} hoverable={false}>
               <Row>
                 <Col span="8">
                   <RelationAutoCompSelect label={this.msg('forwardName')} intl={intl}
@@ -224,7 +216,7 @@ export default class ManifestHeadPane extends React.Component {
                 </Col>
               </Row>
             </Card>
-            <Card bodyStyle={{ padding: 16 }} noHovering>
+            <Card bodyStyle={{ padding: 16 }} hoverable={false}>
               <Row>
                 <TermConfirm {...formProps} intl={intl} formRequire={formRequire} />
               </Row>

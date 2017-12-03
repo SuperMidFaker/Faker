@@ -35,7 +35,7 @@ const messages = defineMessages({
   },
   soPlaceholder: {
     id: 'cwm.shipping.so.search.placeholder',
-    defaultMessage: '搜索SO编号/客户订单号',
+    defaultMessage: '搜索SO编号/客户单号',
   },
   wavePlaceholder: {
     id: 'cwm.shipping.wave.search.placeholder',

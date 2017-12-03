@@ -15,6 +15,7 @@ export default class TrackingTimeline extends React.Component {
     const points = [];
     this.props.points.forEach((item) => {
       points.push({
+        id: item.id,
         date: `${moment(item.location_time || item.created_date).format('YYYY-MM-DD')}`,
         time: `${moment(item.location_time || item.created_date).format('HH:mm')}`,
         title: `${Location.renderLocation(item, 'province', 'city', 'district') || ''} ${item.address || ''}`,
@@ -22,11 +23,12 @@ export default class TrackingTimeline extends React.Component {
       });
     });
     const trackingSteps = points.map((s, i) => {
+      const key = `${s.id}${s.title}`;
       if (type === 'small') {
         if (i === 0) {
-          return (<TimelineItem key={s.title} color="green">{s.description} {s.title}</TimelineItem>);
+          return (<TimelineItem key={key} color="green">{s.description} {s.title}</TimelineItem>);
         } else {
-          return (<TimelineItem key={s.title}>{s.description} {s.title}</TimelineItem>);
+          return (<TimelineItem key={key}>{s.description} {s.title}</TimelineItem>);
         }
       } else {
         let color = 'green';
@@ -36,7 +38,7 @@ export default class TrackingTimeline extends React.Component {
           dotType = (<Icon type="environment" style={{ fontSize: '20px', backgroundColor: '#fff' }} />);
         }
         return (
-          <TimelineItem dot={dotType} key={s.title} color={color}>
+          <TimelineItem dot={dotType} key={key} color={color}>
             <span style={{ marginLeft: -100 }}>{s.date}</span>
             <span style={{ marginLeft: 34 }}>
               {s.title}

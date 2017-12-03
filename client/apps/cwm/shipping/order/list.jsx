@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import RowUpdater from 'client/components/rowUpdater';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
@@ -14,14 +16,16 @@ import ShippingDockPanel from '../dock/shippingDockPanel';
 import AddToWaveModal from './modal/addToWaveModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES } from 'common/constants';
+import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_STATUS, CWM_SO_BONDED_REGTYPES, LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import { loadSos, showDock, releaseSo, createWave, showAddToWave, batchRelease } from 'common/reducers/cwmShippingOrder';
+import { exportNormalExitBySo } from 'common/reducers/cwmOutbound';
+import { loadAdaptors } from 'common/reducers/saasLineFileAdaptor';
 import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 import DelegationDockPanel from '../../../cms/common/dock/delegationDockPanel';
 import ShipmentDockPanel from '../../../transport/shipment/dock/shipmentDockPanel';
 import ImportDataPanel from 'client/components/ImportDataPanel';
-import PageHeader from 'client/components/PageHeader';
+
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -51,8 +55,10 @@ function fetchData({ state, dispatch }) {
     solist: state.cwmShippingOrder.solist,
     loading: state.cwmShippingOrder.solist.loading,
     tenantName: state.account.tenantName,
+    userMembers: state.account.userMembers,
+    adaptors: state.saasLineFileAdaptor.adaptors,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease }
+  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, exportNormalExitBySo, loadAdaptors }
 )
 @connectNav({
   depth: 2,
@@ -72,6 +78,9 @@ export default class ShippingOrderList extends React.Component {
     createWaveEnable: true,
     importPanelVisible: false,
   }
+  componentDidMount() {
+    this.props.loadAdaptors('', [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key], true);
+  }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.solist.loaded && !nextProps.solist.loading) {
       this.handleReload();
@@ -88,7 +97,7 @@ export default class ShippingOrderList extends React.Component {
         {o}
       </a>),
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'cust_order_no',
     width: 180,
   }, {
@@ -168,6 +177,7 @@ export default class ShippingOrderList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -273,6 +283,7 @@ export default class ShippingOrderList extends React.Component {
   handleOwnerChange = (value) => {
     const filters = { ...this.props.filters, ownerCode: value };
     const whseCode = this.props.defaultWhse.code;
+    this.props.loadAdaptors(`${value === 'all' ? '' : value}`, [LINE_FILE_ADAPTOR_MODELS.CWM_SHIPPING_ORDER.key], true);
     this.props.loadSos({
       whseCode,
       pageSize: this.props.solist.pageSize,
@@ -336,6 +347,24 @@ export default class ShippingOrderList extends React.Component {
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
+  }
+  handleExportExitVoucher = () => {
+    const { selectedRows } = this.state;
+    this.props.exportNormalExitBySo(selectedRows.map(sr => sr.so_no)).then((resp) => {
+      if (!resp.error) {
+        let xlsxno = selectedRows.slice(0, 2).map(sr => sr.so_no).join('_');
+        if (selectedRows.length > 2) {
+          xlsxno = `${xlsxno}等`;
+        }
+        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
+          `${xlsxno}_出区凭单.xlsx`);
+      } else {
+        notification.error({
+          message: '导出失败',
+          description: resp.error.message,
+        });
+      }
+    });
   }
   render() {
     const { whses, defaultWhse, owners, receivers, carriers, filters, loading } = this.props;
@@ -427,6 +456,7 @@ export default class ShippingOrderList extends React.Component {
     </span>);
     const bulkActions = (<span>
       {filters.status === 'pending' && <Button onClick={this.handleBatchRelease}>释放</Button>}
+      {(filters.status === 'partial' || filters.status === 'completed') && <Button onClick={this.handleExportExitVoucher}>导出出区凭单</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.handleCreateWave}>创建波次计划</Button>}
       {this.state.createWaveEnable && filters.status === 'pending' && <Button onClick={this.showAddToWaveModal}>添加到波次计划</Button>}
     </span>
@@ -480,6 +510,7 @@ export default class ShippingOrderList extends React.Component {
         <ShipmentDockPanel />
         <ImportDataPanel
           visible={this.state.importPanelVisible}
+          adaptors={this.props.adaptors}
           endpoint={`${API_ROOTS.default}v1/cwm/shipping/import/orders`}
           formData={{
             tenantName: this.props.tenantName,

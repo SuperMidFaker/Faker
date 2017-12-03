@@ -5,17 +5,18 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Button, Menu, Dropdown, Icon, Input } from 'antd';
-import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import '../index.less';
 import ExcelUploader from 'client/components/ExcelUploader';
+import PageHeader from 'client/components/PageHeader';
+import DataTable from 'client/components/DataTable';
 import { createFilename } from 'client/util/dataTransform';
 import { hscodeColumns } from './hscodeColumns';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
@@ -52,7 +53,7 @@ export default class HsCodeList extends Component {
     collapsed: true,
   }
   msg = key => formatMsg(this.props.intl, key)
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadHscodes(params),
     resolve: result => result.data,
     getPagination: (result, resolve) => ({
@@ -144,37 +145,31 @@ export default class HsCodeList extends Component {
         <Menu.Item key="model"><Icon type="download" /> 下载模板(申报单位)</Menu.Item>
       </Menu>
     );
+    const toolbarActions = (<Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 400 }} />);
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
-          <Header className="page-header">
-            <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('classification')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('hscodeInquiry')}
-              </Breadcrumb.Item>
-            </Breadcrumb>
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('classification')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {this.msg('hscodeInquiry')}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </PageHeader.Title>
+            <PageHeader.Actions>
               <Dropdown overlay={menu} type="primary">
                 <Button >
                   {this.msg('importItems')} <Icon type="down" />
                 </Button>
               </Dropdown>
-            </div>
-          </Header>
-          <Content className="main-content" key="main">
-            <div className="page-body">
-              <div className="toolbar">
-                <Search placeholder="编码/名称/描述/申报要素" onSearch={this.handleSearch} style={{ width: 400 }} />
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} dataSource={this.dataSource} rowKey="id" bordered
-                  scroll={{ x: this.columns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
-                />
-              </div>
-            </div>
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content" key="main">
+            <DataTable toolbarActions={toolbarActions} columns={this.columns} dataSource={this.dataSource} rowKey="id" bordered />
           </Content>
         </Layout>
       </Layout>

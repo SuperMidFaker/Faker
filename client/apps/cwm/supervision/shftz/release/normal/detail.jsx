@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Alert, Badge, Tooltip, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Radio, Tag, notification, Checkbox, message } from 'antd';
+import { Alert, Badge, Tabs, Breadcrumb, Form, Layout, Icon, Steps, Button, Card, Popover, Radio, Tag, notification, Checkbox, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
@@ -13,7 +14,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
 import Summary from 'client/components/Summary';
-import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts,
+import { loadRelDetails, loadParams, updateRelReg, fileRelStockouts, exportNormalExitByRel,
   fileRelPortionouts, queryPortionoutInfos, cancelRelReg, editReleaseWt, splitRelDetails } from 'common/reducers/cwmShFtz';
 import { CWM_SHFTZ_APIREG_STATUS, CWM_SO_BONDED_REGTYPES, CWM_OUTBOUND_STATUS, CWM_OUTBOUND_STATUS_INDICATOR } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -25,6 +26,7 @@ const { Description } = DescriptionList;
 const Step = Steps.Step;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const { TabPane } = Tabs;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -37,8 +39,6 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
-    loginId: state.account.loginId,
-    username: state.account.username,
     relSo: state.cwmShFtz.rel_so,
     relRegs: state.cwmShFtz.rel_regs,
     units: state.cwmShFtz.params.units.map(un => ({
@@ -63,6 +63,7 @@ function fetchData({ dispatch, params }) {
   { loadRelDetails,
     updateRelReg,
     fileRelStockouts,
+    exportNormalExitByRel,
     fileRelPortionouts,
     queryPortionoutInfos,
     cancelRelReg,
@@ -89,6 +90,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
     fullscreen: true,
     view: 'splitted',
     filingDetails: [],
+    exitDetails: [],
     merged: [],
   }
   componentWillMount() {
@@ -105,7 +107,8 @@ export default class SHFTZNormalRelRegDetail extends Component {
       const detailMap = this.getMerged(details);
       this.setState({
         reg: nextProps.relRegs[0],
-        filingDetails: nextProps.relRegs[0].details,
+        filingDetails: nextProps.relRegs[0].details.filter(det => det.qty > 0),
+        exitDetails: nextProps.relRegs[0].details.filter(det => det.normalreg_exit_no),
         merged: [...detailMap.values()],
         tabKey: nextProps.relRegs[0].pre_entry_seq_no,
         editable: nextProps.relRegs[0].reg_status < CWM_SHFTZ_APIREG_STATUS.completed,
@@ -130,6 +133,17 @@ export default class SHFTZNormalRelRegDetail extends Component {
       }
     }
     return detailMap;
+  }
+  getStep = (status) => {
+    if (status < 3) {
+      return status;
+    } else if (status === 3 || status === 4) {
+      return 3;
+    } else if (status === 5 || status === 6) {
+      return 4;
+    } else if (status === 7 || status === 8) {
+      return 5;
+    }
   }
   msg = key => formatMsg(this.props.intl, key)
   handleSend = () => {
@@ -195,7 +209,8 @@ export default class SHFTZNormalRelRegDetail extends Component {
       view: 'splitted',
       tabKey,
       reg: this.props.relRegs[tabKey],
-      filingDetails: this.props.relRegs[tabKey].details,
+      filingDetails: this.props.relRegs[tabKey].details.filter(det => det.qty > 0),
+      eixtDetails: this.props.relRegs[tabKey].details.filter(det => det.normalreg_exit_no),
       merged: [...detailMap.values()],
     });
   }
@@ -220,7 +235,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }
   handleDetailSplit = () => {
     const soNo = this.props.params.soNo;
-    this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals, loginId: this.props.loginId }).then((result) => {
+    this.props.splitRelDetails({ soNo, groupVals: this.state.groupVals }).then((result) => {
       if (!result.error) {
         message.success('明细已拆分');
         this.props.loadRelDetails(soNo, 'normal');
@@ -233,14 +248,30 @@ export default class SHFTZNormalRelRegDetail extends Component {
   handleViewChange = (e) => {
     const { merged, reg } = this.state;
     let filingDetails;
+    const exitDetails = reg.details.filter(det => det.normalreg_exit_no);
     if (e.target.value === 'merged') {
       filingDetails = merged;
     } else {
-      filingDetails = reg.details;
+      filingDetails = reg.details.filter(det => det.qty > 0);
     }
     this.setState({
       view: e.target.value,
       filingDetails,
+      exitDetails,
+    });
+  }
+  handleExportExitVoucher = () => {
+    const reg = this.state.reg;
+    this.props.exportNormalExitByRel(reg.ftz_rel_no).then((resp) => {
+      if (!resp.error) {
+        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
+          `${reg.ftz_rel_no}_出区凭单.xlsx`);
+      } else {
+        notification.error({
+          message: '导出失败',
+          description: resp.error.message,
+        });
+      }
     });
   }
   columns = [{
@@ -341,15 +372,61 @@ export default class SHFTZNormalRelRegDetail extends Component {
   }, {
     title: '报关单号',
     width: 150,
-    dataIndex: 'cus_decl_no',
+    dataIndex: 'out_cus_decl_no',
+  }]
+  exitColumns = [{
+    title: '出区编号',
+    dataIndex: 'normalreg_exit_no',
+    width: 160,
+  }, {
+    title: '入库明细ID',
+    dataIndex: 'ftz_ent_detail_id',
+    width: 100,
+  }, {
+    title: '商品货号',
+    dataIndex: 'product_no',
+    width: 160,
+  }, {
+    title: '商品编码',
+    dataIndex: 'hscode',
+    width: 100,
+  }, {
+    title: '中文品名',
+    dataIndex: 'g_name',
+    width: 150,
+  }, {
+    title: '数量',
+    dataIndex: 'exit_qty',
+    width: 100,
+    render: o => (<b>{o}</b>),
+  }, {
+    title: '毛重',
+    dataIndex: 'exit_grosswt',
+    width: 150,
+  }, {
+    title: '净重',
+    dataIndex: 'exit_netwt',
+    width: 100,
+  }, {
+    title: '金额',
+    dataIndex: 'exit_amount',
+    width: 100,
+  }, {
+    title: '币制',
+    dataIndex: 'currency',
+    width: 100,
+    render: (o) => {
+      const currency = this.props.currencies.filter(cur => cur.value === o)[0];
+      const text = currency ? `${currency.value}| ${currency.text}` : o;
+      return text && text.length > 0 && <Tag>{text}</Tag>;
+    },
   }]
   render() {
     const { relSo, relRegs, whse, submitting } = this.props;
-    const { reg, filingDetails } = this.state;
+    const { reg, filingDetails, exitDetails } = this.state;
     if (relRegs.length === 0) {
       return null;
     }
-    console.log(filingDetails);
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -427,10 +504,11 @@ export default class SHFTZNormalRelRegDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
-            {relSo.outbound_no && <Tooltip title="出库操作" placement="bottom">
-              <Button icon="link" onClick={this.handleOutboundPage}><Badge status={outStatus.badge} text={outStatus.text} /></Button>
-            </Tooltip>
-        }
+            {relSo.outbound_no &&
+            <Button icon="link" onClick={this.handleOutboundPage}>
+              关联出库操作 <Badge status={outStatus.badge} text={outStatus.text} />
+            </Button>
+            }
           </PageHeader.Nav>
           <PageHeader.Actions>
             {relEditable &&
@@ -446,7 +524,7 @@ export default class SHFTZNormalRelRegDetail extends Component {
         <Content className="page-content">
           {relEditable && whyunsent && <Alert message={whyunsent} type="info" showIcon closable />}
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
                 <Description term="出区提货单号">{reg.ftz_rel_no}</Description>
                 <Description term="货主">{reg.owner_cus_code}|{reg.owner_name}</Description>
@@ -494,32 +572,52 @@ export default class SHFTZNormalRelRegDetail extends Component {
                 <Description term="备案日期">{reg.ftz_reg_date && moment(reg.ftz_reg_date).format('YYYY-MM-DD')}</Description>
               </DescriptionList>
               <div className="card-footer">
-                <Steps progressDot current={regStatus}>
+                <Steps progressDot current={this.getStep(regStatus)}>
                   <Step title="待备案" />
                   <Step title="已发送" />
-                  <Step title="备案完成" />
+                  <Step title="已备案" />
+                  <Step title="已委托" />
+                  <Step title="已清关" />
+                  <Step title="已出区" />
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
-              <DataPane header="备案明细" fullscreen={this.state.fullscreen}
-                columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                dataSource={filingDetails} rowKey="id" loading={this.state.loading}
-              >
-                <DataPane.Toolbar>
-                  <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
-                    <RadioButton value="splitted">拆分视图</RadioButton>
-                    <RadioButton value="merged">合并视图</RadioButton>
-                  </RadioGroup>
-                  <DataPane.Extra>
-                    <Summary>
-                      <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>
-                      <Summary.Item label="总净重" addonAfter="KG">{stat && stat.total_net_wt.toFixed(3)}</Summary.Item>
-                      <Summary.Item label="总金额">{stat && stat.total_amount.toFixed(3)}</Summary.Item>
-                    </Summary>
-                  </DataPane.Extra>
-                </DataPane.Toolbar>
-              </DataPane>
+            <MagicCard bodyStyle={{ padding: 0 }} onSizeChange={this.toggleFullscreen}>
+              <Tabs defaultActiveKey="regd">
+                <TabPane tab="备案明细" key="regd">
+                  <DataPane fullscreen={this.state.fullscreen}
+                    columns={this.columns} rowSelection={rowSelection} indentSize={8}
+                    dataSource={filingDetails} rowKey="id" loading={this.state.loading}
+                  >
+                    <DataPane.Toolbar>
+                      <RadioGroup value={this.state.view} onChange={this.handleViewChange} >
+                        <RadioButton value="splitted">拆分明细</RadioButton>
+                        <RadioButton value="merged">合并明细</RadioButton>
+                      </RadioGroup>
+                      <DataPane.Extra>
+                        <Summary>
+                          <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>
+                          <Summary.Item label="总净重" addonAfter="KG">{stat && stat.total_net_wt.toFixed(3)}</Summary.Item>
+                          <Summary.Item label="总金额">{stat && stat.total_amount.toFixed(3)}</Summary.Item>
+                        </Summary>
+                      </DataPane.Extra>
+                    </DataPane.Toolbar>
+                  </DataPane>
+                </TabPane>
+                <TabPane tab="出区明细" key="exitd">
+                  <DataPane fullscreen={this.state.fullscreen}
+                    columns={this.exitColumns} rowSelection={rowSelection} indentSize={8}
+                    dataSource={exitDetails} rowKey="id" loading={this.state.loading}
+                  >
+                    {exitDetails.length > 0 &&
+                    <DataPane.Toolbar>
+                      <DataPane.Actions>
+                        <Button type="primary" onClick={this.handleExportExitVoucher}>导出出区凭单</Button>
+                      </DataPane.Actions>
+                    </DataPane.Toolbar>}
+                  </DataPane>
+                </TabPane>
+              </Tabs>
             </MagicCard>
           </Form>
         </Content>

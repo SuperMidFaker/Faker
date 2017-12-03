@@ -6,7 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
   loadBillBody, saveBillRules, setStepVisible, billHeadChange, redoManifest, loadTemplateFormVals,
-  showSendDeclsModal, validateBillDatas, loadBillMeta } from 'common/reducers/cmsManifest';
+  showSendDeclsModal, validateBillDatas, loadBillMeta, resetBillHead } from 'common/reducers/cmsManifest';
 import { loadDocuDatas } from 'common/reducers/cmsInvoice';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
@@ -64,7 +64,8 @@ const confirm = Modal.confirm;
     validateBillDatas,
     loadBillMeta,
     showPreviewer,
-    loadDocuDatas }
+    loadDocuDatas,
+    resetBillHead }
 )
 @connectNav({
   depth: 3,
@@ -232,6 +233,15 @@ export default class ManifestEditor extends React.Component {
         }).catch(() => message.error('重置失败'));
       },
       onCancel() {},
+    });
+  }
+  handleBillHeadReset = () => {
+    this.props.resetBillHead(this.props.formData.id).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.form.resetFields();
+      }
     });
   }
   handleRuleChange = (value) => {
@@ -489,17 +499,22 @@ export default class ManifestEditor extends React.Component {
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
             }
               {sendable &&
-              <Button type="primary" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>
-            }
+              <Button type="primary" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>}
+              {editable &&
+                <Popconfirm title={'是否确认清空表头数据?'} onConfirm={this.handleBillHeadReset}>
+                  <Button type="danger" icon="delete" />
+                </Popconfirm>}
               {editable &&
               (<Button type="primary" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                 loading={this.state.generating} onClick={this.handleGenerateEntry}
-              >{this.msg('generate')}{declType}</Button>) }
+              >{this.msg('generateCDP')}</Button>) }
+              {editable &&
+              <Button type="primary" icon="save" onClick={this.handleBillSave} disabled={billHeadFieldsChangeTimes === 0}>保存</Button>}
               <Dropdown overlay={this.renderOverlayMenu(editable, revertable)}><Button icon="ellipsis" /></Dropdown>
             </PageHeader.Actions>
           </PageHeader>
           <Content className={`page-content layout-min-width layout-min-width-large ${!editable ? 'readonly' : ''}`}>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.manifestSpinning} onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} loading={this.props.manifestSpinning} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="header" onChange={this.handleTabChange}>
                 {tabs}
               </Tabs>

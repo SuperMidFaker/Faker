@@ -14,10 +14,12 @@ import * as CorpOverview from './corp/overview';
 import CorpInfo from './corp/info';
 import * as Organization from './corp/organization';
 import * as CorpMembers from './corp/members';
-import * as Role from './corp/role';
+import * as CorpRole from './corp/role';
+import * as CorpLogs from './corp/logs';
 import PackDataHub from './hub/packDataHub';
 import * as Collab from './hub/collab';
-import * as OpenAPI from './hub/api';
+import * as HubOpenAPI from './hub/api';
+import * as HubAdapter from './hub/adapter';
 import * as OpenIntegration from './hub/integration';
 import * as IntegraionArCTM from './hub/integration/arctm';
 import * as IntegraionQuickPass from './hub/integration/quickpass';
@@ -41,14 +43,12 @@ import * as Template from './pub/template';
 import CMS from './cms/module-clearance';
 import * as CMSDashboard from './cms/dashboard';
 import * as CMSDelegation from './cms/delegation';
-import * as CMSCustomsDecl from './cms/customs';
+import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
 import * as CMSImportCustoms from './cms/import/customs';
-import * as CMSImportCiq from './cms/import/ciq';
 import * as CMSExportManifest from './cms/export/manifest';
 import * as CMSExportCustoms from './cms/export/customs';
-import * as CMSExportCiq from './cms/export/ciq';
 import * as CMSManual from './cms/manual';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
@@ -180,9 +180,10 @@ export default(store) => {
         <Route path="hub" component={PackDataHub}>
           <IndexRedirect to="/hub/integration/installed" />
           <Route path="api">
-            <Route path="auth" component={OpenAPI.Auth} />
-            <Route path="webhook" component={OpenAPI.Webhook} />
+            <Route path="auth" component={HubOpenAPI.Auth} />
+            <Route path="webhook" component={HubOpenAPI.Webhook} />
           </Route>
+          <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">
             <Route path="apps" component={OpenIntegration.AppsList} />
             <Route path="installed" component={OpenIntegration.InstalledList} />
@@ -225,11 +226,12 @@ export default(store) => {
             <Route path="new" component={CorpMembers.Edit} />
             <Route path="edit/:id" component={CorpMembers.Edit} />
           </Route>
-          <Route path="role" component={Role.Wrapper}>
-            <IndexRoute component={Role.List} />
-            <Route path="new" component={Role.Create} />
-            <Route path="edit/:id" component={Role.Edit} />
+          <Route path="role" component={CorpRole.Wrapper}>
+            <IndexRoute component={CorpRole.List} />
+            <Route path="new" component={CorpRole.Create} />
+            <Route path="edit/:id" component={CorpRole.Edit} />
           </Route>
+          <Route path="logs" component={CorpLogs.List} />
         </Route>
         <Route component={Module}>
           <Route path={DEFAULT_MODULES.transport.id} component={TMS}>
@@ -307,9 +309,12 @@ export default(store) => {
               <Route path=":delgNo" component={CMSDelegation.Detail} />
             </Route>
             <Route path="cusdecl">
-              <IndexRoute component={CMSCustomsDecl.List} />
+              <IndexRoute component={CMSCusDecl.List} />
             </Route>
-            <Route path="ciqdecl" component={CMSCiqDecl.List} />
+            <Route path="ciqdecl">
+              <IndexRoute component={CMSCiqDecl.List} />
+              <Route path=":ioType/:declNo" component={CMSCiqDecl.Edit} />
+            </Route>
             <Route path="import">
               <IndexRedirect to="/clearance/import/manifest" />
               <Route path="manifest">
@@ -323,7 +328,6 @@ export default(store) => {
                 <IndexRoute component={CMSImportCustoms.DeclList} />
                 <Route path=":billseqno/:preEntrySeqNo" component={CMSImportCustoms.DeclView} />
               </Route>
-              <Route path="ciqdecl" component={CMSImportCiq.CiqList} />
             </Route>
             <Route path="export">
               <IndexRedirect to="/clearance/export/manifest" />
@@ -338,7 +342,6 @@ export default(store) => {
                 <IndexRoute component={CMSExportCustoms.DeclList} />
                 <Route path=":billseqno/:preEntrySeqNo" component={CMSExportCustoms.DeclView} />
               </Route>
-              <Route path="ciqdecl" component={CMSExportCiq.CiqList} />
             </Route>
             <Route path="manual">
               <IndexRoute component={CMSManual.List} />
@@ -497,11 +500,11 @@ export default(store) => {
                 <IndexRedirect to="/cwm/supervision/shftz/entry" />
                 <Route path="entry" >
                   <IndexRoute component={CWMSupSHFTZEntry.List} />
-                  <Route path=":asnNo" component={CWMSupSHFTZEntry.Detail} />
+                  <Route path=":preEntrySeqNo" component={CWMSupSHFTZEntry.Detail} />
                 </Route>
                 <Route path="transfer/in" >
                   <IndexRoute component={CWMSupSHFTZTransferIn.List} />
-                  <Route path=":asnNo" component={CWMSupSHFTZTransferIn.Detail} />
+                  <Route path=":preFtzEntNo" component={CWMSupSHFTZTransferIn.Detail} />
                 </Route>
                 <Route path="transfer/self" >
                   <IndexRoute component={CWMSupSHFTZTransferSelf.List} />

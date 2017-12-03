@@ -7,6 +7,7 @@ import { Form, Row, Col, Card, DatePicker, Input, Select, Radio } from 'antd';
 import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { CWM_ASN_TYPES, CWM_ASN_BONDED_REGTYPES } from 'common/constants';
+import { Logixon } from 'client/components/FontIcon';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 
@@ -75,7 +76,7 @@ export default class CwmReceivingForm extends Component {
     const whseCode = node.t_whse_code || (node.whse_code ? `${node.wh_ent_tenant_id}-${node.whse_code}` : '');
     // todo required
     return (
-      <Card noHovering bodyStyle={{ padding: 16 }}>
+      <Card title={<Logixon type="receiving" />} hoverable={false} bodyStyle={{ padding: 16 }}>
         <Row gutter={16}>
           <Col sm={24} lg={8}>
             <FormItem label="仓库" {...formItemLayout} required>
@@ -88,15 +89,15 @@ export default class CwmReceivingForm extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
-            <FormItem label="供应商" {...formItemLayout}>
-              <Input value={node.supplier} onChange={ev => this.handleCommonFieldChange('supplier', ev.target.value)} />
-            </FormItem>
-          </Col>
-          <Col sm={24} lg={8}>
             <FormItem label="ASN类型" {...formItemLayout}>
               <Select placeholder="ASN类型" value={node.asn_type} onChange={value => this.handleCommonFieldChange('asn_type', value)}>
                 {CWM_ASN_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
               </Select>
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="供货商" {...formItemLayout}>
+              <Input value={node.supplier} onChange={ev => this.handleCommonFieldChange('supplier', ev.target.value)} />
             </FormItem>
           </Col>
           <Col sm={24} lg={8}>
@@ -107,22 +108,20 @@ export default class CwmReceivingForm extends Component {
               </RadioGroup>
             </FormItem>
           </Col>
-        </Row>
-        <Row gutter={20}>
           {node.bonded &&
             <Col sm={24} lg={8}>
               <FormItem label="保税监管方式" {...formItemLayout}>
-                <RadioGroup value={node.bonded_reg_type}
-                  onChange={ev => this.handleCommonFieldChange('bonded_reg_type', ev.target.value)}
+                <Select value={node.bonded_reg_type}
+                  onChange={value => this.handleCommonFieldChange('bonded_reg_type', value)}
                 >
-                  {CWM_ASN_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
-                </RadioGroup>
+                  {CWM_ASN_BONDED_REGTYPES.map(cabr => <Option value={cabr.value} key={cabr.value}>{cabr.ftztext}</Option>)}
+                </Select>
               </FormItem>
             </Col>
           }
           {node.bonded_reg_type === CWM_ASN_BONDED_REGTYPES[0].value &&
           <Col sm={24} lg={8}>
-            <FormItem label="保税入库预期收货日期" {...formItemLayout}>
+            <FormItem label="预期收货日期" {...formItemLayout}>
               <Input addonBefore="晚于申报日期" addonAfter="天" value={node.rec_after_decl_days}
                 onChange={ev => this.handleCommonFieldChange('rec_after_decl_days', ev.target.value)}
               />

@@ -38,6 +38,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { loadEntryRegDatas, switchDefaultWhse, showDock }
 )
@@ -74,10 +75,11 @@ export default class SHFTZTransferInList extends React.Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '海关进库单号',
+    title: '海关入库单号',
     width: 200,
     dataIndex: 'ftz_ent_no',
     fixed: 'left',
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '监管类型',
     dataIndex: 'ftz_ent_type',
@@ -105,7 +107,7 @@ export default class SHFTZTransferInList extends React.Component {
     width: 160,
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'po_no',
     width: 160,
   }, {
@@ -138,7 +140,7 @@ export default class SHFTZTransferInList extends React.Component {
   }, {
     title: '创建时间',
     width: 120,
-    dataIndex: 'created_time',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
@@ -148,6 +150,7 @@ export default class SHFTZTransferInList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -205,7 +208,7 @@ export default class SHFTZTransferInList extends React.Component {
     this.context.router.push('/cwm/ftz/receive/reg');
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/transfer/in/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/transfer/in/${row.pre_ftz_ent_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {

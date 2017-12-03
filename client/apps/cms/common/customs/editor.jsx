@@ -10,8 +10,8 @@ import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal }
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
-import CustomsDeclHeadPane from './tabpane/customsDeclHeadPane';
-import CustomsDeclBodyPane from './tabpane/customsDeclBodyPane';
+import CusDeclHeadPane from './tabpane/cusDeclHeadPane';
+import CusDeclBodyPane from './tabpane/cusDeclBodyPane';
 import ContainersPane from './tabpane/containersPane';
 import AttachedDocsPane from './tabpane/attachedDocsPane';
 import AttachedCertsPane from './tabpane/attachedCertsPane';
@@ -245,11 +245,11 @@ export default class CustomsDeclEditor extends React.Component {
     const tabs = [];
     tabs.push(
       <TabPane tab="报关单表头" key="header">
-        <CustomsDeclHeadPane ietype={ietype} form={form} formData={head} />
+        <CusDeclHeadPane ietype={ietype} form={form} formData={head} />
       </TabPane>);
     tabs.push(
       <TabPane tab="报关单表体" key="body">
-        <CustomsDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
+        <CusDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
       <TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
@@ -279,7 +279,7 @@ export default class CustomsDeclEditor extends React.Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                <NavLink to={`/clearance/${ietype}/cusdecl/`}>{this.msg('customsDecl')}</NavLink>
+                <NavLink to="/clearance/cusdecl/">{this.msg('customsDecl')}</NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 <a onClick={() => this.handlePreview(head.delg_no)}>{head.bill_seq_no}</a>
@@ -316,7 +316,7 @@ export default class CustomsDeclEditor extends React.Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content layout-min-width layout-min-width-large readonly">
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} loading={this.props.declSpinning} onSizeChange={this.toggleFullscreen}>
             <Tabs defaultActiveKey="header">
               {tabs}
             </Tabs>

@@ -130,7 +130,7 @@ function calculateTotal(bodies, currencies) {
     entryHead: state.cmsManifest.entryHead,
   }), { showDeclElementsModal, getElementByHscode }
 )
-export default class CustomsDeclBodyPane extends React.Component {
+export default class CusDeclBodyPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

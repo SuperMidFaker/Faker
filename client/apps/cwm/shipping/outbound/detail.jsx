@@ -202,7 +202,7 @@ export default class OutboundDetail extends Component {
       regTag = CWM_SO_BONDED_REGTYPES.filter(sbr => sbr.value === outboundHead.bonded_outtype && sbr.tagcolor)[0];
       if (regTag) {
         regTypes = [{
-          tooltip: '海关监管',
+          tooltip: '关联监管备案',
           type: outboundHead.bonded_outtype,
           status: outboundHead.reg_status,
         }];
@@ -253,7 +253,7 @@ export default class OutboundDetail extends Component {
                 CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === reg.status)[0];
               if (regStatus) {
                 return (<Tooltip title={reg.tooltip} placement="bottom" key={reg.type}>
-                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 12 }}>
+                  <Button icon="link" onClick={() => this.handleRegPage(reg.type)} style={{ marginLeft: 8 }}>
                     <Badge status={regStatus.badge} text={regStatus.text} />
                   </Button>
                 </Tooltip>);
@@ -279,7 +279,7 @@ export default class OutboundDetail extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
             <Row gutter={16} className="info-group-underline">
               <Col sm={24} lg={4}>
                 <InfoItem label="货主" field={outboundHead.owner_name} />
@@ -290,7 +290,7 @@ export default class OutboundDetail extends Component {
               </Col>
                 }
               <Col sm={24} lg={4}>
-                <InfoItem label="客户订单号" field={outboundHead.cust_order_no} />
+                <InfoItem label="客户单号" field={outboundHead.cust_order_no} />
               </Col>
               <Col sm={12} lg={3}>
                 <InfoItem label="订单总数" field={outboundHead.total_qty} />
@@ -326,7 +326,7 @@ export default class OutboundDetail extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.tabKey} onChange={this.handleTabChange}>
               <TabPane tab="订单明细" key="orderDetails">
                 <OrderDetailsPane outboundNo={this.props.params.outboundNo} fullscreen={this.state.fullscreen} />

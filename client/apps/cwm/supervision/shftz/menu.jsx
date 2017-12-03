@@ -17,6 +17,7 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     whses: state.cwmContext.whses,
     whse: state.cwmContext.defaultWhse,
+    listFilter: state.cwmShFtz.listFilter,
   }),
   { switchDefaultWhse }
 )

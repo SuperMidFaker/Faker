@@ -37,7 +37,7 @@ function fetchData({ dispatch, params }) {
   state => ({
     loginId: state.account.loginId,
     username: state.account.username,
-    entryAsn: state.cwmShFtz.entry_asn,
+    transfSelfReg: state.cwmShFtz.entry_asn,
     units: state.cwmShFtz.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -53,7 +53,7 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn }
+  { loadVirtualTransferDetails, updateEntryReg, transferToOwnWhse, queryOwnTransferOutIn }
 )
 @connectNav({
   depth: 3,
@@ -143,8 +143,8 @@ export default class SHFTZTransferSelfDetail extends Component {
     },
   }]
   handleInfoSave = (field, value) => {
-    const entryAsn = this.props.entryAsn;
-    this.props.updateEntryReg(entryAsn.pre_entry_seq_no, field, value, entryAsn.virtual_transfer).then((result) => {
+    const transfSelfReg = this.props.transfSelfReg;
+    this.props.updateEntryReg(transfSelfReg.pre_ftz_ent_no, field, value, transfSelfReg.virtual_transfer).then((result) => {
       if (result.error) {
         notification.error({
           message: '操作失败',
@@ -157,10 +157,10 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   handleTransToWhs = () => {
-    const { params, entryAsn, whse } = this.props;
+    const { params, whse } = this.props;
     this.props.transferToOwnWhse({
       asnNo: params.asnNo,
-      whseCode: entryAsn.whse_code,
+      whseCode: whse.code,
       ftzWhseCode: whse.ftz_whse_code,
     }).then((result) => {
       if (!result.error) {
@@ -191,11 +191,11 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   handleOwnTransferQuery = () => {
-    const { params, entryAsn, username } = this.props;
+    const { params, username, whse } = this.props;
     const asnNo = params.asnNo;
     this.props.queryOwnTransferOutIn({
       asn_no: asnNo,
-      whse: entryAsn.whse_code,
+      whse: whse.code,
       ftzWhseCode: this.props.whse.ftz_whse_code,
       username,
     }).then((result) => {
@@ -211,6 +211,7 @@ export default class SHFTZTransferSelfDetail extends Component {
             message: '操作成功',
             placement: 'topLeft',
           });
+          this.props.loadVirtualTransferDetails(asnNo);
         }
       } else if (result.error.message === 'WHSE_FTZ_UNEXIST') {
         notification.error({
@@ -227,8 +228,8 @@ export default class SHFTZTransferSelfDetail extends Component {
     });
   }
   render() {
-    const { entryAsn, whse, submitting } = this.props;
-    const stat = entryAsn.details ? entryAsn.details.reduce((acc, regd) => ({
+    const { transfSelfReg, whse, submitting } = this.props;
+    const stat = transfSelfReg.details ? transfSelfReg.details.reduce((acc, regd) => ({
       total_qty: acc.total_qty + regd.stock_qty,
       total_amount: acc.total_amount + regd.stock_amount,
       total_net_wt: acc.total_net_wt + regd.stock_netwt,
@@ -274,44 +275,44 @@ export default class SHFTZTransferSelfDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
+            {transfSelfReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Button icon="export" loading={submitting} onClick={this.handleTransToWhs}>发送至终端</Button>}
-            {entryAsn.reg_status === CWM_SHFTZ_APIREG_STATUS.sent && entryAsn.ftz_ent_no &&
+            {transfSelfReg.reg_status === CWM_SHFTZ_APIREG_STATUS.processing && transfSelfReg.ftz_ent_no &&
               <Button icon="export" loading={submitting} onClick={this.handleOwnTransferQuery}>获取转移后明细ID</Button>}
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content">
           <Form layout="vertical">
-            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+            <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
               <DescriptionList col={4}>
-                <Description term="货主">{entryAsn.owner_name}</Description>
-                <Description term="出库单号">{entryAsn.ftz_rel_no}</Description>
-                <Description term="转出时间">{entryAsn.ftz_rel_date && moment(entryAsn.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
+                <Description term="货主">{transfSelfReg.owner_name}</Description>
+                <Description term="出库单号">{transfSelfReg.ftz_rel_no}</Description>
+                <Description term="转出时间">{transfSelfReg.ftz_rel_date && moment(transfSelfReg.ftz_rel_date).format('YYYY.MM.DD HH:mm')}</Description>
                 <Description term="入库单号">
-                  <EditableCell value={entryAsn.ftz_ent_no}
+                  <EditableCell value={transfSelfReg.ftz_ent_no}
                     onSave={value => this.handleInfoSave('ftz_ent_no', value)}
                   />
                 </Description>
                 <Description term="转入时间">
-                  <EditableCell type="date" value={entryAsn.ftz_ent_date && moment(entryAsn.ftz_ent_date).format('YYYY-MM-DD')}
+                  <EditableCell type="date" value={transfSelfReg.ftz_ent_date && moment(transfSelfReg.ftz_ent_date).format('YYYY-MM-DD')}
                     onSave={value => this.handleInfoSave('ftz_ent_date', new Date(value))}
                   />
                 </Description>
               </DescriptionList>
               <div className="card-footer">
-                <Steps progressDot current={entryAsn.reg_status}>
+                <Steps progressDot current={transfSelfReg.reg_status}>
                   <Step title="待转出" />
                   <Step title="终端处理" />
                   <Step title="已转入" />
                 </Steps>
               </div>
             </Card>
-            <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+            <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
               <Tabs defaultActiveKey="transitDetails">
                 <TabPane tab="转移明细" key="transitDetails">
                   <DataPane fullscreen={this.state.fullscreen}
                     columns={this.columns} rowSelection={rowSelection} indentSize={8}
-                    dataSource={entryAsn.details} rowKey="id" loading={this.state.loading}
+                    dataSource={transfSelfReg.details} rowKey="id" loading={this.state.loading}
                   >
                     <DataPane.Toolbar>
                       <Row type="flex">

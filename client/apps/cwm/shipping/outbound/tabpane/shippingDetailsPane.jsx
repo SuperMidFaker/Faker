@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import FileSaver from 'file-saver';
 import { intlShape, injectIntl } from 'react-intl';
-import { Tag, Icon, Input } from 'antd';
+import { notification, Button, Tag, Icon, Input } from 'antd';
 import DataPane from 'client/components/DataPane';
-import { loadShipDetails } from 'common/reducers/cwmOutbound';
+import { loadShipDetails, exportNormalExitBySo } from 'common/reducers/cwmOutbound';
+import { CWM_SO_BONDED_REGTYPES } from 'common/constants';
 
 const Search = Input.Search;
 
@@ -13,9 +15,11 @@ const Search = Input.Search;
 @connect(
   state => ({
     reload: state.cwmOutbound.outboundReload,
+    outboundHead: state.cwmOutbound.outboundFormHead,
     shipDetails: state.cwmOutbound.shipDetails,
+    pickDetails: state.cwmOutbound.pickDetails,
   }),
-  { loadShipDetails }
+  { loadShipDetails, exportNormalExitBySo }
 )
 export default class ShippingDetailsPane extends React.Component {
   static propTypes = {
@@ -43,6 +47,19 @@ export default class ShippingDetailsPane extends React.Component {
   handleSearch = (value) => {
     this.setState({ searchValue: value });
   }
+  handleExportExitVoucher = () => {
+    this.props.exportNormalExitBySo(this.props.outboundHead.so_no).then((resp) => {
+      if (!resp.error) {
+        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
+          `${this.props.outboundHead.so_no}_出区凭单.xlsx`);
+      } else {
+        notification.error({
+          message: '导出失败',
+          description: resp.error.message,
+        });
+      }
+    });
+  }
   columns = [{
     title: '装车/配送单号',
     dataIndex: 'waybill',
@@ -58,7 +75,7 @@ export default class ShippingDetailsPane extends React.Component {
   }, {
     title: '商品货号',
     dataIndex: 'product_no',
-    width: 160,
+    width: 200,
   }, {
     title: '发货数量',
     dataIndex: 'shipped_qty',
@@ -99,7 +116,7 @@ export default class ShippingDetailsPane extends React.Component {
     },
   }]
   render() {
-    const { shipDetails } = this.props;
+    const { outboundHead, shipDetails, pickDetails } = this.props;
     const dataSource = shipDetails.filter((item) => {
       if (this.state.searchValue) {
         const reg = new RegExp(this.state.searchValue);
@@ -121,6 +138,10 @@ export default class ShippingDetailsPane extends React.Component {
       >
         <DataPane.Toolbar>
           <Search placeholder="货号/SKU" style={{ width: 200 }} onSearch={this.handleSearch} />
+          <DataPane.Actions>
+            {shipDetails.length > 0 && (outboundHead.bonded_outtype === CWM_SO_BONDED_REGTYPES[0].value || pickDetails.filter(pd => !pd.portion && pd.ftz_ent_filed_id).length > 0) &&
+            <Button type="primary" onClick={this.handleExportExitVoucher}>导出出区凭单</Button>}
+          </DataPane.Actions>
         </DataPane.Toolbar>
       </DataPane>
     );

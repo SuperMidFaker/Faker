@@ -67,7 +67,7 @@ export default class FeeSummaryList extends React.Component {
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={16} />,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     width: 180,
     dataIndex: 'cust_order_no',
   }, {

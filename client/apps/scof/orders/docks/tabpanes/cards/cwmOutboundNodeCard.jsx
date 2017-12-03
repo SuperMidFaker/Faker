@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { routerShape } from 'react-router';
 import { connect } from 'react-redux';
-import { Button, Tooltip, Card, Col, Row, Icon, Steps, message } from 'antd';
+import { Button, Tooltip, Card, Col, Row, Steps, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
 import { loadOrderNodesTriggers, hideDock, getSoFromFlow } from 'common/reducers/crmOrders';
 import { showDock } from 'common/reducers/cwmShippingOrder';
@@ -19,7 +19,6 @@ const Step = Steps.Step;
 )
 export default class CWMOutboundNodeCard extends React.Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
     children: PropTypes.any,
   }
   static contextTypes = {
@@ -73,30 +72,25 @@ export default class CWMOutboundNodeCard extends React.Component {
     this.context.router.push(`/cwm/shipping/outbound/${this.props.so.outbound_no}`);
   }
   render() {
-    const { title, children, so } = this.props;
+    const { children, so } = this.props;
     if (!so) {
       return;
     }
     return (
-      <Card title={<span>{title}</span>} extra={so.outbound_no &&
+      <Card title={<span>{`SO编号:${so.so_no || '尚未创建'}`}</span>} extra={so.outbound_no &&
         <Tooltip title="进入详情">
           <Button type="primary" size="small" shape="circle" icon="right" onClick={this.handleOutbound} />
-        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 48 }}
+        </Tooltip>} bodyStyle={{ padding: 8, paddingBottom: 56 }}
         onClick={() => this.handlePreview(this.props.uuid)}
       >
         <Row>
           <Col span="8">
-            <InfoItem label="SO编号" addonBefore={<Icon type="tag-o" />}
-              field={so.so_no}
-            />
-          </Col>
-          <Col span="8">
-            <InfoItem label="仓库" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="仓库"
               field={so.whse_name}
             />
           </Col>
           <Col span="8">
-            <InfoItem label="货物属性" addonBefore={<Icon type="tag-o" />}
+            <InfoItem label="货物属性"
               field={so.bonded ? '保税' : '非保税'}
             />
           </Col>

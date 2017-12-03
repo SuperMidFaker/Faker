@@ -8,7 +8,7 @@ const messages = defineMessages({
   },
   fee: {
     id: 'bss.module.fee',
-    defaultMessage: '费用',
+    defaultMessage: '收支费用',
   },
   feeSummary: {
     id: 'bss.module.fee.summary',

@@ -38,6 +38,7 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { openNormalRelRegModal, loadReleaseRegDatas, switchDefaultWhse, showDock }
 )
@@ -98,13 +99,13 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 0:
           return (<Badge status="default" text="待备案" />);
         case 1:
-          return (<Badge status="processing" text="终端处理" />);
+          return (<Badge status="processing" text="已发送" />);
         case 2:
           return (<Badge status="processing" text="已备案" />);
         case 3:
-          return (<Badge status="processing" text="部分制单" />);
+          return (<Badge status="processing" text="部分委托" />);
         case 4:
-          return (<Badge status="processing" text="制单中" />);
+          return (<Badge status="processing" text="全部委托" />);
         case 5:
           return (<Badge status="processing" text="部分清关" />);
         case 6:
@@ -121,13 +122,14 @@ export default class SHFTZNormalRelRegList extends React.Component {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
     width: 160,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'cust_order_no',
     width: 180,
   }, {
@@ -146,42 +148,38 @@ export default class SHFTZNormalRelRegList extends React.Component {
     dataIndex: 'carrier_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '出口日期',
+    title: '备案日期',
     width: 120,
-    dataIndex: 'ie_date',
-    render: iedate => iedate && moment(iedate).format('YYYY.MM.DD'),
+    dataIndex: 'ftz_reg_date',
+    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
     title: '报关日期',
     width: 120,
     dataIndex: 'cus_decl_date',
     render: decldate => decldate && moment(decldate).format('YYYY.MM.DD'),
   }, {
-    title: '预计出区日期',
+    title: '出区日期',
     width: 120,
-    dataIndex: 'ftz_rel_date',
+    dataIndex: 'exit_date',
     render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
   }, {
-    title: '备案日期',
-    width: 120,
-    dataIndex: 'ftz_reg_date',
-    render: reldate => reldate && moment(reldate).format('YYYY.MM.DD'),
+    title: '创建人员',
+    dataIndex: 'created_by',
+    width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '创建时间',
     width: 120,
-    dataIndex: 'created_time',
+    dataIndex: 'created_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
       }
     },
   }, {
-    title: '创建人员',
-    dataIndex: 'created_by',
-    width: 80,
-  }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 150,
     fixed: 'right',
     render: (o, record) => {
       switch (record.status) {
@@ -190,9 +188,13 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 1:
           return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
         case 2:
+          return (<span>
+            <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />
+            <span className="ant-divider" />
+            <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />
+          </span>);
         case 3:
         case 4:
-          return <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />;
         case 5:
         case 6:
         case 7:
@@ -229,8 +231,6 @@ export default class SHFTZNormalRelRegList extends React.Component {
     remotes: this.props.releaseList,
   })
   handleCreateNormalRelReg = () => {
-    // const { listFilter, owners } = this.props;
-    // const ownerCusCode = listFilter.ownerView !== 'all' ? listFilter.ownerView : (owners[0] && owners[0].customs_code);
     this.props.openNormalRelRegModal();
   }
   handleReleaseListLoad = (currentPage, whsecode, filter) => {
@@ -332,7 +332,8 @@ export default class SHFTZNormalRelRegList extends React.Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="completed">已发送备案</RadioButton>
+                <RadioButton value="completed">已备案</RadioButton>
+                <RadioButton value="delegated">已委托</RadioButton>
                 <RadioButton value="cleared">已清关</RadioButton>
                 <RadioButton value="exited">已出区</RadioButton>
               </RadioGroup>

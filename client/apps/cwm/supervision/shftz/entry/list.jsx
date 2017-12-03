@@ -27,7 +27,6 @@ const { Content, Sider } = Layout;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const OptGroup = Select.OptGroup;
 
 @injectIntl
 @connect(
@@ -38,6 +37,7 @@ const OptGroup = Select.OptGroup;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners,
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { loadEntryRegDatas, switchDefaultWhse, showDock }
 )
@@ -65,10 +65,6 @@ export default class SHFTZEntryList extends React.Component {
     if (['all', 'pending', 'processing', 'completed'].filter(stkey => stkey === status).length === 0) {
       status = 'all';
     }
-    let type = listFilter.type;
-    if (['all', 'bonded', 'export'].filter(stkey => stkey === type).length === 0) {
-      type = 'all';
-    }
     let ownerView = listFilter.ownerView;
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
@@ -76,13 +72,18 @@ export default class SHFTZEntryList extends React.Component {
     const filter = { ...listFilter, status, type: 'bonded', ownerView };
     this.handleEntryListLoad(null, null, filter);
   }
+  componentWillReceiveProps(nextprops) {
+    if (nextprops.whse.code !== this.props.whse.code) {
+      this.handleEntryListLoad(1, nextprops.whse.code, this.props.listFilter);
+    }
+  }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
-    title: '海关进库单号/备案编号',
+    title: '进区凭单号/备案编号',
     width: 200,
     dataIndex: 'ftz_ent_no',
     fixed: 'left',
-    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_entry_seq_no}</span>,
+    render: (o, record) => o ? <span className="text-emphasis">{o}</span> : <span className="text-normal">{record.pre_ftz_ent_no}</span>,
   }, {
     title: '监管类型',
     width: 80,
@@ -97,25 +98,25 @@ export default class SHFTZEntryList extends React.Component {
     width: 100,
     render: (o) => {
       if (o === 0) {
-        return (<Badge status="default" text="待备案" />);
+        return (<Badge status="default" text="待进区" />);
       } else if (o === 1) {
-        return (<Badge status="processing" text="终端处理" />);
+        return (<Badge status="processing" text="已备案" />);
       } else if (o === 2) {
-        return (<Badge status="success" text="备案完成" />);
+        return (<Badge status="success" text="已进区" />);
       }
     },
   }, {
     title: '报关单号',
     dataIndex: 'pre_entry_seq_no',
     width: 180,
-    render: (preno, row) => row.cus_decl_no || preno,
+    render: (preno, row) => row.cus_decl_no ? <span className="text-emphasis">{row.cus_decl_no}</span> : <span className="text-normal">{preno}</span>,
   }, {
     title: '货主',
     width: 180,
     dataIndex: 'owner_name',
     render: o => <TrimSpan text={o} maxLen={14} />,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'po_no',
     width: 160,
   }, {
@@ -129,27 +130,27 @@ export default class SHFTZEntryList extends React.Component {
     width: 160,
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '进口日期',
+    title: '报关日期',
     width: 120,
-    dataIndex: 'ie_date',
+    dataIndex: 'cus_decl_date',
     render: (o) => {
       if (o) {
         return `${moment(o).format('YYYY.MM.DD')}`;
       }
     },
   }, {
-    title: '进库日期',
+    title: '备案更新时间',
+    width: 120,
+    dataIndex: 'reg_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
+  }, {
+    title: '进区更新时间',
     width: 120,
     dataIndex: 'ftz_ent_date',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('YYYY.MM.DD')}`;
-      }
-    },
-  }, {
-    title: '创建时间',
-    width: 120,
-    dataIndex: 'created_time',
     render: (o) => {
       if (o) {
         return `${moment(o).format('MM.DD HH:mm')}`;
@@ -159,13 +160,22 @@ export default class SHFTZEntryList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_date',
+    render: (o) => {
+      if (o) {
+        return `${moment(o).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
-      : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
+    render: (o, record) => <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);
@@ -224,7 +234,7 @@ export default class SHFTZEntryList extends React.Component {
     this.context.router.push('/cwm/ftz/receive/reg');
   }
   handleDetail = (row) => {
-    const link = `/cwm/supervision/shftz/entry/${row.asn_no}`;
+    const link = `/cwm/supervision/shftz/entry/${row.pre_entry_seq_no}`;
     this.context.router.push(link);
   }
   handleWhseChange = (value) => {
@@ -258,14 +268,12 @@ export default class SHFTZEntryList extends React.Component {
       <Select showSearch optionFilterProp="children" style={{ width: 160 }} value={listFilter.ownerView}
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
-        <OptGroup>
-          <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
-            search={`${data.partner_code}${data.name}`}
-          >{data.name}
-          </Option>)
+        <Option value="all">全部货主</Option>
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
+          search={`${data.partner_code}${data.name}`}
+        >{data.name}
+        </Option>)
           )}
-        </OptGroup>
       </Select></span>);
     return (
       <Layout>
@@ -293,23 +301,23 @@ export default class SHFTZEntryList extends React.Component {
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
                 <RadioButton value="all">全部</RadioButton>
-                <RadioButton value="pending">待备案</RadioButton>
-                <RadioButton value="processing">终端处理</RadioButton>
-                <RadioButton value="completed">备案完成</RadioButton>
+                <RadioButton value="pending">待进区</RadioButton>
+                <RadioButton value="processing">已备案</RadioButton>
+                <RadioButton value="completed">已进区</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable
+              defaultExpandAllRows
               toolbarActions={toolbarActions}
               rowSelection={rowSelection}
               selectedRowKeys={this.state.selectedRowKeys}
               handleDeselectRows={this.handleDeselectRows}
               columns={this.columns}
               dataSource={this.dataSource}
-              indentSize={8}
+              indentSize={0}
               rowKey="id"
-              defaultExpandedRowKeys={['1']}
               loading={this.props.loading}
             />
             <ReceivingDockPanel />

@@ -107,7 +107,7 @@ export default class ReceiveDetailsPane extends React.Component {
   }, {
     title: '货品',
     dataIndex: 'product_sku',
-    width: 150,
+    width: 220,
     fixed: 'left',
     render: o => (<SKUPopover ownerPartnerId={this.props.inboundHead.owner_partner_id} sku={o} />),
   }, {
@@ -146,7 +146,7 @@ export default class ReceiveDetailsPane extends React.Component {
     className: 'cell-align-center',
     render: dl => (dl || dl === 0) && <Tag color={CWM_DAMAGE_LEVEL[dl].color}>{CWM_DAMAGE_LEVEL[dl].text}</Tag>,
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     dataIndex: 'po_no',
     width: 150,
   }, {

@@ -136,7 +136,7 @@ export class RelationAutoCompSelect extends React.Component {
   render() {
     const {
       label, codeField, custCodeField, nameField, formData, disabled, options,
-      getFieldDecorator, codeRules, nameRules,
+      getFieldDecorator, codeRules, nameRules, labelCol,
     } = this.props;
     const initialCodeValue = formData && formData[codeField] || '';
     const initialCustCodeValue = formData && formData[custCodeField] || '';
@@ -144,7 +144,7 @@ export class RelationAutoCompSelect extends React.Component {
     const custOpt = options.filter(op => op.custcode !== null && op.custcode.length > 0);
     const compOpt = options.filter(op => op.code !== null && op.code.length > 0);
     return (
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 19 }} label={label} required>
+      <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 19 }} colon={false} label={label} required>
         <Row gutter={4}>
           <Col span="7">
             <FormItem style={{ marginBottom: 0 }}>
@@ -670,7 +670,7 @@ function FeeFormItem(props) {
     searchKeyFn: opt => opt.search,
   };
   return (
-    <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} label={label}>
+    <FormItem labelCol={{ span: 4 }} wrapperCol={{ span: 20 }} colon={false} label={label}>
       <Row gutter={4}>
         <Col span={10}>
           <FormLocalSearchSelect {...currencyProps} placeholder="币制" style={{ marginBottom: 0 }} />
@@ -988,3 +988,84 @@ StoreYard.propTypes = {
   formRequire: PropTypes.object.isRequired,
 };
 
+
+// 检验检疫代码关联
+export class CiqCodeAutoCompSelect extends React.Component {
+  static propTypes = {
+    label: PropTypes.string.isRequired,
+    codeField: PropTypes.string.isRequired,
+    cnameField: PropTypes.string,
+    formData: PropTypes.object,
+    disabled: PropTypes.bool,
+    getFieldDecorator: PropTypes.func.isRequired,
+    codeRules: PropTypes.array,
+    nameRules: PropTypes.array,
+    onSelect: PropTypes.func,
+  }
+
+  msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
+  handleSelect = (value) => {
+    const { onSelect, codeField, cnameField, enameField } = this.props;
+    if (onSelect) {
+      onSelect(codeField, cnameField, enameField, value);
+    }
+  }
+  render() {
+    const {
+      label, codeField, cnameField, enameField, formData, disabled, options,
+      getFieldDecorator, codeRules, nameRules, labelCol,
+    } = this.props;
+    const initialCodeValue = formData && formData[codeField] || '';
+    const initialCnameValue = formData && formData[cnameField] || '';
+    const initialEnameValue = formData && formData[enameField] || '';
+    const custOpt = options.filter(op => op.ciqcode !== null && op.ciqcode.length > 0);
+    return (
+      <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 21 }} colon={false} label={label} required>
+        <Row gutter={4}>
+          <Col span="4">
+            <FormItem style={{ marginBottom: 0 }}>
+              {disabled ?
+                <Input disabled value={initialCodeValue} />
+                  : getFieldDecorator(codeField, {
+                    initialValue: initialCodeValue,
+                    rules: codeRules,
+                    onChange: this.handleInputChange,
+                  })(<Select
+                    mode="combobox"
+                    allowClear
+                    optionFilterProp="search"
+                    placeholder={this.msg('检验检疫代码')}
+                    onSelect={this.handleSelect}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 360 }}
+                  >
+                    {
+                    custOpt.map(opt => <Option key={opt.ciqcode} search={opt.ciqcode}>{opt.ciqcode} | {opt.name}</Option>)
+                  }
+                  </Select>)}
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem style={{ marginBottom: 0 }}>
+              {disabled ?
+                <Input disabled value={initialCnameValue} />
+                  : getFieldDecorator(cnameField, {
+                    initialValue: initialCnameValue,
+                  })(<Input placeholder={this.msg('中文名称')} disabled={disabled} />)}
+            </FormItem>
+          </Col>
+          <Col span="10">
+            <FormItem style={{ marginBottom: 0 }} >
+              {disabled ?
+                <Input disabled value={initialEnameValue} /> :
+                  getFieldDecorator(enameField, {
+                    rules: nameRules,
+                    initialValue: initialEnameValue,
+                  })(<Input placeholder={this.msg('英文名称')} disabled={disabled} />)}
+            </FormItem>
+          </Col>
+        </Row>
+      </FormItem>
+    );
+  }
+}

@@ -10,6 +10,7 @@ import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import EditableCell from 'client/components/EditableCell';
 import { loadInboundHead, updateInboundMode } from 'common/reducers/cwmReceive';
+import { loadAsnEntries } from 'common/reducers/cwmShFtz';
 import { CWM_INBOUND_STATUS, CWM_ASN_BONDED_REGTYPES, CWM_SHFTZ_REG_STATUS_INDICATOR, CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR } from 'common/constants';
 import PutawayDetailsPane from './tabpane/putawayDetailsPane';
 import ReceiveDetailsPane from './tabpane/receiveDetailsPane';
@@ -35,7 +36,7 @@ const TabPane = Tabs.TabPane;
     inboundProducts: state.cwmReceive.inboundProducts,
     reload: state.cwmReceive.inboundReload,
   }),
-  { loadInboundHead, updateInboundMode }
+  { loadAsnEntries, loadInboundHead, updateInboundMode }
 )
 @connectNav({
   depth: 3,
@@ -50,16 +51,21 @@ export default class ReceiveInbound extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    printed: false,
     activeTab: '',
     fullscreen: true,
+    entryRegs: [],
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.loadInboundHead(this.props.params.inboundNo).then((result) => {
       if (!result.error) {
         const activeTab = result.data.status === CWM_INBOUND_STATUS.COMPLETED.value ? 'putawayDetails' : 'receiveDetails';
         this.setState({
           activeTab,
+        });
+        this.props.loadAsnEntries(result.data.asn_no).then((asnRegRes) => {
+          if (!asnRegRes.error) {
+            this.setState({ entryRegs: asnRegRes.data });
+          }
         });
       }
     });
@@ -89,13 +95,14 @@ export default class ReceiveInbound extends Component {
   handleTabChange = (activeTab) => {
     this.setState({ activeTab });
   }
-  handleRegPage = () => {
-    const link = this.props.inboundHead.bonded_intype === 'transfer' ? `/cwm/supervision/shftz/transfer/in/${this.props.inboundHead.asn_no}`
-      : `/cwm/supervision/shftz/entry/${this.props.inboundHead.asn_no}`;
+  handleRegPage = (entryRegNo) => {
+    const link = this.props.inboundHead.bonded_intype === 'transfer' ? `/cwm/supervision/shftz/transfer/in/${entryRegNo}`
+      : `/cwm/supervision/shftz/entry/${entryRegNo}`;
     this.context.router.push(link);
   }
   render() {
     const { defaultWhse, inboundHead } = this.props;
+    const { entryRegs } = this.state;
     const tagMenu = (
       <Menu>
         <Menu.Item key="printTraceTag">打印追踪标签</Menu.Item>
@@ -112,11 +119,30 @@ export default class ReceiveInbound extends Component {
     )[0];
     const currentStatus = inbStatus ? CWM_INBOUND_STATUS[inbStatus].step : 0;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === inboundHead.bonded_intype)[0];
-    const regStatus = inboundHead.bonded_intype === 'transfer' ?
-      CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR.filter(status => status.value === inboundHead.reg_status)[0] :
-      CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === inboundHead.reg_status)[0];
     const scanLabel = inboundHead.rec_mode === 'scan' ? ' 扫码模式' : '';
     const manualLabel = inboundHead.rec_mode === 'manual' ? ' 手动模式' : '';
+    let regLink = null;
+    const primReg = entryRegs[0];
+    if (entryRegs.length === 1) {
+      const regStatus = inboundHead.bonded_intype === 'transfer' ?
+      CWM_SHFTZ_TRANSFER_IN_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0] :
+      CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === primReg.status)[0];
+      regLink = (<Button icon="link" onClick={() => this.handleRegPage(primReg.pre_entry_seq_no)}>
+        {primReg.cus_decl_no || primReg.pre_entry_seq_no}<Badge status={regStatus.badge} text={regStatus.text} />
+      </Button>);
+    } else if (entryRegs.length > 1) {
+      const regMenu = (<Menu onClick={ev => this.handleRegPage(ev.key)}>
+        {entryRegs.map((er) => {
+          const regStatus = CWM_SHFTZ_REG_STATUS_INDICATOR.filter(status => status.value === er.status)[0];
+          return (<Menu.Item key={er.pre_entry_seq_no}>{er.cus_decl_no || er.pre_entry_seq_no}
+            <Badge status={regStatus.badge} text={regStatus.text} /></Menu.Item>);
+        })}
+      </Menu>);
+      regLink = (<Dropdown overlay={regMenu}>
+        <Button style={{ marginLeft: 8 }}>关联监管备案<Icon type="down" /></Button>
+      </Dropdown>
+      );
+    }
     return (
       <div>
         <PageHeader>
@@ -135,12 +161,7 @@ export default class ReceiveInbound extends Component {
             {!!inboundHead.bonded && entType && <Tag color={entType.tagcolor}>{entType.ftztext}</Tag>}
           </PageHeader.Title>
           <PageHeader.Nav>
-            {!!inboundHead.bonded && <Tooltip title="海关监管" placement="bottom">
-              <Button icon="link" onClick={this.handleRegPage}>
-                <Badge status={regStatus.badge} text={regStatus.text} />
-              </Button>
-            </Tooltip>
-            }
+            {regLink}
           </PageHeader.Nav>
           <PageHeader.Actions>
             {currentStatus < CWM_INBOUND_STATUS.COMPLETED.step &&
@@ -171,7 +192,7 @@ export default class ReceiveInbound extends Component {
             currentStatus < CWM_INBOUND_STATUS.COMPLETED.value &&
             <Alert message="实收数量超过预期数量，全部上架确认后必须手动关闭" type="warning" showIcon closable />
           }
-          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} noHovering>
+          <Card bodyStyle={{ padding: 16, paddingBottom: 56 }} hoverable={false}>
             <DescriptionList col={4}>
               <Description term="货主">{inboundHead.owner_name}</Description>
               <Description term="ASN编号">{inboundHead.asn_no}</Description>
@@ -195,7 +216,7 @@ export default class ReceiveInbound extends Component {
               </Steps>
             </div>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} noHovering onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="收货明细" key="receiveDetails">
                 <ReceiveDetailsPane inboundNo={this.props.params.inboundNo} fullscreen={this.state.fullscreen} />

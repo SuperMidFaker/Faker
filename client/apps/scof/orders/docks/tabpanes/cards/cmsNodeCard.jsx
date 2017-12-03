@@ -81,7 +81,7 @@ export default class CMSNodeCard extends React.Component {
       </Tooltip>
     </div>) : null;
     return (
-      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 48 }} onClick={() => this.handlePreview(this.props.uuid)}>
+      <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handlePreview(this.props.uuid)}>
         <Row>
           <Col span="8">
             <InfoItem label="提运单号"

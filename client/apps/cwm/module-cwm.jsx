@@ -84,11 +84,6 @@ export default class ModuleCWM extends React.Component {
         key: 'cwm-stock-3',
         path: '/cwm/stock/transactions',
         text: formatMsg(intl, 'transactions'),
-      }, {
-        key: 'cwm-stock-4',
-        disabled: true,
-        path: '/cwm/stock/counting',
-        text: formatMsg(intl, 'counting'),
       },
       ],
     });
@@ -132,16 +127,6 @@ export default class ModuleCWM extends React.Component {
         key: 'cwm-settings-0',
         path: '/cwm/settings/warehouse',
         text: formatMsg(intl, 'warehouse'),
-      }, {
-        key: 'cwm-settings-1',
-        disabled: true,
-        path: '/cwm/settings/rules',
-        text: formatMsg(intl, 'rules'),
-      }, {
-        key: 'cwm-settings-2',
-        disabled: true,
-        path: '/cwm/settings/templates',
-        text: formatMsg(intl, 'templates'),
       }],
     });
     this.setState({ linkMenus });

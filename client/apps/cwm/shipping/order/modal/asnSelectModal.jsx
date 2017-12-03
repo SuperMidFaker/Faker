@@ -18,7 +18,7 @@ const formatMsg = format(messages);
   }),
   { getCrossAsns, hideAsnSelectModal, addTemporary, clearTemporary, getCrossAsnDetails }
 )
-export default class AddDetailModal extends Component {
+export default class AsnSelectModal extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
   }
@@ -28,7 +28,7 @@ export default class AddDetailModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      this.props.getCrossAsns(this.props.whseCode, nextProps.bonded, nextProps.regType).then((result) => {
+      this.props.getCrossAsns(this.props.whseCode, nextProps.bonded, nextProps.regType, nextProps.ownerPartnerId).then((result) => {
         if (!result.error) {
           this.setState({
             dataSource: result.data,
@@ -61,7 +61,7 @@ export default class AddDetailModal extends Component {
     const { visible } = this.props;
     const { dataSource } = this.state;
     const columns = [{
-      title: '客户订单号',
+      title: '客户单号',
       dataIndex: 'po_no',
     }, {
       title: 'ASN',

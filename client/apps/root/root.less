@@ -97,6 +97,9 @@ img {
   }
 }
 .ant-card-extra {
+  padding: 8px 0;
+}
+.ant-card-head-title{
   padding: 12px 0;
 }
 .ant-cascader-picker-label {
@@ -118,6 +121,11 @@ img {
 }
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   padding-right: 16px;
+}
+.ant-form-hide-required-mark {
+  .ant-form-item-required {
+    font-weight: 600;
+  }
 }
 .ant-form-item > label {
   padding-right: 10px;
@@ -217,6 +225,9 @@ img {
 .ant-table-placeholder {
   border-bottom: none;
 }
+.ant-table-bordered .ant-table-body > table,
+.ant-table-bordered .ant-table-fixed-left table, 
+.ant-table-bordered .ant-table-fixed-right table,
 .ant-table-bordered .ant-table-header>table {
   border: none;
 }
@@ -251,8 +262,6 @@ img {
 }
 .ant-timeline-item-content {
   .ant-card-head {
-    height: 36px;
-    line-height: 36px;
     padding: 0 16px;
     small {
       color: #999;
@@ -936,7 +945,7 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
     background-color: #f7f7f7;
   }
   .pane-content {
-    padding: 8px 16px;
+    padding: 16px 16px 8px;
   }
 }
 .pane-header {
@@ -986,14 +995,29 @@ form .ant-cascader-picker:only-child, form .ant-select:only-child {
   .ant-form-item {
     margin-bottom: 8px;
   }
+  .has-error .ant-form-explain, .has-error .ant-form-split {
+    display: none;
+  }
 }
 .form-layout-multi-col {
+  .ant-col-5,
+  .ant-col-6,
+  .ant-col-8,
+  .ant-col-12, {
+    height: 48px;
+  }
   .ant-form-item {
     margin-bottom: 16px;
   }
   .ant-form-item-label {
     text-align: left;
     padding-left: 16px;
+  }
+  .has-error .ant-form-explain, .has-error .ant-form-split {
+    display: none;
+  }
+  .ant-input-group-addon {
+    padding: 2px 4px;
   }
 }
 .form-row {

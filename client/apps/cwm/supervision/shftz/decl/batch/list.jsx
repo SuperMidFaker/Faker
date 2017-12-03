@@ -32,6 +32,7 @@ const RadioButton = Radio.Button;
     whse: state.cwmContext.defaultWhse,
     owners: state.cwmContext.whseAttrs.owners.filter(owner => owner.portion_enabled),
     loading: state.cwmShFtz.loading,
+    userMembers: state.account.userMembers,
   }),
   { openBatchDeclModal, switchDefaultWhse, loadBatchApplyList, batchDelgCancel }
 )
@@ -82,27 +83,29 @@ export default class BatchDeclList extends React.Component {
     render: (st) => {
       switch (st) {
         case 'manifest':
-        case 'generated':
           return (<Badge status="default" text="委托制单" />);
+        case 'generated':
+          return (<Badge status="default" text="待报关申请" />);
         case 'processing':
           return (<Badge status="processing" text="已发送申请" />);
         case 'applied':
-          return (<Badge status="processing" text="已发送申请" />);
+          return (<Badge status="processing" text="申请完成" />);
         case 'cleared':
           return (<Badge status="success" text="已清关" />);
         default:
-          return null;
+          break;
       }
     },
   }, {
     title: '报关申请单号',
     dataIndex: 'ftz_apply_no',
     width: 200,
-    render: o => <TrimSpan text={o} maxLen={20} />,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '报关单号',
     dataIndex: 'cus_decl_no',
     width: 180,
+    render: o => <span className="text-emphasis">{o}</span>,
   }, {
     title: '货主',
     width: 180,
@@ -155,7 +158,7 @@ export default class BatchDeclList extends React.Component {
       }
     },
   }, {
-    title: '报关日期',
+    title: '申报日期',
     width: 120,
     dataIndex: 'decl_date',
     render: (o) => {
@@ -173,18 +176,19 @@ export default class BatchDeclList extends React.Component {
       }
     },
   }, {
-    title: '创建时间',
-    width: 120,
-    dataIndex: 'created_time',
-    render: (o) => {
-      if (o) {
-        return `${moment(o).format('MM.DD HH:mm')}`;
-      }
-    },
-  }, {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
+  }, {
+    title: '创建时间',
+    width: 120,
+    dataIndex: 'created_time',
+    render: (o, record) => {
+      if (record.created_date) {
+        return `${moment(record.created_date).format('MM.DD HH:mm')}`;
+      }
+    },
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',

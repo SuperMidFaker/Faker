@@ -50,6 +50,7 @@ function fetchData({ state, dispatch }) {
     suppliers: state.cwmContext.whseAttrs.suppliers,
     loginId: state.account.loginId,
     loginName: state.account.username,
+    userMembers: state.account.userMembers,
   }),
   { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease }
 )
@@ -81,7 +82,7 @@ export default class ReceivingASNList extends React.Component {
     fixed: 'left',
     render: o => (<a onClick={() => this.handlePreview(o)}>{o}</a>),
   }, {
-    title: '客户订单号',
+    title: '客户单号',
     width: 180,
     dataIndex: 'po_no',
   }, {
@@ -168,6 +169,7 @@ export default class ReceivingASNList extends React.Component {
     title: '创建人员',
     dataIndex: 'created_by',
     width: 80,
+    render: o => this.props.userMembers.find(member => member.login_id === o) && this.props.userMembers.find(member => member.login_id === o).name,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -182,17 +184,7 @@ export default class ReceivingASNList extends React.Component {
           {record.status === CWM_ASN_STATUS.INBOUND.value && <RowUpdater onHit={this.handleInbound} label="入库操作" row={record} />}
           {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowUpdater onHit={this.handleInbound} label="差异处理" row={record} />}
           {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleInbound} label="入库详情" row={record} />}</span>);
-        if (record.bonded) {
-          return (<span>
-            {inbndActions}
-            <span className="ant-divider" />
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleSupervision} label="海关备案" row={record} />
-              : <RowUpdater onHit={this.handleSupervision} label="备案详情" row={record} />}
-          </span>
-          );
-        } else {
-          return (<span>{inbndActions}</span>);
-        }
+        return (<span>{inbndActions}</span>);
       }
     },
   }]

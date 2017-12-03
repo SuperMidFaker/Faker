@@ -99,19 +99,15 @@ const messages = defineMessages({
   },
   resources: {
     id: 'cms.module.settings.resources',
-    defaultMessage: '资源设置',
+    defaultMessage: '客户设置',
   },
   brokers: {
     id: 'cms.module.settings.brokers',
-    defaultMessage: '报关报检代理',
-  },
-  docTemplates: {
-    id: 'cms.module.settings.doc.templates',
-    defaultMessage: '单据模板',
+    defaultMessage: '代理设置',
   },
   preferences: {
     id: 'cms.module.settings.preferences',
-    defaultMessage: '偏好设置',
+    defaultMessage: '参数设定',
   },
 });
 export default messages;

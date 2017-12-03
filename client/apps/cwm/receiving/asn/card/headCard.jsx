@@ -78,7 +78,7 @@ export default class HeadCard extends Component {
   render() {
     const { form: { getFieldDecorator, getFieldValue }, owners, asnHead, defaultWhse } = this.props;
     return (
-      <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
+      <Card bodyStyle={{ paddingBottom: 8 }} hoverable={false}>
         <Row gutter={24}>
           <Col sm={24} lg={6}>
             <FormItem label="货主">
@@ -160,10 +160,10 @@ export default class HeadCard extends Component {
           }
           {
             getFieldValue('reg_type') === CWM_ASN_BONDED_REGTYPES[2].value && <Col sm={24} lg={6}>
-              <FormItem label="海关进库单号">
+              <FormItem label="进区凭单号">
                 {getFieldDecorator('transfer_in_bills', {
                   initialValue: asnHead && asnHead.transfer_in_bills,
-                })(<Input placeholder="多个进库单号以逗号分隔" />)}
+                })(<Input />)}
               </FormItem>
             </Col>
           }

@@ -1,4 +1,3 @@
-/* eslint react/no-multi-comp: 0 */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -89,7 +88,7 @@ export default class HeadCard extends Component {
     const { form: { getFieldDecorator }, owners, soHead, defaultWhse } = this.props;
     const { bonded } = this.state;
     return (
-      <Card bodyStyle={{ paddingBottom: 8 }} noHovering>
+      <Card bodyStyle={{ paddingBottom: 8 }} hoverable={false}>
         <Row gutter={24}>
           <Col sm={24} lg={6}>
             <FormItem label="货主">
@@ -113,7 +112,7 @@ export default class HeadCard extends Component {
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
-            <FormItem label="客户订单号">
+            <FormItem label="客户单号">
               {getFieldDecorator('cust_order_no', {
                 initialValue: soHead && soHead.cust_order_no,
               })(

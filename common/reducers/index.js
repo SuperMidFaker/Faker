@@ -13,6 +13,7 @@ import personnel from './personnel';
 import partner from './partner';
 import role from './role';
 import invitation from './invitation';
+import operationLog from './operationLog';
 import openIntegration from './openIntegration';
 import transportAcceptance from './transport-acceptance';
 import trackingLandStatus from './trackingLandStatus';
@@ -68,6 +69,7 @@ import cwmTransaction from './cwmTransaction';
 import cwmTransition from './cwmTransition';
 import cwmSku from './cwmSku';
 import saasLineFileAdaptor from './saasLineFileAdaptor';
+import cmsCiqDeclare from './cmsCiqDeclare';
 
 export default combineReducers({
   activities,
@@ -84,6 +86,7 @@ export default combineReducers({
   partner,
   role,
   invitation,
+  operationLog,
   openIntegration,
   shipment,
   transportAcceptance,
@@ -139,4 +142,5 @@ export default combineReducers({
   cwmTransition,
   cwmMovement,
   saasLineFileAdaptor,
+  cmsCiqDeclare,
 });
