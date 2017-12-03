@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -89,12 +89,24 @@ export default class CiqDeclList extends Component {
     width: 100,
     dataIndex: 'ciq_decl_type',
     render: (o) => {
-      if (o === 'NL') {
-        return <Tag color="cyan">包装检疫</Tag>;
-      } else if (o === 'LA' || o === 'LB') {
-        return <Tag color="orange">法定检验</Tag>;
+      switch (o) {
+        case 13:
+          return <Tag color="cyan">入境检验检疫</Tag>;
+        case 14:
+          return <Tag color="cyan">入境流向</Tag>;
+        case 15:
+          return <Tag color="cyan">入境验证</Tag>;
+        case 21:
+          return <Tag color="orange">出境预检</Tag>;
+        case 24:
+          return <Tag color="orange">出境检验检疫</Tag>;
+        case 25:
+          return <Tag color="orange">出境核查货证</Tag>;
+        case 28:
+          return <Tag color="orange">出境验证</Tag>;
+        default:
+          break;
       }
-      return <span />;
     },
   }, {
     title: this.msg('ciqClNo'),
@@ -117,6 +129,22 @@ export default class CiqDeclList extends Component {
     title: this.msg('status'),
     dataIndex: 'status',
     width: 100,
+    render: (o) => {
+      switch (o) {
+        case 0:
+          return <Badge status="default" text="已创建" />;
+        case 1:
+          return <Badge status="processing" text="报检受理" />;
+        case 2:
+          return <Badge status="error" text="施检查验" />;
+        case 3:
+          return <Badge status="success" text="通关放行" />;
+        case 4:
+          return <Badge status="success" text="签发证单" />;
+        default:
+          break;
+      }
+    },
   }, {
     title: this.msg('orgCode'),
     dataIndex: 'org_code',
