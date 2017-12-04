@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/declaration/', [
   'LOAD_CUSTOMS_DECLS', 'LOAD_CUSTOMS_DECLS_SUCCEED', 'LOAD_CUSTOMS_DECLS_FAIL',
+  'LOAD_CUSTOMSTP', 'LOAD_CUSTOMSTP_SUCCEED', 'LOAD_CUSTOMSTP_FAIL',
   'CIQ_FINISH', 'CIQ_FINISH_SUCCEED', 'CIQ_FINISH_FAIL',
   'LOAD_DECLHEAD', 'LOAD_DECLHEAD_SUCCEED', 'LOAD_DECLHEAD_FAIL',
   'SET_INSPECT', 'SET_INSPECT_SUCCEED', 'SET_INSPECT_FAIL',
@@ -43,9 +44,10 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
+  listRequire: {
+    customs: [],
+  },
   decl_heads: [],
-  customs: [],
-  trades: [],
   sendDeclModal: {
     defaultDecl: { channel: '', dectype: '', appuuid: '' },
     visible: false,
@@ -94,10 +96,11 @@ export default function reducer(state = initialState, action) {
       return { ...state,
         customslist: { ...state.customslist, loading: false, ...action.result.data },
         listFilter: JSON.parse(action.params.filter),
-        customs: action.result.data.customs,
         trades: action.result.data.trades };
     case actionTypes.LOAD_CUSTOMS_DECLS_FAIL:
       return { ...state, customslist: { ...state.customslist, loading: false } };
+    case actionTypes.LOAD_CUSTOMSTP_SUCCEED:
+      return { ...state, listRequire: { ...state.listRequire, customs: action.result.data.customs } };
     case actionTypes.LOAD_DECLHEAD_SUCCEED:
       return { ...state, decl_heads: action.result.data };
     case actionTypes.SHOW_SEND_DECL_MODAL:
@@ -178,6 +181,20 @@ export function loadCustomsDecls(params) {
       endpoint: 'v1/cms/decl/customs',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadTableParams() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CUSTOMSTP,
+        actionTypes.LOAD_CUSTOMSTP_SUCCEED,
+        actionTypes.LOAD_CUSTOMSTP_FAIL,
+      ],
+      endpoint: 'v1/cms/manifests/table/params',
+      method: 'get',
     },
   };
 }

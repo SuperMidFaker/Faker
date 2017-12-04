@@ -57,7 +57,6 @@ const initialState = {
     clients: [],
     tradeModes: [],
     transModes: [],
-    declareWayModes: [],
     customs: [],
   },
   formData: {
