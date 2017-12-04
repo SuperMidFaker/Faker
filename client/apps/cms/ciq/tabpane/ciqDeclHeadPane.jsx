@@ -31,7 +31,7 @@ const ButtonGroup = Button.Group;
     chinaPorts: state.cmsCiqDeclare.ciqParams.chinaPorts,
     countries: state.cmsCiqDeclare.ciqParams.countries,
     units: state.cmsCiqDeclare.ciqParams.units,
-    ciqDeclHead: state.cmsCiqDeclare.ciqDeclHead,
+    ciqDeclHead: state.cmsCiqDeclare.ciqDeclHead.head,
     brokers: state.cmsBrokers.brokers,
     businessUnits: state.cmsResources.businessUnits,
     fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries,

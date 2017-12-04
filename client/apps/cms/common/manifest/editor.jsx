@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
+   notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm, Popover, Tree } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
@@ -33,6 +34,7 @@ const TabPane = Tabs.TabPane;
 const Option = Select.Option;
 const OptGroup = Select.OptGroup;
 const confirm = Modal.confirm;
+const TreeNode = Tree.TreeNode;
 
 @injectIntl
 @connect(
@@ -166,11 +168,6 @@ export default class ManifestEditor extends React.Component {
         this.props.openMergeSplitModal();
       }
     });
-  }
-  handleEntryVisit = (ev) => {
-    const { ietype, billMeta } = this.props;
-    const pathname = `/clearance/${ietype}/cusdecl/${billMeta.bill_seq_no}/${ev.key}`;
-    this.context.router.push({ pathname });
   }
   validateCode = (code, customsCode) => {
     let info = null;
@@ -367,6 +364,17 @@ export default class ManifestEditor extends React.Component {
     const billSeqNo = this.props.billHead.bill_seq_no;
     window.open(`${API_ROOTS.default}v1/cms/manifest/docts/download/doctsDatas_${billSeqNo}.xlsm?billSeqNo=${billSeqNo}`);
   }
+  handleSelect = (selectedKeys) => {
+    const { ietype, billMeta } = this.props;
+    if (selectedKeys[0].indexOf('0-0-0') !== -1) {
+      const pathname = `/clearance/${ietype}/cusdecl/${billMeta.bill_seq_no}/${selectedKeys[0].slice(6)}`;
+      this.context.router.push({ pathname });
+    } else {
+      const type = ietype === 'import' ? 'in' : 'out';
+      const pathname = `/clearance/ciqdecl/${type}/${selectedKeys[0].slice(6)}`;
+      this.context.router.push({ pathname });
+    }
+  }
   renderOverlayMenu(editable, revertable) {
     let lockMenuItem = null;
     if (editable) {
@@ -396,12 +404,29 @@ export default class ManifestEditor extends React.Component {
     const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates } = this.props;
     const { locked, lockedByOthers } = this.state;
     const declType = (billHead.decl_way_code === 'IBND' || billHead.decl_way_code === 'EBND') ? '备案清单' : '报关单';
-    const declEntryMenu = (
-      <Menu onClick={this.handleEntryVisit}>
-        {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-          <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
+    const popoverContent = (
+      <Tree
+        showLine
+        defaultExpandedKeys={['0-0-0']}
+        onSelect={this.handleSelect}
+      >
+        <TreeNode title="申报清单" key="0-0">
+          <TreeNode title="报关单" key="0-0-0">
+            {billMeta.entries.map(bme => <TreeNode title={bme.entry_id || bme.pre_entry_seq_no} key={`0-0-0-${bme.entry_id || bme.pre_entry_seq_no}`} />)}
+          </TreeNode>
+          {billMeta.ciqs.length > 0 && (
+          <TreeNode title="报检单" key="0-0-1">
+            {billMeta.ciqs.map(ciq => <TreeNode title={ciq.pre_entry_seq_no} key={`0-0-1-${ciq.pre_entry_seq_no}`} />)}
+          </TreeNode>
         )}
-      </Menu>);
+        </TreeNode>
+      </Tree>
+    );
+    const DeclPopover = (
+      <Popover content={popoverContent}>
+        <Button ><Icon type="link" />转至{declType}<Icon type="down" /></Button>
+      </Popover>
+    );
     let sendable = billMeta.entries.length > 0;
     let revertable = billMeta.entries.length > 0;
     billMeta.entries.forEach((entry) => {
@@ -489,12 +514,7 @@ export default class ManifestEditor extends React.Component {
                 </OptGroup>
               </Select>)
             }
-              {billMeta.entries.length > 0 &&
-              <Dropdown overlay={declEntryMenu}>
-                <Button ><Icon type="link" />转至{declType}<Icon type="down" /></Button>
-              </Dropdown>
-            }
-
+              {billMeta.entries.length > 0 && DeclPopover}
               {billMeta.docts &&
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
             }

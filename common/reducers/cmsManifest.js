@@ -89,6 +89,7 @@ const initialState = {
   billMeta: {
     bill_seq_no: '',
     entries: [],
+    ciqs: [],
   },
   billHead: {
   },
