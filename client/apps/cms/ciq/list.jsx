@@ -19,7 +19,6 @@ import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/SearchBar';
-import NavLink from 'client/components/NavLink';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
@@ -64,6 +63,9 @@ export default class CiqDeclList extends Component {
     tenantId: PropTypes.number.isRequired,
     ciqdeclList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -190,16 +192,12 @@ export default class CiqDeclList extends Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      const ioPart = record.i_e_type === 0 ? 'in' : 'out';
-      return (
-        <span>
-          <NavLink to={`/clearance/ciqdecl/${ioPart}/${record.pre_entry_seq_no}`}>详情</NavLink>
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.exportCjqDecl} label="导出" row={record} />
-        </span>
-      );
-    },
+    render: (o, record) => (
+      <span>
+        <RowUpdater onHit={this.handleDetail} label="详情" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={this.exportCjqDecl} label="导出" row={record} />
+      </span>),
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCiqDecls(params),
@@ -254,6 +252,11 @@ export default class CiqDeclList extends Component {
         message.error(result.error.message, 5);
       }
     });
+  }
+  handleDetail = (row) => {
+    const ioPart = row.i_e_type === 0 ? 'in' : 'out';
+    const link = `/clearance/ciqdecl/${ioPart}/${row.pre_entry_seq_no}`;
+    this.context.router.push(link);
   }
   handleCiqNoFill = (row) => {
     this.props.openCiqModal({
