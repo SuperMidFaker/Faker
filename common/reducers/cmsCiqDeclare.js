@@ -40,7 +40,10 @@ const initialState = {
     visible: false,
     data: {},
   },
-  ciqDeclHead: {},
+  ciqDeclHead: {
+    head: [],
+    entries: [],
+  },
   ciqDeclGoods: [],
 };
 
@@ -69,7 +72,7 @@ export default function reducer(state = initialState, action) {
       return { ...state, goodsModal: { ...state.goodsModal, visible: false, data: {} } };
     case actionTypes.LOAD_CIQ_DECL_HEAD_SUCCEED:
       return { ...state,
-        ciqDeclHead: action.result.data.head,
+        ciqDeclHead: { head: action.result.data.head, entries: action.result.data.entries },
         ciqParams: { ...state.ciqParams,
           organizations: [...state.ciqParams.organizations, ...action.result.data.organizations],
           countries: [...state.ciqParams.countries, ...action.result.data.countries],

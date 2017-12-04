@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu } from 'antd';
+import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu, Popover, Tree } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
@@ -30,6 +30,7 @@ import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
 const formatMsg = format(messages);
 const { Content } = Layout;
 const TabPane = Tabs.TabPane;
+const TreeNode = Tree.TreeNode;
 
 const navObj = {
   depth: 3,
@@ -155,11 +156,6 @@ export default class CustomsDeclEditor extends React.Component {
   reloadEntry = () => {
     this.props.loadEntry(this.props.head.bill_seq_no, this.props.head.pre_entry_seq_no, this.props.tenantId);
   }
-  handleEntryVisit = (ev) => {
-    const { ietype, billMeta } = this.props;
-    const pathname = `/clearance/${ietype}/cusdecl/${billMeta.bill_seq_no}/${ev.key}`;
-    this.context.router.push({ pathname });
-  }
   handleMoreMenuClick = (ev) => {
     if (ev.key === 'release') {
       this.handleMarkReleasedModal();
@@ -176,13 +172,6 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleEpRecvXmlView = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
-  }
-  handleLinkMenuClick = (ev) => {
-    if (ev.key === 'manifest') {
-      this.handleManifestVisit();
-    } else {
-      this.handleEntryVisit(ev);
-    }
   }
   handlePrintMenuClick = (ev) => {
     const { head, bodies, billMeta, formRequire } = this.props;
@@ -204,6 +193,19 @@ export default class CustomsDeclEditor extends React.Component {
   handlePreview = (delgNo) => {
     this.props.showPreviewer(delgNo, 'customsDecl');
   }
+  handleSelect = (selectedKeys) => {
+    const { ietype, billMeta } = this.props;
+    if (selectedKeys[0].indexOf('0-0-1') !== -1) {
+      const pathname = `/clearance/${ietype}/cusdecl/${billMeta.bill_seq_no}/${selectedKeys[0].slice(6)}`;
+      this.context.router.push({ pathname });
+    } else if (selectedKeys[0].indexOf('0-0-2') !== -1) {
+      const type = ietype === 'import' ? 'in' : 'out';
+      const pathname = `/clearance/ciqdecl/${type}/${selectedKeys[0].slice(6)}`;
+      this.context.router.push({ pathname });
+    } else {
+      this.handleManifestVisit();
+    }
+  }
   render() {
     const { ietype, form, head, bodies, billMeta } = this.props;
     let filterProducts = [];
@@ -213,13 +215,32 @@ export default class CustomsDeclEditor extends React.Component {
       filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
     const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === head.status)[0];
-    const declEntryMenu = (
-      <Menu onClick={this.handleLinkMenuClick}>
-        <Menu.Item key="manifest">申报清单</Menu.Item>
-        {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-          <Icon type="file" /> 关联报关单{bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
+    const popoverContent = (
+      <Tree
+        showLine
+        defaultExpandedKeys={['0-0-0']}
+        onSelect={this.handleSelect}
+      >
+        <TreeNode title="报关单" key="0-0">
+          <TreeNode title="申报清单" key="0-0-0" />
+          {billMeta.entries.length > 0 && (
+          <TreeNode title="关联报关单" key="0-0-1">
+            {billMeta.entries.map(bme => <TreeNode title={bme.entry_id || bme.pre_entry_seq_no} key={`0-0-1-${bme.entry_id || bme.pre_entry_seq_no}`} />)}
+          </TreeNode>
         )}
-      </Menu>);
+          {billMeta.ciqs.length > 0 && (
+          <TreeNode title="报检单" key="0-0-2">
+            {billMeta.ciqs.map(ciq => <TreeNode title={ciq.pre_entry_seq_no} key={`0-0-2-${ciq.pre_entry_seq_no}`} />)}
+          </TreeNode>
+        )}
+        </TreeNode>
+      </Tree>
+    );
+    const DeclPopover = (
+      <Popover content={popoverContent}>
+        <Button ><Icon type="link" />转至<Icon type="down" /></Button>
+      </Popover>
+    );
     const printMenu = (
       <Menu onClick={this.handlePrintMenuClick}>
         <Menu.Item key="standard">标准格式</Menu.Item>
@@ -293,9 +314,7 @@ export default class CustomsDeclEditor extends React.Component {
             {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
           </PageHeader.Nav>
           <PageHeader.Actions>
-            <Dropdown overlay={declEntryMenu}>
-              <Button ><Icon type="link" />转至 <Icon type="down" /></Button>
-            </Dropdown>
+            {DeclPopover}
             <Dropdown overlay={printMenu}>
               <Button >
                 <Icon type="printer" /> 打印
