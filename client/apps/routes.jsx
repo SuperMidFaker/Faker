@@ -403,7 +403,12 @@ export default(store) => {
                   <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
                 </Route>
               </Route>
-              <Route path="task/:cat" component={CMSTradeItemTask.List} />
+              <Route path="task">
+                <Route path="new" component={CMSTradeItemTask.New} />
+                <Route path="conflict" component={CMSTradeItemTask.Conflict} />
+                <Route path="invalid" component={CMSTradeItemTask.Invalid} />
+                <Route path="review" component={CMSTradeItemTask.Review} />
+              </Route>
               <Route path="hscode">
                 <IndexRoute component={CMSTradeItemHSCode.List} />
                 <Route path="special" component={CMSTradeItemHSCode.Special} />

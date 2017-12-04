@@ -45,8 +45,8 @@ export default class ModuleMenu extends React.Component {
             <Menu.Item key="createTask">
               <NavLink to="/clearance/tradeitem/task/create"><Icon type="plus" />{this.msg('createTask')}</NavLink>
             </Menu.Item>
-            <Menu.Item key="unclassified">
-              <NavLink to="/clearance/tradeitem/task/unclassified">{this.msg('taskUnclassified')}</NavLink>
+            <Menu.Item key="new">
+              <NavLink to="/clearance/tradeitem/task/new">{this.msg('taskNew')}</NavLink>
             </Menu.Item>
             <Menu.Item key="conflict">
               <NavLink to="/clearance/tradeitem/task/conflict">{this.msg('taskConflict')}</NavLink>
@@ -54,8 +54,8 @@ export default class ModuleMenu extends React.Component {
             <Menu.Item key="invalid">
               <NavLink to="/clearance/tradeitem/task/invalid">{this.msg('taskInvalid')}</NavLink>
             </Menu.Item>
-            <Menu.Item key="pending">
-              <NavLink to="/clearance/tradeitem/task/pending">{this.msg('taskPending')}</NavLink>
+            <Menu.Item key="review">
+              <NavLink to="/clearance/tradeitem/task/review">{this.msg('taskReview')}</NavLink>
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.SubMenu key="g_hscode" title={<span><Icon type="book" /> {this.msg('hscodeCustoms')}</span>}>

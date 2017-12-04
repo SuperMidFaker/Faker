@@ -18,9 +18,9 @@ const messages = defineMessages({
     id: 'cms.tradeitem.task.create',
     defaultMessage: '新建归类任务',
   },
-  taskUnclassified: {
-    id: 'cms.tradeitem.task.unclassified',
-    defaultMessage: '未归类新料',
+  taskNew: {
+    id: 'cms.tradeitem.task.new',
+    defaultMessage: '新料件',
   },
   taskConflict: {
     id: 'cms.tradeitem.task.conflict',
@@ -30,8 +30,8 @@ const messages = defineMessages({
     id: 'cms.tradeitem.task.invalid',
     defaultMessage: '归类失效',
   },
-  taskPending: {
-    id: 'cms.tradeitem.task.pending',
+  taskReview: {
+    id: 'cms.tradeitem.task.review',
     defaultMessage: '待审核',
   },
   hscodeCustoms: {
@@ -58,61 +58,109 @@ const messages = defineMessages({
     id: 'cms.tradeitem.audit',
     defaultMessage: '日志审计',
   },
-  entrySearchPlaceholder: {
-    id: 'cms.supervision.shftz.entry.search.placeholder',
-    defaultMessage: 'ASN编号/报关单号/进区凭单号',
+  copProductNo: {
+    id: 'cms.tradeitem.col.cop.product.no',
+    defaultMessage: '商品货号',
   },
-  releaseSearchPlaceholder: {
-    id: 'cms.supervision.shftz.release.search.placeholder',
-    defaultMessage: 'SO编号/报关单号/海关出库单号',
+  srcProductNo: {
+    id: 'cms.tradeitem.col.src.product.no',
+    defaultMessage: '源标识',
   },
-  normalSearchPlaceholder: {
-    id: 'cms.supervision.shftz.normal.search.placeholder',
-    defaultMessage: '委托单号',
+  hscode: {
+    id: 'cms.tradeitem.col.hscode',
+    defaultMessage: '商品编码',
   },
-  batchSearchPlaceholder: {
-    id: 'cms.supervision.shftz.batch.search.placeholder',
-    defaultMessage: '报关单号/申请单号',
+  gName: {
+    id: 'cms.tradeitem.col.g.name',
+    defaultMessage: '中文品名',
   },
-  ownerSearchPlaceholder: {
-    id: 'cms.supervision.shftz.owner.search.placeholder',
-    defaultMessage: '货主海关编码/货主名称',
+  enName: {
+    id: 'cms.tradeitem.col.en.description',
+    defaultMessage: '英文描述',
   },
-  productSearchPlaceholder: {
-    id: 'cms.supervision.shftz.product.cargo.search.placeholder',
-    defaultMessage: '产品货号/产品SKU/原始备件号',
+  gModel: {
+    id: 'cms.tradeitem.col.gmodel',
+    defaultMessage: '规范申报要素',
   },
-  productNo: {
-    id: 'cms.tradeitem.cargo.product.no',
-    defaultMessage: '产品货号',
+  element: {
+    id: 'cms.tradeitem.col.element',
+    defaultMessage: '申报要素',
   },
-  productSku: {
-    id: 'cms.tradeitem.cargo.product.sku',
-    defaultMessage: '产品SKU',
+  gUnit1: {
+    id: 'cms.tradeitem.col.g.unit1',
+    defaultMessage: '申报单位一',
   },
-  ftzCargoNo: {
-    id: 'cms.tradeitem.cargo.orig.no',
-    defaultMessage: '备案料号',
+  gUnit2: {
+    id: 'cms.tradeitem.col.g.unit2',
+    defaultMessage: '申报单位二',
   },
-  gname: {
-    id: 'cms.tradeitem.cargo.gname',
-    defaultMessage: '品名',
+  gUnit3: {
+    id: 'cms.tradeitem.col.g.unit3',
+    defaultMessage: '申报单位三',
   },
-  unit: {
-    id: 'cms.tradeitem.cargo.unit',
-    defaultMessage: '单位',
+  unit1: {
+    id: 'cms.tradeitem.col.unit1',
+    defaultMessage: '法一计量单位',
   },
-  country: {
-    id: 'cms.tradeitem.cargo.country',
-    defaultMessage: '国别',
+  unit2: {
+    id: 'cms.tradeitem.col.unit2',
+    defaultMessage: '法二计量单位',
+  },
+  fixedQty: {
+    id: 'cms.tradeitem.fixed.qty',
+    defaultMessage: '固定值',
+  },
+  fixedUnit: {
+    id: 'cms.tradeitem.fixed.unit',
+    defaultMessage: '固值单位',
+  },
+  origCountry: {
+    id: 'cms.tradeitem.col.origin.country',
+    defaultMessage: '产销国',
+  },
+  unitNetWt: {
+    id: 'cms.tradeitem.col.unit.netwt',
+    defaultMessage: '单个净重',
+  },
+  grosswt: {
+    id: 'cms.tradeitem.col.gross.wt',
+    defaultMessage: '毛重',
+  },
+  netwt: {
+    id: 'cms.tradeitem.col.net.wt',
+    defaultMessage: '净重',
+  },
+  customsControl: {
+    id: 'cms.tradeitem.col.customs.control',
+    defaultMessage: '海关监管条件',
+  },
+  inspQuarantine: {
+    id: 'cms.tradeitem.col.inspection.quarantine',
+    defaultMessage: '商检检验检疫',
+  },
+  unitPrice: {
+    id: 'cms.tradeitem.col.unit.price',
+    defaultMessage: '单价',
   },
   currency: {
-    id: 'cms.tradeitem.cargo.currency',
+    id: 'cms.tradeitem.col.currency',
     defaultMessage: '币制',
   },
-  cargoType: {
-    id: 'cms.tradeitem.cargo.type',
-    defaultMessage: '货物类型',
+  preClassifyNo: {
+    id: 'cms.tradeitem.col.pre.classify.no',
+    defaultMessage: '预归类编号',
+  },
+  preClassifyStartDate: {
+    id: 'cms.tradeitem.col.pre.classify.start.date',
+    defaultMessage: '预归类日期',
+  },
+  preClassifyEndDate: {
+    id: 'cms.tradeitem.col.pre.classify.end.date',
+    defaultMessage: '到期日期',
+  },
+  remark: {
+    id: 'cms.tradeitem.col.remark',
+    defaultMessage: '备注',
   },
   opColumn: {
     id: 'cms.tradeitem.opColumn',

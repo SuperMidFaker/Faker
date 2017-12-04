@@ -75,6 +75,11 @@ export default class RepoList extends React.Component {
       }
     },
   }, {
+    title: this.msg('创建企业'),
+    dataIndex: 'created_by_ent',
+    key: 'created_by_ent',
+    width: 200,
+  }, {
     title: this.msg('使用权限'),
     dataIndex: 'permission',
     width: 150,
