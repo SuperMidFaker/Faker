@@ -466,9 +466,6 @@ export default class SHFTZRelDetail extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-              上海自贸区监管
-            </Breadcrumb.Item>
-              <Breadcrumb.Item>
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>

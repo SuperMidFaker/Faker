@@ -452,9 +452,9 @@ export const CIQ_IN_DECL_TYPE = [
 
 export const CIQ_OUT_DECL_TYPE = [
   { value: 21, text: '出境预检' },
-  { value: 24, text: '入境流向' },
-  { value: 25, text: '入境验证' },
-  { value: 28, text: '入境验证' },
+  { value: 24, text: '出境检验检疫' },
+  { value: 25, text: '出境核查货证' },
+  { value: 28, text: '出境验证' },
 ];
 
 export const CIQ_SPECIAL_DECL_FLAG = [
