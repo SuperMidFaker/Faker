@@ -573,7 +573,7 @@ export default class SHFTZEntryDetail extends Component {
           <PageHeader.Nav>
             {primaryEntryReg.inbound_no &&
               <Button icon="link" onClick={this.handleInboundPage}>
-                关联入库操作 <Badge status={inbStatus.badge} text={inbStatus.text} />
+                关联操作 <Badge status={inbStatus.badge} text={inbStatus.text} />
               </Button>
             }
           </PageHeader.Nav>
@@ -586,7 +586,7 @@ export default class SHFTZEntryDetail extends Component {
               <Button icon="sync" loading={submitting} onClick={this.handleQuery}>获取监管ID</Button>}
             {this.state.nonCargono &&
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
-            { entryRegs.length === 1 && entryEditable &&
+            { entryRegs.length === 1 && primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
             <Popover placement="bottom" title="份数" content={<span>
               <InputNumber min={2} max={entryRegs[0].details.length} value={splitNum} onChange={this.handleSplitNumber} />
               <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
