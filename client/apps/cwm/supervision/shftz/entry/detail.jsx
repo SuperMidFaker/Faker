@@ -112,7 +112,7 @@ export default class SHFTZEntryDetail extends Component {
             }
           });
         } else {
-          unsentReason = `${nextProps.primaryEntryReg.pre_entry_seq_no}报关单号或进口时间或入库时间为空`;
+          unsentReason = '报关单号或进口时间或入库时间为空';
           sendable = false;
         }
       }
