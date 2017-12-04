@@ -560,9 +560,6 @@ export default class SHFTZEntryDetail extends Component {
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-              上海自贸区监管
-            </Breadcrumb.Item>
-              <Breadcrumb.Item>
                 {whse.name}
               </Breadcrumb.Item>
               <Breadcrumb.Item>
@@ -598,7 +595,7 @@ export default class SHFTZEntryDetail extends Component {
               <Button disabled={entryRegs[0].details.length === 1}>拆分进区凭单</Button>
             </Popover>}
             {primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
-              <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单数据</Button>}
+              <Button icon="file-excel" onClick={this.handleEntryRegsPrint}>导出进区凭单</Button>}
             {entryEditable && entryRegs.length === 1 &&
               <Button type="primary" ghost={sent} icon="cloud-upload-o" loading={submitting} onClick={this.handleSend} disabled={!this.state.sendable}>{sendText}</Button>
             }

@@ -204,7 +204,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>}
                 </Col>
                 <FormRemoteSearchSelect outercol={6} label={<span><Icon type="safety" />报检地</span>} col={8} field="ciq_org_code"
-                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead} required
                   options={organizations.map(org => ({
                     value: org.org_code,
                     text: `${org.org_code} | ${org.org_name}`,
@@ -212,7 +212,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   }))} onSearch={this.handleSearchOrg} onSelect={this.handleOrganizationSelect}
                 />
                 <FormRemoteSearchSelect outercol={6} label={<span><Icon type="safety" />口岸机构</span>} col={8} field="ciq_insp_orgcode"
-                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead} required
                   options={organizations.map(org => ({
                     value: org.org_code,
                     text: `${org.org_code} | ${org.org_name}`,
@@ -454,7 +454,7 @@ export default class CiqDeclHeadPane extends React.Component {
                 </Col>}
                 {ioType === 'in' &&
                 <FormRemoteSearchSelect outercol={6} label={<span><Icon type="safety" />目的机构</span>} col={8} field="ciq_purp_orgcode"
-                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead} required
                   options={organizations.map(org => ({
                     value: org.org_code,
                     text: `${org.org_code} | ${org.org_name}`,
@@ -476,7 +476,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   </FormItem>
                 </Col>
                 <FormRemoteSearchSelect outercol={6} label={<span><Icon type="safety" />领证地</span>} col={8} field="ciq_vsa_orgcode"
-                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead} required
                   options={organizations.map(org => ({
                     value: org.org_code,
                     text: `${org.org_code} | ${org.org_name}`,
