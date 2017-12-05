@@ -13,6 +13,11 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'SEARCH_COUNTRIES', 'SEARCH_COUNTRIES_SUCCEED', 'SEARCH_COUNTRIES_FAIL',
   'UPDATE_CIQ_HEAD', 'UPDATE_CIQ_HEAD_SUCCEED', 'UPDATE_CIQ_HEAD_FAIL',
   'SET_FIXED_COUNTRY', 'SET_FIXED_ORGANIZATIONS', 'SET_FIXED_WORLDPORTS',
+  'UPDATE_CIQ_HEAD_FIELD', 'UPDATE_CIQ_HEAD_FIELD_SUCCEED', 'UPDATE_CIQ_HEAD_FIELD_FAIL',
+  'CIQ_HEAD_CHANGE',
+  'UPDATE_CIQ_GOOD', 'UPDATE_CIQ_GOOD_SUCCEED', 'UPDATE_CIQ_GOOD_FAIL',
+  'EXTEND_COUNTRY_CODE', 'EXTEND_COUNTRY_CODE_SUCCEED', 'EXTEND_COUNTRY_CODE_FAIL',
+  'SEARCH_CUSTOMS', 'SEARCH_CUSTOMS_SUCCEED', 'SEARCH_CUSTOMS_FAIL',
 ]);
 
 const initialState = {
@@ -32,6 +37,7 @@ const initialState = {
     chinaPorts: [],
     currencies: [],
     units: [],
+    customs: [],
     fixedCountries: [],
     fixedOrganizations: [],
     fixedWorldPorts: [],
@@ -45,6 +51,7 @@ const initialState = {
     entries: [],
   },
   ciqDeclGoods: [],
+  ciqHeadChangeTimes: 0,
 };
 
 export default function reducer(state = initialState, action) {
@@ -63,6 +70,7 @@ export default function reducer(state = initialState, action) {
           units: [...action.result.data.units],
           currencies: [...action.result.data.currencies],
           chinaPorts: [...action.result.data.chinaPorts],
+          customs: [...action.result.data.customs],
           organizations: [...action.result.data.organizations, ...state.ciqParams.fixedOrganizations],
           countries: [...action.result.data.countries, ...state.ciqParams.countries],
           worldPorts: [...action.result.data.worldPorts, ...state.ciqParams.worldPorts] } };
@@ -77,6 +85,7 @@ export default function reducer(state = initialState, action) {
           organizations: [...state.ciqParams.organizations, ...action.result.data.organizations],
           countries: [...state.ciqParams.countries, ...action.result.data.countries],
           worldPorts: [...state.ciqParams.worldPorts, ...action.result.data.worldports],
+          customs: [...state.ciqParams.customs, ...action.result.data.customs],
           fixedOrganizations: [...action.result.data.organizations],
           fixedCountries: [...action.result.data.countries],
           fixedWorldPorts: [...action.result.data.worldports],
@@ -91,12 +100,20 @@ export default function reducer(state = initialState, action) {
       return { ...state, ciqParams: { ...state.ciqParams, chinaPorts: [...action.result.data] } };
     case actionTypes.SEARCH_COUNTRIES_SUCCEED:
       return { ...state, ciqParams: { ...state.ciqParams, countries: [...action.result.data, ...state.ciqParams.fixedCountries] } };
+    case actionTypes.SEARCH_CUSTOMS_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, customs: [...action.result.data] } };
     case actionTypes.SET_FIXED_COUNTRY:
       return { ...state, ciqParams: { ...state.ciqParams, fixedCountries: [...action.records] } };
     case actionTypes.SET_FIXED_ORGANIZATIONS:
       return { ...state, ciqParams: { ...state.ciqParams, fixedOrganizations: [...action.records] } };
     case actionTypes.SET_FIXED_WORLDPORTS:
       return { ...state, ciqParams: { ...state.ciqParams, fixedWorldPorts: [...action.records] } };
+    case actionTypes.CIQ_HEAD_CHANGE:
+      return { ...state, ciqHeadChangeTimes: state.ciqHeadChangeTimes + 1 };
+    case actionTypes.UPDATE_CIQ_HEAD_SUCCEED:
+      return { ...state, ciqHeadChangeTimes: 0 };
+    case actionTypes.EXTEND_COUNTRY_CODE_SUCCEED:
+      return { ...state, ciqParams: { ...state.ciqParams, countries: [...state.ciqParams.countries, action.result.data] } };
     default:
       return state;
   }
@@ -234,6 +251,21 @@ export function searchCountries(searchText) {
   };
 }
 
+export function searchCustoms(searchText) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SEARCH_CUSTOMS,
+        actionTypes.SEARCH_CUSTOMS_SUCCEED,
+        actionTypes.SEARCH_CUSTOMS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/customs/search',
+      method: 'get',
+      params: { searchText },
+    },
+  };
+}
+
 export function updateCiqHead(preEntrySeqNo, data) {
   return {
     [CLIENT_API]: {
@@ -267,5 +299,56 @@ export function setFixedWorldPorts(records) {
   return {
     type: actionTypes.SET_FIXED_WORLDPORTS,
     records,
+  };
+}
+
+export function updateCiqHeadField(field, value, preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CIQ_HEAD_FIELD,
+        actionTypes.UPDATE_CIQ_HEAD_FIELD_SUCCEED,
+        actionTypes.UPDATE_CIQ_HEAD_FIELD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/head/field/update',
+      method: 'post',
+      data: { field, value, preEntrySeqNo },
+    },
+  };
+}
+
+export function ciqHeadChange() {
+  return {
+    type: actionTypes.CIQ_HEAD_CHANGE,
+  };
+}
+
+export function updateCiqGood(id, data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UPDATE_CIQ_GOOD,
+        actionTypes.UPDATE_CIQ_GOOD_SUCCEED,
+        actionTypes.UPDATE_CIQ_GOOD_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/good/update',
+      method: 'post',
+      data: { id, data },
+    },
+  };
+}
+
+export function extendCountryParam(code) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.EXTEND_COUNTRY_CODE,
+        actionTypes.EXTEND_COUNTRY_CODE_SUCCEED,
+        actionTypes.EXTEND_COUNTRY_CODE_FAIL,
+      ],
+      endpoint: 'v1/cms/extend/country/param',
+      method: 'get',
+      params: { code },
+    },
   };
 }
