@@ -2,26 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
-import { loadTradeParams } from 'common/reducers/cmsTradeitem';
+import { loadWorkspaceItems } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import ModuleMenu from '../menu';
 import makeColumns from './commonCols';
+import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
-
+const Option = Select.Option;
 const { Sider, Content } = Layout;
 
-function fetchData({ dispatch }) {
-  const promises = [];
-  promises.push(dispatch(loadTradeParams()));
-  return Promise.all(promises);
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -41,14 +35,17 @@ function fetchData({ dispatch }) {
       value: tc.cntry_co,
       text: tc.cntry_name_cn,
     })),
+    repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
+    workspaceItemsLoading: state.cmsTradeitem.workspaceItemsLoading,
+    workspaceItemList: state.cmsTradeitem.workspaceItemList,
   }),
-  { loadTradeParams }
+  { loadWorkspaceItems }
 )
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
 })
-export default class NewItemsList extends React.Component {
+export default class ReviewItemsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -58,12 +55,7 @@ export default class NewItemsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
-  }
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
-      // this.handleListReload();
-    }
+    filter: { name: '', repoId: '', status: 'reviewing' },
   }
   msg = formatMsg(this.props.intl)
   columns = makeColumns(this.msg, this.props.units, this.props.tradeCountries, this.props.currencies).concat([{
@@ -72,73 +64,38 @@ export default class NewItemsList extends React.Component {
     width: 100,
     fixed: 'right',
   }])
-  handleStatusChange = (ev) => {
-    const filters = { ...this.props.filters, status: ev.target.value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
-      current: this.props.asnlist.current,
-      filters,
-    });
-    this.setState({
-      selectedRowKeys: [],
-    });
-  }
   handleSearch = (value) => {
-    const filters = { ...this.props.filters, name: value };
-    const whseCode = this.props.defaultWhse.code;
-    this.props.loadAsnLists({
-      whseCode,
-      tenantId: this.props.tenantId,
-      pageSize: this.props.asnlist.pageSize,
+    const filter = { ...this.state.filter, name: value };
+    this.props.loadWorkspaceItems({
+      pageSize: this.props.workspaceItemList.pageSize,
       current: 1,
-      filters,
+      filter: JSON.stringify(filter),
     });
+    this.setState({ filter });
+  }
+  handleRepoSelect = (repoId) => {
+    const filter = { ...this.state.filer, repoId };
+    this.props.loadWorkspaceItems({
+      pageSize: this.props.workspaceItemList.pageSize,
+      current: 1,
+      filter: JSON.stringify(filter),
+    });
+    this.setState({ filter });
   }
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { loading } = this.props;
-    const mockData = [{
-      cop_product_no: 'H345HE455',
-      biz_type: '清关',
-      biz_seq_no: 'ID170923455',
-      rec_pay: '收',
-      fee_category: '报关费',
-      fee: '联单费',
-      fee_type: '服务费',
-      amount_rmb: 250.00,
-    }, {
-      cop_product_no: 'YTRWE987653',
-      biz_type: '清关',
-      biz_seq_no: 'ID170923455',
-      rec_pay: '收',
-      fee_category: '报关费',
-      fee: '联单费',
-      fee_type: '服务费',
-      amount_rmb: 250.00,
-    }, {
-      cop_product_no: 'JDY3RIUJHD',
-      biz_type: '清关',
-      biz_seq_no: 'ID170923455',
-      rec_pay: '收',
-      fee_category: '报关费',
-      fee: '联单费',
-      fee_type: '服务费',
-      amount_rmb: 250.00,
-    }];
+    const { workspaceItemsLoading, workspaceItemList, repos } = this.props;
+    const { filter } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
     };
-    /*
     const dataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadAsnLists(params),
+      fetcher: params => this.props.loadWorkspaceItems(params),
       resolve: result => result.data,
       getPagination: (result, resolve) => ({
         total: result.totalCount,
@@ -149,22 +106,22 @@ export default class NewItemsList extends React.Component {
         showTotal: total => `共 ${total} 条`,
       }),
       getParams: (pagination, tblfilters) => {
-        const newfilters = { ...this.props.filters, ...tblfilters[0] };
+        const newfilters = { ...filter, ...tblfilters[0] };
         const params = {
-          tenantId: this.props.tenantId,
           pageSize: pagination.pageSize,
           current: pagination.current,
-          filters: newfilters,
+          filter: JSON.stringify(newfilters),
         };
         return params;
       },
-      remotes: this.props.asnlist,
+      remotes: workspaceItemList,
     });
-    */
     const toolbarActions = (<span>
       <Select showSearch placeholder="所属物料库" optionFilterProp="children" style={{ width: 160 }}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
-      />
+        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
+      >
+        {repos.map(rep => <Option value={rep.id}>{rep.owner_name}</Option>)}
+      </Select>
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} />
     </span>);
     return (
@@ -197,7 +154,7 @@ export default class NewItemsList extends React.Component {
           <Content className="page-content" key="main">
             <DataTable toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns} dataSource={mockData} rowSelection={rowSelection} rowKey="cop_product_no" loading={loading}
+              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="cop_product_no" loading={workspaceItemsLoading}
               locale={{ emptyText: '当前没有新的料件' }}
             />
           </Content>

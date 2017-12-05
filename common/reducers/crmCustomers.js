@@ -134,7 +134,7 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function loadCustomers(tenantId) {
+export function loadCustomers() {
   return {
     [CLIENT_API]: {
       types: [
@@ -144,7 +144,7 @@ export function loadCustomers(tenantId) {
       ],
       endpoint: 'v1/cooperation/partners',
       method: 'get',
-      params: { tenantId, role: 'CUS' },
+      params: { role: 'CUS' },
     },
   };
 }

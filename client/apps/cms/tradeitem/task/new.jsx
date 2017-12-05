@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import { Button, Breadcrumb, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
@@ -16,12 +15,6 @@ import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
 
-function fetchData({ dispatch }) {
-  const promises = [];
-  promises.push(dispatch(loadTradeParams()));
-  return Promise.all(promises);
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
@@ -59,11 +52,6 @@ export default class NewItemsList extends React.Component {
   state = {
     selectedRowKeys: [],
     searchInput: '',
-  }
-  componentWillReceiveProps(nextProps) {
-    if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {
-      // this.handleListReload();
-    }
   }
   msg = formatMsg(this.props.intl)
   columns = makeColumns(this.msg, this.props.units, this.props.tradeCountries, this.props.currencies).concat([{

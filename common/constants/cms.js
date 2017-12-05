@@ -420,7 +420,7 @@ export const TRADE_ITEM_STATUS = {
 
 export const CMS_TRADE_REPO_PERMISSION = {
   edit: 'edit',
-  approval: 'approval',
+  // approval: 'approval',
   view: 'view',
 };
 

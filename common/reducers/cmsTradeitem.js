@@ -28,6 +28,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
   'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
+  'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'LOAD_WSLITEMS', 'LOAD_WSLITEMS_SUCCEED', 'LOAD_WSLITEMS_FAIL',
 ]);
 
 const initialState = {
@@ -53,6 +55,7 @@ const initialState = {
   },
   visibleAddModal: false,
   repos: [],
+  reposLoaded: false,
   tradeCodes: [],
   tabKey: 'copCodes',
   repoId: null,
@@ -68,6 +71,13 @@ const initialState = {
   hstabKey: 'declunit',
   repo: {},
   visibleCompareModal: false,
+  workspaceItemsLoading: false,
+  workspaceItemList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -75,7 +85,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_REPOS:
       return { ...state, reposLoading: true };
     case actionTypes.LOAD_REPOS_SUCCEED:
-      return { ...state, repos: action.result.data, reposLoading: false };
+      return { ...state, repos: action.result.data, reposLoading: false, reposLoaded: true };
     case actionTypes.LOAD_REPOS_FAIL:
       return { ...state, reposLoading: false };
     case actionTypes.OPEN_ADD_MODEL:
@@ -110,6 +120,14 @@ export default function reducer(state = initialState, action) {
       return { ...state, repoUsers: action.result.data };
     case actionTypes.LOAD_TEMP_ITEMS_SUCCEED:
       return { ...state, tempItems: action.result.data };
+    case actionTypes.SWITCH_REPOMD_SUCCEED:
+      return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
+    case actionTypes.LOAD_WSLITEMS:
+      return { ...state, workspaceItemsLoading: true };
+    case actionTypes.LOAD_WSLITEMS_SUCCEED:
+      return { ...state, workspaceItemsLoading: false, workspaceItemList: action.result.data };
+    case actionTypes.LOAD_WSLITEMS_FAIL:
+      return { ...state, workspaceItemsLoading: false };
     default:
       return state;
   }
@@ -204,7 +222,7 @@ export function createTradeItem(datas) {
   };
 }
 
-export function loadRepos(params) {
+export function loadRepos() {
   return {
     [CLIENT_API]: {
       types: [
@@ -214,7 +232,6 @@ export function loadRepos(params) {
       ],
       endpoint: 'v1/cms/tradeitem/repos/load',
       method: 'get',
-      params,
     },
   };
 }
@@ -495,6 +512,36 @@ export function itemNewSrcSave(data) {
       endpoint: 'v1/cms/tradeitem/newSrc/save',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function switchRepoMode(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SWITCH_REPOMD,
+        actionTypes.SWITCH_REPOMD_SUCCEED,
+        actionTypes.SWITCH_REPOMD_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/switch/repomode',
+      method: 'post',
+      data: { repoId },
+    },
+  };
+}
+
+export function loadWorkspaceItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSLITEMS,
+        actionTypes.LOAD_WSLITEMS_SUCCEED,
+        actionTypes.LOAD_WSLITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/items',
+      method: 'get',
+      params,
     },
   };
 }

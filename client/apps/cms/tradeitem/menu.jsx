@@ -4,21 +4,15 @@ import { connect } from 'react-redux';
 import { Icon, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import NavLink from 'client/components/NavLink';
-import { format } from 'client/common/i18n/helpers';
-import { switchDefaultWhse } from 'common/reducers/cwmContext';
-import messages from './message.i18n';
-
-const formatMsg = format(messages);
+import { loadRepos, loadTradeParams } from 'common/reducers/cmsTradeitem';
+import { formatMsg } from './message.i18n';
 
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    whses: state.cwmContext.whses,
-    whse: state.cwmContext.defaultWhse,
-    listFilter: state.cwmShFtz.listFilter,
+    reposLoaded: state.cmsTradeitem.reposLoaded,
   }),
-  { switchDefaultWhse }
+  { loadRepos, loadTradeParams }
 )
 export default class ModuleMenu extends React.Component {
   static propTypes = {
@@ -28,16 +22,17 @@ export default class ModuleMenu extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  msg = key => formatMsg(this.props.intl, key);
+  componentDidMount() {
+    if (!this.props.reposLoaded) {
+      this.props.loadRepos();
+      this.props.loadTradeParams();
+    }
+  }
+  msg = formatMsg(this.props.intl);
   render() {
-    const { currentKey } = this.props;
     return (
       <div>
-        <Menu
-          defaultSelectedKeys={[currentKey]}
-          defaultOpenKeys={['g_task', 'g_hscode']}
-          mode="inline"
-        >
+        <Menu defaultOpenKeys={['g_task', 'g_hscode']} mode="inline" selectedKeys={[this.props.currentKey]}>
           <Menu.Item key="repoList">
             <NavLink to="/clearance/tradeitem/repo"><Icon type="database" /> {this.msg('repoList')}</NavLink>
           </Menu.Item>

@@ -58,6 +58,34 @@ const messages = defineMessages({
     id: 'cms.tradeitem.audit',
     defaultMessage: '日志审计',
   },
+  searchRepoPlaceholder: {
+    id: 'cms.tradeitem.searchRepoPlaceholder',
+    defaultMessage: '输入客户名称搜索',
+  },
+  filterUnclassified: {
+    id: 'cms.tradeitem.filter.unclassified',
+    defaultMessage: '未归类',
+  },
+  filterPending: {
+    id: 'cms.tradeitem.filter.pending',
+    defaultMessage: '归类待定',
+  },
+  filterClassified: {
+    id: 'cms.tradeitem.filter.classified',
+    defaultMessage: '已归类',
+  },
+  stageClassified: {
+    id: 'cms.tradeitem.stage.classified',
+    defaultMessage: '新来源归类区',
+  },
+  repoOwner: {
+    id: 'cms.tradeitem.modal.repo.owner',
+    defaultMessage: '所属客户',
+  },
+  authUserName: {
+    id: 'cms.tradeitem.modal.auth.username',
+    defaultMessage: '企业名称',
+  },
   copProductNo: {
     id: 'cms.tradeitem.col.cop.product.no',
     defaultMessage: '商品货号',

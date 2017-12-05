@@ -9,21 +9,18 @@ import { Breadcrumb, Button, Layout, Radio, Dropdown, Icon, Menu, Popconfirm, To
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import NavLink from 'client/components/NavLink';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
   deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare, copyToStage } from 'common/reducers/cmsTradeitem';
 import { getAuditWay } from 'common/reducers/scvClassification';
-import AddRepoModal from './modal/addRepoModal';
 import SearchBar from 'client/components/SearchBar';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import ImportItemModal from './modal/importItemModal';
 import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
+import { formatMsg } from '../message.i18n';
 
-const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -120,7 +117,7 @@ export default class RepoContent extends Component {
       }
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
+  msg = formatMsg(this.props.intl)
   columns = [{
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
@@ -689,7 +686,7 @@ export default class RepoContent extends Component {
             <RadioGroup value={listFilter.status} onChange={this.handleFilterChange} >
               <RadioButton value="unclassified"><Icon type="question-circle-o" /> {this.msg('filterUnclassified')}</RadioButton>
               <RadioButton value="pending"><Icon type="pause-circle-o" /> {this.msg('filterPending')}</RadioButton>
-              <RadioButton value="stage"><Tooltip title="新来源归类区" placement="bottom"><Icon type="fork" /></Tooltip></RadioButton>
+              <RadioButton value="stage"><Tooltip title={this.msg('stageClassified')} placement="bottom"><Icon type="fork" /></Tooltip></RadioButton>
               <RadioButton value="uselessHs"><Tooltip title="税则改变归类区" placement="bottom"><Icon type="disconnect" /></Tooltip></RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
@@ -736,7 +733,6 @@ export default class RepoContent extends Component {
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             loading={this.props.tradeItemsLoading} rowKey="id" columns={this.columns} dataSource={this.dataSource} bordered
           />
-          <AddRepoModal />
           <ImportItemModal data={this.state.compareduuid} />
         </Content>
       </Layout>
