@@ -10,7 +10,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { setInspect } from 'common/reducers/cmsDeclare';
-import { loadCiqDecls } from 'common/reducers/cmsCiqDeclare';
+import { loadCiqDecls, loadCiqParams } from 'common/reducers/cmsCiqDeclare';
 import { createFilename } from 'client/util/dataTransform';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
@@ -48,8 +48,9 @@ ColumnSwitch.propTypes = {
     tenantId: state.account.tenantId,
     ciqdeclList: state.cmsCiqDeclare.ciqdeclList,
     listFilter: state.cmsCiqDeclare.cjqListFilter,
+    organizations: state.cmsCiqDeclare.ciqParams.organizations,
   }),
-  { loadCiqDecls, openCiqModal, setInspect, showPreviewer }
+  { loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams }
 )
 @connectNav({
   depth: 2,
@@ -73,6 +74,7 @@ export default class CiqDeclList extends Component {
   }
   componentDidMount() {
     this.handleTableLoad();
+    this.props.loadCiqParams();
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -91,7 +93,7 @@ export default class CiqDeclList extends Component {
     width: 100,
     dataIndex: 'ciq_decl_type',
     render: (o) => {
-      switch (o) {
+      switch (Number(o)) {
         case 13:
           return <Tag color="cyan">入境检验检疫</Tag>;
         case 14:
@@ -149,14 +151,14 @@ export default class CiqDeclList extends Component {
     },
   }, {
     title: this.msg('orgCode'),
-    dataIndex: 'org_code',
+    dataIndex: 'ciq_org_code',
     width: 100,
+    render: o => this.props.organizations.find(org => org.org_code === o) && this.props.organizations.find(org => org.org_code === o).org_name,
   }, {
     title: this.msg('ciqDeclDate'),
     dataIndex: 'ciq_decl_date',
     width: 120,
-    render: (o, record) => (record.id ?
-      record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
+    render: o => (o ? moment(0).format('MM.DD HH:mm') : '-'),
   }, {
     title: this.msg('ciqQualityInsp'),
     dataIndex: 'ciq_quality_inspect',
