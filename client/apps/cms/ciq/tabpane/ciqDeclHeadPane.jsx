@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Button, Card, DatePicker, Form, Icon, Input, Select, Row, Col } from 'antd';
+import { Button, Card, DatePicker, Form, Icon, Input, Select, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
-import { loadCiqDeclHead, loadCiqParams, searchOrganizations, searchWorldPorts,
-   searchChinaPorts, searchCountries, setFixedCountry, setFixedOrganizations, setFixedWorldPorts } from 'common/reducers/cmsCiqDeclare';
+import { loadCiqDeclHead, searchOrganizations, searchWorldPorts, searchChinaPorts, searchCountries,
+   setFixedCountry, setFixedOrganizations, setFixedWorldPorts, updateCiqHeadField, loadCiqParams, searchCustoms } from 'common/reducers/cmsCiqDeclare';
 import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { loadBusinessUnits } from 'common/reducers/cmsResources';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
@@ -31,7 +31,8 @@ const ButtonGroup = Button.Group;
     chinaPorts: state.cmsCiqDeclare.ciqParams.chinaPorts,
     countries: state.cmsCiqDeclare.ciqParams.countries,
     units: state.cmsCiqDeclare.ciqParams.units,
-    ciqDeclHead: state.cmsCiqDeclare.ciqDeclHead,
+    customs: state.cmsCiqDeclare.ciqParams.customs,
+    ciqDeclHead: state.cmsCiqDeclare.ciqDeclHead.head,
     brokers: state.cmsBrokers.brokers,
     businessUnits: state.cmsResources.businessUnits,
     fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries,
@@ -39,7 +40,6 @@ const ButtonGroup = Button.Group;
     fixedWorldPorts: state.cmsCiqDeclare.ciqParams.fixedWorldPorts,
   }),
   { loadCiqDeclHead,
-    loadCiqParams,
     searchOrganizations,
     searchWorldPorts,
     searchChinaPorts,
@@ -49,6 +49,9 @@ const ButtonGroup = Button.Group;
     setFixedCountry,
     setFixedOrganizations,
     setFixedWorldPorts,
+    updateCiqHeadField,
+    loadCiqParams,
+    searchCustoms,
   }
 )
 export default class CiqDeclHeadPane extends React.Component {
@@ -66,8 +69,8 @@ export default class CiqDeclHeadPane extends React.Component {
         this.props.loadBusinessUnits({ customerPartnerId: this.props.ciqDeclHead.owner_cuspartner_id });
       }
     });
-    this.props.loadCiqParams();
     this.props.loadCmsBrokers();
+    this.props.loadCiqParams();
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleSearchOrg = (field, value) => {
@@ -88,6 +91,11 @@ export default class CiqDeclHeadPane extends React.Component {
   handleSearchCountries = (field, value) => {
     if (value) {
       this.props.searchCountries(value);
+    }
+  }
+  handleSearchCus = (field, value) => {
+    if (value) {
+      this.props.searchCustoms(value);
     }
   }
   handleAgentSelect = (value) => {
@@ -133,9 +141,20 @@ export default class CiqDeclHeadPane extends React.Component {
     }
     this.props.setFixedWorldPorts(fixedWorldPorts);
   }
+  handleEdit = (field, value) => {
+    if (field === 'ciq_decl_no' && value.length !== 15) {
+      message.error('报检号不为15位');
+      return;
+    }
+    if (field === 'ciq_cl_no' && value.length !== 18) {
+      message.error('通关单号不为18位');
+      return;
+    }
+    this.props.updateCiqHeadField(field, value, this.props.ciqDeclHead.pre_entry_seq_no);
+  }
   render() {
     const { ioType, organizations, countries, worldPorts, chinaPorts, ciqDeclHead, form,
-       form: { getFieldDecorator }, brokers, intl, businessUnits } = this.props;
+       form: { getFieldDecorator }, brokers, intl, businessUnits, customs } = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -170,12 +189,12 @@ export default class CiqDeclHeadPane extends React.Component {
             <Row>
               <Col span="6">
                 <InfoItem size="small" field={ciqDeclHead.ciq_decl_no} placeholder="点击回填"
-                  addonBefore={this.msg('报检号')} editable={!ciqDeclHead.ciq_decl_no}
+                  addonBefore={this.msg('报检号')} editable={!ciqDeclHead.ciq_decl_no} onEdit={value => this.handleEdit('ciq_decl_no', value)}
                 />
               </Col>
               <Col span="6">
                 <InfoItem size="small" field={ciqDeclHead.ciq_cl_no} placeholder="点击回填"
-                  addonBefore={this.msg('通关单号')} editable={!ciqDeclHead.ciq_cl_no}
+                  addonBefore={this.msg('通关单号')} editable={!ciqDeclHead.ciq_cl_no} onEdit={value => this.handleEdit('ciq_cl_no', value)}
                 />
               </Col>
             </Row>
@@ -221,7 +240,11 @@ export default class CiqDeclHeadPane extends React.Component {
                 />
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'报检日期'} required >
-                    <DatePicker style={{ width: '100%' }} />
+                    {getFieldDecorator('ciq_decl_date', {
+                      initialValue: ciqDeclHead.ciq_decl_date && moment(ciqDeclHead.ciq_decl_date),
+                    })(
+                      <DatePicker style={{ width: '100%' }} format="YYYY/MM/DD" />
+                    )}
                   </FormItem>
                 </Col>
               </Row>
@@ -249,16 +272,32 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'报检员'} >
                     <InputGroup compact>
-                      <Input placeholder="编码" value={ciqDeclHead.agent_ciq_person_certno} style={{ width: '50%' }} />
-                      <Input prefix={<Icon type="user" />} placeholder="姓名" value={ciqDeclHead.agent_ciq_person} style={{ width: '50%' }} />
+                      {getFieldDecorator('agent_ciq_person_certno', {
+                        initialValue: ciqDeclHead.agent_ciq_person_certno,
+                      })(
+                        <Input placeholder="编码" style={{ width: '50%' }} />
+                      )}
+                      {getFieldDecorator('agent_ciq_person', {
+                        initialValue: ciqDeclHead.agent_ciq_person,
+                      })(
+                        <Input prefix={<Icon type="user" />} placeholder="姓名" value={ciqDeclHead.agent_ciq_person} style={{ width: '50%' }} />
+                      )}
                     </InputGroup>
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'联系人'} >
                     <InputGroup compact>
-                      <Input prefix={<Icon type="user" />} placeholder="姓名" value={ciqDeclHead.agent_ciq_contact} style={{ width: '50%' }} />
-                      <Input prefix={<Icon type="phone" />} placeholder="电话" value={ciqDeclHead.agent_ciq_tel} style={{ width: '50%' }} />
+                      {getFieldDecorator('agent_ciq_contact', {
+                        initialValue: ciqDeclHead.agent_ciq_contact,
+                      })(
+                        <Input prefix={<Icon type="user" />} placeholder="姓名" style={{ width: '50%' }} />
+                      )}
+                      {getFieldDecorator('agent_ciq_tel', {
+                        initialValue: ciqDeclHead.agent_ciq_tel,
+                      })(
+                        <Input prefix={<Icon type="phone" />} placeholder="电话" style={{ width: '50%' }} />
+                      )}
                     </InputGroup>
                   </FormItem>
                 </Col>
@@ -301,7 +340,11 @@ export default class CiqDeclHeadPane extends React.Component {
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'发货人地址'} >
-                    <Input value={ciqDeclHead.ciq_consignor_addr} />
+                    {getFieldDecorator('ciq_consignor_addr', {
+                      initialValue: ciqDeclHead.ciq_consignor_addr,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
               </Row>}
@@ -343,7 +386,11 @@ export default class CiqDeclHeadPane extends React.Component {
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'收货人地址'} >
-                    <Input value={ciqDeclHead.ciq_consignee_addr} />
+                    {getFieldDecorator('ciq_consignee_addr', {
+                      initialValue: ciqDeclHead.ciq_consignee_addr,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
               </Row>}
@@ -352,37 +399,65 @@ export default class CiqDeclHeadPane extends React.Component {
               <Row>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'运输方式'} required >
-                    <Input value={ciqDeclHead.traf_mode} />
+                    {getFieldDecorator('traf_mode', {
+                      initialValue: ciqDeclHead.traf_mode,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'运输工具名称'} >
-                    <Input value={ciqDeclHead.traf_name} />
+                    {getFieldDecorator('traf_name', {
+                      initialValue: ciqDeclHead.traf_name,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'运输工具号码'} >
-                    <Input value={ciqDeclHead.traf_mean_no} />
+                    {getFieldDecorator('traf_mean_no', {
+                      initialValue: ciqDeclHead.traf_mean_no,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 {ioType === 'in' && <Col span="6">
                   <FormItem {...formItemLayout} label={'提货单号'} >
-                    <Input value={ciqDeclHead.delivery_order} />
+                    {getFieldDecorator('delivery_order', {
+                      initialValue: ciqDeclHead.delivery_order,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
                   <FormItem {...formItemLayout} label={'提/运单号'} required >
-                    <Input value={ciqDeclHead.bill_lad_no} />
+                    {getFieldDecorator('bill_lad_no', {
+                      initialValue: ciqDeclHead.bill_lad_no,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>}
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'合同号'} required >
-                    <Input value={ciqDeclHead.contr_no} />
+                    {getFieldDecorator('contr_no', {
+                      initialValue: ciqDeclHead.contr_no,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'贸易方式'} required >
-                    <Input value={ciqDeclHead.ciq_trade_mode} />
+                    {getFieldDecorator('ciq_trade_mode', {
+                      initialValue: ciqDeclHead.ciq_trade_mode,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 {ioType === 'in' &&
@@ -447,11 +522,15 @@ export default class CiqDeclHeadPane extends React.Component {
                     search: `${port.port_code}${port.port_cname}`,
                   }))} onSearch={this.handleSearchChinaPorts}
                 />
-                {ioType === 'in' && <Col span="6">
-                  <FormItem {...formItemLayout} label={'目的地'} required >
-                    <Input value={ciqDeclHead.dest_code} />
-                  </FormItem>
-                </Col>}
+                {ioType === 'in' &&
+                  <FormRemoteSearchSelect outercol={6} label="目的地" col={8} field="dest_code"
+                    getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                    options={countries.map(coun => ({
+                      value: coun.country_code,
+                      text: `${coun.country_code} | ${coun.country_cn_name}`,
+                      search: `${coun.country_code}${coun.country_cn_name}`,
+                    }))} onSearch={this.handleSearchCountries} onSelect={this.handleCountrySelect}
+                  />}
                 {ioType === 'in' &&
                 <FormRemoteSearchSelect outercol={6} label={<span><Icon type="safety" />目的机构</span>} col={8} field="ciq_purp_orgcode"
                   getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead} required
@@ -472,7 +551,11 @@ export default class CiqDeclHeadPane extends React.Component {
                 />}
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'存放地点'} required >
-                    <Input value={ciqDeclHead.goods_place} />
+                    {getFieldDecorator('goods_place', {
+                      initialValue: ciqDeclHead.goods_place,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 <FormRemoteSearchSelect outercol={6} label={<span><Icon type="safety" />领证地</span>} col={8} field="ciq_vsa_orgcode"
@@ -489,7 +572,7 @@ export default class CiqDeclHeadPane extends React.Component {
                       initialValue: ciqDeclHead.desp_date && moment(ciqDeclHead.desp_date),
                     })(
                       <DatePicker style={{ width: '100%' }} format="YYYY/MM/DD" />
-                  )}
+                    )}
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
@@ -498,7 +581,7 @@ export default class CiqDeclHeadPane extends React.Component {
                       initialValue: ciqDeclHead.arrival_date && moment(ciqDeclHead.arrival_date),
                     })(
                       <DatePicker style={{ width: '100%' }} format="YYYY/MM/DD" />
-                  )}
+                    )}
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
@@ -507,7 +590,7 @@ export default class CiqDeclHeadPane extends React.Component {
                       initialValue: ciqDeclHead.cmpl_dschrg_date && moment(ciqDeclHead.cmpl_dschrg_date),
                     })(
                       <DatePicker style={{ width: '100%' }} format="YYYY/MM/DD" />
-                  )}
+                    )}
                   </FormItem>
                 </Col>}
                 {ioType === 'in' && <Col span="6">
@@ -524,29 +607,48 @@ export default class CiqDeclHeadPane extends React.Component {
                     <DatePicker style={{ width: '100%' }} />
                   </FormItem>
                 </Col>}
-                <Col span="6">
-                  <FormItem {...formItemLayout} label={'报关海关'} >
-                    <Input value={ciqDeclHead.decl_port} />
-                  </FormItem>
-                </Col>
+                <FormRemoteSearchSelect outercol={6} label="报关海关" col={8} field="decl_port"
+                  getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
+                  options={customs.map(cus => ({
+                    value: cus.customs_code,
+                    text: `${cus.customs_code} | ${cus.customs_name}`,
+                    search: `${cus.customs_code}${cus.customs_name}`,
+                  }))} onSearch={this.handleSearchCus} onSelect={this.handleCustomsSelect}
+                />
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'海关注册号'} >
-                    <Input value={ciqDeclHead.customs_reg_no} />
+                    {getFieldDecorator('customs_reg_no', {
+                      initialValue: ciqDeclHead.customs_reg_no,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'关联报检号'} >
-                    <Input value={ciqDeclHead.correl_ciq_decl_no} />
+                    {getFieldDecorator('correl_ciq_decl_no', {
+                      initialValue: ciqDeclHead.correl_ciq_decl_no,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'关联理由'} >
-                    <Input value={ciqDeclHead.correl_reason_flag} />
+                    {getFieldDecorator('correl_reason_flag', {
+                      initialValue: ciqDeclHead.correl_reason_flag,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem {...formItemLayout} label={'分运单号'} >
-                    <Input value={ciqDeclHead.split_bill_lad_no} />
+                    {getFieldDecorator('split_bill_lad_no', {
+                      initialValue: ciqDeclHead.split_bill_lad_no,
+                    })(
+                      <Input />
+                    )}
                   </FormItem>
                 </Col>
               </Row>
@@ -554,7 +656,7 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} label={'特殊业务标识'} >
                     {getFieldDecorator('special_decl_flag', {
-                      initialValue: ciqDeclHead.special_decl_flag,
+                      initialValue: ciqDeclHead.special_decl_flag && ciqDeclHead.special_decl_flag.split(','),
                     })(
                       <Select mode="multiple">
                         {CIQ_SPECIAL_DECL_FLAG.map(type => <Option key={type.value}>{type.text}</Option>)}
@@ -565,7 +667,7 @@ export default class CiqDeclHeadPane extends React.Component {
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} label={'特殊通关模式'} >
                     {getFieldDecorator('spec_pass_flag', {
-                      initialValue: ciqDeclHead.spec_pass_flag,
+                      initialValue: ciqDeclHead.spec_pass_flag && ciqDeclHead.spec_pass_flag.split(','),
                     })(
                       <Select mode="multiple">
                         {CIQ_SPECIAL_PASS_FLAG.map(type => <Option key={type.value}>{type.text}</Option>)}
@@ -589,7 +691,7 @@ export default class CiqDeclHeadPane extends React.Component {
                     {getFieldDecorator('mark_no', {
                       initialValue: ciqDeclHead.mark_no,
                     })(
-                      <TextArea value={ciqDeclHead.mark_no} autosize />
+                      <TextArea autosize />
                     )}
                   </FormItem>
                 </Col>
@@ -602,9 +704,11 @@ export default class CiqDeclHeadPane extends React.Component {
                 </Col>
                 <Col span="12">
                   <FormItem {...formItemSpan2Layout} label={'随附单据'} >
-                    <Input addonAfter={<Button type="primary" ghost size="small"><Icon type="ellipsis" /></Button>}
-                      value={ciqDeclHead.atta_collect_name}
-                    />
+                    {getFieldDecorator('atta_collect_name', {
+                      initialValue: ciqDeclHead.atta_collect_name,
+                    })(
+                      <Input addonAfter={<Button type="primary" ghost size="small"><Icon type="ellipsis" /></Button>} />
+                    )}
                   </FormItem>
                 </Col>
               </Row>

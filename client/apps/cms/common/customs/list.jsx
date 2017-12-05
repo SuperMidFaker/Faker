@@ -7,7 +7,7 @@ import { Breadcrumb, DatePicker, Icon, Layout, Radio, Tag, Tooltip, message, Pop
 import QueueAnim from 'rc-queue-anim';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal } from 'common/reducers/cmsDeclare';
+import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal } from 'common/reducers/cmsDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
@@ -46,13 +46,10 @@ const RangePicker = DatePicker.RangePicker;
     customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
     clients: state.partner.partners,
-    customs: state.cmsDeclare.customs.map(cus => ({
-      value: cus.customs_code,
-      text: cus.customs_name,
-    })),
-    trades: state.cmsDeclare.trades,
+    customs: state.cmsDeclare.listRequire.customs,
   }),
   { loadCustomsDecls,
+    loadTableParams,
     loadPartnersByTypes,
     openEfModal,
     deleteDecl,
@@ -86,6 +83,7 @@ export default class CustomsList extends Component {
   }
   componentDidMount() {
     this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
+    this.props.loadTableParams();
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -486,7 +484,7 @@ export default class CustomsList extends Component {
     this.handleTableLoad(1, filter);
   }
   render() {
-    const { customslist, listFilter, trades } = this.props;
+    const { customslist, listFilter } = this.props;
     this.dataSource.remotes = customslist;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -540,7 +538,7 @@ export default class CustomsList extends Component {
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
         </Option>))}
       </Select>
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
+      {/* <Select showSearch optionFilterProp="children" style={{ width: 160 }}
         onChange={this.handleTradesSelectChange} defaultValue="all"
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
@@ -549,7 +547,7 @@ export default class CustomsList extends Component {
           search={`${data.code}${data.name}`}
         >{data.name}</Option>)
         )}
-      </Select>
+      </Select> */}
       <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
         onChange={this.handleViewChange}
       >

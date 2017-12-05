@@ -10,7 +10,7 @@ import PageHint from 'client/components/PageHint';
 import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import { loadCustomsDecls, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsDeclare';
+import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
@@ -49,13 +49,11 @@ const RangePicker = DatePicker.RangePicker;
     customslist: state.cmsDeclare.customslist,
     listFilter: state.cmsDeclare.listFilter,
     clients: state.partner.partners,
-    customs: state.cmsDeclare.customs.map(cus => ({
-      value: cus.customs_code,
-      text: cus.customs_name,
-    })),
-    trades: state.cmsDeclare.trades,
+    customs: state.cmsDeclare.listRequire.customs,
+    // trades: state.cmsDeclare.trades,
   }),
   { loadCustomsDecls,
+    loadTableParams,
     loadPartnersByTypes,
     openEfModal,
     deleteDecl,
@@ -99,6 +97,7 @@ export default class CustomsList extends Component {
       }
     }
     this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
+    this.props.loadTableParams();
     this.handleTableLoad(this.props.customslist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
   }
   msg = key => formatMsg(this.props.intl, key);

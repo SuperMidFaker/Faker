@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message, notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
+   notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
@@ -22,6 +23,7 @@ import { CMS_DECL_STATUS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import SendDeclsModal from './modals/sendDeclsModal';
+import DeclTreePopover from '../popover/declTreePopover';
 
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import DelegationDockPanel from '../dock/delegationDockPanel';
@@ -166,11 +168,6 @@ export default class ManifestEditor extends React.Component {
         this.props.openMergeSplitModal();
       }
     });
-  }
-  handleEntryVisit = (ev) => {
-    const { ietype, billMeta } = this.props;
-    const pathname = `/clearance/${ietype}/cusdecl/${billMeta.bill_seq_no}/${ev.key}`;
-    this.context.router.push({ pathname });
   }
   validateCode = (code, customsCode) => {
     let info = null;
@@ -395,13 +392,6 @@ export default class ManifestEditor extends React.Component {
   render() {
     const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates } = this.props;
     const { locked, lockedByOthers } = this.state;
-    const declType = (billHead.decl_way_code === 'IBND' || billHead.decl_way_code === 'EBND') ? '备案清单' : '报关单';
-    const declEntryMenu = (
-      <Menu onClick={this.handleEntryVisit}>
-        {billMeta.entries.map(bme => (<Menu.Item key={bme.pre_entry_seq_no}>
-          <Icon type="file" /> {bme.entry_id || bme.pre_entry_seq_no}</Menu.Item>)
-        )}
-      </Menu>);
     let sendable = billMeta.entries.length > 0;
     let revertable = billMeta.entries.length > 0;
     billMeta.entries.forEach((entry) => {
@@ -489,12 +479,9 @@ export default class ManifestEditor extends React.Component {
                 </OptGroup>
               </Select>)
             }
-              {billMeta.entries.length > 0 &&
-              <Dropdown overlay={declEntryMenu}>
-                <Button ><Icon type="link" />转至{declType}<Icon type="down" /></Button>
-              </Dropdown>
-            }
-
+              {billMeta.entries.length > 0 && <DeclTreePopover entries={billMeta.entries}
+                ciqs={billMeta.ciqs} billSeqNo={billMeta.bill_seq_no} ietype={ietype}
+              />}
               {billMeta.docts &&
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>
             }

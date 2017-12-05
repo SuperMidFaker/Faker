@@ -10,7 +10,7 @@ import RowUpdater from 'client/components/rowUpdater';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { setInspect } from 'common/reducers/cmsDeclare';
-import { loadCiqDecls } from 'common/reducers/cmsCiqDeclare';
+import { loadCiqDecls, loadCiqParams } from 'common/reducers/cmsCiqDeclare';
 import { createFilename } from 'client/util/dataTransform';
 import { openCiqModal } from 'common/reducers/cmsDelegation';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
@@ -19,7 +19,6 @@ import messages from './message.i18n';
 import TrimSpan from 'client/components/trimSpan';
 import { format } from 'client/common/i18n/helpers';
 import SearchBar from 'client/components/SearchBar';
-import NavLink from 'client/components/NavLink';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 
 const formatMsg = format(messages);
@@ -49,8 +48,9 @@ ColumnSwitch.propTypes = {
     tenantId: state.account.tenantId,
     ciqdeclList: state.cmsCiqDeclare.ciqdeclList,
     listFilter: state.cmsCiqDeclare.cjqListFilter,
+    organizations: state.cmsCiqDeclare.ciqParams.organizations,
   }),
-  { loadCiqDecls, openCiqModal, setInspect, showPreviewer }
+  { loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams }
 )
 @connectNav({
   depth: 2,
@@ -65,12 +65,16 @@ export default class CiqDeclList extends Component {
     ciqdeclList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   state = {
     selectedRowKeys: [],
     searchInput: '',
   }
   componentDidMount() {
     this.handleTableLoad();
+    this.props.loadCiqParams();
   }
   msg = key => formatMsg(this.props.intl, key);
   columns = [{
@@ -89,7 +93,7 @@ export default class CiqDeclList extends Component {
     width: 100,
     dataIndex: 'ciq_decl_type',
     render: (o) => {
-      switch (o) {
+      switch (Number(o)) {
         case 13:
           return <Tag color="cyan">入境检验检疫</Tag>;
         case 14:
@@ -147,14 +151,14 @@ export default class CiqDeclList extends Component {
     },
   }, {
     title: this.msg('orgCode'),
-    dataIndex: 'org_code',
+    dataIndex: 'ciq_org_code',
     width: 100,
+    render: o => this.props.organizations.find(org => org.org_code === o) && this.props.organizations.find(org => org.org_code === o).org_name,
   }, {
     title: this.msg('ciqDeclDate'),
     dataIndex: 'ciq_decl_date',
     width: 120,
-    render: (o, record) => (record.id ?
-      record.process_date && moment(record.process_date).format('MM.DD HH:mm') : '-'),
+    render: o => (o ? moment(0).format('MM.DD HH:mm') : '-'),
   }, {
     title: this.msg('ciqQualityInsp'),
     dataIndex: 'ciq_quality_inspect',
@@ -190,16 +194,12 @@ export default class CiqDeclList extends Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => {
-      const ioPart = record.i_e_type === 0 ? 'in' : 'out';
-      return (
-        <span>
-          <NavLink to={`/clearance/ciqdecl/${ioPart}/${record.pre_entry_seq_no}`}>详情</NavLink>
-          <span className="ant-divider" />
-          <RowUpdater onHit={this.exportCjqDecl} label="导出" row={record} />
-        </span>
-      );
-    },
+    render: (o, record) => (
+      <span>
+        <RowUpdater onHit={this.handleDetail} label="详情" row={record} />
+        <span className="ant-divider" />
+        <RowUpdater onHit={this.exportCjqDecl} label="导出" row={record} />
+      </span>),
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCiqDecls(params),
@@ -254,6 +254,11 @@ export default class CiqDeclList extends Component {
         message.error(result.error.message, 5);
       }
     });
+  }
+  handleDetail = (row) => {
+    const ioPart = row.i_e_type === 0 ? 'in' : 'out';
+    const link = `/clearance/ciqdecl/${ioPart}/${row.pre_entry_seq_no}`;
+    this.context.router.push(link);
   }
   handleCiqNoFill = (row) => {
     this.props.openCiqModal({
