@@ -36,15 +36,15 @@ export default class DeclTreePopover extends Component {
         defaultExpandedKeys={['0-0-0']}
         onSelect={this.handleSelect}
       >
-        <TreeNode title="申报清单" key="0-0">
+        <TreeNode title={<a role="presentation"><Icon type="file-text" /> 申报清单</a>} key="0-0">
           {entries.length > 0 && (
-          <TreeNode title="报关单" key="0-0-0">
-            {entries.map(bme => <TreeNode title={bme.entry_id || bme.pre_entry_seq_no} key={`0-0-0-${bme.entry_id || bme.pre_entry_seq_no}`} />)}
+          <TreeNode title="报关单" key="0-0-0" selectable={false}>
+            {entries.map(bme => <TreeNode title={<a role="presentation">{bme.entry_id || bme.pre_entry_seq_no}</a>} key={`0-0-0-${bme.pre_entry_seq_no}`} />)}
           </TreeNode>
       )}
           {ciqs.length > 0 && (
-          <TreeNode title="报检单" key="0-0-1">
-            {ciqs.map(ciq => <TreeNode title={ciq.pre_entry_seq_no} key={`0-0-1-${ciq.pre_entry_seq_no}`} />)}
+          <TreeNode title="报检单" key="0-0-1" selectable={false}>
+            {ciqs.map(ciq => <TreeNode title={<a role="presentation">{ciq.pre_entry_seq_no}</a>} key={`0-0-1-${ciq.pre_entry_seq_no}`} />)}
           </TreeNode>
       )}
         </TreeNode>
