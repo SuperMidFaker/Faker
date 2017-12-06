@@ -44,7 +44,7 @@ export default class RepoList extends React.Component {
   }
   msg = formatMsg(this.props.intl);
   repoColumns = [{
-    title: this.msg('所属企业'),
+    title: this.msg('repoOwner'),
     dataIndex: 'owner_name',
     key: 'owner_name',
     width: 300,
@@ -62,7 +62,7 @@ export default class RepoList extends React.Component {
       }
     },
   }, {
-    title: this.msg('创建企业'),
+    title: this.msg('repoCreator'),
     dataIndex: 'creator_name',
     width: 200,
   }, {

@@ -10,6 +10,14 @@ const messages = defineMessages({
     id: 'cms.tradeitem.repo.list',
     defaultMessage: '物料库列表',
   },
+  repoOwner: {
+    id: 'cms.tradeitem.repo.owner',
+    defaultMessage: '所属企业',
+  },
+  repoCreator: {
+    id: 'cms.tradeitem.repo.creator',
+    defaultMessage: '创建企业',
+  },
   taskWorkspace: {
     id: 'cms.tradeitem.task.workspace',
     defaultMessage: '归类工作区',
@@ -77,10 +85,6 @@ const messages = defineMessages({
   stageClassified: {
     id: 'cms.tradeitem.stage.classified',
     defaultMessage: '新来源归类区',
-  },
-  repoOwner: {
-    id: 'cms.tradeitem.modal.repo.owner',
-    defaultMessage: '所属客户',
   },
   authUserName: {
     id: 'cms.tradeitem.modal.auth.username',

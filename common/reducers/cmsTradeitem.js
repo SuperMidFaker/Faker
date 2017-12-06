@@ -29,6 +29,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
   'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
   'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'LOAD_WSTASK', 'LOAD_WSTASK_SUCCEED', 'LOAD_WSTASK_FAIL',
+  'LOAD_WSTITEMS', 'LOAD_WSTITEMS_SUCCEED', 'LOAD_WSTITEMS_FAIL',
   'LOAD_WSLITEMS', 'LOAD_WSLITEMS_SUCCEED', 'LOAD_WSLITEMS_FAIL',
 ]);
 
@@ -71,7 +73,14 @@ const initialState = {
   hstabKey: 'declunit',
   repo: {},
   visibleCompareModal: false,
-  workspaceItemsLoading: false,
+  workspaceLoading: false,
+  workspaceTaskList: [],
+  workspaceTempItemList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
   workspaceItemList: {
     totalCount: 0,
     current: 1,
@@ -122,12 +131,20 @@ export default function reducer(state = initialState, action) {
       return { ...state, tempItems: action.result.data };
     case actionTypes.SWITCH_REPOMD_SUCCEED:
       return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
+    case actionTypes.LOAD_WSTASK:
+    case actionTypes.LOAD_WSTITEMS:
     case actionTypes.LOAD_WSLITEMS:
-      return { ...state, workspaceItemsLoading: true };
-    case actionTypes.LOAD_WSLITEMS_SUCCEED:
-      return { ...state, workspaceItemsLoading: false, workspaceItemList: action.result.data };
+      return { ...state, workspaceLoading: true };
+    case actionTypes.LOAD_WSTITEMS_FAIL:
     case actionTypes.LOAD_WSLITEMS_FAIL:
-      return { ...state, workspaceItemsLoading: false };
+    case actionTypes.LOAD_WSTASK_FAIL:
+      return { ...state, workspaceLoading: false };
+    case actionTypes.LOAD_WSTASK_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceTaskList: action.result.data };
+    case actionTypes.LOAD_WSLITEMS_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceItemList: action.result.data };
+    case actionTypes.LOAD_WSTITEMS_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceTempItemList: action.result.data };
     default:
       return state;
   }
@@ -396,7 +413,7 @@ export function loadRepoUsers(repoId) {
   };
 }
 
-export function addRepoUser(tenantId, repoId, partnerTenantId, name) {
+export function addRepoUser(tenantId, repoId, partnerTenantId, name, permission) {
   return {
     [CLIENT_API]: {
       types: [
@@ -406,7 +423,7 @@ export function addRepoUser(tenantId, repoId, partnerTenantId, name) {
       ],
       endpoint: 'v1/cms/tradeitem/repoUser/add',
       method: 'post',
-      data: { tenantId, repoId, partnerTenantId, name },
+      data: { tenantId, repoId, partnerTenantId, name, permission },
     },
   };
 }
@@ -527,6 +544,36 @@ export function switchRepoMode(repoId) {
       endpoint: 'v1/cms/tradeitem/switch/repomode',
       method: 'post',
       data: { repoId },
+    },
+  };
+}
+
+export function loadWorkspaceTasks(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSTASK,
+        actionTypes.LOAD_WSTASK_SUCCEED,
+        actionTypes.LOAD_WSTASK_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/tasks',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadWorkspaceTempItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSTITEMS,
+        actionTypes.LOAD_WSTITEMS_SUCCEED,
+        actionTypes.LOAD_WSTITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/temp/items',
+      method: 'get',
+      params,
     },
   };
 }

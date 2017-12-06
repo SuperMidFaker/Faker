@@ -37,20 +37,20 @@ export default class ModuleMenu extends React.Component {
             <NavLink to="/clearance/tradeitem/repo"><Icon type="database" /> {this.msg('repoList')}</NavLink>
           </Menu.Item>
           <Menu.SubMenu key="g_task" title={<span><Icon type="exception" /> {this.msg('taskWorkspace')}</span>}>
-            <Menu.Item key="createTask">
-              <NavLink to="/clearance/tradeitem/task/create"><Icon type="plus" />{this.msg('createTask')}</NavLink>
+            <Menu.Item key="task">
+              <NavLink to="/clearance/tradeitem/workspace/tasks"><Icon type="plus" />{this.msg('createTask')}</NavLink>
             </Menu.Item>
             <Menu.Item key="new">
-              <NavLink to="/clearance/tradeitem/task/new">{this.msg('taskNew')}</NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/emerges">{this.msg('taskNew')}</NavLink>
             </Menu.Item>
             <Menu.Item key="conflict">
-              <NavLink to="/clearance/tradeitem/task/conflict">{this.msg('taskConflict')}</NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/conflicts">{this.msg('taskConflict')}</NavLink>
             </Menu.Item>
             <Menu.Item key="invalid">
-              <NavLink to="/clearance/tradeitem/task/invalid">{this.msg('taskInvalid')}</NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/invalids">{this.msg('taskInvalid')}</NavLink>
             </Menu.Item>
             <Menu.Item key="review">
-              <NavLink to="/clearance/tradeitem/task/review">{this.msg('taskReview')}</NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/pendings">{this.msg('taskReview')}</NavLink>
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.SubMenu key="g_hscode" title={<span><Icon type="book" /> {this.msg('hscodeCustoms')}</span>}>

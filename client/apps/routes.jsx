@@ -59,7 +59,7 @@ import * as CMSTradeItem from './cms/tradeitem';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
 import * as CMSTradeItemRepo from './cms/tradeitem/repo';
 import * as CMSTradeItemRepoItem from './cms/tradeitem/repo/item';
-import * as CMSTradeItemTask from './cms/tradeitem/task';
+import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -403,11 +403,12 @@ export default(store) => {
                   <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
                 </Route>
               </Route>
-              <Route path="task">
-                <Route path="new" component={CMSTradeItemTask.New} />
-                <Route path="conflict" component={CMSTradeItemTask.Conflict} />
-                <Route path="invalid" component={CMSTradeItemTask.Invalid} />
-                <Route path="review" component={CMSTradeItemTask.Review} />
+              <Route path="workspace">
+                <Route path="tasks" component={CMSTradeItemWorkspace.TaskList} />
+                <Route path="emerges" component={CMSTradeItemWorkspace.Emerge} />
+                <Route path="conflicts" component={CMSTradeItemWorkspace.Conflict} />
+                <Route path="invalids" component={CMSTradeItemWorkspace.Invalid} />
+                <Route path="pendings" component={CMSTradeItemWorkspace.Pending} />
               </Route>
               <Route path="hscode">
                 <IndexRoute component={CMSTradeItemHSCode.List} />

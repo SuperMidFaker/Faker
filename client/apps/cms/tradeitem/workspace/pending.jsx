@@ -36,7 +36,7 @@ const { Sider, Content } = Layout;
       text: tc.cntry_name_cn,
     })),
     repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
-    workspaceItemsLoading: state.cmsTradeitem.workspaceItemsLoading,
+    workspaceLoading: state.cmsTradeitem.workspaceLoading,
     workspaceItemList: state.cmsTradeitem.workspaceItemList,
   }),
   { loadWorkspaceItems }
@@ -45,7 +45,7 @@ const { Sider, Content } = Layout;
   depth: 2,
   moduleName: 'clearance',
 })
-export default class ReviewItemsList extends React.Component {
+export default class PendingItemsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -55,7 +55,14 @@ export default class ReviewItemsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    filter: { name: '', repoId: '', status: 'reviewing' },
+    filter: { name: '', repoId: '', status: 'pending' },
+  }
+  componentDidMount() {
+    this.props.loadWorkspaceItems({
+      pageSize: this.props.workspaceItemList.pageSize,
+      current: 1,
+      filter: JSON.stringify(this.state.filter),
+    });
   }
   msg = formatMsg(this.props.intl)
   columns = makeColumns(this.msg, this.props.units, this.props.tradeCountries, this.props.currencies).concat([{
@@ -86,7 +93,7 @@ export default class ReviewItemsList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { workspaceItemsLoading, workspaceItemList, repos } = this.props;
+    const { workspaceLoading, workspaceItemList, repos } = this.props;
     const { filter } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -154,7 +161,7 @@ export default class ReviewItemsList extends React.Component {
           <Content className="page-content" key="main">
             <DataTable toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="cop_product_no" loading={workspaceItemsLoading}
+              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="cop_product_no" loading={workspaceLoading}
               locale={{ emptyText: '当前没有新的料件' }}
             />
           </Content>
