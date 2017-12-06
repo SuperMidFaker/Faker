@@ -949,7 +949,7 @@ export function authorizeBroker(value, whseCode, partnerId) {
   };
 }
 
-export function loadCustomers() {
+export function loadCustoms() {
   return {
     [CLIENT_API]: {
       types: [
@@ -957,7 +957,7 @@ export function loadCustomers() {
         actionTypes.LOAD_CUSTOMERS_SUCCEED,
         actionTypes.LOAD_CUSTOMERS_FAIL,
       ],
-      endpoint: 'v1/cwm/customers/get',
+      endpoint: 'v1/cwm/customs/get',
       method: 'get',
     },
   };

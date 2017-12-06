@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Form, Select, message } from 'antd';
 import { formatMsg } from '../message.i18n';
-import { updateWhse, loadCustomers } from 'common/reducers/cwmWarehouse';
+import { updateWhse, loadCustoms } from 'common/reducers/cwmWarehouse';
 import { loadWhseSupervisionApps } from 'common/reducers/openIntegration';
 
 const FormItem = Form.Item;
@@ -38,7 +38,7 @@ const tailFormItemLayout = {
     whseSupervisonApps: state.openIntegration.whseSupervisonApps,
     customs: state.cwmWarehouse.customs,
   }),
-  { loadWhseSupervisionApps, updateWhse, loadCustomers }
+  { loadWhseSupervisionApps, updateWhse, loadCustoms }
 )
 export default class SupervisionPane extends Component {
   static propTypes = {
@@ -53,7 +53,7 @@ export default class SupervisionPane extends Component {
     customs: [],
   }
   componentWillMount() {
-    this.props.loadCustomers().then((result) => {
+    this.props.loadCustoms().then((result) => {
       this.setState({
         customs: result.data.slice(0, 20),
       });
