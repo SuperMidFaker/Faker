@@ -480,7 +480,7 @@ export default class ManifestEditor extends React.Component {
               </Select>)
             }
               {billMeta.entries.length > 0 && <DeclTreePopover entries={billMeta.entries}
-                ciqs={billMeta.ciqs} billSeqNo={billMeta.bill_seq_no} ietype={ietype}
+                ciqs={billMeta.ciqs} billSeqNo={billMeta.bill_seq_no} ietype={ietype} selectedKeys={['0-0']}
               />}
               {billMeta.docts &&
               <Button icon="download" onClick={this.handleDoctsDownload}>下载数据</Button>

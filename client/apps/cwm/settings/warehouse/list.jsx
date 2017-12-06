@@ -143,7 +143,7 @@ export default class WarehouseList extends Component {
     if (warehouse.bonded) {
       tabs.push(
         <TabPane tab="保税监管" key="supervision">
-          <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} />
+          <SupervisionPane whseCode={warehouse.code} ftzAppId={warehouse.ftz_integration_app_id} customsCode={warehouse.customs_code} />
         </TabPane>);
     }
     return (

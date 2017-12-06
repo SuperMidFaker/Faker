@@ -101,7 +101,9 @@ export default class CiqDeclEdit extends React.Component {
             {/* <Dropdown overlay={declEntryMenu}>
               <Button ><Icon type="link" />转至 <Icon type="down" /></Button>
             </Dropdown> */}
-            {<DeclTreePopover entries={entries} ciqs={ciqs} billSeqNo={ciqDeclHead.bill_seq_no} ietype={this.props.params.ioType === 'in' ? 'import' : 'export'} />}
+            {<DeclTreePopover entries={entries} ciqs={ciqs} selectedKeys={[`0-0-1-${this.props.router.params.declNo}`]}
+              billSeqNo={ciqDeclHead.bill_seq_no} ietype={this.props.params.ioType === 'in' ? 'import' : 'export'}
+            />}
             <Button icon="file-excel">九城商检导出</Button>
             <Button type="primary" icon="save" onClick={this.handleSave} disabled={this.props.ciqHeadChangeTimes === 0}>保存</Button>
           </PageHeader.Actions>

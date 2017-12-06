@@ -56,6 +56,7 @@ const actionTypes = createActionTypes('@@welogix/cwm/warehouse/', [
   'LOAD_ADVICE_LOCATIONS', 'LOAD_ADVICE_LOCATIONS_SUCCEED', 'LOAD_ADVICE_LOCATIONS_FAIL',
   'AUTHORIZE_BROKER', 'AUTHORIZE_BROKER_SUCCEED', 'AUTHORIZE_BROKER_FAIL',
   'LOAD_BRKP', 'LOAD_BRKP_SUCCEED', 'LOAD_BRKP_FAIL',
+  'LOAD_CUSTOMERS', 'LOAD_CUSTOMERS_SUCCEED', 'LOAD_CUSTOMERS_FAIL',
 ]);
 
 const initialState = {
@@ -110,6 +111,7 @@ const initialState = {
     broker: {},
   },
   brokerPartners: [],
+  customs: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -174,6 +176,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, CCBs: action.result.data };
     case actionTypes.LOAD_BRKP_SUCCEED:
       return { ...state, brokerPartners: action.result.data };
+    case actionTypes.LOAD_CUSTOMERS_SUCCEED:
+      return { ...state, customs: action.result.data };
     default:
       return state;
   }
@@ -941,6 +945,20 @@ export function authorizeBroker(value, whseCode, partnerId) {
       endpoint: 'v1/cwm/authorize/broker',
       method: 'post',
       data: { value, whseCode, partnerId },
+    },
+  };
+}
+
+export function loadCustoms() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_CUSTOMERS,
+        actionTypes.LOAD_CUSTOMERS_SUCCEED,
+        actionTypes.LOAD_CUSTOMERS_FAIL,
+      ],
+      endpoint: 'v1/cwm/customs/get',
+      method: 'get',
     },
   };
 }
