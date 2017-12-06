@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
-import Table from 'client/components/remoteAntTable';
 import { format } from 'client/common/i18n/helpers';
 import { hideActivitiesDock } from 'common/reducers/activities';
 import { loadRecentActivities } from 'common/reducers/operationLog';
@@ -34,26 +34,22 @@ export default class ActivitiesDockPanel extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { visible, recentActivities } = this.props;
-    const columns = [{
-      title: '业务单号',
-      dataIndex: 'op_ref_billno',
-      width: 200,
-    }, {
-      title: '内容',
-      dataIndex: 'op_content',
-    }, {
-      title: '时间',
-      dataIndex: 'created_date',
-      width: 100,
-      render: o => o && moment(o).fromNow(),
-    },
-    ];
     return (
       <DockPanel size="small" visible={visible} onClose={this.props.hideActivitiesDock}
         title={<span>{this.msg('activities')}</span>}
       >
-        <Table columns={columns} dataSource={recentActivities} rowKey="id" locale={{ emptyText: this.msg('emptyActivities') }}
-          showHeader={false} scrollOffset={170} scroll={{ x: 400 }}
+        <List
+          itemLayout="horizontal"
+          dataSource={recentActivities}
+          renderItem={item => (
+            <List.Item>
+              <List.Item.Meta
+                title={<a>{item.op_content}</a>}
+                description={item.created_date && moment(item.created_date).fromNow()}
+              />
+              <div>{item.op_ref_billno}</div>
+            </List.Item>
+          )}
         />
       </DockPanel>
     );
