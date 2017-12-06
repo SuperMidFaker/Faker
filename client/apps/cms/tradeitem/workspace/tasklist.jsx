@@ -127,7 +127,7 @@ export default class TradeItemTaskList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="new" />
+            <ModuleMenu currentKey="task" />
           </div>
         </Sider>
         <Layout>
@@ -135,7 +135,7 @@ export default class TradeItemTaskList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  {this.msg('taskNew')}
+                  {this.msg('taskList')}
                 </Breadcrumb.Item>
               </Breadcrumb>
             </PageHeader.Title>
@@ -147,7 +147,6 @@ export default class TradeItemTaskList extends React.Component {
             <DataTable toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows} loading={loading}
               columns={this.columns} dataSource={workspaceTaskList} rowSelection={rowSelection} rowKey="id"
-              locale={{ emptyText: '当前没有新的料件' }}
             />
           </Content>
         </Layout>

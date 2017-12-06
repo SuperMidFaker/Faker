@@ -141,7 +141,7 @@ export default class NewItemsList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="new" />
+            <ModuleMenu currentKey="emerge" />
           </div>
         </Sider>
         <Layout>

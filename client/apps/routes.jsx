@@ -55,7 +55,6 @@ import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
-import * as CMSTradeItem from './cms/tradeitem';
 import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
 import * as CMSTradeItemRepo from './cms/tradeitem/repo';
 import * as CMSTradeItemRepoItem from './cms/tradeitem/repo/item';
@@ -384,14 +383,6 @@ export default(store) => {
                 <Route path="templates/packinglist/:id" component={CMSSettings.PackingListTemplate} />
               </Route>
             </Route>
-            <Route path="classification">
-              <Route path="tradeitem">
-                <IndexRoute component={CMSTradeItem.List} />
-                <Route path="create" component={CMSTradeItem.Create} />
-                <Route path="edit/:id" component={CMSTradeItem.Edit} />
-                <Route path="newSrc/:id" component={CMSTradeItem.NewSrc} />
-              </Route>
-            </Route>
             <Route path="tradeitem">
               <IndexRedirect to="/clearance/tradeitem/repo" />
               <Route path="repo">
@@ -415,7 +406,6 @@ export default(store) => {
                 <Route path="special" component={CMSTradeItemHSCode.Special} />
                 <Route path="changes" component={CMSTradeItemHSCode.Changes} />
               </Route>
-              <Route path="audit" component={CMSTradeItem.Audit} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>

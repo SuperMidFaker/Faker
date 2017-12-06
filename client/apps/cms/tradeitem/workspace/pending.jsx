@@ -142,7 +142,7 @@ export default class PendingItemsList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="review" />
+            <ModuleMenu currentKey="pending" />
           </div>
         </Sider>
         <Layout>

@@ -18,28 +18,28 @@ const messages = defineMessages({
     id: 'cms.tradeitem.repo.creator',
     defaultMessage: '创建企业',
   },
-  taskWorkspace: {
-    id: 'cms.tradeitem.task.workspace',
+  workspace: {
+    id: 'cms.tradeitem.workspace',
     defaultMessage: '归类工作区',
   },
-  createTask: {
-    id: 'cms.tradeitem.task.create',
-    defaultMessage: '新建归类任务',
+  taskList: {
+    id: 'cms.tradeitem.workspace.task.list',
+    defaultMessage: '任务列表',
   },
   taskNew: {
-    id: 'cms.tradeitem.task.new',
+    id: 'cms.tradeitem.workspace.new',
     defaultMessage: '新料件',
   },
   taskConflict: {
-    id: 'cms.tradeitem.task.conflict',
+    id: 'cms.tradeitem.workspace.conflict',
     defaultMessage: '归类冲突',
   },
   taskInvalid: {
-    id: 'cms.tradeitem.task.invalid',
+    id: 'cms.tradeitem.workspace.invalid',
     defaultMessage: '归类失效',
   },
   taskReview: {
-    id: 'cms.tradeitem.task.review',
+    id: 'cms.tradeitem.workspace.review',
     defaultMessage: '待审核',
   },
   hscodeCustoms: {
@@ -62,9 +62,9 @@ const messages = defineMessages({
     id: 'cms.tradeitem.config',
     defaultMessage: '资源配置',
   },
-  audit: {
-    id: 'cms.tradeitem.audit',
-    defaultMessage: '日志审计',
+  tradeItemMaster: {
+    id: 'cms.tradeitem.master',
+    defaultMessage: '物料主数据',
   },
   searchRepoPlaceholder: {
     id: 'cms.tradeitem.searchRepoPlaceholder',
@@ -97,6 +97,14 @@ const messages = defineMessages({
   srcProductNo: {
     id: 'cms.tradeitem.col.src.product.no',
     defaultMessage: '源标识',
+  },
+  itemType: {
+    id: 'cms.tradeitem.col.item.type',
+    defaultMessage: '类型',
+  },
+  copUOM: {
+    id: 'cms.tradeitem.col.cop.uom',
+    defaultMessage: '企业计量单位',
   },
   hscode: {
     id: 'cms.tradeitem.col.hscode',

@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Dropdown, Menu, Modal, Layout, Icon, Input, Tag } from 'antd';
+import { Breadcrumb, Button, Dropdown, Menu, Modal, Layout, Icon, Input, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openAddModal, switchRepoMode } from 'common/reducers/cmsTradeitem';
+import { openAddModal, switchRepoMode, setRepo } from 'common/reducers/cmsTradeitem';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -26,7 +26,7 @@ const Search = Input.Search;
     repos: state.cmsTradeitem.repos,
     reposLoading: state.cmsTradeitem.reposLoading,
   }),
-  { openAddModal, switchRepoMode, loadCustomers }
+  { openAddModal, switchRepoMode, setRepo, loadCustomers }
 )
 @connectNav({
   depth: 2,
@@ -81,18 +81,6 @@ export default class RepoList extends React.Component {
     dataIndex: 'classified_num',
     width: 150,
   }, {
-    title: this.msg('状态'),
-    dataIndex: 'status',
-    width: 150,
-    render: (o) => {
-      switch (o) {
-        case 0:
-          return <Badge status="default" text="停止" />;
-        default:
-          return <Badge status="processing" text="运行中" />;
-      }
-    },
-  }, {
     title: this.msg('最后更新时间'),
     dataIndex: 'last_modified_date',
     render: (o, record) => record.last_modified_date && moment(record.last_modified_date).format('YYYY.MM.DD HH:mm'),
@@ -132,6 +120,7 @@ export default class RepoList extends React.Component {
   },
   ];
   handleEnter = (record) => {
+    this.props.setRepo(record);
     const link = `/clearance/tradeitem/repo/${record.id}`;
     this.context.router.push(link);
   }

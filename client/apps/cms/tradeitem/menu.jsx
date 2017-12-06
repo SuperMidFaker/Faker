@@ -36,11 +36,11 @@ export default class ModuleMenu extends React.Component {
           <Menu.Item key="repoList">
             <NavLink to="/clearance/tradeitem/repo"><Icon type="database" /> {this.msg('repoList')}</NavLink>
           </Menu.Item>
-          <Menu.SubMenu key="g_task" title={<span><Icon type="exception" /> {this.msg('taskWorkspace')}</span>}>
+          <Menu.SubMenu key="g_task" title={<span><Icon type="profile" /> {this.msg('workspace')}</span>}>
             <Menu.Item key="task">
-              <NavLink to="/clearance/tradeitem/workspace/tasks"><Icon type="plus" />{this.msg('createTask')}</NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/tasks">{this.msg('taskList')}</NavLink>
             </Menu.Item>
-            <Menu.Item key="new">
+            <Menu.Item key="emerge">
               <NavLink to="/clearance/tradeitem/workspace/emerges">{this.msg('taskNew')}</NavLink>
             </Menu.Item>
             <Menu.Item key="conflict">
@@ -49,7 +49,7 @@ export default class ModuleMenu extends React.Component {
             <Menu.Item key="invalid">
               <NavLink to="/clearance/tradeitem/workspace/invalids">{this.msg('taskInvalid')}</NavLink>
             </Menu.Item>
-            <Menu.Item key="review">
+            <Menu.Item key="pending">
               <NavLink to="/clearance/tradeitem/workspace/pendings">{this.msg('taskReview')}</NavLink>
             </Menu.Item>
           </Menu.SubMenu>
@@ -61,9 +61,6 @@ export default class ModuleMenu extends React.Component {
               <NavLink to="/clearance/tradeitem/hscode/special">{this.msg('hscodeSpecial')}</NavLink>
             </Menu.Item>
           </Menu.SubMenu>
-          <Menu.Item key="audit">
-            <NavLink to="/clearance/tradeitem/audit"><Icon type="file-text" /> {this.msg('audit')}</NavLink>
-          </Menu.Item>
         </Menu>
       </div>);
   }
