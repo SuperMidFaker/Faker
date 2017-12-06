@@ -66,7 +66,7 @@ export default class RepoUsersCard extends React.Component {
     this.setState({ repoUserList: data, addOne });
   }
   handleSave = (record) => {
-    this.props.addRepoUser(this.props.tenantId, this.props.repo.id, record.partnerTenantId, record.name).then(
+    this.props.addRepoUser(this.props.tenantId, this.props.repo.id, record.partnerTenantId, record.name, record.permission).then(
       (result) => {
         if (result.error) {
           message.error(result.error.message, 10);
@@ -90,7 +90,6 @@ export default class RepoUsersCard extends React.Component {
   }
   handleTradeSel = (partnerTenantId) => {
     const addOne = { ...this.state.addOne };
-    addOne.tenant_id = partnerTenantId;
     addOne.partnerTenantId = partnerTenantId;
     const broker = this.state.brokers.find(tr => tr.partner_tenant_id === partnerTenantId);
     if (broker) {
@@ -121,7 +120,7 @@ export default class RepoUsersCard extends React.Component {
       render: (o, record) => {
         if (!record.id) {
           return (
-            <Select value={record.tenant_id || ''} onChange={this.handleTradeSel} style={{ width: '100%' }}>
+            <Select value={record.partnerTenantId || ''} onChange={this.handleTradeSel} style={{ width: '100%' }}>
               {
                 brokers.map(opt => <Option value={opt.partner_tenant_id} key={opt.name}>{opt.name}</Option>)
               }
