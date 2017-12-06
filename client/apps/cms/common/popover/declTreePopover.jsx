@@ -10,6 +10,7 @@ export default class DeclTreePopover extends Component {
     ciqs: PropTypes.array,
     billSeqNo: PropTypes.string,
     ieType: PropTypes.string,
+    selectedKeys: PropTypes.array,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -29,12 +30,13 @@ export default class DeclTreePopover extends Component {
     }
   }
   render() {
-    const { entries, ciqs } = this.props;
+    const { entries, ciqs, selectedKeys } = this.props;
     const popoverContent = (
       <Tree
         showLine
         defaultExpandedKeys={['0-0-0']}
         onSelect={this.handleSelect}
+        selectedKeys={selectedKeys}
       >
         <TreeNode title={<a role="presentation"><Icon type="file-text" /> 申报清单</a>} key="0-0">
           {entries.length > 0 && (

@@ -275,7 +275,9 @@ export default class CustomsDeclEditor extends React.Component {
             {declkey && <Badge status={CMS_DECL_STATUS[declkey].badge} text={CMS_DECL_STATUS[declkey].text} />}
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {<DeclTreePopover entries={billMeta.entries} ciqs={billMeta.ciqs} ietype={ietype} billSeqNo={billMeta.bill_seq_no} />}
+            {<DeclTreePopover entries={billMeta.entries} ciqs={billMeta.ciqs}
+              ietype={ietype} billSeqNo={billMeta.bill_seq_no} selectedKeys={[`0-0-0-${head.pre_entry_seq_no}`]}
+            />}
             <Dropdown overlay={printMenu}>
               <Button >
                 <Icon type="printer" /> 打印
