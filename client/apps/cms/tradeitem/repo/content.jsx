@@ -10,6 +10,8 @@ import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import NavLink from 'client/components/NavLink';
 import { loadCustomers } from 'common/reducers/crmCustomers';
+import { getElementByHscode } from 'common/reducers/cmsHsCode';
+import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
   deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare, copyToStage } from 'common/reducers/cmsTradeitem';
 import { getAuditWay } from 'common/reducers/scvClassification';
@@ -17,6 +19,7 @@ import SearchBar from 'client/components/SearchBar';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
 import ImportItemModal from './modal/importItemModal';
+import DeclElementsModal from '../../common/modal/declElementsModal';
 import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
 import RowUpdater from 'client/components/rowUpdater';
 import { formatMsg } from '../message.i18n';
@@ -72,6 +75,8 @@ function fetchData({ dispatch }) {
     getAuditWay,
     upgradeMode,
     setDatasShare,
+    getElementByHscode,
+    showDeclElementsModal,
     copyToStage }
 )
 @connectNav({
@@ -171,6 +176,7 @@ export default class RepoContent extends Component {
     title: this.msg('gModel'),
     dataIndex: 'g_model',
     width: 400,
+    onCellClick: record => record.cop_product_no && this.handleShowDeclElementModal(record),
   }, {
     title: this.msg('element'),
     dataIndex: 'element',
@@ -416,6 +422,13 @@ export default class RepoContent extends Component {
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
+      }
+    });
+  }
+  handleShowDeclElementModal = (record) => {
+    this.props.getElementByHscode(record.hscode).then((result) => {
+      if (!result.error) {
+        this.props.showDeclElementsModal(result.data.declared_elements, record.id, record.g_model, true, record.g_name);
       }
     });
   }
@@ -734,6 +747,7 @@ export default class RepoContent extends Component {
             loading={this.props.tradeItemsLoading} rowKey="id" columns={this.columns} dataSource={this.dataSource} bordered
           />
           <ImportItemModal data={this.state.compareduuid} />
+          <DeclElementsModal onOk={null} />
         </Content>
       </Layout>
     );

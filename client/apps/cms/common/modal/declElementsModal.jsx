@@ -110,7 +110,7 @@ export default class DeclElementsModal extends Component {
             <FormItem>
               <TextArea value={model} disabled autosize />
             </FormItem>
-            <Alert message="根据海关规定应填报以下要素" type="info" closable />
+            {!disabled && <Alert message="根据海关规定应填报以下要素" type="info" closable />}
             {element.map((item, index) => {
               if (item && index >= 1) {
                 return (

@@ -60,9 +60,6 @@ export default class ModuleMenu extends React.Component {
             <Menu.Item key="hscodeSpecial">
               <NavLink to="/clearance/tradeitem/hscode/special">{this.msg('hscodeSpecial')}</NavLink>
             </Menu.Item>
-            <Menu.Item key="hscodeChanges">
-              <NavLink to="/clearance/tradeitem/hscode/changes">{this.msg('hscodeChanges')}</NavLink>
-            </Menu.Item>
           </Menu.SubMenu>
           <Menu.Item key="audit">
             <NavLink to="/clearance/tradeitem/audit"><Icon type="file-text" /> {this.msg('audit')}</NavLink>
