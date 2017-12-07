@@ -192,24 +192,22 @@ export default class CiqDeclGoodsPane extends React.Component {
     const { totQty, totWet, totStdQty } = this.state;
     const columns = this.getColumns();
     return (
-      <div className="pane">
-        <DataPane fullscreen={this.props.fullscreen}
-          columns={columns} bordered scrollOffset={312} onRowClick={this.handleOnRowClick}
-          dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
-        >
-          <DataPane.Toolbar>
-            <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
-            <DataPane.Actions>
-              <Summary>
-                <Summary.Item label="总数量" addonAfter="KG">{totQty && totQty.toFixed(2)}</Summary.Item>
-                <Summary.Item label="总重量" addonAfter="KG">{totWet && totWet.toFixed(3)}</Summary.Item>
-                <Summary.Item label="总HS标准量" addonAfter="元">{totStdQty && totStdQty.toFixed(2)}</Summary.Item>
-              </Summary>
-            </DataPane.Actions>
-          </DataPane.Toolbar>
-        </DataPane>
+      <DataPane fullscreen={this.props.fullscreen}
+        columns={columns} bordered scrollOffset={312} onRowClick={this.handleOnRowClick}
+        dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
+      >
+        <DataPane.Toolbar>
+          <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
+          <DataPane.Actions>
+            <Summary>
+              <Summary.Item label="总数量" addonAfter="KG">{totQty && totQty.toFixed(2)}</Summary.Item>
+              <Summary.Item label="总重量" addonAfter="KG">{totWet && totWet.toFixed(3)}</Summary.Item>
+              <Summary.Item label="总HS标准量" addonAfter="元">{totStdQty && totStdQty.toFixed(2)}</Summary.Item>
+            </Summary>
+          </DataPane.Actions>
+        </DataPane.Toolbar>
         <GoodsModal ioType={ioType} />
-      </div>
+      </DataPane>
     );
   }
 }
