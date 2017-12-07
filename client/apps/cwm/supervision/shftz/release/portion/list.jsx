@@ -161,8 +161,8 @@ export default class SHFTZReleaseList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => record.status < 1 ? <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />
-    : <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />,
+    render: (o, record) => record.status < 1 ? <RowUpdater onClick={this.handleDetail} label="发送备案" row={record} />
+    : <RowUpdater onClick={this.handleDetail} label="备案详情" row={record} />,
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);

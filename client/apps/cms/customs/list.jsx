@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Breadcrumb, DatePicker, Divider, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -120,7 +120,7 @@ export default class CustomsList extends Component {
                 {record.pre_entry_seq_no}
               </span>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                <RowUpdater onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
@@ -150,7 +150,7 @@ export default class CustomsList extends Component {
                 </a>
               </Tooltip>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                <RowUpdater onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
@@ -327,8 +327,10 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
+            <RowUpdater onClick={this.handleRowClick} label={this.msg('viewDetail')} row={record} />
+            <Divider type="vertical" />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onHit={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
+              <RowUpdater onClick={this.handleReview} label={<Icon type="check-circle-o" />} tooltip={this.msg('review')}row={record} />
             </PrivilegeCover>
           </span>
         );
@@ -336,7 +338,7 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onHit={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendDeclMsg')}</span>} row={record} />
+            <RowUpdater onClick={this.handleShowSendDeclModal} label={<Icon type="mail" />} tooltip={this.msg('sendDeclMsg')} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
@@ -344,15 +346,19 @@ export default class CustomsList extends Component {
         if (record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
-              <RowUpdater onHit={this.handleShowDeclReleasedModal} row={record}
-                label={<span><Icon type="flag" />放行确认</span>}
+              <RowUpdater onClick={this.handleShowDeclReleasedModal} row={record}
+                label={<Icon type="flag" />} tooltip={this.msg('markReleased')}
               />
             </PrivilegeCover>);
         }
         for (let i = 1; i < spanElems.length; i += 2) {
-          spanElems.splice(i, 0, <span className="ant-divider" key={`divid${i}`} />);
+          spanElems.splice(i, 0, <Divider type="vertical" key={`divider-${i}`} />);
         }
-        return <span>{spanElems}</span>;
+        return spanElems.length === 0 ? <RowUpdater onClick={this.handleRowClick} label={this.msg('viewDetail')} row={record} /> : (<span>
+          <RowUpdater onClick={this.handleRowClick} label={this.msg('viewDetail')} row={record} />
+          <Divider type="vertical" />
+          {spanElems}
+        </span>);
       }
     },
   }]
@@ -411,8 +417,8 @@ export default class CustomsList extends Component {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, { ...filters });
   }
-  handleRowClick = (record, index, ev) => {
-    ev.preventDefault();
+  handleRowClick = (record) => {
+    // ev.preventDefault();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
     const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
     this.context.router.push(link);
@@ -681,7 +687,7 @@ export default class CustomsList extends Component {
             <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
               rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
               columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
-              onRowClick={this.handleRowClick}
+              onRowDoubleClick={this.handleRowClick}
             />
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />

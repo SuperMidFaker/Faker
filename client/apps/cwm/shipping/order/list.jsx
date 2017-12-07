@@ -185,19 +185,19 @@ export default class ShippingOrderList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CWM_SO_STATUS.PENDING.value) {
-        return (<span><RowUpdater label="释放" row={record} onHit={this.handleReleaseSO} />
-          <span className="ant-divider" /><RowUpdater onHit={this.handleEditSO} label="修改" row={record} /></span>);
+        return (<span><RowUpdater label="释放" row={record} onClick={this.handleReleaseSO} />
+          <span className="ant-divider" /><RowUpdater onClick={this.handleEditSO} label="修改" row={record} /></span>);
       } else {
         const outbndActions = (<span>
           {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
-            && <RowUpdater onHit={this.handleOutbound} label="出库操作" row={record} />}
-          {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onHit={this.handleOutbound} label="出库详情" row={record} />}</span>);
+            && <RowUpdater onClick={this.handleOutbound} label="出库操作" row={record} />}
+          {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onClick={this.handleOutbound} label="出库详情" row={record} />}</span>);
         if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
           return (<span>
             {outbndActions}
             <span className="ant-divider" />
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onHit={this.handleSupervision} label="海关备案" row={record} />
-              : <RowUpdater onHit={this.handleSupervision} label="备案详情" row={record} />}
+            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onClick={this.handleSupervision} label="海关备案" row={record} />
+              : <RowUpdater onClick={this.handleSupervision} label="备案详情" row={record} />}
           </span>);
         } else {
           return (<span>{outbndActions}</span>);

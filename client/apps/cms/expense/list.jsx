@@ -171,7 +171,7 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowUpdater onHit={this.handleAddAdvanceIncome} field="cush_bill"
+                <RowUpdater onClick={this.handleAddAdvanceIncome} field="cush_bill"
                   row={{ delg_no: row.delg_no }} label={labelElem}
                 />);
             }
@@ -237,7 +237,7 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowUpdater onHit={this.handleAddAdvancePayment} field="cush_cost"
+                <RowUpdater onClick={this.handleAddAdvancePayment} field="cush_cost"
                   row={{ delg_no: row.delg_no }} label={labelElem}
                 />);
             }
@@ -329,7 +329,7 @@ export default class ExpenseList extends Component {
       dataIndex: 'OPS_COL',
       width: 120,
       fixed: 'right',
-      render: record => <RowUpdater onHit={this.handleInbound} label="费用明细" row={record} />,
+      render: record => <RowUpdater onClick={this.handleInbound} label="费用明细" row={record} />,
     },
   ];
   dataSource = new DataTable.DataSource({

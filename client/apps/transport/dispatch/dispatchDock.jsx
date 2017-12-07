@@ -24,9 +24,9 @@ const TabPane = Tabs.TabPane;
 const formatMsg = format(messages);
 
 export function RowClick(props) {
-  const { text, onHit, row, index } = props;
+  const { text, onClick, row, index } = props;
   function handleClick(ev) {
-    onHit(ev, row, index);
+    onClick(ev, row, index);
   }
   return <a role="presentation" onClick={handleClick}>{text}</a>;
 }
@@ -35,7 +35,7 @@ RowClick.propTypes = {
   row: PropTypes.object.isRequired,
   index: PropTypes.number,
   text: PropTypes.string.isRequired,
-  onHit: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 function fetch({ state, dispatch, cookie }) {

@@ -158,11 +158,11 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else if (record.status === 0 && record.receiving_lock === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       }
     },
   }]

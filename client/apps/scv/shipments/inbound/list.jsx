@@ -233,7 +233,7 @@ export default class InboundShipmentsList extends React.Component {
       if (record.status <= 3) {
         return (
           <span>
-            <RowUpdater onHit={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
+            <RowUpdater onClick={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
             <span className="ant-divider" />
           </span>
         );

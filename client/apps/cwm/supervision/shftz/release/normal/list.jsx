@@ -184,14 +184,14 @@ export default class SHFTZNormalRelRegList extends React.Component {
     render: (o, record) => {
       switch (record.status) {
         case 0:
-          return <RowUpdater onHit={this.handleDetail} label="发送备案" row={record} />;
+          return <RowUpdater onClick={this.handleDetail} label="发送备案" row={record} />;
         case 1:
-          return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
+          return <RowUpdater onClick={this.handleDetail} label="备案详情" row={record} />;
         case 2:
           return (<span>
-            <RowUpdater onHit={this.handleDetail} label="委托清关" row={record} />
+            <RowUpdater onClick={this.handleDetail} label="委托清关" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />
+            <RowUpdater onClick={this.handleDetail} label="备案详情" row={record} />
           </span>);
         case 3:
         case 4:
@@ -199,7 +199,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 6:
         case 7:
         case 8:
-          return <RowUpdater onHit={this.handleDetail} label="备案详情" row={record} />;
+          return <RowUpdater onClick={this.handleDetail} label="备案详情" row={record} />;
         default:
           break;
       }

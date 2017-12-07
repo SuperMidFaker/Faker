@@ -283,7 +283,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
+              <RowUpdater onClick={this.handleCodeChoose} label="使用新编码" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'newhscode') {
@@ -293,7 +293,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
+              <RowUpdater onClick={this.handleCodeChoose} label="使用原编码" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'preGmodel') {
@@ -303,7 +303,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
+              <RowUpdater onClick={this.handleCodeChoose} label="使用新规格型号" row={record} index={index} />
             </span>
           );
         } else if (record.feedback === 'newGmodel') {
@@ -313,7 +313,7 @@ export default class ImportComparisonModal extends React.Component {
                 <a role="presentation"><Icon type="delete" /></a>
               </Popconfirm>
               <span className="ant-divider" />
-              <RowUpdater onHit={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
+              <RowUpdater onClick={this.handleCodeChoose} label="使用原规格型号" row={record} index={index} />
             </span>
           );
         } else {

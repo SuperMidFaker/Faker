@@ -293,7 +293,7 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <PrivilegeCover module="transport" feature="tracking" action="edit">
               <RowUpdater label={msg('updateVehicleDriver')}
-                onHit={handlers.onShowVehicleModal} row={record}
+                onClick={handlers.onShowVehicleModal} row={record}
               />
             </PrivilegeCover>
           );
@@ -393,7 +393,7 @@ export default function makeColumns(type, handlers, msg) {
               return (
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyPOD')} row={record}
-                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: record }); }}
+                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPod, shipment: record }); }}
                   />
                 </PrivilegeCover>
               );
@@ -403,7 +403,7 @@ export default function makeColumns(type, handlers, msg) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <RowUpdater label={msg('notifyPOD')} row={record}
-                  onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: record }); }}
+                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPod, shipment: record }); }}
                 />
               </PrivilegeCover>
             );
@@ -416,7 +416,7 @@ export default function makeColumns(type, handlers, msg) {
           return (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
-                <RowUpdater label={msg('auditPod')} onHit={handlers.onShowAuditModal}
+                <RowUpdater label={msg('auditPod')} onClick={handlers.onShowAuditModal}
                   row={record}
                 />
               </PrivilegeCover>
@@ -434,7 +434,7 @@ export default function makeColumns(type, handlers, msg) {
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
                   <div>
                     <RowUpdater label={msg('deliverConfirm')} row={record}
-                      onHit={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
+                      onClick={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                     />
                   </div>
                 </PrivilegeCover>
@@ -504,7 +504,7 @@ export default function makeColumns(type, handlers, msg) {
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
                 <RowUpdater label={msg('notifyAccept')} row={record}
-                  onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptAccept, shipment: record }); }}
+                  onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptAccept, shipment: record }); }}
                 />
               </PrivilegeCover>
             </div>
@@ -516,7 +516,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
                   <RowUpdater label={msg('updateVehicleDriver')} row={record}
-                    onHit={handlers.onShowVehicleModal}
+                    onClick={handlers.onShowVehicleModal}
                   />
                 </PrivilegeCover>
               </div>
@@ -526,7 +526,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyDispatch')} row={record}
-                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: record }); }}
+                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDispatch, shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
@@ -546,7 +546,7 @@ export default function makeColumns(type, handlers, msg) {
                 <div>
                   <PrivilegeCover module="transport" feature="tracking" action="create">
                     <RowUpdater label={msg('notifyPickup')} row={record}
-                      onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: record }); }}
+                      onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptDriverPickup, shipment: record }); }}
                     />
                   </PrivilegeCover>
                 </div>
@@ -558,7 +558,7 @@ export default function makeColumns(type, handlers, msg) {
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="create">
                   <RowUpdater label={msg('notifyPickup')} row={record}
-                    onHit={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: record }); }}
+                    onClick={() => { handlers.sendMessage({ module: 'transport', promptType: PROMPT_TYPES.promptSpPickup, shipment: record }); }}
                   />
                 </PrivilegeCover>
               </div>
@@ -580,7 +580,7 @@ export default function makeColumns(type, handlers, msg) {
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <div>
                   <RowUpdater label={msg('deliverConfirm')} row={record}
-                    onHit={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
+                    onClick={() => { handlers.deliverConfirm(record.shipmt_no, record.disp_id); }}
                   />
                 </div>
               </PrivilegeCover>

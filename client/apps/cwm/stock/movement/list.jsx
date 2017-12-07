@@ -128,12 +128,12 @@ export default class MovementList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.isdone) {
-        return (<RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />);
+        return (<RowUpdater onClick={this.handleMovementDetail} label="移库明细" row={record} />);
       } else {
         return (<span>
-          <RowUpdater onHit={this.handleMovementDetail} label="移库明细" row={record} />
+          <RowUpdater onClick={this.handleMovementDetail} label="移库明细" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={this.cancelMovement} label="取消移库" row={record} />
+          <RowUpdater onClick={this.cancelMovement} label="取消移库" row={record} />
         </span>);
       }
     },

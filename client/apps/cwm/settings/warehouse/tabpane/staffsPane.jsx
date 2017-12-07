@@ -59,10 +59,10 @@ export default class StaffsPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeStaffStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeStaffStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onClick={() => this.changeStaffStatus(record.id, true)} label="启用" row={record} /> :
+        <RowUpdater onClick={() => this.changeStaffStatus(record.id, false)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={this.handleDeleteStaff} label={<Icon type="delete" />} row={record} />
+        <RowUpdater onClick={this.handleDeleteStaff} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]

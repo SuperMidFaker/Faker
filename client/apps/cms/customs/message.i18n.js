@@ -313,4 +313,8 @@ export default defineMessages({
     id: 'cms.customs.decl.tabpanes.cert.num',
     defaultMessage: '单证编号',
   },
+  viewDetail: {
+    id: 'cms.customs.decl.op.view.detail',
+    defaultMessage: '详情',
+  },
 });

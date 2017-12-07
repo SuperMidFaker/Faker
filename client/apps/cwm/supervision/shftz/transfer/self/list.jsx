@@ -144,7 +144,7 @@ export default class SHFTZTransferSelfList extends React.Component {
     render: (o, record) =>
         (
           <span>
-            <RowUpdater onHit={this.handleDetail} label="转移详情" row={record} />
+            <RowUpdater onClick={this.handleDetail} label="转移详情" row={record} />
             {record.status === CWM_SHFTZ_APIREG_STATUS.pending && <span className="ant-divider" />}
             {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>

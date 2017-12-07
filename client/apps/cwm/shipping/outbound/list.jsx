@@ -181,11 +181,11 @@ export default class OutboundList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
       } else if (record.status === 0 && record.receiving_mode === 2) {
         return (<span><RowUpdater label="撤回" row={record} /></span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
       }
     },
   }]
