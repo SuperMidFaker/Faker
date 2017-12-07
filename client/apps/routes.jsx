@@ -55,9 +55,10 @@ import * as CMSExpense from './cms/expense';
 import * as CMSBilling from './cms/billing';
 import * as CMSSettings from './cms/settings';
 import * as CMSBrokers from './cms/settings/brokers';
-import * as CMSTradeItem from './cms/classification/tradeitem';
-import * as CMSClassificationHsCode from './cms/classification/hscode';
-import * as CMSClassificationSpecial from './cms/classification/special';
+import * as CMSTradeItemHSCode from './cms/tradeitem/hscode';
+import * as CMSTradeItemRepo from './cms/tradeitem/repo';
+import * as CMSTradeItemRepoItem from './cms/tradeitem/repo/item';
+import * as CMSTradeItemWorkspace from './cms/tradeitem/workspace';
 import CWM from './cwm/module-cwm';
 import * as CWMDashboard from './cwm/dashboard';
 import * as CWMReceivingASN from './cwm/receiving/asn';
@@ -382,15 +383,30 @@ export default(store) => {
                 <Route path="templates/packinglist/:id" component={CMSSettings.PackingListTemplate} />
               </Route>
             </Route>
-            <Route path="classification">
-              <Route path="tradeitem">
-                <IndexRoute component={CMSTradeItem.List} />
-                <Route path="create" component={CMSTradeItem.Create} />
-                <Route path="edit/:id" component={CMSTradeItem.Edit} />
-                <Route path="newSrc/:id" component={CMSTradeItem.NewSrc} />
+            <Route path="tradeitem">
+              <IndexRedirect to="/clearance/tradeitem/repo" />
+              <Route path="repo">
+                <IndexRoute component={CMSTradeItemRepo.List} />
+                <Route path=":repoId" component={CMSTradeItemRepo.Content} />
+                <Route path="item">
+                  <Route path="add" component={CMSTradeItemRepoItem.Add} />
+                  <Route path="edit/:id" component={CMSTradeItemRepoItem.Edit} />
+                  <Route path="fork/:id" component={CMSTradeItemRepoItem.Fork} />
+                </Route>
               </Route>
-              <Route path="hscode" component={CMSClassificationHsCode.List} />
-              <Route path="special" component={CMSClassificationSpecial.Categories} />
+              <Route path="workspace">
+                <Route path="tasks" component={CMSTradeItemWorkspace.TaskList} />
+                <Route path="task/:id" component={CMSTradeItemWorkspace.TaskPage} />
+                <Route path="emerges" component={CMSTradeItemWorkspace.Emerge} />
+                <Route path="conflicts" component={CMSTradeItemWorkspace.Conflict} />
+                <Route path="invalids" component={CMSTradeItemWorkspace.Invalid} />
+                <Route path="pendings" component={CMSTradeItemWorkspace.Pending} />
+              </Route>
+              <Route path="hscode">
+                <IndexRoute component={CMSTradeItemHSCode.List} />
+                <Route path="special" component={CMSTradeItemHSCode.Special} />
+                <Route path="changes" component={CMSTradeItemHSCode.Changes} />
+              </Route>
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>

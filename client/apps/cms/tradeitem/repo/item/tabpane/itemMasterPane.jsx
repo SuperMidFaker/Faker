@@ -1,13 +1,14 @@
-/* eslint react/no-multi-comp: 0 */
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { connect } from 'react-redux';
-import { Form, Select, Input, Card, Col, Row, message } from 'antd';
+import { Card, DatePicker, Form, Input, Select, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
+import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
-import { SPECIAL_COPNO_TERM } from 'common/constants';
+import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE } from 'common/constants';
+import messages from '../../../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -37,6 +38,12 @@ function getFieldInits(formData) {
         }
       }
     }
+    ['pre_classify_start_date', 'pre_classify_end_date'].forEach((fd) => {
+      init[fd] = !formData[fd] ? null : moment(formData[fd]);
+    });
+    ['pre_classify_no', 'remark'].forEach((fd) => {
+      init[fd] = formData[fd] === undefined ? '' : formData[fd];
+    });
   }
   return init;
 }
@@ -55,9 +62,11 @@ function getFieldInits(formData) {
     repoId: state.cmsTradeitem.repoId,
     itemData: state.cmsTradeitem.itemData,
   }),
-  { loadHscodes }
+  {
+    loadHscodes,
+  }
 )
-export default class BasicForm extends Component {
+export default class ItemMasterPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -70,6 +79,9 @@ export default class BasicForm extends Component {
     action: PropTypes.string.isRequired,
     repoId: PropTypes.number.isRequired,
     itemData: PropTypes.object.isRequired,
+  }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.hscodes !== nextProps.hscodes) {
@@ -99,6 +111,7 @@ export default class BasicForm extends Component {
       }
     }
   }
+  msg = key => formatMsg(this.props.intl, key);
   handleSearch = (value) => {
     const { hscodes } = this.props;
     this.props.loadHscodes({
@@ -119,7 +132,6 @@ export default class BasicForm extends Component {
       }
     });
   }
-  msg = key => formatMsg(this.props.intl, key);
   render() {
     const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes, action } = this.props;
     const currencyOptions = currencies.map(curr => ({
@@ -132,27 +144,90 @@ export default class BasicForm extends Component {
       text: `${tc.cntry_co} | ${tc.cntry_name_cn}`,
       search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
     }));
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+      colon: false,
+    };
+    const formItemSpan2Layout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 20 },
+      },
+      colon: false,
+    };
+    const formItemSpan4Layout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 2 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 22 },
+      },
+      colon: false,
+    };
+
     return (
-      <div>
-        <Card bodyStyle={{ padding: 16 }}>
-          <Row gutter={16}>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('copProductNo')}>
+      <FormPane fullscreen={this.props.fullscreen}>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+          <Row>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('copProductNo')}>
                 {getFieldDecorator('cop_product_no', {
                   rules: [{ required: true, message: '商品货号必填' }],
                   initialValue: fieldInits.cop_product_no,
                 })(<Input disabled={action !== 'create'} onChange={this.handleCopNoChange} />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('srcProductNo')}>
-                {getFieldDecorator('src_product_no', {
-                  initialValue: fieldInits.src_product_no,
-                })(<Input disabled={action !== 'newSrc'} onChange={this.handleSrcNoChange} />)}
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('itemType')}>
+                {getFieldDecorator('item_type', {
+                  initialValue: fieldInits.item_type,
+                })(<Select onChange={this.handleItemTypeChange}>
+                  {CMS_TRADE_ITEM_TYPE.map(it =>
+                    <Option key={it.value}>{it.text}</Option>
+                  )}
+                </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('hscode')}>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('enName')}>
+                {getFieldDecorator('en_name', {
+                  initialValue: fieldInits.en_name,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('srcProductNo')}>
+                {getFieldDecorator('src_product_no', {
+                  initialValue: fieldInits.src_product_no,
+                })(<Input disabled={action !== 'fork'} onChange={this.handleSrcNoChange} />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('copUOM')}>
+                {getFieldDecorator('cop_uom', {
+                  initialValue: fieldInits.cop_uom,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+          </Row>
+        </Card>
+        <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} hoverable={false}>
+          <Row>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('hscode')}>
                 {getFieldDecorator('hscode', {
                   rules: [{ required: true, message: '商品编码必填' }],
                   initialValue: fieldInits.hscode,
@@ -165,61 +240,24 @@ export default class BasicForm extends Component {
                 )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={24}>
-              <FormItem label={this.msg('specialNo')}>
-                {getFieldDecorator('specialMark', {
-                  initialValue: fieldInits.specialMark,
-                })(<Select mode="multiple" style={{ width: '100%' }} >
-                  { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('gName')}>
+            <Col span={12}>
+              <FormItem {...formItemSpan2Layout} label={this.msg('gName')}>
                 {getFieldDecorator('g_name', {
                   initialValue: fieldInits.g_name,
                   rules: [{ required: true, message: '中文品名必填' }],
                 })(<Input />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('enName')}>
-                {getFieldDecorator('en_name', {
-                  initialValue: fieldInits.en_name,
-                })(<Input />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={24}>
-              <FormItem label={this.msg('gModel')}>
+            <Col span={24}>
+              <FormItem {...formItemSpan4Layout} label={this.msg('gModel')}>
                 {getFieldDecorator('g_model', {
                   initialValue: fieldInits.g_model,
                   rules: [{ required: true, message: '规格型号必填' }],
                 })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={24}>
-              <FormItem label={this.msg('element')}>
-                {getFieldDecorator('element', {
-                  initialValue: fieldInits.element,
-                })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} disabled />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('customsControl')}>
-                {getFieldDecorator('customs_control', {
-                  initialValue: fieldInits.customs_control,
-                })(<Input disabled />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('inspQuarantine')}>
-                {getFieldDecorator('inspection_quarantine', {
-                  initialValue: fieldInits.inspection_quarantine,
-                })(<Input disabled />)}
-              </FormItem>
-            </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('unit1')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('unit1')}>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
                 })(<Select showSearch showArrow optionFilterProp="search">
@@ -231,8 +269,8 @@ export default class BasicForm extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={12}>
-              <FormItem label={this.msg('unit2')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('unit2')} required >
                 {getFieldDecorator('unit_2', {
                   initialValue: fieldInits.unit_2,
                 })(<Select showSearch showArrow optionFilterProp="search">
@@ -244,115 +282,152 @@ export default class BasicForm extends Component {
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('gUnit1')}>
+
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('gUnit1')}>
                 {getFieldDecorator('g_unit_1', {
                   initialValue: fieldInits.g_unit_1,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
-                    units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
-                  }
+                  units.map(gt =>
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
+                  )
+                }
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('gUnit2')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('gUnit2')}>
                 {getFieldDecorator('g_unit_2', {
                   initialValue: fieldInits.g_unit_2,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
-                    units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
-                  }
+                  units.map(gt =>
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
+                  )
+                }
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('gUnit3')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('gUnit3')}>
                 {getFieldDecorator('g_unit_3', {
                   initialValue: fieldInits.g_unit_3,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
-                    units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
-                  }
+                  units.map(gt =>
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
+                  )
+                }
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('unitNetWt')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('unitNetWt')}>
                 {getFieldDecorator('unit_net_wt', {
                   initialValue: fieldInits.unit_net_wt,
                 })(<Input />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('unitPrice')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('unitPrice')}>
                 {getFieldDecorator('unit_price', {
                   initialValue: fieldInits.unit_price,
                 })(<Input />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('currency')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('currency')}>
                 {getFieldDecorator('currency', {
                   initialValue: fieldInits.currency,
                 })(
                   <Select showSearch showArrow optionFilterProp="search">
                     {
-                      currencyOptions.map(data => (
-                        <Option key={data.value} search={`${data.search}`} >
-                          {`${data.text}`}
-                        </Option>)
-                      )}
-                  </Select>
+                  currencyOptions.map(data => (
+                    <Option key={data.value} search={`${data.search}`} >
+                      {`${data.text}`}
+                    </Option>)
                   )}
+                  </Select>
+              )}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('fixedQty')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('fixedQty')}>
                 {getFieldDecorator('fixed_qty', {
                   initialValue: fieldInits.fixed_qty,
                 })(<Input />)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('fixedUnit')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('fixedUnit')}>
                 {getFieldDecorator('fixed_unit', {
                   initialValue: fieldInits.fixed_unit,
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
-                    units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
-                  }
+                units.map(gt =>
+                  <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
+                )
+              }
                 </Select>)}
               </FormItem>
             </Col>
-            <Col sm={24} lg={8}>
-              <FormItem label={this.msg('origCountry')}>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('origCountry')}>
                 {getFieldDecorator('origin_country', {
                   initialValue: fieldInits.origin_country,
                 })(
                   <Select showSearch showArrow optionFilterProp="search">
                     {
-                      tradeCountriesOpts.map(data => (
-                        <Option key={data.value} search={`${data.search}`} >
-                          {`${data.text}`}
-                        </Option>)
-                      )}
-                  </Select>
+                  tradeCountriesOpts.map(data => (
+                    <Option key={data.value} search={`${data.search}`} >
+                      {`${data.text}`}
+                    </Option>)
                   )}
+                  </Select>
+              )}
               </FormItem>
             </Col>
-
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('specialNo')}>
+                {getFieldDecorator('specialMark', {
+                  initialValue: fieldInits.specialMark,
+                })(<Select mode="multiple" style={{ width: '100%' }} >
+                  { SPECIAL_COPNO_TERM.map(data => (<Option value={data.value} key={data.value}>{data.text}</Option>))}
+                </Select>)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} {...formItemLayout} label={this.msg('preClassifyNo')}>
+                {getFieldDecorator('pre_classify_no', {
+                  initialValue: fieldInits.pre_classify_no,
+                })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('preClassifyStartDate')}>
+                {getFieldDecorator('pre_classify_start_date', {
+                  initialValue: fieldInits.pre_classify_start_date,
+                })(<DatePicker style={{ width: '100%' }} />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('preClassifyEndDate')}>
+                {getFieldDecorator('pre_classify_end_date', {
+                  initialValue: fieldInits.pre_classify_end_date,
+                })(<DatePicker style={{ width: '100%' }} />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('remark')}>
+                {getFieldDecorator('remark', {
+                  initialValue: fieldInits.remark,
+                })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} />)}
+              </FormItem>
+            </Col>
           </Row>
         </Card>
-      </div>
+      </FormPane>
     );
   }
 }

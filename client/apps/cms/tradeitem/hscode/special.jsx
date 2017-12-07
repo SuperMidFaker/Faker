@@ -6,14 +6,14 @@ import { Breadcrumb, Button, Table, Layout, Icon, Input, message, Popconfirm, Ta
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
 loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
-import CategoryHscodeList from './categoryHscodeList';
+import HSCodeSpecialList from './specialList';
 import PageHeader from 'client/components/PageHeader';
+import NavLink from 'client/components/NavLink';
 import ExcelUploader from 'client/components/ExcelUploader';
 import { createFilename } from 'client/util/dataTransform';
-import '../index.less';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Content, Sider } = Layout;
@@ -42,7 +42,7 @@ function fetchData({ state, dispatch }) {
   depth: 2,
   moduleName: 'clearance',
 })
-export default class SpecialCategories extends React.Component {
+export default class HSCodeSpecial extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -227,11 +227,13 @@ export default class SpecialCategories extends React.Component {
           <div className="page-header">
             <Breadcrumb>
               <Breadcrumb.Item>
-                {this.msg('classification')}
+                <NavLink to="/clearance/tradeitem">
+                  <Icon type="left" /> {this.msg('tradeitem')}
+                </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-              特殊商品编码分类
-            </Breadcrumb.Item>
+                {this.msg('hscodeSpecial')}
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel" >
@@ -273,7 +275,7 @@ export default class SpecialCategories extends React.Component {
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
-            <CategoryHscodeList hscodeCategory={hscodeCategory} />
+            <HSCodeSpecialList hscodeCategory={hscodeCategory} />
           </Content>
         </Layout>
       </Layout>

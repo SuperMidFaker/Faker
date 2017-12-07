@@ -150,6 +150,16 @@ export default class CiqDeclList extends Component {
       }
     },
   }, {
+    title: this.msg('consigneeCname'),
+    dataIndex: 'ciq_consignee_name_cn',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
+    title: this.msg('consignorCname'),
+    dataIndex: 'ciq_consignor_name_cn',
+    width: 180,
+    render: o => <TrimSpan text={o} maxLen={12} />,
+  }, {
     title: this.msg('orgCode'),
     dataIndex: 'ciq_org_code',
     width: 100,
@@ -159,6 +169,7 @@ export default class CiqDeclList extends Component {
     dataIndex: 'ciq_decl_date',
     width: 120,
     render: o => (o ? moment(0).format('MM.DD HH:mm') : '-'),
+  /*
   }, {
     title: this.msg('ciqQualityInsp'),
     dataIndex: 'ciq_quality_inspect',
@@ -171,16 +182,7 @@ export default class CiqDeclList extends Component {
     width: 100,
     render: (o, record) =>
       <ColumnSwitch field="djcy" record={record} checked={!!o} onChange={this.handleEditChange} />,
-  }, {
-    title: this.msg('consignorCname'),
-    dataIndex: 'ciq_consignor_name_cn',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
-  }, {
-    title: this.msg('consigneeCname'),
-    dataIndex: 'ciq_consignee_name_cn',
-    width: 180,
-    render: o => <TrimSpan text={o} maxLen={12} />,
+  */
   }, {
     title: this.msg('declRegNo'),
     dataIndex: 'agent_name',

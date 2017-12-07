@@ -420,7 +420,7 @@ export const TRADE_ITEM_STATUS = {
 
 export const CMS_TRADE_REPO_PERMISSION = {
   edit: 'edit',
-  approval: 'approval',
+  // approval: 'approval',
   view: 'view',
 };
 
@@ -439,6 +439,11 @@ export const CMS_DOCU_TYPE = {
   contract: 1,
   packingList: 2,
 };
+
+export const CMS_TRADE_ITEM_TYPE = [
+  { value: 'RM', text: '料件' },
+  { value: 'FP', text: '成品' },
+];
 
 export const SPECIAL_COPNO_TERM = [
   { value: 'A', text: '特殊货号' },

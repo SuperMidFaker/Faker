@@ -2,18 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Button, Row, Col, message } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import BasicForm from './forms/basicForm';
-import SiderForm from './forms/siderForm';
+import MagicCard from 'client/components/MagicCard';
+import PageHeader from 'client/components/PageHeader';
 import { loadTradeItem, itemEditedSave } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
+import ItemMasterPane from './tabpane/itemMasterPane';
+import ItemDocuPane from './tabpane/itemDocuPane';
+import ItemHistoryPane from './tabpane/itemHistoryPane';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
+const TabPane = Tabs.TabPane;
 
 function fetchData({ dispatch, params }) {
   const promises = [];
@@ -46,7 +49,13 @@ export default class EditTradeItem extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = {
+    fullscreen: true,
+  }
   msg = key => formatMsg(this.props.intl, key);
+  toggleFullscreen = (fullscreen) => {
+    this.setState({ fullscreen });
+  }
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
@@ -57,7 +66,8 @@ export default class EditTradeItem extends Component {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
-            this.context.router.push('/clearance/classification/tradeitem');
+            message.success('保存成功');
+            // this.context.router.push('/clearance/classification/tradeitem');
           }
         });
       }
@@ -69,42 +79,49 @@ export default class EditTradeItem extends Component {
 
   render() {
     const { form } = this.props;
+    const tabs = [];
+    tabs.push(
+      <TabPane tab="主数据" key="master">
+        <ItemMasterPane action="edit" form={form} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="相关资料" key="docu">
+        <ItemDocuPane fullscreen={this.state.fullscreen} />
+      </TabPane>);
+    tabs.push(
+      <TabPane tab="历史版本" key="history">
+        <ItemHistoryPane fullscreen={this.state.fullscreen} />
+      </TabPane>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('classification')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('tradeItemMaster')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {this.msg('editItem')}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+      <Layout>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('tradeItemMaster')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {this.msg('editItem')}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" icon="save" onClick={this.handleSave}>
               {this.msg('save')}
             </Button>
-          </div>
-        </Header>
-        <Content className="main-content layout-fixed-width layout-fixed-width-lg">
-          <Form layout="vertical">
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <BasicForm action="edit" form={form} />
-              </Col>
-              <Col sm={24} md={8}>
-                <SiderForm form={form} />
-              </Col>
-            </Row>
-          </Form>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content">
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+            <Tabs defaultActiveKey="header">
+              {tabs}
+            </Tabs>
+          </MagicCard>
         </Content>
-      </QueueAnim>
+      </Layout>
     );
   }
 }

@@ -28,13 +28,22 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
   'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
+  'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'LOAD_WSTASKLIST', 'LOAD_WSTASKLIST_SUCCEED', 'LOAD_WSTASKLIST_FAIL',
+  'LOAD_WSTASK', 'LOAD_WSTASK_SUCCEED', 'LOAD_WSTASK_FAIL',
+  'LOAD_TEITEMS', 'LOAD_TEITEMS_SUCCEED', 'LOAD_TEITEMS_FAIL',
+  'LOAD_TCITEMS', 'LOAD_TCITEMS_SUCCEED', 'LOAD_TCITEMS_FAIL',
+  'LOAD_WSLITEMS', 'LOAD_WSLITEMS_SUCCEED', 'LOAD_WSLITEMS_FAIL',
+  'DEL_WSLITEMS', 'DEL_WSLITEMS_SUCCEED', 'DEL_WSLITEMS_FAIL',
+  'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
+  'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
 ]);
 
 const initialState = {
   reposLoading: false,
   tradeItemsLoading: false,
   listFilter: {
-    status: 'pending',
+    status: 'classified',
     sortField: '',
     sortOrder: '',
   },
@@ -53,6 +62,7 @@ const initialState = {
   },
   visibleAddModal: false,
   repos: [],
+  reposLoaded: false,
   tradeCodes: [],
   tabKey: 'copCodes',
   repoId: null,
@@ -68,6 +78,33 @@ const initialState = {
   hstabKey: 'declunit',
   repo: {},
   visibleCompareModal: false,
+  workspaceLoading: false,
+  workspaceTaskList: [],
+  workspaceTask: { id: '' },
+  taskEmergeList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  taskConflictList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  workspaceTempItemList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
+  workspaceItemList: {
+    totalCount: 0,
+    current: 1,
+    pageSize: 10,
+    data: [],
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -75,7 +112,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_REPOS:
       return { ...state, reposLoading: true };
     case actionTypes.LOAD_REPOS_SUCCEED:
-      return { ...state, repos: action.result.data, reposLoading: false };
+      return { ...state, repos: action.result.data, reposLoading: false, reposLoaded: true };
     case actionTypes.LOAD_REPOS_FAIL:
       return { ...state, reposLoading: false };
     case actionTypes.OPEN_ADD_MODEL:
@@ -110,6 +147,26 @@ export default function reducer(state = initialState, action) {
       return { ...state, repoUsers: action.result.data };
     case actionTypes.LOAD_TEMP_ITEMS_SUCCEED:
       return { ...state, tempItems: action.result.data };
+    case actionTypes.SWITCH_REPOMD_SUCCEED:
+      return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
+    case actionTypes.LOAD_WSTASKLIST:
+    case actionTypes.LOAD_WSTASK:
+    case actionTypes.LOAD_WSLITEMS:
+      return { ...state, workspaceLoading: true };
+    case actionTypes.LOAD_WSLITEMS_FAIL:
+    case actionTypes.LOAD_WSTASK_FAIL:
+    case actionTypes.LOAD_WSTASKLIST_FAIL:
+      return { ...state, workspaceLoading: false };
+    case actionTypes.LOAD_WSTASKLIST_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceTaskList: action.result.data };
+    case actionTypes.LOAD_WSTASK_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceTask: action.result.data };
+    case actionTypes.LOAD_WSLITEMS_SUCCEED:
+      return { ...state, workspaceLoading: false, workspaceItemList: action.result.data };
+    case actionTypes.LOAD_TEITEMS_SUCCEED:
+      return { ...state, taskEmergeList: action.result.data };
+    case actionTypes.LOAD_TCITEMS_SUCCEED:
+      return { ...state, taskConflictList: action.result.data };
     default:
       return state;
   }
@@ -204,7 +261,7 @@ export function createTradeItem(datas) {
   };
 }
 
-export function loadRepos(params) {
+export function loadRepos() {
   return {
     [CLIENT_API]: {
       types: [
@@ -214,7 +271,6 @@ export function loadRepos(params) {
       ],
       endpoint: 'v1/cms/tradeitem/repos/load',
       method: 'get',
-      params,
     },
   };
 }
@@ -379,7 +435,7 @@ export function loadRepoUsers(repoId) {
   };
 }
 
-export function addRepoUser(tenantId, repoId, partnerTenantId, name) {
+export function addRepoUser(tenantId, repoId, partnerTenantId, name, permission) {
   return {
     [CLIENT_API]: {
       types: [
@@ -389,7 +445,7 @@ export function addRepoUser(tenantId, repoId, partnerTenantId, name) {
       ],
       endpoint: 'v1/cms/tradeitem/repoUser/add',
       method: 'post',
-      data: { tenantId, repoId, partnerTenantId, name },
+      data: { tenantId, repoId, partnerTenantId, name, permission },
     },
   };
 }
@@ -495,6 +551,141 @@ export function itemNewSrcSave(data) {
       endpoint: 'v1/cms/tradeitem/newSrc/save',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function switchRepoMode(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SWITCH_REPOMD,
+        actionTypes.SWITCH_REPOMD_SUCCEED,
+        actionTypes.SWITCH_REPOMD_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/switch/repomode',
+      method: 'post',
+      data: { repoId },
+    },
+  };
+}
+
+export function loadWorkspaceTasks(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSTASKLIST,
+        actionTypes.LOAD_WSTASKLIST_SUCCEED,
+        actionTypes.LOAD_WSTASKLIST_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/tasks',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadWorkspaceTask(taskId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSTASK,
+        actionTypes.LOAD_WSTASK_SUCCEED,
+        actionTypes.LOAD_WSTASK_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/task',
+      method: 'get',
+      params: { taskId },
+    },
+  };
+}
+
+export function loadTaskConflictItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TCITEMS,
+        actionTypes.LOAD_TCITEMS_SUCCEED,
+        actionTypes.LOAD_TCITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/items',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadTaskEmergeItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_TEITEMS,
+        actionTypes.LOAD_TEITEMS_SUCCEED,
+        actionTypes.LOAD_TEITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/items',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function loadWorkspaceItems(params) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSLITEMS,
+        actionTypes.LOAD_WSLITEMS_SUCCEED,
+        actionTypes.LOAD_WSLITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/items',
+      method: 'get',
+      params,
+    },
+  };
+}
+
+export function delWorkspaceItem(itemIds) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_WSLITEMS,
+        actionTypes.DEL_WSLITEMS_SUCCEED,
+        actionTypes.DEL_WSLITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/delitem',
+      method: 'post',
+      data: { itemIds },
+    },
+  };
+}
+
+export function resolveWorkspaceItem(itemIds, action) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.RESOLV_WSLITEMS,
+        actionTypes.RESOLV_WSLITEMS_SUCCEED,
+        actionTypes.RESOLV_WSLITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/conflict/resolve',
+      method: 'post',
+      data: { itemIds, action },
+    },
+  };
+}
+
+export function submitAudit(auditAction) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SUBMIT_AUDIT,
+        actionTypes.SUBMIT_AUDIT_SUCCEED,
+        actionTypes.SUBMIT_AUDIT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/submit/audit',
+      method: 'post',
+      data: { auditAction },
     },
   };
 }
