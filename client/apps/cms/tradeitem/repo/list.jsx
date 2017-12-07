@@ -108,7 +108,7 @@ export default class RepoList extends React.Component {
           </Menu>);
       }
       return (<span>
-        <RowUpdater onHit={this.handleEnter} label={<span>{this.msg('manageItems')}</span>} row={repo} />
+        <RowUpdater onClick={this.handleEnter} label={<span>{this.msg('manageItems')}</span>} row={repo} />
         {creator && <span className="ant-divider" />}
         {creator && <Dropdown overlay={menu} trigger={['click']}>
           <a className="ant-dropdown-link">
