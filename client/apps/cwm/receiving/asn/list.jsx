@@ -177,14 +177,16 @@ export default class ReceivingASNList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CWM_ASN_STATUS.PENDING.value) {
-        return (<span><RowAction onClick={this.handleReleaseASN} label="释放" row={record} />
-          <span className="ant-divider" /><RowAction onClick={this.handleEditASN} label="修改" row={record} /></span>);
+        return (<span>
+          <RowAction onClick={this.handleReleaseASN} icon="play-circle-o" label="释放" row={record} />
+          <RowAction onClick={this.handleEditASN} icon="edit" tooltip="修改" row={record} />
+        </span>);
       } else {
-        const inbndActions = (<span>
-          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowAction onClick={this.handleInbound} label="入库操作" row={record} />}
+        return (<span>
+          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowAction onClick={this.handleInbound} icon="form" label="入库操作" row={record} />}
           {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowAction onClick={this.handleInbound} label="差异处理" row={record} />}
-          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowAction onClick={this.handleInbound} label="入库详情" row={record} />}</span>);
-        return (<span>{inbndActions}</span>);
+          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowAction onClick={this.handleInbound} icon="eye-o" label="入库详情" row={record} />}
+        </span>);
       }
     },
   }]

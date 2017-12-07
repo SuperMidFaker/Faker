@@ -108,7 +108,7 @@ export default class RepoList extends React.Component {
           </Menu>);
       }
       return (<span>
-        <RowAction onClick={this.handleEnter} label={<span>{this.msg('manageItems')}</span>} row={repo} />
+        <RowAction onClick={this.handleEnter} icon="folder" label={<span>{this.msg('manageItems')}</span>} row={repo} />
         {creator && <RowAction overlay={menu} />}
       </span>);
     },

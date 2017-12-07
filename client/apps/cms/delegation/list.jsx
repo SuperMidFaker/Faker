@@ -637,7 +637,7 @@ export default class DelegationList extends Component {
           let manifestOp = null;
           switch (record.manifested) {
             case CMS_DELEGATION_MANIFEST.created:           // 制单中
-              manifestOp = <RowAction onClick={this.handleManifestMake} label={<span><Icon type="file-text" /> {this.msg('editManifest')}</span>} row={record} />;
+              manifestOp = <RowAction onClick={this.handleManifestMake} label={<span><Icon type="form" /> {this.msg('editManifest')}</span>} row={record} />;
               break;
             case CMS_DELEGATION_MANIFEST.manifested:        // 制单完成(已生成报关清单)
               manifestOp = <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;

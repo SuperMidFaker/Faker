@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
+import { Breadcrumb, Button, Menu, Icon, Radio, Popconfirm, Progress, message, Layout, Tooltip, Select } from 'antd';
 import Table from 'client/components/remoteAntTable';
 import { Link } from 'react-router';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
@@ -124,9 +125,10 @@ export default class OrderList extends React.Component {
       }
     });
   }
-  handleStart = (shipmtOrderNo) => {
+  handleStart = (row) => {
     this.setState({ starting: true });
     const { loginId, username } = this.props;
+    const shipmtOrderNo = row.shipmt_order_no;
     this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -236,7 +238,7 @@ export default class OrderList extends React.Component {
       width: 100,
     }, {
       title: '操作',
-      width: 80,
+      width: 120,
       fixed: 'right',
       className: 'editable-row-operations',
       render: (o, record) => {
@@ -244,12 +246,9 @@ export default class OrderList extends React.Component {
           return (
             <div>
               {record.flow_node_num > 0 &&
-              <Button type="primary" shape="circle" icon="caret-right" loading={this.state.starting} onClick={() => this.handleStart(record.shipmt_order_no)} />
+                <RowAction onClick={this.handleStart} label={this.msg('startOrder')} icon="caret-right" row={record} />
               }
-              {record.flow_node_num > 0 &&
-              <span className="ant-divider" />
-              }
-              <Dropdown overlay={(
+              <RowAction overlay={(
                 <Menu onClick={this.handleMenuClick}>
                   <Menu.Item key="edit">
                     <Link to={`/scof/orders/edit?shipmtOrderNo=${record.shipmt_order_no}`}><Icon type="edit" />修改</Link>
@@ -260,9 +259,7 @@ export default class OrderList extends React.Component {
                     </Popconfirm>
                   </Menu.Item>
                 </Menu>)}
-              >
-                <a><Icon type="down" /></a>
-              </Dropdown>
+              />
             </div>
           );
         } else {
