@@ -122,6 +122,14 @@ const messages = defineMessages({
     id: 'cms.tradeitem.col.gmodel',
     defaultMessage: '规范申报要素',
   },
+  preHscode: {
+    id: 'cms.tradeitem.col.prehscode',
+    defaultMessage: '原商品编码',
+  },
+  preGModel: {
+    id: 'cms.tradeitem.col.pregmodel',
+    defaultMessage: '原规范申报要素',
+  },
   element: {
     id: 'cms.tradeitem.col.element',
     defaultMessage: '申报要素',
@@ -217,6 +225,18 @@ const messages = defineMessages({
   manageItems: {
     id: 'cms.tradeitem.repo.manage.items',
     defaultMessage: '料件管理',
+  },
+  createdDate: {
+    id: 'cms.tradeitem.created.date',
+    defaultMessage: '创建时间',
+  },
+  createdBy: {
+    id: 'cms.tradeitem.created.by',
+    defaultMessage: '创建人',
+  },
+  newComparisonImport: {
+    id: 'cms.tradeitem.task.new.comparison.import',
+    defaultMessage: '新建对比导入',
   },
 });
 

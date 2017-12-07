@@ -1,12 +1,74 @@
-export default function makeColumns(msg, units, tradeCountries, currencies) {
+import React from 'react';
+import { Tooltip, Tag } from 'antd';
+import { Fontello } from 'client/components/FontIcon';
+
+export default function makeColumns({ msg, units, tradeCountries, currencies, withRepo, withRepoItem }) {
   const columns = [{
     title: msg('copProductNo'),
     dataIndex: 'cop_product_no',
     width: 200,
+    render: (o, record) => {
+      if (record.feedback === 'repeat') {
+        return (
+          <Tooltip title="与原归类相同">
+            <Tag color="orange">{o}</Tag>
+          </Tooltip>);
+      } else if (record.duplicate === 1) {
+        return (
+          <Tooltip title="导入货号重复造成冲突">
+            <Tag color="red">{o}</Tag>
+          </Tooltip>);
+      } else if (record.feedback === 'newSrc') {
+        return (
+          <Tooltip title="原归类信息由主库同步过来">
+            <Tag color="green">{o}</Tag>
+          </Tooltip>);
+      } else {
+        return <span>{o}</span>;
+      }
+    },
   }, {
+    title: msg('srcProductNo'),
+    dataIndex: 'src_product_no',
+    width: 200,
+  }, {
+    title: msg('filterUnclassified'),
+    dataIndex: 'classified',
+    width: 80,
+    render: classified => !classified ? <Fontello type="circle" color="red" /> : '',
+  }].concat(withRepo ? [{
+    title: msg('repoOwner'),
+    dataIndex: 'owner_name',
+    width: 300,
+  }, {
+    title: msg('repoCreator'),
+    dataIndex: 'creator_name',
+    width: 200,
+  }] : []).concat(withRepoItem ? [{
+    title: msg('preHscode'),
+    dataIndex: 'item_hscode',
+    width: 180,
+    render: itemhscode => <span>{itemhscode}</span>,
+  }, {
+    title: msg('preGModel'),
+    dataIndex: 'item_g_model',
+    width: 300,
+    render: pregmodel => <span>{pregmodel}</span>,
+  }] : []).concat([{
     title: msg('hscode'),
     dataIndex: 'hscode',
     width: 150,
+    render: (hscode) => {
+      if (!hscode) {
+        return (
+          <Tooltip title="错误的商品编码">
+            <Tag color="red">{hscode}</Tag>
+          </Tooltip>
+        );
+      } else {
+        return <span>{hscode}</span>;
+      }
+    },
   }, {
     title: msg('gName'),
     dataIndex: 'g_name',
@@ -143,7 +205,7 @@ export default function makeColumns(msg, units, tradeCountries, currencies) {
     title: msg('remark'),
     dataIndex: 'remark',
     width: 180,
-  }];
+  }]);
   return columns;
 }
 

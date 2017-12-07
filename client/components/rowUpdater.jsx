@@ -8,7 +8,7 @@ export default function RowUpdater(props) {
     ev.preventDefault();
     ev.stopPropagation();
     if (onHit) {
-      onHit(row, index);
+      onHit(row, index, extra);
     }
   }
   function handleHover() {

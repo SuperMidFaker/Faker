@@ -396,6 +396,7 @@ export default(store) => {
               </Route>
               <Route path="workspace">
                 <Route path="tasks" component={CMSTradeItemWorkspace.TaskList} />
+                <Route path="task/:id" component={CMSTradeItemWorkspace.TaskPage} />
                 <Route path="emerges" component={CMSTradeItemWorkspace.Emerge} />
                 <Route path="conflicts" component={CMSTradeItemWorkspace.Conflict} />
                 <Route path="invalids" component={CMSTradeItemWorkspace.Invalid} />

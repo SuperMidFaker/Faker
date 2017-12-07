@@ -65,7 +65,12 @@ export default class NewItemsList extends React.Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  columns = makeColumns(this.msg, this.props.units, this.props.tradeCountries, this.props.currencies).concat([{
+  columns = makeColumns({ msg: this.msg,
+    units: this.props.units,
+    tradeCountries: this.props.tradeCountries,
+    currencies: this.props.currencies,
+    withRepo: true,
+  }).concat([{
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
@@ -92,6 +97,28 @@ export default class NewItemsList extends React.Component {
   handleDeselectRows = () => {
     this.setState({ selectedRowKeys: [] });
   }
+  dataSource = new DataTable.DataSource({
+    fetcher: params => this.props.loadWorkspaceItems(params),
+    resolve: result => result.data,
+    getPagination: (result, resolve) => ({
+      total: result.totalCount,
+      current: resolve(result.totalCount, result.current, result.pageSize),
+      showSizeChanger: true,
+      showQuickJumper: false,
+      pageSize: result.pageSize,
+      showTotal: total => `共 ${total} 条`,
+    }),
+    getParams: (pagination, tblfilters) => {
+      const newfilters = { ...this.state.filter, ...tblfilters[0] };
+      const params = {
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        filter: JSON.stringify(newfilters),
+      };
+      return params;
+    },
+    remotes: this.props.workspaceItemList,
+  });
   render() {
     const { loading, workspaceItemList, repos } = this.props;
     const rowSelection = {
@@ -100,28 +127,7 @@ export default class NewItemsList extends React.Component {
         this.setState({ selectedRowKeys });
       },
     };
-    const dataSource = new DataTable.DataSource({
-      fetcher: params => this.props.loadWorkspaceItems(params),
-      resolve: result => result.data,
-      getPagination: (result, resolve) => ({
-        total: result.totalCount,
-        current: resolve(result.totalCount, result.current, result.pageSize),
-        showSizeChanger: true,
-        showQuickJumper: false,
-        pageSize: result.pageSize,
-        showTotal: total => `共 ${total} 条`,
-      }),
-      getParams: (pagination, tblfilters) => {
-        const newfilters = { ...this.state.filter, ...tblfilters[0] };
-        const params = {
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          filter: JSON.stringify(newfilters),
-        };
-        return params;
-      },
-      remotes: workspaceItemList,
-    });
+    this.dataSource.remotes = workspaceItemList;
     const toolbarActions = (<span>
       <Select showSearch placeholder="所属物料库" optionFilterProp="children" style={{ width: 160 }}
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
@@ -159,8 +165,8 @@ export default class NewItemsList extends React.Component {
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable toolbarActions={toolbarActions}
-              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="cop_product_no" loading={loading}
+              selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows} loading={loading}
+              columns={this.columns} dataSource={this.dataSource} rowSelection={rowSelection} rowKey="cop_product_no"
               locale={{ emptyText: '当前没有新的料件' }}
             />
           </Content>

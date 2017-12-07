@@ -55,7 +55,7 @@ export default class ConflictItemsList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    filter: { repoId: '', name: '', status: 'emerge' },
+    filter: { repoId: '', name: '', status: 'conflict' },
   }
   componentDidMount() {
     this.props.loadWorkspaceItems({
@@ -65,7 +65,12 @@ export default class ConflictItemsList extends React.Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  columns = makeColumns(this.msg, this.props.units, this.props.tradeCountries, this.props.currencies).concat([{
+  columns = makeColumns({ msg: this.msg,
+    units: this.props.units,
+    tradeCountries: this.props.tradeCountries,
+    currencies: this.props.currencies,
+    withRepo: true,
+  }).concat([{
     title: '操作',
     dataIndex: 'OPS_COL',
     width: 100,
