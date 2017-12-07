@@ -8,7 +8,7 @@ import { Badge, Icon, Breadcrumb, Layout, Radio, Select, Tooltip, message } from
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -158,11 +158,11 @@ export default class ReceivingInboundList extends React.Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else if (record.status === 0 && record.receiving_lock === 2) {
-        return (<span><RowUpdater label="撤回" row={record} /></span>);
+        return (<span><RowAction label="撤回" row={record} /></span>);
       } else {
-        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       }
     },
   }]

@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message } from '
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
@@ -184,14 +184,14 @@ export default class SHFTZNormalRelRegList extends React.Component {
     render: (o, record) => {
       switch (record.status) {
         case 0:
-          return <RowUpdater onClick={this.handleDetail} label="发送备案" row={record} />;
+          return <RowAction onClick={this.handleDetail} label="发送备案" row={record} />;
         case 1:
-          return <RowUpdater onClick={this.handleDetail} label="备案详情" row={record} />;
+          return <RowAction onClick={this.handleDetail} label="备案详情" row={record} />;
         case 2:
           return (<span>
-            <RowUpdater onClick={this.handleDetail} label="委托清关" row={record} />
+            <RowAction onClick={this.handleDetail} label="委托清关" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onClick={this.handleDetail} label="备案详情" row={record} />
+            <RowAction onClick={this.handleDetail} label="备案详情" row={record} />
           </span>);
         case 3:
         case 4:
@@ -199,7 +199,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 6:
         case 7:
         case 8:
-          return <RowUpdater onClick={this.handleDetail} label="备案详情" row={record} />;
+          return <RowAction onClick={this.handleDetail} label="备案详情" row={record} />;
         default:
           break;
       }

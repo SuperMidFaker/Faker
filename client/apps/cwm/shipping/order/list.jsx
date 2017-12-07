@@ -8,7 +8,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { Breadcrumb, Layout, Radio, Select, Button, Badge, Tag, message, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -185,19 +185,19 @@ export default class ShippingOrderList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CWM_SO_STATUS.PENDING.value) {
-        return (<span><RowUpdater label="释放" row={record} onClick={this.handleReleaseSO} />
-          <span className="ant-divider" /><RowUpdater onClick={this.handleEditSO} label="修改" row={record} /></span>);
+        return (<span><RowAction label="释放" row={record} onClick={this.handleReleaseSO} />
+          <span className="ant-divider" /><RowAction onClick={this.handleEditSO} label="修改" row={record} /></span>);
       } else {
         const outbndActions = (<span>
           {(record.status === CWM_SO_STATUS.OUTBOUND.value || record.status === CWM_SO_STATUS.PARTIAL.value)
-            && <RowUpdater onClick={this.handleOutbound} label="出库操作" row={record} />}
-          {record.status === CWM_SO_STATUS.COMPLETED.value && <RowUpdater onClick={this.handleOutbound} label="出库详情" row={record} />}</span>);
+            && <RowAction onClick={this.handleOutbound} label="出库操作" row={record} />}
+          {record.status === CWM_SO_STATUS.COMPLETED.value && <RowAction onClick={this.handleOutbound} label="出库详情" row={record} />}</span>);
         if (record.bonded_outtype === 'transfer' || record.bonded_outtype === 'portion' || record.bonded_outtype === 'normal') {
           return (<span>
             {outbndActions}
             <span className="ant-divider" />
-            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowUpdater onClick={this.handleSupervision} label="海关备案" row={record} />
-              : <RowUpdater onClick={this.handleSupervision} label="备案详情" row={record} />}
+            {record.reg_status === CWM_SHFTZ_APIREG_STATUS.pending ? <RowAction onClick={this.handleSupervision} label="海关备案" row={record} />
+              : <RowAction onClick={this.handleSupervision} label="备案详情" row={record} />}
           </span>);
         } else {
           return (<span>{outbndActions}</span>);

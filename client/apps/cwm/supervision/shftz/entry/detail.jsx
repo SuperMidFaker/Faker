@@ -10,7 +10,7 @@ import { Alert, Badge, Breadcrumb, Form, Layout, InputNumber, Popover, Radio, St
 import connectNav from 'client/common/decorators/connect-nav';
 import EditableCell from 'client/components/EditableCell';
 import TrimSpan from 'client/components/trimSpan';
-// import RowUpdater from 'client/components/rowUpdater';
+// import RowAction from 'client/components/RowAction';
 import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';

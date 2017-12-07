@@ -24,7 +24,7 @@ import { createFilename } from 'client/util/dataTransform';
 import RepoUsersPane from './panes/repoUsersPane';
 import ImportComparisonModal from './modals/importComparison';
 import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import Strip from 'client/components/Strip';
 import TrimSpan from 'client/components/trimSpan';
 
@@ -345,9 +345,9 @@ export default class TradeItemList extends Component {
           } else {
             return (
               <span>
-                <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <RowAction onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                 <span className="ant-divider" />
                 <Dropdown overlay={(
                   <Menu>
@@ -718,9 +718,9 @@ export default class TradeItemList extends Component {
             } else {
               return (
                 <span>
-                  <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                  <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
                   <span className="ant-divider" />
-                  <RowUpdater onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                  <RowAction onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                   <span className="ant-divider" />
                   <Dropdown overlay={(
                     <Menu>

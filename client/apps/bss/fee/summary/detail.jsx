@@ -9,7 +9,7 @@ import PageHeader from 'client/components/PageHeader';
 import MagicCard from 'client/components/MagicCard';
 import DescriptionList from 'client/components/DescriptionList';
 import DataPane from 'client/components/DataPane';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import './index.less';
@@ -95,11 +95,11 @@ export default class FeeSummaryDetail extends Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onClick={this.handleDetail} label="调整" row={record} />
+        return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onClick={this.handleDetail} label="排除" row={record} /></span>);
+          <RowAction onClick={this.handleDetail} label="排除" row={record} /></span>);
       }
     },
   }]
@@ -149,11 +149,11 @@ export default class FeeSummaryDetail extends Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onClick={this.handleDetail} label="调整" row={record} />
+        return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onClick={this.handleDetail} label="排除" row={record} /></span>);
+          <RowAction onClick={this.handleDetail} label="排除" row={record} /></span>);
       }
     },
   }]

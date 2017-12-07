@@ -8,7 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { intlShape, injectIntl } from 'react-intl';
 import SKUPopover from '../../../common/popover/skuPopover';
 import TraceIdPopover from '../../../common/popover/traceIdPopover';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail } from 'common/reducers/cwmMovement';
 
 const Search = Input.Search;
@@ -159,7 +159,7 @@ export default class MovementDetailsPane extends React.Component {
   }, {
     title: '操作',
     width: 80,
-    render: (o, record) => !record.isdone && <RowUpdater onClick={this.removeMoveDetail} label="取消明细" row={record} />,
+    render: (o, record) => !record.isdone && <RowAction onClick={this.removeMoveDetail} label="取消明细" row={record} />,
   }]
   render() {
     const { movementDetails, mode, movementHead } = this.props;

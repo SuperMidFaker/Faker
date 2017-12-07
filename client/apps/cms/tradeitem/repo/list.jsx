@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Dropdown, Menu, Modal, Layout, Icon, Input, Tag } from 'antd';
+import { Breadcrumb, Button, Menu, Modal, Layout, Input, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openAddModal, switchRepoMode, setRepo } from 'common/reducers/cmsTradeitem';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import ModuleMenu from '../menu';
 import AddRepoModal from './modal/addRepoModal';
 import RepoUsersCard from './modal/repoUserCard';
@@ -108,13 +108,8 @@ export default class RepoList extends React.Component {
           </Menu>);
       }
       return (<span>
-        <RowUpdater onClick={this.handleEnter} label={<span>{this.msg('manageItems')}</span>} row={repo} />
-        {creator && <span className="ant-divider" />}
-        {creator && <Dropdown overlay={menu} trigger={['click']}>
-          <a className="ant-dropdown-link">
-          配置 <Icon type="down" />
-          </a>
-        </Dropdown>}
+        <RowAction onClick={this.handleEnter} label={<span>{this.msg('manageItems')}</span>} row={repo} />
+        {creator && <RowAction overlay={menu} />}
       </span>);
     },
   },

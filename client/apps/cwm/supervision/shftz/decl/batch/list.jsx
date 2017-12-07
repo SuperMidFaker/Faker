@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Button, Layout, Radio, Select, Tag, message, Popconf
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openBatchDeclModal, loadBatchApplyList, batchDelgCancel } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -195,7 +195,7 @@ export default class BatchDeclList extends React.Component {
     width: 160,
     fixed: 'right',
     render: (o, record) => (<span>
-      <RowUpdater onClick={this.handleDetail} label="报关详情" row={record} />
+      <RowAction onClick={this.handleDetail} label="报关详情" row={record} />
       {record.status === 'manifest' && <span className="ant-divider" />}
       {record.status === 'manifest' &&
       <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>

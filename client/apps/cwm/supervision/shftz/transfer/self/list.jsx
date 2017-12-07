@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Layout, Radio, Select, Icon, message, Button, Popcon
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas, showTransferInModal, deleteVirtualTransfer } from 'common/reducers/cwmShFtz';
 import ModuleMenu from '../../menu';
@@ -144,7 +144,7 @@ export default class SHFTZTransferSelfList extends React.Component {
     render: (o, record) =>
         (
           <span>
-            <RowUpdater onClick={this.handleDetail} label="转移详情" row={record} />
+            <RowAction onClick={this.handleDetail} label="转移详情" row={record} />
             {record.status === CWM_SHFTZ_APIREG_STATUS.pending && <span className="ant-divider" />}
             {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
               <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>

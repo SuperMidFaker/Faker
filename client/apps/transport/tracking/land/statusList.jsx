@@ -13,7 +13,7 @@ import {
   showLocModal, loadShipmtLastPoint, deliverConfirm,
   changeStatusFilter,
 } from 'common/reducers/trackingLandStatus';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import VehicleModal from './modals/vehicle-updater';
 import PickupDeliverModal from './modals/pickup-deliver-updater';
 import LocationModal from './modals/intransitLocationUpdater';
@@ -392,7 +392,7 @@ export default class TrackingStatusList extends React.Component {
     return (
       <PrivilegeCover module="transport" feature="tracking" action="edit">
         <span>
-          <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
+          <RowAction label={locLabel} onHover={this.handleReportLocHover}
             onClick={this.handleShowTransitModal} row={record}
             className={reported ? 'mdc-text-grey' : ''}
           />

@@ -9,7 +9,7 @@ import { openTransitionModal, loadTransitions, splitTransit, unfreezeTransit,
   openBatchTransitModal, openBatchMoveModal, openBatchFreezeModal } from 'common/reducers/cwmTransition';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
 import DataTable from 'client/components/DataTable';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import Summary from 'client/components/Summary';
 import QueryForm from './queryForm';
@@ -189,7 +189,7 @@ export default class StockTransitionList extends React.Component {
           <a>解冻</a>
         </Popover>);
       } else if (record.avail_qty >= 1) {
-        const spans = [<RowUpdater onClick={this.handleTransitModal} label="调整" row={record} key="adjust" />];
+        const spans = [<RowAction onClick={this.handleTransitModal} label="调整" row={record} key="adjust" />];
         const min = 1;
         let max = record.avail_qty - 1;
         if (record.avail_qty !== record.stock_qty) {
