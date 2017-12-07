@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import connectFetch from 'client/common/decorators/connect-fetch';
-import { Breadcrumb, Form, Layout, Button, Row, Col, Tabs, message } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import ItemForm from './form/itemForm';
-import SiderForm from './form/siderForm';
 import { loadTradeItem, itemEditedSave } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
@@ -69,7 +66,8 @@ export default class EditTradeItem extends Component {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
-            this.context.router.push('/clearance/classification/tradeitem');
+            message.success('保存成功');
+            // this.context.router.push('/clearance/classification/tradeitem');
           }
         });
       }
@@ -84,7 +82,7 @@ export default class EditTradeItem extends Component {
     const tabs = [];
     tabs.push(
       <TabPane tab="主数据" key="master">
-        <ItemMasterPane form={form} />
+        <ItemMasterPane action="edit" form={form} />
       </TabPane>);
     tabs.push(
       <TabPane tab="相关资料" key="docu">
@@ -95,7 +93,7 @@ export default class EditTradeItem extends Component {
         <ItemHistoryPane fullscreen={this.state.fullscreen} />
       </TabPane>);
     return (
-      <QueueAnim type={['bottom', 'up']}>
+      <Layout>
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
@@ -122,18 +120,8 @@ export default class EditTradeItem extends Component {
               {tabs}
             </Tabs>
           </MagicCard>
-          <Form layout="vertical">
-            <Row gutter={16}>
-              <Col sm={24} md={16}>
-                <ItemForm action="edit" form={form} />
-              </Col>
-              <Col sm={24} md={8}>
-                <SiderForm form={form} />
-              </Col>
-            </Row>
-          </Form>
         </Content>
-      </QueueAnim>
+      </Layout>
     );
   }
 }
