@@ -9,7 +9,7 @@ import NavLink from 'client/components/NavLink';
 import { loadWorkspaceTask, loadTaskEmergeItems, loadTaskConflictItems, delWorkspaceItem, resolveWorkspaceItem,
   submitAudit } from 'common/reducers/cmsTradeitem';
 import PageHeader from 'client/components/PageHeader';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
 import { formatMsg } from '../message.i18n';
 
@@ -182,7 +182,7 @@ export default class TaskPage extends React.Component {
       const spanElms = [];
       if (record.classified && record.status === 1) {
         spanElms.push(
-          <RowUpdater key="standard" onClick={this.handleConflictResolve} label={<Icon type="star-o" />}
+          <RowAction key="standard" onClick={this.handleConflictResolve} label={<Icon type="star-o" />}
             row={record}
             tooltip="设为标准"
           />,
@@ -190,7 +190,7 @@ export default class TaskPage extends React.Component {
         );
         if (!record.duplicate) {
           spanElms.push(
-            <RowUpdater key="stage" onClick={this.handleConflictResolve} label={<Icon type="fork" />}
+            <RowAction key="stage" onClick={this.handleConflictResolve} label={<Icon type="fork" />}
               row={record} tooltip="标志为新来源"
             />,
             <span className="ant-divider" key="stage-div" />

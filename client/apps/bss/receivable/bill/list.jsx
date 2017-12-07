@@ -8,7 +8,7 @@ import { Button, Breadcrumb, DatePicker, Layout, Radio, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import Summary from 'client/components/Summary';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
@@ -127,9 +127,9 @@ export default class ReceivableBillList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onClick={this.handleDetail} label="账单详情" row={record} /> </span>);
+        return (<span><RowAction onClick={this.handleDetail} label="账单详情" row={record} /> </span>);
       }
     },
   }]

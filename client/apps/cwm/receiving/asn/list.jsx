@@ -8,7 +8,7 @@ import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, notification, me
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import TrimSpan from 'client/components/trimSpan';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -177,13 +177,13 @@ export default class ReceivingASNList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CWM_ASN_STATUS.PENDING.value) {
-        return (<span><RowUpdater onClick={this.handleReleaseASN} label="释放" row={record} />
-          <span className="ant-divider" /><RowUpdater onClick={this.handleEditASN} label="修改" row={record} /></span>);
+        return (<span><RowAction onClick={this.handleReleaseASN} label="释放" row={record} />
+          <span className="ant-divider" /><RowAction onClick={this.handleEditASN} label="修改" row={record} /></span>);
       } else {
         const inbndActions = (<span>
-          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowUpdater onClick={this.handleInbound} label="入库操作" row={record} />}
-          {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowUpdater onClick={this.handleInbound} label="差异处理" row={record} />}
-          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowUpdater onClick={this.handleInbound} label="入库详情" row={record} />}</span>);
+          {record.status === CWM_ASN_STATUS.INBOUND.value && <RowAction onClick={this.handleInbound} label="入库操作" row={record} />}
+          {record.status === CWM_ASN_STATUS.DISCREPANT.value && <RowAction onClick={this.handleInbound} label="差异处理" row={record} />}
+          {record.status === CWM_ASN_STATUS.COMPLETED.value && <RowAction onClick={this.handleInbound} label="入库详情" row={record} />}</span>);
         return (<span>{inbndActions}</span>);
       }
     },

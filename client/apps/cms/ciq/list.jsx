@@ -6,7 +6,7 @@ import { Badge, Breadcrumb, Layout, Radio, message, Icon, Switch, Tag, Tooltip }
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 // import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { setInspect } from 'common/reducers/cmsDeclare';
@@ -198,9 +198,8 @@ export default class CiqDeclList extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onClick={this.handleDetail} label="详情" row={record} />
-        <span className="ant-divider" />
-        <RowUpdater onClick={this.exportCjqDecl} label="导出" row={record} />
+        <RowAction onClick={this.handleDetail} label="详情" icon="eye-o" row={record} />
+        <RowAction onClick={this.exportCjqDecl} tooltip="九城商检导出" icon="file-excel" row={record} />
       </span>),
   }]
   dataSource = new DataTable.DataSource({

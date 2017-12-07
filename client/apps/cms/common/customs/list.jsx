@@ -14,7 +14,7 @@ import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import DeclReleasedModal from './modals/declReleasedModal';
 import DeclStatusPopover from './declStatusPopover';
@@ -123,7 +123,7 @@ export default class CustomsList extends Component {
                 </a>
               </Tooltip>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowUpdater onClick={this.handleDeclNoFill} row={record}
+                <RowAction onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
@@ -279,7 +279,7 @@ export default class CustomsList extends Component {
         return (
           <span>
             <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onClick={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
+              <RowAction onClick={this.handleReview} label={<span><Icon type="check-circle-o" /> {this.msg('review')}</span>} row={record} />
             </PrivilegeCover>
           </span>
         );
@@ -287,7 +287,7 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onClick={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendDeclMsg')}</span>} row={record} />
+            <RowAction onClick={this.handleShowSendDeclModal} label={<span><Icon type="mail" /> {this.msg('sendDeclMsg')}</span>} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
@@ -295,7 +295,7 @@ export default class CustomsList extends Component {
         if (record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
-              <RowUpdater onClick={this.handleShowDeclReleasedModal} row={record}
+              <RowAction onClick={this.handleShowDeclReleasedModal} row={record}
                 label={<span><Icon type="flag" />放行确认</span>}
               />
             </PrivilegeCover>);

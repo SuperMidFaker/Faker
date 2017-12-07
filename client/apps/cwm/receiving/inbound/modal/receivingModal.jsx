@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { notification, Card, Table, Icon, Modal, Input, Row, Col, Select, Button, DatePicker, message } from 'antd';
 import InfoItem from 'client/components/InfoItem';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
 import QuantityInput from '../../../common/quantityInput';
 import LocationPopover from '../../../common/popover/locationPopover';
@@ -406,7 +406,7 @@ export default class ReceivingModal extends Component {
     title: '操作',
     width: 50,
     fixed: 'right',
-    render: (o, record, index) => !record.trace_id && (<RowUpdater onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
+    render: (o, record, index) => !record.trace_id && (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
     const { inboundProduct, inboundHead, editable, saveLoading } = this.props;

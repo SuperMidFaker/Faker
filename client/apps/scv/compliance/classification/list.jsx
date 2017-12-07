@@ -16,7 +16,7 @@ import { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNomin
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import { TRADE_ITEM_STATUS } from 'common/constants';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import ImportComparisonModal from './modals/importComparison';
 import NominatedImportModal from './modals/nominatedImport';
 import ConflictList from './conflictList';
@@ -479,9 +479,9 @@ export default class TradeItemList extends Component {
           if (record.status === TRADE_ITEM_STATUS.pending) {
             return (
               <span>
-                <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <RowAction onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                 <span className="ant-divider" />
                 <Dropdown overlay={(
                   <Menu>
@@ -517,7 +517,7 @@ export default class TradeItemList extends Component {
         } else if (record.status === TRADE_ITEM_STATUS.pending) {
           return (
             <span>
-              <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+              <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
               <span className="ant-divider" />
               <Popover trigger="click" content={
                 <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={this.msg('reason')} >
@@ -525,7 +525,7 @@ export default class TradeItemList extends Component {
                 </FormItem>
               }
               >
-                <RowUpdater label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <RowAction label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
               </Popover>
             </span>
           );

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Icon, Tag } from 'antd';
 import { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus } from 'common/reducers/cwmWarehouse';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import SuppliersModal from '../modal/whseSuppliersModal';
 import { formatMsg } from '../message.i18n';
@@ -87,12 +87,12 @@ export default class SuppliersPane extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        {record.active === 0 ? <RowUpdater onClick={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
-        <RowUpdater onClick={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        {record.active === 0 ? <RowAction onClick={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowAction onClick={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onClick={() => this.handleEditSupplier(record)} label={<Icon type="edit" />} row={record} />
+        <RowAction onClick={() => this.handleEditSupplier(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onClick={() => this.handleDeleteSupplier(record.id)} label={<Icon type="delete" />} row={record} />
+        <RowAction onClick={() => this.handleDeleteSupplier(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]

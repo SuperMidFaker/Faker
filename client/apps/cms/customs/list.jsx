@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Divider, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Breadcrumb, DatePicker, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -15,7 +15,7 @@ import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import FillCustomsNoModal from '../common/customs/modals/fillCustomsNoModal';
 import DeclReleasedModal from '../common/customs/modals/declReleasedModal';
 import DeclStatusPopover from '../common/customs/declStatusPopover';
@@ -120,7 +120,7 @@ export default class CustomsList extends Component {
                 {record.pre_entry_seq_no}
               </span>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowUpdater onClick={this.handleDeclNoFill} row={record}
+                <RowAction onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
@@ -150,7 +150,7 @@ export default class CustomsList extends Component {
                 </a>
               </Tooltip>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowUpdater onClick={this.handleDeclNoFill} row={record}
+                <RowAction onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
@@ -327,10 +327,9 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
-            <RowUpdater onClick={this.handleRowClick} label={this.msg('viewDetail')} row={record} />
-            <Divider type="vertical" />
+            <RowAction onClick={this.handleRowClick} label={this.msg('viewDetail')} icon="eye-o" row={record} />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowUpdater onClick={this.handleReview} label={<Icon type="check-circle-o" />} tooltip={this.msg('review')}row={record} />
+              <RowAction onClick={this.handleReview} label={<Icon type="check-circle-o" />} tooltip={this.msg('review')}row={record} />
             </PrivilegeCover>
           </span>
         );
@@ -338,7 +337,7 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowUpdater onClick={this.handleShowSendDeclModal} label={<Icon type="mail" />} tooltip={this.msg('sendDeclMsg')} row={record} />
+            <RowAction onClick={this.handleShowSendDeclModal} label={<Icon type="mail" />} tooltip={this.msg('sendDeclMsg')} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
@@ -346,17 +345,13 @@ export default class CustomsList extends Component {
         if (record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
-              <RowUpdater onClick={this.handleShowDeclReleasedModal} row={record}
+              <RowAction onClick={this.handleShowDeclReleasedModal} row={record}
                 label={<Icon type="flag" />} tooltip={this.msg('markReleased')}
               />
             </PrivilegeCover>);
         }
-        for (let i = 1; i < spanElems.length; i += 2) {
-          spanElems.splice(i, 0, <Divider type="vertical" key={`divider-${i}`} />);
-        }
-        return spanElems.length === 0 ? <RowUpdater onClick={this.handleRowClick} label={this.msg('viewDetail')} row={record} /> : (<span>
-          <RowUpdater onClick={this.handleRowClick} label={this.msg('viewDetail')} row={record} />
-          <Divider type="vertical" />
+        return (<span>
+          <RowAction onClick={this.handleRowClick} label={this.msg('viewDetail')} icon="eye-o" row={record} />
           {spanElems}
         </span>);
       }

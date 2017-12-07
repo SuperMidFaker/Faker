@@ -6,7 +6,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Layout, Radio, Select, Badge, message } from 'antd';
 import DataTable from 'client/components/DataTable';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -109,21 +109,21 @@ export default class WaveList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span>
-          <RowUpdater label="释放" row={record} onClick={this.handleReleaseWave} />
+          <RowAction label="释放" row={record} onClick={this.handleReleaseWave} />
           <span className="ant-divider" />
-          <RowUpdater onClick={this.handleEditWave} label="修改" row={record} />
+          <RowAction onClick={this.handleEditWave} label="修改" row={record} />
           <span className="ant-divider" />
-          <RowUpdater label="取消" row={record} onClick={this.cancelWave} />
+          <RowAction label="取消" row={record} onClick={this.cancelWave} />
         </span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span>
-            <RowUpdater onClick={this.handleAllocate} label="出库操作" row={record} />
+            <RowAction onClick={this.handleAllocate} label="出库操作" row={record} />
             <span className="ant-divider" />
-            <RowUpdater onClick={this.handleEntryReg} label="出区备案" row={record} />
+            <RowAction onClick={this.handleEntryReg} label="出区备案" row={record} />
           </span>);
         } else {
-          return (<RowUpdater onClick={this.handleAllocate} label="出库操作" row={record} />);
+          return (<RowAction onClick={this.handleAllocate} label="出库操作" row={record} />);
         }
       }
     },

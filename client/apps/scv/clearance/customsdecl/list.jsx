@@ -17,7 +17,7 @@ import messages from '../message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { Logixon } from 'client/components/FontIcon';
 
 const formatMsg = format(messages);
@@ -101,7 +101,7 @@ export default class ScvCustomsDeclList extends Component {
               <Tag>预</Tag>
               {preEntryLink}
               <PrivilegeCover module="clearance" feature={ietype} action="edit" key="entry_no">
-                <RowUpdater onClick={this.handleDeclNoFill} row={record}
+                <RowAction onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>

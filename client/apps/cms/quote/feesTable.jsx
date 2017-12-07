@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote } from 'common/reducers/cmsQuote';
 import messages from './message.i18n';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { CHARGE_PARAM, FEE_STYLE, FEE_CATEGORY } from 'common/constants';
 import { Select, Table, Button, Input, Switch, message, Mention } from 'antd';
 
@@ -537,39 +537,39 @@ export default class FeesTable extends Component {
         render: (o, record, index) => {
           if (record.category === 'custom' && action === 'create') {
             return (
-              <RowUpdater onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
+              <RowAction onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
             );
           } else if (action === 'edit' && batchSaved === 0) {
             if (index === editIndex) {
               return (
                 <span>
-                  <RowUpdater onClick={this.handleSave} label={msg('confirm')} row={record} index={index} />
+                  <RowAction onClick={this.handleSave} label={msg('confirm')} row={record} index={index} />
                   <span className="ant-divider" />
-                  <RowUpdater onClick={this.handleCancel} label={msg('cancel')} />
+                  <RowAction onClick={this.handleCancel} label={msg('cancel')} />
                 </span>
               );
             } else if (record.category === 'custom') {
               return (
                 <span>
-                  <RowUpdater onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
+                  <RowAction onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
                   <span className="ant-divider" />
-                  <RowUpdater onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
+                  <RowAction onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
                 </span>
               );
             } else if (record.category !== 'custom') {
               return (
-                <RowUpdater onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
+                <RowAction onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
               );
             }
           } else if (action === 'edit' && batchSaved === 1) {
             if (record.category === 'custom') {
               return (
-                <RowUpdater onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
+                <RowAction onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
               );
             }
           } else if (record.category === 'custom' && action === 'model') {
             return (
-              <RowUpdater onClick={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
+              <RowAction onClick={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
             );
           } else {
             return <span />;

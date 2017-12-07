@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { Button, Icon, Tag } from 'antd';
 import { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus } from 'common/reducers/cwmWarehouse';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import CarrierModal from '../modal/whseCarrierModal';
 import { formatMsg } from '../message.i18n';
@@ -83,12 +83,12 @@ export default class CarriersPane extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        {record.active === 0 ? <RowUpdater onClick={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
-        <RowUpdater onClick={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        {record.active === 0 ? <RowAction onClick={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowAction onClick={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onClick={() => this.handleEditCarrier(record)} label={<Icon type="edit" />} row={record} />
+        <RowAction onClick={() => this.handleEditCarrier(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onClick={() => this.handleDeleteCarrier(record.id)} label={<Icon type="delete" />} row={record} />
+        <RowAction onClick={() => this.handleDeleteCarrier(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]

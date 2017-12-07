@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm }
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openNormalDeclModal, loadNormalDelgList, cancelBatchNormalClear } from 'common/reducers/cwmShFtz';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -159,7 +159,7 @@ export default class NormalDeclList extends React.Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onClick={this.handleDetail} label="报关详情" row={record} />
+        <RowAction onClick={this.handleDetail} label="报关详情" row={record} />
         {record.manifested < 2 && <span className="ant-divider" />}
         {record.manifested < 2 &&
         <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>

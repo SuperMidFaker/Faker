@@ -7,7 +7,7 @@ import { Badge, Button, Breadcrumb, Layout, Radio, Select, Tag, message } from '
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import ShippingDockPanel from '../../../../shipping/dock/shippingDockPanel';
 import OrderDockPanel from '../../../../../scof/orders/docks/orderDockPanel';
@@ -154,7 +154,7 @@ export default class SHFTZTransferOutList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onClick={this.handleDetail} label="转出详情" row={record} />,
+    render: (o, record) => <RowAction onClick={this.handleDetail} label="转出详情" row={record} />,
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);

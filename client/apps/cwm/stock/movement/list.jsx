@@ -8,7 +8,7 @@ import { Button, Breadcrumb, Layout, Select, Icon, Tooltip, message } from 'antd
 import DataTable from 'client/components/DataTable';
 import QueueAnim from 'rc-queue-anim';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Fontello } from 'client/components/FontIcon';
 import { openMovementModal, loadMovements, cancelMovement } from 'common/reducers/cwmMovement';
@@ -128,12 +128,12 @@ export default class MovementList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.isdone) {
-        return (<RowUpdater onClick={this.handleMovementDetail} label="移库明细" row={record} />);
+        return (<RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />);
       } else {
         return (<span>
-          <RowUpdater onClick={this.handleMovementDetail} label="移库明细" row={record} />
+          <RowAction onClick={this.handleMovementDetail} label="移库明细" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onClick={this.cancelMovement} label="取消移库" row={record} />
+          <RowAction onClick={this.cancelMovement} label="取消移库" row={record} />
         </span>);
       }
     },

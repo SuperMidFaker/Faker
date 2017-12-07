@@ -7,7 +7,7 @@ import { Badge, Breadcrumb, Layout, Radio, Select, Tag, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadEntryRegDatas } from 'common/reducers/cwmShFtz';
 import { showDock } from 'common/reducers/cwmReceive';
@@ -156,7 +156,7 @@ export default class SHFTZTransferInList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowUpdater onClick={this.handleDetail} label="转入详情" row={record} />,
+    render: (o, record) => <RowAction onClick={this.handleDetail} label="转入详情" row={record} />,
   }]
   handlePreview = (asnNo) => {
     this.props.showDock(asnNo);

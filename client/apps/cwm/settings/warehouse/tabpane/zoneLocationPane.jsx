@@ -6,7 +6,7 @@ import moment from 'moment';
 import { Layout, Table, Button, Input, Popover, Menu, Form, message, Popconfirm, Icon } from 'antd';
 import LocationModal from '../modal/locationModal';
 import { MdIcon } from 'client/components/FontIcon';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import ExcelUploader from 'client/components/ExcelUploader';
 import ZoneEditModal from '../modal/zoneEditModal';
 import { createFilename } from 'client/util/dataTransform';
@@ -252,10 +252,10 @@ export default class ZoneLocationPane extends Component {
     width: 80,
     render: record => (
       <span>
-        <RowUpdater onClick={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
+        <RowAction onClick={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
         <Popconfirm title="确定要删除?" onConfirm={() => this.handleDeleteLocation(record)} okText="是" cancelText="否">
-          <RowUpdater label={<Icon type="delete" />} />
+          <RowAction label={<Icon type="delete" />} />
         </Popconfirm>
       </span>
     ),

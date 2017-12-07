@@ -13,7 +13,7 @@ import SearchBar from 'client/components/SearchBar';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import InboundExpander from './expander';
 import SendModal from './senderModal';
 import CreateModal from './createModal';
@@ -233,7 +233,7 @@ export default class InboundShipmentsList extends React.Component {
       if (record.status <= 3) {
         return (
           <span>
-            <RowUpdater onClick={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
+            <RowAction onClick={this.handleSendAtDest} label={this.msg('sendAtDest')} row={record} />
             <span className="ant-divider" />
           </span>
         );

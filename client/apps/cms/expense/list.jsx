@@ -19,7 +19,7 @@ import SearchBar from 'client/components/SearchBar';
 import TrimSpan from 'client/components/trimSpan';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import DelgAdvanceExpenseModal from './modals/delgAdvanceExpenseModal';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import ExpEptModal from './modals/expEptModal';
 import AdvModelModal from './modals/advModelModal';
 import AdvUploadModal from './modals/advUploadModal';
@@ -171,7 +171,7 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowUpdater onClick={this.handleAddAdvanceIncome} field="cush_bill"
+                <RowAction onClick={this.handleAddAdvanceIncome} field="cush_bill"
                   row={{ delg_no: row.delg_no }} label={labelElem}
                 />);
             }
@@ -237,7 +237,7 @@ export default class ExpenseList extends Component {
                 <span>{o.toFixed(2)}<Icon type="edit" /></span>
               );
               return (
-                <RowUpdater onClick={this.handleAddAdvancePayment} field="cush_cost"
+                <RowAction onClick={this.handleAddAdvancePayment} field="cush_cost"
                   row={{ delg_no: row.delg_no }} label={labelElem}
                 />);
             }
@@ -329,7 +329,7 @@ export default class ExpenseList extends Component {
       dataIndex: 'OPS_COL',
       width: 120,
       fixed: 'right',
-      render: record => <RowUpdater onClick={this.handleInbound} label="费用明细" row={record} />,
+      render: record => <RowAction onClick={this.handleInbound} label="费用明细" row={record} />,
     },
   ];
   dataSource = new DataTable.DataSource({

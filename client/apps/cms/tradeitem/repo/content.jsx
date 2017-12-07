@@ -20,7 +20,7 @@ import { createFilename } from 'client/util/dataTransform';
 import ImportItemModal from './modal/importItemModal';
 import DeclElementsModal from '../../common/modal/declElementsModal';
 import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
-// import RowUpdater from 'client/components/rowUpdater';
+// import RowAction from 'client/components/RowAction';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;

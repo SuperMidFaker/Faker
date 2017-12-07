@@ -7,7 +7,7 @@ import { Button, Tag, Modal } from 'antd';
 import { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus } from 'common/reducers/cwmWarehouse';
 import { clearTransition } from 'common/reducers/cwmTransition';
 import { loadWhse } from 'common/reducers/cwmContext';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import WhseOwnersModal from '../modal/whseOwnersModal';
@@ -142,10 +142,10 @@ export default class OwnersPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        <RowUpdater onClick={this.handleOwnerControl} label="控制属性" row={record} />
+        <RowAction onClick={this.handleOwnerControl} label="控制属性" row={record} />
         <span className="ant-divider" />
-        {record.active === 0 ? <RowUpdater onClick={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onClick={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowAction onClick={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
+        <RowAction onClick={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
       </span>
     ),
   }]

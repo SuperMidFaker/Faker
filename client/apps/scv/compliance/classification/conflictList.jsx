@@ -10,7 +10,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadConflictItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, setStandardItem } from 'common/reducers/scvClassification';
 import { TRADE_ITEM_STATUS } from 'common/constants';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 
 const formatMsg = format(messages);
 
@@ -298,9 +298,9 @@ export default class ConflictList extends Component {
           if (record.status === TRADE_ITEM_STATUS.pending) {
             return (
               <span>
-                <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <RowAction onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                 <span className="ant-divider" />
                 <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
                   <Icon type="edit" />
@@ -319,19 +319,19 @@ export default class ConflictList extends Component {
         } else if (!record.setStandard && record.contribute_tenant_id !== this.props.tenantId && record.status === TRADE_ITEM_STATUS.pending) {
           return (
             <span>
-              <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+              <RowAction onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
               <span className="ant-divider" />
-              <RowUpdater onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+              <RowAction onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
             </span>
           );
         } else if (record.setStandard && record.contribute_tenant_id !== this.props.tenantId) {
           return (
-            <RowUpdater onClick={this.handleSetStandard} label={<span><Icon type="star-o" /> {this.msg('setStandard')}</span>} row={record} />
+            <RowAction onClick={this.handleSetStandard} label={<span><Icon type="star-o" /> {this.msg('setStandard')}</span>} row={record} />
           );
         } else if (record.setStandard && record.contribute_tenant_id === this.props.tenantId) {
           return (
             <span>
-              <RowUpdater onClick={this.handleSetStandard} label={<span><Icon type="star-o" /> {this.msg('setStandard')}</span>} row={record} />
+              <RowAction onClick={this.handleSetStandard} label={<span><Icon type="star-o" /> {this.msg('setStandard')}</span>} row={record} />
               <span className="ant-divider" />
               <NavLink to={`/scv/products/tradeitem/edit/${record.id}`}>
                 <Icon type="edit" /> {this.msg('modify')}

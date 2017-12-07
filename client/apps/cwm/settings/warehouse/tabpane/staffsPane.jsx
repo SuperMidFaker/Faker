@@ -4,7 +4,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button, Icon, Tag } from 'antd';
 import { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff } from 'common/reducers/cwmWarehouse';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import StaffModal from '../modal/staffModal';
 import DataPane from 'client/components/DataPane';
 import { formatMsg } from '../message.i18n';
@@ -59,10 +59,10 @@ export default class StaffsPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        {record.active === 0 ? <RowUpdater onClick={() => this.changeStaffStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onClick={() => this.changeStaffStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowAction onClick={() => this.changeStaffStatus(record.id, true)} label="启用" row={record} /> :
+        <RowAction onClick={() => this.changeStaffStatus(record.id, false)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onClick={this.handleDeleteStaff} label={<Icon type="delete" />} row={record} />
+        <RowAction onClick={this.handleDeleteStaff} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]

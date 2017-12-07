@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Dropdown, Icon, Popconfirm, Tooltip } from 'antd';
+import './index.less';
 
-export default class RowUpdater extends Component {
+export default class RowAction extends Component {
   static propTypes = {
     label: PropTypes.any,
+    icon: PropTypes.string,
     onClick: PropTypes.func,
     onHover: PropTypes.func,
     onConfirm: PropTypes.func,
@@ -34,14 +36,14 @@ export default class RowUpdater extends Component {
     }
   }
   renderButton = () => {
-    const { label, onClick, onHover, row, index, tooltip, primary, overlay, ...extra } = this.props;
+    const { label, onClick, onHover, row, index, tooltip, primary, overlay, icon, ...extra } = this.props;
     const type = primary ? 'primary' : 'default';
     return overlay ?
-    (<Dropdown overlay={overlay} placement="bottomRight">
+    (<Dropdown overlay={overlay} placement="bottomRight" trigger={['click']}>
       <Button size="small"><Icon type="ellipsis" /></Button>
     </Dropdown>)
     :
-    (<Button type={type} ghost={primary} size="small" onClick={this.handleClick} onMouseEnter={this.handleHover} {...extra}>
+    (<Button type={type} ghost={primary} size="small" icon={icon} onClick={this.handleClick} onMouseEnter={this.handleHover} {...extra} className="welo-row-action">
       {label}
     </Button>);
   }

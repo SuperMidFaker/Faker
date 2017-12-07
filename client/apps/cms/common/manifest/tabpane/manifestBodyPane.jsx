@@ -15,7 +15,7 @@ import DeclElementsModal from '../../modal/declElementsModal';
 import ImportDeclaredBodyModal from '../modals/importDeclaredBodyModal';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import AmountModel from '../modals/amountDivid';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import RelateImportRuleModal from '../modals/relateImportRules';
 import { dividGrossWt } from './helper';
 import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
@@ -512,7 +512,7 @@ export default class ManifestBodyPane extends React.Component {
         } else {
           return (
             <span>
-              <RowUpdater onClick={this.handleEditBody} label={<Icon type="edit" />}
+              <RowAction onClick={this.handleEditBody} label={<Icon type="edit" />}
                 row={record} index={index}
               />
               <span className="ant-divider" />

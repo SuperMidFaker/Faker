@@ -15,7 +15,7 @@ import {
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import SearchBar from 'client/components/SearchBar';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { Logixon, MdIcon, Fontello } from 'client/components/FontIcon';
 import { loadDelegationList, acceptDelg, delDelg, setDispStatus, loadCiqTable, delgAssignRecall,
   ensureManifestMeta, showDispModal, loadFormRequire } from 'common/reducers/cmsDelegation';
@@ -588,7 +588,6 @@ export default class DelegationList extends Component {
               <PrivilegeCover module="clearance" feature={clearType} action="edit">
                 <OperatorPopover partenrId={record.partnerId} record={record} handleAccept={this.handleDelegationAccept} module="clearance" />
               </PrivilegeCover>
-              {editOverlay && <span className="ant-divider" />}
               {editOverlay && <PrivilegeCover module="clearance" feature={clearType} action="edit">
                 <Dropdown overlay={editOverlay}>
                   <a role="presentation"><Icon type="down" /></a>
@@ -600,20 +599,19 @@ export default class DelegationList extends Component {
           let extraOp = null;
           if (record.customs_tenant_id === tenantId) {                    // 2.1 报关单位为当前租户(未作分配)
             extraOp = (
-              <RowUpdater onClick={() => this.handleDelegationAssign(record)} row={record}
+              <RowAction onClick={() => this.handleDelegationAssign(record)} row={record}
                 label={<Icon type="share-alt" />} tooltip={this.msg('delgDispatch')}
               />);
           } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业(已作分配)
               record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
             extraOp = (
-              <RowUpdater confirm="你确定撤回分配吗?" onConfirm={this.handleDelgAssignRecall} row={record}
+              <RowAction confirm="你确定撤回分配吗?" onConfirm={this.handleDelgAssignRecall} row={record}
                 label={<Icon type="rollback" />} tooltip={this.msg('delgRecall')}
               />);
           }
           return (
             <span>
-              <RowUpdater primary onClick={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
-              {extraOp && <span className="ant-divider" />}
+              <RowAction primary onClick={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
               {extraOp}
             </span>);
         } else if (record.status === CMS_DELEGATION_STATUS.processing) {  // 3.
@@ -639,10 +637,10 @@ export default class DelegationList extends Component {
           let manifestOp = null;
           switch (record.manifested) {
             case CMS_DELEGATION_MANIFEST.created:           // 制单中
-              manifestOp = <RowUpdater onClick={this.handleManifestMake} label={<span><Icon type="file-text" /> {this.msg('editManifest')}</span>} row={record} />;
+              manifestOp = <RowAction onClick={this.handleManifestMake} label={<span><Icon type="file-text" /> {this.msg('editManifest')}</span>} row={record} />;
               break;
             case CMS_DELEGATION_MANIFEST.manifested:        // 制单完成(已生成报关清单)
-              manifestOp = <RowUpdater onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
+              manifestOp = <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
               break;
             default:
               break;
@@ -652,14 +650,13 @@ export default class DelegationList extends Component {
               <PrivilegeCover module="clearance" feature={clearType} action="create">
                 {manifestOp}
               </PrivilegeCover>
-              {dispatchOverlay && <span className="ant-divider" />}
-              {dispatchOverlay && <RowUpdater overlay={dispatchOverlay} />}
+              {dispatchOverlay && <RowAction overlay={dispatchOverlay} />}
             </span>);
         } else if (record.status === CMS_DELEGATION_STATUS.declaring ||   // 4. 申报
                       record.status === CMS_DELEGATION_STATUS.released) {   // 5. 放行
           return (
             <PrivilegeCover module="clearance" feature={clearType} action="create">
-              <RowUpdater onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
+              <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
             </PrivilegeCover>);
         }
       },
