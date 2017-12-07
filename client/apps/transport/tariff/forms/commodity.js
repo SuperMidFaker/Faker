@@ -89,9 +89,9 @@ ConfirmDel.propTypes = {
 };
 
 export function RowClick(props) {
-  const { row, text, onHit } = props;
+  const { row, text, onClick } = props;
   function handleClick(ev) {
-    onHit(row, ev);
+    onClick(row, ev);
   }
   return <a role="presentation" onClick={handleClick}>{text}</a>;
 }
@@ -99,5 +99,5 @@ export function RowClick(props) {
 RowClick.propTypes = {
   row: PropTypes.object.isRequired,
   text: PropTypes.string.isRequired,
-  onHit: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
 };

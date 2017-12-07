@@ -75,15 +75,15 @@ export default class BrokersPane extends Component {
     dataIndex: 'OPS_COL',
     render: (o, record) => (
       <span>
-        {!!record.active && (!record.authority ? <RowUpdater onHit={() => this.authorizeBroker(true, record.partner_id)} label="仓库授权" row={record} /> :
-        <RowUpdater onHit={() => this.authorizeBroker(false, record.partner_id)} label="取消授权" row={record} />)}
+        {!!record.active && (!record.authority ? <RowUpdater onClick={() => this.authorizeBroker(true, record.partner_id)} label="仓库授权" row={record} /> :
+        <RowUpdater onClick={() => this.authorizeBroker(false, record.partner_id)} label="取消授权" row={record} />)}
         {!!record.active && <span className="ant-divider" />}
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onClick={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowUpdater onClick={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         {record.active === 0 && (
           <span>
             <span className="ant-divider" />
-            <RowUpdater onHit={() => this.handleDeleteBroker(record.id)} label={<Icon type="delete" />} row={record} />
+            <RowUpdater onClick={() => this.handleDeleteBroker(record.id)} label={<Icon type="delete" />} row={record} />
           </span>
         )}
       </span>

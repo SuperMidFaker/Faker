@@ -95,11 +95,11 @@ export default class FeeSummaryDetail extends Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleDetail} label="调整" row={record} />
+        return (<span><RowUpdater onClick={this.handleDetail} label="调整" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={this.handleDetail} label="排除" row={record} /></span>);
+          <RowUpdater onClick={this.handleDetail} label="排除" row={record} /></span>);
       }
     },
   }]
@@ -149,11 +149,11 @@ export default class FeeSummaryDetail extends Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleDetail} label="调整" row={record} />
+        return (<span><RowUpdater onClick={this.handleDetail} label="调整" row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={this.handleDetail} label="排除" row={record} /></span>);
+          <RowUpdater onClick={this.handleDetail} label="排除" row={record} /></span>);
       }
     },
   }]

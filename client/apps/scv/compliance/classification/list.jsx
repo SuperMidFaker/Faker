@@ -479,9 +479,9 @@ export default class TradeItemList extends Component {
           if (record.status === TRADE_ITEM_STATUS.pending) {
             return (
               <span>
-                <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+                <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
                 <span className="ant-divider" />
-                <RowUpdater onHit={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
+                <RowUpdater onClick={this.handleItemRefused} label={<span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>} row={record} />
                 <span className="ant-divider" />
                 <Dropdown overlay={(
                   <Menu>
@@ -517,7 +517,7 @@ export default class TradeItemList extends Component {
         } else if (record.status === TRADE_ITEM_STATUS.pending) {
           return (
             <span>
-              <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+              <RowUpdater onClick={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
               <span className="ant-divider" />
               <Popover trigger="click" content={
                 <FormItem labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} label={this.msg('reason')} >

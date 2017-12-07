@@ -105,9 +105,9 @@ export default class PayableInvoiceList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowUpdater onHit={this.handleReceive} label="入库操作" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleReceive} label="入库操作" row={record} /> </span>);
       } else {
-        return (<span><RowUpdater onHit={this.handleDetail} label="申请付款" row={record} /> </span>);
+        return (<span><RowUpdater onClick={this.handleDetail} label="申请付款" row={record} /> </span>);
       }
     },
   }]

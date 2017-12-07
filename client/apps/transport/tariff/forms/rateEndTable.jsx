@@ -262,7 +262,7 @@ export default class RateEndTable extends React.Component {
         dataIndex: 'OPS_COL',
         render: (o, record) => (
           <span>
-            <RowClick text="编辑" onHit={this.handleEdit} row={record} />
+            <RowClick text="编辑" onClick={this.handleEdit} row={record} />
             <span className="ant-divider" />
             <ConfirmDel text="删除" onConfirm={this.handleDel} row={record} />
           </span>),

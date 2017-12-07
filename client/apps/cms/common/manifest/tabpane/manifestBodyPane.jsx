@@ -512,7 +512,7 @@ export default class ManifestBodyPane extends React.Component {
         } else {
           return (
             <span>
-              <RowUpdater onHit={this.handleEditBody} label={<Icon type="edit" />}
+              <RowUpdater onClick={this.handleEditBody} label={<Icon type="edit" />}
                 row={record} index={index}
               />
               <span className="ant-divider" />

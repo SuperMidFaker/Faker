@@ -55,7 +55,7 @@ export default class TasksPane extends React.Component {
     render: (o, record) => {
       if (record.progress === 100) {
         return (<span>
-          <RowUpdater onHit={this.handleDetail} label="对比详情" row={record} />
+          <RowUpdater onClick={this.handleDetail} label="对比详情" row={record} />
           {record.progress === -1 && <span className="ant-divider" />}
         </span>);
       }

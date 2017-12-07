@@ -195,7 +195,7 @@ export default class BatchDeclList extends React.Component {
     width: 160,
     fixed: 'right',
     render: (o, record) => (<span>
-      <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
+      <RowUpdater onClick={this.handleDetail} label="报关详情" row={record} />
       {record.status === 'manifest' && <span className="ant-divider" />}
       {record.status === 'manifest' &&
       <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>

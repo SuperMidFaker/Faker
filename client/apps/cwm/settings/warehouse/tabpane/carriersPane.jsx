@@ -83,12 +83,12 @@ export default class CarriersPane extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onClick={() => this.changeCarrierStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
+        <RowUpdater onClick={() => this.changeCarrierStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditCarrier(record)} label={<Icon type="edit" />} row={record} />
+        <RowUpdater onClick={() => this.handleEditCarrier(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleDeleteCarrier(record.id)} label={<Icon type="delete" />} row={record} />
+        <RowUpdater onClick={() => this.handleDeleteCarrier(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]

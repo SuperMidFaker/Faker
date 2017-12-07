@@ -78,9 +78,9 @@ export default class PaymentReceivedPane extends Component {
       fixed: 'right',
       render: (o, record) => (
         <span>
-          <RowUpdater onHit={this.handleEdit} label={<Icon type="edit" />} row={record} />
+          <RowUpdater onClick={this.handleEdit} label={<Icon type="edit" />} row={record} />
           <span className="ant-divider" />
-          <RowUpdater onHit={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
+          <RowUpdater onClick={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
         </span>
         ),
     }];

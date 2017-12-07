@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -86,6 +86,18 @@ export default class NormalDeclList extends React.Component {
     title: '状态',
     dataIndex: 'status',
     width: 100,
+    render: (o) => {
+      switch (o) {
+        case 2:
+          return <Badge status="processing" text="委托制单" />;
+        case 3:
+          return <Badge status="processing" text="已申报" />;
+        case 4:
+          return <Badge status="success" text="已清关" />;
+        default:
+          break;
+      }
+    },
   }, {
     title: '货主',
     width: 180,
@@ -147,7 +159,7 @@ export default class NormalDeclList extends React.Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleDetail} label="报关详情" row={record} />
+        <RowUpdater onClick={this.handleDetail} label="报关详情" row={record} />
         {record.manifested < 2 && <span className="ant-divider" />}
         {record.manifested < 2 &&
         <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>

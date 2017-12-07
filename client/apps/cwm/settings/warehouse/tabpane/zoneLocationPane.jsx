@@ -252,7 +252,7 @@ export default class ZoneLocationPane extends Component {
     width: 80,
     render: record => (
       <span>
-        <RowUpdater onHit={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
+        <RowUpdater onClick={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
         <Popconfirm title="确定要删除?" onConfirm={() => this.handleDeleteLocation(record)} okText="是" cancelText="否">
           <RowUpdater label={<Icon type="delete" />} />

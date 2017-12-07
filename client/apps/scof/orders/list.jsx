@@ -87,6 +87,7 @@ export default class OrderList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
+    starting: false,
   }
   componentWillMount() {
     this.props.hideDock();
@@ -124,6 +125,7 @@ export default class OrderList extends React.Component {
     });
   }
   handleStart = (shipmtOrderNo) => {
+    this.setState({ starting: true });
     const { loginId, username } = this.props;
     this.props.acceptOrder({ loginId, username, shipmtOrderNo }).then((result) => {
       if (result.error) {
@@ -132,6 +134,7 @@ export default class OrderList extends React.Component {
         message.info('订单流程已启动');
         this.handleTableLoad();
       }
+      this.setState({ starting: false });
     });
   }
   handleTableLoad = () => {
@@ -241,7 +244,7 @@ export default class OrderList extends React.Component {
           return (
             <div>
               {record.flow_node_num > 0 &&
-              <a onClick={() => this.handleStart(record.shipmt_order_no)}><Icon type="play-circle" /></a>
+              <Button type="primary" shape="circle" icon="caret-right" loading={this.state.starting} onClick={() => this.handleStart(record.shipmt_order_no)} />
               }
               {record.flow_node_num > 0 &&
               <span className="ant-divider" />

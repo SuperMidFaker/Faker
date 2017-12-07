@@ -196,9 +196,9 @@ export default class CiqDeclList extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowUpdater onHit={this.handleDetail} label="详情" row={record} />
+        <RowUpdater onClick={this.handleDetail} label="详情" row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={this.exportCjqDecl} label="导出" row={record} />
+        <RowUpdater onClick={this.exportCjqDecl} label="导出" row={record} />
       </span>),
   }]
   dataSource = new DataTable.DataSource({

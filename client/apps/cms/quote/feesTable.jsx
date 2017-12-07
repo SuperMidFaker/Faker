@@ -537,39 +537,39 @@ export default class FeesTable extends Component {
         render: (o, record, index) => {
           if (record.category === 'custom' && action === 'create') {
             return (
-              <RowUpdater onHit={this.handleDelete} label={msg('delete')} row={record} index={index} />
+              <RowUpdater onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
             );
           } else if (action === 'edit' && batchSaved === 0) {
             if (index === editIndex) {
               return (
                 <span>
-                  <RowUpdater onHit={this.handleSave} label={msg('confirm')} row={record} index={index} />
+                  <RowUpdater onClick={this.handleSave} label={msg('confirm')} row={record} index={index} />
                   <span className="ant-divider" />
-                  <RowUpdater onHit={this.handleCancel} label={msg('cancel')} />
+                  <RowUpdater onClick={this.handleCancel} label={msg('cancel')} />
                 </span>
               );
             } else if (record.category === 'custom') {
               return (
                 <span>
-                  <RowUpdater onHit={this.handleModify} label={msg('modify')} row={record} index={index} />
+                  <RowUpdater onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
                   <span className="ant-divider" />
-                  <RowUpdater onHit={this.handleDelete} label={msg('delete')} row={record} index={index} />
+                  <RowUpdater onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
                 </span>
               );
             } else if (record.category !== 'custom') {
               return (
-                <RowUpdater onHit={this.handleModify} label={msg('modify')} row={record} index={index} />
+                <RowUpdater onClick={this.handleModify} label={msg('modify')} row={record} index={index} />
               );
             }
           } else if (action === 'edit' && batchSaved === 1) {
             if (record.category === 'custom') {
               return (
-                <RowUpdater onHit={this.handleDelete} label={msg('delete')} row={record} index={index} />
+                <RowUpdater onClick={this.handleDelete} label={msg('delete')} row={record} index={index} />
               );
             }
           } else if (record.category === 'custom' && action === 'model') {
             return (
-              <RowUpdater onHit={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
+              <RowUpdater onClick={this.handleMdlFeeDelete} label={msg('delete')} row={record} index={index} />
             );
           } else {
             return <span />;

@@ -159,7 +159,7 @@ export default class MovementDetailsPane extends React.Component {
   }, {
     title: '操作',
     width: 80,
-    render: (o, record) => !record.isdone && <RowUpdater onHit={this.removeMoveDetail} label="取消明细" row={record} />,
+    render: (o, record) => !record.isdone && <RowUpdater onClick={this.removeMoveDetail} label="取消明细" row={record} />,
   }]
   render() {
     const { movementDetails, mode, movementHead } = this.props;

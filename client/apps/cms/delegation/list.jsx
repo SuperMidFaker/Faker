@@ -600,19 +600,19 @@ export default class DelegationList extends Component {
           let extraOp = null;
           if (record.customs_tenant_id === tenantId) {                    // 2.1 报关单位为当前租户(未作分配)
             extraOp = (
-              <RowUpdater onHit={() => this.handleDelegationAssign(record)} row={record}
+              <RowUpdater onClick={() => this.handleDelegationAssign(record)} row={record}
                 label={<Icon type="share-alt" />} tooltip={this.msg('delgDispatch')}
               />);
           } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业(已作分配)
               record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
             extraOp = (
-              <Popconfirm title="你确定撤回分配吗?" onConfirm={() => this.handleDelgAssignRecall(record)} >
-                <a role="presentation"><Icon type="rollback" /> {this.msg('delgRecall')}</a>
-              </Popconfirm>);
+              <RowUpdater confirm="你确定撤回分配吗?" onConfirm={this.handleDelgAssignRecall} row={record}
+                label={<Icon type="rollback" />} tooltip={this.msg('delgRecall')}
+              />);
           }
           return (
             <span>
-              <RowUpdater onHit={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
+              <RowUpdater primary onClick={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
               {extraOp && <span className="ant-divider" />}
               {extraOp}
             </span>);
@@ -639,10 +639,10 @@ export default class DelegationList extends Component {
           let manifestOp = null;
           switch (record.manifested) {
             case CMS_DELEGATION_MANIFEST.created:           // 制单中
-              manifestOp = <RowUpdater onHit={this.handleManifestMake} label={<span><Icon type="file-text" /> {this.msg('editManifest')}</span>} row={record} />;
+              manifestOp = <RowUpdater onClick={this.handleManifestMake} label={<span><Icon type="file-text" /> {this.msg('editManifest')}</span>} row={record} />;
               break;
             case CMS_DELEGATION_MANIFEST.manifested:        // 制单完成(已生成报关清单)
-              manifestOp = <RowUpdater onHit={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
+              manifestOp = <RowUpdater onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
               break;
             default:
               break;
@@ -653,15 +653,13 @@ export default class DelegationList extends Component {
                 {manifestOp}
               </PrivilegeCover>
               {dispatchOverlay && <span className="ant-divider" />}
-              {dispatchOverlay && <Dropdown overlay={dispatchOverlay}>
-                <a role="presentation"><Icon type="down" /></a>
-                </Dropdown>}
+              {dispatchOverlay && <RowUpdater overlay={dispatchOverlay} />}
             </span>);
         } else if (record.status === CMS_DELEGATION_STATUS.declaring ||   // 4. 申报
                       record.status === CMS_DELEGATION_STATUS.released) {   // 5. 放行
           return (
             <PrivilegeCover module="clearance" feature={clearType} action="create">
-              <RowUpdater onHit={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
+              <RowUpdater onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
             </PrivilegeCover>);
         }
       },
@@ -703,7 +701,7 @@ export default class DelegationList extends Component {
           <DataTable toolbarActions={toolbarActions}
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={columns} dataSource={dataSource} rowKey="delg_no" loading={delegationlist.loading}
-            onRowClick={this.handleRowClick}
+            onRowDoubleClick={this.handleRowClick}
           />
         </Content>
         <DelegationDockPanel />

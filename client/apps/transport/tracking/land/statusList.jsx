@@ -393,7 +393,7 @@ export default class TrackingStatusList extends React.Component {
       <PrivilegeCover module="transport" feature="tracking" action="edit">
         <span>
           <RowUpdater label={locLabel} onHover={this.handleReportLocHover}
-            onHit={this.handleShowTransitModal} row={record}
+            onClick={this.handleShowTransitModal} row={record}
             className={reported ? 'mdc-text-grey' : ''}
           />
         </span>

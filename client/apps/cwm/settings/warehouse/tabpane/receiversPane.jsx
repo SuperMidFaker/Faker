@@ -98,12 +98,12 @@ export default class ReceiversPane extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        {record.active === 0 ? <RowUpdater onHit={() => this.changeReceiverStatus(record.id, true)} label="启用" row={record} /> :
-        <RowUpdater onHit={() => this.changeReceiverStatus(record.id, false)} label="停用" row={record} />}
+        {record.active === 0 ? <RowUpdater onClick={() => this.changeReceiverStatus(record.id, true)} label="启用" row={record} /> :
+        <RowUpdater onClick={() => this.changeReceiverStatus(record.id, false)} label="停用" row={record} />}
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleEditReceiver(record)} label={<Icon type="edit" />} row={record} />
+        <RowUpdater onClick={() => this.handleEditReceiver(record)} label={<Icon type="edit" />} row={record} />
         <span className="ant-divider" />
-        <RowUpdater onHit={() => this.handleDeleteReceiver(record.id)} label={<Icon type="delete" />} row={record} />
+        <RowUpdater onClick={() => this.handleDeleteReceiver(record.id)} label={<Icon type="delete" />} row={record} />
       </span>
     ),
   }]

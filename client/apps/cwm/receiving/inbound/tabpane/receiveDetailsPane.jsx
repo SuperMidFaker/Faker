@@ -175,9 +175,9 @@ export default class ReceiveDetailsPane extends React.Component {
       if (this.props.inboundHead.rec_mode === 'scan' ||
         this.props.inboundHead.status === CWM_INBOUND_STATUS.COMPLETED.value ||
         record.received_qty >= record.expect_qty) {
-        return (<RowUpdater onHit={this.handleReceiveDetails} label="收货记录" row={record} />);
+        return (<RowUpdater onClick={this.handleReceiveDetails} label="收货记录" row={record} />);
       } else {
-        return (<RowUpdater onHit={this.handleManualReceive} label="收货确认" row={record} />);
+        return (<RowUpdater onClick={this.handleManualReceive} label="收货确认" row={record} />);
       }
     },
   }]

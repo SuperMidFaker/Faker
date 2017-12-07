@@ -101,7 +101,7 @@ export default class ScvCustomsDeclList extends Component {
               <Tag>预</Tag>
               {preEntryLink}
               <PrivilegeCover module="clearance" feature={ietype} action="edit" key="entry_no">
-                <RowUpdater onHit={this.handleDeclNoFill} row={record}
+                <RowUpdater onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
