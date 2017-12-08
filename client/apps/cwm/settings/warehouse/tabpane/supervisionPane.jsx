@@ -56,6 +56,7 @@ export default class SupervisionPane extends Component {
     this.props.loadCustoms().then((result) => {
       this.setState({
         customs: result.data.slice(0, 20),
+        customsCode: this.props.customsCode,
       });
     });
     this.props.loadWhseSupervisionApps();
@@ -103,8 +104,8 @@ export default class SupervisionPane extends Component {
     }
   }
   render() {
-    const { whseSupervisonApps, customsCode } = this.props;
-    const { customs } = this.state;
+    const { whseSupervisonApps } = this.props;
+    const { customsCode, customs } = this.state;
     return (
       <div style={{ padding: 24 }}>
         <Form layout="horizontal">

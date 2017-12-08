@@ -474,3 +474,13 @@ export const CIQ_SPECIAL_PASS_FLAG = [
   { value: 2, text: '外交礼遇' },
   { value: 3, text: '转关' },
 ];
+
+export const CIQ_TRANSPORTS_TYPE = [
+  { value: 1, text: '水路运输' },
+  { value: 2, text: '铁路运输' },
+  { value: 3, text: '公路运输' },
+  { value: 4, text: '航空运输' },
+  { value: 5, text: '旅客携带' },
+  { value: 6, text: '管道运输' },
+  { value: 9, text: '其他运输' },
+];
