@@ -71,7 +71,7 @@ export default class TradeItemTaskList extends React.Component {
     width: 300,
   }, {
     title: this.msg('repoCreator'),
-    dataIndex: 'repo_creator_name',
+    dataIndex: 'created_tenant_name',
     width: 300,
   }, {
     title: this.msg('createdDate'),

@@ -10,7 +10,7 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     render: (o, record) => {
       if (record.feedback === 'repeat') {
         return (
-          <Tooltip title="与原归类相同">
+          <Tooltip title="新归类与原归类相同">
             <Tag color="orange">{o}</Tag>
           </Tooltip>);
       } else if (record.duplicate) {
@@ -18,9 +18,9 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
           <Tooltip title="导入货号重复造成冲突">
             <Tag color="red">{o}</Tag>
           </Tooltip>);
-      } else if (record.feedback === 'newSrc') {
+      } else if (record.feedback === 'createdByOther') {
         return (
-          <Tooltip title="原归类信息由主库同步过来">
+          <Tooltip title="原归类信息由其他租户创建">
             <Tag color="blue">{o}</Tag>
           </Tooltip>);
       } else if (record.rejected) {
@@ -40,14 +40,26 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     title: '归类',
     dataIndex: 'classified',
     width: 80,
-    render: classified => !classified ? <Fontello type="circle" color="red" /> : <Fontello type="circle" color="green" />,
+    render: (classified, item) => {
+      if (classified) {
+        return <Fontello type="circle" color="green" />;
+      } else {
+        let tooltip;
+        if (!(item.hscode || item.g_name || item.g_model)) {
+          tooltip = '申报商品编码或品名或规范要素未完整';
+        } else {
+          tooltip = '填写规格型号与规范申报要素项数不一致';
+        }
+        return <Tooltip title={tooltip}><span><Fontello type="circle" color="red" /></span></Tooltip>;
+      }
+    },
   }].concat(withRepo ? [{
     title: msg('repoOwner'),
     dataIndex: 'repo_owner_name',
     width: 300,
   }, {
     title: msg('repoCreator'),
-    dataIndex: 'repo_creator_name',
+    dataIndex: 'contribute_tenant_name',
     width: 300,
   }] : []).concat(withRepoItem ? [{
     title: msg('preHscode'),
@@ -78,6 +90,13 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     title: msg('gName'),
     dataIndex: 'g_name',
     width: 200,
+    render: (gname) => {
+      if (!gname) {
+        return <Tag color="red" />;
+      } else {
+        return gname;
+      }
+    },
   }, {
     title: msg('enName'),
     dataIndex: 'en_name',
@@ -86,6 +105,13 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     title: msg('gModel'),
     dataIndex: 'g_model',
     width: 400,
+    render: (model) => {
+      if (!model) {
+        return <Tag color="red" />;
+      } else {
+        return model;
+      }
+    },
   }, {
     title: msg('gUnit1'),
     dataIndex: 'g_unit_1',
