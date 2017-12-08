@@ -38,6 +38,7 @@ const Option = Select.Option;
     repos: state.cmsTradeitem.repos.filter(rep => rep.permission === CMS_TRADE_REPO_PERMISSION.edit),
     workspaceLoading: state.cmsTradeitem.workspaceLoading,
     workspaceItemList: state.cmsTradeitem.workspaceItemList,
+    invalidStat: state.cmsTradeitem.workspaceStat.invalid,
   }),
   { loadWorkspaceItems }
 )
@@ -98,7 +99,7 @@ export default class InvalidItemsList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { workspaceLoading, workspaceItemList, repos } = this.props;
+    const { workspaceLoading, workspaceItemList, repos, invalidStat } = this.props;
     const { filter } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -132,7 +133,7 @@ export default class InvalidItemsList extends React.Component {
       <Select showSearch placeholder="所属物料库" optionFilterProp="children" style={{ width: 160 }}
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
       >
-        {repos.map(rep => <Option value={rep.id}>{rep.owner_name}</Option>)}
+        {repos.map(rep => <Option value={String(rep.id)} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
       <SearchBar placeholder={this.msg('商品货号/HS编码/品名')} onInputSearch={this.handleSearch} value={filter.name} />
     </span>);
@@ -160,13 +161,15 @@ export default class InvalidItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
+              <Button type="primary" icon="save" onClick={this.handleLocalAudit}>提交审核</Button>
+              {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button icon="file-excel">导出</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">
             <DataTable toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="cop_product_no" loading={workspaceLoading}
+              columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={workspaceLoading}
               locale={{ emptyText: '当前没有新的料件' }}
             />
           </Content>

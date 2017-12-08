@@ -238,6 +238,14 @@ const messages = defineMessages({
     id: 'cms.tradeitem.task.new.comparison.import',
     defaultMessage: '新建对比导入',
   },
+  pass: {
+    id: 'cms.tradeitem.pendig.pass',
+    defaultMessage: '通过',
+  },
+  refuse: {
+    id: 'cms.tradeitem.pending.refuse',
+    defaultMessage: '拒绝',
+  },
 });
 
 export default messages;

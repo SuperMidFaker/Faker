@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Button, Breadcrumb, Layout, Popconfirm, Icon, Select } from 'antd';
+import { notification, Button, Breadcrumb, Layout, Popconfirm, Icon, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import { loadWorkspaceTasks } from 'common/reducers/cmsTradeitem';
+import { loadWorkspaceTasks, delWorkspaceTask } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import NavLink from 'client/components/NavLink';
 import ImportDataPanel from 'client/components/ImportDataPanel';
@@ -24,7 +24,7 @@ const Option = Select.Option;
     loading: state.cmsTradeitem.workspaceLoading,
     workspaceTaskList: state.cmsTradeitem.workspaceTaskList,
   }),
-  { loadWorkspaceTasks }
+  { loadWorkspaceTasks, delWorkspaceTask }
 )
 @connectNav({
   depth: 2,
@@ -53,7 +53,7 @@ export default class TradeItemTaskList extends React.Component {
   columns = [{
     title: '任务ID',
     dataIndex: 'id',
-    width: 150,
+    width: 80,
   }, {
     title: '说明',
     dataIndex: 'title',
@@ -81,7 +81,7 @@ export default class TradeItemTaskList extends React.Component {
   }, {
     title: this.msg('createdBy'),
     dataIndex: 'created_by',
-    width: 200,
+    width: 150,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
@@ -100,6 +100,17 @@ export default class TradeItemTaskList extends React.Component {
       );
     },
   }]
+  handleTaskDel = (taskId) => {
+    this.props.delWorkspaceTask(taskId).then((result) => {
+      if (!result.error) {
+        this.props.loadWorkspaceTasks();
+      } else {
+        notification.error({ title: '错误',
+          description: result.error.message,
+        });
+      }
+    });
+  }
   handleRepoSelect = (repoId) => {
     this.props.loadWorkspaceTasks({ repoId });
   }
@@ -113,6 +124,14 @@ export default class TradeItemTaskList extends React.Component {
     this.setState({ comparisonImportPanel: { ...this.state.comparisonImportPanel, visible: false, repo_id: null } });
   }
   handleCompareImportUploaded = (resp) => {
+    if (resp.existEmerges.length > 0) {
+      const warnCopPnos = resp.existEmerges.length > 5 ? `${resp.existEmerges.slice(5).join(',')}等` :
+        `${resp.existEmerges.join(',')}`;
+      notification.warn({ title: '导入反馈',
+        description: `货号${warnCopPnos}已经存在于新物料归类工作区`,
+      });
+    }
+    this.handleCompareImportEnd();
     const taskUrl = '/clearance/tradeitem/workspace/task';
     this.context.router.push(`${taskUrl}/${resp.id}`);
   }
@@ -132,7 +151,7 @@ export default class TradeItemTaskList extends React.Component {
       <Select showSearch placeholder="所属物料库" allowClear style={{ width: 160 }}
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
       >
-        {repos.map(rep => <Option value={rep.id}>{rep.owner_name}</Option>)}
+        {repos.map(rep => <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}
       </Select>
     </span>);
     return (
@@ -179,7 +198,7 @@ export default class TradeItemTaskList extends React.Component {
             <Select showSearch allowClear style={{ width: '100%' }} placeholder="导入物料库必选"
               onChange={this.handleCompareImptRepoSelect}
             >
-              {repos.map(rep => <Option value={rep.id}>{rep.owner_name}</Option>)}
+              {repos.map(rep => <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}
             </Select>
           </ImportDataPanel>
         </Layout>

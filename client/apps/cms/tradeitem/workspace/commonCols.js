@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip, Tag } from 'antd';
 import { Fontello } from 'client/components/FontIcon';
 
-export default function makeColumns({ msg, units, tradeCountries, currencies, withRepo, withRepoItem }) {
+export default function makeColumns({ msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit }) {
   const columns = [{
     title: msg('copProductNo'),
     dataIndex: 'cop_product_no',
@@ -13,7 +13,7 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
           <Tooltip title="与原归类相同">
             <Tag color="orange">{o}</Tag>
           </Tooltip>);
-      } else if (record.duplicate === 1) {
+      } else if (record.duplicate) {
         return (
           <Tooltip title="导入货号重复造成冲突">
             <Tag color="red">{o}</Tag>
@@ -21,7 +21,12 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
       } else if (record.feedback === 'newSrc') {
         return (
           <Tooltip title="原归类信息由主库同步过来">
-            <Tag color="green">{o}</Tag>
+            <Tag color="blue">{o}</Tag>
+          </Tooltip>);
+      } else if (record.rejected) {
+        return (
+          <Tooltip title={`审核拒绝(${record.reason})`}>
+            <Tag color="grey">{o}</Tag>
           </Tooltip>);
       } else {
         return <span>{o}</span>;
@@ -32,18 +37,18 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     dataIndex: 'src_product_no',
     width: 200,
   }, {
-    title: msg('filterUnclassified'),
+    title: '归类',
     dataIndex: 'classified',
     width: 80,
-    render: classified => !classified ? <Fontello type="circle" color="red" /> : '',
+    render: classified => !classified ? <Fontello type="circle" color="red" /> : <Fontello type="circle" color="green" />,
   }].concat(withRepo ? [{
     title: msg('repoOwner'),
-    dataIndex: 'owner_name',
+    dataIndex: 'repo_owner_name',
     width: 300,
   }, {
     title: msg('repoCreator'),
-    dataIndex: 'creator_name',
-    width: 200,
+    dataIndex: 'repo_creator_name',
+    width: 300,
   }] : []).concat(withRepoItem ? [{
     title: msg('preHscode'),
     dataIndex: 'item_hscode',
@@ -206,6 +211,32 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     dataIndex: 'remark',
     width: 180,
   }]);
+  if (!audit) {
+    columns.push({
+      title: '本库审核',
+      dataIndex: 'pass',
+      width: 50,
+      fixed: 'right',
+      render: (pass) => {
+        if (pass === 'Y') {
+          return <Tooltip title="提交直接通过"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+        } else {
+          return <Tooltip title="需人工审核"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        }
+      },
+    }, {
+      title: '主库审核',
+      dataIndex: 'master_repo_id',
+      width: 50,
+      fixed: 'right',
+      render: (masterRepo) => {
+        if (masterRepo) {
+          return <Tooltip title="可提交主库审核"><span><Fontello type="circle" color="green" /></span></Tooltip>;
+        } else {
+          return <Tooltip title="只需本库审核"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+        }
+      } });
+  }
   return columns;
 }
 

@@ -29,14 +29,17 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
   'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
   'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'LOAD_WSSTAT', 'LOAD_WSSTAT_SUCCEED', 'LOAD_WSSTAT_FAIL',
   'LOAD_WSTASKLIST', 'LOAD_WSTASKLIST_SUCCEED', 'LOAD_WSTASKLIST_FAIL',
   'LOAD_WSTASK', 'LOAD_WSTASK_SUCCEED', 'LOAD_WSTASK_FAIL',
+  'DEL_WSTASK', 'DEL_WSTASK_SUCCEED', 'DEL_WSTASK_FAIL',
   'LOAD_TEITEMS', 'LOAD_TEITEMS_SUCCEED', 'LOAD_TEITEMS_FAIL',
   'LOAD_TCITEMS', 'LOAD_TCITEMS_SUCCEED', 'LOAD_TCITEMS_FAIL',
   'LOAD_WSLITEMS', 'LOAD_WSLITEMS_SUCCEED', 'LOAD_WSLITEMS_FAIL',
   'DEL_WSLITEMS', 'DEL_WSLITEMS_SUCCEED', 'DEL_WSLITEMS_FAIL',
   'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
+  'AUDIT_ITEMS', 'AUDIT_ITEMS_SUCCEED', 'AUDIT_ITEMS_FAIL',
 ]);
 
 const initialState = {
@@ -78,6 +81,7 @@ const initialState = {
   hstabKey: 'declunit',
   repo: {},
   visibleCompareModal: false,
+  workspaceStat: { task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {} },
   workspaceLoading: false,
   workspaceTaskList: [],
   workspaceTask: { id: '' },
@@ -149,6 +153,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, tempItems: action.result.data };
     case actionTypes.SWITCH_REPOMD_SUCCEED:
       return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
+    case actionTypes.LOAD_WSSTAT_SUCCEED:
+      return { ...state, workspaceStat: action.result.data };
     case actionTypes.LOAD_WSTASKLIST:
     case actionTypes.LOAD_WSTASK:
     case actionTypes.LOAD_WSLITEMS:
@@ -570,6 +576,20 @@ export function switchRepoMode(repoId) {
   };
 }
 
+export function loadWorkspaceStat() {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSSTAT,
+        actionTypes.LOAD_WSSTAT_SUCCEED,
+        actionTypes.LOAD_WSSTAT_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/stat',
+      method: 'get',
+    },
+  };
+}
+
 export function loadWorkspaceTasks(params) {
   return {
     [CLIENT_API]: {
@@ -596,6 +616,21 @@ export function loadWorkspaceTask(taskId) {
       endpoint: 'v1/cms/tradeitem/workspace/task',
       method: 'get',
       params: { taskId },
+    },
+  };
+}
+
+export function delWorkspaceTask(taskId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DEL_WSTASK,
+        actionTypes.DEL_WSTASK_SUCCEED,
+        actionTypes.DEL_WSTASK_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/deltask',
+      method: 'post',
+      data: { taskId },
     },
   };
 }
@@ -686,6 +721,21 @@ export function submitAudit(auditAction) {
       endpoint: 'v1/cms/tradeitem/workspace/submit/audit',
       method: 'post',
       data: { auditAction },
+    },
+  };
+}
+
+export function auditItems(itemIds, auditMethod) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.AUDIT_ITEMS,
+        actionTypes.AUDIT_ITEMS_SUCCEED,
+        actionTypes.AUDIT_ITEMS_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/audit',
+      method: 'post',
+      data: { itemIds, auditMethod },
     },
   };
 }
