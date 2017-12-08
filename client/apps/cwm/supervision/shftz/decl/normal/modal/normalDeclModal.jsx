@@ -327,7 +327,7 @@ export default class NormalDeclModal extends Component {
       customs_code: own.customs_code,
       name: own.name,
     }))[0];
-    const { loginId, loginName, tenantName } = this.props;
+    const { loginId, loginName, tenantName, defaultWhse } = this.props;
     const { destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
@@ -344,6 +344,7 @@ export default class NormalDeclModal extends Component {
         trxnMode: values.trxn_mode,
         destCountry,
         dutyMode,
+        customsCode: defaultWhse.customs_code,
       }).then((result) => {
         if (!result.error) {
           this.handleCancel();

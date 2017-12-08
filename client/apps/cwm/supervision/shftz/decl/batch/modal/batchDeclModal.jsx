@@ -350,7 +350,7 @@ export default class BatchDeclModal extends Component {
       customs_code: own.customs_code,
       name: own.name,
     }))[0];
-    const { loginId, loginName, tenantName } = this.props;
+    const { loginId, loginName, tenantName, defaultWhse } = this.props;
     const { template, groupVals, destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
       if (errors) {
@@ -371,6 +371,7 @@ export default class BatchDeclModal extends Component {
         ietype: values.ietype,
         destCountry,
         dutyMode,
+        customsCode: defaultWhse.customs_code,
       }).then((result) => {
         if (!result.error) {
           this.handleCancel();
