@@ -179,19 +179,18 @@ export default class SHFTZNormalRelRegList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 100,
     fixed: 'right',
     render: (o, record) => {
       switch (record.status) {
         case 0:
-          return <RowAction onClick={this.handleDetail} label="发送备案" row={record} />;
+          return <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />;
         case 1:
-          return <RowAction onClick={this.handleDetail} label="备案详情" row={record} />;
+          return <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />;
         case 2:
           return (<span>
-            <RowAction onClick={this.handleDetail} label="委托清关" row={record} />
-            <span className="ant-divider" />
-            <RowAction onClick={this.handleDetail} label="备案详情" row={record} />
+            <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
+            <RowAction onClick={this.handleDetail} icon="share-alt" tooltip="委托清关" row={record} />
           </span>);
         case 3:
         case 4:
@@ -199,7 +198,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         case 6:
         case 7:
         case 8:
-          return <RowAction onClick={this.handleDetail} label="备案详情" row={record} />;
+          return <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />;
         default:
           break;
       }

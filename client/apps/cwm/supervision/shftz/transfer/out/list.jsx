@@ -154,7 +154,9 @@ export default class SHFTZTransferOutList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
-    render: (o, record) => <RowAction onClick={this.handleDetail} label="转出详情" row={record} />,
+    render: (o, record) => record.status === 0 ?
+      <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+      <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />,
   }]
   handlePreview = (soNo, outboundNo) => {
     this.props.showDock(soNo, outboundNo);

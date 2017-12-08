@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Layout, Radio, Select, Icon, message, Button, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Layout, Radio, Select, message, Button } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -144,12 +144,13 @@ export default class SHFTZTransferSelfList extends React.Component {
     render: (o, record) =>
         (
           <span>
-            <RowAction onClick={this.handleDetail} label="转移详情" row={record} />
-            {record.status === CWM_SHFTZ_APIREG_STATUS.pending && <span className="ant-divider" />}
+            {record.status === CWM_SHFTZ_APIREG_STATUS.pending ?
+              <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+              <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
+            }
             {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
-              <Popconfirm title="确认删除" onConfirm={() => this.handleVTransDel(record.asn_no)}>
-                <a><Icon type="delete" /></a>
-              </Popconfirm>}
+              <RowAction confirm="确认删除?" onConfirm={this.handleVTransDel} icon="delete" tooltip="删除" row={record} />
+            }
           </span>
         ),
   }]
@@ -189,7 +190,8 @@ export default class SHFTZTransferSelfList extends React.Component {
       }
     });
   }
-  handleVTransDel = (asnNo) => {
+  handleVTransDel = (row) => {
+    const asnNo = row.asn_no;
     this.props.deleteVirtualTransfer({ asnNo }).then((result) => {
       if (!result.error) {
         this.handleEntryListLoad();

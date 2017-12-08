@@ -26,8 +26,8 @@ const messages = defineMessages({
     id: 'cms.settings.save',
     defaultMessage: '保存',
   },
-  edit: {
-    id: 'cms.settings.edit',
+  modify: {
+    id: 'cms.settings.modify',
     defaultMessage: '修改',
   },
   view: {

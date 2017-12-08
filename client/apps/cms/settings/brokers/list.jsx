@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Layout, Popconfirm } from 'antd';
+import { Breadcrumb, Button, Layout, Popconfirm, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
 import SearchBar from 'client/components/SearchBar';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
+import RowAction from 'client/components/RowAction';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import BrokerModal from './modal/brokerModal';
 import connectNav from 'client/common/decorators/connect-nav';
@@ -15,9 +16,6 @@ import { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker } f
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
-const rowSelection = {
-  onSelect() {},
-};
 
 function fetchData({ dispatch }) {
   return dispatch(loadCmsBrokers());
@@ -47,22 +45,22 @@ export default class BrokerList extends Component {
   handleAddBtnClick = () => {
     this.props.toggleBrokerModal(true, 'add');
   }
-  handleStopBtnClick = (id, status) => {
-    this.props.changeBrokerStatus(id, status).then((result) => {
+  handleStopBtnClick = (row) => {
+    this.props.changeBrokerStatus(row.id, false).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
     });
   }
-  handleDeleteBtnClick = (id) => {
-    this.props.deleteBroker(id).then((result) => {
+  handleDeleteBtnClick = (row) => {
+    this.props.deleteBroker(row.id).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
     });
   }
-  handleResumeBtnClick = (id, status) => {
-    this.props.changeBrokerStatus(id, status).then((result) => {
+  handleResumeBtnClick = (row) => {
+    this.props.changeBrokerStatus(row.id, true).then((result) => {
       if (!result.error) {
         this.handleReload();
       }
@@ -146,6 +144,11 @@ export default class BrokerList extends Component {
           }
         },
       }, {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        render: o => o === 1 ? <Tag color="green">已启用</Tag> : <Tag>已停用</Tag>,
+      }, {
         title: '创建日期',
         dataIndex: 'created_date',
         key: 'created_date',
@@ -162,15 +165,16 @@ export default class BrokerList extends Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        width: 100,
+        width: 160,
         fixed: 'right',
-        render: (_, record, index) => {
-          if (record.status === 1) {
-            return this.renderEditAndStopOperations(record, index);
-          } else {
-            return this.renderDeleteAndResumeOperations(record);
+        render: (_, record) => (<span>
+          <RowAction onClick={this.handleEditBtnClick} icon="edit" label={this.msg('modify')} row={record} />
+          {record.status === 1 ? <RowAction onClick={this.handleStopBtnClick} icon="pause-circle" tooltip={this.msg('stop')} row={record} /> :
+          <RowAction onClick={this.handleResumeBtnClick} icon="play-circle" tooltip={this.msg('resume')} row={record} />
           }
-        },
+          <RowAction confirm="确定要删除？" onConfirm={this.handleDeleteBtnClick} icon="delete" tooltip={this.msg('delete')} row={record} />
+        </span>
+        ),
       },
     ];
     const toolbarActions = (<SearchBar placeholder="搜索" onInputSearch={this.handleSearch}
@@ -196,8 +200,7 @@ export default class BrokerList extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions} dataSource={data} columns={columns} rowSelection={rowSelection} rowKey="id" />
-
+          <DataTable toolbarActions={toolbarActions} dataSource={data} columns={columns} rowKey="id" />
           <BrokerModal onOk={this.handleReload} />
         </Content>
       </QueueAnim>

@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Icon, Table, Button, Layout, Popconfirm, Tag, message } from 'antd';
+import { Table, Button, Layout, Tag, message } from 'antd';
 import NavLink from 'client/components/NavLink';
+import RowAction from 'client/components/RowAction';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
@@ -71,34 +72,45 @@ export default class ManifestRulesPane extends React.Component {
         title: '类型',
         dataIndex: 'i_e_type',
         key: 'i_e_type',
-        width: 200,
+        width: 100,
         render: o => <Tag>{o === 0 ? '进口' : '出口'}</Tag>,
-      }, {
-        title: '修改人',
-        dataIndex: 'modify_name',
-        key: 'modify_name',
       }, {
         title: '最后更新时间',
         dataIndex: 'modify_date',
         key: 'modify_date',
+        width: 120,
         render: date => date ? moment(date).format('MM.DD HH:mm') : '-',
+      }, {
+        title: '修改人',
+        dataIndex: 'modify_name',
+        key: 'modify_name',
+        width: 100,
+      }, {
+        title: '创建日期',
+        dataIndex: 'created_date',
+        key: 'created_date',
+        width: 120,
+        render(o) {
+          return moment(o).format('YYYY/MM/DD');
+        },
+      }, {
+        title: '创建人',
+        dataIndex: 'creater_name',
+        key: 'creater_name',
+        width: 100,
       }, {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        width: 100,
+        width: 160,
         render: (_, record) => {
           const ietype = record.i_e_type === 0 ? 'import' : 'export';
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
               <span>
-                <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
-                <span className="ant-divider" />
-                <a onClick={() => this.handleClone(record)}><Icon type="copy" /></a>
-                <span className="ant-divider" />
-                <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
-                  <a><Icon type="delete" /></a>
-                </Popconfirm>
+                <RowAction onClick={this.handleEdit} icon="edit" label={this.msg('modify')} row={record} />
+                <RowAction onClick={this.handleClone} icon="copy" tooltip={this.msg('copy')} row={record} />
+                <RowAction confirm="确定要删除？" onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
             return <NavLink to={`/clearance/${ietype}/manifest/rules/view/${record.id}`}>{this.msg('view')}</NavLink>;

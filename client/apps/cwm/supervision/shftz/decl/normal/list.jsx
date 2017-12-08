@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Breadcrumb, Button, Layout, Radio, Select, message, Popconfirm } from 'antd';
+import { Badge, Breadcrumb, Button, Layout, Radio, Select, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
@@ -155,16 +155,13 @@ export default class NormalDeclList extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 160,
+    width: 100,
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowAction onClick={this.handleDetail} label="报关详情" row={record} />
-        {record.manifested < 2 && <span className="ant-divider" />}
+        <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
         {record.manifested < 2 &&
-        <Popconfirm title="确认取消委托?" onConfirm={() => this.handleDelgCancel(record)}>
-          <a>取消委托</a>
-        </Popconfirm>}
+        <RowAction confirm="确认取消委托?" onConfirm={this.handleDelgCancel} icon="close-circle-o" tooltip="取消报关委托" row={record} />}
       </span>
     ),
   }]
