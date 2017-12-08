@@ -22,7 +22,7 @@ export default class RowAction extends Component {
     ev.preventDefault();
     ev.stopPropagation();
     if (this.props.onClick) {
-      this.props.onClick(this.props.row, this.props.index);
+      this.props.onClick(this.props.row, this.props.index, this.props);
     }
   }
   handleHover = () => {

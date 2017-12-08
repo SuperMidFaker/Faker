@@ -7,7 +7,7 @@ import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import NavLink from 'client/components/NavLink';
 import { delWorkspaceItem, resolveWorkspaceItem } from 'common/reducers/cmsTradeitem';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -110,12 +110,12 @@ export default class ConflictItemTable extends React.Component {
       const spanElms = [];
       if (record.classified && record.status === 1) {
         spanElms.push(
-          <RowUpdater key="standard" action="standard" onHit={this.handleConflictResolve} label={<Icon type="star-o" />}
+          <RowAction key="standard" action="standard" onHit={this.handleConflictResolve} label={<Icon type="star-o" />}
             row={record}
             tooltip="设为标准"
           />,
           <span className="ant-divider" key="standard-div" />,
-          <RowUpdater key="stage" action="stage" onHit={this.handleConflictResolve} label={<Icon type="fork" />}
+          <RowAction key="stage" action="stage" onHit={this.handleConflictResolve} label={<Icon type="fork" />}
             row={record} tooltip="标记为新来源"
           />,
           <span className="ant-divider" key="stage-div" />

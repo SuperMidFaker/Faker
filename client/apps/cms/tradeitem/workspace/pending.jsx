@@ -10,7 +10,7 @@ import { loadWorkspaceItems, auditItems } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import ModuleMenu from '../menu';
 import makeColumns from './commonCols';
-import RowUpdater from 'client/components/rowUpdater';
+import RowAction from 'client/components/RowAction';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -76,7 +76,7 @@ export default class PendingItemsList extends React.Component {
     fixed: 'right',
     render: (_, record) => (
       <span>
-        <RowUpdater onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
+        <RowAction onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
         <span className="ant-divider" />
         <Popover trigger="click" content={<div>
           <Input onChange={this.handleRefuseReason} value={this.state.refuseReason} placeholder="原因" style={{ width: 150 }} />
