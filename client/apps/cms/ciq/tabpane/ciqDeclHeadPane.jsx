@@ -14,7 +14,7 @@ import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import { CiqCodeAutoCompSelect } from '../../common/form/headFormItems';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG } from 'common/constants';
+import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG, CIQ_TRANSPORTS_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -397,9 +397,11 @@ export default class CiqDeclHeadPane extends React.Component {
             <Col span="6">
               <FormItem {...formItemLayout} label={'运输方式'} required >
                 {getFieldDecorator('traf_mode', {
-                  initialValue: ciqDeclHead.traf_mode,
+                  initialValue: (ciqDeclHead.traf_mode && [0, 1, 7, 8, 9].indexOf(Number(ciqDeclHead.traf_mode))) !== -1 ? 9 : Number(ciqDeclHead.traf_mode),
                 })(
-                  <Input />
+                  <Select>
+                    {CIQ_TRANSPORTS_TYPE.map(tran => <Option value={tran.value} key={tran.value}>{tran.text}</Option>)}
+                  </Select>
                 )}
               </FormItem>
             </Col>
