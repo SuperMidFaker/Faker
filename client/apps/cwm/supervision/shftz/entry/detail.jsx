@@ -587,7 +587,7 @@ export default class SHFTZEntryDetail extends Component {
             {this.state.nonCargono &&
               <Button icon="sync" loading={submitting} onClick={this.handleRefreshFtzCargo}>同步备件号</Button>}
             { entryRegs.length === 1 && primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
-            <Popover placement="bottom" title="份数" content={<span>
+            <Popover placement="bottom" title="拆分数量" content={<span>
               <InputNumber min={2} max={entryRegs[0].details.length} value={splitNum} onChange={this.handleSplitNumber} />
               <Button type="primary" style={{ marginLeft: 8 }} onClick={this.handleRegSequenceSplit}>确定</Button>
             </span>} trigger="click"
@@ -639,18 +639,6 @@ export default class SHFTZEntryDetail extends Component {
                     <RadioButton value="splitted">归并前明细</RadioButton>
                     <RadioButton value="merged">归并后明细</RadioButton>
                   </RadioGroup>
-                  {/* <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
-                    {primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending && reg.details.length > 1 &&
-                    <Button onClick={this.handleItemSplit} disabled={this.state.selectedRowKeys.length === reg.details.length}>按项拆分</Button>}
-                    {primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending &&
-                    <Popover placement="bottom" title="份数" content={qtySplitPopover} trigger="click">
-                      <Button onClick={this.handleAverageQtySplit}>按数量平均拆分</Button> {/* TODO:需排除选择项的数量等于1 }
-                    </Popover>}
-                    {primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.pending && entryRegs.length > 1 &&
-                    <Popover placement="bottom" content={movePopover} trigger="click"> {/* TODO:已拆分后显示此按钮 }
-                      <Button onClick={this.handleMoveInto}>移到至...</Button>
-                    </Popover>}
-                  </DataPane.BulkActions> */}
                   <DataPane.Extra>
                     <Summary>
                       <Summary.Item label="总数量">{stat && stat.total_qty}</Summary.Item>

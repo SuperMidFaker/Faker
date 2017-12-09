@@ -100,8 +100,7 @@ export default class ManifestRulesPane extends React.Component {
         width: 100,
       }, {
         title: '操作',
-        dataIndex: 'status',
-        key: 'status',
+        key: 'OP_COL',
         width: 160,
         render: (_, record) => {
           const ietype = record.i_e_type === 0 ? 'import' : 'export';

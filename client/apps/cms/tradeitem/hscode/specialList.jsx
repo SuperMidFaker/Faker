@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Popconfirm, Input, message } from 'antd';
+import { Input, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
+import RowAction from 'client/components/RowAction';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../../message.i18n';
 import { loadCategoryHsCode, removeCategoryHsCode, addCategoryHsCode } from 'common/reducers/cmsHsCode';
@@ -71,8 +72,8 @@ export default class HSCodeSpecialList extends React.Component {
     };
     this.props.loadCategoryHsCode(params);
   }
-  handleRemove = (id) => {
-    this.props.removeCategoryHsCode(id).then(() => {
+  handleRemove = (row) => {
+    this.props.removeCategoryHsCode(row.id).then(() => {
       this.handleTableLoad();
     });
   }
@@ -116,9 +117,9 @@ export default class HSCodeSpecialList extends React.Component {
       width: 60,
       render: (col, row) => {
         if (row.id === -1) {
-          return (<a onClick={() => this.handleAdd()}>保存</a>);
+          return (<RowAction onClick={this.handleAdd} icon="save" />);
         }
-        return (<Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row.id)}><a onClick={() => this.handleRemove(row.id)}><Icon type="delete" /></a></Popconfirm>);
+        return (<RowAction confirm="确认删除?" onConfirm={this.handleRemove} icon="delete" row={row} />);
       },
     }]);
     columns[0].width = 150;

@@ -120,7 +120,7 @@ export default class TraderList extends Component {
     }, {
       title: '操作',
       width: 160,
-      key: 'id',
+      key: 'OP_COL',
       render: (_, record) => (
         <span>
           <PrivilegeCover module="corp" feature="partners" action="edit">

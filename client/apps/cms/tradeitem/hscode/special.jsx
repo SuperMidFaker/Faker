@@ -257,7 +257,7 @@ export default class HSCodeSpecial extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="export" onClick={this.handleExportExcel}>
+              <Button icon="file-excel" onClick={this.handleExportExcel}>
                 {this.msg('导出')}
               </Button>
               <Popover title="导入数据表格式如下" content={content}>

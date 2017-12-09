@@ -37,7 +37,7 @@ function fetchData({ dispatch, params }) {
   moduleName: 'clearance',
 })
 @Form.create()
-export default class NewSrcTradeItem extends Component {
+export default class TradeItemFork extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,

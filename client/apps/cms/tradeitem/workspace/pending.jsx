@@ -213,9 +213,8 @@ export default class PendingItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
+              <Button type="danger" icon="close-circle-o" onClick={this.handleBatchRefuse}>全部拒绝</Button>
               <Button type="primary" icon="check-circle-o" onClick={this.handleBatchPass}>全部通过</Button>
-              <Button type="primary" icon="close-circle-o" onClick={this.handleBatchRefuse}>全部拒绝</Button>
-              <Button icon="file-excel">导出</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, Tag } from 'antd';
+import { Icon, Popover, Tooltip, Tag } from 'antd';
 import { Fontello } from 'client/components/FontIcon';
 
 export default function makeColumns({ msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit }) {
@@ -8,60 +8,48 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     dataIndex: 'cop_product_no',
     width: 200,
     render: (o, record) => {
+      const pn = o === record.src_product_no ? o : <span>{o}|{record.src_product_no}</span>;
       if (record.feedback === 'repeat') {
         return (
           <Tooltip title="新归类与原归类相同">
-            <Tag color="orange">{o}</Tag>
+            <Tag color="orange">{pn}</Tag>
           </Tooltip>);
       } else if (record.duplicate) {
         return (
           <Tooltip title="导入货号重复造成冲突">
-            <Tag color="red">{o}</Tag>
+            <Tag color="red">{pn}</Tag>
           </Tooltip>);
       } else if (record.feedback === 'createdByOther') {
         return (
           <Tooltip title="原归类信息由其他租户创建">
-            <Tag color="blue">{o}</Tag>
+            <Tag color="blue">{pn}</Tag>
           </Tooltip>);
       } else if (record.rejected) {
         return (
           <Tooltip title={`审核拒绝(${record.reason})`}>
-            <Tag color="grey">{o}</Tag>
+            <Tag color="grey">{pn}</Tag>
           </Tooltip>);
       } else {
-        return <span>{o}</span>;
+        return <span>{pn}</span>;
       }
     },
   }, {
-    title: msg('srcProductNo'),
-    dataIndex: 'src_product_no',
-    width: 200,
-  }, {
-    title: '归类',
     dataIndex: 'classified',
-    width: 80,
+    width: 40,
     render: (classified, item) => {
       if (classified) {
-        return <Fontello type="circle" color="green" />;
+        return <Icon type="check-circle-o" style={{ fontSize: 16, color: '#52c41a' }} />;
       } else {
-        let tooltip;
+        let content;
         if (!(item.hscode || item.g_name || item.g_model)) {
-          tooltip = '申报商品编码或品名或规范要素未完整';
+          content = '申报商品编码或品名或规范要素未完整';
         } else {
-          tooltip = '填写规格型号与规范申报要素项数不一致';
+          content = '填写规格型号与规范申报要素项数不一致';
         }
-        return <Tooltip title={tooltip}><span><Fontello type="circle" color="red" /></span></Tooltip>;
+        return <Popover content={content} placement="right"><Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} /></Popover>;
       }
     },
-  }].concat(withRepo ? [{
-    title: msg('repoOwner'),
-    dataIndex: 'repo_owner_name',
-    width: 300,
-  }, {
-    title: msg('repoCreator'),
-    dataIndex: 'contribute_tenant_name',
-    width: 300,
-  }] : []).concat(withRepoItem ? [{
+  }].concat(withRepoItem ? [{
     title: msg('preHscode'),
     dataIndex: 'item_hscode',
     width: 120,
@@ -236,13 +224,20 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     title: msg('remark'),
     dataIndex: 'remark',
     width: 180,
-  }]);
+  }].concat(withRepo ? [{
+    title: msg('repoOwner'),
+    dataIndex: 'repo_owner_name',
+    width: 200,
+  }, {
+    title: msg('repoCreator'),
+    dataIndex: 'contribute_tenant_name',
+    width: 200,
+  }] : []));
   if (!audit) {
     columns.push({
       title: '本库审核',
       dataIndex: 'pass',
-      width: 50,
-      fixed: 'right',
+      width: 80,
       render: (pass) => {
         if (pass === 'Y') {
           return <Tooltip title="提交直接通过"><span><Fontello type="circle" color="green" /></span></Tooltip>;
@@ -253,8 +248,7 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     }, {
       title: '主库审核',
       dataIndex: 'master_repo_id',
-      width: 50,
-      fixed: 'right',
+      width: 80,
       render: (masterRepo) => {
         if (masterRepo) {
           return <Tooltip title="可提交主库审核"><span><Fontello type="circle" color="green" /></span></Tooltip>;

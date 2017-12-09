@@ -54,11 +54,11 @@ export default class RepoList extends React.Component {
     width: 150,
     render: (o) => {
       if (o === 'slave') {
-        return (<Tag>从库</Tag>);
+        return (<Tag color="#2db7f5">从库</Tag>);
       } else if (o === 'master') {
-        return (<Tag color="blue">主库</Tag>);
+        return (<Tag color="#108ee9">主库</Tag>);
       } else if (o === 'single') {
-        return (<Tag color="green">独立单库</Tag>);
+        return (<Tag color="cyan">独立单库</Tag>);
       }
     },
   }, {
@@ -69,15 +69,15 @@ export default class RepoList extends React.Component {
     title: this.msg('使用权限'),
     dataIndex: 'permission',
     width: 150,
-    render: (perm) => {
+    render: (perm, record) => {
       if (perm === CMS_TRADE_REPO_PERMISSION.view) {
         return (<Tag>只读</Tag>);
       } else if (perm === CMS_TRADE_REPO_PERMISSION.edit) {
-        return (<Tag color="blue">可读写</Tag>);
+        return record.creator_tenant_id === this.props.tenantId ? (<Tag color="green">完全控制</Tag>) : (<Tag color="blue">可读写</Tag>);
       }
     },
   }, {
-    title: this.msg('料件总数量'),
+    title: this.msg('料件数量'),
     dataIndex: 'classified_num',
     width: 150,
   }, {
@@ -108,7 +108,7 @@ export default class RepoList extends React.Component {
           </Menu>);
       }
       return (<span>
-        <RowAction onClick={this.handleEnter} icon="folder" label={<span>{this.msg('manageItems')}</span>} row={repo} />
+        <RowAction onClick={this.handleEnter} icon="folder" label={this.msg('manageItems')} row={repo} />
         {creator && <RowAction overlay={menu} />}
       </span>);
     },
@@ -127,7 +127,7 @@ export default class RepoList extends React.Component {
   }
   handleRepoModeSwitch = (repo) => {
     const self = this;
-    const targetMode = repo.mode === 'single' ? '主从库模式?' : '独立单库模式';
+    const targetMode = repo.mode === 'single' ? '主从库模式' : '独立单库模式';
     Modal.confirm({
       title: `确定切换为【${targetMode}】?`,
       onOk() {

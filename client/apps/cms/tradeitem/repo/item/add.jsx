@@ -30,7 +30,7 @@ const TabPane = Tabs.TabPane;
   moduleName: 'clearance',
 })
 @Form.create()
-export default class CreateTradeItem extends Component {
+export default class TradeItemAdd extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     form: PropTypes.object.isRequired,

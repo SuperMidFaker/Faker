@@ -269,13 +269,5 @@ const messages = defineMessages({
     id: 'cms.classificagtion.tradeitem.special.search',
     defaultMessage: '分类名称',
   },
-  specialSplit: {
-    id: 'cms.classificagtion.tradeitem.special.split',
-    defaultMessage: '独立拆分',
-  },
-  specialMerge: {
-    id: 'cms.classificagtion.tradeitem.special.merge',
-    defaultMessage: '货号合并',
-  },
 });
 export default messages;

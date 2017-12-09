@@ -163,8 +163,7 @@ export default class BrokerList extends Component {
         width: 120,
       }, {
         title: '操作',
-        dataIndex: 'status',
-        key: 'status',
+        key: 'OP_COL',
         width: 160,
         fixed: 'right',
         render: (_, record) => (<span>

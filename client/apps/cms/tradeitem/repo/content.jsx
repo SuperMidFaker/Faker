@@ -456,18 +456,15 @@ export default class RepoContent extends Component {
               <Breadcrumb.Item>
                 {`${repo.owner_name}`}
               </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {this.msg('tradeItemMaster')}
-              </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup value={listFilter.status} onChange={this.handleFilterChange} >
-              <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('filterClassified')}</RadioButton>
+              <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('tradeItemMaster')}</RadioButton>
             </RadioGroup>
             <span />
             <RadioGroup value={listFilter.status} onChange={this.handleFilterChange} >
-              <RadioButton value="stage"><Tooltip title={this.msg('stageClassified')} placement="bottom"><Icon type="fork" /></Tooltip></RadioButton>
+              <RadioButton value="stage"><Icon type="fork" /> {this.msg('forkedItems')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>

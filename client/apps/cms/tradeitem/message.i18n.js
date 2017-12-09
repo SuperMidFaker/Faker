@@ -66,6 +66,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.master',
     defaultMessage: '物料主数据',
   },
+  forkedItems: {
+    id: 'cms.tradeitem.forked',
+    defaultMessage: '归类分支',
+  },
   newItem: {
     id: 'cms.classificagtion.tradeitem.new.item',
     defaultMessage: '新增物料',
@@ -221,6 +225,14 @@ const messages = defineMessages({
   remark: {
     id: 'cms.tradeitem.col.remark',
     defaultMessage: '备注',
+  },
+  specialSplit: {
+    id: 'cms.tradeitem.special.split',
+    defaultMessage: '独立拆分',
+  },
+  specialMerge: {
+    id: 'cms.tradeitem.special.merge',
+    defaultMessage: '货号合并',
   },
   opColumn: {
     id: 'cms.tradeitem.opColumn',

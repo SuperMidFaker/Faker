@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Breadcrumb, Form, Layout, Button, message } from 'antd';
+import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
@@ -11,6 +11,7 @@ import { loadWorkspaceItem, saveWorkspaceItem } from 'common/reducers/cmsTradeit
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
+const TabPane = Tabs.TabPane;
 
 @injectIntl
 @connect(
@@ -94,7 +95,11 @@ export default class WorkItemPage extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
-            <ItemMasterPane action="edit" form={form} itemData={itemData} />
+            <Tabs defaultActiveKey="master">
+              <TabPane tab="主数据" key="master">
+                <ItemMasterPane action="edit" form={form} itemData={itemData} />
+              </TabPane>
+            </Tabs>
           </MagicCard>
         </Content>
       </Layout>
