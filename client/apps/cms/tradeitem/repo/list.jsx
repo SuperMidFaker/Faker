@@ -126,7 +126,17 @@ export default class RepoList extends React.Component {
     this.setState({ authAction: { doing: false, repo: {} } });
   }
   handleRepoModeSwitch = (repo) => {
-    this.props.switchRepoMode(repo.id);
+    const self = this;
+    const targetMode = repo.mode === 'single' ? '主从库模式?' : '独立单库模式';
+    Modal.confirm({
+      title: `确定切换为【${targetMode}】?`,
+      onOk() {
+        self.props.switchRepoMode(repo.id);
+      },
+      onCancel() {
+      },
+    }
+    );
   }
   handleAddRepo = () => {
     this.props.loadCustomers();
@@ -173,7 +183,7 @@ export default class RepoList extends React.Component {
             />
           </Content>
           <AddRepoModal />
-          <Modal visible={authAction.doing} maskClosable={false} footer={[]}
+          <Modal title="授权使用单位" visible={authAction.doing} maskClosable={false} footer={[]}
             onCancel={this.handleAuthAcOk}
           >
             <RepoUsersCard repo={authAction.repo} />

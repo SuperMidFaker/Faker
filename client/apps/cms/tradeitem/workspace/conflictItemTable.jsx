@@ -121,7 +121,7 @@ export default class ConflictItemTable extends React.Component {
     },
   }])
   handleItemEdit = (record) => {
-    const link = `/clearance/tradeitem/workspace/item/edit/${record.id}`;
+    const link = `/clearance/tradeitem/workspace/item/${record.id}`;
     this.context.router.push(link);
   }
   handleItemDel = (record) => {

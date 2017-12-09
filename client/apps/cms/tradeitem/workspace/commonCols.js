@@ -64,7 +64,7 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
   }] : []).concat(withRepoItem ? [{
     title: msg('preHscode'),
     dataIndex: 'item_hscode',
-    width: 180,
+    width: 120,
     render: itemhscode => <span>{itemhscode}</span>,
   }, {
     title: msg('preGModel'),
@@ -74,7 +74,7 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
   }] : []).concat([{
     title: msg('hscode'),
     dataIndex: 'hscode',
-    width: 150,
+    width: 120,
     render: (hscode) => {
       if (!hscode) {
         return (

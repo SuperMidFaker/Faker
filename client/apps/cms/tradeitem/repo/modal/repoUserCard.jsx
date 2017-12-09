@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Icon, Radio, Table, Select, message } from 'antd';
+import { Button, Radio, Table, Select, message } from 'antd';
 import { loadRepoUsers, addRepoUser, deleteRepoUser } from 'common/reducers/cmsTradeitem';
 import { loadPartners } from 'common/reducers/partner';
+import RowAction from 'client/components/RowAction';
 import { formatMsg } from '../../message.i18n';
 import { PARTNER_ROLES, PARTNER_BUSINESSE_TYPES, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 
@@ -140,14 +141,14 @@ export default class RepoUsersCard extends React.Component {
             <RadioButton value={CMS_TRADE_REPO_PERMISSION.view}>只读</RadioButton>
           </RadioGroup>),
     }, {
-      width: 60,
+      width: 80,
       render: (o, record, index) => {
-        let ruAction = <a onClick={() => this.handleDelete(record, index)}><Icon type="delete" /></a>;
+        let ruAction = <RowAction confirm="确定删除?" onConfirm={this.handleDelete} icon="delete" row={record} index={index} />;
         if (!record.id) {
           ruAction = (
             <span>
-              <a onClick={() => this.handleSave(record)}><Icon type="save" /></a>
-              <a onClick={() => this.handleAddCancel(index)}><Icon type="close" /></a>
+              <RowAction onClick={this.handleSave} icon="save" row={record} />
+              <RowAction onClick={this.handleAddCancel} icon="close" index={index} />
             </span>
             );
         }

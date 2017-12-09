@@ -134,7 +134,7 @@ export default class RepoContent extends Component {
           </Tooltip>
         );
       } else {
-        return o;
+        return o === record.src_product_no ? o : <span>{o}|{record.src_product_no}</span>;
       }
     },
   /*
@@ -159,7 +159,7 @@ export default class RepoContent extends Component {
   }, {
     title: this.msg('hscode'),
     dataIndex: 'hscode',
-    width: 150,
+    width: 120,
     render: (o, record) => {
       switch (record.status) {
         case TRADE_ITEM_STATUS.pending:
