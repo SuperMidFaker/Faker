@@ -96,7 +96,7 @@ export default class TradeItemAdd extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey="header">
+            <Tabs defaultActiveKey="master">
               {tabs}
             </Tabs>
           </MagicCard>

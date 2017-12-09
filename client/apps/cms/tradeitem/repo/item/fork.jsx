@@ -72,11 +72,11 @@ export default class TradeItemFork extends Component {
   }
 
   render() {
-    const { form } = this.props;
+    const { form, itemData } = this.props;
     const tabs = [];
     tabs.push(
       <TabPane tab="主数据" key="master">
-        <ItemMasterPane action="fork" form={form} />
+        <ItemMasterPane action="fork" form={form} itemData={itemData} />
       </TabPane>);
     return (
       <Layout>
@@ -102,7 +102,7 @@ export default class TradeItemFork extends Component {
         </PageHeader>
         <Content className="page-content">
           <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
-            <Tabs defaultActiveKey="header">
+            <Tabs defaultActiveKey="master">
               {tabs}
             </Tabs>
           </MagicCard>
