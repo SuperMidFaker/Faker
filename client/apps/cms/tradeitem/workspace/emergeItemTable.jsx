@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Popconfirm, Icon, notification, Select } from 'antd';
+import { notification, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
-import NavLink from 'client/components/NavLink';
+import RowAction from 'client/components/RowAction';
 import { delWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import makeColumns from './commonCols';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
@@ -39,6 +39,7 @@ export default class EmergeItemTable extends React.Component {
     withRepo: PropTypes.bool,
     loadEmergeItems: PropTypes.func.isRequired,
     listFilter: PropTypes.shape({ taskId: PropTypes.number, repoId: PropTypes.number, name: PropTypes.string }),
+    noBorder: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -88,21 +89,19 @@ export default class EmergeItemTable extends React.Component {
   }).concat({
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 140,
     fixed: 'right',
-    render: (_, record) => {
-      const itemUrl = '/clearance/tradeitem/workspace/item/edit';
-      return (<span>
-        <NavLink to={`${itemUrl}/${record.id}`}><Icon type="edit" /></NavLink>
-        <span className="ant-divider" />
-        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-          <a role="presentation"><Icon type="delete" /></a>
-        </Popconfirm>
-      </span>);
-    },
+    render: (_, record) => (<span>
+      <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
+      <RowAction confirm={this.msg('deleteConfirm')} onConfirm={this.handleItemDel} icon="delete" row={record} />
+    </span>),
   })
-  handleItemDel = (itemId) => {
-    this.props.delWorkspaceItem([itemId]).then((result) => {
+  handleItemEdit = (record) => {
+    const link = `/clearance/tradeitem/workspace/item/edit/${record.id}`;
+    this.context.router.push(link);
+  }
+  handleItemDel = (record) => {
+    this.props.delWorkspaceItem([record.id]).then((result) => {
       if (!result.error) {
         this.props.loadEmergeItems({
           pageSize: this.props.emergeList.pageSize,
@@ -136,7 +135,7 @@ export default class EmergeItemTable extends React.Component {
     this.setState({ emergeSelRowKeys: [] });
   }
   render() {
-    const { loading, emergeList, withRepo, repos } = this.props;
+    const { loading, emergeList, withRepo, repos, noBorder } = this.props;
     const { emergeSelRowKeys } = this.state;
     this.emergeDataSource.remotes = emergeList;
     const emergeSelRows = {
@@ -156,7 +155,7 @@ export default class EmergeItemTable extends React.Component {
     return (
       <DataTable selectedRowKeys={emergeSelRowKeys} handleDeselectRows={this.handleRowDeselect} loading={loading}
         columns={this.emergeColumns} dataSource={this.emergeDataSource} rowSelection={emergeSelRows} rowKey="id"
-        locale={{ emptyText: '当前没有新的料件' }} toolbarActions={toolbarActions}
+        locale={{ emptyText: '当前没有新的料件' }} toolbarActions={toolbarActions} noBorder={noBorder}
       />
     );
   }

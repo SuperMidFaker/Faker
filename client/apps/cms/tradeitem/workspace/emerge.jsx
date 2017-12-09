@@ -105,9 +105,9 @@ export default class NewItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button type="primary" icon="save" onClick={this.handleLocalAudit}>提交审核</Button>
-              {emergeStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button icon="file-excel">导出</Button>
+              {emergeStat.master && <Button type="primary" ghost icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
+              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { notification, Button, Breadcrumb, Layout, Popconfirm, Icon, Select } from 'antd';
+import { notification, Badge, Button, Breadcrumb, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import { loadWorkspaceTasks, delWorkspaceTask } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
-import NavLink from 'client/components/NavLink';
+import RowAction from 'client/components/RowAction';
 import ImportDataPanel from 'client/components/ImportDataPanel';
 import ModuleMenu from '../menu';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
@@ -61,47 +61,47 @@ export default class TradeItemTaskList extends React.Component {
     title: '新料数',
     dataIndex: 'emerge_count',
     width: 100,
+    render: count => <Badge count={count} style={{ backgroundColor: '#52c41a' }} />,
   }, {
     title: '冲突数',
     dataIndex: 'conflict_count',
     width: 100,
+    render: count => <Badge count={count} />,
   }, {
     title: this.msg('repoOwner'),
     dataIndex: 'repo_owner_name',
-    width: 300,
+    width: 200,
   }, {
     title: this.msg('repoCreator'),
     dataIndex: 'created_tenant_name',
-    width: 300,
+    width: 200,
   }, {
     title: this.msg('createdDate'),
     dataIndex: 'created_date',
     render: crd => moment(crd).format('YYYY-MM-DD HH'),
-    width: 200,
+    width: 120,
   }, {
     title: this.msg('createdBy'),
     dataIndex: 'created_by',
-    width: 150,
+    width: 100,
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 140,
     fixed: 'right',
-    render: (_, task) => {
-      const taskUrl = '/clearance/tradeitem/workspace/task';
-      return (
-        <span>
-          <NavLink to={`${taskUrl}/${task.id}`}>处理</NavLink>
-          <span className="ant-divider" />
-          <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleTaskDel(task.id)}>
-            <a role="presentation"><Icon type="delete" /></a>
-          </Popconfirm>
-        </span>
-      );
-    },
+    render: (_, record) => (
+      <span>
+        <RowAction onClick={this.handleRowClick} icon="form" label={this.msg('处理')} row={record} />
+        <RowAction confirm={this.msg('deleteConfirm')} onConfirm={this.handleTaskDel} icon="delete" row={record} />
+      </span>
+    ),
   }]
-  handleTaskDel = (taskId) => {
-    this.props.delWorkspaceTask(taskId).then((result) => {
+  handleRowClick = (record) => {
+    const link = `/clearance/tradeitem/workspace/task/${record.id}`;
+    this.context.router.push(link);
+  }
+  handleTaskDel = (record) => {
+    this.props.delWorkspaceTask(record.id).then((result) => {
       if (!result.error) {
         this.props.loadWorkspaceTasks();
       } else {
@@ -178,7 +178,7 @@ export default class TradeItemTaskList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="upload" onClick={this.handleCompareImportInit}>{this.msg('newComparisonImport')}</Button>
+              <Button type="primary" icon="upload" onClick={this.handleCompareImportInit}>{this.msg('newComparisonImport')}</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

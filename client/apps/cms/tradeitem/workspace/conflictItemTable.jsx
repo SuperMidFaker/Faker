@@ -2,10 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Popconfirm, Icon, Select, notification } from 'antd';
+import { Select, notification } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
-import NavLink from 'client/components/NavLink';
 import { delWorkspaceItem, resolveWorkspaceItem } from 'common/reducers/cmsTradeitem';
 import RowAction from 'client/components/RowAction';
 import makeColumns from './commonCols';
@@ -40,6 +39,7 @@ export default class ConflictItemTable extends React.Component {
     withRepo: PropTypes.bool,
     loadConflictItems: PropTypes.func.isRequired,
     listFilter: PropTypes.shape({ taskId: PropTypes.number, repoId: PropTypes.number, name: PropTypes.string }),
+    noBorder: PropTypes.bool,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -103,36 +103,29 @@ export default class ConflictItemTable extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 200,
+    width: 140,
     fixed: 'right',
     render: (_, record) => {
-      const itemUrl = '/clearance/tradeitem/workspace/item/edit';
       const spanElms = [];
       if (record.classified && record.status === 1) {
         spanElms.push(
-          <RowAction key="standard" action="standard" onHit={this.handleConflictResolve} label={<Icon type="star-o" />}
-            row={record}
-            tooltip="设为标准"
-          />,
-          <span className="ant-divider" key="standard-div" />,
-          <RowAction key="stage" action="stage" onHit={this.handleConflictResolve} label={<Icon type="fork" />}
-            row={record} tooltip="标记为新来源"
-          />,
-          <span className="ant-divider" key="stage-div" />
+          <RowAction key="standard" action="standard" onClick={this.handleConflictResolve} icon="star-o" row={record} tooltip="设为标准" />,
+          <RowAction key="stage" action="stage" onClick={this.handleConflictResolve} icon="fork" row={record} tooltip="标记为新来源" />
         );
       }
       return (<span>
-        <NavLink to={`${itemUrl}/${record.id}`}><Icon type="edit" /></NavLink>
-        <span className="ant-divider" />
+        <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
         {spanElms}
-        <Popconfirm title={this.msg('deleteConfirm')} onConfirm={() => this.handleItemDel(record.id)}>
-          <a role="presentation"><Icon type="delete" /></a>
-        </Popconfirm>
+        <RowAction confirm={this.msg('deleteConfirm')} onConfirm={this.handleItemDel} icon="delete" row={record} />
       </span>);
     },
   }])
-  handleItemDel = (itemId) => {
-    this.props.delWorkspaceItem([itemId]).then((result) => {
+  handleItemEdit = (record) => {
+    const link = `/clearance/tradeitem/workspace/item/edit/${record.id}`;
+    this.context.router.push(link);
+  }
+  handleItemDel = (record) => {
+    this.props.delWorkspaceItem([record.id]).then((result) => {
       if (!result.error) {
         this.props.loadConflictItems({
           pageSize: this.props.conflictList.pageSize,
@@ -179,7 +172,7 @@ export default class ConflictItemTable extends React.Component {
     this.setState({ conflictSelRowKeys: [] });
   }
   render() {
-    const { loading, withRepo, repos, conflictList } = this.props;
+    const { loading, withRepo, repos, conflictList, noBorder } = this.props;
     const { conflictSelRowKeys } = this.state;
     this.conflictDataSource.remotes = conflictList;
     const conflictSelRows = {
@@ -199,7 +192,7 @@ export default class ConflictItemTable extends React.Component {
     return (
       <DataTable selectedRowKeys={conflictSelRowKeys} handleDeselectRows={this.handleRowDeselect} loading={loading}
         columns={this.conflictColumns} dataSource={this.conflictDataSource} rowSelection={conflictSelRows} rowKey="id"
-        locale={{ emptyText: '当前没有新的料件' }} toolbarActions={toolbarActions}
+        locale={{ emptyText: '当前没有冲突的料件归类' }} toolbarActions={toolbarActions} noBorder={noBorder}
       />
     );
   }

@@ -130,18 +130,18 @@ export default class TaskPage extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button type="primary" icon="save" onClick={this.handleLocalAudit}>提交审核</Button>
-              {task.master_repo_id && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
+              {task.master_repo_id && <Button type="primary" icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
+              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content">
-            <Card hoverable={false}>
+            <Card bodyStyle={{ padding: 0 }} hoverable={false}>
               <Tabs defaultActiveKey="emerge">
                 <TabPane tab="新物料区" key="emerge">
-                  <EmergeItemTable loadEmergeItems={this.props.loadTaskEmergeItems} emergeList={emergeList} listFilter={emergeFilter} />
+                  <EmergeItemTable loadEmergeItems={this.props.loadTaskEmergeItems} emergeList={emergeList} listFilter={emergeFilter} noBorder />
                 </TabPane>
                 <TabPane tab="冲突区" key="conflict">
-                  <ConflictItemTable loadConflictItems={this.props.loadTaskConflictItems} conflictList={conflictList} listFilter={conflictFilter} />
+                  <ConflictItemTable loadConflictItems={this.props.loadTaskConflictItems} conflictList={conflictList} listFilter={conflictFilter} noBorder />
                 </TabPane>
               </Tabs>
             </Card>

@@ -76,8 +76,7 @@ export default class PendingItemsList extends React.Component {
     fixed: 'right',
     render: (_, record) => (
       <span>
-        <RowAction onHit={this.handleItemPass} label={<span><Icon type="check-circle-o" /> {this.msg('pass')}</span>} row={record} />
-        <span className="ant-divider" />
+        <RowAction onHit={this.handleItemPass} icon="check-circle-o" label={this.msg('pass')} row={record} />
         <Popover trigger="click" content={<div>
           <Input onChange={this.handleRefuseReason} value={this.state.refuseReason} placeholder="原因" style={{ width: 150 }} />
           <Button type="primary" style={{ marginLeft: 8 }} onClick={() => this.handleItemRefused(record)}>确定</Button>
@@ -223,7 +222,7 @@ export default class PendingItemsList extends React.Component {
             <DataTable toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
               columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={workspaceLoading}
-              locale={{ emptyText: '当前没有新的料件' }}
+              locale={{ emptyText: '当前没有待审核的料件' }}
             />
           </Content>
         </Layout>

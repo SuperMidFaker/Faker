@@ -246,6 +246,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.pending.refuse',
     defaultMessage: '拒绝',
   },
+  modify: {
+    id: 'cms.tradeitem.op.modify',
+    defaultMessage: '修改',
+  },
 });
 
 export default messages;

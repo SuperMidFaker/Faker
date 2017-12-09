@@ -8,7 +8,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Button, Layout, Radio, Icon, Popconfirm, Tooltip, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
-import NavLink from 'client/components/NavLink';
+import RowAction from 'client/components/RowAction';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
@@ -312,27 +312,20 @@ export default class RepoContent extends Component {
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
-    width: 150,
+    width: 140,
     fixed: 'right',
     render: (o, record) => {
       if (this.props.repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
         if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id === this.props.tenantId) {
           return (
             <span>
-              <NavLink to={`/clearance/tradeitem/repo/item/edit/${record.id}`}>
-                <Icon type="edit" /> {this.msg('modify')}
-              </NavLink>
-              <span className="ant-divider" />
-              <NavLink to={`/clearance/tradeitem/repo/item/fork/${record.id}`}>
-                <Tooltip title={this.msg('addNewSrc')} placement="bottom"><Icon type="file-add" /></Tooltip>
-              </NavLink>
+              <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
+              <RowAction onClick={this.handleItemFork} icon="file-add" tooltip={this.msg('fork')} row={record} />
             </span>
           );
         } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== this.props.tenantId) {
           return (
-            <NavLink to={`/clearance/tradeitem/repo/item/fork/${record.id}`}>
-              <Tooltip title={this.msg('addNewSrc')} placement="bottom"><Icon type="file-add" /></Tooltip>
-            </NavLink>
+            <RowAction onClick={this.handleItemFork} icon="file-add" label={this.msg('fork')} row={record} />
           );
         }
       }
@@ -362,6 +355,14 @@ export default class RepoContent extends Component {
     },
     remotes: this.props.tradeItemlist,
   })
+  handleItemEdit = (record) => {
+    const link = `/clearance/tradeitem/repo/item/edit/${record.id}`;
+    this.context.router.push(link);
+  }
+  handleItemFork = (record) => {
+    const link = `/clearance/tradeitem/repo/item/fork/${record.id}`;
+    this.context.router.push(link);
+  }
   handleItemListLoad = (currentPage, filter, search) => {
     const { listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
     this.setState({ expandedKeys: [] });

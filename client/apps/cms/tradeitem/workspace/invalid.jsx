@@ -170,7 +170,7 @@ export default class InvalidItemsList extends React.Component {
             <DataTable toolbarActions={toolbarActions}
               selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
               columns={this.columns} dataSource={dataSource} rowSelection={rowSelection} rowKey="id" loading={workspaceLoading}
-              locale={{ emptyText: '当前没有新的料件' }}
+              locale={{ emptyText: '当前没有失效的料件归类' }}
             />
           </Content>
         </Layout>

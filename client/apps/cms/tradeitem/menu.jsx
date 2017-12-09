@@ -41,19 +41,34 @@ export default class ModuleMenu extends React.Component {
           </Menu.Item>
           <Menu.SubMenu key="g_task" title={<span><Icon type="profile" /> {this.msg('workspace')}</span>}>
             <Menu.Item key="task">
-              <NavLink to="/clearance/tradeitem/workspace/tasks"><Badge count={workspaceStat.task.count}>{this.msg('taskList')}</Badge></NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/tasks">
+                {this.msg('taskList')}
+                <Badge count={workspaceStat.task.count} className="menu-badge" style={{ backgroundColor: '#1890ff' }} />
+              </NavLink>
             </Menu.Item>
             <Menu.Item key="emerge">
-              <NavLink to="/clearance/tradeitem/workspace/emerges"><Badge count={workspaceStat.emerge.count}>{this.msg('taskNew')}</Badge></NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/emerges">
+                {this.msg('taskNew')}
+                <Badge count={workspaceStat.emerge.count} className="menu-badge" style={{ backgroundColor: '#52c41a' }} />
+              </NavLink>
             </Menu.Item>
             <Menu.Item key="conflict">
-              <NavLink to="/clearance/tradeitem/workspace/conflicts"><Badge count={workspaceStat.conflict.count}>{this.msg('taskConflict')}</Badge></NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/conflicts">
+                {this.msg('taskConflict')}
+                <Badge count={workspaceStat.conflict.count} className="menu-badge" />
+              </NavLink>
             </Menu.Item>
             <Menu.Item key="invalid">
-              <NavLink to="/clearance/tradeitem/workspace/invalids"><Badge count={workspaceStat.invalid.count}>{this.msg('taskInvalid')}</Badge></NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/invalids">
+                {this.msg('taskInvalid')}
+                <Badge count={workspaceStat.invalid.count} className="menu-badge" />
+              </NavLink>
             </Menu.Item>
             <Menu.Item key="pending">
-              <NavLink to="/clearance/tradeitem/workspace/pendings"><Badge count={workspaceStat.pending.count}>{this.msg('taskReview')}</Badge></NavLink>
+              <NavLink to="/clearance/tradeitem/workspace/pendings">
+                {this.msg('taskReview')}
+                <Badge count={workspaceStat.pending.count} className="menu-badge" />
+              </NavLink>
             </Menu.Item>
           </Menu.SubMenu>
           <Menu.SubMenu key="g_hscode" title={<span><Icon type="book" /> {this.msg('hscodeCustoms')}</span>}>
