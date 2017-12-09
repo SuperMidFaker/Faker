@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Button, Breadcrumb, Layout, Select } from 'antd';
+import { Icon, Button, Breadcrumb, Layout, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
+import NavLink from 'client/components/NavLink';
 import { loadWorkspaceItems } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import ModuleMenu from '../menu';
@@ -49,7 +50,6 @@ const Option = Select.Option;
 export default class InvalidItemsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -76,6 +76,12 @@ export default class InvalidItemsList extends React.Component {
     dataIndex: 'OPS_COL',
     width: 100,
     fixed: 'right',
+    render: (_, record) => {
+      const itemUrl = '/clearance/tradeitem/workspace/item';
+      return (<span>
+        <NavLink to={`${itemUrl}/${record.id}`}><Icon type="edit" /></NavLink>
+      </span>);
+    },
   }])
   handleSearch = (value) => {
     const filter = { ...this.state.filter, name: value };

@@ -401,6 +401,7 @@ export default(store) => {
                 <Route path="conflicts" component={CMSTradeItemWorkspace.Conflict} />
                 <Route path="invalids" component={CMSTradeItemWorkspace.Invalid} />
                 <Route path="pendings" component={CMSTradeItemWorkspace.Pending} />
+                <Route path="item/:id" component={CMSTradeItemWorkspace.ItemPage} />
               </Route>
               <Route path="hscode">
                 <IndexRoute component={CMSTradeItemHSCode.List} />
