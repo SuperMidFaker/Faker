@@ -66,6 +66,14 @@ const messages = defineMessages({
     id: 'cms.tradeitem.master',
     defaultMessage: '物料主数据',
   },
+  newItem: {
+    id: 'cms.classificagtion.tradeitem.new.item',
+    defaultMessage: '新增物料',
+  },
+  editItem: {
+    id: 'cms.classificagtion.tradeitem.edit.item',
+    defaultMessage: '修改物料',
+  },
   searchRepoPlaceholder: {
     id: 'cms.tradeitem.searchRepoPlaceholder',
     defaultMessage: '输入客户名称搜索',
@@ -105,6 +113,10 @@ const messages = defineMessages({
   copUOM: {
     id: 'cms.tradeitem.col.cop.uom',
     defaultMessage: '企业计量单位',
+  },
+  markPass: {
+    id: 'cms.tradeitem.form.mark.pass',
+    defaultMessage: '标记直接通过',
   },
   hscode: {
     id: 'cms.tradeitem.col.hscode',
@@ -245,6 +257,14 @@ const messages = defineMessages({
   refuse: {
     id: 'cms.tradeitem.pending.refuse',
     defaultMessage: '拒绝',
+  },
+  cancel: {
+    id: 'cms.classificagtion.tradeitem.cancel',
+    defaultMessage: '取消',
+  },
+  save: {
+    id: 'cms.classificagtion.tradeitem.save',
+    defaultMessage: '保存',
   },
 });
 

@@ -91,7 +91,7 @@ export default class EmergeItemTable extends React.Component {
     width: 100,
     fixed: 'right',
     render: (_, record) => {
-      const itemUrl = '/clearance/tradeitem/workspace/item/edit';
+      const itemUrl = '/clearance/tradeitem/workspace/item';
       return (<span>
         <NavLink to={`${itemUrl}/${record.id}`}><Icon type="edit" /></NavLink>
         <span className="ant-divider" />

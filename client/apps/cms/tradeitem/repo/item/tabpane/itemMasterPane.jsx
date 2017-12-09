@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Card, DatePicker, Form, Input, Select, Row, Col, message } from 'antd';
+import { Card, DatePicker, Form, Input, Select, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
@@ -57,10 +57,7 @@ function getFieldInits(formData) {
       text: un.unit_name,
     })),
     tradeCountries: state.cmsTradeitem.params.tradeCountries,
-    fieldInits: getFieldInits(state.cmsTradeitem.itemData),
     hscodes: state.cmsHsCode.hscodes,
-    repoId: state.cmsTradeitem.repoId,
-    itemData: state.cmsTradeitem.itemData,
   }),
   {
     loadHscodes,
@@ -77,12 +74,12 @@ export default class ItemMasterPane extends React.Component {
     tradeCountries: PropTypes.array,
     hscodes: PropTypes.object,
     action: PropTypes.string.isRequired,
-    repoId: PropTypes.number.isRequired,
     itemData: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
+  state = { fieldInits: {} }
   componentWillReceiveProps(nextProps) {
     if (this.props.hscodes !== nextProps.hscodes) {
       if (nextProps.hscodes.data.length === 1) {
@@ -110,6 +107,10 @@ export default class ItemMasterPane extends React.Component {
         });
       }
     }
+    if (nextProps.itemData !== this.props.itemData) {
+      const fieldInits = getFieldInits(nextProps.itemData);
+      this.setState({ fieldInits });
+    }
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSearch = (value) => {
@@ -133,7 +134,8 @@ export default class ItemMasterPane extends React.Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, fieldInits, currencies, units, tradeCountries, hscodes, action } = this.props;
+    const { form: { getFieldDecorator }, currencies, units, tradeCountries, hscodes, action } = this.props;
+    const { fieldInits } = this.state;
     const currencyOptions = currencies.map(curr => ({
       value: curr.curr_code,
       text: `${curr.curr_code} | ${curr.curr_name}`,
@@ -220,6 +222,13 @@ export default class ItemMasterPane extends React.Component {
                 {getFieldDecorator('cop_uom', {
                   initialValue: fieldInits.cop_uom,
                 })(<Input />)}
+              </FormItem>
+            </Col>
+            <Col span={6}>
+              <FormItem {...formItemLayout} label={this.msg('markPass')}>
+                {getFieldDecorator('pass', {
+                  initialValue: fieldInits.pass === 'Y',
+                })(<Switch />)}
               </FormItem>
             </Col>
           </Row>

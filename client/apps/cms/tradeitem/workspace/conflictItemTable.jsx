@@ -106,7 +106,7 @@ export default class ConflictItemTable extends React.Component {
     width: 200,
     fixed: 'right',
     render: (_, record) => {
-      const itemUrl = '/clearance/tradeitem/workspace/item/edit';
+      const itemUrl = '/clearance/tradeitem/workspace/item';
       const spanElms = [];
       if (record.classified && record.status === 1) {
         spanElms.push(

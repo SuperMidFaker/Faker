@@ -36,6 +36,8 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_TEITEMS', 'LOAD_TEITEMS_SUCCEED', 'LOAD_TEITEMS_FAIL',
   'LOAD_TCITEMS', 'LOAD_TCITEMS_SUCCEED', 'LOAD_TCITEMS_FAIL',
   'LOAD_WSLITEMS', 'LOAD_WSLITEMS_SUCCEED', 'LOAD_WSLITEMS_FAIL',
+  'LOAD_WSITEM', 'LOAD_WSITEM_SUCCEED', 'LOAD_WSITEM_FAIL',
+  'SAVE_WSITEM', 'SAVE_WSITEM_SUCCEED', 'SAVE_WSITEM_FAIL',
   'DEL_WSLITEMS', 'DEL_WSLITEMS_SUCCEED', 'DEL_WSLITEMS_FAIL',
   'RESOLV_WSLITEMS', 'RESOLV_WSLITEMS_SUCCEED', 'RESOLV_WSLITEMS_FAIL',
   'SUBMIT_AUDIT', 'SUBMIT_AUDIT_SUCCEED', 'SUBMIT_AUDIT_FAIL',
@@ -43,6 +45,7 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
 ]);
 
 const initialState = {
+  submitting: false,
   reposLoading: false,
   tradeItemsLoading: false,
   listFilter: {
@@ -97,18 +100,13 @@ const initialState = {
     pageSize: 10,
     data: [],
   },
-  workspaceTempItemList: {
-    totalCount: 0,
-    current: 1,
-    pageSize: 10,
-    data: [],
-  },
   workspaceItemList: {
     totalCount: 0,
     current: 1,
     pageSize: 10,
     data: [],
   },
+  workspaceItem: {},
 };
 
 export default function reducer(state = initialState, action) {
@@ -169,6 +167,13 @@ export default function reducer(state = initialState, action) {
       return { ...state, workspaceLoading: false, workspaceTask: action.result.data };
     case actionTypes.LOAD_WSLITEMS_SUCCEED:
       return { ...state, workspaceLoading: false, workspaceItemList: action.result.data };
+    case actionTypes.LOAD_WSITEM_SUCCEED:
+      return { ...state, workspaceItem: action.result.data };
+    case actionTypes.SAVE_WSITEM:
+      return { ...state, submitting: true };
+    case actionTypes.SAVE_WSITEM_SUCCEED:
+    case actionTypes.SAVE_WSITEM_FAIL:
+      return { ...state, submitting: false };
     case actionTypes.LOAD_TEITEMS_SUCCEED:
       return { ...state, taskEmergeList: action.result.data };
     case actionTypes.LOAD_TCITEMS_SUCCEED:
@@ -676,6 +681,36 @@ export function loadWorkspaceItems(params) {
       endpoint: 'v1/cms/tradeitem/workspace/items',
       method: 'get',
       params,
+    },
+  };
+}
+
+export function loadWorkspaceItem(itemId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_WSITEM,
+        actionTypes.LOAD_WSITEM_SUCCEED,
+        actionTypes.LOAD_WSITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/item',
+      method: 'get',
+      params: { itemId },
+    },
+  };
+}
+
+export function saveWorkspaceItem(item) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_WSITEM,
+        actionTypes.SAVE_WSITEM_SUCCEED,
+        actionTypes.SAVE_WSITEM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/workspace/itemsave',
+      method: 'post',
+      data: { item },
     },
   };
 }
