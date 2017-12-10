@@ -9,18 +9,13 @@ import { Breadcrumb, Button, Layout, Radio, Icon, Popconfirm, Tooltip, message }
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
-import { loadCustomers } from 'common/reducers/crmCustomers';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepos, openAddModal, selectedRepoId, loadTradeItems, setCompareVisible,
-  deleteItems, setRepo, deleteRepo, loadTradeParams, setItemStatus, upgradeMode, setDatasShare, copyToStage } from 'common/reducers/cmsTradeitem';
-import { getAuditWay } from 'common/reducers/scvClassification';
+import { loadRepos, selectedRepoId, loadTradeItems, deleteItems, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
-import ImportItemModal from './modal/importItemModal';
 import DeclElementsModal from '../../common/modal/declElementsModal';
-import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION, SYNC_AUDIT_METHODS } from 'common/constants';
-// import RowAction from 'client/components/RowAction';
+import { TRADE_ITEM_STATUS, CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
 const { Content } = Layout;
@@ -39,15 +34,11 @@ function fetchData({ dispatch }) {
     tenantId: state.account.tenantId,
     loginId: state.account.loginId,
     loginName: state.account.username,
-    repos: state.cmsTradeitem.repos,
     repoId: state.cmsTradeitem.repoId,
     listFilter: state.cmsTradeitem.listFilter,
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
-    visibleAddModal: state.cmsTradeitem.visibleAddModal,
     repo: state.cmsTradeitem.repo,
-    reposLoading: state.cmsTradeitem.reposLoading,
     tradeItemsLoading: state.cmsTradeitem.tradeItemsLoading,
-    auditWay: state.scvClassification.auditWay,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -61,22 +52,14 @@ function fetchData({ dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadCustomers,
-    openAddModal,
-    selectedRepoId,
+  { selectedRepoId,
     loadTradeItems,
-    setCompareVisible,
     deleteItems,
-    setRepo,
     loadRepos,
-    deleteRepo,
     setItemStatus,
-    getAuditWay,
-    upgradeMode,
-    setDatasShare,
     getElementByHscode,
     showDeclElementsModal,
-    copyToStage }
+  }
 )
 @connectNav({
   depth: 3,
@@ -86,26 +69,18 @@ export default class RepoContent extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
-    repos: PropTypes.array.isRequired,
     tradeItemlist: PropTypes.object.isRequired,
     repoId: PropTypes.number,
-    visibleAddModal: PropTypes.bool,
     repo: PropTypes.object,
     listFilter: PropTypes.object.isRequired,
-    reposLoading: PropTypes.bool.isRequired,
     tradeItemsLoading: PropTypes.bool.isRequired,
-    auditWay: PropTypes.string,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
-    collapsed: false,
-    rightSiderCollapsed: true,
     selectedRowKeys: [],
-    compareduuid: '',
     currentPage: 1,
-    protected: 1,
     searchVal: '',
   }
   componentDidMount() {
@@ -126,6 +101,7 @@ export default class RepoContent extends Component {
     title: this.msg('copProductNo'),
     dataIndex: 'cop_product_no',
     width: 150,
+    fixed: 'left',
     render: (o, record) => {
       if (record.master_rejected) {
         return (
@@ -187,6 +163,7 @@ export default class RepoContent extends Component {
     dataIndex: 'g_model',
     width: 400,
     onCellClick: record => record.cop_product_no && this.handleShowDeclElementModal(record),
+    render: o => <a role="presentation">{o}</a>,
   }, {
     title: this.msg('gUnit1'),
     dataIndex: 'g_unit_1',
@@ -320,12 +297,12 @@ export default class RepoContent extends Component {
           return (
             <span>
               <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
-              <RowAction onClick={this.handleItemFork} icon="file-add" tooltip={this.msg('fork')} row={record} />
+              <RowAction onClick={this.handleItemFork} icon="fork" tooltip={this.msg('fork')} row={record} />
             </span>
           );
         } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== this.props.tenantId) {
           return (
-            <RowAction onClick={this.handleItemFork} icon="file-add" label={this.msg('fork')} row={record} />
+            <RowAction onClick={this.handleItemFork} icon="fork" label={this.msg('fork')} row={record} />
           );
         }
       }
@@ -395,7 +372,7 @@ export default class RepoContent extends Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.props.loadRepos({ tenantId: this.props.tenantId });
+        // this.props.loadRepos({ tenantId: this.props.tenantId });
         this.handleItemListLoad();
       }
     });
@@ -422,29 +399,25 @@ export default class RepoContent extends Component {
     window.open(`${API_ROOTS.default}v1/cms/tradeitems/selected/export/${createFilename('selectedItemsExport')}.xlsx?selectedIds=${selectedIds}`);
   }
   render() {
-    const { tradeItemlist, repo, listFilter, auditWay } = this.props;
+    const { tradeItemlist, repo, listFilter } = this.props;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
       onChange: (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
       },
-      getCheckboxProps: record => ({ disabled: (auditWay === SYNC_AUDIT_METHODS[1].key && !record.master_rejected && listFilter.status !== 'unclassified') }),
     };
     let bulkActions = null;
     if (repo.permission === CMS_TRADE_REPO_PERMISSION.edit && selectedRows.length > 0) {
-      if (listFilter.status === 'unclassified' ||
-        (listFilter.status === 'pending' && auditWay === SYNC_AUDIT_METHODS[1].key)) {
-        bulkActions = (<span>
-          <Button icon="export" onClick={this.handleExportSelected} >
+      bulkActions = (<span>
+        <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
-          <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
-            <Button type="danger" icon="delete">
+        <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Button type="danger" icon="delete">
               批量删除
             </Button>
-          </Popconfirm></span>);
-      }
+        </Popconfirm></span>);
     }
     this.dataSource.remotes = tradeItemlist;
     const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} />);
@@ -478,7 +451,6 @@ export default class RepoContent extends Component {
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             loading={this.props.tradeItemsLoading} rowKey="id" columns={this.columns} dataSource={this.dataSource} bordered
           />
-          <ImportItemModal data={this.state.compareduuid} />
           <DeclElementsModal onOk={null} />
         </Content>
       </Layout>

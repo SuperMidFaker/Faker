@@ -67,6 +67,7 @@ export default class TradeItemEdit extends Component {
             message.error(result.error.message, 10);
           } else {
             message.success('保存成功');
+            this.context.router.goBack();
             // this.context.router.push('/clearance/classification/tradeitem');
           }
         });

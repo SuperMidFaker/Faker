@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Dropdown, Icon, Popconfirm, Tooltip } from 'antd';
+import { Button, Dropdown, Icon, Popconfirm, Popover, Tooltip } from 'antd';
 import './index.less';
 
 export default class RowAction extends Component {
@@ -16,6 +16,7 @@ export default class RowAction extends Component {
     tooltip: PropTypes.string,
     confirm: PropTypes.string,
     primary: PropTypes.bool,
+    danger: PropTypes.bool,
     overlay: PropTypes.node,
   }
   handleClick = (ev) => {
@@ -36,8 +37,13 @@ export default class RowAction extends Component {
     }
   }
   renderButton = () => {
-    const { label, onClick, onHover, row, index, tooltip, primary, overlay, icon, ...extra } = this.props;
-    const type = primary ? 'primary' : 'default';
+    const { label, onClick, onHover, row, index, tooltip, primary, danger, overlay, icon, ...extra } = this.props;
+    let type = 'default';
+    if (primary) {
+      type = 'primary';
+    } else if (danger) {
+      type = 'danger';
+    }
     return overlay ?
     (<Dropdown overlay={overlay} placement="bottomRight" trigger={['click']}>
       <Button size="small"><Icon type="ellipsis" /></Button>
@@ -48,13 +54,18 @@ export default class RowAction extends Component {
     </Button>);
   }
   renderButtonWrapper = () => {
-    const { confirm } = this.props;
-    return confirm ?
-    (<Popconfirm title={confirm} placement="left" onConfirm={this.handleConfirm} >
-      {this.renderButton()}
-    </Popconfirm>)
-    :
-    this.renderButton();
+    const { confirm, popover } = this.props;
+    if (confirm) {
+      return (<Popconfirm title={confirm} placement="left" onConfirm={this.handleConfirm} >
+        {this.renderButton()}
+      </Popconfirm>);
+    } else if (popover) {
+      return (<Popover trigger="click" content={popover} placement="left">
+        {this.renderButton()}
+      </Popover>);
+    } else {
+      return this.renderButton();
+    }
   }
 
   render() {

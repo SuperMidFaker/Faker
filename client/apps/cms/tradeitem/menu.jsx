@@ -67,7 +67,7 @@ export default class ModuleMenu extends React.Component {
             <Menu.Item key="pending">
               <NavLink to="/clearance/tradeitem/workspace/pendings">
                 {this.msg('taskReview')}
-                <Badge count={workspaceStat.pending.count} className="menu-badge" />
+                <Badge count={workspaceStat.pending.count} className="menu-badge" style={{ backgroundColor: '#1890ff' }} />
               </NavLink>
             </Menu.Item>
           </Menu.SubMenu>

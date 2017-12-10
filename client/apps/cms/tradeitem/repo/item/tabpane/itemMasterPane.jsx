@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Card, DatePicker, Form, Input, Select, Switch, Row, Col, message } from 'antd';
+import { Button, Card, DatePicker, Form, Icon, Input, Select, Switch, Row, Col, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import FormPane from 'client/components/FormPane';
 import { format } from 'client/common/i18n/helpers';
-import { loadHscodes } from 'common/reducers/cmsHsCode';
+import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
+import { showDeclElementsModal } from 'common/reducers/cmsManifest';
+import DeclElementsModal from '../../../../common/modal/declElementsModal';
 import { SPECIAL_COPNO_TERM, CMS_TRADE_ITEM_TYPE } from 'common/constants';
 import messages from '../../../message.i18n';
 
@@ -61,6 +63,8 @@ function getFieldInits(formData) {
   }),
   {
     loadHscodes,
+    getElementByHscode,
+    showDeclElementsModal,
   }
 )
 export default class ItemMasterPane extends React.Component {
@@ -130,6 +134,14 @@ export default class ItemMasterPane extends React.Component {
     srcNos.forEach((no) => {
       if (no === e.target.value) {
         return message.error('该源标记号已存在', 5);
+      }
+    });
+  }
+  handleShowDeclElementModal = () => {
+    const { fieldInits } = this.state;
+    this.props.getElementByHscode(fieldInits.hscode).then((result) => {
+      if (!result.error) {
+        this.props.showDeclElementsModal(result.data.declared_elements, fieldInits.id, fieldInits.g_model, true, fieldInits.g_name);
       }
     });
   }
@@ -262,7 +274,7 @@ export default class ItemMasterPane extends React.Component {
                 {getFieldDecorator('g_model', {
                   initialValue: fieldInits.g_model,
                   rules: [{ required: true, message: '规格型号必填' }],
-                })(<Input.TextArea autosize={{ minRows: 1, maxRows: 16 }} />)}
+                })(<Input addonAfter={<Button type="primary" ghost size="small" onClick={this.handleShowDeclElementModal}><Icon type="ellipsis" /></Button>} />)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -436,6 +448,7 @@ export default class ItemMasterPane extends React.Component {
             </Col>
           </Row>
         </Card>
+        <DeclElementsModal onOk={null} />
       </FormPane>
     );
   }

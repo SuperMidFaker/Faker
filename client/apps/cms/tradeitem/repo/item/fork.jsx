@@ -61,7 +61,8 @@ export default class TradeItemFork extends Component {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
-            this.context.router.push('/clearance/classification/tradeitem');
+            message.success('保存成功');
+            this.context.router.goBack();
           }
         });
       }

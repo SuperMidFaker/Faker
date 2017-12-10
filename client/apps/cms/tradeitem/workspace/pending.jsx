@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { notification, Icon, Button, Breadcrumb, Layout, Popover, Input, Select } from 'antd';
+import { notification, Button, Breadcrumb, Layout, Input, Select } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import PageHeader from 'client/components/PageHeader';
@@ -72,18 +72,16 @@ export default class PendingItemsList extends React.Component {
   }).concat([{
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 180,
     fixed: 'right',
     render: (_, record) => (
       <span>
-        <RowAction onHit={this.handleItemPass} icon="check-circle-o" label={this.msg('pass')} row={record} />
-        <Popover trigger="click" content={<div>
+        <RowAction onClick={this.handleItemPass} icon="check-circle-o" label={this.msg('pass')} row={record} />
+        <RowAction danger popover={<div>
           <Input onChange={this.handleRefuseReason} value={this.state.refuseReason} placeholder="原因" style={{ width: 150 }} />
           <Button type="primary" style={{ marginLeft: 8 }} onClick={() => this.handleItemRefused(record)}>确定</Button>
-        </div>}
-        >
-          <span><Icon type="close-circle-o" /> {this.msg('refuse')}</span>
-        </Popover>
+        </div>} icon="close-circle-o" label={this.msg('refuse')}
+        />
       </span>),
   }])
   handleItemPass = (row) => {
