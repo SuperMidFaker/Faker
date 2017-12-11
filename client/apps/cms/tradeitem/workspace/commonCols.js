@@ -4,6 +4,22 @@ import { Fontello } from 'client/components/FontIcon';
 
 export default function makeColumns({ msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit }) {
   const columns = [{
+    dataIndex: 'classified',
+    width: 40,
+    render: (classified, item) => {
+      if (classified) {
+        return <Icon type="check-circle-o" style={{ fontSize: 16, color: '#52c41a' }} />;
+      } else {
+        let content;
+        if (!(item.hscode && item.g_name && item.g_model)) {
+          content = '申报商品编码或品名或规范要素未完整';
+        } else {
+          content = '填写规格型号与规范申报要素项数不一致';
+        }
+        return <Popover content={content} placement="right"><Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} /></Popover>;
+      }
+    },
+  }, {
     title: msg('copProductNo'),
     dataIndex: 'cop_product_no',
     width: 200,
@@ -31,22 +47,6 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
           </Tooltip>);
       } else {
         return <span>{pn}</span>;
-      }
-    },
-  }, {
-    dataIndex: 'classified',
-    width: 40,
-    render: (classified, item) => {
-      if (classified) {
-        return <Icon type="check-circle-o" style={{ fontSize: 16, color: '#52c41a' }} />;
-      } else {
-        let content;
-        if (!(item.hscode && item.g_name && item.g_model)) {
-          content = '申报商品编码或品名或规范要素未完整';
-        } else {
-          content = '填写规格型号与规范申报要素项数不一致';
-        }
-        return <Popover content={content} placement="right"><Icon type="warning" style={{ fontSize: 16, color: '#f5222d' }} /></Popover>;
       }
     },
   }].concat(withRepoItem ? [{

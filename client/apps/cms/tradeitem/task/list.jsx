@@ -97,7 +97,7 @@ export default class TradeItemTaskList extends React.Component {
     ),
   }]
   handleRowClick = (record) => {
-    const link = `/clearance/tradeitem/workspace/task/${record.id}`;
+    const link = `/clearance/tradeitem/task/${record.id}`;
     this.context.router.push(link);
   }
   handleTaskDel = (record) => {
@@ -165,7 +165,7 @@ export default class TradeItemTaskList extends React.Component {
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">
-            <ModuleMenu currentKey="task" />
+            <ModuleMenu currentKey="taskList" />
           </div>
         </Sider>
         <Layout>

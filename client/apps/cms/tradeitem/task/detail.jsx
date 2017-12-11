@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { notification, Card, Breadcrumb, Button, Layout, Tabs } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import EmergeItemTable from './emergeItemTable';
-import ConflictItemTable from './conflictItemTable';
+import EmergeItemTable from '../workspace/emergeItemTable';
+import ConflictItemTable from '../workspace/conflictItemTable';
 import { loadWorkspaceTask, loadTaskEmergeItems, loadTaskConflictItems, submitAudit } from 'common/reducers/cmsTradeitem';
 import PageHeader from 'client/components/PageHeader';
 import { formatMsg } from '../message.i18n';
@@ -30,7 +30,7 @@ const TabPane = Tabs.TabPane;
   depth: 3,
   moduleName: 'clearance',
 })
-export default class TaskPage extends React.Component {
+export default class TaskDetail extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     task: PropTypes.shape({

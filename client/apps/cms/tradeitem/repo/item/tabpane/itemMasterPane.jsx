@@ -117,8 +117,9 @@ export default class ItemMasterPane extends React.Component {
     }
   }
   msg = key => formatMsg(this.props.intl, key);
-  handleSearch = (value) => {
-    const { hscodes } = this.props;
+  handleHscodeChange = (value) => {
+    const { hscodes, form } = this.props;
+    form.setFieldsValue({ g_model: '' });
     this.props.loadHscodes({
       tenantId: this.props.tenantId,
       pageSize: hscodes.pageSize,
@@ -138,12 +139,16 @@ export default class ItemMasterPane extends React.Component {
     });
   }
   handleShowDeclElementModal = () => {
+    const { form } = this.props;
     const { fieldInits } = this.state;
-    this.props.getElementByHscode(this.props.form.getFieldValue('hscode')).then((result) => {
+    this.props.getElementByHscode(form.getFieldValue('hscode')).then((result) => {
       if (!result.error) {
-        this.props.showDeclElementsModal(result.data.declared_elements, fieldInits.id, fieldInits.g_model, true, fieldInits.g_name);
+        this.props.showDeclElementsModal(result.data.declared_elements, fieldInits.id, form.getFieldValue('g_model'), false, form.getFieldValue('g_name'));
       }
     });
+  }
+  handleModalChange = (model) => {
+    this.props.form.setFieldsValue({ g_model: model });
   }
   render() {
     const { form: { getFieldDecorator }, currencies, units, tradeCountries, hscodes, action } = this.props;
@@ -252,7 +257,7 @@ export default class ItemMasterPane extends React.Component {
                 {getFieldDecorator('hscode', {
                   rules: [{ required: true, message: '商品编码必填' }],
                   initialValue: fieldInits.hscode,
-                })(<Select mode="combobox" optionFilterProp="search" onChange={this.handleSearch} >
+                })(<Select allowClear mode="combobox" optionFilterProp="search" onChange={this.handleHscodeChange} >
                   { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
                     search={data.hscode}
                   >{data.hscode}</Option>)
@@ -281,6 +286,7 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('unit1')} required>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
+                  rules: [{ required: true, message: '法一计量单位必填' }],
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
@@ -448,7 +454,7 @@ export default class ItemMasterPane extends React.Component {
             </Col>
           </Row>
         </Card>
-        <DeclElementsModal onOk={null} />
+        <DeclElementsModal onOk={this.handleModalChange} />
       </FormPane>
     );
   }

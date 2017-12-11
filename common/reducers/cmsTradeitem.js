@@ -54,7 +54,7 @@ const initialState = {
   reposLoading: false,
   tradeItemsLoading: false,
   listFilter: {
-    status: 'classified',
+    status: 'master',
     sortField: '',
     sortOrder: '',
   },

@@ -57,7 +57,7 @@ export default class RowAction extends Component {
   renderButtonWrapper = () => {
     const { confirm, popover } = this.props;
     if (confirm) {
-      return (<Popconfirm title={confirm} placement="left" onConfirm={this.handleConfirm} >
+      return (<Popconfirm title={confirm} placement="left" onConfirm={this.handleConfirm} okText="是" cancelText="否">
         {this.renderButton()}
       </Popconfirm>);
     } else if (popover) {

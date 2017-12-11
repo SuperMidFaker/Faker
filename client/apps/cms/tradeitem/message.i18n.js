@@ -24,7 +24,7 @@ const messages = defineMessages({
   },
   taskList: {
     id: 'cms.tradeitem.workspace.task.list',
-    defaultMessage: '任务列表',
+    defaultMessage: '导入任务列表',
   },
   taskNew: {
     id: 'cms.tradeitem.workspace.new',
@@ -293,6 +293,10 @@ const messages = defineMessages({
   save: {
     id: 'cms.tradeitem.op.save',
     defaultMessage: '保存',
+  },
+  deleteConfirm: {
+    id: 'cms.tradeitem.op.delete.confirm',
+    defaultMessage: '确定要删除吗？',
   },
 });
 

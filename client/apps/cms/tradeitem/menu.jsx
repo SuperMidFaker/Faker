@@ -35,17 +35,17 @@ export default class ModuleMenu extends React.Component {
     const { workspaceStat } = this.props;
     return (
       <div>
-        <Menu defaultOpenKeys={['g_task', 'g_hscode']} mode="inline" selectedKeys={[this.props.currentKey]}>
+        <Menu defaultOpenKeys={['g_workspace', 'g_hscode']} mode="inline" selectedKeys={[this.props.currentKey]}>
           <Menu.Item key="repoList">
             <NavLink to="/clearance/tradeitem/repo"><Icon type="database" /> {this.msg('repoList')}</NavLink>
           </Menu.Item>
-          <Menu.SubMenu key="g_task" title={<span><Icon type="profile" /> {this.msg('workspace')}</span>}>
-            <Menu.Item key="task">
-              <NavLink to="/clearance/tradeitem/workspace/tasks">
-                {this.msg('taskList')}
-                <Badge count={workspaceStat.task.count} className="menu-badge" style={{ backgroundColor: '#1890ff' }} />
-              </NavLink>
-            </Menu.Item>
+          <Menu.Item key="taskList">
+            <NavLink to="/clearance/tradeitem/task">
+              <Icon type="profile" /> {this.msg('taskList')}
+              <Badge count={workspaceStat.task.count} className="menu-badge" style={{ backgroundColor: '#1890ff' }} />
+            </NavLink>
+          </Menu.Item>
+          <Menu.SubMenu key="g_workspace" title={<span><Icon type="schedule" /> {this.msg('workspace')}</span>}>
             <Menu.Item key="emerge">
               <NavLink to="/clearance/tradeitem/workspace/emerges">
                 {this.msg('taskNew')}
