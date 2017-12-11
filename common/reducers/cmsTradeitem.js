@@ -29,6 +29,10 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'SET_DATA_SHARED', 'SET_DATA_SHARED_SUCCEED', 'SET_DATA_SHARED_FAIL',
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
   'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
+  'SHOW_LINKSLAVE',
+  'LOAD_OWNSLAVES', 'LOAD_OWNSLAVES_SUCCEED', 'LOAD_OWNSLAVES_FAIL',
+  'LINK_MASTERSLAVE', 'LINK_MASTERSLAVE_SUCCEED', 'LINK_MASTERSLAVE_FAIL',
+  'UNLINK_MASTERSLAVE', 'UNLINK_MASTERSLAVE_SUCCEED', 'UNLINK_MASTERSLAVE_FAIL',
   'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
   'LOAD_WSSTAT', 'LOAD_WSSTAT_SUCCEED', 'LOAD_WSSTAT_FAIL',
   'LOAD_WSTASKLIST', 'LOAD_WSTASKLIST_SUCCEED', 'LOAD_WSTASKLIST_FAIL',
@@ -86,6 +90,11 @@ const initialState = {
   repo: {},
   repoLoading: false,
   visibleCompareModal: false,
+  linkSlaveModal: {
+    visible: false,
+    masterRepo: {},
+    slaves: [],
+  },
   workspaceStat: { task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {} },
   workspaceLoading: false,
   workspaceTaskList: [],
@@ -157,6 +166,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, repoUsers: action.result.data };
     case actionTypes.LOAD_TEMP_ITEMS_SUCCEED:
       return { ...state, tempItems: action.result.data };
+    case actionTypes.SHOW_LINKSLAVE:
+      return { ...state, linkSlaveModal: { ...state.linkSlaveModal, ...action.data } };
+    case actionTypes.LOAD_OWNSLAVES_SUCCEED:
+      return { ...state, linkSlaveModal: { ...state.linkSlaveModal, slaves: action.result.data } };
     case actionTypes.SWITCH_REPOMD_SUCCEED:
       return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
     case actionTypes.LOAD_WSSTAT_SUCCEED:
@@ -585,6 +598,58 @@ export function itemNewSrcSave(data) {
       endpoint: 'v1/cms/tradeitem/newSrc/save',
       method: 'post',
       data,
+    },
+  };
+}
+
+export function showLinkSlaveModal({ visible, masterRepo, slaves }) {
+  return {
+    type: actionTypes.SHOW_LINKSLAVE,
+    data: { visible, masterRepo, slaves },
+  };
+}
+
+export function getUnlinkSlavesByOwner(ownerTenantId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_OWNSLAVES,
+        actionTypes.LOAD_OWNSLAVES_SUCCEED,
+        actionTypes.LOAD_OWNSLAVES_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/owner/slaves',
+      method: 'get',
+      params: { ownerTenantId },
+    },
+  };
+}
+
+export function linkMasterSlaves(masterRepo, slaveRepos) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LINK_MASTERSLAVE,
+        actionTypes.LINK_MASTERSLAVE_SUCCEED,
+        actionTypes.LINK_MASTERSLAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/link/slave',
+      method: 'post',
+      data: { masterRepo, slaveRepos },
+    },
+  };
+}
+
+export function unlinkMasterSlave(slaveRepo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.UNLINK_MASTERSLAVE,
+        actionTypes.UNLINK_MASTERSLAVE_SUCCEED,
+        actionTypes.UNLINK_MASTERSLAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/unlink/slave',
+      method: 'post',
+      data: { slaveRepo },
     },
   };
 }

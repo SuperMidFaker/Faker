@@ -98,6 +98,10 @@ const messages = defineMessages({
     id: 'cms.tradeitem.stage.classified',
     defaultMessage: '新来源归类区',
   },
+  linkSlave: {
+    id: 'cms.tradeitem.model.slave.link',
+    defaultMessage: '添加从库关联',
+  },
   authUserName: {
     id: 'cms.tradeitem.modal.auth.username',
     defaultMessage: '企业名称',

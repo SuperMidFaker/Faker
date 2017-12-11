@@ -5,7 +5,7 @@ import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Breadcrumb, Button, Icon, Menu, Modal, Layout, Input, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
-import { openAddModal, switchRepoMode, setRepo } from 'common/reducers/cmsTradeitem';
+import { loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave, setRepo } from 'common/reducers/cmsTradeitem';
 import { loadCustomers } from 'common/reducers/crmCustomers';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
@@ -13,6 +13,7 @@ import RowAction from 'client/components/RowAction';
 import ModuleMenu from '../menu';
 import AddRepoModal from './modal/addRepoModal';
 import RepoUsersCard from './modal/repoUserCard';
+import LinkSlaveModal from './modal/linkSlaveModal';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
 
@@ -26,7 +27,7 @@ const Search = Input.Search;
     repos: state.cmsTradeitem.repos,
     reposLoading: state.cmsTradeitem.reposLoading,
   }),
-  { openAddModal, switchRepoMode, setRepo, loadCustomers }
+  { loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave, setRepo, loadCustomers }
 )
 @connectNav({
   depth: 2,
@@ -40,7 +41,14 @@ export default class RepoList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   state = {
+    repos: [],
+    filter: { name: '' },
     authAction: { repo: {}, doing: false },
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.repos !== this.props.repos) {
+      this.setState({ repos: nextProps.repos });
+    }
   }
   msg = formatMsg(this.props.intl);
   repoColumns = [{
@@ -70,10 +78,10 @@ export default class RepoList extends React.Component {
     dataIndex: 'permission',
     width: 150,
     render: (perm, record) => {
-      if (perm === CMS_TRADE_REPO_PERMISSION.view) {
-        return (<Tag>只读</Tag>);
-      } else if (perm === CMS_TRADE_REPO_PERMISSION.edit) {
+      if (perm === CMS_TRADE_REPO_PERMISSION.edit) {
         return record.creator_tenant_id === this.props.tenantId ? (<Tag color="green">完全控制</Tag>) : (<Tag color="blue">可读写</Tag>);
+      } else { // CMS_TRADE_REPO_PERMISSION.view OR slave repo(null)
+        return (<Tag>只读</Tag>);
       }
     },
   }, {
@@ -95,21 +103,39 @@ export default class RepoList extends React.Component {
     fixed: 'right',
     render: (_, repo) => {
       const creator = repo.creator_tenant_id === this.props.tenantId;
-      let menu;
+      const menuItems = [];
       if (creator) {
-        menu = (
-          <Menu>
-            <Menu.Item key="0">
-              <a onClick={() => this.handleRepoUserAuth(repo)}>授权使用单位</a>
-            </Menu.Item>
-            <Menu.Item key="1">
-              <a onClick={() => this.handleRepoModeSwitch(repo)}>切换库模式</a>
-            </Menu.Item>
-          </Menu>);
+        menuItems.push(<Menu.Item key="auth">
+          <a onClick={() => this.handleRepoUserAuth(repo)}>授权使用单位</a>
+        </Menu.Item>);
+        let masterSlaveLinked = false;
+        if (repo.mode === 'slave' && repo.master_repo_id) {
+          masterSlaveLinked = true;
+        } else if (repo.mode === 'master' && repo.children) {
+          masterSlaveLinked = true;
+        }
+        if (!masterSlaveLinked) {
+          menuItems.push(<Menu.Item key="reposwitch">
+            <a onClick={() => this.handleRepoModeSwitch(repo)}>切换库模式</a>
+          </Menu.Item>);
+        }
+        if (repo.mode === 'master') {
+          menuItems.push(<Menu.Item key="addslave">
+            <a onClick={() => this.handleLinkSlave(repo)}>关联从库</a>
+          </Menu.Item>);
+        }
+      } else if (repo.owner_tenant_id === this.props.tenantId) {
+        menuItems.push(<Menu.Item key="remslave">
+          <a onClick={() => this.handleUnlinkSlave(repo.id)}>删除关联</a>
+        </Menu.Item>);
+      }
+      let menu;
+      if (menuItems.length > 0) {
+        menu = (<Menu>{menuItems}</Menu>);
       }
       return (<span>
-        <RowAction onClick={this.handleEnter} icon="folder" label={this.msg('manageData')} row={repo} />
-        {creator && <RowAction overlay={menu} />}
+        <RowAction onClick={this.handleEnter} icon="folder" label={this.msg('manageItems')} row={repo} />
+        {menu && <RowAction overlay={menu} />}
       </span>);
     },
   },
@@ -135,16 +161,33 @@ export default class RepoList extends React.Component {
       },
       onCancel() {
       },
-    }
-    );
+    });
   }
   handleAddRepo = () => {
     this.props.loadCustomers();
     this.props.openAddModal();
   }
+  handleLinkSlave = (masterRepo) => {
+    this.props.showLinkSlaveModal({ masterRepo, visible: true });
+  }
+  handleUnlinkSlave = (slaveRepo) => {
+    this.props.unlinkMasterSlave(slaveRepo).then((result) => {
+      if (!result.error) {
+        this.handleRepoReload();
+      }
+    });
+  }
+  handleRepoReload = () => {
+    this.props.loadRepos();
+  }
+  handleRepoSearch = (ownerName) => {
+    const filter = { ...this.state.filter, name: ownerName };
+    this.setState({ filter });
+  }
   render() {
-    const { repos, reposLoading } = this.props;
-    const { authAction } = this.state;
+    const { reposLoading } = this.props;
+    const { authAction, filter } = this.state;
+    const repos = this.props.repos.filter(rep => !filter.name || new RegExp(filter.name).test(rep.owner_name));
     const toolbarActions = (<span>
       <Search style={{ width: 200 }} placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} />
     </span>);
@@ -188,6 +231,7 @@ export default class RepoList extends React.Component {
           >
             <RepoUsersCard repo={authAction.repo} />
           </Modal>
+          <LinkSlaveModal reload={this.handleRepoReload} />
         </Layout>
       </Layout>
     );
