@@ -397,7 +397,7 @@ export default class CiqDeclHeadPane extends React.Component {
             <Col span="6">
               <FormItem {...formItemLayout} label={'运输方式'} required >
                 {getFieldDecorator('traf_mode', {
-                  initialValue: (ciqDeclHead.traf_mode && [0, 1, 7, 8, 9].indexOf(Number(ciqDeclHead.traf_mode))) !== -1 ? 9 : Number(ciqDeclHead.traf_mode),
+                  initialValue: ciqDeclHead.traf_mode && Number(ciqDeclHead.traf_mode),
                 })(
                   <Select>
                     {CIQ_TRANSPORTS_TYPE.map(tran => <Option value={tran.value} key={tran.value}>{tran.text}</Option>)}
