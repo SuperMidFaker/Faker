@@ -27,7 +27,7 @@ const initialState = {
     pageSize: 20,
     data: [],
   },
-  cjqListFilter: {
+  ciqListFilter: {
     ieType: 'all',
   },
   ciqParams: {
@@ -62,7 +62,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CIQ_DECLS_SUCCEED:
       return { ...state,
         ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data },
-        cjqListFilter: JSON.parse(action.params.filter) };
+        ciqListFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
       return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
     case actionTypes.LOAD_CIQ_PARAMS_SUCCEED:

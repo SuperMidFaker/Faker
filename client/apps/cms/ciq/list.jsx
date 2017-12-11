@@ -47,7 +47,7 @@ ColumnSwitch.propTypes = {
   state => ({
     tenantId: state.account.tenantId,
     ciqdeclList: state.cmsCiqDeclare.ciqdeclList,
-    listFilter: state.cmsCiqDeclare.cjqListFilter,
+    listFilter: state.cmsCiqDeclare.ciqListFilter,
     organizations: state.cmsCiqDeclare.ciqParams.organizations,
   }),
   { loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams }
@@ -198,8 +198,8 @@ export default class CiqDeclList extends Component {
     fixed: 'right',
     render: (o, record) => (
       <span>
-        <RowAction onClick={this.handleDetail} label="详情" icon="eye-o" row={record} />
-        <RowAction onClick={this.exportCjqDecl} tooltip="九城商检导出" icon="file-excel" row={record} />
+        <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} />
+        <RowAction onClick={this.exportCiqDecl} icon="file-excel" tooltip="九城商检导出" row={record} />
       </span>),
   }]
   dataSource = new DataTable.DataSource({
@@ -288,7 +288,7 @@ export default class CiqDeclList extends Component {
     const newFilters = { ...listFilter, ieType: e.target.value };
     this.handleTableLoad(ciqdeclList.current, newFilters);
   }
-  exportCjqDecl = (row) => {
+  exportCiqDecl = (row) => {
     window.open(`${API_ROOTS.default}v1/cms/clearance/ciqdecl/${createFilename('ciqdecl')}.xlsx?preEntrySeqNo=${row.pre_entry_seq_no}`);
   }
   render() {
