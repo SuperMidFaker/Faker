@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
-import { Breadcrumb, Button, Menu, Modal, Layout, Input, Tag } from 'antd';
+import { Breadcrumb, Button, Icon, Menu, Modal, Layout, Input, Tag } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import { openAddModal, switchRepoMode, setRepo } from 'common/reducers/cmsTradeitem';
 import { loadCustomers } from 'common/reducers/crmCustomers';
@@ -52,13 +52,13 @@ export default class RepoList extends React.Component {
     title: this.msg('库模式'),
     dataIndex: 'mode',
     width: 150,
-    render: (o) => {
+    render: (o, record) => {
       if (o === 'slave') {
-        return (<Tag color="#2db7f5">从库</Tag>);
+        return (<Tag color="#2db7f5">从库 {record.master_repo_id ? <Icon type="link" /> : <Icon type="disconnect" />}</Tag>);
       } else if (o === 'master') {
         return (<Tag color="#108ee9">主库</Tag>);
       } else if (o === 'single') {
-        return (<Tag color="cyan">独立单库</Tag>);
+        return (<Tag color="cyan">单库</Tag>);
       }
     },
   }, {
@@ -108,7 +108,7 @@ export default class RepoList extends React.Component {
           </Menu>);
       }
       return (<span>
-        <RowAction onClick={this.handleEnter} icon="folder" label={this.msg('manageItems')} row={repo} />
+        <RowAction onClick={this.handleEnter} icon="folder" label={this.msg('manageData')} row={repo} />
         {creator && <RowAction overlay={menu} />}
       </span>);
     },
@@ -127,7 +127,7 @@ export default class RepoList extends React.Component {
   }
   handleRepoModeSwitch = (repo) => {
     const self = this;
-    const targetMode = repo.mode === 'single' ? '主从库模式' : '独立单库模式';
+    const targetMode = repo.mode === 'single' ? '主从库模式' : '单库模式';
     Modal.confirm({
       title: `确定切换为【${targetMode}】?`,
       onOk() {

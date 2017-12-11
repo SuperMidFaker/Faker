@@ -3,6 +3,7 @@ import { createActionTypes } from 'client/common/redux-actions';
 
 const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'LOAD_REPOS', 'LOAD_REPOS_SUCCEED', 'LOAD_REPOS_FAIL',
+  'LOAD_REPO', 'LOAD_REPO_SUCCEED', 'LOAD_REPO_FAIL',
   'OPEN_ADD_MODEL', 'CLOSE_ADD_MODEL',
   'CREATE_REPO', 'CREATE_REPO_SUCCEED', 'CREATE_REPO_FAIL',
   'DELETE_REPO', 'DELETE_REPO_SUCCEED', 'DELETE_REPO_FAIL',
@@ -83,6 +84,7 @@ const initialState = {
   bodyHscode: {},
   hstabKey: 'declunit',
   repo: {},
+  repoLoading: false,
   visibleCompareModal: false,
   workspaceStat: { task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {} },
   workspaceLoading: false,
@@ -117,6 +119,12 @@ export default function reducer(state = initialState, action) {
       return { ...state, repos: action.result.data, reposLoading: false, reposLoaded: true };
     case actionTypes.LOAD_REPOS_FAIL:
       return { ...state, reposLoading: false };
+    case actionTypes.LOAD_REPO:
+      return { ...state, repoLoading: true };
+    case actionTypes.LOAD_REPO_SUCCEED:
+      return { ...state, repo: action.result.data, repoLoading: false };
+    case actionTypes.LOAD_REPO_FAIL:
+      return { ...state, repoLoading: false };
     case actionTypes.OPEN_ADD_MODEL:
       return { ...state, visibleAddModal: true };
     case actionTypes.CLOSE_ADD_MODEL:
@@ -282,6 +290,21 @@ export function loadRepos() {
       ],
       endpoint: 'v1/cms/tradeitem/repos/load',
       method: 'get',
+    },
+  };
+}
+
+export function loadRepo(repoId) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_REPO,
+        actionTypes.LOAD_REPO_SUCCEED,
+        actionTypes.LOAD_REPO_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/load',
+      method: 'get',
+      params: { repoId },
     },
   };
 }

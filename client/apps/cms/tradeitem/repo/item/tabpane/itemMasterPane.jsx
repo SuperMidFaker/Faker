@@ -139,7 +139,7 @@ export default class ItemMasterPane extends React.Component {
   }
   handleShowDeclElementModal = () => {
     const { fieldInits } = this.state;
-    this.props.getElementByHscode(fieldInits.hscode).then((result) => {
+    this.props.getElementByHscode(this.props.form.getFieldValue('hscode')).then((result) => {
       if (!result.error) {
         this.props.showDeclElementsModal(result.data.declared_elements, fieldInits.id, fieldInits.g_model, true, fieldInits.g_name);
       }
@@ -278,7 +278,7 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unit1')}>
+              <FormItem {...formItemLayout} label={this.msg('unit1')} required>
                 {getFieldDecorator('unit_1', {
                   initialValue: fieldInits.unit_1,
                 })(<Select showSearch showArrow optionFilterProp="search">
@@ -291,7 +291,7 @@ export default class ItemMasterPane extends React.Component {
               </FormItem>
             </Col>
             <Col span={6}>
-              <FormItem {...formItemLayout} label={this.msg('unit2')} required >
+              <FormItem {...formItemLayout} label={this.msg('unit2')}>
                 {getFieldDecorator('unit_2', {
                   initialValue: fieldInits.unit_2,
                 })(<Select showSearch showArrow optionFilterProp="search">

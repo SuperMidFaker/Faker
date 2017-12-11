@@ -18,6 +18,7 @@ export default class RowAction extends Component {
     primary: PropTypes.bool,
     danger: PropTypes.bool,
     overlay: PropTypes.node,
+    popover: PropTypes.node,
   }
   handleClick = (ev) => {
     ev.preventDefault();

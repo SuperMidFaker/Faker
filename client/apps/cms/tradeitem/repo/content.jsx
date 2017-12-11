@@ -11,7 +11,7 @@ import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepos, selectedRepoId, loadTradeItems, deleteItems, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+import { loadRepo, selectedRepoId, loadTradeItems, deleteItems, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
@@ -55,7 +55,7 @@ function fetchData({ dispatch }) {
   { selectedRepoId,
     loadTradeItems,
     deleteItems,
-    loadRepos,
+    loadRepo,
     setItemStatus,
     getElementByHscode,
     showDeclElementsModal,
@@ -84,7 +84,7 @@ export default class RepoContent extends Component {
     searchVal: '',
   }
   componentDidMount() {
-    this.props.selectedRepoId(this.props.params.repoId);
+    this.props.loadRepo(this.props.params.repoId);
     this.props.loadTradeItems({
       repoId: this.props.params.repoId,
       filter: JSON.stringify(this.props.listFilter),
@@ -142,11 +142,11 @@ export default class RepoContent extends Component {
           if (record.master_rejected) {
             return (
               <Tooltip title={record.reason}>
-                <span style={{ color: 'orange' }}>{o} <Icon type="pause-circle-o" className="text-warning" /></span>
+                <span style={{ color: 'orange' }}>{o} <Icon type="exclamation-circle-o" className="text-warning" /></span>
               </Tooltip>
             );
           } else {
-            return <span>{o} <Icon type="pause-circle-o" className="text-warning" /></span>;
+            return <span>{o} <Icon type="exclamation-circle-o" className="text-warning" /></span>;
           }
         case TRADE_ITEM_STATUS.classified:
           return <span>{o} <Icon type="check-circle-o" className="text-success" /></span>;
@@ -293,16 +293,22 @@ export default class RepoContent extends Component {
     fixed: 'right',
     render: (o, record) => {
       if (this.props.repo.permission === CMS_TRADE_REPO_PERMISSION.edit) {
-        if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id === this.props.tenantId) {
+        if (this.props.listFilter.status === 'master') {
+          if (this.props.repo.mode === 'slave') {
+            return (
+              <RowAction onClick={this.handleItemFork} icon="fork" label={this.msg('fork')} row={record} />
+            );
+          } else {
+            return (
+              <span>
+                <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
+                <RowAction onClick={this.handleItemFork} icon="fork" tooltip={this.msg('fork')} row={record} />
+              </span>
+            );
+          }
+        } else {
           return (
-            <span>
-              <RowAction onClick={this.handleItemEdit} icon="edit" label={this.msg('modify')} row={record} />
-              <RowAction onClick={this.handleItemFork} icon="fork" tooltip={this.msg('fork')} row={record} />
-            </span>
-          );
-        } else if (record.status === TRADE_ITEM_STATUS.classified && record.created_tenant_id !== this.props.tenantId) {
-          return (
-            <RowAction onClick={this.handleItemFork} icon="fork" label={this.msg('fork')} row={record} />
+            <RowAction onClick={this.handleItemDelete} icon="delete" label={this.msg('delete')} row={record} />
           );
         }
       }
@@ -433,11 +439,8 @@ export default class RepoContent extends Component {
           </PageHeader.Title>
           <PageHeader.Nav>
             <RadioGroup value={listFilter.status} onChange={this.handleFilterChange} >
-              <RadioButton value="classified"><Icon type="check-circle-o" /> {this.msg('tradeItemMaster')}</RadioButton>
-            </RadioGroup>
-            <span />
-            <RadioGroup value={listFilter.status} onChange={this.handleFilterChange} >
-              <RadioButton value="stage"><Icon type="fork" /> {this.msg('forkedItems')}</RadioButton>
+              <RadioButton value="master"><Icon type="check-circle-o" /> {this.msg('tradeItemMaster')}</RadioButton>
+              <RadioButton value="branch"><Icon type="exclamation-circle-o" /> {this.msg('tradeItemBranch')}</RadioButton>
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>

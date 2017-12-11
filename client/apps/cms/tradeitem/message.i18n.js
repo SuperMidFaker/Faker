@@ -66,9 +66,9 @@ const messages = defineMessages({
     id: 'cms.tradeitem.master',
     defaultMessage: '物料主数据',
   },
-  forkedItems: {
-    id: 'cms.tradeitem.forked',
-    defaultMessage: '归类分支',
+  tradeItemBranch: {
+    id: 'cms.tradeitem.branch',
+    defaultMessage: '分支数据',
   },
   newItem: {
     id: 'cms.classificagtion.tradeitem.new.item',
@@ -246,9 +246,9 @@ const messages = defineMessages({
     id: 'cms.tradeitem.create',
     defaultMessage: '新建',
   },
-  manageItems: {
-    id: 'cms.tradeitem.repo.manage.items',
-    defaultMessage: '料件管理',
+  manageData: {
+    id: 'cms.tradeitem.repo.manage.data',
+    defaultMessage: '数据管理',
   },
   createdDate: {
     id: 'cms.tradeitem.created.date',
@@ -274,12 +274,20 @@ const messages = defineMessages({
     id: 'cms.tradeitem.op.modify',
     defaultMessage: '修改',
   },
+  fork: {
+    id: 'cms.tradeitem.op.fork',
+    defaultMessage: '分支',
+  },
+  delete: {
+    id: 'cms.tradeitem.op.delete',
+    defaultMessage: '删除',
+  },
   cancel: {
-    id: 'cms.classificagtion.tradeitem.cancel',
+    id: 'cms.tradeitem.op.cancel',
     defaultMessage: '取消',
   },
   save: {
-    id: 'cms.classificagtion.tradeitem.save',
+    id: 'cms.tradeitem.op.save',
     defaultMessage: '保存',
   },
 });

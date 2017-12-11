@@ -21,7 +21,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
 ]);
 
 const initialState = {
-  ciqdeclList: {
+  ciqDeclList: {
     totalCount: 0,
     current: 1,
     pageSize: 20,
@@ -58,13 +58,13 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_CIQ_DECLS:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: true } };
+      return { ...state, ciqDeclList: { ...state.ciqDeclList, loading: true } };
     case actionTypes.LOAD_CIQ_DECLS_SUCCEED:
       return { ...state,
-        ciqdeclList: { ...state.ciqdeclList, loading: false, ...action.result.data },
+        ciqDeclList: { ...state.ciqDeclList, loading: false, ...action.result.data },
         ciqListFilter: JSON.parse(action.params.filter) };
     case actionTypes.LOAD_CIQ_DECLS_FAIL:
-      return { ...state, ciqdeclList: { ...state.ciqdeclList, loading: false } };
+      return { ...state, ciqDeclList: { ...state.ciqDeclList, loading: false } };
     case actionTypes.LOAD_CIQ_PARAMS_SUCCEED:
       return { ...state,
         ciqParams: { ...state.ciqParams,

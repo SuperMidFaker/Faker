@@ -400,7 +400,7 @@ export default class CiqDeclHeadPane extends React.Component {
                   initialValue: ciqDeclHead.traf_mode && Number(ciqDeclHead.traf_mode),
                 })(
                   <Select>
-                    {CIQ_TRANSPORTS_TYPE.map(tran => <Option value={tran.value} key={tran.value}>{tran.text}</Option>)}
+                    {CIQ_TRANSPORTS_TYPE.map(tran => <Option value={tran.value} key={tran.value}>{tran.value} | {tran.text}</Option>)}
                   </Select>
                 )}
               </FormItem>
@@ -460,7 +460,7 @@ export default class CiqDeclHeadPane extends React.Component {
               </FormItem>
             </Col>
             {ioType === 'in' &&
-            <FormRemoteSearchSelect outercol={6} label="贸易国家" col={8} field="ciq_trade_country"
+            <FormRemoteSearchSelect outercol={6} label="贸易国别" col={8} field="ciq_trade_country"
               getFieldDecorator={form.getFieldDecorator} formData={ciqDeclHead}
               options={countries.map(coun => ({
                 value: coun.country_code,

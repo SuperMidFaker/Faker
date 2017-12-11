@@ -46,7 +46,7 @@ ColumnSwitch.propTypes = {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    ciqdeclList: state.cmsCiqDeclare.ciqdeclList,
+    ciqDeclList: state.cmsCiqDeclare.ciqDeclList,
     listFilter: state.cmsCiqDeclare.ciqListFilter,
     organizations: state.cmsCiqDeclare.ciqParams.organizations,
   }),
@@ -62,7 +62,7 @@ export default class CiqDeclList extends Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
-    ciqdeclList: PropTypes.object.isRequired,
+    ciqDeclList: PropTypes.object.isRequired,
     listFilter: PropTypes.object.isRequired,
   }
   static contextTypes = {
@@ -223,7 +223,7 @@ export default class CiqDeclList extends Component {
       params.filter = JSON.stringify(filter);
       return params;
     },
-    remotes: this.props.ciqdeclList,
+    remotes: this.props.ciqDeclList,
   })
   handlePreview = (record, ev) => {
     ev.stopPropagation();
@@ -248,8 +248,8 @@ export default class CiqDeclList extends Component {
     this.props.loadCiqDecls({
       tenantId: this.props.tenantId,
       filter: JSON.stringify(filter || this.props.listFilter),
-      pageSize: this.props.ciqdeclList.pageSize,
-      currentPage: currentPage || this.props.ciqdeclList.current,
+      pageSize: this.props.ciqDeclList.pageSize,
+      currentPage: currentPage || this.props.ciqDeclList.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 5);
@@ -284,16 +284,16 @@ export default class CiqDeclList extends Component {
     return newFilters;
   }
   handleIEFilter = (e) => {
-    const { listFilter, ciqdeclList } = this.props;
+    const { listFilter, ciqDeclList } = this.props;
     const newFilters = { ...listFilter, ieType: e.target.value };
-    this.handleTableLoad(ciqdeclList.current, newFilters);
+    this.handleTableLoad(ciqDeclList.current, newFilters);
   }
   exportCiqDecl = (row) => {
     window.open(`${API_ROOTS.default}v1/cms/clearance/ciqdecl/${createFilename('ciqdecl')}.xlsx?preEntrySeqNo=${row.pre_entry_seq_no}`);
   }
   render() {
-    const { ciqdeclList, listFilter } = this.props;
-    this.dataSource.remotes = ciqdeclList;
+    const { ciqDeclList, listFilter } = this.props;
+    this.dataSource.remotes = ciqDeclList;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -327,7 +327,7 @@ export default class CiqDeclList extends Component {
         <Content className="page-content" key="main">
           <DataTable toolbarActions={toolbarActions}
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={ciqdeclList.loading}
+            columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={ciqDeclList.loading}
             onRowClick={this.handleRowClick}
           />
         </Content>
