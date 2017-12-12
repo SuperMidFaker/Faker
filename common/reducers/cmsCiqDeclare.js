@@ -18,6 +18,9 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'UPDATE_CIQ_GOOD', 'UPDATE_CIQ_GOOD_SUCCEED', 'UPDATE_CIQ_GOOD_FAIL',
   'EXTEND_COUNTRY_CODE', 'EXTEND_COUNTRY_CODE_SUCCEED', 'EXTEND_COUNTRY_CODE_FAIL',
   'SEARCH_CUSTOMS', 'SEARCH_CUSTOMS_SUCCEED', 'SEARCH_CUSTOMS_FAIL',
+  'TOGGLE_ENTQUALIFI_MODAL',
+  'SAVE_ENT_QUALIF', 'SAVE_ENT_QUALIF_SUCCEED', 'SAVE_ENT_QUALIF_FAIL',
+  'LOAD_ENT_QUALIF', 'LOAD_ENT_QUALIF_SUCCEED', 'LOAD_ENT_QUALIF_FAIL',
 ]);
 
 const initialState = {
@@ -53,6 +56,10 @@ const initialState = {
   },
   ciqDeclGoods: [],
   ciqHeadChangeTimes: 0,
+  entQualifictaionModal: {
+    visible: false,
+  },
+  entQualifs: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -115,6 +122,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, ciqHeadChangeTimes: 0 };
     case actionTypes.EXTEND_COUNTRY_CODE_SUCCEED:
       return { ...state, ciqParams: { ...state.ciqParams, countries: [...state.ciqParams.countries, action.result.data] } };
+    case actionTypes.TOGGLE_ENTQUALIFI_MODAL:
+      return { ...state, entQualifictaionModal: { ...state.entQualifictaionModal, visible: action.visible } };
+    case actionTypes.LOAD_ENT_QUALIF_SUCCEED:
+      return { ...state, entQualifs: action.result.data };
     default:
       return state;
   }
@@ -350,6 +361,43 @@ export function extendCountryParam(code) {
       endpoint: 'v1/cms/extend/country/param',
       method: 'get',
       params: { code },
+    },
+  };
+}
+
+export function toggleEntQualifiModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_ENTQUALIFI_MODAL,
+    visible,
+  };
+}
+
+export function saveEntQualif(data) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_ENT_QUALIF,
+        actionTypes.SAVE_ENT_QUALIF_SUCCEED,
+        actionTypes.SAVE_ENT_QUALIF_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/ent/qualif/save',
+      method: 'post',
+      data,
+    },
+  };
+}
+
+export function loadEntQualif(customerPartnerId, ciqCode) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ENT_QUALIF,
+        actionTypes.LOAD_ENT_QUALIF_SUCCEED,
+        actionTypes.LOAD_ENT_QUALIF_FAIL,
+      ],
+      endpoint: 'v1/cms/ent/qualif/load',
+      method: 'get',
+      params: { customerPartnerId, ciqCode },
     },
   };
 }

@@ -60,6 +60,9 @@ export default class CiqDeclEdit extends React.Component {
   handleSave = () => {
     const { form } = this.props;
     const values = form.getFieldsValue();
+    if (values.ent_qualif_type_code) {
+      values.ent_qualif_type_code = values.ent_qualif_type_code.split('|')[0];
+    }
     if (values.spec_pass_flag) {
       values.spec_pass_flag = values.spec_pass_flag.join(',');
     }

@@ -7,14 +7,17 @@ import { intlShape, injectIntl } from 'react-intl';
 import InfoItem from 'client/components/InfoItem';
 import FormPane from 'client/components/FormPane';
 import { loadCiqDeclHead, searchOrganizations, searchWorldPorts, searchChinaPorts, searchCountries,
-   setFixedCountry, setFixedOrganizations, setFixedWorldPorts, updateCiqHeadField, loadCiqParams, searchCustoms } from 'common/reducers/cmsCiqDeclare';
+   setFixedCountry, setFixedOrganizations, setFixedWorldPorts, updateCiqHeadField, loadCiqParams, searchCustoms,
+   toggleEntQualifiModal, loadEntQualif, ciqHeadChange } from 'common/reducers/cmsCiqDeclare';
 import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { loadBusinessUnits } from 'common/reducers/cmsResources';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import { CiqCodeAutoCompSelect } from '../../common/form/headFormItems';
+import EntQualifiModal from '../modal/entQualifiModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG, CIQ_TRANSPORTS_TYPE } from 'common/constants';
+import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG, CIQ_TRANSPORTS_TYPE, CIQ_TRADE_MODE,
+  CIQ_ENT_QUALIFY_TYPE } from 'common/constants';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -39,6 +42,7 @@ const ButtonGroup = Button.Group;
     fixedCountries: state.cmsCiqDeclare.ciqParams.fixedCountries,
     fixedOrganizations: state.cmsCiqDeclare.ciqParams.fixedOrganizations,
     fixedWorldPorts: state.cmsCiqDeclare.ciqParams.fixedWorldPorts,
+    entQualifs: state.cmsCiqDeclare.entQualifs,
   }),
   { loadCiqDeclHead,
     searchOrganizations,
@@ -53,6 +57,9 @@ const ButtonGroup = Button.Group;
     updateCiqHeadField,
     loadCiqParams,
     searchCustoms,
+    toggleEntQualifiModal,
+    loadEntQualif,
+    ciqHeadChange,
   }
 )
 export default class CiqDeclHeadPane extends React.Component {
@@ -64,14 +71,40 @@ export default class CiqDeclHeadPane extends React.Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
-  componentDidMount() {
+  state = {
+    entQualif: {},
+  }
+  componentWillMount() {
+    const { ioType } = this.props;
     this.props.loadCiqDeclHead(this.context.router.params.declNo).then((result) => {
       if (!result.error) {
         this.props.loadBusinessUnits({ customerPartnerId: this.props.ciqDeclHead.owner_cuspartner_id });
+        this.props.loadEntQualif(this.props.ciqDeclHead.owner_cuspartner_id,
+           ioType === 'in' ? this.props.ciqDeclHead.ciq_consignee_code : this.props.ciqDeclHead.ciq_consignor_code).then((re) => {
+             if (!re.error) {
+               if (this.props.ciqDeclHead.ent_qualif_type_code) {
+                 const entQualif = re.data.find(item => item.ent_qualif_type_code === this.props.ciqDeclHead.ent_qualif_type_code);
+                 this.setState({
+                   entQualif,
+                 });
+               } else {
+                 this.setState({
+                   entQualif: re.data.length > 0 ? re.data[0] : {},
+                 });
+               }
+             }
+           });
       }
     });
     this.props.loadCmsBrokers();
     this.props.loadCiqParams();
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.entQualifs !== this.props.entQualifs) {
+      this.setState({
+        entQualif: nextProps.entQualifs.length > 0 ? nextProps.entQualifs[0] : {},
+      });
+    }
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleSearchOrg = (field, value) => {
@@ -105,18 +138,26 @@ export default class CiqDeclHeadPane extends React.Component {
     form.setFieldsValue({ agent_name: broker.comp_name });
   };
   handleConsigneeSelect = (codeField, cnameField, enameField, value) => {
-    const { businessUnits, form } = this.props;
+    const { businessUnits, form, ioType } = this.props;
     const consignee = businessUnits.find(unit => unit.ciq_code === value);
     form.setFieldsValue({
       [cnameField]: consignee.comp_name,
     });
+    if (ioType === 'in') {
+      this.props.loadEntQualif(this.props.ciqDeclHead.owner_cuspartner_id, value);
+      this.props.ciqHeadChange();
+    }
   }
   handleConsignorSelect = (codeField, cnameField, enameField, value) => {
-    const { businessUnits, form } = this.props;
+    const { businessUnits, form, ioType } = this.props;
     const consignor = businessUnits.find(unit => unit.ciq_code === value);
     form.setFieldsValue({
       [cnameField]: consignor.comp_name,
     });
+    if (ioType === 'out') {
+      this.props.loadEntQualif(this.props.ciqDeclHead.owner_cuspartner_id, value);
+      this.props.ciqHeadChange();
+    }
   }
   handleCountrySelect = (value) => {
     const { fixedCountries, countries } = this.props;
@@ -153,9 +194,39 @@ export default class CiqDeclHeadPane extends React.Component {
     }
     this.props.updateCiqHeadField(field, value, this.props.ciqDeclHead.pre_entry_seq_no);
   }
+  toggleEntQualifiModal = () => {
+    this.props.toggleEntQualifiModal(true);
+  }
+  changeEntQualif = (type) => {
+    const { entQualifs } = this.props;
+    const { entQualif } = this.state;
+    if (entQualifs.length > 1) {
+      let index = entQualifs.findIndex(qualif => qualif.ent_qualif_type_code === entQualif.ent_qualif_type_code);
+      if (type) {
+        if (index === entQualifs.length - 1) {
+          this.setState({
+            entQualif: entQualifs[0],
+          });
+        } else {
+          this.setState({
+            entQualif: entQualifs[++index],
+          });
+        }
+      } else if (index === 0) {
+        this.setState({
+          entQualif: entQualifs[entQualifs.length - 1],
+        });
+      } else {
+        this.setState({
+          entQualif: entQualifs[--index],
+        });
+      }
+    }
+  }
   render() {
     const { ioType, organizations, countries, worldPorts, chinaPorts, ciqDeclHead, form,
        form: { getFieldDecorator }, brokers, intl, businessUnits, customs } = this.props;
+    const { entQualif } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -179,9 +250,9 @@ export default class CiqDeclHeadPane extends React.Component {
       colon: false,
     };
     const addonAfter = (<ButtonGroup size="small">
-      <Button type="primary" ghost><Icon type="left" /></Button>
-      <Button type="primary" ghost><Icon type="right" /></Button>
-      <Button type="primary" ghost><Icon type="ellipsis" /></Button>
+      <Button type="primary" ghost onClick={() => this.changeEntQualif(false)}><Icon type="left" /></Button>
+      <Button type="primary" ghost onClick={() => this.changeEntQualif(true)}><Icon type="right" /></Button>
+      <Button type="primary" ghost onClick={this.toggleEntQualifiModal}><Icon type="ellipsis" /></Button>
     </ButtonGroup>);
     const header = (<Row>
       <Col span="6">
@@ -316,7 +387,11 @@ export default class CiqDeclHeadPane extends React.Component {
             </Col>
             <Col span="6">
               <FormItem {...formItemLayout} label={'企业资质'} >
-                <Input addonAfter={addonAfter} />
+                {getFieldDecorator('ent_qualif_type_code', {
+                  initialValue: entQualif.ent_qualif_type_code ? `${entQualif.ent_qualif_type_code}|${CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(entQualif.ent_qualif_type_code)) && CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(entQualif.ent_qualif_type_code)).text}` : '',
+                })(
+                  <Input addonAfter={addonAfter} />
+                )}
               </FormItem>
             </Col>
             </Row>}
@@ -361,8 +436,12 @@ export default class CiqDeclHeadPane extends React.Component {
               />
             </Col>
             <Col span="6">
-              <FormItem {...formItemLayout} label={'企业性质'} >
-                <Input />
+              <FormItem {...formItemLayout} label={'企业资质'} >
+                {getFieldDecorator('ent_qualif_type_code', {
+                  initialValue: entQualif.ent_qualif_type_code ? `${entQualif.ent_qualif_type_code}|${CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(entQualif.ent_qualif_type_code)) && CIQ_ENT_QUALIFY_TYPE.find(type => type.value === Number(entQualif.ent_qualif_type_code)).text}` : '',
+                })(
+                  <Input addonAfter={addonAfter} />
+                )}
               </FormItem>
             </Col>
             </Row>}
@@ -453,9 +532,11 @@ export default class CiqDeclHeadPane extends React.Component {
             <Col span="6">
               <FormItem {...formItemLayout} label={'贸易方式'} required >
                 {getFieldDecorator('ciq_trade_mode', {
-                  initialValue: ciqDeclHead.ciq_trade_mode,
+                  initialValue: ciqDeclHead.ciq_trade_mode && Number(ciqDeclHead.ciq_trade_mode),
                 })(
-                  <Input />
+                  <Select>
+                    {CIQ_TRADE_MODE.map(mode => <Option key={mode.value} value={mode.value}>{mode.text}</Option>)}
+                  </Select>
                 )}
               </FormItem>
             </Col>
@@ -655,7 +736,7 @@ export default class CiqDeclHeadPane extends React.Component {
             <Col span="12">
               <FormItem {...formItemSpan2Layout} label={'特殊业务标识'} >
                 {getFieldDecorator('special_decl_flag', {
-                  initialValue: ciqDeclHead.special_decl_flag && ciqDeclHead.special_decl_flag.split(','),
+                  initialValue: ciqDeclHead.special_decl_flag ? ciqDeclHead.special_decl_flag.split(',') : [],
                 })(
                   <Select mode="multiple">
                     {CIQ_SPECIAL_DECL_FLAG.map(type => <Option key={type.value}>{type.text}</Option>)}
@@ -666,7 +747,7 @@ export default class CiqDeclHeadPane extends React.Component {
             <Col span="12">
               <FormItem {...formItemSpan2Layout} label={'特殊通关模式'} >
                 {getFieldDecorator('spec_pass_flag', {
-                  initialValue: ciqDeclHead.spec_pass_flag && ciqDeclHead.spec_pass_flag.split(','),
+                  initialValue: ciqDeclHead.spec_pass_flag ? ciqDeclHead.spec_pass_flag.split(',') : [],
                 })(
                   <Select mode="multiple">
                     {CIQ_SPECIAL_PASS_FLAG.map(type => <Option key={type.value}>{type.text}</Option>)}
@@ -712,6 +793,9 @@ export default class CiqDeclHeadPane extends React.Component {
             </Col>
           </Row>
         </Card>
+        <EntQualifiModal ciqCode={ioType === 'in' ? ciqDeclHead.ciq_consignee_code : ciqDeclHead.ciq_consignor_code}
+          customerPartnerId={this.props.ciqDeclHead.owner_cuspartner_id}
+        />
       </FormPane>
     );
   }
