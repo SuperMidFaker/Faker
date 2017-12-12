@@ -93,11 +93,11 @@ export default class SendDeclMsgModal extends React.Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 },
+        sm: { span: 6 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 14 },
       },
     };
     const tailFormItemLayout = {
@@ -107,8 +107,8 @@ export default class SendDeclMsgModal extends React.Component {
           offset: 0,
         },
         sm: {
-          span: 16,
-          offset: 8,
+          span: 14,
+          offset: 6,
         },
       },
     };

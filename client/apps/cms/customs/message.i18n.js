@@ -77,6 +77,10 @@ export default defineMessages({
     id: 'cms.customs.decl.easipass.list',
     defaultMessage: 'EDI列表',
   },
+  quickpassList: {
+    id: 'cms.customs.decl.quickpass.list',
+    defaultMessage: 'QP列表',
+  },
   sendDecl: {
     id: 'cms.customs.decl.decl.sendModal.sendDecl',
     defaultMessage: '发送报关报文',
