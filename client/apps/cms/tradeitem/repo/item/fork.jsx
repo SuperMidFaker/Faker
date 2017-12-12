@@ -6,7 +6,7 @@ import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import { loadTradeItem, itemNewSrcSave } from 'common/reducers/cmsTradeitem';
+import { loadTradeItem, saveRepoForkItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import ItemMasterPane from './tabpane/itemMasterPane';
 import messages from '../../message.i18n';
@@ -27,10 +27,11 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
+    submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
     tenantId: state.account.tenantId,
   }),
-  { itemNewSrcSave }
+  { saveRepoForkItem }
 )
 @connectNav({
   depth: 3,
@@ -57,7 +58,7 @@ export default class TradeItemFork extends Component {
         }
         const specialMark = value.specialMark.join('/');
         const item = { ...this.props.itemData, ...value, special_mark: specialMark, created_tenant_id: this.props.tenantId };
-        this.props.itemNewSrcSave({ item }).then((result) => {
+        this.props.saveRepoForkItem({ item }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -73,7 +74,7 @@ export default class TradeItemFork extends Component {
   }
 
   render() {
-    const { form, itemData } = this.props;
+    const { form, submitting, itemData } = this.props;
     const tabs = [];
     tabs.push(
       <TabPane tab="主数据" key="master">
@@ -96,7 +97,7 @@ export default class TradeItemFork extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleSave}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

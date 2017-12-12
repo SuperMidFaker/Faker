@@ -3,15 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
-import { Breadcrumb, Button, Layout, Radio, Icon, Popconfirm, Tooltip, message } from 'antd';
+import { Breadcrumb, Button, Form, Layout, Radio, Icon, Popconfirm, Popover, Select, Tooltip, message } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import RowAction from 'client/components/RowAction';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
-import { loadRepo, selectedRepoId, loadTradeItems, deleteItems, loadTradeParams, setItemStatus } from 'common/reducers/cmsTradeitem';
+import { loadRepo, getLinkedSlaves, loadTradeItems, deleteItems, replicaMasterSlave, loadTradeParams } from 'common/reducers/cmsTradeitem';
 import SearchBar from 'client/components/SearchBar';
 import { createFilename } from 'client/util/dataTransform';
 import DeclElementsModal from '../../common/modal/declElementsModal';
@@ -21,24 +20,17 @@ import { formatMsg } from '../message.i18n';
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
+const FormItem = Form.Item;
+const Option = Select.Option;
 
-function fetchData({ dispatch }) {
-  const promises = [];
-  promises.push(dispatch(loadTradeParams()));
-  return Promise.all(promises);
-}
-@connectFetch()(fetchData)
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
-    repoId: state.cmsTradeitem.repoId,
     listFilter: state.cmsTradeitem.listFilter,
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     repo: state.cmsTradeitem.repo,
     tradeItemsLoading: state.cmsTradeitem.tradeItemsLoading,
+    submitting: state.cmsTradeitem.submitting,
     units: state.cmsTradeitem.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -52,11 +44,12 @@ function fetchData({ dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { selectedRepoId,
+  { loadTradeParams,
     loadTradeItems,
     deleteItems,
     loadRepo,
-    setItemStatus,
+    getLinkedSlaves,
+    replicaMasterSlave,
     getElementByHscode,
     showDeclElementsModal,
   }
@@ -68,9 +61,7 @@ function fetchData({ dispatch }) {
 export default class RepoContent extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
     tradeItemlist: PropTypes.object.isRequired,
-    repoId: PropTypes.number,
     repo: PropTypes.object,
     listFilter: PropTypes.object.isRequired,
     tradeItemsLoading: PropTypes.bool.isRequired,
@@ -80,21 +71,35 @@ export default class RepoContent extends Component {
   }
   state = {
     selectedRowKeys: [],
-    currentPage: 1,
+    linkedSlaves: [],
     searchVal: '',
+    masterReplica: {
+      source: '',
+      slave: null,
+    },
   }
   componentDidMount() {
     this.props.loadRepo(this.props.params.repoId);
+    this.props.loadTradeParams();
     this.props.loadTradeItems({
       repoId: this.props.params.repoId,
       filter: JSON.stringify(this.props.listFilter),
-      pageSize: 20,
-      currentPage: 1,
+      pageSize: this.props.tradeItemlist.pageSize,
+      currentPage: this.props.tradeItemlist.current,
     }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       }
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.repo !== this.props.repo && nextProps.repo.mode === 'master') {
+      this.props.getLinkedSlaves(nextProps.params.repoId).then((result) => {
+        if (!result.error) {
+          this.setState({ linkedSlaves: result.data });
+        }
+      });
+    }
   }
   msg = formatMsg(this.props.intl)
   columns = [{
@@ -138,16 +143,6 @@ export default class RepoContent extends Component {
     width: 120,
     render: (o, record) => {
       switch (record.status) {
-        case TRADE_ITEM_STATUS.pending:
-          if (record.master_rejected) {
-            return (
-              <Tooltip title={record.reason}>
-                <span style={{ color: 'orange' }}>{o} <Icon type="exclamation-circle-o" className="text-warning" /></span>
-              </Tooltip>
-            );
-          } else {
-            return <span>{o} <Icon type="exclamation-circle-o" className="text-warning" /></span>;
-          }
         case TRADE_ITEM_STATUS.classified:
           return <span>{o} <Icon type="check-circle-o" className="text-success" /></span>;
         default:
@@ -346,6 +341,15 @@ export default class RepoContent extends Component {
     const link = `/clearance/tradeitem/repo/item/fork/${record.id}`;
     this.context.router.push(link);
   }
+  handleItemDelete = (row) => {
+    this.props.deleteItems({ repoId: this.props.params.repoId, ids: [row.id] }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.handleItemListLoad();
+      }
+    });
+  }
   handleItemListLoad = (currentPage, filter, search) => {
     const { listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
     this.setState({ expandedKeys: [] });
@@ -368,17 +372,12 @@ export default class RepoContent extends Component {
       }
     });
   }
-  handleNewhsUploaded = () => {
-    const filter = { ...this.props.listFilter, status: 'uselessHs' };
-    this.handleItemListLoad(this.props.repoId, 1, filter);
-  }
   handleDeleteSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
-    this.props.deleteItems({ repoId: this.props.repoId, ids: selectedIds }).then((result) => {
+    this.props.deleteItems({ repoId: this.props.params.repoId, ids: selectedIds }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        // this.props.loadRepos({ tenantId: this.props.tenantId });
         this.handleItemListLoad();
       }
     });
@@ -396,7 +395,8 @@ export default class RepoContent extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (value) => {
-    const { repoId, listFilter } = this.props;
+    const { listFilter } = this.props;
+    const repoId = this.props.params.repoId;
     this.setState({ searchVal: value });
     this.handleItemListLoad(repoId, 1, listFilter, value);
   }
@@ -404,8 +404,33 @@ export default class RepoContent extends Component {
     const selectedIds = this.state.selectedRowKeys;
     window.open(`${API_ROOTS.default}v1/cms/tradeitems/selected/export/${createFilename('selectedItemsExport')}.xlsx?selectedIds=${selectedIds}`);
   }
+  handleReplicaSource = (ev) => {
+    const masterReplica = { ...this.state.masterReplica };
+    masterReplica.source = ev.target.value;
+    this.setState({ masterReplica });
+  }
+  handleReplicaSlave = (slave) => {
+    const masterReplica = { ...this.state.masterReplica };
+    masterReplica.slave = slave;
+    this.setState({ masterReplica });
+  }
+  handleMasterSlaveReplica = () => {
+    this.props.replicaMasterSlave({ masterRepo: this.props.params.repoId,
+      slaveRepo: this.state.masterReplica.slave,
+      source: this.state.masterReplica.source,
+    }).then((result) => {
+      if (!result.error) {
+        if (this.state.masterReplica.source === 'slave') {
+          message.info('同步任务已创建', 10);
+        } else if (this.state.masterReplica.source === 'master') {
+          message.info('主库已开始向从库同步物料归类', 10);
+        }
+      }
+    });
+  }
   render() {
-    const { tradeItemlist, repo, listFilter } = this.props;
+    const { tradeItemlist, repo, listFilter, submitting } = this.props;
+    const { linkedSlaves } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -444,8 +469,24 @@ export default class RepoContent extends Component {
             </RadioGroup>
           </PageHeader.Nav>
           <PageHeader.Actions>
-            {
-              repo.mode === 'master' && <Button type="primary">同步数据</Button>
+            { repo.mode === 'master' &&
+            <Popover placement="left" title="选择从库与同步方式" content={<Form>
+              <FormItem label="从库">
+                <Select allowClear showSearch onChange={this.handleReplicaSlave} getPopupContainer={triggerNode => triggerNode.parentNode}>
+                  {linkedSlaves.map(linkSl => <Option key={linkSl.creator_name} value={String(linkSl.id)}>{linkSl.creator_name}</Option>)}
+                </Select>
+              </FormItem>
+              <FormItem label="同步源">
+                <RadioGroup onChange={this.handleReplicaSource}>
+                  <RadioButton value="master">主库</RadioButton>
+                  <RadioButton value="slave">从库</RadioButton>
+                </RadioGroup>
+              </FormItem>
+              <Button type="primary" onClick={this.handleMasterSlaveReplica}>确定</Button>
+            </Form>} trigger="click"
+            >
+              <Button type="primary" loading={submitting}>同步数据</Button>
+            </Popover>
             }
           </PageHeader.Actions>
         </PageHeader>
