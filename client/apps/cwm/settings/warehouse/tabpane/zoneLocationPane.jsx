@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Layout, Table, Button, Input, Popover, Menu, Form, message, Popconfirm, Icon } from 'antd';
+import { Layout, Table, Button, Input, Popover, Menu, Form, message, Popconfirm } from 'antd';
 import LocationModal from '../modal/locationModal';
 import { MdIcon } from 'client/components/FontIcon';
 import RowAction from 'client/components/RowAction';
@@ -252,11 +252,8 @@ export default class ZoneLocationPane extends Component {
     width: 80,
     render: record => (
       <span>
-        <RowAction onClick={this.handleEditLocation} label={<Icon type="edit" />} row={record} />
-        <span className="ant-divider" />
-        <Popconfirm title="确定要删除?" onConfirm={() => this.handleDeleteLocation(record)} okText="是" cancelText="否">
-          <RowAction label={<Icon type="delete" />} />
-        </Popconfirm>
+        <RowAction onClick={this.handleEditLocation} icon="edit" row={record} />
+        <RowAction danger confirm="确定要删除吗?" onConfirm={this.handleDeleteLocation} icon="delete" row={record} />
       </span>
     ),
   }]

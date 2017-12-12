@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Button, Icon, Tag } from 'antd';
+import { Button, Tag } from 'antd';
 import { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff } from 'common/reducers/cwmWarehouse';
 import RowAction from 'client/components/RowAction';
 import StaffModal from '../modal/staffModal';
@@ -59,10 +59,10 @@ export default class StaffsPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        {record.active === 0 ? <RowAction onClick={() => this.changeStaffStatus(record.id, true)} label="启用" row={record} /> :
-        <RowAction onClick={() => this.changeStaffStatus(record.id, false)} label="停用" row={record} />}
-        <span className="ant-divider" />
-        <RowAction onClick={this.handleDeleteStaff} label={<Icon type="delete" />} row={record} />
+        {record.active === 0 ?
+          <RowAction onClick={() => this.changeStaffStatus(record.id, true)} icon="play-circle" tooltip="启用" row={record} /> :
+          <RowAction onClick={() => this.changeStaffStatus(record.id, false)} icon="pause-circle" tooltip="停用" row={record} />}
+        <RowAction danger confirm="确定要删除吗?" onConfirm={this.handleDeleteStaff} icon="delete" row={record} />
       </span>
     ),
   }]

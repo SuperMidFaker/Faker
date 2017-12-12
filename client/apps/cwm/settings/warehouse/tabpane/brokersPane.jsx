@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { Button, Icon, Tag, message } from 'antd';
+import { Button, Tag, message } from 'antd';
 import { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus, authorizeBroker } from 'common/reducers/cwmWarehouse';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
@@ -73,28 +73,26 @@ export default class BrokersPane extends Component {
     title: '操作',
     width: 200,
     dataIndex: 'OPS_COL',
+    fixed: 'right',
     render: (o, record) => (
       <span>
-        {!!record.active && (!record.authority ? <RowAction onClick={() => this.authorizeBroker(true, record.partner_id)} label="仓库授权" row={record} /> :
-        <RowAction onClick={() => this.authorizeBroker(false, record.partner_id)} label="取消授权" row={record} />)}
-        {!!record.active && <span className="ant-divider" />}
-        {record.active === 0 ? <RowAction onClick={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} label="启用" row={record} /> :
-        <RowAction onClick={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} label="停用" row={record} />}
-        {record.active === 0 && (
-          <span>
-            <span className="ant-divider" />
-            <RowAction onClick={() => this.handleDeleteBroker(record.id)} label={<Icon type="delete" />} row={record} />
-          </span>
-        )}
+        {!!record.active && (!record.authority ?
+          <RowAction onClick={() => this.authorizeBroker(true, record.partner_id)} icon="key" label="仓库授权" row={record} /> :
+          <RowAction onClick={() => this.authorizeBroker(false, record.partner_id)} icon="key" label="取消授权" row={record} />)}
+        {record.active === 0 ?
+          <RowAction onClick={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} icon="play-circle" tooltip="启用" row={record} /> :
+          <RowAction onClick={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} icon="pause-circle" tooltip="停用" row={record} />}
+        <RowAction danger confirm="确定要删除吗?" onConfirm={() => this.handleDeleteBroker(record.id)} icon="delete" row={record} />
       </span>
     ),
   }]
   msg = formatMsg(this.props.intl)
   authorizeBroker = (value, partnerId) => {
+    const msg = value ? '授权成功' : '已取消授权';
     this.props.authorizeBroker(value, this.props.whseCode, partnerId).then((result) => {
       if (!result.error) {
         this.props.loadBrokers(this.props.whseCode);
-        message.info('授权成功');
+        message.info(msg);
       }
     });
   }

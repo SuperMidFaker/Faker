@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Link } from 'react-router';
-import { Breadcrumb, Button, Collapse, Icon, Popconfirm, Input, Layout, Select, message, Table } from 'antd';
+import { Breadcrumb, Button, Collapse, Input, Layout, Select, message, Table } from 'antd';
 import DataTable from 'client/components/DataTable';
 import SearchBar from 'client/components/SearchBar';
 import ButtonToggle from 'client/components/ButtonToggle';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, delSku, openApplyPackingRuleModal } from 'common/reducers/cwmSku';
 import { switchDefaultWhse } from 'common/reducers/cwmContext';
@@ -135,13 +135,10 @@ export default class CWMSkuList extends React.Component {
     width: 100,
     fixed: 'right',
     render: (_, row) => (
-      <div>
-        <Link to={`/cwm/products/sku/edit/${row.id}`}><Icon type="edit" /></Link>
-        <span className="ant-divider" />
-        <Popconfirm title="确定删除?" onConfirm={() => this.handleRemove(row.id)}>
-          <a><Icon type="delete" /></a>
-        </Popconfirm>
-      </div>),
+      <span>
+        <RowAction onClick={this.handleEditSku} icon="edit" label="修改" row={row} />
+        <RowAction danger confirm="确定要删除吗?" onConfirm={() => this.handleRemove(row.id)} icon="delete" row={row} />
+      </span>),
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadOwnerSkus(params),
@@ -178,6 +175,10 @@ export default class CWMSkuList extends React.Component {
     this.setState({
       rightSiderCollapsed: !this.state.rightSiderCollapsed,
     });
+  }
+  handleEditSku = (sku) => {
+    const link = `/cwm/products/sku/edit/${sku.id}`;
+    this.context.router.push(link);
   }
   handleRemove = (sku) => {
     this.props.delSku(sku).then((result) => {

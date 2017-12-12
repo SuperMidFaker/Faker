@@ -142,10 +142,10 @@ export default class OwnersPane extends Component {
     fixed: 'right',
     render: record => (
       <span>
-        <RowAction onClick={this.handleOwnerControl} label="控制属性" row={record} />
-        <span className="ant-divider" />
-        {record.active === 0 ? <RowAction onClick={() => this.changeOwnerStatus(record.id, true)} label="启用" row={record} /> :
-        <RowAction onClick={() => this.changeOwnerStatus(record.id, false)} label="停用" row={record} />}
+        <RowAction onClick={this.handleOwnerControl} icon="tool" label="控制属性" row={record} />
+        {record.active === 0 ?
+          <RowAction onClick={() => this.changeOwnerStatus(record.id, true)} icon="play-circle" tooltip="启用" row={record} /> :
+          <RowAction onClick={() => this.changeOwnerStatus(record.id, false)} icon="pause-circle" tooltip="停用" row={record} />}
       </span>
     ),
   }]

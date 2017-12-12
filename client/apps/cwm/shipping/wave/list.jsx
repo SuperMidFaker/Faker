@@ -109,21 +109,18 @@ export default class WaveList extends React.Component {
     render: (o, record) => {
       if (record.status === 0) {
         return (<span>
-          <RowAction label="释放" row={record} onClick={this.handleReleaseWave} />
-          <span className="ant-divider" />
-          <RowAction onClick={this.handleEditWave} label="修改" row={record} />
-          <span className="ant-divider" />
+          <RowAction onClick={this.handleReleaseWave} icon="play-circle-o" label="释放" row={record} />
+          <RowAction onClick={this.handleEditWave} icon="edit" label="修改" row={record} />
           <RowAction label="取消" row={record} onClick={this.cancelWave} />
         </span>);
       } else if (record.status === 1) {
         if (record.bonded === 1 && record.reg_status === 0) {
           return (<span>
             <RowAction onClick={this.handleAllocate} label="出库操作" row={record} />
-            <span className="ant-divider" />
             <RowAction onClick={this.handleEntryReg} label="出区备案" row={record} />
           </span>);
         } else {
-          return (<RowAction onClick={this.handleAllocate} label="出库操作" row={record} />);
+          return (<RowAction onClick={this.handleAllocate} icon="form" label="出库操作" row={record} />);
         }
       }
     },

@@ -325,7 +325,7 @@ export default class SHFTZCargoList extends React.Component {
             <PageHeader.Title>
               <Breadcrumb>
                 <Breadcrumb.Item>
-                  <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange}>
+                  <Select value={whse.code} placeholder="选择仓库" style={{ width: 160 }} onChange={this.handleWhseChange} disabled>
                     {bondedWhses.map(wh => <Option value={wh.code} key={wh.code}>{wh.name}</Option>)}
                   </Select>
                 </Breadcrumb.Item>
@@ -336,10 +336,11 @@ export default class SHFTZCargoList extends React.Component {
             </PageHeader.Title>
             <PageHeader.Nav>
               <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
-                <RadioButton value="all">全部</RadioButton>
                 <RadioButton value="pending">待备案</RadioButton>
                 <RadioButton value="sent">已发送</RadioButton>
-                <RadioButton value="completed">备案料号规则库</RadioButton>
+              </RadioGroup>
+              <RadioGroup value={listFilter.status} onChange={this.handleStatusChange} >
+                <RadioButton value="completed">备案料号库</RadioButton>
               </RadioGroup>
             </PageHeader.Nav>
             <PageHeader.Actions>

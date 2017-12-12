@@ -1,15 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Breadcrumb, Button, Dropdown, Menu, Icon, Layout, message, Popconfirm, Tooltip, Tag } from 'antd';
+import { Breadcrumb, Button, Icon, Layout, message, Tooltip, Tag } from 'antd';
 import QueueAnim from 'rc-queue-anim';
 import DataTable from 'client/components/DataTable';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import NavLink from 'client/components/NavLink';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-// import connectFetch from 'client/common/decorators/connect-fetch';
+import RowAction from 'client/components/RowAction';
 import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { Logixon } from 'client/components/FontIcon';
@@ -279,7 +278,7 @@ export default class AcceptList extends React.Component {
   }, {
     title: this.msg('opColumn'),
     fixed: 'right',
-    width: 100,
+    width: 160,
     dataIndex: 'OPS_COL',
     render: (o, record) => {
       if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {
@@ -289,46 +288,24 @@ export default class AcceptList extends React.Component {
           return (
             <PrivilegeCover module="transport" feature="shipment" action="edit">
               <span>
-                <a onClick={() => this.handleShipmtAccept(record)}>{this.msg('shipmtRelease')}</a>
-                <span className="ant-divider" />
-                <NavLink to={`/transport/shipment/edit/${record.shipmt_no}`}>{this.msg('shipmtModify')}</NavLink>
-                <span className="ant-divider" />
-                <Dropdown overlay={(
-                  <Menu onClick={this.handleMenuClick}>
-                    <Menu.Item key="delete">
-                      <Popconfirm title={this.msg('deleteConfirm')} onConfirm={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)}>
-                        <a role="presentation">
-                          {this.msg('shipmtRemove')}
-                        </a>
-                      </Popconfirm>
-                    </Menu.Item>
-                  </Menu>)}
-                >
-                  <a><Icon type="down" /></a>
-                </Dropdown>
+                <RowAction onClick={this.handleShipmtAccept} icon="play-circle-o" label={this.msg('shipmtRelease')} row={record} />
+                <RowAction onClick={this.handleShipmtEdit} icon="edit" tooltip={this.msg('shipmtModify')} row={record} />
+                <RowAction danger confirm={this.msg('deleteConfirm')} onConfirm={ev => this.handleShipmtRevoke(record.shipmt_no, record.key, ev)} icon="delete" />
               </span>
             </PrivilegeCover>
           );
         } else if (record.source === SHIPMENT_SOURCE.subcontracted) {
           return (
-            <span>
-              <PrivilegeCover module="transport" feature="shipment" action="edit">
-                <a onClick={() => this.handleShipmtAccept(record)}>{this.msg('shipmtAccept')}</a>
-              </PrivilegeCover>
-            </span>
+            <PrivilegeCover module="transport" feature="shipment" action="edit">
+              <RowAction onClick={this.handleShipmtAccept} icon="check-circle-o" label={this.msg('shipmtAccept')} row={record} />
+            </PrivilegeCover>
           );
         }
       } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {
         return (
-          <span>
-            <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Popconfirm title="退回至未接单状态" onConfirm={() => this.handleReturn(record.disp_id)}>
-                <a role="presentation">
-                  退回
-                </a>
-              </Popconfirm>
-            </PrivilegeCover>
-          </span>
+          <PrivilegeCover module="transport" feature="shipment" action="edit">
+            <RowAction confirm="退回至未接单状态" onConfirm={() => this.handleReturn(record.disp_id)} icon="close-circle-o" label="退回" />
+          </PrivilegeCover>
         );
       }
     },
@@ -392,6 +369,10 @@ export default class AcceptList extends React.Component {
         this.handleSelectionClear();
       }
     });
+  }
+  handleShipmtEdit = (row) => {
+    const link = `/transport/shipment/edit/${row.shipmt_no}`;
+    this.context.router.push(link);
   }
   handleShipmtsAccept = () => {
     const partnerIds = this.state.selectedPartnerIds;

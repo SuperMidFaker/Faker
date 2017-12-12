@@ -153,16 +153,16 @@ export default class ReceivingInboundList extends React.Component {
     render: completedDate => completedDate && moment(completedDate).format('MM.DD HH:mm'),
   }, {
     title: '操作',
-    width: 100,
+    width: 140,
     fixed: 'right',
     dataIndex: 'OPS_COL',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} /> </span>);
+        return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;
       } else if (record.status === 0 && record.receiving_lock === 2) {
-        return (<span><RowAction label="撤回" row={record} /></span>);
+        return <RowAction label="撤回" row={record} />;
       } else {
-        return (<span><RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} /> </span>);
+        return <RowAction onClick={this.handleReceive} icon="form" label="入库操作" row={record} />;
       }
     },
   }]

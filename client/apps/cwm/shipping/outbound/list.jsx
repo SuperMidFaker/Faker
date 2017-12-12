@@ -181,11 +181,11 @@ export default class OutboundList extends React.Component {
     fixed: 'right',
     render: (o, record) => {
       if (record.status === 0) {
-        return (<span><RowAction onClick={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
-      } else if (record.status === 0 && record.receiving_mode === 2) {
-        return (<span><RowAction label="撤回" row={record} /></span>);
+        return <RowAction onClick={this.handleOutboundDetail} icon="form" label="出库操作" row={record} />;
+      } else if (record.status === 0 && record.shipping_mode === 2) {
+        return <RowAction label="撤回" row={record} />;
       } else {
-        return (<span><RowAction onClick={this.handleOutboundDetail} label="出库操作" row={record} /> </span>);
+        return <RowAction onClick={this.handleOutboundDetail} icon="form" label="出库操作" row={record} />;
       }
     },
   }]
