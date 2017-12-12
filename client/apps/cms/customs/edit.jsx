@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import connectFetch from 'client/common/decorators/connect-fetch';
 import { Badge, Form, Breadcrumb, Button, Icon, Layout, Tabs, message, Popconfirm, Dropdown, Menu } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { setNavTitle } from 'common/reducers/navbar';
-import { loadEntry, saveEntryHead } from 'common/reducers/cmsManifest';
+import { loadEntry, loadCmsParams, saveEntryHead } from 'common/reducers/cmsManifest';
 import { deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal } from 'common/reducers/cmsDeclare';
 import NavLink from 'client/components/NavLink';
 import PageHeader from 'client/components/PageHeader';
@@ -24,9 +25,9 @@ import { CMS_DECL_STATUS } from 'common/constants';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import { StandardDocDef } from './print/standardDocDef';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
-import DelegationDockPanel from '../dock/delegationDockPanel';
-import OrderDockPanel from '../../../scof/orders/docks/orderDockPanel';
-import DeclTreePopover from '../popover/declTreePopover';
+import DelegationDockPanel from '../common/dock/delegationDockPanel';
+import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
+import DeclTreePopover from '../common/popover/declTreePopover';
 
 const formatMsg = format(messages);
 const { Content } = Layout;
@@ -38,6 +39,15 @@ const navObj = {
   jumpOut: true,
 };
 
+function fetchData({ dispatch, params, state }) {
+  const promises = [];
+  promises.push(dispatch(loadEntry(params.billseqno, params.preEntrySeqNo, state.account.tenantId)));
+  promises.push(dispatch(loadCmsParams({
+    ieType: 'import',
+    tenantId: state.account.tenantId,
+  })));
+  return Promise.all(promises);
+}
 @injectIntl
 @connect(
   state => ({
@@ -46,20 +56,21 @@ const navObj = {
     bodies: state.cmsManifest.entryBodies,
     tenantId: state.account.tenantId,
     formRequire: state.cmsManifest.params,
+    declSpinning: state.cmsManifest.customsDeclLoading,
   }),
-  { saveEntryHead, loadEntry, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer }
+  { saveEntryHead, loadEntry, loadCmsParams, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer }
 )
+@connectFetch()(fetchData)
 @connectNav(navObj)
 @Form.create()
 export default class CustomsDeclEditor extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    ietype: PropTypes.oneOf(['import', 'export']),
+    // ietype: PropTypes.oneOf(['import', 'export']),
     billMeta: PropTypes.shape({
       bill_seq_no: PropTypes.string.isRequired,
       entries: PropTypes.arrayOf(PropTypes.shape({ pre_entry_seq_no: PropTypes.string })),
     }),
-    declSpinning: PropTypes.bool.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -105,8 +116,8 @@ export default class CustomsDeclEditor extends React.Component {
     this.setState({ visible: true });
   }
   handleManifestVisit = () => {
-    const { ietype, billMeta } = this.props;
-    const pathname = `/clearance/${ietype}/manifest/view/${billMeta.bill_seq_no}`;
+    const { params, billMeta } = this.props;
+    const pathname = `/clearance/${params.ietype}/manifest/view/${billMeta.bill_seq_no}`;
     this.context.router.push({ pathname });
   }
   handleDelete = () => {
@@ -115,7 +126,7 @@ export default class CustomsDeclEditor extends React.Component {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
-        this.context.router.push(`/clearance/${this.props.ietype}/customs`);
+        this.context.router.push(`/clearance/${this.props.params.ietype}/customs`);
       }
     });
   }
@@ -141,7 +152,7 @@ export default class CustomsDeclEditor extends React.Component {
   }
   handleShowSendDeclModal = () => {
     const head = this.props.head;
-    const ietype = this.props.ietype;
+    const ietype = this.props.params.ietype;
     this.props.showSendDeclModal({ visible: true,
       defaultDecl: { channel: head.dec_channel, dectype: head.pre_entry_dec_type, appuuid: head.ep_app_uuid },
       ietype,
@@ -194,9 +205,9 @@ export default class CustomsDeclEditor extends React.Component {
     this.props.showPreviewer(delgNo, 'customsDecl');
   }
   render() {
-    const { ietype, form, head, bodies, billMeta } = this.props;
+    const { params, form, head, bodies, billMeta } = this.props;
     let filterProducts = [];
-    if (ietype === 'import') {
+    if (params.ietype === 'import') {
       filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
     } else {
       filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
@@ -227,11 +238,11 @@ export default class CustomsDeclEditor extends React.Component {
     const tabs = [];
     tabs.push(
       <TabPane tab="报关单表头" key="header">
-        <CusDeclHeadPane ietype={ietype} form={form} formData={head} />
+        <CusDeclHeadPane ietype={params.ietype} form={form} formData={head} />
       </TabPane>);
     tabs.push(
       <TabPane tab="报关单表体" key="body">
-        <CusDeclBodyPane ietype={ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
+        <CusDeclBodyPane ietype={params.ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
       </TabPane>);
     tabs.push(
       <TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
@@ -276,7 +287,7 @@ export default class CustomsDeclEditor extends React.Component {
           </PageHeader.Nav>
           <PageHeader.Actions>
             {<DeclTreePopover entries={billMeta.entries} ciqs={billMeta.ciqs}
-              ietype={ietype} billSeqNo={billMeta.bill_seq_no} selectedKeys={[`0-0-0-${head.pre_entry_seq_no}`]}
+              ietype={params.ietype} billSeqNo={billMeta.bill_seq_no} selectedKeys={[`0-0-0-${head.pre_entry_seq_no}`]}
             />}
             <Dropdown overlay={printMenu}>
               <Button >
@@ -304,7 +315,7 @@ export default class CustomsDeclEditor extends React.Component {
             </Tabs>
           </MagicCard>
         </Content>
-        <DelegationDockPanel ietype={ietype} />
+        <DelegationDockPanel ietype={params.ietype} />
         <OrderDockPanel />
         <SendDeclMsgModal reload={this.reloadEntry} />
         <DeclReleasedModal reload={this.reloadEntry} />

@@ -132,7 +132,7 @@ export default class TradeItemTaskList extends React.Component {
       });
     }
     this.handleCompareImportEnd();
-    const taskUrl = '/clearance/tradeitem/workspace/task';
+    const taskUrl = '/clearance/tradeitem/task';
     this.context.router.push(`${taskUrl}/${resp.id}`);
   }
   handleDeselectRows = () => {
@@ -148,7 +148,7 @@ export default class TradeItemTaskList extends React.Component {
       },
     };
     const toolbarActions = (<span>
-      <Select showSearch placeholder="所属物料库" allowClear style={{ width: 160 }}
+      <Select showSearch placeholder="所属物料库" allowClear style={{ width: 200 }}
         dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }} onChange={this.handleRepoSelect}
       >
         {repos.map(rep => <Option value={rep.id} key={rep.owner_name}>{rep.owner_name}</Option>)}

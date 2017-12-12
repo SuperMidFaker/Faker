@@ -65,12 +65,16 @@ export default defineMessages({
     id: 'cms.customs.decl.decl.status',
     defaultMessage: '通关状态',
   },
+  declChannel: {
+    id: 'cms.customs.decl.channel',
+    defaultMessage: '申报通道',
+  },
   declType: {
-    id: 'cms.customs.decl.decl.declType',
+    id: 'cms.customs.decl.type',
     defaultMessage: '单证类型',
   },
   easipassList: {
-    id: 'cms.customs.decl.decl.easipassList',
+    id: 'cms.customs.decl.easipass.list',
     defaultMessage: 'EDI列表',
   },
   sendDecl: {

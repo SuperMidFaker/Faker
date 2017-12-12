@@ -17,7 +17,7 @@ export default class CustomsDeclSheetCard extends React.Component {
   }
   handleView = () => {
     const clearType = this.props.manifest.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${clearType}/cusdecl/${this.props.manifest.bill_seq_no}/${this.props.customsDecl.pre_entry_seq_no}`;
+    const link = `/clearance/cusdecl/${clearType}/${this.props.manifest.bill_seq_no}/${this.props.customsDecl.pre_entry_seq_no}`;
     this.context.router.push(`${link}`);
   }
 

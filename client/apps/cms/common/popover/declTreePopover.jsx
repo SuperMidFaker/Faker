@@ -18,7 +18,7 @@ export default class DeclTreePopover extends Component {
   handleSelect = (selectedKeys) => {
     const { ietype, billSeqNo } = this.props;
     if (selectedKeys[0].indexOf('0-0-0-') !== -1) {
-      const pathname = `/clearance/${ietype}/cusdecl/${billSeqNo}/${selectedKeys[0].slice(6)}`;
+      const pathname = `/clearance/cusdecl/${ietype}/${billSeqNo}/${selectedKeys[0].slice(6)}`;
       this.context.router.push({ pathname });
     } else if (selectedKeys[0].indexOf('0-0-1-') !== -1) {
       const type = ietype === 'import' ? 'in' : 'out';

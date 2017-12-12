@@ -9,7 +9,6 @@ import RowAction from 'client/components/RowAction';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import TrackingItem from './trackingItem';
-import { SCV_TRACKING_FIELD_SOURCES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition } from 'common/reducers/scvTracking';
@@ -148,7 +147,7 @@ export default class TrackingItems extends React.Component {
           <div className="ant-table">
             <table className="ant-table" style={{ width: '100%', fontSize: 14 }}>
               <thead className="ant-table-thead">
-                <tr><th>追踪数据列</th><th>显示名称</th><th>显示宽度</th><th>数据来源</th><th>数据类型</th><th>可编辑</th><th>操作</th></tr>
+                <tr><th><span /></th><th>追踪数据列</th><th>显示名称</th><th>显示宽度</th><th>数据类型</th><th>可编辑</th><th>操作</th></tr>
               </thead>
               <tbody className="ant-table-tbody">
                 {trackingItems.map((row, i) => (
@@ -166,6 +165,7 @@ export default class TrackingItems extends React.Component {
                   />
                   ))}
                 <tr className="ant-table-row  ant-table-row-level-0" style={{ height: 43 }}>
+                  <td style={{ ...colStyle, width: 50 }} />
                   <td style={{ ...colStyle, width: '25%' }} />
                   <td style={{ ...colStyle }}>
                     <Input
@@ -174,17 +174,14 @@ export default class TrackingItems extends React.Component {
                       onChange={e => this.setState({ newItem: { ...newItem, custom_title: e.target.value } })}
                     />
                   </td>
-                  <td style={{ ...colStyle }}>
+                  <td style={{ ...colStyle, width: 150 }}>
                     <Input
                       style={{ width: '80%' }}
                       value={newItem.width}
                       onChange={e => this.setState({ newItem: { ...newItem, width: Number(e.target.value) } })}
                     />
                   </td>
-                  <td style={{ ...colStyle, width: 150 }}>
-                    {SCV_TRACKING_FIELD_SOURCES[newItem.source]}
-                  </td>
-                  <td style={{ ...colStyle, width: 150 }}>
+                  <td style={{ ...colStyle, width: 200 }}>
                     <Select
                       style={{ width: '80%' }}
                       value={this.state.newItem.datatype}
@@ -198,7 +195,7 @@ export default class TrackingItems extends React.Component {
                   <td style={{ ...colStyle, width: 60 }}>
                       是
                     </td>
-                  <td style={{ ...colStyle, width: 60 }} className="editable-row-operations">
+                  <td style={{ ...colStyle, width: 100 }} className="editable-row-operations">
                     <RowAction primary onClick={this.handleAddItem} icon="save" />
                   </td>
                 </tr>

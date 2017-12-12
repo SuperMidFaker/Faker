@@ -22,7 +22,7 @@ import { loadHscodes, getElementByHscode } from 'common/reducers/cmsHsCode';
 import { createFilename } from 'client/util/dataTransform';
 import { LINE_FILE_ADAPTOR_MODELS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../form/message.i18n';
+import messages from '../../message.i18n';
 
 const formatMsg = format(messages);
 const Option = Select.Option;

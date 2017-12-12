@@ -325,7 +325,7 @@ export const CMS_DECL_STATUS = {
 export const CMS_DECL_CHANNEL = {
   QP: { value: 'qp', text: 'QP预录入', disabled: false },
   EP: { value: 'ep', text: '亿通EDI', disabled: false },
-  SW: { value: 'sw', text: '单一窗口', disabled: true },
+  SW: { value: 'sw', text: '单一窗口', disabled: false },
 };
 
 export const ITEMS_STATUS = [

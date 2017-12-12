@@ -122,7 +122,7 @@ export default class TrackingModal extends React.Component {
         })}
       >
         {modules.map(item => (
-          <Option value={item.key}>{item.text}</Option>
+          <Option key={item.key}>{item.text}</Option>
         ))}
       </Select>
     );

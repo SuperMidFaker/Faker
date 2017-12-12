@@ -46,9 +46,7 @@ import * as CMSDelegation from './cms/delegation';
 import * as CMSCusDecl from './cms/customs';
 import * as CMSCiqDecl from './cms/ciq';
 import * as CMSImportManifest from './cms/import/manifest';
-import * as CMSImportCustoms from './cms/import/customs';
 import * as CMSExportManifest from './cms/export/manifest';
-import * as CMSExportCustoms from './cms/export/customs';
 import * as CMSManual from './cms/manual';
 import * as CMSQuote from './cms/quote';
 import * as CMSExpense from './cms/expense';
@@ -299,6 +297,7 @@ export default(store) => {
             </Route>
             <Route path="cusdecl">
               <IndexRoute component={CMSCusDecl.List} />
+              <Route path=":ietype/:billseqno/:preEntrySeqNo" component={CMSCusDecl.Edit} />
             </Route>
             <Route path="ciqdecl">
               <IndexRoute component={CMSCiqDecl.List} />
@@ -313,10 +312,6 @@ export default(store) => {
                 <Route path="rules/edit/:id" component={CMSImportManifest.RuleEdit} />
                 <Route path="rules/view/:id" component={CMSImportManifest.RuleView} />
               </Route>
-              <Route path="cusdecl">
-                <IndexRoute component={CMSImportCustoms.DeclList} />
-                <Route path=":billseqno/:preEntrySeqNo" component={CMSImportCustoms.DeclView} />
-              </Route>
             </Route>
             <Route path="export">
               <IndexRedirect to="/clearance/export/manifest" />
@@ -326,10 +321,6 @@ export default(store) => {
                 <Route path="view/:billno" component={CMSExportManifest.View} />
                 <Route path="rules/edit/:id" component={CMSExportManifest.RuleEdit} />
                 <Route path="rules/view/:id" component={CMSExportManifest.RuleView} />
-              </Route>
-              <Route path="cusdecl">
-                <IndexRoute component={CMSExportCustoms.DeclList} />
-                <Route path=":billseqno/:preEntrySeqNo" component={CMSExportCustoms.DeclView} />
               </Route>
             </Route>
             <Route path="manual">

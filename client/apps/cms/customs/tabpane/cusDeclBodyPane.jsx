@@ -6,10 +6,10 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
-import DeclElementsModal from '../../modal/declElementsModal';
+import DeclElementsModal from '../../common/modal/declElementsModal';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
-import messages from '../../form/message.i18n';
+import messages from '../../common/message.i18n';
 import { buildTipItems } from 'client/common/customs';
 
 const formatMsg = format(messages);

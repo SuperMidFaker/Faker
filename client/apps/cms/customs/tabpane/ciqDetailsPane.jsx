@@ -1,44 +1,17 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../form/message.i18n';
-import DataPane from 'client/components/DataPane';
-import Summary from 'client/components/Summary';
+import messages from '../../common/message.i18n';
 import { format } from 'client/common/i18n/helpers';
-
+import DataPane from 'client/components/DataPane';
 const formatMsg = format(messages);
-
-function calculateTotal(bodies, currencies) {
-  let totGrossWt = 0;
-  let totWetWt = 0;
-  let totTrade = 0;
-  let totPcs = 0;
-  for (let i = 0; i < bodies.length; i++) {
-    const body = bodies[i];
-    if (body.gross_wt) {
-      totGrossWt += Number(body.gross_wt);
-    }
-    if (body.wet_wt) {
-      totWetWt += Number(body.wet_wt);
-    }
-    if (body.trade_total) {
-      const currency = currencies.find(curr => curr.value === body.trade_curr);
-      const rate = currency ? currency.rate_cny : 1;
-      totTrade += Number(body.trade_total * rate);
-    }
-    if (body.qty_pcs) {
-      totPcs += Number(body.qty_pcs);
-    }
-  }
-  return { totGrossWt, totWetWt, totTrade, totPcs };
-}
+import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
 @connect(
   state => ({
-    billDetails: state.cmsManifest.billDetails,
     units: state.cmsManifest.params.units.map(un => ({
       value: un.unit_code,
       text: un.unit_name,
@@ -55,27 +28,16 @@ function calculateTotal(bodies, currencies) {
       value: ep.value,
       text: ep.text,
     })),
-  }),
+  })
 )
-export default class ManifestDetailsPane extends React.Component {
+export default class CiqDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    billDetails: PropTypes.array.isRequired,
-  }
-  constructor(props) {
-    super(props);
-    const calresult = calculateTotal(props.billDetails, props.currencies);
-    this.state = {
-      totGrossWt: calresult.totGrossWt,
-      totWetWt: calresult.totWetWt,
-      totTrade: calresult.totTrade,
-      totPcs: calresult.totPcs,
-    };
+    filterProducts: PropTypes.array.isRequired,
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { billDetails } = this.props;
-    const { totGrossWt, totWetWt, totTrade } = this.state;
+    const { filterProducts } = this.props;
     const columns = [{
       title: this.msg('seqNumber'),
       dataIndex: 'g_no',
@@ -96,8 +58,18 @@ export default class ManifestDetailsPane extends React.Component {
       width: 200,
       dataIndex: 'g_name',
     }, {
+      title: this.msg('customs'),
+      width: 250,
+      dataIndex: 'customs',
+      render: col => buildTipItems(col),
+    }, {
+      title: this.msg('inspection'),
+      width: 250,
+      dataIndex: 'inspection',
+      render: col => buildTipItems(col, true),
+    }, {
       title: this.msg('gModel'),
-      width: 400,
+      width: 300,
       dataIndex: 'g_model',
     }, {
       title: <div className="cell-align-right">{this.msg('quantity')}</div>,
@@ -201,18 +173,8 @@ export default class ManifestDetailsPane extends React.Component {
     return (
       <DataPane fullscreen={this.props.fullscreen}
         columns={columns} bordered scrollOffset={312}
-        dataSource={billDetails} rowKey="id"
-      >
-        <DataPane.Toolbar>
-          <DataPane.Actions>
-            <Summary>
-              <Summary.Item label="总毛重" addonAfter="KG">{totGrossWt.toFixed(3)}</Summary.Item>
-              <Summary.Item label="总净重" addonAfter="KG">{totWetWt.toFixed(3)}</Summary.Item>
-              <Summary.Item label="总金额" addonAfter="元">{totTrade.toFixed(3)}</Summary.Item>
-            </Summary>
-          </DataPane.Actions>
-        </DataPane.Toolbar>
-      </DataPane>
+        dataSource={filterProducts} rowKey="id"
+      />
     );
   }
 }

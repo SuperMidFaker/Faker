@@ -21,9 +21,9 @@ export default class RowAction extends Component {
     popover: PropTypes.node,
   }
   handleClick = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
     if (this.props.onClick) {
+      ev.preventDefault();
+      ev.stopPropagation();
       this.props.onClick(this.props.row, this.props.index, this.props);
     }
   }

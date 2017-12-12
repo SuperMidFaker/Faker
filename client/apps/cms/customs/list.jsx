@@ -16,16 +16,17 @@ import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
-import FillCustomsNoModal from '../common/customs/modals/fillCustomsNoModal';
-import DeclReleasedModal from '../common/customs/modals/declReleasedModal';
-import DeclStatusPopover from '../common/customs/declStatusPopover';
-import SendDeclMsgModal from '../common/customs/modals/sendDeclMsgModal';
+import { Logixon, Fontello } from 'client/components/FontIcon';
+import DeclStatusPopover from '../common/popover/declStatusPopover';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import OrderDockPanel from 'client/apps/scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from 'client/apps/transport/shipment/dock/shipmentDockPanel';
-import BatchSendModal from '../common/customs/modals/batchSendModal';
+import BatchSendModal from './modals/batchSendModal';
+import FillCustomsNoModal from './modals/fillCustomsNoModal';
+import DeclReleasedModal from './modals/declReleasedModal';
+import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import DeclMsgPanel from './panel/declMsgPanel';
-import { Logixon, Fontello } from 'client/components/FontIcon';
+
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
@@ -422,13 +423,13 @@ export default class CustomsList extends Component {
   handleRowClick = (record) => {
     // ev.preventDefault();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
     this.context.router.push(link);
   }
   handleDounbleClick = (record, ev) => {
     ev.stopPropagation();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
-    const link = `/clearance/${ietype}/cusdecl/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
+    const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
     window.open(link);
   }
   mergeFilters(curFilters, value) {

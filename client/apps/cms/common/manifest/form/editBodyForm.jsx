@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Form, Select, Input, Col, Row } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../../form/message.i18n';
+import messages from '../../message.i18n';
 import { loadHscodes } from 'common/reducers/cmsHsCode';
 import { getItemForBody } from 'common/reducers/cmsTradeitem';
 

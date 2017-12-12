@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Tag } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import messages from '../../form/message.i18n';
+import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import DataPane from 'client/components/DataPane';
 const formatMsg = format(messages);

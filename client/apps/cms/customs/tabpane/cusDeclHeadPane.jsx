@@ -9,7 +9,7 @@ import {
   RelationAutoCompSelect, IEPort, IEDate, DeclDate, Transport, LicenseNo, TermConfirm,
   TradeRemission, CountryAttr, TradeMode, Fee, ContainerNo, PackWeight,
   RaDeclManulNo, StoreYard,
-} from '../../form/headFormItems';
+} from '../../common/form/headFormItems';
 import { fillEntryId } from 'common/reducers/cmsManifest';
 import { updateMark } from 'common/reducers/cmsDeclare';
 import { format } from 'client/common/i18n/helpers';
