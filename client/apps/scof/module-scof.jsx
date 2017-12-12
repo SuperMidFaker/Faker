@@ -1,24 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import { locationShape } from 'react-router';
 import CollapsibleSiderLayout from 'client/components/CollapsibleSiderLayout';
+import { loadTrackings } from 'common/reducers/scvTracking';
 import messages from './message.i18n';
 import { format } from 'client/common/i18n/helpers';
 
 const formatMsg = format(messages);
 
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    trackings: state.scvTracking.trackings,
+  }),
+  { loadTrackings }
+)
 @injectIntl
 export default class ModuleSCOF extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     location: locationShape.isRequired,
     children: PropTypes.node,
+    trackings: PropTypes.array.isRequired,
   };
   state = {
     linkMenus: [],
   }
   componentWillMount() {
+    this.props.loadTrackings(this.props.tenantId);
+  }
+  componentWillReceiveProps(nextProps) {
+    let trackingSublinks = [];
+    if (nextProps.trackings.length > 0) {
+      trackingSublinks = nextProps.trackings.map((item, index) => ({
+        key: `scof-tracking-${index}`,
+        path: `/scof/tracking/${item.id}`,
+        text: item.name,
+      }));
+    }
     const { intl } = this.props;
     const linkMenus = [];
     linkMenus.push({
@@ -35,6 +56,18 @@ export default class ModuleSCOF extends React.Component {
       path: '/scof/orders',
       icon: 'logixon icon-order-mng',
       text: formatMsg(intl, 'orders'),
+    });
+    linkMenus.push({
+      single: false,
+      key: 'scof-tracking',
+      icon: 'logixon icon-monitor',
+      text: formatMsg(intl, 'tracking'),
+      sublinks: trackingSublinks.concat([{
+        key: 'scof-tracking-999',
+        icon: 'zmdi zmdi-wrench',
+        path: '/scof/tracking/customize',
+        text: formatMsg(intl, 'customizeTracking'),
+      }]),
     });
     linkMenus.push({
       single: true,

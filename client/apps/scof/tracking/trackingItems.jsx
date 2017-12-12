@@ -3,8 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Input, Select, message } from 'antd';
+import { Card, Input, Select, message } from 'antd';
 import update from 'react/lib/update';
+import RowAction from 'client/components/RowAction';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import TrackingItem from './trackingItem';
@@ -91,8 +92,8 @@ export default class TrackingItems extends React.Component {
     });
     this.setState({ ...state });
   }
-  handleRemove = (id, source) => {
-    this.props.removeTrackingItem(id, source).then(() => {
+  handleRemove = (item) => {
+    this.props.removeTrackingItem(item.id, item.source).then(() => {
       this.props.loadTrackingItems(this.props.tracking.id);
     });
   }
@@ -141,72 +142,72 @@ export default class TrackingItems extends React.Component {
   render() {
     const { trackingItems, newItem } = this.state;
     return (
-      <div className="page-body">
-        <div className="panel-body table-panel table-fixed-layout">
-          <div className="ant-table-wrapper">
-            <div className="ant-table">
-              <table className="ant-table" style={{ width: '100%', fontSize: 14 }}>
-                <thead className="ant-table-thead">
-                  <tr><th>追踪数据列</th><th>显示名称</th><th>显示宽度</th><th>数据来源</th><th>数据类型</th><th>可编辑</th><th>操作</th></tr>
-                </thead>
-                <tbody className="ant-table-tbody">
-                  {trackingItems.map((row, i) => (
-                    <TrackingItem
-                      key={row.id}
-                      index={i}
-                      id={row.id}
-                      row={row}
-                      moveCard={this.moveCard}
-                      handleCustomTitleChange={this.handleCustomTitleChange}
-                      handleWidthChange={this.handleWidthChange}
-                      handleEditableChange={this.handleEditableChange}
-                      handleRemove={this.handleRemove}
-                      handleDatatypeChange={this.handleDatatypeChange}
-                    />
+
+      <Card bodyStyle={{ padding: 0 }}>
+        <div className="ant-table-wrapper">
+          <div className="ant-table">
+            <table className="ant-table" style={{ width: '100%', fontSize: 14 }}>
+              <thead className="ant-table-thead">
+                <tr><th>追踪数据列</th><th>显示名称</th><th>显示宽度</th><th>数据来源</th><th>数据类型</th><th>可编辑</th><th>操作</th></tr>
+              </thead>
+              <tbody className="ant-table-tbody">
+                {trackingItems.map((row, i) => (
+                  <TrackingItem
+                    key={row.id}
+                    index={i}
+                    id={row.id}
+                    row={row}
+                    moveCard={this.moveCard}
+                    handleCustomTitleChange={this.handleCustomTitleChange}
+                    handleWidthChange={this.handleWidthChange}
+                    handleEditableChange={this.handleEditableChange}
+                    handleRemove={this.handleRemove}
+                    handleDatatypeChange={this.handleDatatypeChange}
+                  />
                   ))}
-                  <tr className="ant-table-row  ant-table-row-level-0" style={{ height: 43 }}>
-                    <td style={{ ...colStyle, width: '25%' }} />
-                    <td style={{ ...colStyle }}>
-                      <Input
-                        style={{ width: '80%' }}
-                        value={newItem.custom_title}
-                        onChange={e => this.setState({ newItem: { ...newItem, custom_title: e.target.value } })}
-                      />
-                    </td>
-                    <td style={{ ...colStyle }}>
-                      <Input
-                        style={{ width: '80%' }}
-                        value={newItem.width}
-                        onChange={e => this.setState({ newItem: { ...newItem, width: Number(e.target.value) } })}
-                      />
-                    </td>
-                    <td style={{ ...colStyle, width: 150 }}>
-                      {SCV_TRACKING_FIELD_SOURCES[newItem.source]}
-                    </td>
-                    <td style={{ ...colStyle, width: 150 }}>
-                      <Select
-                        style={{ width: '80%' }}
-                        value={this.state.newItem.datatype}
-                        onChange={value => this.setState({ newItem: { ...newItem, datatype: value } })}
-                      >
-                        <Option value="STRING">文本</Option>
-                        <Option value="INTEGER">数字</Option>
-                        <Option value="DATE">日期</Option>
-                      </Select>
-                    </td>
-                    <td style={{ ...colStyle, width: 50 }}>
+                <tr className="ant-table-row  ant-table-row-level-0" style={{ height: 43 }}>
+                  <td style={{ ...colStyle, width: '25%' }} />
+                  <td style={{ ...colStyle }}>
+                    <Input
+                      style={{ width: '80%' }}
+                      value={newItem.custom_title}
+                      onChange={e => this.setState({ newItem: { ...newItem, custom_title: e.target.value } })}
+                    />
+                  </td>
+                  <td style={{ ...colStyle }}>
+                    <Input
+                      style={{ width: '80%' }}
+                      value={newItem.width}
+                      onChange={e => this.setState({ newItem: { ...newItem, width: Number(e.target.value) } })}
+                    />
+                  </td>
+                  <td style={{ ...colStyle, width: 150 }}>
+                    {SCV_TRACKING_FIELD_SOURCES[newItem.source]}
+                  </td>
+                  <td style={{ ...colStyle, width: 150 }}>
+                    <Select
+                      style={{ width: '80%' }}
+                      value={this.state.newItem.datatype}
+                      onChange={value => this.setState({ newItem: { ...newItem, datatype: value } })}
+                    >
+                      <Option value="STRING">文本</Option>
+                      <Option value="INTEGER">数字</Option>
+                      <Option value="DATE">日期</Option>
+                    </Select>
+                  </td>
+                  <td style={{ ...colStyle, width: 60 }}>
                       是
                     </td>
-                    <td style={{ ...colStyle, width: 60 }} className="editable-row-operations">
-                      <a role="presentation" onClick={this.handleAddItem}><Icon type="save" /></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                  <td style={{ ...colStyle, width: 60 }} className="editable-row-operations">
+                    <RowAction primary onClick={this.handleAddItem} icon="save" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
+      </Card>
+
     );
   }
 }

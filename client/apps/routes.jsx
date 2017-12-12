@@ -87,26 +87,13 @@ import * as CWMSupSHFTZNonBondedStock from './cwm/supervision/shftz/stock/nonbon
 import * as CWMSupSHFTZCargo from './cwm/supervision/shftz/cargo';
 import SCV from './scv/module-scv';
 import * as SCVDashboard from './scv/dashboard';
-import * as SCVOrders from './scv/orders';
-import * as SCVTracking from './scv/tracking';
-import * as SCVInboundShipments from './scv/shipments/inbound';
 import * as SCVCustomsDecl from './scv/clearance/customsdecl';
 import * as SCVDeclManifest from './scv/clearance/manifest';
-import * as SCVInventoryStock from './scv/inventory/stock';
-import * as SCVInventoryTransaction from './scv/inventory/transaction';
-import * as SCVReceivingNotice from './scv/inventory/receiving';
-import * as SCVShippingOrder from './scv/inventory/shipping';
-import * as SCVInventorySku from './scv/inventory/sku';
 import * as SCVClassification from './scv/compliance/classification';
-import * as SCVPaymentsTax from './scv/payments/tax';
-import * as SCVPaymentsBilling from './scv/payments/billing';
-import * as SCVAnalyticsKpi from './scv/analytics/kpi';
-import * as SCVAnalyticsCost from './scv/analytics/cost';
-import * as SCVResource from './scv/resources';
-import * as SCVSettings from './scv/settings';
 import SCOF from './scof/module-scof';
 import * as SCOFDashboard from './scof/dashboard';
 import * as SCOFOrders from './scof/orders';
+import * as SCOFTracking from './scof/tracking';
 import * as SCOFCustomers from './scof/customers';
 import * as SCOFVendors from './scof/vendors';
 import * as SCOFFlow from './scof/flow';
@@ -416,42 +403,9 @@ export default(store) => {
           <Route path={DEFAULT_MODULES.scv.id} component={SCV}>
             <IndexRedirect to="/scv/dashboard" />
             <Route path="dashboard" component={SCVDashboard.Index} />
-            <Route path="orders" component={SCVOrders.List} />
-            <Route path="tracking">
-              <Route path="customize">
-                <IndexRoute component={SCVTracking.Customize} />
-              </Route>
-              <Route path=":trackingId" component={SCVTracking.Instance} />
-            </Route>
-            <Route path="shipments">
-              <Route path="inbound">
-                <IndexRoute component={SCVInboundShipments.List} />
-              </Route>
-            </Route>
             <Route path="clearance">
               <Route path="manifest" component={SCVDeclManifest.List} />
               <Route path="decl" component={SCVCustomsDecl.List} />
-            </Route>
-            <Route path="inventory">
-              <Route path="stock" component={SCVInventoryStock.List} />
-              <Route path="transaction" component={SCVInventoryTransaction.List} />
-              <Route path="receiving">
-                <IndexRoute component={SCVReceivingNotice.List} />
-                <Route path="create" component={SCVReceivingNotice.Create} />
-              </Route>
-              <Route path="shipping">
-                <IndexRoute component={SCVShippingOrder.List} />
-                <Route path="create" component={SCVShippingOrder.Create} />
-              </Route>
-              <Route path="sku">
-                <IndexRoute component={SCVInventorySku.List} />
-                <Route path="create" component={SCVInventorySku.Create} />
-                <Route path=":sku" component={SCVInventorySku.Edit} />
-              </Route>
-            </Route>
-            <Route path="payments">
-              <Route path="tax" component={SCVPaymentsTax.List} />
-              <Route path="billing" component={SCVPaymentsBilling.List} />
             </Route>
             <Route path="compliance">
               <Route path="classification">
@@ -461,19 +415,6 @@ export default(store) => {
                 <Route path="master" component={SCVClassification.Master} />
                 <Route path="slave" component={SCVClassification.Slave} />
               </Route>
-            </Route>
-            <Route path="analytics">
-              <Route path="kpi" component={SCVAnalyticsKpi.List} />
-              <Route path="cost" component={SCVAnalyticsCost.List} />
-            </Route>
-            <Route path="resources">
-              <IndexRoute component={SCVResource.Warehouses} />
-              <Route path="warehouse" component={SCVResource.Warehouses} />
-              <Route path="serviceprovider" component={SCVResource.ServiceProviders} />
-            </Route>
-            <Route path="settings">
-              <IndexRedirect to="/scv/settings/openapi" />
-              <Route path="openapi" component={SCVSettings.OpenApi} />
             </Route>
           </Route>
           <Route path={DEFAULT_MODULES.cwm.id} component={CWM} onEnter={ensureCwmContext}>
@@ -581,6 +522,12 @@ export default(store) => {
               <Route path="create" component={SCOFOrders.Create} />
               <Route path="view" component={SCOFOrders.View} />
               <Route path="edit" component={SCOFOrders.Edit} />
+            </Route>
+            <Route path="tracking">
+              <Route path="customize">
+                <IndexRoute component={SCOFTracking.Customize} />
+              </Route>
+              <Route path=":trackingId" component={SCOFTracking.Instance} />
             </Route>
             <Route path="customers" component={SCOFCustomers.List} />
             <Route path="vendors" component={SCOFVendors.List} />

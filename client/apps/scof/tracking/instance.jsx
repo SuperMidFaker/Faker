@@ -6,7 +6,8 @@ import moment from 'moment';
 import connectNav from 'client/common/decorators/connect-nav';
 import { Breadcrumb, Layout, Button, Input } from 'antd';
 import EditableCell from 'client/components/EditableCell';
-import Table from 'client/components/remoteAntTable';
+import DataTable from 'client/components/DataTable';
+import PageHeader from 'client/components/PageHeader';
 import RangePickerPopover from './modals/rangePickerPopover';
 import { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom } from 'common/reducers/scvTracking';
 import { makeExcel } from 'common/reducers/common';
@@ -15,7 +16,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const Search = Input.Search;
 
 @injectIntl
@@ -30,7 +31,7 @@ const Search = Input.Search;
 )
 @connectNav({
   depth: 2,
-  moduleName: 'scv',
+  moduleName: 'scof',
 })
 export default class Instance extends Component {
   static propTypes = {
@@ -138,7 +139,7 @@ export default class Instance extends Component {
       },
     };
   })
-  dataSource = new Table.DataSource({
+  dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadTrackingOrders({
       searchValue: this.props.orders.searchValue,
       tracking_id: this.props.params.trackingId,
@@ -157,7 +158,6 @@ export default class Instance extends Component {
       showTotal: total => `共 ${total} 条`,
     }),
     getParams: (pagination, filters, sorter) => {
-      console.log(sorter);
       this.setState({ sorter });
       const params = {
         pageSize: pagination.pageSize,
@@ -217,34 +217,32 @@ export default class Instance extends Component {
     const { tracking } = this.state;
     this.dataSource.remotes = orders;
     const tableWidth = trackingItems.map(item => item.width).reduce((a, b) => a + b, 0);
+    const toolbarActions = (<span>
+      <Search
+        style={{ width: 240 }}
+        placeholder="搜索"
+        onSearch={this.handleSearch}
+      />
+    </span>);
     return (
       <Layout>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              {this.msg('shipmentsTracking')}
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>
-              {tracking.name}
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools">
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                {this.msg('shipmentsTracking')}
+              </Breadcrumb.Item>
+              <Breadcrumb.Item>
+                {tracking.name}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
             <Button type="primary" ghost icon="export" onClick={this.handleExport} loading={this.state.exportLoading}>导出</Button>
-          </div>
-        </Header>
-        <Content className="main-content" key="main">
-          <div className="page-body">
-            <div className="toolbar">
-              <Search
-                style={{ width: 240 }}
-                placeholder="搜索"
-                onSearch={this.handleSearch}
-              />
-            </div>
-            <div className="panel-body table-panel table-fixed-layout">
-              <Table columns={this.makeColumns()} scroll={{ x: tableWidth }} dataSource={this.dataSource} rowKey="shipmt_order_no" />
-            </div>
-          </div>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content" key="main">
+          <DataTable toolbarActions={toolbarActions} columns={this.makeColumns()} scroll={{ x: tableWidth }} dataSource={this.dataSource} rowKey="shipmt_order_no" />
         </Content>
       </Layout>
     );

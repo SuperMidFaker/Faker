@@ -6,6 +6,7 @@ import { Breadcrumb, Button, Input, Table, Tooltip, Layout, Popconfirm, Icon } f
 import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import ButtonToggle from 'client/components/ButtonToggle';
+import PageHeader from 'client/components/PageHeader';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import { loadTrackings, addTracking, removeTracking, updateTracking, loadTrackingFields, toggleTrackingModal, loadTrackingItems } from 'common/reducers/scvTracking';
@@ -13,7 +14,7 @@ import TrackingModal from './modals/trackingModal';
 import TrackingItems from './trackingItems';
 
 const formatMsg = format(messages);
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 const Search = Input.Search;
 
 function fetchData({ state, dispatch }) {
@@ -33,7 +34,7 @@ function fetchData({ state, dispatch }) {
 )
 @connectNav({
   depth: 2,
-  moduleName: 'scv',
+  moduleName: 'scof',
 })
 export default class CustomizeTracking extends React.Component {
   static propTypes = {
@@ -143,7 +144,7 @@ export default class CustomizeTracking extends React.Component {
       title: '操作',
       dataIndex: 'id',
       key: 'id',
-      width: 60,
+      width: 80,
       render: (_, row) => {
         if (row.id === editId) {
           return (
@@ -197,25 +198,27 @@ export default class CustomizeTracking extends React.Component {
           </div>
         </Sider>
         <Layout>
-          <Header className="page-header">
-            { this.state.collapsed && <Breadcrumb>
-              <Breadcrumb.Item>
-                {this.msg('shipmentsTrackingCustomize')}
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {tracking.name}
-              </Breadcrumb.Item>
-            </Breadcrumb>}
-            <ButtonToggle
-              iconOn="menu-fold" iconOff="menu-unfold"
-              onClick={this.toggle}
-              toggle
-            />
-            <div className="page-header-tools">
+          <PageHeader>
+            <PageHeader.Title>
+              <ButtonToggle
+                iconOn="menu-fold" iconOff="menu-unfold"
+                onClick={this.toggle}
+                toggle
+              />
+              { this.state.collapsed && <Breadcrumb>
+                <Breadcrumb.Item>
+                  {this.msg('shipmentsTrackingCustomize')}
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  {tracking.name}
+                </Breadcrumb.Item>
+              </Breadcrumb>}
+            </PageHeader.Title>
+            <PageHeader.Actions>
               <Button type="primary" ghost disabled={this.state.trackings.length === 0} onClick={this.handleEdit}>跟踪表设置</Button>
-            </div>
-          </Header>
-          <Content className="main-content layout-fixed-width layout-fixed-width-lg">
+            </PageHeader.Actions>
+          </PageHeader>
+          <Content className="page-content">
             {this.state.trackings.length > 0 && <TrackingItems tracking={tracking} />}
           </Content>
         </Layout>

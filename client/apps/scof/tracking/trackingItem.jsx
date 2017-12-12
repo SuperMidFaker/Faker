@@ -3,8 +3,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { findDOMNode } from 'react-dom';
-import { Popconfirm, Icon } from 'antd';
 import { DragSource, DropTarget } from 'react-dnd';
+import RowAction from 'client/components/RowAction';
 import EditableCell from 'client/components/EditableCell';
 import { SCV_TRACKING_FIELD_SOURCES } from 'common/constants';
 const ItemTypes = {
@@ -128,9 +128,7 @@ export default class TrackingItem extends Component {
           />
         </td>
         <td style={{ ...colStyle, width: 60 }}>
-          <Popconfirm title="确认删除?" onConfirm={() => this.props.handleRemove(row.id, row.source)}>
-            <a role="presentation"><Icon type="delete" /></a>
-          </Popconfirm>
+          <RowAction danger confirm="确认删除?" onConfirm={this.props.handleRemove} row={row} icon="delete" />
         </td>
       </tr>
     ));

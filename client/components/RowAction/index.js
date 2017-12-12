@@ -38,7 +38,7 @@ export default class RowAction extends Component {
     }
   }
   renderButton = () => {
-    const { label, onClick, onHover, row, index, tooltip, primary, danger, overlay, icon, ...extra } = this.props;
+    const { label, primary, danger, overlay, icon } = this.props;
     let type = 'default';
     if (primary) {
       type = 'primary';
@@ -50,7 +50,7 @@ export default class RowAction extends Component {
       <Button size="small"><Icon type="ellipsis" /></Button>
     </Dropdown>)
     :
-    (<Button type={type} ghost={primary} size="small" icon={icon} onClick={this.handleClick} onMouseEnter={this.handleHover} {...extra} className="welo-row-action">
+    (<Button type={type} ghost={primary} size="small" icon={icon} onClick={this.handleClick} onMouseEnter={this.handleHover} className="welo-row-action">
       {label}
     </Button>);
   }

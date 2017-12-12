@@ -165,6 +165,14 @@ export default defineMessages({
     id: 'cms.customs.decl.mark.released',
     defaultMessage: '放行确认',
   },
+  viewDeclMsg: {
+    id: 'cms.customs.decl.view.decl',
+    defaultMessage: '查看申报报文',
+  },
+  viewResultMsg: {
+    id: 'cms.customs.decl.view.result',
+    defaultMessage: '查看回执报文',
+  },
   preEntryId: {
     id: 'cms.customs.decl.form.pre.entry.id',
     defaultMessage: '预录入编号',

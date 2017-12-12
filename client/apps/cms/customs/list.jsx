@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import moment from 'moment';
-import { Breadcrumb, DatePicker, Icon, Layout, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
+import { Breadcrumb, DatePicker, Icon, Layout, Menu, Radio, Tag, Tooltip, message, Popconfirm, Badge, Button, Select, Popover } from 'antd';
 import DataTable from 'client/components/DataTable';
 import PageHeader from 'client/components/PageHeader';
 import PageHint from 'client/components/PageHint';
@@ -321,15 +321,15 @@ export default class CustomsList extends Component {
   }, {
     title: this.msg('opColumn'),
     dataIndex: 'OPS_COL',
-    width: 100,
+    width: 140,
     fixed: 'right',
     render: (o, record) => {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
-            <RowAction onClick={this.handleRowClick} label={this.msg('viewDetail')} icon="eye-o" row={record} />
+            <RowAction onClick={this.handleRowClick} icon="eye-o" label={this.msg('viewDetail')} row={record} />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
-              <RowAction onClick={this.handleReview} label={<Icon type="check-circle-o" />} tooltip={this.msg('review')}row={record} />
+              <RowAction onClick={this.handleReview} icon="check-circle-o" tooltip={this.msg('review')}row={record} />
             </PrivilegeCover>
           </span>
         );
@@ -337,21 +337,28 @@ export default class CustomsList extends Component {
         const spanElems = [];
         if (record.status === CMS_DECL_STATUS.reviewed.value) {
           spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="send">
-            <RowAction onClick={this.handleShowSendDeclModal} label={<Icon type="mail" />} tooltip={this.msg('sendDeclMsg')} row={record} />
+            <RowAction onClick={this.handleShowSendDeclModal} icon="mail" tooltip={this.msg('sendDeclMsg')} row={record} />
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
+          spanElems.push(<RowAction overlay={<Menu><Menu.Item key="viewDeclMsg">{this.msg('viewDeclMsg')}</Menu.Item></Menu>} row={record} />);
         }
         if (record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
             <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
               <RowAction onClick={this.handleShowDeclReleasedModal} row={record}
-                label={<Icon type="flag" />} tooltip={this.msg('markReleased')}
+                icon="flag" tooltip={this.msg('markReleased')}
               />
             </PrivilegeCover>);
         }
+        if (record.status >= CMS_DECL_STATUS.entered.value) {
+          spanElems.push(<RowAction overlay={<Menu>
+            <Menu.Item key="viewDeclMsg">{this.msg('viewDeclMsg')}</Menu.Item>
+            <Menu.Item key="viewResultMsg">{this.msg('viewResultMsg')}</Menu.Item></Menu>} row={record}
+          />);
+        }
         return (<span>
-          <RowAction onClick={this.handleRowClick} label={this.msg('viewDetail')} icon="eye-o" row={record} />
+          <RowAction onClick={this.handleRowClick} icon="eye-o" label={this.msg('viewDetail')} row={record} />
           {spanElems}
         </span>);
       }
