@@ -30,10 +30,14 @@ const actionTypes = createActionTypes('@@welogix/cms/tradeitem/', [
   'COPY_ITEM_STAGE', 'COPY_ITEM_STAGE_SUCCEED', 'COPY_ITEM_STAGE_FAIL',
   'ITEM_NEWSRC_SAVE', 'ITEM_NEWSRC_SAVE_SUCCEED', 'ITEM_NEWSRC_SAVE_FAIL',
   'SHOW_LINKSLAVE',
+  'LOAD_LINKEDSLAVES', 'LOAD_LINKEDSLAVES_SUCCEED', 'LOAD_LINKEDSLAVES_FAIL',
   'LOAD_OWNSLAVES', 'LOAD_OWNSLAVES_SUCCEED', 'LOAD_OWNSLAVES_FAIL',
   'LINK_MASTERSLAVE', 'LINK_MASTERSLAVE_SUCCEED', 'LINK_MASTERSLAVE_FAIL',
   'UNLINK_MASTERSLAVE', 'UNLINK_MASTERSLAVE_SUCCEED', 'UNLINK_MASTERSLAVE_FAIL',
+  'SAVE_REPOITM', 'SAVE_REPOITM_SUCCEED', 'SAVE_REPOITM_FAIL',
+  'SAVE_REPOFKITM', 'SAVE_REPOFKITM_SUCCEED', 'SAVE_REPOFKITM_FAIL',
   'SWITCH_REPOMD', 'SWITCH_REPOMD_SUCCEED', 'SWITCH_REPOMD_FAIL',
+  'REPLICA_MASTERSLAVE', 'REPLICA_MASTERSLAVE_SUCCEED', 'REPLICA_MASTERSLAVE_FAIL',
   'LOAD_WSSTAT', 'LOAD_WSSTAT_SUCCEED', 'LOAD_WSSTAT_FAIL',
   'LOAD_WSTASKLIST', 'LOAD_WSTASKLIST_SUCCEED', 'LOAD_WSTASKLIST_FAIL',
   'LOAD_WSTASK', 'LOAD_WSTASK_SUCCEED', 'LOAD_WSTASK_FAIL',
@@ -191,9 +195,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_WSITEM_SUCCEED:
       return { ...state, workspaceItem: action.result.data };
     case actionTypes.SAVE_WSITEM:
+    case actionTypes.REPLICA_MASTERSLAVE:
+    case actionTypes.SAVE_REPOITM:
+    case actionTypes.SAVE_REPOFKITM:
       return { ...state, submitting: true };
     case actionTypes.SAVE_WSITEM_SUCCEED:
     case actionTypes.SAVE_WSITEM_FAIL:
+    case actionTypes.REPLICA_MASTERSLAVE_SUCCEED:
+    case actionTypes.REPLICA_MASTERSLAVE_FAIL:
+    case actionTypes.SAVE_REPOITM_SUCCEED:
+    case actionTypes.SAVE_REPOITM_FAIL:
+    case actionTypes.SAVE_REPOFKITM_SUCCEED:
+    case actionTypes.SAVE_REPOFKITM_FAIL:
       return { ...state, submitting: false };
     case actionTypes.LOAD_TEITEMS_SUCCEED:
       return { ...state, taskEmergeList: action.result.data };
@@ -609,6 +622,21 @@ export function showLinkSlaveModal({ visible, masterRepo, slaves }) {
   };
 }
 
+export function getLinkedSlaves(masterRepo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_LINKEDSLAVES,
+        actionTypes.LOAD_LINKEDSLAVES_SUCCEED,
+        actionTypes.LOAD_LINKEDSLAVES_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/linked/slaves',
+      method: 'get',
+      params: { masterRepo },
+    },
+  };
+}
+
 export function getUnlinkSlavesByOwner(ownerTenantId) {
   return {
     [CLIENT_API]: {
@@ -617,7 +645,7 @@ export function getUnlinkSlavesByOwner(ownerTenantId) {
         actionTypes.LOAD_OWNSLAVES_SUCCEED,
         actionTypes.LOAD_OWNSLAVES_FAIL,
       ],
-      endpoint: 'v1/cms/tradeitem/repo/owner/slaves',
+      endpoint: 'v1/cms/tradeitem/repo/unlinked/slaves',
       method: 'get',
       params: { ownerTenantId },
     },
@@ -650,6 +678,51 @@ export function unlinkMasterSlave(slaveRepo) {
       endpoint: 'v1/cms/tradeitem/repo/unlink/slave',
       method: 'post',
       data: { slaveRepo },
+    },
+  };
+}
+
+export function replicaMasterSlave(replicaInfo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.REPLICA_MASTERSLAVE,
+        actionTypes.REPLICA_MASTERSLAVE_SUCCEED,
+        actionTypes.REPLICA_MASTERSLAVE_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/masterslave/replica',
+      method: 'post',
+      data: replicaInfo,
+    },
+  };
+}
+
+export function saveRepoItem(item) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_REPOITM,
+        actionTypes.SAVE_REPOITM_SUCCEED,
+        actionTypes.SAVE_REPOITM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/itemsave',
+      method: 'post',
+      data: item,
+    },
+  };
+}
+
+export function saveRepoForkItem(item) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_REPOFKITM,
+        actionTypes.SAVE_REPOFKITM_SUCCEED,
+        actionTypes.SAVE_REPOFKITM_FAIL,
+      ],
+      endpoint: 'v1/cms/tradeitem/repo/fork/itemsave',
+      method: 'post',
+      data: item,
     },
   };
 }

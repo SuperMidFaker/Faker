@@ -6,7 +6,7 @@ import { Breadcrumb, Form, Layout, Button, Tabs, message } from 'antd';
 import connectNav from 'client/common/decorators/connect-nav';
 import MagicCard from 'client/components/MagicCard';
 import PageHeader from 'client/components/PageHeader';
-import { loadTradeItem, itemEditedSave } from 'common/reducers/cmsTradeitem';
+import { loadTradeItem, saveRepoItem } from 'common/reducers/cmsTradeitem';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import ItemMasterPane from './tabpane/itemMasterPane';
@@ -29,10 +29,11 @@ function fetchData({ dispatch, params }) {
 @injectIntl
 @connect(
   state => ({
+    submitting: state.cmsTradeitem.submitting,
     itemData: state.cmsTradeitem.itemData,
     tenantId: state.account.tenantId,
   }),
-  { itemEditedSave }
+  { saveRepoItem }
 )
 @connectNav({
   depth: 3,
@@ -62,7 +63,7 @@ export default class TradeItemEdit extends Component {
         const value = this.props.form.getFieldsValue();
         const specialMark = value.specialMark.join('/');
         const item = { ...this.props.itemData, ...value, special_mark: specialMark };
-        this.props.itemEditedSave({ item }).then((result) => {
+        this.props.saveRepoItem({ item }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -79,7 +80,7 @@ export default class TradeItemEdit extends Component {
   }
 
   render() {
-    const { form, itemData } = this.props;
+    const { form, submitting, itemData } = this.props;
     const tabs = [];
     tabs.push(
       <TabPane tab="主数据" key="master">
@@ -110,7 +111,7 @@ export default class TradeItemEdit extends Component {
             <Button onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" onClick={this.handleSave}>
+            <Button type="primary" icon="save" onClick={this.handleSave} loading={submitting}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>
