@@ -39,6 +39,10 @@ export default class allocatedPopover extends Component {
     width: 80,
     dataIndex: 'picked_qty',
     className: 'cell-align-right',
+  }, {
+    title: '采购订单号',
+    width: 120,
+    dataIndex: 'po_no',
   }]
   msg = key => formatMsg(this.props.intl, key);
   handleVisibleChange = (visible) => {

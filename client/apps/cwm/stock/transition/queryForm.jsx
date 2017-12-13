@@ -74,7 +74,7 @@ export default class QueryForm extends React.Component {
           <Col span={5}>
             <FormItem {...formItemLayout} label="入库单号">
               {getFieldDecorator('asn_no', { initialValue: filter.asn_no })(
-                <Input placeholder="ASN/进区凭单号" />)}
+                <Input placeholder="ASN/进区凭单号/客户订单号" />)}
             </FormItem>
           </Col>
           <Col span={5}>
