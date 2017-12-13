@@ -73,7 +73,7 @@ export default class EntQualifiModal extends Component {
       dataIndex: 'ent_name',
     }];
     return (
-      <Modal width={800} title="企业资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
+      <Modal width={960} title="企业资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
         <Form>
           <Row>
             <Col span={12}>
@@ -82,7 +82,7 @@ export default class EntQualifiModal extends Component {
                   required: true,
                 })(
                   <Select>
-                    {CIQ_ENT_QUALIFY_TYPE.map(type => <Option key={type.value} value={type.value}>{type.text}</Option>)}
+                    {CIQ_ENT_QUALIFY_TYPE.map(type => <Option key={type.value} value={type.value}>{type.value} | {type.text}</Option>)}
                   </Select>
                 )}
               </FormItem>
@@ -113,12 +113,12 @@ export default class EntQualifiModal extends Component {
           </Row>
           <Row style={{ marginBottom: 8 }}>
             <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={this.handleSave}>保存</Button>
-              <Button style={{ marginLeft: 8 }} >删除</Button>
+              <Button type="primary" icon="save" onClick={this.handleSave}>保存</Button>
+              <Button style={{ marginLeft: 8 }} icon="delete" >删除</Button>
             </Col>
           </Row>
         </Form>
-        <Table columns={columns} dataSource={entQualifs} rowKey="id" />
+        <Table size="middle" columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />
       </Modal>
     );
   }

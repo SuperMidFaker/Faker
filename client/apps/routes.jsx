@@ -501,7 +501,6 @@ export default(store) => {
             </Route>
             <Route path="settings">
               <Route path="warehouse" component={CWMSettings.Warehouse} />
-              <Route path="rules" component={CWMSettings.Rules} />
               <Route path="templates" component={CWMSettings.Templates} />
             </Route>
           </Route>
