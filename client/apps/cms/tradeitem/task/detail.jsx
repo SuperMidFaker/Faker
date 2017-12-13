@@ -79,7 +79,9 @@ export default class TaskDetail extends React.Component {
             filter: JSON.stringify(conflictFilter),
           });
           this.setState({ emergeFilter, conflictFilter });
-          notification.info({ title: '提示', description: '部分归类已提交审核' });
+          notification.info({ title: '提示', description: '归类已提交审核' });
+        } else if (result.data.feedback === 'noop') {
+          notification.info({ title: '提示', description: '没有归类可提交审核' });
         } else {
           this.context.router.goBack();
         }
@@ -105,7 +107,9 @@ export default class TaskDetail extends React.Component {
               filter: JSON.stringify(conflictFilter),
             });
             this.setState({ emergeFilter, conflictFilter });
-            notification.info({ title: '提示', description: '部分归类已提交审核' });
+            notification.info({ title: '提示', description: '归类已提交审核' });
+          } else if (result.data.feedback === 'noop') {
+            notification.info({ title: '提示', description: '没有归类可提交主库审核' });
           } else {
             this.context.router.goBack();
           }

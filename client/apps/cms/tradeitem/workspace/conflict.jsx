@@ -15,7 +15,7 @@ const { Sider, Content } = Layout;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
+    submitting: state.cmsTradeitem.submitting,
     workspaceItemList: state.cmsTradeitem.workspaceItemList,
     conflictStat: state.cmsTradeitem.workspaceStat.conflict,
   }),
@@ -56,7 +56,9 @@ export default class ConflictItemsList extends React.Component {
             filter: JSON.stringify(this.state.filter),
           });
           this.setState({ filter });
-          notification.info({ title: '提示', description: '部分归类已提交审核' });
+          notification.info({ title: '提示', description: '归类已提交审核' });
+        } else if (result.data.feedback === 'noop') {
+          notification.info({ title: '提示', description: '没有冲突归类可提交审核' });
         }
       }
     });
@@ -73,13 +75,15 @@ export default class ConflictItemsList extends React.Component {
               filter: JSON.stringify(this.state.filter),
             });
             this.setState({ filter });
-            notification.info({ title: '提示', description: '部分归类已提交审核' });
+            notification.info({ title: '提示', description: '归类已提交审核' });
+          } else if (result.data.feedback === 'noop') {
+            notification.info({ title: '提示', description: '没有冲突归类可提交主库审核' });
           }
         }
       });
   }
   render() {
-    const { workspaceItemList, conflictStat } = this.props;
+    const { workspaceItemList, conflictStat, submitting } = this.props;
     const { filter } = this.state;
     return (
       <Layout>
@@ -106,8 +110,8 @@ export default class ConflictItemsList extends React.Component {
             </PageHeader.Title>
             <PageHeader.Actions>
               <Button icon="file-excel">导出</Button>
-              {conflictStat.master && <Button type="primary" ghost icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
-              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
+              {conflictStat.master && <Button type="primary" loading={submitting} ghost icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
+              <Button type="primary" icon="arrow-up" loading={submitting} onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

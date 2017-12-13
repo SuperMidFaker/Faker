@@ -100,6 +100,7 @@ const initialState = {
     slaves: [],
   },
   workspaceStat: { task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {} },
+  wsStateReload: false,
   workspaceLoading: false,
   workspaceTaskList: [],
   workspaceTask: { id: '' },
@@ -177,14 +178,16 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SWITCH_REPOMD_SUCCEED:
       return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
     case actionTypes.LOAD_WSSTAT_SUCCEED:
-      return { ...state, workspaceStat: action.result.data };
+      return { ...state, workspaceStat: action.result.data, wsStateReload: false };
     case actionTypes.LOAD_WSTASKLIST:
     case actionTypes.LOAD_WSTASK:
     case actionTypes.LOAD_WSLITEMS:
+    case actionTypes.DEL_WSTASK:
       return { ...state, workspaceLoading: true };
     case actionTypes.LOAD_WSLITEMS_FAIL:
     case actionTypes.LOAD_WSTASK_FAIL:
     case actionTypes.LOAD_WSTASKLIST_FAIL:
+    case actionTypes.DEL_WSTASK_FAIL:
       return { ...state, workspaceLoading: false };
     case actionTypes.LOAD_WSTASKLIST_SUCCEED:
       return { ...state, workspaceLoading: false, workspaceTaskList: action.result.data };
@@ -194,10 +197,18 @@ export default function reducer(state = initialState, action) {
       return { ...state, workspaceLoading: false, workspaceItemList: action.result.data };
     case actionTypes.LOAD_WSITEM_SUCCEED:
       return { ...state, workspaceItem: action.result.data };
+    case actionTypes.DEL_WSTASK_SUCCEED: {
+      const workspaceStat = { ...state.workspaceStat };
+      workspaceStat.task.count -= 1;
+      return { ...state, workspaceLoading: false, workspaceStat };
+    }
     case actionTypes.SAVE_WSITEM:
     case actionTypes.REPLICA_MASTERSLAVE:
     case actionTypes.SAVE_REPOITM:
     case actionTypes.SAVE_REPOFKITM:
+    case actionTypes.DEL_WSLITEMS:
+    case actionTypes.SUBMIT_AUDIT:
+    case actionTypes.AUDIT_ITEMS:
       return { ...state, submitting: true };
     case actionTypes.SAVE_WSITEM_SUCCEED:
     case actionTypes.SAVE_WSITEM_FAIL:
@@ -207,11 +218,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SAVE_REPOITM_FAIL:
     case actionTypes.SAVE_REPOFKITM_SUCCEED:
     case actionTypes.SAVE_REPOFKITM_FAIL:
+    case actionTypes.DEL_WSLITEMS_FAIL:
+    case actionTypes.SUBMIT_AUDIT_FAIL:
+    case actionTypes.AUDIT_ITEMS_FAIL:
       return { ...state, submitting: false };
     case actionTypes.LOAD_TEITEMS_SUCCEED:
       return { ...state, taskEmergeList: action.result.data };
     case actionTypes.LOAD_TCITEMS_SUCCEED:
       return { ...state, taskConflictList: action.result.data };
+    case actionTypes.DEL_WSLITEMS_SUCCEED:
+    case actionTypes.SUBMIT_AUDIT_SUCCEED:
+    case actionTypes.AUDIT_ITEMS_SUCCEED:
+      return { ...state, submitting: false, wsStateReload: true };
     default:
       return state;
   }
