@@ -12,7 +12,7 @@ import { formatMsg } from './message.i18n';
   state => ({
     reposLoaded: state.cmsTradeitem.reposLoaded,
     workspaceStat: state.cmsTradeitem.workspaceStat,
-    wsStateReload: state.cmsTradeitem.wsStateReload,
+    wsStatReload: state.cmsTradeitem.wsStatReload,
   }),
   { loadRepos, loadTradeParams, loadWorkspaceStat }
 )
@@ -32,7 +32,7 @@ export default class ModuleMenu extends React.Component {
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.wsStateReload !== this.props.wsStateReload && nextProps.wsStateReload) {
+    if (nextProps.wsStatReload !== this.props.wsStatReload && nextProps.wsStatReload) {
       this.props.loadWorkspaceStat();
     }
   }

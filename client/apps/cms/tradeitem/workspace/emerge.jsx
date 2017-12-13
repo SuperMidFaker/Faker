@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { notification, Button, Breadcrumb, Layout } from 'antd';
-import EmergeItemTable from './emergeItemTable';
 import PageHeader from 'client/components/PageHeader';
 import { loadWorkspaceItems, submitAudit } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import ModuleMenu from '../menu';
+import WsItemExportButton from './exportButton';
+import EmergeItemTable from './emergeItemTable';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
@@ -108,7 +109,7 @@ export default class NewItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="file-excel">导出</Button>
+              <WsItemExportButton {...this.state.filter} />
               {emergeStat.master && <Button type="primary" ghost icon="cloud-upload-o" loading={submitting} onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit} loading={submitting}>提交审核</Button>
             </PageHeader.Actions>

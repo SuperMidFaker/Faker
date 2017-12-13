@@ -100,7 +100,7 @@ const initialState = {
     slaves: [],
   },
   workspaceStat: { task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {} },
-  wsStateReload: false,
+  wsStatReload: false,
   workspaceLoading: false,
   workspaceTaskList: [],
   workspaceTask: { id: '' },
@@ -178,7 +178,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SWITCH_REPOMD_SUCCEED:
       return { ...state, repos: state.repos.map(rep => rep.id === action.data.repoId ? { ...rep, mode: action.result.data } : rep) };
     case actionTypes.LOAD_WSSTAT_SUCCEED:
-      return { ...state, workspaceStat: action.result.data, wsStateReload: false };
+      return { ...state, workspaceStat: action.result.data, wsStatReload: false };
     case actionTypes.LOAD_WSTASKLIST:
     case actionTypes.LOAD_WSTASK:
     case actionTypes.LOAD_WSLITEMS:
@@ -229,7 +229,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.DEL_WSLITEMS_SUCCEED:
     case actionTypes.SUBMIT_AUDIT_SUCCEED:
     case actionTypes.AUDIT_ITEMS_SUCCEED:
-      return { ...state, submitting: false, wsStateReload: true };
+      return { ...state, submitting: false, wsStatReload: true };
     default:
       return state;
   }

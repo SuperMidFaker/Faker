@@ -7,6 +7,7 @@ import PageHeader from 'client/components/PageHeader';
 import connectNav from 'client/common/decorators/connect-nav';
 import { loadWorkspaceItems, submitAudit } from 'common/reducers/cmsTradeitem';
 import ModuleMenu from '../menu';
+import WsItemExportButton from './exportButton';
 import ConflictItemTable from './conflictItemTable';
 import { formatMsg } from '../message.i18n';
 
@@ -109,7 +110,7 @@ export default class ConflictItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="file-excel">导出</Button>
+              <WsItemExportButton {...this.state.filter} />
               {conflictStat.master && <Button type="primary" loading={submitting} ghost icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" loading={submitting} onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>
