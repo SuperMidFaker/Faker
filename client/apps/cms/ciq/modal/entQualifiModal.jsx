@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Modal, Form, Select, Row, Col, Input, Button, Table } from 'antd';
-import { toggleEntQualifiModal, saveEntQualif, loadEntQualif } from 'common/reducers/cmsCiqDeclare';
+import { toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_ENT_QUALIFY_TYPE } from 'common/constants';
 
 const FormItem = Form.Item;
@@ -13,13 +13,16 @@ const Option = Select.Option;
     visible: state.cmsCiqDeclare.entQualifictaionModal.visible,
     entQualifs: state.cmsCiqDeclare.entQualifs,
   }),
-  { toggleEntQualifiModal, saveEntQualif, loadEntQualif }
+  { toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif }
 )
 @Form.create()
 export default class EntQualifiModal extends Component {
   static propTypes = {
     customerPartnerId: PropTypes.string.isRequired,
     ciqCode: PropTypes.string,
+  }
+  state = {
+    selectedRowKeys: [],
   }
   handleCancel = () => {
     this.props.toggleEntQualifiModal(false);
@@ -40,6 +43,20 @@ export default class EntQualifiModal extends Component {
       }
     });
   }
+  handleDelete = () => {
+    const { customerPartnerId, ciqCode } = this.props;
+    const { selectedRowKeys } = this.state;
+    if (selectedRowKeys.length > 0) {
+      this.props.deleteEntQualif(selectedRowKeys).then((result) => {
+        if (!result.error) {
+          this.props.loadEntQualif(customerPartnerId, ciqCode);
+          this.setState({
+            selectedRowKeys: [],
+          });
+        }
+      });
+    }
+  }
   render() {
     const { visible, form: { getFieldDecorator }, entQualifs } = this.props;
     const formItemLayout = {
@@ -50,6 +67,13 @@ export default class EntQualifiModal extends Component {
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 16 },
+      },
+    };
+    const rowSelection = {
+      onChange: (selectedRowKeys) => {
+        this.setState({
+          selectedRowKeys,
+        });
       },
     };
     const columns = [{
@@ -114,11 +138,11 @@ export default class EntQualifiModal extends Component {
           <Row style={{ marginBottom: 8 }}>
             <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" icon="save" onClick={this.handleSave}>保存</Button>
-              <Button style={{ marginLeft: 8 }} icon="delete" >删除</Button>
+              <Button style={{ marginLeft: 8 }} icon="delete" onClick={this.handleDelete}>删除</Button>
             </Col>
           </Row>
         </Form>
-        <Table size="middle" columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />
+        <Table size="middle" rowSelection={rowSelection} columns={columns} dataSource={entQualifs} pagination={null} rowKey="id" />
       </Modal>
     );
   }

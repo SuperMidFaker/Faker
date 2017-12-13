@@ -10,6 +10,7 @@ import NavLink from 'client/components/NavLink';
 import { loadWorkspaceItems } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import ModuleMenu from '../menu';
+import WsItemExportButton from './exportButton';
 import makeColumns from './commonCols';
 import { CMS_TRADE_REPO_PERMISSION } from 'common/constants';
 import { formatMsg } from '../message.i18n';
@@ -167,7 +168,7 @@ export default class InvalidItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="file-excel">导出</Button>
+              <WsItemExportButton {...this.state.filter} />
               {invalidStat.master && <Button type="primary" icon="save" onClick={this.handleMasterAudit}>提交主库</Button>}
               <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
             </PageHeader.Actions>

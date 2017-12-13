@@ -223,17 +223,17 @@ export const CMS_CONFIRM = [
 ];
 
 export const CMS_DECL_DOCU = [
-  { value: '00000001', text: '发票' },
-  { value: '00000002', text: '装箱单' },
-  { value: '00000003', text: '提运单' },
-  { value: '00000004', text: '合同' },
-  { value: '00000005', text: '其他1' },
-  { value: '00000006', text: '其他2' },
-  { value: '00000007', text: '其他3' },
-  { value: '00000008', text: '代理报关委托协议' },
-  { value: '10000001', text: '电子代理委托协议' },
-  { value: '10000002', text: '减免税货物税款担保证明' },
-  { value: '10000003', text: '减免税货物税款担保延期证明' },
+  { value: '1', text: '发票' },
+  { value: '2', text: '装箱单' },
+  { value: '3', text: '提运单' },
+  { value: '4', text: '合同' },
+  { value: '5', text: '其他1' },
+  { value: '6', text: '其他2' },
+  { value: '7', text: '其他3' },
+  { value: '8', text: '代理报关委托协议' },
+  { value: 'A', text: '电子代理委托协议' },
+  { value: 'B', text: '减免税货物税款担保证明' },
+  { value: 'C', text: '减免税货物税款担保延期证明' },
 ];
 
 export const CMS_CNTNR_SPEC_CUS = [
@@ -529,4 +529,23 @@ export const CIQ_ENT_QUALIFY_TYPE = [
   { value: 414, text: '进口可用作原料的固体废物国外供货商注册登记' },
   { value: 415, text: '进出境集装箱场站登记' },
   { value: 416, text: '进口棉花境外供货商登记注册' },
+];
+
+export const CIQ_INSP_QUAE_DOCUMENTS = [
+  { app_cert_code: '11', app_cert_name: '品质证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '12', app_cert_name: '重量证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '13', app_cert_name: '数量证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '14', app_cert_name: '兽医卫生证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '15', app_cert_name: '健康证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '16', app_cert_name: '卫生证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '17', app_cert_name: '动物卫生证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '18', app_cert_name: '植物检疫证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '19', app_cert_name: '熏蒸/消毒证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '20', app_cert_name: '出境货物换证凭单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '21', app_cert_name: '入境货物检验检疫证明', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '22', app_cert_name: '出境货物不合格通知单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '23', app_cert_name: '集装箱检验检疫结果单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '97', app_cert_name: '通关单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '98', app_cert_name: '其他单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '99', app_cert_name: '其他证书', appl_ori: 1, appl_copy_quan: 2 },
 ];

@@ -12,6 +12,7 @@ import { formatMsg } from './message.i18n';
   state => ({
     reposLoaded: state.cmsTradeitem.reposLoaded,
     workspaceStat: state.cmsTradeitem.workspaceStat,
+    wsStatReload: state.cmsTradeitem.wsStatReload,
   }),
   { loadRepos, loadTradeParams, loadWorkspaceStat }
 )
@@ -28,6 +29,11 @@ export default class ModuleMenu extends React.Component {
     this.props.loadWorkspaceStat();
     if (!this.props.reposLoaded) {
       this.props.loadTradeParams();
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.wsStatReload !== this.props.wsStatReload && nextProps.wsStatReload) {
+      this.props.loadWorkspaceStat();
     }
   }
   msg = formatMsg(this.props.intl);

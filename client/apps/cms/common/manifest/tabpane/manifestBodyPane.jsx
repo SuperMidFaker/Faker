@@ -875,7 +875,7 @@ export default class ManifestBodyPane extends React.Component {
       </Menu>);
     const relatedImportMenu = (
       <Menu onClick={this.handleRelatedImportMenuClick}>
-        {this.state.bodies.length > 1 && billMeta.repoId !== null &&
+        {this.state.bodies.length > 0 && billMeta.repoId !== null &&
         <Menu.Item key="refresh"><Icon type="retweet" /> 重新关联归类数据</Menu.Item>}
         <Menu.Item key="rule"><Icon type="tool" /> 设置关联导入规则</Menu.Item>
       </Menu>);

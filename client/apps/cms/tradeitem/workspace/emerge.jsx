@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { notification, Button, Breadcrumb, Layout } from 'antd';
-import EmergeItemTable from './emergeItemTable';
 import PageHeader from 'client/components/PageHeader';
 import { loadWorkspaceItems, submitAudit } from 'common/reducers/cmsTradeitem';
 import connectNav from 'client/common/decorators/connect-nav';
 import ModuleMenu from '../menu';
+import WsItemExportButton from './exportButton';
+import EmergeItemTable from './emergeItemTable';
 import { formatMsg } from '../message.i18n';
 
 const { Sider, Content } = Layout;
@@ -15,7 +16,7 @@ const { Sider, Content } = Layout;
 @injectIntl
 @connect(
   state => ({
-    tenantId: state.account.tenantId,
+    submitting: state.cmsTradeitem.submitting,
     workspaceItemList: state.cmsTradeitem.workspaceItemList,
     emergeStat: state.cmsTradeitem.workspaceStat.emerge,
   }),
@@ -28,7 +29,6 @@ const { Sider, Content } = Layout;
 export default class NewItemsList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    tenantId: PropTypes.number.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
@@ -57,7 +57,9 @@ export default class NewItemsList extends React.Component {
             filter: JSON.stringify(this.state.filter),
           });
           this.setState({ filter });
-          notification.info({ title: '提示', description: '部分归类已提交审核' });
+          notification.info({ title: '提示', description: '归类已提交审核' });
+        } else if (result.data.feedback === 'noop') {
+          notification.info({ title: '提示', description: '没有归类可提交审核' });
         }
       }
     });
@@ -74,13 +76,15 @@ export default class NewItemsList extends React.Component {
               filter: JSON.stringify(this.state.filter),
             });
             this.setState({ filter });
-            notification.info({ title: '提示', description: '部分归类已提交审核' });
+            notification.info({ title: '提示', description: '归类已提交审核' });
+          } else if (result.data.feedback === 'noop') {
+            notification.info({ title: '提示', description: '没有归类可提交主库审核' });
           }
         }
       });
   }
   render() {
-    const { workspaceItemList, emergeStat } = this.props;
+    const { workspaceItemList, emergeStat, submitting } = this.props;
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -105,9 +109,9 @@ export default class NewItemsList extends React.Component {
               </Breadcrumb>
             </PageHeader.Title>
             <PageHeader.Actions>
-              <Button icon="file-excel">导出</Button>
-              {emergeStat.master && <Button type="primary" ghost icon="cloud-upload-o" onClick={this.handleMasterAudit}>提交主库</Button>}
-              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit}>提交审核</Button>
+              <WsItemExportButton {...this.state.filter} />
+              {emergeStat.master && <Button type="primary" ghost icon="cloud-upload-o" loading={submitting} onClick={this.handleMasterAudit}>提交主库</Button>}
+              <Button type="primary" icon="arrow-up" onClick={this.handleLocalAudit} loading={submitting}>提交审核</Button>
             </PageHeader.Actions>
           </PageHeader>
           <Content className="page-content" key="main">

@@ -25,12 +25,7 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
     width: 200,
     render: (o, record) => {
       const pn = o === record.src_product_no ? o : <span>{o}|{record.src_product_no}</span>;
-      if (record.feedback === 'repeat') {
-        return (
-          <Tooltip title="新归类与原归类相同">
-            <Tag color="orange">{pn}</Tag>
-          </Tooltip>);
-      } else if (record.duplicate) {
+      if (record.duplicate) {
         return (
           <Tooltip title="导入货号重复造成冲突">
             <Tag color="red">{pn}</Tag>
@@ -41,8 +36,12 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
             <Tag color="blue">{pn}</Tag>
           </Tooltip>);
       } else if (record.rejected) {
+        let reason = '';
+        if (record.reason) {
+          reason = `: ${record.reason}`;
+        }
         return (
-          <Tooltip title={`审核拒绝(${record.reason})`}>
+          <Tooltip title={`审核拒绝${reason}`}>
             <Tag color="grey">{pn}</Tag>
           </Tooltip>);
       } else {
@@ -249,11 +248,15 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
       title: '主库审核',
       dataIndex: 'master_repo_id',
       width: 80,
-      render: (masterRepo) => {
-        if (masterRepo) {
+      render: (masterRepo, row) => {
+        let master = masterRepo;
+        if (master && row.item_id && !row.master_id) {
+          master = false;
+        }
+        if (master) {
           return <Tooltip title="可提交主库审核"><span><Fontello type="circle" color="green" /></span></Tooltip>;
         } else {
-          return <Tooltip title="只需本库审核"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
+          return <Tooltip title="只可提交本库"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
         }
       } });
   }

@@ -103,7 +103,7 @@ export default class ConflictItemTable extends React.Component {
   }, {
     title: '操作',
     dataIndex: 'OPS_COL',
-    width: 140,
+    width: 210,
     fixed: 'right',
     render: (_, record) => {
       const spanElms = [];

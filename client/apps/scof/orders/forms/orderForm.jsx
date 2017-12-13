@@ -444,13 +444,30 @@ export default class OrderForm extends Component {
               </FormItem>
             </Col>
             <Col sm={8}>
-              <FormItem label="发票号" {...formItemLayout}>
-                <Input placeholder="可用逗号分隔填写多个" value={formData.cust_invoice_no} onChange={e => this.handleChange('cust_invoice_no', e.target.value)} />
+              <FormItem label="扩展单号1" {...formItemLayout}>
+                <Input value={formData.ext_attr_1} onChange={e => this.handleChange('ext_attr_1', e.target.value)} />
               </FormItem>
             </Col>
             <Col sm={8}>
-              <FormItem label="合同号" {...formItemLayout}>
-                <Input value={formData.cust_contract_no} onChange={e => this.handleChange('cust_contract_no', e.target.value)} />
+              <FormItem label="扩展单号2" {...formItemLayout}>
+                <Input value={formData.ext_attr_2} onChange={e => this.handleChange('ext_attr_2', e.target.value)} />
+              </FormItem>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col sm={8}>
+              <FormItem label="扩展单号3" {...formItemLayout}>
+                <Input value={formData.ext_attr_3} onChange={e => this.handleChange('ext_attr_3', e.target.value)} />
+              </FormItem>
+            </Col>
+            <Col sm={8}>
+              <FormItem label="扩展单号4" {...formItemLayout}>
+                <Input value={formData.ext_attr_4} onChange={e => this.handleChange('ext_attr_4', e.target.value)} />
+              </FormItem>
+            </Col>
+            <Col sm={8}>
+              <FormItem label="扩展单号5" {...formItemLayout}>
+                <Input value={formData.ext_attr_5} onChange={e => this.handleChange('ext_attr_5', e.target.value)} />
               </FormItem>
             </Col>
           </Row>
