@@ -530,3 +530,22 @@ export const CIQ_ENT_QUALIFY_TYPE = [
   { value: 415, text: '进出境集装箱场站登记' },
   { value: 416, text: '进口棉花境外供货商登记注册' },
 ];
+
+export const CIQ_INSP_QUAE_DOCUMENTS = [
+  { app_cert_code: '11', app_cert_name: '品质证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '12', app_cert_name: '重量证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '13', app_cert_name: '数量证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '14', app_cert_name: '兽医卫生证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '15', app_cert_name: '健康证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '16', app_cert_name: '卫生证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '17', app_cert_name: '动物卫生证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '18', app_cert_name: '植物检疫证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '19', app_cert_name: '熏蒸/消毒证书', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '20', app_cert_name: '出境货物换证凭单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '21', app_cert_name: '入境货物检验检疫证明', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '22', app_cert_name: '出境货物不合格通知单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '23', app_cert_name: '集装箱检验检疫结果单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '97', app_cert_name: '通关单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '98', app_cert_name: '其他单', appl_ori: 1, appl_copy_quan: 2 },
+  { app_cert_code: '99', app_cert_name: '其他证书', appl_ori: 1, appl_copy_quan: 2 },
+];
