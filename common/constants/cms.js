@@ -223,17 +223,17 @@ export const CMS_CONFIRM = [
 ];
 
 export const CMS_DECL_DOCU = [
-  { value: '00000001', text: '发票' },
-  { value: '00000002', text: '装箱单' },
-  { value: '00000003', text: '提运单' },
-  { value: '00000004', text: '合同' },
-  { value: '00000005', text: '其他1' },
-  { value: '00000006', text: '其他2' },
-  { value: '00000007', text: '其他3' },
-  { value: '00000008', text: '代理报关委托协议' },
-  { value: '10000001', text: '电子代理委托协议' },
-  { value: '10000002', text: '减免税货物税款担保证明' },
-  { value: '10000003', text: '减免税货物税款担保延期证明' },
+  { value: '1', text: '发票' },
+  { value: '2', text: '装箱单' },
+  { value: '3', text: '提运单' },
+  { value: '4', text: '合同' },
+  { value: '5', text: '其他1' },
+  { value: '6', text: '其他2' },
+  { value: '7', text: '其他3' },
+  { value: '8', text: '代理报关委托协议' },
+  { value: 'A', text: '电子代理委托协议' },
+  { value: 'B', text: '减免税货物税款担保证明' },
+  { value: 'C', text: '减免税货物税款担保延期证明' },
 ];
 
 export const CMS_CNTNR_SPEC_CUS = [

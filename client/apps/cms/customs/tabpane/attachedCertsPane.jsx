@@ -40,12 +40,13 @@ function ColumnSelect(props) {
     return (
       <Select value={record[field] || ''} onChange={handleChange} style={{ width: '100%' }}>
         {
-          options.map(opt => <Option value={opt.key} key={opt.key}>{opt.text}</Option>)
+          options.map(opt => <Option value={opt.value} key={opt.key}>{opt.text}</Option>)
         }
       </Select>
     );
   } else {
-    return <span>{`${record.cert_code} | ${record[field]}` || ''}</span>;
+    const existOpt = options.filter(opt => opt.key === record[field])[0];
+    return <span>{existOpt ? existOpt.text : ''}</span>;
   }
 }
 
@@ -93,9 +94,9 @@ export default class CertMarkPane extends React.Component {
   }
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values)
   handleEditChange = (record, field, value) => {
-    if (field === 'cert_spec') {
-      const cert = this.props.certParams.filter(param => param.cert_spec === value)[0];
-      record.cert_code = cert.cert_code; // eslint-disable-line no-param-reassign
+    if (field === 'cert_code') {
+      const cert = this.props.certParams.filter(param => param.cert_code === value)[0];
+      record.cert_spec = cert.cert_spec; // eslint-disable-line no-param-reassign
     }
     record[field] = value; // eslint-disable-line no-param-reassign
     this.forceUpdate();
@@ -155,13 +156,13 @@ export default class CertMarkPane extends React.Component {
     const option = certParams.map(cert => ({
       value: cert.cert_code,
       text: `${cert.cert_code}|${cert.cert_spec}`,
-      key: cert.cert_spec,
+      key: cert.cert_code,
     }));
     const columns = [{
       title: this.msg('certSpec'),
-      dataIndex: 'cert_spec',
+      dataIndex: 'cert_code',
       render: (o, record) =>
-        (<ColumnSelect field="cert_spec" inEdit={!record.id} record={record}
+        (<ColumnSelect field="cert_code" inEdit={!record.id} record={record}
           onChange={this.handleEditChange} options={option}
         />),
     }, {
