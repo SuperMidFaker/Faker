@@ -18,9 +18,11 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'UPDATE_CIQ_GOOD', 'UPDATE_CIQ_GOOD_SUCCEED', 'UPDATE_CIQ_GOOD_FAIL',
   'EXTEND_COUNTRY_CODE', 'EXTEND_COUNTRY_CODE_SUCCEED', 'EXTEND_COUNTRY_CODE_FAIL',
   'SEARCH_CUSTOMS', 'SEARCH_CUSTOMS_SUCCEED', 'SEARCH_CUSTOMS_FAIL',
-  'TOGGLE_ENTQUALIFI_MODAL',
+  'TOGGLE_ENTQUALIFI_MODAL', 'TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL',
   'SAVE_ENT_QUALIF', 'SAVE_ENT_QUALIF_SUCCEED', 'SAVE_ENT_QUALIF_FAIL',
   'LOAD_ENT_QUALIF', 'LOAD_ENT_QUALIF_SUCCEED', 'LOAD_ENT_QUALIF_FAIL',
+  'DELETE_ENT_QUALIF', 'DELETE_ENT_QUALIF_SUCCEED', 'DELETE_ENT_QUALIF_FAIL',
+  'SAVE_DOCUMENTS', 'SAVE_DOCUMENTS_SUCCEED', 'SAVE_DOCUMENTS_FAIL',
 ]);
 
 const initialState = {
@@ -60,6 +62,9 @@ const initialState = {
     visible: false,
   },
   entQualifs: [],
+  inspQuarantineDocumentsRequiredModal: {
+    visible: false,
+  },
 };
 
 export default function reducer(state = initialState, action) {
@@ -126,6 +131,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, entQualifictaionModal: { ...state.entQualifictaionModal, visible: action.visible } };
     case actionTypes.LOAD_ENT_QUALIF_SUCCEED:
       return { ...state, entQualifs: action.result.data };
+    case actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL:
+      return { ...state, inspQuarantineDocumentsRequiredModal: { ...state.entQualifictaionModal, visible: action.visible } };
     default:
       return state;
   }
@@ -398,6 +405,43 @@ export function loadEntQualif(customerPartnerId, ciqCode) {
       endpoint: 'v1/cms/ent/qualif/load',
       method: 'get',
       params: { customerPartnerId, ciqCode },
+    },
+  };
+}
+
+export function deleteEntQualif(ids) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.DELETE_ENT_QUALIF,
+        actionTypes.DELETE_ENT_QUALIF_SUCCEED,
+        actionTypes.DELETE_ENT_QUALIF_FAIL,
+      ],
+      endpoint: 'v1/cms/ent/qualif/delete',
+      method: 'post',
+      data: { ids },
+    },
+  };
+}
+
+export function toggleInspQuarantineDocumentsRequiredModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL,
+    visible,
+  };
+}
+
+export function saveDocuments(data, preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_DOCUMENTS,
+        actionTypes.SAVE_DOCUMENTS_SUCCEED,
+        actionTypes.SAVE_DOCUMENTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/documents/save',
+      method: 'post',
+      data: { data: JSON.stringify(data), preEntrySeqNo },
     },
   };
 }
