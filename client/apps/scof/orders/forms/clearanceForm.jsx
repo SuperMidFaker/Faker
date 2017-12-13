@@ -158,6 +158,18 @@ export default class ClearanceForm extends Component {
         </Row>
         <Row>
           <Col sm={24} lg={8}>
+            <FormItem label="发票号" {...formItemLayout}>
+              <Input placeholder="可用逗号分隔填写多个" value={node.cust_invoice_no} onChange={ev => this.handleChange('cust_invoice_no', ev.target.value)} />
+            </FormItem>
+          </Col>
+          <Col sm={24} lg={8}>
+            <FormItem label="合同号" {...formItemLayout}>
+              <Input value={node.cust_contract_no} onChange={ev => this.handleChange('cust_contract_no', ev.target.value)} />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={24} lg={8}>
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
