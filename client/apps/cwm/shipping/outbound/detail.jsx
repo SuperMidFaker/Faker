@@ -87,10 +87,10 @@ export default class OutboundDetail extends Component {
       }
     });
   }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     this.handleSave({ accepted: false });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleAutoAllocate = () => {

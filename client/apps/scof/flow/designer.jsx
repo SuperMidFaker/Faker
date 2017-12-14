@@ -468,7 +468,7 @@ export default class FlowDesigner extends React.Component {
     });
   }
   handlePanelForm = (form) => { this.formhoc = form; }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     const activeItem = this.state.activeItem;
     if (activeItem && this.formhoc) {
       const values = this.formhoc.getFieldsValue();
@@ -542,7 +542,7 @@ export default class FlowDesigner extends React.Component {
               toggle
             />
             <div className="page-header-tools">
-              <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+              <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
                 {this.msg('saveFlow')}
               </Button>
               <ButtonToggle

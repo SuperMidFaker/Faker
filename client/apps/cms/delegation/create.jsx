@@ -74,10 +74,10 @@ export default class CreateDelegation extends Component {
       }
     });
   }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     this.handleSave({ accepted: false });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleSaveAccept = () => {
@@ -103,10 +103,10 @@ export default class CreateDelegation extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('save')}
             </Button>
           </div>

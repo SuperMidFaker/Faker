@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Alert, Button, Modal, Form, Radio, Select, message } from 'antd';
+import { Alert, Modal, Form, Radio, Select, message } from 'antd';
 import DescriptionList from 'client/components/DescriptionList';
 import { showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl } from 'common/reducers/cmsDeclare';
 import { CMS_DECL_CHANNEL, CMS_IMPORT_DECL_TYPE, CMS_EXPORT_DECL_TYPE } from 'common/constants';
@@ -100,18 +100,6 @@ export default class SendDeclMsgModal extends React.Component {
         sm: { span: 14 },
       },
     };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0,
-        },
-        sm: {
-          span: 14,
-          offset: 6,
-        },
-      },
-    };
     let declList = [];
     if (ietype === 'import') {
       declList = CMS_IMPORT_DECL_TYPE;
@@ -132,7 +120,7 @@ export default class SendDeclMsgModal extends React.Component {
           }
           <FormItem label={this.msg('declChannel')} {...formItemLayout}>
             {getFieldDecorator('declChannel', { initialValue: defaultDecl && defaultDecl.channel, rules: [{ required: true, message: '请选择申报通道' }] })(
-              <RadioGroup>
+              <RadioGroup onChange={this.handleChannelChange}>
                 {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
                   const channel = CMS_DECL_CHANNEL[declChannel];
                   return <RadioButton value={channel.value} key={channel.value} disabled={channel.disabled}>{channel.text}</RadioButton>;
@@ -166,12 +154,6 @@ export default class SendDeclMsgModal extends React.Component {
             )}
             </FormItem>}
         </Form>
-        {
-          getFieldValue('declChannel') &&
-          <FormItem {...tailFormItemLayout}>
-            <Button type="primary" ghost icon="eye">预览报文</Button>
-          </FormItem>
-        }
       </Modal>
     );
   }

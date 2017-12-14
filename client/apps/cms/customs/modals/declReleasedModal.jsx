@@ -99,7 +99,7 @@ export default class DeclReleasedModal extends React.Component {
           </FormItem>
           <FormItem label={this.state.ieLabel} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>
             <DatePicker onChange={this.handleIEDateChange} value={this.state.ieTime && moment(this.state.ieTime)}
-              style={{ width: '100%' }} format="YYYY-MM-DD HH:mm" showTime
+              style={{ width: '100%' }} format="YYYY-MM-DD"
             />
           </FormItem>
           <FormItem label="放行时间" labelCol={{ span: 6 }} wrapperCol={{ span: 14 }}>

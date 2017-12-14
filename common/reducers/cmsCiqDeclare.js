@@ -64,7 +64,7 @@ const initialState = {
     visible: false,
   },
   entQualifs: [],
-  inspQuarantineDocumentsRequiredModal: {
+  requiredDocuModal: {
     visible: false,
   },
   attDocuModal: {
@@ -137,7 +137,7 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ENT_QUALIF_SUCCEED:
       return { ...state, entQualifs: action.result.data };
     case actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL:
-      return { ...state, inspQuarantineDocumentsRequiredModal: { ...state.entQualifictaionModal, visible: action.visible } };
+      return { ...state, requiredDocuModal: { ...state.entQualifictaionModal, visible: action.visible } };
     case actionTypes.TOGGLE_ATT_DOCU_MODAL:
       return { ...state, attDocuModal: { ...state.attDocuModal, visible: action.visible } };
     default:
@@ -431,7 +431,7 @@ export function deleteEntQualif(ids) {
   };
 }
 
-export function toggleInspQuarantineDocumentsRequiredModal(visible) {
+export function toggleReqDocuModal(visible) {
   return {
     type: actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL,
     visible,

@@ -8,15 +8,15 @@ import InfoItem from 'client/components/InfoItem';
 import FormPane from 'client/components/FormPane';
 import { loadCiqDeclHead, searchOrganizations, searchWorldPorts, searchChinaPorts, searchCountries,
    setFixedCountry, setFixedOrganizations, setFixedWorldPorts, updateCiqHeadField, loadCiqParams, searchCustoms,
-   toggleEntQualifiModal, loadEntQualif, ciqHeadChange, toggleInspQuarantineDocumentsRequiredModal,
+   toggleEntQualifiModal, loadEntQualif, ciqHeadChange, toggleReqDocuModal,
    toggleAttDocuModal } from 'common/reducers/cmsCiqDeclare';
 import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { loadBusinessUnits } from 'common/reducers/cmsResources';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import { CiqCodeAutoCompSelect } from '../../common/form/headFormItems';
 import EntQualifiModal from '../modal/entQualifiModal';
-import InspQuarantineDocumentsRequiredModal from '../modal/inspQuarantineDocumentsRequiredModal';
-import DecCiqDocuAttModal from '../modal/decCiqdocumentsAttachedModal';
+import RequiredDocuModal from '../modal/requiredDocuModal';
+import AttachedDocuModal from '../modal/attachedDocuModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG, CIQ_TRANSPORTS_TYPE, CIQ_TRADE_MODE,
@@ -63,7 +63,7 @@ const ButtonGroup = Button.Group;
     toggleEntQualifiModal,
     loadEntQualif,
     ciqHeadChange,
-    toggleInspQuarantineDocumentsRequiredModal,
+    toggleReqDocuModal,
     toggleAttDocuModal,
   }
 )
@@ -229,7 +229,7 @@ export default class CiqDeclHeadPane extends React.Component {
     }
   }
   handleToggleInspQuarDocuReModal = () => {
-    this.props.toggleInspQuarantineDocumentsRequiredModal(true);
+    this.props.toggleReqDocuModal(true);
   }
   toggleAttDocuModal = () => {
     this.props.toggleAttDocuModal(true);
@@ -803,10 +803,10 @@ export default class CiqDeclHeadPane extends React.Component {
         <EntQualifiModal ciqCode={ioType === 'in' ? ciqDeclHead.ciq_consignee_code : ciqDeclHead.ciq_consignor_code}
           customerPartnerId={this.props.ciqDeclHead.owner_cuspartner_id}
         />
-        <InspQuarantineDocumentsRequiredModal selectedRowKeys={ciqDeclHead.app_cert_code} preEntrySeqNo={ciqDeclHead.pre_entry_seq_no}
+        <RequiredDocuModal selectedRowKeys={ciqDeclHead.app_cert_code} preEntrySeqNo={ciqDeclHead.pre_entry_seq_no}
           applOris={ciqDeclHead.appl_ori} applCopyQuans={ciqDeclHead.appl_copy_quan}
         />
-        <DecCiqDocuAttModal preEntrySeqNo={ciqDeclHead.pre_entry_seq_no} />
+        <AttachedDocuModal preEntrySeqNo={ciqDeclHead.pre_entry_seq_no} />
       </FormPane>
     );
   }

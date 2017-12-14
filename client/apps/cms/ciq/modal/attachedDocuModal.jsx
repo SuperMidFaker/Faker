@@ -13,7 +13,7 @@ import { CIQ_ATT_DOCUMENTS } from 'common/constants';
   }),
   { toggleAttDocuModal, saveAttDocuments, loadCiqDeclHead, loadAttDocuments }
 )
-export default class DecCiqDocuAttModal extends Component {
+export default class AttachedDocuModal extends Component {
   static PropTypes = {
     preEntrySeqNo: PropTypes.string.isRequired,
   }

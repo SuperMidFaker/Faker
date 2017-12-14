@@ -7,6 +7,7 @@ export default class RowAction extends Component {
   static propTypes = {
     label: PropTypes.any,
     icon: PropTypes.string,
+    shape: PropTypes.string,
     onClick: PropTypes.func,
     onHover: PropTypes.func,
     onConfirm: PropTypes.func,
@@ -38,7 +39,7 @@ export default class RowAction extends Component {
     }
   }
   renderButton = () => {
-    const { label, primary, danger, overlay, icon } = this.props;
+    const { label, primary, danger, overlay, icon, shape } = this.props;
     let type = 'default';
     if (primary) {
       type = 'primary';
@@ -47,10 +48,10 @@ export default class RowAction extends Component {
     }
     return overlay ?
     (<Dropdown overlay={overlay} placement="bottomRight" trigger={['click']}>
-      <Button size="small"><Icon type="ellipsis" /></Button>
+      <Button shape={shape} size="small"><Icon type="ellipsis" /></Button>
     </Dropdown>)
     :
-    (<Button type={type} ghost={primary} size="small" icon={icon} onClick={this.handleClick} onMouseEnter={this.handleHover} className="welo-row-action">
+    (<Button type={type} shape={shape} ghost={primary} size="small" icon={icon} onClick={this.handleClick} onMouseEnter={this.handleHover} className="welo-row-action">
       {label}
     </Button>);
   }

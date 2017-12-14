@@ -60,7 +60,7 @@ export default class CreateReceivingASN extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     const { temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
@@ -92,7 +92,7 @@ export default class CreateReceivingASN extends Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleUploadFiles = (fileList) => {
@@ -133,10 +133,10 @@ export default class CreateReceivingASN extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
-            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            <Button type="primary" disabled={disable} icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('save')}
             </Button>
           </PageHeader.Actions>

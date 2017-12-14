@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Modal, Input, Table } from 'antd';
-import { toggleInspQuarantineDocumentsRequiredModal, saveRequiredDocuments, loadCiqDeclHead } from 'common/reducers/cmsCiqDeclare';
+import { toggleReqDocuModal, saveRequiredDocuments, loadCiqDeclHead } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
 
 
 @connect(
   state => ({
-    visible: state.cmsCiqDeclare.inspQuarantineDocumentsRequiredModal.visible,
+    visible: state.cmsCiqDeclare.requiredDocuModal.visible,
   }),
-  { toggleInspQuarantineDocumentsRequiredModal, saveRequiredDocuments, loadCiqDeclHead }
+  { toggleReqDocuModal, saveRequiredDocuments, loadCiqDeclHead }
 )
-export default class InspQuarantineDocumentsRequiredModal extends Component {
+export default class RequiredDocuModal extends Component {
   static PropTypes = {
     preEntrySeqNo: PropTypes.string.isRequired,
     selectedRowKeys: PropTypes.string,
@@ -49,7 +49,7 @@ export default class InspQuarantineDocumentsRequiredModal extends Component {
     }
   }
   handleCancel = () => {
-    this.props.toggleInspQuarantineDocumentsRequiredModal(false);
+    this.props.toggleReqDocuModal(false);
   }
   handleOk = () => {
     const { selectedRows } = this.state;

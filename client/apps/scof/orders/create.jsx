@@ -101,7 +101,7 @@ export default class CreateOrder extends Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   render() {
@@ -119,7 +119,7 @@ export default class CreateOrder extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" onClick={this.handleSave} loading={this.props.saving}>

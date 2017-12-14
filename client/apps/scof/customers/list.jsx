@@ -107,7 +107,7 @@ export default class CustomerList extends React.Component {
     }
     this.setState({ customers, currentPage: 1 });
   }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
   }
   render() {
     const { customer } = this.state;
@@ -171,7 +171,7 @@ export default class CustomerList extends React.Component {
               toggle
             />
             <div className="page-header-tools">
-              <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSaveBtnClick}>
+              <Button type="primary" icon="save" disabled={this.state.unchanged} onClick={this.handleSave}>
                 {this.msg('save')}
               </Button>
             </div>

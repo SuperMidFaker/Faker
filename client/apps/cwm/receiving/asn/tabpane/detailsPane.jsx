@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Icon } from 'antd';
+import { Button } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
@@ -143,9 +143,8 @@ export default class DetailsPane extends Component {
       fixed: 'right',
       render: (o, record) => (
         <span>
-          <RowAction onClick={this.handleEdit} label={<Icon type="edit" />} row={record} />
-          <span className="ant-divider" />
-          <RowAction onClick={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
+          <RowAction onClick={this.handleEdit} icon="edit" row={record} />
+          <RowAction confirm="确定要删除吗?" onConfirm={() => this.handleDelete(record.index)} icon="delete" row={record} />
         </span>
         ),
     }];

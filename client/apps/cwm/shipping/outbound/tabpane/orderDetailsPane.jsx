@@ -126,16 +126,14 @@ export default class OrderDetailsPane extends React.Component {
     render: (o, record) => {
       if (record.alloc_qty < record.order_qty) {
         return (<span>
-          <RowAction onClick={this.handleSKUAutoAllocate} label="自动分配" row={record} disabled={this.props.submitting} />
-          <span className="ant-divider" />
-          <RowAction onClick={this.handleManualAlloc} label="手动分配" row={record} />
+          <RowAction onClick={this.handleSKUAutoAllocate} icon="rocket" label="自动分配" row={record} disabled={this.props.submitting} />
+          <RowAction onClick={this.handleManualAlloc} icon="tool" tooltip="手动分配" row={record} />
         </span>);
       } else {
         return (<span>
-          <RowAction onClick={this.handleAllocDetails} label="分配明细" row={record} />
-          {record.picked_qty < record.alloc_qty && <span className="ant-divider" />}
+          <RowAction onClick={this.handleAllocDetails} icon="eye-o" label="分配明细" row={record} />
           {record.picked_qty < record.alloc_qty &&
-            <RowAction onClick={this.handleSKUCancelAllocate} label="取消分配" row={record} disabled={this.props.submitting} />}
+            <RowAction onClick={this.handleSKUCancelAllocate} icon="close-circle-o" tooltip="取消分配" row={record} disabled={this.props.submitting} />}
         </span>);
       }
     },

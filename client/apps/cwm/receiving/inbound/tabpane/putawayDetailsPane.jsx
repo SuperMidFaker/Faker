@@ -108,9 +108,8 @@ export default class PutawayDetailsPane extends React.Component {
     render: (o, record) => {
       if (!record.result) {  // 上架明细的状态 0 未上架 1 已上架
         return (<span>
-          <RowAction onClick={this.handlePutAway} label="上架确认" row={record} />
-          <span className="ant-divider" />
-          <RowAction onClick={this.handleUndoReceive} label="取消收货" row={record} />
+          <RowAction onClick={this.handlePutAway} icon="check-circle-o" label="上架确认" row={record} />
+          <RowAction onClick={this.handleUndoReceive} icon="close-circle-o" tooltip="取消收货" row={record} />
         </span>);
       }
     },

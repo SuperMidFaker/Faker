@@ -49,7 +49,7 @@ export default class InstallSHFTZ extends React.Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
 
@@ -67,7 +67,7 @@ export default class InstallSHFTZ extends React.Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools">
-            <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>
             <Button type="primary" icon="save" loading={this.state.submitting}

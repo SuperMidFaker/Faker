@@ -274,7 +274,7 @@ export default class OrderForm extends Component {
                         <Icon type="question-circle-o" />
                       </Popover>
                 </span>
-                  )} {...formItemLayout} required="true"
+                  )} {...formItemLayout} required
               >
                 <RadioGroup value={formData.cust_shipmt_transfer} onChange={ev => this.handleKvChange('cust_shipmt_transfer', ev.target.value, 'transfer')}>
                   {SCOF_ORDER_TRANSFER.map(sot => <RadioButton value={sot.value} key={sot.value}>{sot.text}</RadioButton>)}
@@ -282,7 +282,7 @@ export default class OrderForm extends Component {
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
-              <FormItem label="货物类型" {...formItemLayout} required="true">
+              <FormItem label="货物类型" {...formItemLayout} required>
                 <RadioGroup value={formData.cust_shipmt_goods_type} onChange={ev => this.handleKvChange('cust_shipmt_goods_type', ev.target.value, 'goods')}>
                   <RadioButton value={GOODSTYPES[0].value}>{GOODSTYPES[0].text}</RadioButton>
                   <RadioButton value={GOODSTYPES[1].value}>{GOODSTYPES[1].text}</RadioButton>
@@ -390,7 +390,7 @@ export default class OrderForm extends Component {
               }
           <Row gutter={16}>
             <Col sm={16} lg={8}>
-              <FormItem label="件数/包装" {...formItemLayout} required="true">
+              <FormItem label="件数/包装" {...formItemLayout} required>
                 <InputGroup compact>
                   <Input type="number" style={{ width: '50%' }} value={formData.cust_shipmt_pieces} onChange={(ev) => {
                     const pieces = parseFloat(ev.target.value);
@@ -411,7 +411,7 @@ export default class OrderForm extends Component {
               </FormItem>
             </Col>
             <Col sm={16} lg={8}>
-              <FormItem label="总毛重" {...formItemLayout} required="true">
+              <FormItem label="总毛重" {...formItemLayout} required>
                 <Input type="number" addonAfter="KG" value={formData.cust_shipmt_weight} onChange={(ev) => {
                   const weight = parseFloat(ev.target.value);
                   if (!isNaN(weight)) {

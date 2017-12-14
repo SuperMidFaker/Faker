@@ -72,7 +72,7 @@ export default class ReceivingASNDetail extends Component {
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
   }
-  handleSaveBtnClick = () => {
+  handleSave = () => {
     const { temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers } = this.props;
     this.props.form.validateFields((errors, values) => {
       if (!errors) {
@@ -100,7 +100,7 @@ export default class ReceivingASNDetail extends Component {
       }
     });
   }
-  handleCancelBtnClick = () => {
+  handleCancel = () => {
     this.context.router.goBack();
   }
   handleUploadFiles = (fileList) => {
@@ -136,10 +136,10 @@ export default class ReceivingASNDetail extends Component {
             </Breadcrumb>
           </PageHeader.Title>
           <PageHeader.Actions>
-            {this.state.editable && <Button type="ghost" onClick={this.handleCancelBtnClick}>
+            {this.state.editable && <Button type="ghost" onClick={this.handleCancel}>
               {this.msg('cancel')}
             </Button>}
-            {this.state.editable && <Button type="primary" icon="save" loading={submitting} onClick={this.handleSaveBtnClick}>
+            {this.state.editable && <Button type="primary" icon="save" loading={submitting} onClick={this.handleSave}>
               {this.msg('save')}
             </Button>}
           </PageHeader.Actions>

@@ -106,6 +106,7 @@ export default class CustomsList extends Component {
     title: this.msg('declNo'),
     dataIndex: 'entry_id',
     width: 200,
+    fixed: 'left',
     render: (entryNO, record) => {
       switch (record.status) {
         case CMS_DECL_STATUS.proposed.value:
@@ -117,11 +118,11 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.sent.value:
           return (
             <span>
-              <span className="text-normal">
+              <span className="text-normal" style={{ marginRight: 4 }}>
                 {record.pre_entry_seq_no}
               </span>
               <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowAction onClick={this.handleDeclNoFill} row={record}
+                <RowAction shape="circle" onClick={this.handleDeclNoFill} row={record}
                   label={<Icon type="edit" />} tooltip="回填海关编号"
                 />
               </PrivilegeCover>
@@ -132,37 +133,6 @@ export default class CustomsList extends Component {
         default:
           break;
       }
-      /*
-      switch (record.status) {
-        case CMS_DECL_STATUS.proposed.value:
-        case CMS_DECL_STATUS.reviewed.value:
-          return (
-            <Tooltip title="点击编号在新窗口中打开" placement="right">
-              <a onClick={ev => this.handleOpenInWindow(record, ev)}>
-                {record.pre_entry_seq_no}
-              </a>
-            </Tooltip>);
-        case CMS_DECL_STATUS.sent.value:
-          return (
-            <span>
-              <Tooltip title="点击编号在新窗口中打开" placement="left">
-                <a onClick={ev => this.handleOpenInWindow(record, ev)}>
-                  {record.pre_entry_seq_no}
-                </a>
-              </Tooltip>
-              <PrivilegeCover module="clearance" feature="customs" action="edit" key="entry_no">
-                <RowAction onClick={this.handleDeclNoFill} row={record}
-                  label={<Icon type="edit" />} tooltip="回填海关编号"
-                />
-              </PrivilegeCover>
-            </span>);
-        case CMS_DECL_STATUS.entered.value:
-        case CMS_DECL_STATUS.released.value:
-          return (<Tooltip title="点击编号在新窗口中打开" mouseEnterDelay={3} placement="left"><a onClick={ev => this.handleOpenInWindow(record, ev)}>{entryNO}</a></Tooltip>);
-        default:
-          break;
-      }
-      */
     },
   }, {
     title: <Tooltip title="申报项数"><Icon type="bars" /></Tooltip>,
