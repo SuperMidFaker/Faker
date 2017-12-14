@@ -18,7 +18,7 @@ import * as CorpRole from './corp/role';
 import * as CorpLogs from './corp/logs';
 import PackDataHub from './hub/packDataHub';
 import * as Collab from './hub/collab';
-import * as HubOpenAPI from './hub/api';
+import * as HubDev from './hub/dev';
 import * as HubAdapter from './hub/adapter';
 import * as OpenIntegration from './hub/integration';
 import * as IntegraionArCTM from './hub/integration/arctm';
@@ -166,9 +166,9 @@ export default(store) => {
         </Route>
         <Route path="hub" component={PackDataHub}>
           <IndexRedirect to="/hub/integration/installed" />
-          <Route path="api">
-            <Route path="auth" component={HubOpenAPI.Auth} />
-            <Route path="webhook" component={HubOpenAPI.Webhook} />
+          <Route path="dev">
+            <IndexRoute component={HubDev.List} />
+            <Route path=":appId" component={HubDev.Profile} />
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">

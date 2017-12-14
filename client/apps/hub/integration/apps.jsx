@@ -22,6 +22,11 @@ export default class IntegrationAppsList extends React.Component {
   render() {
     const data = [
       {
+        title: '『单一窗口』货物申报',
+        link: '/hub/integration/singlewindow/install',
+        description: '国际贸易单一窗口',
+      },
+      {
         title: 'QP海关预录入系统',
         link: '/hub/integration/quickpass/install',
         description: 'QuickPass 海关预录入系统',
@@ -52,7 +57,7 @@ export default class IntegrationAppsList extends React.Component {
         <Header className="page-header">
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Icon type="shop" /> 应用商店
+              <Icon type="shop" /> 系统整合
             </Breadcrumb.Item>
           </Breadcrumb>
           <div className="page-header-tools" />

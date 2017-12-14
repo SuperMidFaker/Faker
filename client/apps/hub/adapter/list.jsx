@@ -92,12 +92,12 @@ export default class ApiAuthList extends React.Component {
     },
   }, {
     title: this.msg('操作'),
-    width: 150,
+    width: 140,
     render: (_, record) => {
       let editDiv = null;
       if (record.active) {
         editDiv = (<PrivilegeCover module="clearance" feature="resources" action="edit">
-          <RowAction icon="edit" onClick={this.handleEditBtnClick} row={record} />
+          <RowAction onClick={this.handleEditBtnClick} icon="edit" label="修改" row={record} />
         </PrivilegeCover>);
       } else {
         editDiv = (<ExcelUploader endpoint={`${API_ROOTS.default}v1/saas/line/file/upload/example`}

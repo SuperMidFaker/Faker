@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Alert, Breadcrumb, Button, Icon, Layout, Table } from 'antd';
-import QueueAnim from 'rc-queue-anim';
+import { Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
+import PageHeader from 'client/components/PageHeader';
 import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 
 const formatMsg = format(messages);
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 @injectIntl
 @connect(
@@ -21,7 +21,7 @@ const { Header, Content } = Layout;
   }),
 )
 
-export default class ApiAuthList extends React.Component {
+export default class DevAppList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
@@ -74,34 +74,33 @@ export default class ApiAuthList extends React.Component {
   render() {
     return (
       <div>
-        <Header className="page-header">
-          <Breadcrumb>
-            <Breadcrumb.Item>
-              <Icon type="api" /> API接口授权
-            </Breadcrumb.Item>
-          </Breadcrumb>
-          <div className="page-header-tools" />
-        </Header>
-        <Content className="main-content">
-          <QueueAnim type="right">
-            <Alert
-              description={this.msg('apiDesc')}
-              type="info"
-              showIcon
-              closable
-              key="alert"
-            />
-            <div className="page-body" key="body">
-              <div className="toolbar">
-                <Button type="primary" icon="plus" onClick={this.handleAddWarehouse}>
-                  {this.msg('generateAPICredential')}
-                </Button>
-              </div>
-              <div className="panel-body table-panel table-fixed-layout">
-                <Table columns={this.columns} dataSource={this.mockDataSource} />
-              </div>
-            </div>
-          </QueueAnim>
+        <PageHeader>
+          <PageHeader.Title>
+            <Breadcrumb>
+              <Breadcrumb.Item>
+                <Icon type="code-o" /> 自建应用
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          </PageHeader.Title>
+          <PageHeader.Actions>
+            <Button type="primary" icon="plus" onClick={this.handleCreateApp}>
+              {this.msg('create')}
+            </Button>
+          </PageHeader.Actions>
+        </PageHeader>
+        <Content className="page-content">
+          <List
+            grid={{ gutter: 16, column: 3 }}
+            dataSource={this.mockDataSource}
+            renderItem={item => (
+              <List.Item>
+                <Card title={item.app_name} className="app-card">
+                  <div className="app-logo" />
+                  <div className="app-desc">{item.scope}</div>
+                </Card>
+              </List.Item>
+              )}
+          />
         </Content>
       </div>
     );
