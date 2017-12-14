@@ -109,7 +109,7 @@ export default class ApiAuthList extends React.Component {
       return (<span>
         {editDiv}
         <PrivilegeCover module="clearance" feature="resources" action="delete">
-          <RowAction danger confirm="确定要删除吗？" onConfirm={this.handleDel} icon="delete" row={record} />
+          <RowAction danger confirm="确定删除？" onConfirm={this.handleDel} icon="delete" row={record} />
         </PrivilegeCover>
       </span>
       );

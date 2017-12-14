@@ -175,7 +175,7 @@ export default class DetailsPane extends Component {
       render: (o, record) => (
         <span>
           <RowAction onClick={this.handleEdit} icon="edit" row={record} />
-          <RowAction confirm="确定要删除吗?" onConfirm={() => this.handleDelete(record.index)} icon="delete" row={record} />
+          <RowAction confirm="确定删除?" onConfirm={() => this.handleDelete(record.index)} icon="delete" row={record} />
         </span>
       ),
     }];

@@ -102,7 +102,7 @@ export default class ReceiversPane extends Component {
         {record.active === 0 ?
           <RowAction onClick={() => this.changeReceiverStatus(record.id, true)} icon="play-circle" tooltip="启用" row={record} /> :
           <RowAction onClick={() => this.changeReceiverStatus(record.id, false)} icon="pause-circle" tooltip="停用" row={record} />}
-        <RowAction danger confirm="确定要删除吗?" onConfirm={() => this.handleDeleteReceiver(record.id)} icon="delete" row={record} />
+        <RowAction danger confirm="确定删除?" onConfirm={() => this.handleDeleteReceiver(record.id)} icon="delete" row={record} />
       </span>
     ),
   }]

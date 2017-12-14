@@ -281,7 +281,7 @@ export default class QuoteList extends Component {
                   <div>
                     <a onClick={() => this.handleQuoteEdit(record)}>{msg('reviseContinue')}</a>
                     <span className="ant-divider" />
-                    <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteDraft(record._id, record.quote_no)}>
+                    <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteDraft(record._id, record.quote_no)}>
                       <a>{msg('delete')}</a>
                     </Popconfirm>
                   </div>
@@ -361,7 +361,7 @@ export default class QuoteList extends Component {
                     <div>
                       <a onClick={() => this.handleChangeStatus(record._id, true)}>{msg('enable')}</a>
                       <span className="ant-divider" />
-                      <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteQuote(record.quote_no)}>
+                      <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteQuote(record.quote_no)}>
                         <a>{msg('delete')}</a>
                       </Popconfirm>
                       <span className="ant-divider" />

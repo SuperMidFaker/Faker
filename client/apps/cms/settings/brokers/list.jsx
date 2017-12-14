@@ -90,7 +90,7 @@ export default class BrokerList extends Component {
     return (
       <span>
         <PrivilegeCover module="corp" feature="partners" action="delete">
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDeleteBtnClick(id)}>
+          <Popconfirm title="确定删除？" onConfirm={() => this.handleDeleteBtnClick(id)}>
             <a>删除</a>
           </Popconfirm>
         </PrivilegeCover>

@@ -109,7 +109,7 @@ export default class ManifestRulesPane extends React.Component {
               <span>
                 <RowAction onClick={this.handleEdit} icon="edit" label={this.msg('modify')} row={record} />
                 <RowAction onClick={this.handleClone} icon="copy" tooltip={this.msg('copy')} row={record} />
-                <RowAction confirm="确定要删除？" onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />
+                <RowAction confirm="确定删除？" onConfirm={this.handleDelete} icon="delete" tooltip={this.msg('delete')} row={record} />
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
             return <NavLink to={`/clearance/${ietype}/manifest/rules/view/${record.id}`}>{this.msg('view')}</NavLink>;

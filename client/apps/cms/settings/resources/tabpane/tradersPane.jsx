@@ -130,7 +130,7 @@ export default class TraderList extends Component {
             <RowAction onClick={this.handleRuleBtnClick} icon="key" tooltip={this.msg('auth')} row={record} />
           </PrivilegeCover>
           <PrivilegeCover module="corp" feature="partners" action="delete">
-            <RowAction confirm="确定要删除？" onConfirm={this.handleDeleteBtnClick} icon="delete" tooltip={this.msg('delete')} row={record} />
+            <RowAction confirm="确定删除？" onConfirm={this.handleDeleteBtnClick} icon="delete" tooltip={this.msg('delete')} row={record} />
           </PrivilegeCover>
         </span>
         ),

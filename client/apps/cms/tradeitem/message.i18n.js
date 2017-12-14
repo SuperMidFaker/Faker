@@ -296,7 +296,7 @@ const messages = defineMessages({
   },
   deleteConfirm: {
     id: 'cms.tradeitem.op.delete.confirm',
-    defaultMessage: '确定要删除吗？',
+    defaultMessage: '确定删除？',
   },
 });
 

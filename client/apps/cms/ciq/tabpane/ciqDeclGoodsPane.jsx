@@ -108,7 +108,7 @@ export default class CiqDeclGoodsPane extends React.Component {
     }, {
       title: this.msg('货物名称'),
       dataIndex: 'g_name',
-      width: 150,
+      width: 200,
     }, {
       title: <div className="cell-align-right">{this.msg('数量')}</div>,
       dataIndex: 'g_qty',
@@ -175,7 +175,8 @@ export default class CiqDeclGoodsPane extends React.Component {
       width: 120,
     }, {
       dataIndex: 'OP_COL',
-      width: 100,
+      width: 60,
+      fixed: 'right',
       render: (o, record, index) => (
         <span>
           <RowAction onClick={this.handleRowClick} icon="edit" row={record} index={index} />

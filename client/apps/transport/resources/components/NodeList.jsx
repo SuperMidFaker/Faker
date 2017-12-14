@@ -97,7 +97,7 @@ export default function NodeList(props) {
           </PrivilegeCover>
           <span className="ant-divider" />
           <PrivilegeCover module="transport" feature="resources" action="delete">
-            <Popconfirm title="确定要删除吗？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
+            <Popconfirm title="确定删除？" onConfirm={() => onDeleteBtnClick(record.node_id)}>
               <a>删除</a>
             </Popconfirm>
           </PrivilegeCover>

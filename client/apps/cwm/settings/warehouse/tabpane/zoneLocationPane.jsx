@@ -253,7 +253,7 @@ export default class ZoneLocationPane extends Component {
     render: record => (
       <span>
         <RowAction onClick={this.handleEditLocation} icon="edit" row={record} />
-        <RowAction danger confirm="确定要删除吗?" onConfirm={this.handleDeleteLocation} icon="delete" row={record} />
+        <RowAction danger confirm="确定删除?" onConfirm={this.handleDeleteLocation} icon="delete" row={record} />
       </span>
     ),
   }]
@@ -337,14 +337,14 @@ export default class ZoneLocationPane extends Component {
               导出库位
             </Button>}
             {this.state.selectedRowKeys.length > 0 &&
-            <Popconfirm title="确定要删除?" onConfirm={this.batchDeleteLocations} okText="是" cancelText="否">
+            <Popconfirm title="确定删除?" onConfirm={this.batchDeleteLocations} okText="是" cancelText="否">
               <Button type="danger" ghost icon="delete">批量删除库位</Button>
             </Popconfirm>
             }
             <div className="toolbar-right">
               { zoneList.length > 0 && <Button icon="edit" onClick={this.showZoneModal}>编辑库区</Button> }
               { zoneList.length > 0 &&
-              <Popconfirm title="确定要删除?" onConfirm={this.handleDeleteZone} okText="是" cancelText="否">
+              <Popconfirm title="确定删除?" onConfirm={this.handleDeleteZone} okText="是" cancelText="否">
                 <Button type="danger" icon="delete" >删除库区</Button>
               </Popconfirm>
               }

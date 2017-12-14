@@ -48,7 +48,7 @@ export default function VehicleList(props) {
             启用
           </a>
           <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => onRemoveVehicle(record.vehicle_id)}>
+          <Popconfirm title="确定删除？" onConfirm={() => onRemoveVehicle(record.vehicle_id)}>
             <a>删除</a>
           </Popconfirm>
         </span>

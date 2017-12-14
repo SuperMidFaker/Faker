@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
-import { Icon, Table, Button, Popconfirm, Tag, message } from 'antd';
-import NavLink from 'client/components/NavLink';
+import { Table, Button, message } from 'antd';
+import RowAction from 'client/components/RowAction';
 import { loadPartners } from 'common/reducers/partner';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -37,6 +37,10 @@ export default class ManifestTemplateList extends React.Component {
     this.props.loadCustomers(this.props.tenantId);
   }
   msg = key => formatMsg(this.props.intl, key);
+  handleDetail = (record) => {
+    const ietype = record.i_e_type === 0 ? 'import' : 'export';
+    this.context.router.push(`/clearance/${ietype}/manifest/rules/view/${record.id}`);
+  }
   handleEdit = (record) => {
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
     this.context.router.push(`/clearance/${ietype}/manifest/rules/edit/${record.id}`);
@@ -65,13 +69,7 @@ export default class ManifestTemplateList extends React.Component {
         title: '模板名称',
         dataIndex: 'template_name',
         key: 'template_name',
-        width: 120,
-      }, {
-        title: '类型',
-        dataIndex: 'i_e_type',
-        key: 'i_e_type',
-        width: 40,
-        render: o => <Tag>{o === 0 ? '进口' : '出口'}</Tag>,
+        width: 150,
       }, {
         title: '关联客户',
         dataIndex: 'customer_name',
@@ -80,20 +78,16 @@ export default class ManifestTemplateList extends React.Component {
         title: '操作',
         dataIndex: 'status',
         key: 'status',
-        width: 60,
+        width: 100,
         render: (_, record) => {
-          const ietype = record.i_e_type === 0 ? 'import' : 'export';
           if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.edit) {
             return (
               <span>
-                <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
-                <span className="ant-divider" />
-                <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}>
-                  <a><Icon type="delete" /></a>
-                </Popconfirm>
+                <RowAction onClick={this.handleEdit} icon="edit" row={record} />
+                <RowAction confirm="确定删除？" onConfirm={() => this.handleDelete(record)} icon="delete" />
               </span>);
           } else if (record.permission === CMS_BILL_TEMPLATE_PERMISSION.view) {
-            return <NavLink to={`/clearance/${ietype}/manifest/rules/view/${record.id}`}>{this.msg('view')}</NavLink>;
+            return <RowAction onClick={this.handleDetail} icon="eye-o" row={record} />;
           }
           return '';
         },

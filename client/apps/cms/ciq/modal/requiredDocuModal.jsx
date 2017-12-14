@@ -139,9 +139,7 @@ export default class RequiredDocuModal extends Component {
     }];
     return (
       <Modal width={800} title="所需单证" visible={visible} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} style={{ top: 20 }}>
-        <Table size="middle" columns={columns} dataSource={documents} scroll={{ y: 560 }} rowSelection={rowSelection} rowKey="app_cert_code" pagination={false}
-          style={{ paddingTop: 4, paddingBottom: 4 }}
-        />
+        <Table size="middle" columns={columns} dataSource={documents} scroll={{ y: 560 }} rowSelection={rowSelection} rowKey="app_cert_code" pagination={false} />
       </Modal>
     );
   }

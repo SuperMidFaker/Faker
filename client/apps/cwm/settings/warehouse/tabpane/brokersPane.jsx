@@ -82,7 +82,7 @@ export default class BrokersPane extends Component {
         {record.active === 0 ?
           <RowAction onClick={() => this.changeBrokerStatus(record.id, true, this.props.loginId)} icon="play-circle" tooltip="启用" row={record} /> :
           <RowAction onClick={() => this.changeBrokerStatus(record.id, false, this.props.loginId)} icon="pause-circle" tooltip="停用" row={record} />}
-        <RowAction danger confirm="确定要删除吗?" onConfirm={() => this.handleDeleteBroker(record.id)} icon="delete" row={record} />
+        <RowAction danger confirm="确定删除?" onConfirm={() => this.handleDeleteBroker(record.id)} icon="delete" row={record} />
       </span>
     ),
   }]

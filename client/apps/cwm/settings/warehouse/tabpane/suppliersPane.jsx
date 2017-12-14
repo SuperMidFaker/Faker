@@ -91,7 +91,7 @@ export default class SuppliersPane extends Component {
         {record.active === 0 ?
           <RowAction onClick={() => this.changeSupplierStatus(record.id, true, this.props.loginId)} icon="play-circle" tooltip="启用" row={record} /> :
           <RowAction onClick={() => this.changeSupplierStatus(record.id, false, this.props.loginId)} icon="pause-circle" tooltip="停用" row={record} />}
-        <RowAction danger confirm="确定要删除吗?" onConfirm={() => this.handleDeleteSupplier(record.id)} icon="delete" row={record} />
+        <RowAction danger confirm="确定删除?" onConfirm={() => this.handleDeleteSupplier(record.id)} icon="delete" row={record} />
       </span>
     ),
   }]

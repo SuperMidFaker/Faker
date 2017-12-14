@@ -69,7 +69,7 @@ function DriverList(props) {
             启用
           </a>
           <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => onRemoveDriver({ driverId: record.driver_id, driverLoginId: record.login_id })}>
+          <Popconfirm title="确定删除？" onConfirm={() => onRemoveDriver({ driverId: record.driver_id, driverLoginId: record.login_id })}>
             <a>删除</a>
           </Popconfirm>
         </span>

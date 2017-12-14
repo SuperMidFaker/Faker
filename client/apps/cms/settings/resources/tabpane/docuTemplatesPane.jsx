@@ -193,7 +193,7 @@ export default class InvoiceTemplate extends Component {
         <span>
           <a onClick={() => this.handleEdit(record)}><Icon type="edit" /></a>
           <span className="ant-divider" />
-          <Popconfirm title="确定要删除吗？" onConfirm={() => this.handleDelete(record)}><a><Icon type="delete" /></a></Popconfirm>
+          <Popconfirm title="确定删除？" onConfirm={() => this.handleDelete(record)}><a><Icon type="delete" /></a></Popconfirm>
         </span>),
     }];
     const excelTemplPopover = (<div style={{ width: 300 }}>

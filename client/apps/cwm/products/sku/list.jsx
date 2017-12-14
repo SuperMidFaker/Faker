@@ -137,7 +137,7 @@ export default class CWMSkuList extends React.Component {
     render: (_, row) => (
       <span>
         <RowAction onClick={this.handleEditSku} icon="edit" label="修改" row={row} />
-        <RowAction danger confirm="确定要删除吗?" onConfirm={() => this.handleRemove(row.id)} icon="delete" row={row} />
+        <RowAction danger confirm="确定删除?" onConfirm={() => this.handleRemove(row.id)} icon="delete" row={row} />
       </span>),
   }]
   dataSource = new DataTable.DataSource({
