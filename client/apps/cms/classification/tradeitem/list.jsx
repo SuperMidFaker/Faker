@@ -833,9 +833,12 @@ export default class TradeItemList extends Component {
               <Search placeholder={this.msg('searchRepoPlaceholder')} onSearch={this.handleRepoSearch} />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" dataSource={this.state.repos} columns={repoColumns} showHeader={false}
                 rowKey="id" pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === repo.id ? 'table-row-selected' : ''} loading={this.props.reposLoading}
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
           </div>

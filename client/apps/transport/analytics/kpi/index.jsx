@@ -268,9 +268,12 @@ export default class Kpi extends React.Component {
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.clients} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" dataSource={this.state.clients} columns={columns} showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }} rowKey="partner_id"
                 rowClassName={record => record.partner_id === customer.partner_id ? 'table-row-selected' : ''}
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
           </div>

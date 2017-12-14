@@ -498,7 +498,7 @@ export default class TariffList extends React.Component {
         </Header>
         <Content className="main-content" key="main">
           <DataTable toolbarActions={toolbarActions} rowSelection={rowSelection} columns={columns} loading={loading}
-            dataSource={this.dataSource} onRowClick={this.handleShipmtPreview}
+            dataSource={this.dataSource}
           />
           <CreateTariffModal />
         </Content>

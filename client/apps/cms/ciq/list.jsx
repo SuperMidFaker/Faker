@@ -328,7 +328,13 @@ export default class CiqDeclList extends Component {
           <DataTable toolbarActions={toolbarActions}
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={ciqDeclList.loading}
-            onRowClick={this.handleRowClick}
+            onRow={record => ({
+              onClick: () => {},
+              onDoubleClick: () => { this.handleDetail(record); },
+              onContextMenu: () => {},
+              onMouseEnter: () => {},
+              onMouseLeave: () => {},
+            })}
           />
         </Content>
         <DelegationDockPanel />
