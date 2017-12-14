@@ -508,8 +508,8 @@ export default class ManifestBodyPane extends React.Component {
       fixed: 'right',
       render: (o, record, index) => (
         <span>
-          <RowAction onClick={this.handleEditBody} icon="edit" row={record} index={index} disabled={readonly} />
-          <RowAction confirm="确认删除?" onConfirm={() => this.handleDel(record, index)} icon="delete" disabled={readonly} />
+          <RowAction onClick={this.handleEditBody} icon="edit" row={record} index={index} disabled={this.props.readonly} />
+          <RowAction confirm="确认删除?" onConfirm={() => this.handleDel(record, index)} icon="delete" disabled={this.props.readonly} />
         </span>
           ),
     }];
