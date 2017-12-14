@@ -14,7 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'UPDATE_CIQ_HEAD', 'UPDATE_CIQ_HEAD_SUCCEED', 'UPDATE_CIQ_HEAD_FAIL',
   'SET_FIXED_COUNTRY', 'SET_FIXED_ORGANIZATIONS', 'SET_FIXED_WORLDPORTS',
   'UPDATE_CIQ_HEAD_FIELD', 'UPDATE_CIQ_HEAD_FIELD_SUCCEED', 'UPDATE_CIQ_HEAD_FIELD_FAIL',
-  'CIQ_HEAD_CHANGE',
+  'CIQ_HEAD_CHANGE', 'TOGGLE_ATT_DOCU_MODAL',
   'UPDATE_CIQ_GOOD', 'UPDATE_CIQ_GOOD_SUCCEED', 'UPDATE_CIQ_GOOD_FAIL',
   'EXTEND_COUNTRY_CODE', 'EXTEND_COUNTRY_CODE_SUCCEED', 'EXTEND_COUNTRY_CODE_FAIL',
   'SEARCH_CUSTOMS', 'SEARCH_CUSTOMS_SUCCEED', 'SEARCH_CUSTOMS_FAIL',
@@ -22,7 +22,9 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'SAVE_ENT_QUALIF', 'SAVE_ENT_QUALIF_SUCCEED', 'SAVE_ENT_QUALIF_FAIL',
   'LOAD_ENT_QUALIF', 'LOAD_ENT_QUALIF_SUCCEED', 'LOAD_ENT_QUALIF_FAIL',
   'DELETE_ENT_QUALIF', 'DELETE_ENT_QUALIF_SUCCEED', 'DELETE_ENT_QUALIF_FAIL',
-  'SAVE_DOCUMENTS', 'SAVE_DOCUMENTS_SUCCEED', 'SAVE_DOCUMENTS_FAIL',
+  'SAVE_REQUIRED_DOCUMENTS', 'SAVE_REQUIRED_DOCUMENTS_SUCCEED', 'SAVE_REQUIRED_DOCUMENTS_FAIL',
+  'SAVE_ATT_DOCUMENTS', 'SAVE_ATT_DOCUMENTS_SUCCEED', 'SAVE_ATT_DOCUMENTS_FAIL',
+  'LOAD_ATT_DOCUMENTS', 'LOAD_ATT_DOCUMENTS_SUCCEED', 'LOAD_ATT_DOCUMENTS_FAIL',
 ]);
 
 const initialState = {
@@ -63,6 +65,9 @@ const initialState = {
   },
   entQualifs: [],
   inspQuarantineDocumentsRequiredModal: {
+    visible: false,
+  },
+  attDocuModal: {
     visible: false,
   },
 };
@@ -133,6 +138,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, entQualifs: action.result.data };
     case actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL:
       return { ...state, inspQuarantineDocumentsRequiredModal: { ...state.entQualifictaionModal, visible: action.visible } };
+    case actionTypes.TOGGLE_ATT_DOCU_MODAL:
+      return { ...state, attDocuModal: { ...state.attDocuModal, visible: action.visible } };
     default:
       return state;
   }
@@ -431,17 +438,54 @@ export function toggleInspQuarantineDocumentsRequiredModal(visible) {
   };
 }
 
-export function saveDocuments(data, preEntrySeqNo) {
+export function saveRequiredDocuments(data, preEntrySeqNo) {
   return {
     [CLIENT_API]: {
       types: [
-        actionTypes.SAVE_DOCUMENTS,
-        actionTypes.SAVE_DOCUMENTS_SUCCEED,
-        actionTypes.SAVE_DOCUMENTS_FAIL,
+        actionTypes.SAVE_REQUIRED_DOCUMENTS,
+        actionTypes.SAVE_REQUIRED_DOCUMENTS_SUCCEED,
+        actionTypes.SAVE_REQUIRED_DOCUMENTS_FAIL,
       ],
-      endpoint: 'v1/cms/ciq/documents/save',
+      endpoint: 'v1/cms/ciq/required/documents/save',
       method: 'post',
       data: { data: JSON.stringify(data), preEntrySeqNo },
+    },
+  };
+}
+
+export function toggleAttDocuModal(visible) {
+  return {
+    type: actionTypes.TOGGLE_ATT_DOCU_MODAL,
+    visible,
+  };
+}
+
+export function saveAttDocuments(documents, preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.SAVE_ATT_DOCUMENTS,
+        actionTypes.SAVE_ATT_DOCUMENTS_SUCCEED,
+        actionTypes.SAVE_ATT_DOCUMENTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/att/documents/save',
+      method: 'post',
+      data: { documents: JSON.stringify(documents), preEntrySeqNo },
+    },
+  };
+}
+
+export function loadAttDocuments(preEntrySeqNo) {
+  return {
+    [CLIENT_API]: {
+      types: [
+        actionTypes.LOAD_ATT_DOCUMENTS,
+        actionTypes.LOAD_ATT_DOCUMENTS_SUCCEED,
+        actionTypes.LOAD_ATT_DOCUMENTS_FAIL,
+      ],
+      endpoint: 'v1/cms/ciq/att/documents/load',
+      method: 'get',
+      params: { preEntrySeqNo },
     },
   };
 }
