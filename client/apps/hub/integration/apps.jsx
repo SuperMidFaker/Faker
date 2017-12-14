@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Alert, Breadcrumb, Card, Icon, Layout, List } from 'antd';
+import { Alert, Breadcrumb, Button, Card, Icon, Layout, List } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
-import NavLink from 'client/components/NavLink';
 import { formatMsg } from './message.i18n';
+import './index.less';
 
 const { Header, Content } = Layout;
 
@@ -16,7 +16,9 @@ export default class IntegrationAppsList extends React.Component {
     router: PropTypes.object.isRequired,
   }
   msg = formatMsg(this.props.intl);
-
+  handleInstall = (link) => {
+    this.context.router.push(link);
+  }
   render() {
     const data = [
       {
@@ -27,7 +29,7 @@ export default class IntegrationAppsList extends React.Component {
       {
         title: '亿通EDI海关申报系统',
         link: '/hub/integration/easipass/install',
-        description: '海关EDI申报系统是亿通公司就针对海关通关管理系统，自主设计开发的一套适用于电子报关企业的客户端应用软件。',
+        description: '海关EDI申报系统是亿通公司就针对海关通关管理系统',
       },
       {
         title: '上海自贸区监管系统',
@@ -64,12 +66,14 @@ export default class IntegrationAppsList extends React.Component {
             key="alert"
           />
           <List
-            grid={{ gutter: 16, column: 4 }}
+            grid={{ gutter: 16, column: 6 }}
             dataSource={data}
             renderItem={item => (
               <List.Item>
-                <Card title={item.title} extra={<NavLink to={item.link}>Install</NavLink>} bodyStyle={{ height: 120 }}>
-                  {item.description}
+                <Card title={item.title} className="app-card">
+                  <div className="app-logo" />
+                  <div className="app-desc">{item.description}</div>
+                  <Button type="primary" ghost onClick={() => this.handleInstall(item.link)}>安装</Button>
                 </Card>
               </List.Item>
               )}

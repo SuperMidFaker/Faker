@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Modal, Input, Button, Table } from 'antd';
+import { Modal, Input, Table } from 'antd';
+import RowAction from 'client/components/RowAction';
 import { toggleAttDocuModal, saveAttDocuments, loadCiqDeclHead, loadAttDocuments } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_ATT_DOCUMENTS } from 'common/constants';
 
@@ -91,46 +92,47 @@ export default class DecCiqDocuAttModal extends Component {
     const columns = [{
       title: '序号',
       render: (o, record, index) => index + 1,
-      width: 50,
+      width: 45,
     }, {
-      title: '随附单据类别代码',
+      title: '类别代码',
       dataIndex: 'att_doc_type_code',
-      width: 140,
+      width: 80,
     }, {
       title: '随附单据名称',
       dataIndex: 'att_doc_name',
     }, {
       title: '随附单据编号',
-      render: (o, record, index) => <Input value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_no')} />,
+      render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_no')} />,
       dataIndex: 'att_doc_no',
-      width: 120,
+      width: 150,
     }, {
       title: '核销货物序号',
-      render: (o, record, index) => <Input value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_detail_no')} />,
+      render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_detail_no')} />,
       dataIndex: 'att_doc_wrtof_detail_no',
       width: 120,
     }, {
       title: '核销数量',
-      render: (o, record, index) => <Input value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_qty')} />,
+      render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_qty')} />,
       dataIndex: 'att_doc_wrtof_qty',
       width: 120,
     }, {
       title: '核销后明细余量',
-      render: (o, record, index) => <Input value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_detail_left')} />,
+      render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_detail_left')} />,
       dataIndex: 'att_doc_detail_left',
       width: 120,
     }, {
       title: '核销后余量',
-      render: (o, record, index) => <Input value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_left')} />,
+      render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleChange(e.target.value, index, 'att_doc_wrtof_left')} />,
       dataIndex: 'att_doc_wrtof_left',
       width: 120,
     }, {
       title: '操作',
-      render: (o, record, index) => <Button onClick={() => this.handleAdd(record.att_doc_type_code, index)}>add</Button>,
+      width: 60,
+      render: (o, record, index) => <RowAction onClick={() => this.handleAdd(record.att_doc_type_code, index)} icon="plus" />,
     }];
     return (
-      <Modal width={1200} title="随附单据" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
-        <Table columns={columns} dataSource={documents} pagination={false} scroll={{ y: 600 }} rowSelection={rowSelection} rowKey="index" />
+      <Modal width={1200} title="随附单据" visible={visible} maskClosable={false} onCancel={this.handleCancel} onOk={this.handleOk} style={{ top: 20 }}>
+        <Table size="middle" columns={columns} dataSource={documents} pagination={false} scroll={{ y: 560 }} rowSelection={rowSelection} rowKey="index" />
       </Modal>
     );
   }
