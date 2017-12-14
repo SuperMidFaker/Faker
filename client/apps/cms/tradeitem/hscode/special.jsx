@@ -208,7 +208,7 @@ export default class HSCodeSpecial extends React.Component {
       },
     }];
     const tabTable = (
-      <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns} onRowClick={this.handleRowClick}
+      <Table size="middle" dataSource={this.state.hscodeCategories} columns={columns}
         pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
         rowKey="id" rowClassName={record => record.name === hscodeCategory.name ? 'table-row-selected' : ''}
         footer={() => <Button type="dashed" icon="plus" onClick={() => this.handleShowAddCategory()} disabled={this.state.disabled} style={{ width: '100%' }}>添加分类</Button>}

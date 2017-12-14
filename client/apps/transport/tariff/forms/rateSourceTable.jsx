@@ -230,7 +230,10 @@ export default class RateSourceTable extends React.Component {
     return (
       <div>
         <DataTable size="middle" rowSelection={rowSelection} columns={columns} loading={loading}
-          dataSource={this.dataSource} onRowClick={this.handleRowClick} rowKey={getRowKey}
+          dataSource={this.dataSource} rowKey={getRowKey}
+          onRow={record => ({
+            onClick: () => { this.handleRowClick(record); },
+          })}
         />
         <Modal maskClosable={false} visible={visibleModal} onOk={this.handleSourceSave} onCancel={this.handleCancel}
           closable={false}

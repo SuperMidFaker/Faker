@@ -138,7 +138,7 @@ export default class CustomsList extends Component {
         case CMS_DECL_STATUS.reviewed.value:
           return (
             <Tooltip title="点击编号在新窗口中打开" placement="right">
-              <a onClick={ev => this.handleDounbleClick(record, ev)}>
+              <a onClick={ev => this.handleOpenInWindow(record, ev)}>
                 {record.pre_entry_seq_no}
               </a>
             </Tooltip>);
@@ -146,7 +146,7 @@ export default class CustomsList extends Component {
           return (
             <span>
               <Tooltip title="点击编号在新窗口中打开" placement="left">
-                <a onClick={ev => this.handleDounbleClick(record, ev)}>
+                <a onClick={ev => this.handleOpenInWindow(record, ev)}>
                   {record.pre_entry_seq_no}
                 </a>
               </Tooltip>
@@ -158,7 +158,7 @@ export default class CustomsList extends Component {
             </span>);
         case CMS_DECL_STATUS.entered.value:
         case CMS_DECL_STATUS.released.value:
-          return (<Tooltip title="点击编号在新窗口中打开" mouseEnterDelay={3} placement="left"><a onClick={ev => this.handleDounbleClick(record, ev)}>{entryNO}</a></Tooltip>);
+          return (<Tooltip title="点击编号在新窗口中打开" mouseEnterDelay={3} placement="left"><a onClick={ev => this.handleOpenInWindow(record, ev)}>{entryNO}</a></Tooltip>);
         default:
           break;
       }
@@ -328,7 +328,7 @@ export default class CustomsList extends Component {
       if (record.status === CMS_DECL_STATUS.proposed.value) {
         return (
           <span>
-            <RowAction onClick={this.handleRowClick} icon="eye-o" label={this.msg('viewDetail')} row={record} />
+            <RowAction onClick={this.handleDetail} icon="eye-o" label={this.msg('viewDetail')} row={record} />
             <PrivilegeCover module="clearance" feature="customs" action="edit">
               <RowAction onClick={this.handleReview} icon="check-circle-o" tooltip={this.msg('review')}row={record} />
             </PrivilegeCover>
@@ -359,7 +359,7 @@ export default class CustomsList extends Component {
           />);
         }
         return (<span>
-          <RowAction onClick={this.handleRowClick} icon="eye-o" label={this.msg('viewDetail')} row={record} />
+          <RowAction onClick={this.handleDetail} icon="eye-o" label={this.msg('viewDetail')} row={record} />
           {spanElems}
         </span>);
       }
@@ -420,13 +420,13 @@ export default class CustomsList extends Component {
     const filters = this.mergeFilters(this.props.listFilter, searchVal);
     this.handleTableLoad(1, { ...filters });
   }
-  handleRowClick = (record) => {
+  handleDetail = (record) => {
     // ev.preventDefault();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
     const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
     this.context.router.push(link);
   }
-  handleDounbleClick = (record, ev) => {
+  handleOpenInWindow = (record, ev) => {
     ev.stopPropagation();
     const ietype = record.i_e_type === 0 ? 'import' : 'export';
     const link = `/clearance/cusdecl/${ietype}/${record.bill_seq_no}/${record.pre_entry_seq_no}`;
@@ -690,7 +690,13 @@ export default class CustomsList extends Component {
             <DataTable toolbarActions={toolbarActions} bulkActions={bulkActions}
               rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
               columns={this.columns} dataSource={this.dataSource} rowKey="id" loading={customslist.loading}
-              onRowDoubleClick={this.handleRowClick}
+              onRow={record => ({
+                onClick: () => {},
+                onDoubleClick: () => { this.handleDetail(record); },
+                onContextMenu: () => {},
+                onMouseEnter: () => {},
+                onMouseLeave: () => {},
+              })}
             />
             <FillCustomsNoModal reload={this.handleTableLoad} />
             <DeclReleasedModal reload={this.handleTableLoad} />

@@ -469,8 +469,7 @@ export default class DelegationList extends Component {
     const filters = { ...this.props.listFilter, filterNo: searchVal };
     this.handleDelgListLoad(1, filters);
   }
-  handleRowClick = (record, index, ev) => {
-    ev.preventDefault();
+  handleDetail = (record) => {
     if (record.status > CMS_DELEGATION_STATUS.accepted) {
       if (record.manifested === CMS_DELEGATION_MANIFEST.created) {
         this.handleManifestMake(record);
@@ -698,7 +697,13 @@ export default class DelegationList extends Component {
           <DataTable toolbarActions={toolbarActions}
             rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
             columns={columns} dataSource={dataSource} rowKey="delg_no" loading={delegationlist.loading}
-            onRowDoubleClick={this.handleRowClick}
+            onRow={record => ({
+              onClick: () => {},
+              onDoubleClick: () => { this.handleDetail(record); },
+              onContextMenu: () => {},
+              onMouseEnter: () => {},
+              onMouseLeave: () => {},
+            })}
           />
         </Content>
         <DelegationDockPanel />

@@ -423,8 +423,11 @@ export default class DocuPane extends React.Component {
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle" dataSource={invoices} columns={docuCols} showHeader={false} onRowClick={this.handleRowClick}
+                <Table size="middle" dataSource={invoices} columns={docuCols} showHeader={false}
                   rowKey="id" pagination={false} rowClassName={record => record.id === docu.id ? 'table-row-selected' : ''}
+                  onRow={record => ({
+                    onClick: () => { this.handleRowClick(record); },
+                  })}
                 />
               </Panel>
               <Panel header={this.msg('contract')} key="contract">
@@ -445,8 +448,11 @@ export default class DocuPane extends React.Component {
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle" dataSource={contracts} columns={docuCols} showHeader={false} onRowClick={this.handleRowClick}
+                <Table size="middle" dataSource={contracts} columns={docuCols} showHeader={false}
                   rowKey="id" pagination={false} rowClassName={record => record.id === docu.id ? 'table-row-selected' : ''}
+                  onRow={record => ({
+                    onClick: () => { this.handleRowClick(record); },
+                  })}
                 />
               </Panel>
               <Panel header={this.msg('packingList')} key="packlist">
@@ -467,8 +473,11 @@ export default class DocuPane extends React.Component {
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle" dataSource={packlists} columns={docuCols} showHeader={false} onRowClick={this.handleRowClick}
+                <Table size="middle" dataSource={packlists} columns={docuCols} showHeader={false}
                   rowKey="id" pagination={false} rowClassName={record => record.id === docu.id ? 'table-row-selected' : ''}
+                  onRow={record => ({
+                    onClick: () => { this.handleRowClick(record); },
+                  })}
                 />
               </Panel>
             </Collapse>

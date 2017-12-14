@@ -313,9 +313,12 @@ export default class SHFTZCargoList extends React.Component {
               <SearchBar placeholder={this.msg('ownerSearchPlaceholder')} onInputSearch={this.handleOwnerSearch} />
             </div>
             <div className="list-body">
-              <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" columns={ownerColumns} dataSource={filterOwners} showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 50, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === owner.id ? 'table-row-selected' : ''} rowKey="id"
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
             </div>
           </div>

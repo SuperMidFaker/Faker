@@ -189,9 +189,12 @@ export default class CustomizeTracking extends React.Component {
               />
             </div>
             <div className="list-body">
-              <Table size="middle" dataSource={this.state.trackings} columns={columns} showHeader={false} onRowClick={this.handleRowClick}
+              <Table size="middle" dataSource={this.state.trackings} columns={columns} showHeader={false}
                 pagination={{ current: this.state.currentPage, defaultPageSize: 15, onChange: this.handlePageChange }}
                 rowClassName={record => record.id === tracking.id ? 'table-row-selected' : ''} rowKey="id" loading={this.props.loading}
+                onRow={record => ({
+                  onClick: () => { this.handleRowClick(record); },
+                })}
               />
               <TrackingModal onOk={this.handleTableLoad} />
             </div>

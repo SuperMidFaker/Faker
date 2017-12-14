@@ -300,7 +300,10 @@ export default class CWMSkuList extends React.Component {
             </div>
             <div className="list-body">
               <Table size="middle" columns={this.ownerColumns} showHeader={false} dataSource={this.state.tableOwners} rowKey="id"
-                rowClassName={row => row.id === this.props.owner.id ? 'table-row-selected' : ''} onRowClick={this.handleOwnerSelect}
+                rowClassName={row => row.id === this.props.owner.id ? 'table-row-selected' : ''}
+                onRow={record => ({
+                  onClick: () => { this.handleOwnerSelect(record); },
+                })}
               />
             </div>
           </div>

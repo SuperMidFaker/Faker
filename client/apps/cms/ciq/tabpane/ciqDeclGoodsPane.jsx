@@ -184,7 +184,7 @@ export default class CiqDeclGoodsPane extends React.Component {
       },
     });
   }
-  handleOnRowClick = (record) => {
+  handleRowClick = (record) => {
     this.props.showGoodsModal(record);
   }
   render() {
@@ -193,8 +193,11 @@ export default class CiqDeclGoodsPane extends React.Component {
     const columns = this.getColumns();
     return (
       <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} bordered scrollOffset={312} onRowClick={this.handleOnRowClick}
+        columns={columns} bordered scrollOffset={312}
         dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
+        onRow={record => ({
+          onClick: () => { this.handleRowClick(record); },
+        })}
       >
         <DataPane.Toolbar>
           <Button icon="export" onClick={this.handleEntrybodyExport}>导出表体数据</Button>
