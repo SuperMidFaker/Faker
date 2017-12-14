@@ -118,24 +118,30 @@ export default class InspQuarantineDocumentsRequiredModal extends Component {
     const columns = [{
       title: '序号',
       render: (o, record, index) => index + 1,
+      width: 50,
     }, {
       title: '证书代码',
       dataIndex: 'app_cert_code',
+      width: 80,
     }, {
       title: '证书名称',
       dataIndex: 'app_cert_name',
     }, {
       title: '正本数量',
       dataIndex: 'appl_ori',
-      render: (o, record, index) => <Input value={o} onChange={e => this.handleOriChange(e, index)} />,
+      width: 100,
+      render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleOriChange(e, index)} />,
     }, {
       title: '副本数量',
       dataIndex: 'appl_copy_quan',
-      render: (o, record, index) => <Input value={o} onChange={e => this.handleCopyQuanChange(e, index)} />,
+      width: 100,
+      render: (o, record, index) => <Input size="small" value={o} onChange={e => this.handleCopyQuanChange(e, index)} />,
     }];
     return (
       <Modal width={800} title="所需单证" visible={visible} onCancel={this.handleCancel} onOk={this.handleOk}>
-        <Table columns={columns} dataSource={documents} rowSelection={rowSelection} rowKey="app_cert_code" />
+        <Table size="middle" columns={columns} dataSource={documents} rowSelection={rowSelection} rowKey="app_cert_code" pagination={false}
+          style={{ paddingTop: 4, paddingBottom: 4 }}
+        />
       </Modal>
     );
   }

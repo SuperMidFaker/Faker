@@ -13,6 +13,7 @@ import { CMS_FEE_UNIT, CMS_CONFIRM } from 'common/constants';
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
+const InputGroup = Input.Group;
 
 // 进出口口岸
 export function IEPort(props) {
@@ -147,9 +148,8 @@ export class RelationAutoCompSelect extends React.Component {
       <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 19 }} colon={false} label={label} required>
         <Row gutter={4}>
           <Col span="7">
-            <FormItem style={{ marginBottom: 0 }}>
-              {disabled ?
-                <Input disabled value={initialCustCodeValue} />
+            {disabled ?
+              <Input disabled value={initialCustCodeValue} />
                   : getFieldDecorator(custCodeField, {
                     initialValue: initialCustCodeValue,
                     rules: codeRules,
@@ -167,12 +167,10 @@ export class RelationAutoCompSelect extends React.Component {
                     custOpt.map(opt => <Option key={opt.custcode} search={opt.custcode}>{opt.custcode} | {opt.name}</Option>)
                   }
                   </Select>)}
-            </FormItem>
           </Col>
           <Col span="7">
-            <FormItem style={{ marginBottom: 0 }}>
-              {disabled ?
-                <Input disabled value={initialCodeValue} />
+            {disabled ?
+              <Input disabled value={initialCodeValue} />
                   : getFieldDecorator(codeField, {
                     initialValue: initialCodeValue,
                     onChange: this.handleInputChange,
@@ -189,17 +187,14 @@ export class RelationAutoCompSelect extends React.Component {
                     compOpt.map(opt => <Option key={opt.code} search={opt.code}>{opt.code} | {opt.name}</Option>)
                   }
                   </Select>)}
-            </FormItem>
           </Col>
           <Col span="10">
-            <FormItem style={{ marginBottom: 0 }} >
-              {disabled ?
-                <Input disabled value={initialNameValue} /> :
+            {disabled ?
+              <Input disabled value={initialNameValue} /> :
                   getFieldDecorator(nameField, {
                     rules: nameRules,
                     initialValue: initialNameValue,
                   })(<Input placeholder={this.msg('relationName')} disabled={disabled} />)}
-            </FormItem>
           </Col>
         </Row>
       </FormItem>
@@ -1021,11 +1016,9 @@ export class CiqCodeAutoCompSelect extends React.Component {
     const custOpt = options.filter(op => op.ciqcode !== null && op.ciqcode.length > 0);
     return (
       <FormItem labelCol={{ span: labelCol || 5 }} wrapperCol={{ span: 21 }} colon={false} label={label} required>
-        <Row gutter={4}>
-          <Col span="4">
-            <FormItem style={{ marginBottom: 0 }}>
-              {disabled ?
-                <Input disabled value={initialCodeValue} />
+        <InputGroup compact>
+          {disabled ?
+            <Input disabled value={initialCodeValue} style={{ width: '20%' }} />
                   : getFieldDecorator(codeField, {
                     initialValue: initialCodeValue,
                     rules: codeRules,
@@ -1038,33 +1031,24 @@ export class CiqCodeAutoCompSelect extends React.Component {
                     onSelect={this.handleSelect}
                     dropdownMatchSelectWidth={false}
                     dropdownStyle={{ width: 360 }}
+                    style={{ width: '20%' }}
                   >
                     {
                     custOpt.map(opt => <Option key={opt.ciqcode} search={opt.ciqcode}>{opt.ciqcode} | {opt.name}</Option>)
                   }
                   </Select>)}
-            </FormItem>
-          </Col>
-          <Col span="10">
-            <FormItem style={{ marginBottom: 0 }}>
-              {disabled ?
-                <Input disabled value={initialCnameValue} />
+          {disabled ?
+            <Input disabled value={initialCnameValue} style={{ width: '40%' }} />
                   : getFieldDecorator(cnameField, {
                     initialValue: initialCnameValue,
-                  })(<Input placeholder={this.msg('中文名称')} disabled={disabled} />)}
-            </FormItem>
-          </Col>
-          <Col span="10">
-            <FormItem style={{ marginBottom: 0 }} >
-              {disabled ?
-                <Input disabled value={initialEnameValue} /> :
+                  })(<Input placeholder={this.msg('中文名称')} disabled={disabled} style={{ width: '40%' }} />)}
+          {disabled ?
+            <Input disabled value={initialEnameValue} style={{ width: '40%' }} /> :
                   getFieldDecorator(enameField, {
                     rules: nameRules,
                     initialValue: initialEnameValue,
-                  })(<Input placeholder={this.msg('英文名称')} disabled={disabled} />)}
-            </FormItem>
-          </Col>
-        </Row>
+                  })(<Input placeholder={this.msg('英文名称')} disabled={disabled} style={{ width: '40%' }} />)}
+        </InputGroup>
       </FormItem>
     );
   }
