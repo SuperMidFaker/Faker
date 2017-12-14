@@ -26,6 +26,7 @@ const Option = Select.Option;
 @injectIntl
 @connect(
   state => ({
+    tenantId: state.account.tenantId,
     listFilter: state.cmsTradeitem.listFilter,
     tradeItemlist: state.cmsTradeitem.tradeItemlist,
     repo: state.cmsTradeitem.repo,
@@ -395,10 +396,8 @@ export default class RepoContent extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   handleSearch = (value) => {
-    const { listFilter } = this.props;
-    const repoId = this.props.params.repoId;
     this.setState({ searchVal: value });
-    this.handleItemListLoad(repoId, 1, listFilter, value);
+    this.handleItemListLoad(1, null, value);
   }
   handleExportSelected = () => {
     const selectedIds = this.state.selectedRowKeys;
@@ -429,8 +428,8 @@ export default class RepoContent extends Component {
     });
   }
   render() {
-    const { tradeItemlist, repo, listFilter, submitting } = this.props;
-    const { linkedSlaves } = this.state;
+    const { tradeItemlist, repo, listFilter, submitting, tenantId } = this.props;
+    const { linkedSlaves, searchVal } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
       selectedRowKeys: selectedRows,
@@ -451,14 +450,18 @@ export default class RepoContent extends Component {
         </Popconfirm></span>);
     }
     this.dataSource.remotes = tradeItemlist;
-    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} />);
+    const toolbarActions = (<SearchBar placeholder="编码/名称/描述/申报要素" onInputSearch={this.handleSearch} value={searchVal} />);
+    let repoName = repo.owner_name;
+    if (tenantId === repo.owner_tenant_id) {
+      repoName = repo.creator_name;
+    }
     return (
       <Layout>
         <PageHeader>
           <PageHeader.Title>
             <Breadcrumb>
               <Breadcrumb.Item>
-                {`${repo.owner_name}`}
+                {repoName}
               </Breadcrumb.Item>
             </Breadcrumb>
           </PageHeader.Title>
@@ -477,7 +480,7 @@ export default class RepoContent extends Component {
                 </Select>
               </FormItem>
               <FormItem label="同步源">
-                <RadioGroup onChange={this.handleReplicaSource}>
+                <RadioGroup onChange={this.handleReplicaSource} value={listFilter.status}>
                   <RadioButton value="master">主库</RadioButton>
                   <RadioButton value="slave">从库</RadioButton>
                 </RadioGroup>
