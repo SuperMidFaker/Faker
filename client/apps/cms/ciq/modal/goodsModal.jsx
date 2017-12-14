@@ -85,7 +85,7 @@ export default class GoodsModal extends Component {
       },
     };
     return (
-      <Modal title="Goods" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1200">
+      <Modal title="商品信息" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width="1200">
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
           <Card bodyStyle={{ padding: 16, paddingBottom: 0 }} style={{ marginBottom: 0 }} hoverable={false}>
             <Row>

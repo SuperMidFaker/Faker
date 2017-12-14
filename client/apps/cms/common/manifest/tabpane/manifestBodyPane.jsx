@@ -503,26 +503,15 @@ export default class ManifestBodyPane extends React.Component {
       width: 100,
       render: freight => freight > 0 ? freight : null,
     }, {
-      width: 80,
-      className: 'cell-align-center',
+      dataIndex: 'OPS_COL',
+      width: 100,
       fixed: 'right',
-      render: (o, record, index) => {
-        if (readonly) {
-          return (<span />);
-        } else {
-          return (
-            <span>
-              <RowAction onClick={this.handleEditBody} label={<Icon type="edit" />}
-                row={record} index={index}
-              />
-              <span className="ant-divider" />
-              <Popconfirm placement="left" title="确认删除?" onConfirm={() => this.handleDel(record, index)}>
-                <a role="presentation"><Icon type="delete" /></a>
-              </Popconfirm>
-            </span>
-          );
-        }
-      },
+      render: (o, record, index) => (
+        <span>
+          <RowAction onClick={this.handleEditBody} icon="edit" row={record} index={index} disabled={readonly} />
+          <RowAction confirm="确认删除?" onConfirm={() => this.handleDel(record, index)} icon="delete" disabled={readonly} />
+        </span>
+          ),
     }];
     return columns;
   }
@@ -935,6 +924,9 @@ export default class ManifestBodyPane extends React.Component {
       <DataPane fullscreen={this.props.fullscreen}
         columns={columns} rowSelection={rowSelection} bordered scrollOffset={312}
         dataSource={this.state.bodies} rowKey="id" loading={this.state.tableMask}
+        onRow={record => ({
+          onDoubleClick: () => { this.handleEditBody(record); },
+        })}
       >
         <DataPane.Toolbar>
           {this.renderToolbar()}

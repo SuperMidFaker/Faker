@@ -6,6 +6,7 @@ import { intlShape, injectIntl } from 'react-intl';
 import { format } from 'client/common/i18n/helpers';
 import Summary from 'client/components/Summary';
 import DataPane from 'client/components/DataPane';
+import RowAction from 'client/components/RowAction';
 import { showDeclElementsModal } from 'common/reducers/cmsManifest';
 import { getElementByHscode } from 'common/reducers/cmsHsCode';
 import { loadCiqDeclGoods, showGoodsModal } from 'common/reducers/cmsCiqDeclare';
@@ -172,6 +173,14 @@ export default class CiqDeclGoodsPane extends React.Component {
       title: this.msg('货物属性'),
       dataIndex: 'goods_attr',
       width: 120,
+    }, {
+      dataIndex: 'OP_COL',
+      width: 100,
+      render: (o, record, index) => (
+        <span>
+          <RowAction onClick={this.handleRowClick} icon="edit" row={record} index={index} />
+        </span>
+      ),
     }];
     return columns;
   }
@@ -196,7 +205,7 @@ export default class CiqDeclGoodsPane extends React.Component {
         columns={columns} bordered scrollOffset={312}
         dataSource={ciqDeclGoods} rowKey="id" loading={this.state.loading}
         onRow={record => ({
-          onClick: () => { this.handleRowClick(record); },
+          onDoubleClick: () => { this.handleRowClick(record); },
         })}
       >
         <DataPane.Toolbar>
