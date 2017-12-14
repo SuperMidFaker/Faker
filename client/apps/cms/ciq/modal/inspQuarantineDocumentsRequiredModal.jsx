@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Modal, Input, Table } from 'antd';
-import { toggleInspQuarantineDocumentsRequiredModal, saveDocuments, loadCiqDeclHead } from 'common/reducers/cmsCiqDeclare';
+import { toggleInspQuarantineDocumentsRequiredModal, saveRequiredDocuments, loadCiqDeclHead } from 'common/reducers/cmsCiqDeclare';
 import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
 
 
@@ -10,7 +10,7 @@ import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
   state => ({
     visible: state.cmsCiqDeclare.inspQuarantineDocumentsRequiredModal.visible,
   }),
-  { toggleInspQuarantineDocumentsRequiredModal, saveDocuments, loadCiqDeclHead }
+  { toggleInspQuarantineDocumentsRequiredModal, saveRequiredDocuments, loadCiqDeclHead }
 )
 export default class InspQuarantineDocumentsRequiredModal extends Component {
   static PropTypes = {
@@ -82,7 +82,7 @@ export default class InspQuarantineDocumentsRequiredModal extends Component {
         data.appl_copy_quan += `,${row.appl_copy_quan}`;
       }
     }
-    this.props.saveDocuments(data, this.props.preEntrySeqNo).then((result) => {
+    this.props.saveRequiredDocuments(data, this.props.preEntrySeqNo).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.loadCiqDeclHead(this.props.preEntrySeqNo);
