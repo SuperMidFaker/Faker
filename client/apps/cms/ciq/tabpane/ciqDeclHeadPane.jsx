@@ -8,13 +8,15 @@ import InfoItem from 'client/components/InfoItem';
 import FormPane from 'client/components/FormPane';
 import { loadCiqDeclHead, searchOrganizations, searchWorldPorts, searchChinaPorts, searchCountries,
    setFixedCountry, setFixedOrganizations, setFixedWorldPorts, updateCiqHeadField, loadCiqParams, searchCustoms,
-   toggleEntQualifiModal, loadEntQualif, ciqHeadChange, toggleInspQuarantineDocumentsRequiredModal } from 'common/reducers/cmsCiqDeclare';
+   toggleEntQualifiModal, loadEntQualif, ciqHeadChange, toggleInspQuarantineDocumentsRequiredModal,
+   toggleAttDocuModal } from 'common/reducers/cmsCiqDeclare';
 import { loadCmsBrokers } from 'common/reducers/cmsBrokers';
 import { loadBusinessUnits } from 'common/reducers/cmsResources';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
 import { CiqCodeAutoCompSelect } from '../../common/form/headFormItems';
 import EntQualifiModal from '../modal/entQualifiModal';
 import InspQuarantineDocumentsRequiredModal from '../modal/inspQuarantineDocumentsRequiredModal';
+import DecCiqDocuAttModal from '../modal/decCiqdocumentsAttachedModal';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { CIQ_IN_DECL_TYPE, CIQ_OUT_DECL_TYPE, CIQ_SPECIAL_DECL_FLAG, CIQ_SPECIAL_PASS_FLAG, CIQ_TRANSPORTS_TYPE, CIQ_TRADE_MODE,
@@ -62,6 +64,7 @@ const ButtonGroup = Button.Group;
     loadEntQualif,
     ciqHeadChange,
     toggleInspQuarantineDocumentsRequiredModal,
+    toggleAttDocuModal,
   }
 )
 export default class CiqDeclHeadPane extends React.Component {
@@ -227,6 +230,9 @@ export default class CiqDeclHeadPane extends React.Component {
   }
   handleToggleInspQuarDocuReModal = () => {
     this.props.toggleInspQuarantineDocumentsRequiredModal(true);
+  }
+  toggleAttDocuModal = () => {
+    this.props.toggleAttDocuModal(true);
   }
   render() {
     const { ioType, organizations, countries, worldPorts, chinaPorts, ciqDeclHead, form,
@@ -789,11 +795,7 @@ export default class CiqDeclHeadPane extends React.Component {
             </Col>
             <Col span="12">
               <FormItem {...formItemSpan2Layout} label={'随附单据'} >
-                {getFieldDecorator('atta_collect_name', {
-                  initialValue: ciqDeclHead.atta_collect_name,
-                })(
-                  <Input addonAfter={<Button type="primary" ghost size="small"><Icon type="ellipsis" /></Button>} />
-                )}
+                <Input value={ciqDeclHead.atta_collect_name} addonAfter={<Button type="primary" ghost size="small" onClick={this.toggleAttDocuModal}><Icon type="ellipsis" /></Button>} />
               </FormItem>
             </Col>
           </Row>
@@ -804,6 +806,7 @@ export default class CiqDeclHeadPane extends React.Component {
         <InspQuarantineDocumentsRequiredModal selectedRowKeys={ciqDeclHead.app_cert_code} preEntrySeqNo={ciqDeclHead.pre_entry_seq_no}
           applOris={ciqDeclHead.appl_ori} applCopyQuans={ciqDeclHead.appl_copy_quan}
         />
+        <DecCiqDocuAttModal preEntrySeqNo={ciqDeclHead.pre_entry_seq_no} />
       </FormPane>
     );
   }
