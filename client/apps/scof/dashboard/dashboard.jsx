@@ -12,11 +12,9 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-  }),
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+}), )
 @connectNav({
   depth: 2,
   moduleName: 'scof',

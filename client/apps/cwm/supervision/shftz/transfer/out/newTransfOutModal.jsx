@@ -27,10 +27,12 @@ const FormItem = Form.Item;
       text: cr.curr_name,
     })),
     receivers: state.cwmContext.whseAttrs.receivers.filter(recv =>
-        recv.customs_code && recv.ftz_whse_code && recv.name),
+      recv.customs_code && recv.ftz_whse_code && recv.name),
     submitting: state.cwmShFtz.submitting,
   }),
-  { closeNewTransfOutModal, loadParams, loadNormalSoRegs, loadSoRelDetails, newTransfOutRegBySo }
+  {
+    closeNewTransfOutModal, loadParams, loadNormalSoRegs, loadSoRelDetails, newTransfOutRegBySo,
+  }
 )
 export default class NewTransfOutModal extends Component {
   static propTypes = {
@@ -165,7 +167,8 @@ export default class NewTransfOutModal extends Component {
     });
   }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '',
+    this.setState({
+      ownerCusCode: '',
       receiverCode: '',
       transferSource: [],
       relDetails: [],
@@ -201,7 +204,9 @@ export default class NewTransfOutModal extends Component {
       count: soCountObj[relNo],
     }));
     const owner = this.props.owners.filter(own => own.customs_code === this.state.ownerCusCode)[0];
-    this.props.newTransfOutRegBySo({ detailIds, soCounts, owner: owner.id, whse_code: this.props.defaultWhse.code, receiver: this.state.receiverCode }).then((result) => {
+    this.props.newTransfOutRegBySo({
+      detailIds, soCounts, owner: owner.id, whse_code: this.props.defaultWhse.code, receiver: this.state.receiverCode,
+    }).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -234,7 +239,9 @@ export default class NewTransfOutModal extends Component {
   }
   render() {
     const { submitting, owners, receivers } = this.props;
-    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, ownerCusCode, receiverCode } = this.state;
+    const {
+      srcFilter, relDetails, relDetailFilter, selRelDetailKeys, ownerCusCode, receiverCode,
+    } = this.state;
     const dataSource = relDetails.filter((item) => {
       if (relDetailFilter) {
         const reg = new RegExp(relDetailFilter);

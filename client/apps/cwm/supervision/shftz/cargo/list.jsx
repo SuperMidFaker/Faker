@@ -56,14 +56,16 @@ function fetchData({ dispatch }) {
     })),
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadProductCargo,
+  {
+    loadProductCargo,
     switchDefaultWhse,
     updateCargoRule,
     syncProdSKUS,
     fileCargos,
     confirmCargos,
     loadWhse,
-    editGname }
+    editGname,
+  }
 )
 @connectNav({
   depth: 2,
@@ -265,7 +267,9 @@ export default class SHFTZCargoList extends React.Component {
     this.handleCargoLoad(1, filter);
   }
   render() {
-    const { cargolist, listFilter, loading, whses, whse, loginId, submitting } = this.props;
+    const {
+      cargolist, listFilter, loading, whses, whse, loginId, submitting,
+    } = this.props;
     const bondedWhses = whses.filter(wh => wh.bonded === 1);
     const { owners, owner, rule } = this.state;
     const filterOwners = owners.filter(item => item.portion_enabled);
@@ -301,7 +305,7 @@ export default class SHFTZCargoList extends React.Component {
               <Breadcrumb.Item>
                 <NavLink to="/cwm/supervision/shftz">
                   <Icon type="left" /> 上海自贸区监管
-                  </NavLink>
+                </NavLink>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {this.msg('ftzCargoReg')}
@@ -350,7 +354,7 @@ export default class SHFTZCargoList extends React.Component {
               {listFilter.status === 'pending' &&
               <Button icon="sync" loading={submitting} onClick={this.handleSyncProductSKUs} >
               同步SKU
-            </Button>
+              </Button>
             }
               {listFilter.status === 'pending' &&
               <Button type="primary" icon="cloud-upload-o" loading={submitting} onClick={this.handleCargoSend}>

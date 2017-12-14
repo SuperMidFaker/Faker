@@ -6,16 +6,14 @@ import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 const formatMsg = format(messages);
 
-@connect(
-  state => ({
-    fieldDefaults: {
-      ref_waybill_no: state.shipment.formData.ref_waybill_no,
-      ref_entry_no: state.shipment.formData.ref_entry_no,
-      remark: state.shipment.formData.remark,
-    },
-    tenantName: state.account.tenantName,
-  })
-)
+@connect(state => ({
+  fieldDefaults: {
+    ref_waybill_no: state.shipment.formData.ref_waybill_no,
+    ref_entry_no: state.shipment.formData.ref_entry_no,
+    remark: state.shipment.formData.remark,
+  },
+  tenantName: state.account.tenantName,
+}))
 export default class CorrelInfo extends React.Component {
   static propTypes = {
     tenantName: PropTypes.string.isRequired,
@@ -26,9 +24,11 @@ export default class CorrelInfo extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   render() {
-    const { tenantName, formhoc, fieldDefaults: {
-      ref_waybill_no, ref_entry_no, remark,
-    }, vertical } = this.props;
+    const {
+      tenantName, formhoc, fieldDefaults: {
+        ref_waybill_no, ref_entry_no, remark,
+      }, vertical,
+    } = this.props;
     let content = '';
     if (vertical) {
       content = (

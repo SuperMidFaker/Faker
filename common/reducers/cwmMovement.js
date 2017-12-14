@@ -103,12 +103,16 @@ export function createMovement(ownerCode, ownerName, moveType, reason, whseCode,
       ],
       endpoint: 'v1/cwm/create/movement',
       method: 'post',
-      data: { ownerCode, ownerName, moveType, reason, whseCode, loginName, details },
+      data: {
+        ownerCode, ownerName, moveType, reason, whseCode, loginName, details,
+      },
     },
   };
 }
 
-export function loadMovements({ whseCode, pageSize, current, filter }) {
+export function loadMovements({
+  whseCode, pageSize, current, filter,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -118,7 +122,9 @@ export function loadMovements({ whseCode, pageSize, current, filter }) {
       ],
       endpoint: 'v1/cwm/load/movements',
       method: 'get',
-      params: { whseCode, pageSize, current, filter: JSON.stringify(filter) },
+      params: {
+        whseCode, pageSize, current, filter: JSON.stringify(filter),
+      },
     },
   };
 }
@@ -170,7 +176,9 @@ export function executeMovement(movementNo, toTraceIds, loginName, whseCode) {
       ],
       endpoint: 'v1/cwm/execute/move',
       method: 'post',
-      data: { movementNo, toTraceIds, loginName, whseCode },
+      data: {
+        movementNo, toTraceIds, loginName, whseCode,
+      },
     },
   };
 }

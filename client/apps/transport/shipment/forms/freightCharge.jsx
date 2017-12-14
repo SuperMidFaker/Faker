@@ -51,12 +51,14 @@ export default class FreightCharge extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleCompute = (tariffType) => {
-    this.setState({ alert: {
-      visible: false,
-      type: 'error',
-      message: '',
-      description: '',
-    } });
+    this.setState({
+      alert: {
+        visible: false,
+        type: 'error',
+        message: '',
+        description: '',
+      },
+    });
     const {
       customer_partner_id,
       consigner_region_code,
@@ -73,7 +75,9 @@ export default class FreightCharge extends React.Component {
       consignee_street,
       transport_mode_code,
     } = this.props.formData;
-    const { goods_type, container: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date } =
+    const {
+      goods_type, container: ctn, vehicle_type_id, vehicle_length_id, total_weight, total_volume, pickup_est_date, deliver_est_date,
+    } =
       this.props.formhoc.getFieldsValue([
         'goods_type', 'container', 'vehicle_type_id',
         'vehicle_length_id', 'total_weight', 'total_volume',
@@ -182,8 +186,10 @@ export default class FreightCharge extends React.Component {
           tariffType,
         });
         // todo 起步价运费公式? pickup mode=1 x数量?
-        const { quoteNo, freight, pickup, deliver, meter, quantity,
-          unitRatio, gradient, miles, coefficient, transitTime } = result.data;
+        const {
+          quoteNo, freight, pickup, deliver, meter, quantity,
+          unitRatio, gradient, miles, coefficient, transitTime,
+        } = result.data;
         this.props.formhoc.setFieldsValue({
           freight_charge: freight,
           pickup_charge: pickup,
@@ -202,8 +208,10 @@ export default class FreightCharge extends React.Component {
           miles,
           adjust_coefficient: coefficient,
           meter,
-          charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
-              unitRatio, coefficient),
+          charge_amount: getChargeAmountExpression(
+            meter, gradient, miles, quantity,
+            unitRatio, coefficient
+          ),
           pickup_checked: true,
           deliver_checked: true,
           transit_time: transitTime,
@@ -303,9 +311,7 @@ export default class FreightCharge extends React.Component {
   handleTransitChange = (value) => {
     const pickupDt = this.props.formhoc.getFieldValue('pickup_est_date');
     if (pickupDt && typeof value === 'number') {
-      const deliverDate = new Date(
-        pickupDt.valueOf() + value * ONE_DAY_MS
-      );
+      const deliverDate = new Date(pickupDt.valueOf() + value * ONE_DAY_MS);
       this.props.formhoc.setFieldsValue({
         deliver_est_date: moment(deliverDate),
       });
@@ -467,7 +473,8 @@ export default class FreightCharge extends React.Component {
       <Card title={title} bodyStyle={{ padding: 16 }}
         extra={computed ? <a role="presentation" onClick={this.handleReset}>重置</a> : <Button type="primary" icon="calculator"
           onClick={() => this.handleCompute('normal')}
-        >{this.msg('computeCharge')}</Button>}
+        >{this.msg('computeCharge')}
+        </Button>}
       >
         {
           alert.visible &&
@@ -525,18 +532,23 @@ export default class FreightCharge extends React.Component {
         {
           computed ?
             <InputItem formhoc={formhoc} labelName={this.msg('surcharge')} addonAfter={this.msg('CNY')}
-              field="surcharge" fieldProps={{ initialValue: formData.surcharge,
-                onChange: this.handleSurchargeChange }}
+              field="surcharge" fieldProps={{
+ initialValue: formData.surcharge,
+                onChange: this.handleSurchargeChange,
+}}
               colSpan={8}
             /> : ''
         }
         <InputItem formhoc={formhoc} labelName={this.msg('totalCharge')} addonAfter={this.msg('CNY')}
-          field="total_charge" fieldProps={{ initialValue: formData.total_charge,
+          field="total_charge" fieldProps={{
+ initialValue: formData.total_charge,
             onChange: this.handleTotalChange,
           }}
-          rules={[{ type: 'number',
+          rules={[{
+ type: 'number',
             transform: v => Number(v),
-            message: this.msg('totalChargeMustBeNumber') }]}
+            message: this.msg('totalChargeMustBeNumber'),
+}]}
           colSpan={8} readOnly={computed}
         />
         <InputItem formhoc={formhoc} labelName={this.msg('distance')} addonAfter={this.msg('kilometer')}

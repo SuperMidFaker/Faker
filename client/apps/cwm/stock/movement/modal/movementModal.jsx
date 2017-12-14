@@ -26,7 +26,9 @@ const Option = Select.Option;
     movements: state.cwmMovement.movements,
     movementFilter: state.cwmMovement.movementFilter,
   }),
-  { closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter }
+  {
+    closeMovementModal, inventorySearch, createMovement, loadMovements, setMovementsFilter,
+  }
 )
 export default class MovementModal extends Component {
   static propTypes = {
@@ -249,26 +251,28 @@ export default class MovementModal extends Component {
     });
   }
   handleCreateMovement = () => {
-    this.props.createMovement(this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code,
-      this.props.loginName, this.state.movements).then((result) => {
-        if (!result.err) {
-          this.props.closeMovementModal();
-          this.props.loadMovements({
-            whseCode: this.props.defaultWhse.code,
-            tenantId: this.props.tenantId,
-            pageSize: this.props.movements.pageSize,
-            current: this.props.movements.current,
-            filter: this.props.movementFilter,
-          });
-          this.setState({
-            stocks: [],
-            movements: [],
-          });
-          message.success('创建库存移动成功');
-        } else {
-          message.error('操作失败');
-        }
-      });
+    this.props.createMovement(
+      this.state.owner.id, this.state.owner.name, this.state.moveType, '', this.props.defaultWhse.code,
+      this.props.loginName, this.state.movements
+    ).then((result) => {
+      if (!result.err) {
+        this.props.closeMovementModal();
+        this.props.loadMovements({
+          whseCode: this.props.defaultWhse.code,
+          tenantId: this.props.tenantId,
+          pageSize: this.props.movements.pageSize,
+          current: this.props.movements.current,
+          filter: this.props.movementFilter,
+        });
+        this.setState({
+          stocks: [],
+          movements: [],
+        });
+        message.success('创建库存移动成功');
+      } else {
+        message.error('操作失败');
+      }
+    });
   }
   handleMoveQtyChange = (value, index) => {
     const stocks = [...this.state.stocks];

@@ -28,7 +28,9 @@ const { Header, Content } = Layout;
     billingFees: state.transportBilling.billingFees,
     saving: state.transportBilling.billingSaving,
   }),
-  { loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail }
+  {
+    loadFeesByBillingId, updateBillingFees, checkBilling, acceptBilling, editBilling, loadShipmtDetail,
+  }
 )
 export default class BillingFeeList extends React.Component {
   static propTypes = {
@@ -55,8 +57,12 @@ export default class BillingFeeList extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAccept = () => {
-    const { loginId, tenantId, loginName, type, billing } = this.props;
-    const { id: billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge } = billing;
+    const {
+      loginId, tenantId, loginName, type, billing,
+    } = this.props;
+    const {
+      id: billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge,
+    } = billing;
     const fees = this.props.billingFees.data;
     const modifyTimes = billing.modifyTimes + 1;
     const shipmtCount = fees.filter(item => item.status === 1).length;
@@ -82,7 +88,9 @@ export default class BillingFeeList extends React.Component {
         }
       });
     } else {
-      this.props.acceptBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
+      this.props.acceptBilling({
+        tenantId, loginId, loginName, billingId,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -92,8 +100,12 @@ export default class BillingFeeList extends React.Component {
     }
   }
   handleEdit = () => {
-    const { loginId, tenantId, loginName, type, billing } = this.props;
-    const { id: billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge } = billing;
+    const {
+      loginId, tenantId, loginName, type, billing,
+    } = this.props;
+    const {
+      id: billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge,
+    } = billing;
     const fees = this.props.billingFees.data;
     const shipmtCount = fees.filter(item => item.status === 1).length;
     if (this.state.changed) {
@@ -163,7 +175,9 @@ export default class BillingFeeList extends React.Component {
     return '';
   }
   render() {
-    const { billing, tenantId, operation, type } = this.props;
+    const {
+      billing, tenantId, operation, type,
+    } = this.props;
     let partnerName = '';
     if (tenantId === billing.srTenantId) {
       partnerName = billing.spName;

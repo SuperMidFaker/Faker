@@ -18,7 +18,8 @@ const RadioGroup = Radio.Group;
     loginId: state.account.loginId,
     auditModal: state.trackingLandPod.auditModal,
   }),
-  { closePodAuditModal, passAudit, returnAudit })
+  { closePodAuditModal, passAudit, returnAudit }
+)
 export default class PodAuditModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -57,26 +58,26 @@ export default class PodAuditModal extends React.Component {
     const { signStatus, remark, photoList } = this.state;
     const photos = photoList.map(ph => ph.url).join(',');
    */
-    const { auditModal: { dispId, parentDispId, podId }, auditor, tenantId, loginId } = this.props;
-    this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.closePodAuditModal();
-        }
-      });
+    const {
+      auditModal: { dispId, parentDispId, podId }, auditor, tenantId, loginId,
+    } = this.props;
+    this.props.passAudit(podId, dispId, parentDispId, auditor, tenantId, loginId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.closePodAuditModal();
+      }
+    });
   }
   handleAuditReturn = () => {
     const { auditModal: { dispId } } = this.props;
-    this.props.returnAudit(dispId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.closePodAuditModal();
-        }
-      });
+    this.props.returnAudit(dispId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.closePodAuditModal();
+      }
+    });
   }
   handleAuditCancel = () => {
     this.props.closePodAuditModal();

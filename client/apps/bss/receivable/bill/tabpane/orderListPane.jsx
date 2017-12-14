@@ -90,7 +90,7 @@ export default class OrderListPane extends Component {
           <span className="ant-divider" />
           <RowAction onClick={() => this.handleDelete(record.index)} label={<Icon type="delete" />} row={record} />
         </span>
-        ),
+      ),
     }];
     return (
       <DataPane fullscreen={this.props.fullscreen}

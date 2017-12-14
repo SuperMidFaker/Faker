@@ -19,7 +19,9 @@ const Panel = Collapse.Panel;
 const TabPane = Tabs.TabPane;
 
 function getFieldInits(formData) {
-  const init = { mergeOpt_arr: [], specialHsSortArr: [], splHsMergeArr: [], splNoMergeArr: [] };
+  const init = {
+    mergeOpt_arr: [], specialHsSortArr: [], splHsMergeArr: [], splNoMergeArr: [],
+  };
   if (formData) {
     ['rule_currency', 'rule_orig_country', 'rule_net_wt',
     ].forEach((fd) => {
@@ -94,7 +96,9 @@ function getFieldInits(formData) {
       text: tm.name,
     })),
   }),
-  { saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo }
+  {
+    saveTemplateData, countFieldsChange, loadCmsParams, changeTempInfo,
+  }
 )
 @Form.create({ onFieldsChange: (props, values) => props.countFieldsChange(values) })
 export default class ManifestTemplate extends Component {
@@ -138,7 +142,9 @@ export default class ManifestTemplate extends Component {
     const specialHsSortArr = this.props.form.getFieldValue('split_spl_category') || fieldInits.specialHsSortArr;
     const splHsMergeArr = this.props.form.getFieldValue('merge_spl_hs') || fieldInits.splHsMergeArr;
     const splNoMergeArr = this.props.form.getFieldValue('merge_spl_no') || fieldInits.splNoMergeArr;
-    const mergeObj = { merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0 };
+    const mergeObj = {
+      merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0,
+    };
     for (const mergeOpt of mergeOptArr) {
       if (mergeOpt === 'byHsCode') {
         mergeObj.merge_byhscode = 1;
@@ -167,22 +173,22 @@ export default class ManifestTemplate extends Component {
     if (splNoMergeArr) {
       splNoMergeSorts = splNoMergeArr.join(',');
     }
-    const head = { ...this.props.form.getFieldsValue(),
+    const head = {
+      ...this.props.form.getFieldsValue(),
       ...mergeObj,
       rule_element: element,
       split_spl_category: specialHsSorts,
       merge_spl_hs: splHsMergeSorts,
-      merge_spl_no: splNoMergeSorts };
-    this.props.saveTemplateData({ head, templateId: template.id }).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.setState({ changed: false });
-          message.info('保存成功');
-        }
+      merge_spl_no: splNoMergeSorts,
+    };
+    this.props.saveTemplateData({ head, templateId: template.id }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ changed: false });
+        message.info('保存成功');
       }
-    );
+    });
   }
   handleCancel = () => {
     this.context.router.goBack();
@@ -202,7 +208,9 @@ export default class ManifestTemplate extends Component {
     });
   }
   render() {
-    const { form, ietype, templateName, formData, template, operation, fieldInits } = this.props;
+    const {
+      form, ietype, templateName, formData, template, operation, fieldInits,
+    } = this.props;
     return (
       <Layout className="ant-layout-wrapper">
         <Layout>
@@ -230,7 +238,7 @@ export default class ManifestTemplate extends Component {
               />
             </div>
           </Header>
-          <Content className={'main-content layout-min-width layout-min-width-large'}>
+          <Content className="main-content layout-min-width layout-min-width-large">
             <div className="page-body tabbed">
               <Form layout="horizontal">
                 <Tabs>
@@ -262,7 +270,7 @@ export default class ManifestTemplate extends Component {
               <h3>模板设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="properties">
-              <Panel header={'模板属性'} key="properties">
+              <Panel header="模板属性" key="properties">
                 {/*
                 <InfoItem type="select" label="关联客户" placeholder="关联客户" field={template.customer_partner_id}
                   editable options={customers} onEdit={value => this.handleTempInfoChange(value, 'customer_partner_id')}
@@ -270,7 +278,7 @@ export default class ManifestTemplate extends Component {
                 */}
                 <InfoItem label="模板名称" field={templateName} dataIndex="template_name" placeholder="模板名称" editable onEdit={this.handleTempInfoChange} />
               </Panel>
-              <Panel header={'授权使用单位'} key="user">
+              <Panel header="授权使用单位" key="user">
                 <TemplateUsersPane template={template} operation={operation} />
               </Panel>
             </Collapse>

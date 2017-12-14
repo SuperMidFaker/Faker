@@ -61,7 +61,9 @@ export default class CreateReceivingASN extends Component {
     this.setState({ fullscreen });
   }
   handleSave = () => {
-    const { temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers } = this.props;
+    const {
+      temporaryDetails, defaultWhse, owners, loginId, tenantName, suppliers,
+    } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -79,26 +81,19 @@ export default class CreateReceivingASN extends Component {
         data.loginId = loginId;
         data.tenantName = tenantName;
         data.supplier_code = supplier && supplier.code;
-        this.props.addASN(data).then(
-          (result) => {
-            if (!result.error) {
-              message.success('收货通知已创建成功');
-              this.context.router.push('/cwm/receiving/asn');
-            } else {
-              message.error('操作失败');
-            }
+        this.props.addASN(data).then((result) => {
+          if (!result.error) {
+            message.success('收货通知已创建成功');
+            this.context.router.push('/cwm/receiving/asn');
+          } else {
+            message.error('操作失败');
           }
-        );
+        });
       }
     });
   }
   handleCancel = () => {
     this.context.router.goBack();
-  }
-  handleUploadFiles = (fileList) => {
-    this.setState({
-      attachments: fileList,
-    });
   }
   handleOwnerChange = (bool, partnerId) => {
     this.setState({
@@ -107,7 +102,9 @@ export default class CreateReceivingASN extends Component {
     });
   }
   render() {
-    const { form, submitting, defaultWhse, temporaryDetails } = this.props;
+    const {
+      form, submitting, defaultWhse, temporaryDetails,
+    } = this.props;
     const disable = !(this.state.detailEnable && temporaryDetails.length !== 0);
     return (
       <div>

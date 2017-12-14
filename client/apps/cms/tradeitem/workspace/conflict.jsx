@@ -65,23 +65,22 @@ export default class ConflictItemsList extends React.Component {
     });
   }
   handleMasterAudit = () => {
-    this.props.submitAudit({ auditor: 'master', status: 'conflict' }).then(
-      (result) => {
-        if (!result.error) {
-          if (result.data.feedback === 'reload') {
-            const filter = { status: 'conflict' };
-            this.props.loadWorkspaceItems({
-              pageSize: this.props.workspaceItemList.pageSize,
-              current: 1,
-              filter: JSON.stringify(this.state.filter),
-            });
-            this.setState({ filter });
-            notification.info({ title: '提示', description: '归类已提交审核' });
-          } else if (result.data.feedback === 'noop') {
-            notification.info({ title: '提示', description: '没有冲突归类可提交主库审核' });
-          }
+    this.props.submitAudit({ auditor: 'master', status: 'conflict' }).then((result) => {
+      if (!result.error) {
+        if (result.data.feedback === 'reload') {
+          const filter = { status: 'conflict' };
+          this.props.loadWorkspaceItems({
+            pageSize: this.props.workspaceItemList.pageSize,
+            current: 1,
+            filter: JSON.stringify(this.state.filter),
+          });
+          this.setState({ filter });
+          notification.info({ title: '提示', description: '归类已提交审核' });
+        } else if (result.data.feedback === 'noop') {
+          notification.info({ title: '提示', description: '没有冲突归类可提交主库审核' });
         }
-      });
+      }
+    });
   }
   render() {
     const { workspaceItemList, conflictStat, submitting } = this.props;

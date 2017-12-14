@@ -74,7 +74,9 @@ export default function thunkOrClientApiMiddleware(initialReq) {
       return next(action);
     }
 
-    const { endpoint, method, types, ...rest } = caller;
+    const {
+      endpoint, method, types, ...rest
+    } = caller;
 
     if (typeof endpoint !== 'string') {
       throw new Error('Specify a string endpoint URL.');
@@ -88,14 +90,12 @@ export default function thunkOrClientApiMiddleware(initialReq) {
 
     const [REQUEST, SUCCESS, FAILURE] = types;
     next({ ...rest, type: REQUEST });
-    return requests[method](endpoint, { ...rest }).then(
-        (result) => {
-          next({ ...rest, result, type: SUCCESS });
-          return { error: null, data: result.data };
-        }
-      ).catch((error) => {
-        next({ ...rest, error, type: FAILURE });
-        return { error: { message: error.message || error.msg } };
-      });
+    return requests[method](endpoint, { ...rest }).then((result) => {
+      next({ ...rest, result, type: SUCCESS });
+      return { error: null, data: result.data };
+    }).catch((error) => {
+      next({ ...rest, error, type: FAILURE });
+      return { error: { message: error.message || error.msg } };
+    });
   };
 }

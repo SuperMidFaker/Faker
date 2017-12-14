@@ -18,7 +18,9 @@ import { formatMsg } from '../message.i18n';
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus }
+  {
+    toggleCarrierModal, loadCarriers, deleteCarrier, changeCarrierStatus,
+  }
 )
 export default class CarriersPane extends Component {
   static propTypes = {

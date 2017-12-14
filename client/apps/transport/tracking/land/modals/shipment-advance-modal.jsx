@@ -26,7 +26,9 @@ const Option = Select.Option;
     fees: state.transportBilling.advanceModal.fees,
     advances: state.transportBilling.advanceModal.advances,
   }),
-  { showAdvanceModal, createAdvances, getTariffByTransportInfo, loadShipmtDispatch }
+  {
+    showAdvanceModal, createAdvances, getTariffByTransportInfo, loadShipmtDispatch,
+  }
 )
 
 export default class ShipmentAdvanceModal extends React.Component {
@@ -53,7 +55,9 @@ export default class ShipmentAdvanceModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.shipmtNo && this.props.shipmtNo !== nextProps.shipmtNo) {
-      const { transModeCode, goodsType, dispId, type, tenantId } = nextProps;
+      const {
+        transModeCode, goodsType, dispId, type, tenantId,
+      } = nextProps;
       this.props.loadShipmtDispatch(dispId).then((result) => {
         if (type === 1) {
           this.props.getTariffByTransportInfo({
@@ -92,7 +96,9 @@ export default class ShipmentAdvanceModal extends React.Component {
         }
       });
     }
-    const { shipmtNo, dispId, loginId, tenantId, loginName } = nextProps;
+    const {
+      shipmtNo, dispId, loginId, tenantId, loginName,
+    } = nextProps;
     if (nextProps.visible) {
       const advances = nextProps.advances;
       for (let i = 0; i < nextProps.fees.length; i++) {
@@ -154,7 +160,9 @@ export default class ShipmentAdvanceModal extends React.Component {
     });
   }
   handleCancel = () => {
-    this.props.showAdvanceModal({ visible: false, shipmtNo: '', dispId: -1, transModeCode: '', goodsType: -1 });
+    this.props.showAdvanceModal({
+      visible: false, shipmtNo: '', dispId: -1, transModeCode: '', goodsType: -1,
+    });
   }
   handleAmountChange = (index, value) => {
     const advances = [...this.state.advances];
@@ -177,7 +185,7 @@ export default class ShipmentAdvanceModal extends React.Component {
       width: 100,
       render: (col, row, index) => (
         <Input type="number" value={col} onChange={ev => this.handleAmountChange(index, ev.target.value)} />
-        ),
+      ),
     }, {
       title: '币制',
       dataIndex: 'currency',

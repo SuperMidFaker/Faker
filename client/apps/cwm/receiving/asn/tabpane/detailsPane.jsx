@@ -22,7 +22,9 @@ const formatMsg = format(messages);
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { showDetailModal, addTemporary, deleteTemporary, clearTemporary }
+  {
+    showDetailModal, addTemporary, deleteTemporary, clearTemporary,
+  }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
@@ -80,7 +82,9 @@ export default class DetailsPane extends Component {
     window.open(`${XLSX_CDN}/ASN明细导入模板_20170901.xlsx`);
   }
   render() {
-    const { editable, temporaryDetails, detailEnable, form, units, currencies } = this.props;
+    const {
+      editable, temporaryDetails, detailEnable, form, units, currencies,
+    } = this.props;
     const poNo = form.getFieldValue('po_no');
     const ownerPartnerId = form.getFieldValue('owner_partner_id');
     const rowSelection = {
@@ -146,7 +150,7 @@ export default class DetailsPane extends Component {
           <RowAction onClick={this.handleEdit} icon="edit" row={record} />
           <RowAction confirm="确定删除?" onConfirm={() => this.handleDelete(record.index)} icon="delete" row={record} />
         </span>
-        ),
+      ),
     }];
     return (
       <DataPane fullscreen={this.props.fullscreen}

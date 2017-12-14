@@ -93,10 +93,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CUSTOMS_DECLS:
       return { ...state, customslist: { ...state.customslist, loading: true } };
     case actionTypes.LOAD_CUSTOMS_DECLS_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         customslist: { ...state.customslist, loading: false, ...action.result.data },
         listFilter: JSON.parse(action.params.filter),
-        trades: action.result.data.trades };
+        trades: action.result.data.trades,
+      };
     case actionTypes.LOAD_CUSTOMS_DECLS_FAIL:
       return { ...state, customslist: { ...state.customslist, loading: false } };
     case actionTypes.LOAD_CUSTOMSTP_SUCCEED:
@@ -140,7 +142,9 @@ export default function reducer(state = initialState, action) {
   }
 }
 
-export function setInspect({ preEntrySeqNo, delgNo, field, enabled }) {
+export function setInspect({
+  preEntrySeqNo, delgNo, field, enabled,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -150,7 +154,9 @@ export function setInspect({ preEntrySeqNo, delgNo, field, enabled }) {
       ],
       endpoint: 'v1/cms/declare/set/inspect',
       method: 'post',
-      data: { preEntrySeqNo, delgNo, field, enabled },
+      data: {
+        preEntrySeqNo, delgNo, field, enabled,
+      },
     },
   };
 }
@@ -270,10 +276,14 @@ export function sendMutiDecl(data) {
   };
 }
 
-export function showSendDeclModal({ visible = true, ietype, preEntrySeqNo = '', delgNo = '', agentCustCo, defaultDecl }) {
+export function showSendDeclModal({
+  visible = true, ietype, preEntrySeqNo = '', delgNo = '', agentCustCo, defaultDecl,
+}) {
   return {
     type: actionTypes.SHOW_SEND_DECL_MODAL,
-    data: { visible, ietype, preEntrySeqNo, delgNo, agentCustCo, defaultDecl },
+    data: {
+      visible, ietype, preEntrySeqNo, delgNo, agentCustCo, defaultDecl,
+    },
   };
 }
 
@@ -314,7 +324,9 @@ export function clearClearanceResults() {
 export function openDeclReleasedModal(entryNo, preEntrySeqNo, delgNo, ietype) {
   return {
     type: actionTypes.OPEN_DECL_RELEASED_MODAL,
-    data: { preEntrySeqNo, entryNo, delgNo, ietype },
+    data: {
+      preEntrySeqNo, entryNo, delgNo, ietype,
+    },
   };
 }
 

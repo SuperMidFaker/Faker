@@ -10,12 +10,11 @@ import { string2Bytes } from 'client/util/dataTransform';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
-@connect(
-    state => ({
-      diffviews: state.cwmShFtz.compareTask.views.filter(vw => vw.diff_qty !== 0 || vw.diff_net_wt !== 0),
-      entrydiffs: state.cwmShFtz.compareTask.entrydiffs,
-      inbounddiffs: state.cwmShFtz.compareTask.inbounddiffs,
-    }))
+@connect(state => ({
+  diffviews: state.cwmShFtz.compareTask.views.filter(vw => vw.diff_qty !== 0 || vw.diff_net_wt !== 0),
+  entrydiffs: state.cwmShFtz.compareTask.entrydiffs,
+  inbounddiffs: state.cwmShFtz.compareTask.inbounddiffs,
+}))
 export default class FTZDiscrepancyPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -149,8 +148,10 @@ export default class FTZDiscrepancyPane extends React.Component {
     const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
     const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
     wb.Sheets.Sheet1 = XLSX.utils.json_to_sheet(csvData);
-    FileSaver.saveAs(new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
-      'shftz_stock_compare.xlsx');
+    FileSaver.saveAs(
+      new window.Blob([string2Bytes(XLSX.write(wb, wopts))], { type: 'application/octet-stream' }),
+      'shftz_stock_compare.xlsx'
+    );
   }
   render() {
     return (

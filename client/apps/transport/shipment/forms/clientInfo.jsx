@@ -39,9 +39,7 @@ export default class ClientInfo extends React.Component {
       // 手工输入名称直接返回
       return evalue;
     }
-    const selclients = this.props.clients.filter(
-        cl => cl.partner_id === clientFieldId
-    );
+    const selclients = this.props.clients.filter(cl => cl.partner_id === clientFieldId);
     this.props.setConsignFields({
       customer_tenant_id: selclients.length > 0 ? selclients[0].tid : -1,
       customer_partner_id: selclients.length > 0 ? clientFieldId : -1,
@@ -49,7 +47,9 @@ export default class ClientInfo extends React.Component {
     return selclients.length > 0 ? selclients[0].name : evalue;
   }
   render() {
-    const { formhoc, mode, clients, customer_name: name, ref_external_no, vertical } = this.props;
+    const {
+      formhoc, mode, clients, customer_name: name, ref_external_no, vertical,
+    } = this.props;
     const clientOpts = clients.map(cl => ({
       key: `${cl.partner_id}/${cl.tid}`,
       value: `${cl.partner_id}`,
@@ -64,7 +64,7 @@ export default class ClientInfo extends React.Component {
             field="ref_external_no" fieldProps={{ initialValue: ref_external_no }}
           />
         </div>
-        );
+      );
     } else {
       content = (
         <Row gutter={16}>
@@ -98,7 +98,7 @@ export default class ClientInfo extends React.Component {
             />
           </Col>
         </Row>
-        );
+      );
     }
 
     return (

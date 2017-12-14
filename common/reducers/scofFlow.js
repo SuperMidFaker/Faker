@@ -65,7 +65,9 @@ const initialState = {
   eplist: [],
   qplist: [],
   cmsQuotes: [],
-  tmsParams: { consigners: [], consignees: [], transitModes: [], packagings: [] },
+  tmsParams: {
+    consigners: [], consignees: [], transitModes: [], packagings: [],
+  },
   cwmParams: { whses: [] },
   addLineModal: {
     visible: false,
@@ -94,7 +96,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SAVE_FLOW_FAIL:
       return { ...state, submitting: false };
     case actionTypes.SAVE_FLOW_SUCCEED:
-      return { ...state, reloadFlowList: true, submitting: false, currentFlow: action.result.data };
+      return {
+        ...state, reloadFlowList: true, submitting: false, currentFlow: action.result.data,
+      };
     case actionTypes.OPEN_ADD_TRIGGER_MODAL:
       return { ...state, visibleTriggerModal: true, triggerModal: action.data };
     case actionTypes.CLOSE_ADD_TRIGGER_MODAL:
@@ -116,14 +120,18 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FLOWLIST_SUCCEED: {
       const flowList = action.result.data;
       const currentFlow = flowList.data[0];
-      return { ...state, flowListLoading: false, flowList, currentFlow };
+      return {
+        ...state, flowListLoading: false, flowList, currentFlow,
+      };
     }
     case actionTypes.RELOAD_FLOWLIST:
       return { ...state, flowListLoading: true, listFilter: JSON.parse(action.params.filter) };
     case actionTypes.RELOAD_FLOWLIST_FAIL:
       return { ...state, flowListLoading: false };
     case actionTypes.RELOAD_FLOWLIST_SUCCEED:
-      return { ...state, flowListLoading: false, reloadFlowList: false, flowList: action.result.data };
+      return {
+        ...state, flowListLoading: false, reloadFlowList: false, flowList: action.result.data,
+      };
     case actionTypes.OPEN_FLOW:
       return { ...state, currentFlow: action.data };
     case actionTypes.LOAD_GRAPH:
@@ -415,7 +423,9 @@ export function saveFlowGraph(flowid, nodes, edges, trackingId, trackings) {
       ],
       endpoint: 'v1/scof/flow/update/graph',
       method: 'post',
-      data: { flowid, nodes, edges, trackings, trackingId },
+      data: {
+        flowid, nodes, edges, trackings, trackingId,
+      },
     },
   };
 }

@@ -31,7 +31,9 @@ const { Content } = Layout;
     adaptors: state.saasLineFileAdaptor.adaptors,
     customers: state.partner.partners,
   }),
-  { showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor }
+  {
+    showAdaptorModal, loadAdaptors, loadPartners, loadAdaptor, showAdaptorDetailModal, delAdaptor,
+  }
 )
 
 export default class ApiAuthList extends React.Component {

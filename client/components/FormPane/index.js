@@ -41,7 +41,9 @@ export default class DataPane extends React.Component {
     }
   }
   render() {
-    const { baseCls, children, header, layout, hideRequiredMark } = this.props;
+    const {
+      baseCls, children, header, layout, hideRequiredMark,
+    } = this.props;
     return (
       <div className={baseCls}>
         {header ? <div className={`${baseCls}-header`}>{header}</div> : null}

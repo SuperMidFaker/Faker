@@ -1,8 +1,10 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import messages from 'common/message.i18n';
-const actionTypes = createActionTypes('@@welogix/reusable/checker/',
-  ['CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL']);
+const actionTypes = createActionTypes(
+  '@@welogix/reusable/checker/',
+  ['CHECK_LOGINNAME', 'CHECK_LOGINNAME_SUCCEED', 'CHECK_LOGINNAME_FAIL']
+);
 
 export function checkLoginName(loginName, loginId, tenantId) {
   return {
@@ -15,8 +17,10 @@ export function checkLoginName(loginName, loginId, tenantId) {
   };
 }
 
-export function isLoginNameExist(name, code, loginId, tenantId, callback, message,
-  checkerDispatchFn, formatFn) {
+export function isLoginNameExist(
+  name, code, loginId, tenantId, callback, message,
+  checkerDispatchFn, formatFn
+) {
   if (!name) {
     return callback(new Error(formatFn(messages, 'userNameRequired')));
   }

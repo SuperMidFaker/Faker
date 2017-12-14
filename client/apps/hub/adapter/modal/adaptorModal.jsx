@@ -19,7 +19,9 @@ const formItemLayout = {
     visible: state.saasLineFileAdaptor.adaptorModal.visible,
     customers: state.partner.partners,
   }),
-  { showAdaptorModal, hideAdaptorModal, loadPartners, addAdaptor, loadAdaptors }
+  {
+    showAdaptorModal, hideAdaptorModal, loadPartners, addAdaptor, loadAdaptors,
+  }
 )
 
 export default class AdaptorModal extends Component {
@@ -35,7 +37,9 @@ export default class AdaptorModal extends Component {
     this.props.hideAdaptorModal();
   }
   handleAddAdaptor = () => {
-    const { adaptorName, model, ownerPid, ownerTid } = this.state;
+    const {
+      adaptorName, model, ownerPid, ownerTid,
+    } = this.state;
     this.props.addAdaptor({
       code: uuidWithoutDash(),
       name: adaptorName,

@@ -163,7 +163,7 @@ export default class VendorList extends React.Component {
               <Breadcrumb.Item>
                 {vendor.name}
               </Breadcrumb.Item>
-              </Breadcrumb>}
+            </Breadcrumb>}
             <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}

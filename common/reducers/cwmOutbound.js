@@ -101,17 +101,26 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_ALLOCATING_MODAL:
       return { ...state, allocatingModal: { ...state.allocatingModal, visible: false } };
     case actionTypes.OPEN_PICKING_MODAL:
-      return { ...state,
-        pickingModal: { visible: true,
+      return {
+        ...state,
+        pickingModal: {
+          visible: true,
           traceId: action.traceId,
           location: action.location,
           allocQty: action.allcoQty,
           skuPackQty: action.skuPackQty,
-          id: action.id } };
+          id: action.id,
+        },
+      };
     case actionTypes.CLOSE_PICKING_MODAL:
       return { ...state, pickingModal: { visible: false } };
     case actionTypes.OPEN_SHIPPING_MODAL:
-      return { ...state, shippingModal: { visible: true, id: action.id, pickedQty: action.pickedQty, skuPackQty: action.skuPackQty } };
+      return {
+        ...state,
+        shippingModal: {
+          visible: true, id: action.id, pickedQty: action.pickedQty, skuPackQty: action.skuPackQty,
+        },
+      };
     case actionTypes.CLOSE_SHIPPING_MODAL:
       return { ...state, shippingModal: { visible: false } };
     case actionTypes.LOAD_OUTBOUNDS:
@@ -220,7 +229,9 @@ export function closeShippingModal() {
   };
 }
 
-export function loadOutbounds({ whseCode, pageSize, current, filters }) {
+export function loadOutbounds({
+  whseCode, pageSize, current, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -230,7 +241,9 @@ export function loadOutbounds({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/outbounds',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: {
+        whseCode, pageSize, current, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -275,7 +288,9 @@ export function loadProductInboundDetail(productNo, whseCode, ownerPartnerId, fi
       ],
       endpoint: 'v1/cwm/product/inbound/details',
       method: 'get',
-      params: { productNo, whseCode, ownerPartnerId, filters: JSON.stringify(filters) },
+      params: {
+        productNo, whseCode, ownerPartnerId, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -305,10 +320,12 @@ export function batchAutoAlloc(outboundNo, seqNos, loginId, loginName) {
       ],
       endpoint: 'v1/cwm/outbound/autoalloc/batch',
       method: 'post',
-      data: { outbound_no: outboundNo,
+      data: {
+        outbound_no: outboundNo,
         seq_nos: seqNos,
         login_id: loginId,
-        login_name: loginName },
+        login_name: loginName,
+      },
     },
   };
 }
@@ -323,11 +340,13 @@ export function manualAlloc(outboundNo, seqNo, allocs, loginId, loginName) {
       ],
       endpoint: 'v1/cwm/outbound/alloc/manual',
       method: 'post',
-      data: { outbound_no: outboundNo,
+      data: {
+        outbound_no: outboundNo,
         seq_no: seqNo,
         allocs,
         login_id: loginId,
-        login_name: loginName },
+        login_name: loginName,
+      },
     },
   };
 }
@@ -342,7 +361,8 @@ export function cancelProductsAlloc(outboundNo, seqNos, loginId) {
       ],
       endpoint: 'v1/cwm/outbound/undo/products/alloc',
       method: 'post',
-      data: { outbound_no: outboundNo,
+      data: {
+        outbound_no: outboundNo,
         seq_nos: seqNos,
         login_id: loginId,
       },
@@ -360,7 +380,8 @@ export function cancelTraceAlloc(outboundNo, ids, loginId) {
       ],
       endpoint: 'v1/cwm/outbound/undo/trace/alloc',
       method: 'post',
-      data: { outbound_no: outboundNo,
+      data: {
+        outbound_no: outboundNo,
         detail_ids: ids,
         login_id: loginId,
       },
@@ -408,7 +429,9 @@ export function pickConfirm(outboundNo, skulist, loginId, pickedBy, pickedDate) 
       ],
       endpoint: 'v1/cwm/outbounds/pick',
       method: 'post',
-      data: { outboundNo, skulist, loginId, pickedBy, pickedDate },
+      data: {
+        outboundNo, skulist, loginId, pickedBy, pickedDate,
+      },
     },
   };
 }
@@ -438,7 +461,9 @@ export function shipConfirm(outbounddata, skulist, loginName, shippedBy, shipped
       ],
       endpoint: 'v1/cwm/outbounds/ship',
       method: 'post',
-      data: { outbounddata, skulist, loginName, shippedBy, shippedDate },
+      data: {
+        outbounddata, skulist, loginName, shippedBy, shippedDate,
+      },
     },
   };
 }

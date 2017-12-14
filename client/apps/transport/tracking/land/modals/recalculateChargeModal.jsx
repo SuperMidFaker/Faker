@@ -38,7 +38,9 @@ export default class RecalculateChargeModal extends React.Component {
     expense: 0,
   }
   handleOk = () => {
-    const { shipmtNo, loginName, loginId, tenantId, charges } = this.props;
+    const {
+      shipmtNo, loginName, loginId, tenantId, charges,
+    } = this.props;
     const { revenue, expense } = this.state;
     if (revenue !== 0) {
       this.props.createSpecialCharge({

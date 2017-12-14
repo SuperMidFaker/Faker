@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Input, Select, Button } from 'antd';
 import { TARIFF_METER_METHODS } from 'common/constants';
@@ -9,7 +9,9 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 function IntervalInput(props) {
-  const { readonly, unit, index, intervals, onRemove, onChange } = props;
+  const {
+    readonly, unit, index, intervals, onRemove, onChange,
+  } = props;
   function handleRemove() {
     onRemove(index);
   }
@@ -69,12 +71,10 @@ IntervalInput.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-@connect(
-  state => ({
-    meter: state.transportTariff.agreement.meter,
-    intervals: state.transportTariff.agreement.intervals,
-  })
-)
+@connect(state => ({
+  meter: state.transportTariff.agreement.meter,
+  intervals: state.transportTariff.agreement.intervals,
+}))
 export default class PricingLTL extends React.Component {
   static propTypes = {
     readonly: PropTypes.bool,
@@ -133,7 +133,9 @@ export default class PricingLTL extends React.Component {
     this.props.onChange(state.intervals.slice(1));
   }
   render() {
-    const { meter, readonly, formItemLayout, form: { getFieldDecorator } } = this.props;
+    const {
+      meter, readonly, formItemLayout, form: { getFieldDecorator },
+    } = this.props;
     const { unit, intervals } = this.state;
     return (
       <div>
@@ -145,8 +147,7 @@ export default class PricingLTL extends React.Component {
               })(<Select onSelect={this.handleMeterSelect} disabled={readonly}>
                 {
                 TARIFF_METER_METHODS.map(tmm =>
-                  <Option value={tmm.value} key={tmm.value}>{tmm.text}</Option>
-                )
+                  <Option value={tmm.value} key={tmm.value}>{tmm.text}</Option>)
               }
               </Select>)}
             </FormItem>

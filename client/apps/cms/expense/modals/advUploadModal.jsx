@@ -106,7 +106,9 @@ export default class AdvUploadModal extends React.Component {
     this.setState({ attachments: [] });
   }
   renderForm() {
-    const { form: { getFieldDecorator }, partners, tenantId, tenantName } = this.props;
+    const {
+      form: { getFieldDecorator }, partners, tenantId, tenantName,
+    } = this.props;
     if (this.state.importMode === 'recpt') {
       return (
         <div>
@@ -116,26 +118,21 @@ export default class AdvUploadModal extends React.Component {
             </Select>
           </FormItem>
           <FormItem label={this.msg('payer')} {...formItemLayout} >
-            {getFieldDecorator('partnerIdPay', { rules: [{ required: true }] })(
-              <Select
-                showSearch
-                showArrow
-                optionFilterProp="searched"
-                style={{ width: '80%' }}
-              >
-                {partners.customer.map(pt => (
-                  <Option searched={`${pt.partner_code}${pt.name}`} value={pt.partner_id} key={pt.partner_id}>
-                    {pt.name}
-                  </Option>)
-                )}
-              </Select>
-            )}
+            {getFieldDecorator('partnerIdPay', { rules: [{ required: true }] })(<Select
+              showSearch
+              showArrow
+              optionFilterProp="searched"
+              style={{ width: '80%' }}
+            >
+              {partners.customer.map(pt => (
+                <Option searched={`${pt.partner_code}${pt.name}`} value={pt.partner_id} key={pt.partner_id}>
+                  {pt.name}
+                </Option>))}
+            </Select>)}
           </FormItem>
           <Col offset={6}>
             <FormItem>
-              {getFieldDecorator('calculateAll', { initialValue: false })(
-                <Checkbox>同时计算付款方应收代垫费用</Checkbox>
-                )}
+              {getFieldDecorator('calculateAll', { initialValue: false })(<Checkbox>同时计算付款方应收代垫费用</Checkbox>)}
             </FormItem>
           </Col>
         </div>
@@ -144,20 +141,17 @@ export default class AdvUploadModal extends React.Component {
       return (
         <div>
           <FormItem label={this.msg('recipient')} {...formItemLayout} >
-            {getFieldDecorator('partnerIdRec', { rules: [{ required: true }] })(
-              <Select
-                showSearch
-                showArrow
-                optionFilterProp="searched"
-                style={{ width: '80%' }}
-              >
-                {partners.supplier.map(pt => (
-                  <Option searched={`${pt.partner_code}${pt.name}`} value={pt.partner_id} key={pt.partner_id}>
-                    {pt.name}
-                  </Option>)
-                )}
-              </Select>
-            )}
+            {getFieldDecorator('partnerIdRec', { rules: [{ required: true }] })(<Select
+              showSearch
+              showArrow
+              optionFilterProp="searched"
+              style={{ width: '80%' }}
+            >
+              {partners.supplier.map(pt => (
+                <Option searched={`${pt.partner_code}${pt.name}`} value={pt.partner_id} key={pt.partner_id}>
+                  {pt.name}
+                </Option>))}
+            </Select>)}
           </FormItem>
           <FormItem label={this.msg('payer')} {...formItemLayout} >
             <Select value={tenantId} style={{ width: '80%' }} disabled>
@@ -166,9 +160,7 @@ export default class AdvUploadModal extends React.Component {
           </FormItem>
           <Col offset={6}>
             <FormItem>
-              {getFieldDecorator('calculateAll', { initialValue: false })(
-                <Checkbox>同时计算付款方应收代垫费用</Checkbox>
-                )}
+              {getFieldDecorator('calculateAll', { initialValue: false })(<Checkbox>同时计算付款方应收代垫费用</Checkbox>)}
             </FormItem>
           </Col>
         </div>

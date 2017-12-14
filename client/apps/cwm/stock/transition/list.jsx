@@ -43,14 +43,16 @@ const Option = Select.Option;
     sortFilter: state.cwmTransition.sortFilter,
     reload: state.cwmTransition.reloadTransitions,
   }),
-  { openTransitionModal,
+  {
+    openTransitionModal,
     loadTransitions,
     splitTransit,
     unfreezeTransit,
     switchDefaultWhse,
     openBatchTransitModal,
     openBatchMoveModal,
-    openBatchFreezeModal }
+    openBatchFreezeModal,
+  }
 )
 @connectNav({
   depth: 2,
@@ -94,7 +96,9 @@ export default class StockTransitionList extends React.Component {
     const frozenQty = data.reduce((prev, curr) => prev + curr.frozen_qty, 0);
     const bondedQty = data.reduce((prev, curr) => prev + curr.bonded_qty, 0);
     const nonbondedQty = data.reduce((prev, curr) => prev + curr.nonbonded_qty, 0);
-    return { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty };
+    return {
+      stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+    };
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -196,7 +200,8 @@ export default class StockTransitionList extends React.Component {
           max = record.avail_qty;
         }
         if (min <= max) {
-          spans.push(<span className="ant-divider" key="divid" />,
+          spans.push(
+            <span className="ant-divider" key="divid" />,
             <Popover placement="left" title="拆分数量" key="split" content={<span>
               <InputNumber min={min} max={max} onChange={value => this.handleSplitChange(value, min, max)}
                 value={this.state.transitionSplitNum}
@@ -205,7 +210,8 @@ export default class StockTransitionList extends React.Component {
             </span>} trigger="click"
             >
               <a>拆分</a>
-            </Popover>);
+            </Popover>
+          );
         }
         if (spans.length === 1) {
           return spans[0];
@@ -273,7 +279,9 @@ export default class StockTransitionList extends React.Component {
       current: currentPage || current,
     }).then((result) => {
       if (!result.error) {
-        const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.getTotalData(result.data.data);
+        const {
+          stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+        } = this.getTotalData(result.data.data);
         this.setState({
           stockQty,
           availQty,
@@ -319,8 +327,12 @@ export default class StockTransitionList extends React.Component {
     this.props.openTransitionModal(row.trace_id);
   }
   handleDeselectRows = () => {
-    const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.getTotalData(this.props.transitionlist.data);
-    this.setState({ selectedRowKeys: [], totalQty: 0, allSelectedRows: [], stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty });
+    const {
+      stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+    } = this.getTotalData(this.props.transitionlist.data);
+    this.setState({
+      selectedRowKeys: [], totalQty: 0, allSelectedRows: [], stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+    });
   }
   handleExportExcel = () => {
     const { listFilter, sortFilter } = this.props;
@@ -334,8 +346,12 @@ export default class StockTransitionList extends React.Component {
     return <Checkbox>Checkbox</Checkbox>;
   }
   render() {
-    const { defaultWhse, whses, loading, listFilter } = this.props;
-    const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.state;
+    const {
+      defaultWhse, whses, loading, listFilter,
+    } = this.props;
+    const {
+      stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+    } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selRows) => {
@@ -365,7 +381,8 @@ export default class StockTransitionList extends React.Component {
           }
         }
         if (selectedRows.length > 0 && enableBatchTransit) {
-          batchTransitDetail = { owner_partner_id: selectedRows[0].owner_partner_id,
+          batchTransitDetail = {
+            owner_partner_id: selectedRows[0].owner_partner_id,
             owner_name: selectedRows[0].owner_name,
             whse_code: selectedRows[0].whse_code,
           };

@@ -10,11 +10,9 @@ import { formatMsg } from '../message.i18n';
 const TabPane = Tabs.TabPane;
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-  })
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+}))
 @Form.create()
 export default class FlowTmsNodePanel extends Component {
   static propTypes = {

@@ -37,7 +37,9 @@ const Option = Select.Option;
     })),
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadParams, showTransferInModal, loadEntryTransRegs, loadVtransferRegDetails, saveVirtualTransfer }
+  {
+    loadParams, showTransferInModal, loadEntryTransRegs, loadVtransferRegDetails, saveVirtualTransfer,
+  }
 )
 export default class TransferSelfModal extends Component {
   static propTypes = {
@@ -183,8 +185,7 @@ export default class TransferSelfModal extends Component {
     this.props.loadVtransferRegDetails({ ftzEntNo: row.ftz_ent_no }).then((result) => {
       if (!result.error) {
         const entNo = row.ftz_ent_no;
-        const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(
-          result.data.map(dt => ({ ...dt, ftz_ent_no: entNo })));
+        const regDetails = this.state.regDetails.filter(reg => reg.ftz_ent_no !== entNo).concat(result.data.map(dt => ({ ...dt, ftz_ent_no: entNo })));
         const transRegs = this.state.transRegs.map(pr => pr.ftz_ent_no === entNo ? { ...pr, added: true } : pr);
         this.setState({ regDetails, transRegs });
       }
@@ -196,7 +197,9 @@ export default class TransferSelfModal extends Component {
     this.setState({ regDetails, transRegs });
   }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '', transRegs: [], regDetails: [], rel_no: '', relDateRange: [] });
+    this.setState({
+      ownerCusCode: '', transRegs: [], regDetails: [], rel_no: '', relDateRange: [],
+    });
     this.props.showTransferInModal({ visible: false });
   }
   handleOwnerChange = (ownerCusCode) => {
@@ -233,22 +236,26 @@ export default class TransferSelfModal extends Component {
       customs_code: own.customs_code,
       name: own.name,
     }))[0];
-    this.props.saveVirtualTransfer({ detailIds,
+    this.props.saveVirtualTransfer({
+      detailIds,
       owner,
       whseCode: this.props.defaultWhse.code,
-      loginId: this.props.loginId }).then((result) => {
-        if (!result.error) {
-          this.handleCancel();
-          this.props.reload();
-        } else {
-          message.error(result.error.message);
-        }
-      });
+      loginId: this.props.loginId,
+    }).then((result) => {
+      if (!result.error) {
+        this.handleCancel();
+        this.props.reload();
+      } else {
+        message.error(result.error.message);
+      }
+    });
   }
 
   render() {
     const { submitting } = this.props;
-    const { entryRegNo, relDateRange, transRegs, ownerCusCode, regDetails } = this.state;
+    const {
+      entryRegNo, relDateRange, transRegs, ownerCusCode, regDetails,
+    } = this.state;
     const extraForm = (
       <Form layout="inline">
         <FormItem label="货主">
@@ -289,7 +296,7 @@ export default class TransferSelfModal extends Component {
         <Summary.Item label="总净重" addonAfter="KG">{stat.total_netwt.toFixed(3)}</Summary.Item>
         <Summary.Item label="总金额">{stat.total_amount.toFixed(3)}</Summary.Item>
       </Summary>
-      );
+    );
     return (
       <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
         footer={null} visible={this.props.visible}

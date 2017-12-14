@@ -79,7 +79,9 @@ export default class HSCodeSpecialList extends React.Component {
   }
   handleSearch = (value) => {
     const { categoryHscodes: { categoryId, current, pageSize } } = this.props;
-    this.props.loadCategoryHsCode({ categoryId, current, pageSize, searchText: value });
+    this.props.loadCategoryHsCode({
+      categoryId, current, pageSize, searchText: value,
+    });
   }
   render() {
     const { hscode } = this.state;

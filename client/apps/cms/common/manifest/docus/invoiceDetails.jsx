@@ -87,7 +87,9 @@ export default class InvoiceDetails extends React.Component {
     this.props.saveDocuChange(change, this.props.invoice.id);
   }
   render() {
-    const { invoice, trxModes, customs, docuBody } = this.props;
+    const {
+      invoice, trxModes, customs, docuBody,
+    } = this.props;
     const columns = [...this.columns];
     const totCols = [...this.totCols];
     if (invoice.eng_name_en) {

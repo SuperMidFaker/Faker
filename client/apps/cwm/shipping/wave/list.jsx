@@ -42,7 +42,9 @@ function fetchData({ state, dispatch }) {
     wave: state.cwmShippingOrder.wave,
     loading: state.cwmShippingOrder.wave.loading,
   }),
-  { loadWaves, switchDefaultWhse, releaseWave, cancelWave }
+  {
+    loadWaves, switchDefaultWhse, releaseWave, cancelWave,
+  }
 )
 @connectNav({
   depth: 2,
@@ -177,7 +179,9 @@ export default class WaveList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, filters, loading, owners } = this.props;
+    const {
+      whses, defaultWhse, filters, loading, owners,
+    } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadWaves(params),
       resolve: result => result.data,

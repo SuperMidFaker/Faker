@@ -52,8 +52,12 @@ export default class AddTemplateModal extends React.Component {
     }
   }
   handleAddNew = (formData) => {
-    const { tenantId, loginId, loginName, tenantName } = this.props;
-    const params = { ...formData, tenant_id: tenantId, modify_id: loginId, modify_name: loginName, tenant_name: tenantName };
+    const {
+      tenantId, loginId, loginName, tenantName,
+    } = this.props;
+    const params = {
+      ...formData, tenant_id: tenantId, modify_id: loginId, modify_name: loginName, tenant_name: tenantName,
+    };
     this.props.createBillTemplate(params).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -77,8 +81,7 @@ export default class AddTemplateModal extends React.Component {
       <Modal maskClosable={false} title="新增制单规则" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="vertical">
           <FormItem label="关联客户">
-            {getFieldDecorator('customer', { initialValue: null, rules: [{ required: true, message: '关联客户必选' }] }
-            )(<Select
+            {getFieldDecorator('customer', { initialValue: null, rules: [{ required: true, message: '关联客户必选' }] })(<Select
               showSearch
               placeholder="选择客户"
               optionFilterProp="children"
@@ -87,27 +90,23 @@ export default class AddTemplateModal extends React.Component {
             >
               {customers.map(data => (<Option key={data.id} value={data.id}
                 search={`${data.partner_code}${data.name}`}
-              >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-              )}
+              >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+              </Option>))}
             </Select>)
           }
           </FormItem>
           <FormItem label="模板名称">
             {getFieldDecorator('template_name', {
               rules: [{ required: true, message: '模板名称必填' }],
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem>
             {getFieldDecorator('i_e_type', {
               rules: [{ required: true, message: '进口或出口必选' }],
-            })(
-              <RadioGroup onChange={this.handleIEChange}>
-                <Radio value={0}>进口</Radio>
-                <Radio value={1}>出口</Radio>
-              </RadioGroup>
-            )}
+            })(<RadioGroup onChange={this.handleIEChange}>
+              <Radio value={0}>进口</Radio>
+              <Radio value={1}>出口</Radio>
+            </RadioGroup>)}
           </FormItem>
         </Form>
       </Modal>

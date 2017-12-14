@@ -133,8 +133,7 @@ export default class MemberSelect extends React.Component {
               onClick={this.handleSelect}
             >
               {teamMembers.map(member =>
-                <Menu.Item key={member.login_id} >{member.name}</Menu.Item>
-              )}
+                <Menu.Item key={member.login_id} >{member.name}</Menu.Item>)}
             </Menu>
           </TabPane>
           <TabPane tab="部门" key="2">
@@ -150,8 +149,7 @@ export default class MemberSelect extends React.Component {
               onClick={this.handleSelect}
             >
               {allUsers.map(user =>
-                <Menu.Item key={user.login_id} >{user.name}</Menu.Item>
-              )}
+                <Menu.Item key={user.login_id} >{user.name}</Menu.Item>)}
             </Menu>
           </TabPane>
         </Tabs>

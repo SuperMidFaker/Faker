@@ -24,7 +24,9 @@ const formatMsg = format(messages);
     billtemplates: state.cmsManifest.billtemplates,
     customer: state.cmsResources.customer,
   }),
-  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal }
+  {
+    loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal,
+  }
 )
 
 export default class ManifestRulesPane extends React.Component {

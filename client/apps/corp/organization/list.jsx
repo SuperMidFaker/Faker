@@ -101,10 +101,10 @@ export default class CorpList extends React.Component {
   handleStatusSwitch(tenant, index) {
     this.props.switchStatus(index, tenant.key, tenant.status === ACCOUNT_STATUS.normal.name
       ? ACCOUNT_STATUS.blocked.name : ACCOUNT_STATUS.normal.name).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        }
-      });
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
   }
   handleEnabledAppEdit(record, index) {
     this.props.openTenantAppsEditor(record, index);
@@ -188,11 +188,9 @@ export default class CorpList extends React.Component {
       render: (o, record, index) => {
         const modComp = [];
         (record.apps || []).forEach((mod) => {
-          modComp.push(
-            <NavLink key={mod.id} to={DEFAULT_MODULES[mod.id].url}>
-              {formatGlobalMsg(intl, DEFAULT_MODULES[mod.id].text)}
-            </NavLink>
-          );
+          modComp.push(<NavLink key={mod.id} to={DEFAULT_MODULES[mod.id].url}>
+            {formatGlobalMsg(intl, DEFAULT_MODULES[mod.id].text)}
+          </NavLink>);
           modComp.push(<span className="ant-divider" key={`divider${mod.id}`} />);
         });
         return (

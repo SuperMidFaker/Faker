@@ -49,7 +49,9 @@ const initialState = {
     loading: true,
     loaded: true,
   },
-  soFilters: { status: 'all', ownerCode: 'all', receiverCode: 'all', carrierCode: 'all' },
+  soFilters: {
+    status: 'all', ownerCode: 'all', receiverCode: 'all', carrierCode: 'all',
+  },
   wave: {
     totalCount: 0,
     pageSize: 20,
@@ -85,7 +87,16 @@ export default function reducer(state = initialState, action) {
     case actionTypes.HIDE_DOCK:
       return { ...state, dock: { ...state.dock, visible: false } };
     case actionTypes.SHOW_DOCK:
-      return { ...state, dock: { ...state.dock, visible: true, order: { ...state.dock.order, so_no: action.soNo, outboundNo: action.outboundNo, status: 0 } } };
+      return {
+        ...state,
+        dock: {
+          ...state.dock,
+          visible: true,
+          order: {
+            ...state.dock.order, so_no: action.soNo, outboundNo: action.outboundNo, status: 0,
+          },
+        },
+      };
     case actionTypes.CHANGE_DOCK_TAB:
       return { ...state, dock: { ...state.dock, tabKey: action.data.tabKey } };
     case actionTypes.LOAD_SOS:
@@ -117,7 +128,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CANCEL_OUTBOUND_SUCCEED:
       return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false } };
     case actionTypes.CLOSE_OUTBOUND_SUCCEED:
-      return { ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false }, dockLoading: false };
+      return {
+        ...state, dock: { ...state.dock, visible: false }, solist: { ...state.solist, loaded: false }, dockLoading: false,
+      };
     case actionTypes.SHOW_ASN_SELECT:
       return { ...state, asnSelectModal: { ...state.asnSelectModal, visible: true } };
     case actionTypes.HIDE_ASN_SELECT:
@@ -170,7 +183,9 @@ export function createSO(data) {
   };
 }
 
-export function loadSos({ whseCode, pageSize, current, filters }) {
+export function loadSos({
+  whseCode, pageSize, current, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -180,7 +195,9 @@ export function loadSos({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/shipping/sos/load',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: {
+        whseCode, pageSize, current, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -245,7 +262,9 @@ export function batchRelease(soNos, loginId) {
   };
 }
 
-export function loadWaves({ whseCode, pageSize, current, filters }) {
+export function loadWaves({
+  whseCode, pageSize, current, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -255,7 +274,9 @@ export function loadWaves({ whseCode, pageSize, current, filters }) {
       ],
       endpoint: 'v1/cwm/waves',
       method: 'get',
-      params: { whseCode, pageSize, current, filters: JSON.stringify(filters) },
+      params: {
+        whseCode, pageSize, current, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -285,7 +306,9 @@ export function createWave(soNos, tenantName, whseCode, loginId) {
       ],
       endpoint: 'v1/cwm/create/waves',
       method: 'post',
-      data: { soNos, tenantName, whseCode, loginId },
+      data: {
+        soNos, tenantName, whseCode, loginId,
+      },
     },
   };
 }

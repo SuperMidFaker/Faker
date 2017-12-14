@@ -24,7 +24,9 @@ function fetchData({ dispatch, state }) {
   nodes: state.transportResources.nodes,
   nodeType: state.transportResources.nodeType,
   partners: state.shipment.partners,
-}), { setNodeType, removeNode, toggleNodeModal, loadNodeList })
+}), {
+  setNodeType, removeNode, toggleNodeModal, loadNodeList,
+})
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -34,10 +36,10 @@ export default class NodeListContainer extends Component {
     loaded: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    nodes: PropTypes.array.isRequired,                // 节点数组,包括发货地、收获地和中转地
-    nodeType: PropTypes.number.isRequired,            // 当前选中的节点类型
-    setNodeType: PropTypes.func.isRequired,           // 改变节点类型的action creator
-    removeNode: PropTypes.func.isRequired,            // 移除某个节点时的action creator
+    nodes: PropTypes.array.isRequired, // 节点数组,包括发货地、收获地和中转地
+    nodeType: PropTypes.number.isRequired, // 当前选中的节点类型
+    setNodeType: PropTypes.func.isRequired, // 改变节点类型的action creator
+    removeNode: PropTypes.func.isRequired, // 移除某个节点时的action creator
     toggleNodeModal: PropTypes.func.isRequired,
     loadNodeList: PropTypes.func.isRequired,
     partners: PropTypes.array.isRequired,

@@ -66,26 +66,30 @@ export const { REPORT_LOC_SUCCEED, LOAD_TRANSHIPMT, CHANGE_ACT_DATE_SUCCEED } = 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_TRANSHIPMT:
-      return { ...state,
+      return {
+        ...state,
         loading: true,
         filters: JSON.parse(action.params.filters),
       };
     case actionTypes.LOAD_TRANSHIPMT_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         loading: false,
         loaded: true,
         shipmentlist: action.result.data,
       };
     case actionTypes.SHOW_VEHICLE_MODAL:
-      return { ...state,
+      return {
+        ...state,
         vehicleModal: { visible: true, ...action.data },
       };
     case actionTypes.HIDE_VEHICLE_MODAL:
       return { ...state, vehicleModal: initialState.vehicleModal };
     case actionTypes.SHOW_DATE_MODAL:
-      return { ...state,
+      return {
+        ...state,
         dateModal: {
           visible: true,
           shipments: action.data.shipments,
@@ -178,7 +182,9 @@ export function saveVehicle(shipmtNo, dispId, plate, driver, remark) {
       ],
       endpoint: 'v1/transport/tracking/vehicle',
       method: 'post',
-      data: { shipmtNo, dispId, plate, driver, remark },
+      data: {
+        shipmtNo, dispId, plate, driver, remark,
+      },
     },
   };
 }
@@ -249,7 +255,9 @@ export function reportLoc(tenantId, shipmtNo, parentNo, dispId, point) {
       ],
       endpoint: 'v1/transport/tracking/point',
       method: 'post',
-      data: { tenantId, shipmtNo, parentNo, dispId, point },
+      data: {
+        tenantId, shipmtNo, parentNo, dispId, point,
+      },
     },
   };
 }
@@ -298,7 +306,9 @@ export function deliverConfirm(shipmtNo, dispId) {
   };
 }
 
-export function changePickDeliverDate({ dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate }) {
+export function changePickDeliverDate({
+  dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -308,12 +318,16 @@ export function changePickDeliverDate({ dispId, shipmtNo, loginName, loginId, te
       ],
       endpoint: 'v1/transport/tracking/changePickDeliverDate',
       method: 'post',
-      data: { dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate },
+      data: {
+        dispId, shipmtNo, loginName, loginId, tenantId, tenantName, pickupActDate, deliverActDate,
+      },
     },
   };
 }
 
-export function changeDeliverPrmDate({ dispId, shipmtNo, loginName, loginId, tenantId, tenantName, deliverPrmDate }) {
+export function changeDeliverPrmDate({
+  dispId, shipmtNo, loginName, loginId, tenantId, tenantName, deliverPrmDate,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -323,7 +337,9 @@ export function changeDeliverPrmDate({ dispId, shipmtNo, loginName, loginId, ten
       ],
       endpoint: 'v1/transport/tracking/changeDeliverPrmDate',
       method: 'post',
-      data: { dispId, shipmtNo, loginName, loginId, tenantId, tenantName, deliverPrmDate },
+      data: {
+        dispId, shipmtNo, loginName, loginId, tenantId, tenantName, deliverPrmDate,
+      },
     },
   };
 }

@@ -19,12 +19,10 @@ function fetchData({ state, dispatch }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
-    hscodeCategories: state.cmsHsCode.hscodeCategories,
-  })
-)
+@connect(state => ({
+  isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
+  hscodeCategories: state.cmsHsCode.hscodeCategories,
+}))
 
 export default class MergeSplitRulesPane extends React.Component {
   static propTypes = {
@@ -47,8 +45,7 @@ export default class MergeSplitRulesPane extends React.Component {
     return (
       <div className="pane form-layout-compact">
         <div className="panel-header">
-          <FormItem>{getFieldDecorator('set_merge_split')(
-            <Switch checked={mergeSplit} onChange={this.handleOnChange} checkedChildren={'启用'} unCheckedChildren={'关闭'} />)}
+          <FormItem>{getFieldDecorator('set_merge_split')(<Switch checked={mergeSplit} onChange={this.handleOnChange} checkedChildren="启用" unCheckedChildren="关闭" />)}
           </FormItem>
         </div>
         <div className="pane-content">

@@ -8,11 +8,12 @@ import { showLinkSlaveModal, getUnlinkSlavesByOwner, linkMasterSlaves } from 'co
 import { formatMsg } from '../../message.i18n';
 
 @injectIntl
-@connect(state => ({
-  masterRepo: state.cmsTradeitem.linkSlaveModal.masterRepo,
-  visible: state.cmsTradeitem.linkSlaveModal.visible,
-  slaveList: state.cmsTradeitem.linkSlaveModal.slaves,
-}),
+@connect(
+  state => ({
+    masterRepo: state.cmsTradeitem.linkSlaveModal.masterRepo,
+    visible: state.cmsTradeitem.linkSlaveModal.visible,
+    slaveList: state.cmsTradeitem.linkSlaveModal.slaves,
+  }),
   { showLinkSlaveModal, getUnlinkSlavesByOwner, linkMasterSlaves }
 )
 export default class LinkSlaveModal extends React.Component {
@@ -39,15 +40,14 @@ export default class LinkSlaveModal extends React.Component {
       message.error('未选择从库');
       return;
     }
-    this.props.linkMasterSlaves(masterRepo.id, selectedRowKeys).then(
-      (result) => {
-        if (!result.error) {
-          this.handleCancel();
-          this.props.reload();
-        } else {
-          message.error(result.error.message, 10);
-        }
-      });
+    this.props.linkMasterSlaves(masterRepo.id, selectedRowKeys).then((result) => {
+      if (!result.error) {
+        this.handleCancel();
+        this.props.reload();
+      } else {
+        message.error(result.error.message, 10);
+      }
+    });
   }
   columns = [{
     title: '库创建者',

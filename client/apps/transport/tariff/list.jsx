@@ -55,7 +55,10 @@ function fetchData({ state, dispatch, location }) {
     loading: state.transportTariff.loading,
     formParams: state.transportTariff.formParams,
   }),
-  { loadTable, delTariffById, updateTariffValid, showCreateTariffModal, delTariffByQuoteNo, createTariffByNextVersion })
+  {
+    loadTable, delTariffById, updateTariffValid, showCreateTariffModal, delTariffByQuoteNo, createTariffByNextVersion,
+  }
+)
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -451,7 +454,7 @@ export default class TariffList extends React.Component {
                   <div>
                     <NavLink to={`/transport/billing/tariff/edit/${record.quoteNo}/${record.version}`}>
                         继续修订
-                      </NavLink>
+                    </NavLink>
                     <span className="ant-divider" />
                     <PrivilegeCover module="transport" feature="tariff" action="delete">
                       <a onClick={() => this.handleDel(record)}>删除</a>

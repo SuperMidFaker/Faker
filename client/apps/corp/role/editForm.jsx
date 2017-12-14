@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import { connect } from 'react-redux';
 import { Button, Form, Input, Card, Switch, Checkbox, Row, Col, message } from 'antd';
 import { routerShape } from 'react-router';
@@ -21,7 +21,9 @@ function goBack(router) {
 }
 
 function FormInputItem(props) {
-  const { type = 'text', labelName, labelSpan, required, placeholder, field, options } = props;
+  const {
+    type = 'text', labelName, labelSpan, required, placeholder, field, options,
+  } = props;
   const { getFieldDecorator, ...fieldOptions } = options;
   const fieldInputProps = getFieldDecorator(field, fieldOptions);
   return (
@@ -124,18 +126,18 @@ export default class RoleForm extends React.Component {
     let state;
     if (checked) {
       if (this.state.editPrivilegeMap[moduleId]) {
-        state = update(this.state, { editPrivilegeMap: {
-          [moduleId]: { [featId]: { $set: true } } },
+        state = update(this.state, {
+          editPrivilegeMap: { [moduleId]: { [featId]: { $set: true } } },
         });
       } else {
-        state = update(this.state, { editPrivilegeMap: {
-          [moduleId]: { $set: { [featId]: true } } },
+        state = update(this.state, {
+          editPrivilegeMap: { [moduleId]: { $set: { [featId]: true } } },
         });
       }
     } else {
       // uncheck moduleId featId必然已存在
-      state = update(this.state, { editPrivilegeMap: {
-        [moduleId]: { [featId]: { $set: undefined } } },
+      state = update(this.state, {
+        editPrivilegeMap: { [moduleId]: { [featId]: { $set: undefined } } },
       });
     }
     this.setState(state);
@@ -179,8 +181,10 @@ export default class RoleForm extends React.Component {
     goBack(this.context.router);
   }
   render() {
-    const { formData: { name, desc }, tenantModules, intl,
-      submitting, form: { getFieldDecorator } } = this.props;
+    const {
+      formData: { name, desc }, tenantModules, intl,
+      submitting, form: { getFieldDecorator },
+    } = this.props;
     const { editPrivilegeMap: privileges } = this.state;
     return (
       <div className="page-body card-wrapper">
@@ -239,8 +243,7 @@ export default class RoleForm extends React.Component {
                             />
                           </Col>
                           <Col span={12} offset={2}>
-                            <CheckboxGroup options={feat.actions.map(
-                              act => ({
+                            <CheckboxGroup options={feat.actions.map(act => ({
                                 label: formatGlobalMsg(intl, act.text),
                                 value: act.id,
                               }))} value={
@@ -249,8 +252,7 @@ export default class RoleForm extends React.Component {
                               onChange={checkeds => this.handleActionCheck(tnm.id, feat.id, checkeds)}
                             />
                           </Col>
-                        </Row>)
-                      )
+                        </Row>))
                     }
                 </Card>
               </Col>

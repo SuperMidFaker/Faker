@@ -24,7 +24,9 @@ const Option = Select.Option;
     listFilter: state.scvClassification.listFilter,
     tradeItemlist: state.scvClassification.tradeItemlist,
   }),
-  { setNominatedVisible, loadSyncList, nominatedImport, loadTradeItems, setCompareVisible }
+  {
+    setNominatedVisible, loadSyncList, nominatedImport, loadTradeItems, setCompareVisible,
+  }
 )
 export default class NominatedImport extends React.Component {
   static propTypes = {
@@ -58,7 +60,8 @@ export default class NominatedImport extends React.Component {
     };
     if (this.state.nominated) {
       const broker = slaves.filter(tr => tr.broker_tenant_id === val.broker)[0];
-      params = { ...params,
+      params = {
+        ...params,
         contributeTenantId: broker.broker_tenant_id,
         contributeTenantName: broker.broker_name,
       };
@@ -119,18 +122,16 @@ export default class NominatedImport extends React.Component {
             </Radio>
           </Col>
           { this.state.nominated && <Col offset="2" span="18">
-            {getFieldDecorator('broker', { initialValue: null }
-              )(<Select
-                showSearch
-                placeholder="选择报关行"
-                optionFilterProp="children"
+            {getFieldDecorator('broker', { initialValue: null })(<Select
+              showSearch
+              placeholder="选择报关行"
+              optionFilterProp="children"
 
-                style={{ width: '90%' }}
-              >
-                {slaves.map(data => (
-                  <Option key={data.broker_tenant_id} value={data.broker_tenant_id} >{data.broker_name}</Option>)
-                )}
-              </Select>)
+              style={{ width: '90%' }}
+            >
+              {slaves.map(data => (
+                <Option key={data.broker_tenant_id} value={data.broker_tenant_id} >{data.broker_name}</Option>))}
+            </Select>)
             }
           </Col>}
         </FormItem>

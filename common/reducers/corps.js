@@ -2,7 +2,7 @@ import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 import { CHINA_CODE, PRESET_TENANT_ROLE } from '../constants';
 import { appendFormAcitonTypes, formReducer, loadFormC, clearFormC, setFormValueC } from
-'./form-common';
+  './form-common';
 import { PERSONNEL_EDIT_SUCCEED } from './personnel';
 const actionTypes = createActionTypes('@@welogix/corps/', [
   'OPEN_TENANT_APPS_EDITOR', 'CLOSE_TENANT_APPS_EDITOR',
@@ -84,7 +84,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.ORGANS_LOAD_SUCCEED: {
       const corplist = { ...state.corplist, ...action.result.data };
-      return { ...state, loading: false, loaded: true, corplist };
+      return {
+        ...state, loading: false, loaded: true, corplist,
+      };
     }
     case actionTypes.ORGANS_LOAD_FAIL:
       return { ...state, loading: false };
@@ -99,14 +101,17 @@ export default function reducer(state = initialState, action) {
         // DO NOT use push because apps is shallow copied, DO NOT modify state
         corplist.data[action.index].apps = [...corplist.data[action.index].apps, action.data.app];
       } else {
-        corplist.data[action.index].apps = corplist.data[action.index].apps.filter(
-          app => app.id !== action.data.app.id);
+        corplist.data[action.index].apps = corplist.data[action.index].apps.filter(app => app.id !== action.data.app.id);
       }
-      return { ...state,
+      return {
+        ...state,
         corplist,
-        appEditor: { ...state.appEditor,
+        appEditor: {
+          ...state.appEditor,
           tenantApps:
-        corplist.data[action.index].apps } };
+        corplist.data[action.index].apps,
+        },
+      };
     }
     case actionTypes.OPEN_TENANT_APPS_EDITOR:
       return { ...state, appEditor: action.tenantAppInfo };
@@ -118,11 +123,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ORGAN_EDIT_SUCCEED: {
       const corps = state.corplist.data.map(corp => corp.key === action.data.corp.key ?
         { ...corp, ...action.result.data } : corp);
-      return { ...state,
+      return {
+        ...state,
         corplist: { ...state.corplist, data: corps },
         formData: initialState.formData,
         corpUsers: [],
-        submitting: false };
+        submitting: false,
+      };
     }
     case actionTypes.CORP_SUBMIT_SUCCEED: {
       const corplist = { ...state.corplist };

@@ -41,7 +41,9 @@ export default class BeforeFeesModal extends React.Component {
   }
   componentDidMount() {
     const { tenantId, type } = this.props;
-    const { beginDate, chooseModel, partnerId, partnerTenantId } = this.props.billing;
+    const {
+      beginDate, chooseModel, partnerId, partnerTenantId,
+    } = this.props.billing;
     this.props.loadDispsBeforeTime({
       type,
       beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),

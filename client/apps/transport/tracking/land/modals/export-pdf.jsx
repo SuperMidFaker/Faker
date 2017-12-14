@@ -16,7 +16,8 @@ const CheckboxGroup = Checkbox.Group;
   state => ({
     tenantId: state.account.tenantId,
   }),
-  { })
+  { }
+)
 export default class ExportPDF extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

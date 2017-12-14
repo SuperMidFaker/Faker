@@ -19,7 +19,9 @@ const formatMsg = format(messages);
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { reviseQuote, copyQuote, openPublishModal, openTrialModal }
+  {
+    reviseQuote, copyQuote, openPublishModal, openTrialModal,
+  }
 )
 export default class EditToolbar extends Component {
   static propTypes = {

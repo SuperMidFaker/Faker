@@ -5,7 +5,7 @@ import { Icon, Card, Col, Row, Tooltip, Modal, Form, Input, Radio, Button,
   Table, Select, message } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleShunfengExpressModal,
-loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
+  loadExpressInfo, addZD } from 'common/reducers/cwmOutbound';
 import messages from '../../message.i18n';
 import { format } from 'client/common/i18n/helpers';
 import { WaybillDef, TrigeminyListDef } from '../billsPrint/docDef';
@@ -51,7 +51,9 @@ const ADDED_SERVICES = [
     visible: state.cwmOutbound.shunfengExpressModal.visible,
     config: state.cwmOutbound.shunfengExpressModal.config,
   }),
-  { loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleShunfengExpressModal, loadExpressInfo, addZD }
+  {
+    loadOutboundHead, updateOutboundMode, readWaybillLogo, orderExpress, toggleShunfengExpressModal, loadExpressInfo, addZD,
+  }
 )
 export default class ShunfengExpressModal extends Component {
   static propTypes = {
@@ -67,12 +69,12 @@ export default class ShunfengExpressModal extends Component {
     router: PropTypes.object.isRequired,
   }
 
-// 第一单：顺丰标快--寄付月结--保价；
-// 第二单：顺丰特惠--到付--签回单；
-// 第三单：顺丰次晨--第三方付--代收货款；
-// 第四单：顺丰即日--寄付月结--子母件；
-// 第五单：重货快运--寄付月结；
-// 第六单：物流普运--寄付月结
+  // 第一单：顺丰标快--寄付月结--保价；
+  // 第二单：顺丰特惠--到付--签回单；
+  // 第三单：顺丰次晨--第三方付--代收货款；
+  // 第四单：顺丰即日--寄付月结--子母件；
+  // 第五单：重货快运--寄付月结；
+  // 第六单：物流普运--寄付月结
   state = {
     printedPickingList: false,
     mailnoLoading: false,
@@ -507,7 +509,8 @@ export default class ShunfengExpressModal extends Component {
               {mailno &&
                 <Button type="dashed" icon="plus" style={{ width: '100%' }}
                   onClick={this.handleAddZD} loading={this.state.sonMailnoLoading}
-                >增加子单号</Button>}
+                >增加子单号
+                </Button>}
             </Card>
           </Col>
         </Row>

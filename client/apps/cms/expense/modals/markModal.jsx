@@ -61,7 +61,7 @@ export default class MarkModal extends Component {
       title: this.msg('statementEn'),
       render: (o, record) => (
         <ColumnCheckbox field="status" record={record} onChange={this.handleOnChange} />
-        ),
+      ),
     },
   ];
   handleOnChange = (record, field, value) => {

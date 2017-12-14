@@ -22,7 +22,8 @@ const FormItem = Form.Item;
     type: state.scofFlow.addLocationModal.type,
     tariffId: state.scofFlow.addLocationModal.tariffId,
   }),
-  { toggleAddLocationModal,
+  {
+    toggleAddLocationModal,
     loadTmsBizParams,
     loadFormRequires,
     addNode,
@@ -64,10 +65,14 @@ export default class AddLocationModal extends React.Component {
     this.props.toggleAddLocationModal({ visible: false });
   }
   handleOk = () => {
-    const { form, type, tenantId, partnerId, partnerName } = this.props;
+    const {
+      form, type, tenantId, partnerId, partnerName,
+    } = this.props;
     const { region } = this.state;
     const nodeInfoInForm = form.getFieldsValue();
-    const nodeInfo = Object.assign({}, nodeInfoInForm, { ...region, type, tenant_id: tenantId, ref_partner_id: partnerId, ref_partner_name: partnerName });
+    const nodeInfo = Object.assign({}, nodeInfoInForm, {
+      ...region, type, tenant_id: tenantId, ref_partner_id: partnerId, ref_partner_name: partnerName,
+    });
     this.props.addNode(nodeInfo).then((result) => {
       this.setState({
         region: {
@@ -93,18 +98,22 @@ export default class AddLocationModal extends React.Component {
   }
   handleRegionChange = (value) => {
     const [code, province, city, district, street] = value;
-    const region = Object.assign({}, { region_code: code, province, city, district, street });
+    const region = Object.assign({}, {
+      region_code: code, province, city, district, street,
+    });
     this.setState({ region });
   }
   handleNameSelect = (value) => {
     const region = this.state.locations.find(item => item.name === value);
-    this.setState({ region: {
-      province: region.province,
-      city: region.city,
-      district: region.district,
-      street: region.street,
-      region_code: region.code,
-    } });
+    this.setState({
+      region: {
+        province: region.province,
+        city: region.city,
+        district: region.district,
+        street: region.street,
+        region_code: region.code,
+      },
+    });
   }
   handleNameChange = (value) => {
     if (this.props.tariffId) {
@@ -159,12 +168,11 @@ export default class AddLocationModal extends React.Component {
           </Col>
           <Col span="10">
             <FormItem label="地点别名">
-              {getFieldDecorator('byname')(
-                <AutoComplete style={{ width: '100%' }} placeholder="地点别名"
-                  dataSource={this.state.locations.map(item => item.name)}
-                  onChange={this.handleNameChange}
-                  onSelect={this.handleNameSelect}
-                />)}
+              {getFieldDecorator('byname')(<AutoComplete style={{ width: '100%' }} placeholder="地点别名"
+                dataSource={this.state.locations.map(item => item.name)}
+                onChange={this.handleNameChange}
+                onSelect={this.handleNameSelect}
+              />)}
             </FormItem>
           </Col>
         </Row>

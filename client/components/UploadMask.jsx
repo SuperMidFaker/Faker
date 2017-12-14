@@ -54,7 +54,9 @@ export default class UploadMask extends React.Component {
   }
   handleCancel = () => { this.setState({ inUpload: false, errorMsg: '', closable: false }); }
   render() {
-    const { inUpload, uploadPercent, uploadStatus, errorMsg, closable } = this.state;
+    const {
+      inUpload, uploadPercent, uploadStatus, errorMsg, closable,
+    } = this.state;
     if (!inUpload) {
       return null;
     }

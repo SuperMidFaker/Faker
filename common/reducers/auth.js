@@ -112,7 +112,9 @@ export function verifySms(smsId, userId, smsCode, newPwd) {
       types: [SMS_VERIFY, SMS_VERIFY_SUCCEED, SMS_VERIFY_FAIL],
       endpoint: 'public/v1/sms/verify',
       method: 'post',
-      data: { smsId, userId, smsCode, newPwd },
+      data: {
+        smsId, userId, smsCode, newPwd,
+      },
     },
   };
 }

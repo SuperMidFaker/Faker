@@ -21,12 +21,10 @@ function fetchData({ state, dispatch }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
-    hscodeCategories: state.cmsHsCode.hscodeCategories,
-  })
-)
+@connect(state => ({
+  isCustomRegisted: !!state.cmsManifest.billHead.manual_no,
+  hscodeCategories: state.cmsHsCode.hscodeCategories,
+}))
 
 export default class MergeSplitForm extends React.Component {
   static propTypes = {
@@ -97,22 +95,19 @@ export default class MergeSplitForm extends React.Component {
           <Panel key="merge" header={this.msg('mergePrinciple')} >
             <FormItem>
               <Col span="3">
-                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(
-                  <Radio checked={mergeOpt.checked}>
-                    {this.msg('conditionalMerge')}
-                  </Radio>)}
+                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={mergeOpt.checked}>
+                  {this.msg('conditionalMerge')}
+                </Radio>)}
               </Col>
               <Col offset="2" span="19">
-                {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr,
-                })(<CheckboxGroup options={this.mergeConditions} disabled={!mergeOpt.checked}
+                {getFieldDecorator('mergeOpt_arr', { initialValue: formData.mergeOpt_arr })(<CheckboxGroup options={this.mergeConditions} disabled={!mergeOpt.checked}
                   onChange={this.handleMergeCheck}
                 />)}
               </Col>
             </FormItem>
             {mergeOpt.checked && !mergeOpt.byCopGNo ? <Col offset="5">
               <FormItem>
-                {getFieldDecorator('merge_bysplhs', { initialValue: formData.merge_bysplhs === 1 })(
-                  <Checkbox defaultChecked={formData.merge_bysplhs}>{this.msg('mergeSpecialHscode')}</Checkbox>)
+                {getFieldDecorator('merge_bysplhs', { initialValue: formData.merge_bysplhs === 1 })(<Checkbox defaultChecked={formData.merge_bysplhs}>{this.msg('mergeSpecialHscode')}</Checkbox>)
                   }
                 {getFieldValue('merge_bysplhs') &&
                 <div>
@@ -127,8 +122,7 @@ export default class MergeSplitForm extends React.Component {
                   }
               </FormItem>
               <FormItem>
-                {getFieldDecorator('merge_bysplno', { initialValue: formData.merge_bysplno === 1 })(
-                  <Checkbox defaultChecked={formData.merge_bysplno}>{this.msg('mergeSpecialNo')}</Checkbox>)
+                {getFieldDecorator('merge_bysplno', { initialValue: formData.merge_bysplno === 1 })(<Checkbox defaultChecked={formData.merge_bysplno}>{this.msg('mergeSpecialNo')}</Checkbox>)
                   }
                 {getFieldValue('merge_bysplno') &&
                 <div>
@@ -144,10 +138,9 @@ export default class MergeSplitForm extends React.Component {
             </Col> : null}
             <FormItem>
               <Col span="3">
-                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(
-                  <Radio checked={!mergeOpt.checked}>
-                    {this.msg('nonMerge')}
-                  </Radio>)}
+                {getFieldDecorator('merge_checked', { getValueFromEvent: this.handleMergeRadioChange })(<Radio checked={!mergeOpt.checked}>
+                  {this.msg('nonMerge')}
+                </Radio>)}
               </Col>
               <Col offset="2" span="19">
                 按清单数据直接生成报关建议书
@@ -156,17 +149,14 @@ export default class MergeSplitForm extends React.Component {
           </Panel>
           <Panel key="split" header={this.msg('splitPrinciple')} >
             <FormItem>
-              {getFieldDecorator('split_percount', {
-                initialValue: formData.split_percount })(
-                  <Select >
-                    {
+              {getFieldDecorator('split_percount', { initialValue: formData.split_percount })(<Select >
+                {
                       CMS_SPLIT_COUNT.map(sc => <Option key={sc.value} value={sc.value}>{sc.text}</Option>)
                     }
-                  </Select>)}
+              </Select>)}
             </FormItem>
             <FormItem>
-              {getFieldDecorator('split_hscode', { initialValue: formData.split_hscode === 1 })(
-                <Checkbox defaultChecked={formData.split_hscode}>{this.msg('specialHscodeDeclare')}</Checkbox>)
+              {getFieldDecorator('split_hscode', { initialValue: formData.split_hscode === 1 })(<Checkbox defaultChecked={formData.split_hscode}>{this.msg('specialHscodeDeclare')}</Checkbox>)
               }
               {getFieldValue('split_hscode') &&
                 <div>
@@ -181,28 +171,24 @@ export default class MergeSplitForm extends React.Component {
               }
             </FormItem>
             <FormItem>
-              {getFieldDecorator('split_curr', { initialValue: formData.split_curr })(
-                <Checkbox defaultChecked={formData.split_curr}>{this.msg('currencySplit')}</Checkbox>)}
+              {getFieldDecorator('split_curr', { initialValue: formData.split_curr })(<Checkbox defaultChecked={formData.split_curr}>{this.msg('currencySplit')}</Checkbox>)}
             </FormItem>
           </Panel>
           <Panel key="sort" header={this.msg('sortPrinciple')} >
             <Row>
               <Col span={8}>
                 <FormItem>
-                  {getFieldDecorator('sort_customs', { initialValue: formData.sort_customs })(
-                    <Checkbox defaultChecked={formData.sort_customs}>{this.msg('customOnTop')}</Checkbox>)}
+                  {getFieldDecorator('sort_customs', { initialValue: formData.sort_customs })(<Checkbox defaultChecked={formData.sort_customs}>{this.msg('customOnTop')}</Checkbox>)}
                 </FormItem>
               </Col>
               <Col span={8}>
                 <FormItem>
-                  {getFieldDecorator('sort_dectotal', { initialValue: formData.sort_dectotal })(
-                    <Checkbox defaultChecked={formData.sort_dectotal}>{this.msg('priceDescSort')}</Checkbox>)}
+                  {getFieldDecorator('sort_dectotal', { initialValue: formData.sort_dectotal })(<Checkbox defaultChecked={formData.sort_dectotal}>{this.msg('priceDescSort')}</Checkbox>)}
                 </FormItem>
               </Col>
               <Col span={8}>
                 <FormItem>
-                  {getFieldDecorator('sort_hscode', { initialValue: formData.sort_hscode })(
-                    <Checkbox defaultChecked={formData.sort_hscode}>{this.msg('hsCodeAscSort')}</Checkbox>)}
+                  {getFieldDecorator('sort_hscode', { initialValue: formData.sort_hscode })(<Checkbox defaultChecked={formData.sort_hscode}>{this.msg('hsCodeAscSort')}</Checkbox>)}
                 </FormItem>
               </Col>
             </Row>

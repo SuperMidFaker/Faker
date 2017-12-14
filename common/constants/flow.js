@@ -113,7 +113,8 @@ const cwmShippingBizObjects = [{
 }, {
   key: 'cwmSoNormal',
   text: 'cwmShippingOrderNormalReg',
-  triggers: [{ key: 'regFinished',
+  triggers: [{
+    key: 'regFinished',
     text: 'onRegFinished',
     actionText: 'regFinish',
   }],

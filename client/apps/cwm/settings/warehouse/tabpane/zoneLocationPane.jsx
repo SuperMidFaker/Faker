@@ -28,7 +28,8 @@ const SubMenu = Menu.SubMenu;
     locations: state.cwmWarehouse.locations,
     locationLoading: state.cwmWarehouse.locationLoading,
   }),
-  { addZone,
+  {
+    addZone,
     loadZones,
     showLocationModal,
     loadLocations,
@@ -65,8 +66,7 @@ export default class ZoneLocationPane extends Component {
           selectZone: [result.data[0].zone_code],
         });
       }
-    }
-    );
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.warehouse.code !== this.props.warehouse.code) {
@@ -79,8 +79,7 @@ export default class ZoneLocationPane extends Component {
             selectZone: [result.data[0].zone_code],
           });
         }
-      }
-      );
+      });
     }
   }
   onSelectChange = (selectedRowKeys) => {
@@ -148,44 +147,38 @@ export default class ZoneLocationPane extends Component {
   handleDeleteLocation = (row) => {
     const whseCode = this.props.warehouse.code;
     const zoneCode = this.state.zone.zone_code;
-    this.props.deleteLocation(row.id).then(
-      (result) => {
-        if (!result.error) {
-          message.info('库位已删除');
-          this.props.loadLocations(whseCode, zoneCode);
-        }
+    this.props.deleteLocation(row.id).then((result) => {
+      if (!result.error) {
+        message.info('库位已删除');
+        this.props.loadLocations(whseCode, zoneCode);
       }
-    );
+    });
   }
   handleDeleteZone = () => {
     const whseCode = this.props.warehouse.code;
     const zoneCode = this.state.zone.zone_code;
-    this.props.deleteZone(whseCode, zoneCode).then(
-      (result) => {
-        if (!result.error) {
-          message.info('库区已删除');
-          this.props.loadZones(whseCode).then(
-            (data) => {
-              if (!data.error && data.data.length !== 0) {
-                this.setState({
-                  zones: data.data,
-                  zone: data.data[0],
-                  selectZone: [data.data[0].zone_code],
-                });
-                this.props.loadLocations(whseCode, data.data[0].zone_code);
-              } else {
-                this.setState({
-                  zones: [],
-                  zone: {},
-                  selectZone: [],
-                });
-                this.props.clearLocations();
-              }
-            }
-          );
-        }
+    this.props.deleteZone(whseCode, zoneCode).then((result) => {
+      if (!result.error) {
+        message.info('库区已删除');
+        this.props.loadZones(whseCode).then((data) => {
+          if (!data.error && data.data.length !== 0) {
+            this.setState({
+              zones: data.data,
+              zone: data.data[0],
+              selectZone: [data.data[0].zone_code],
+            });
+            this.props.loadLocations(whseCode, data.data[0].zone_code);
+          } else {
+            this.setState({
+              zones: [],
+              zone: {},
+              selectZone: [],
+            });
+            this.props.clearLocations();
+          }
+        });
       }
-    );
+    });
   }
   batchDeleteLocations = () => {
     const whseCode = this.props.warehouse.code;
@@ -259,7 +252,9 @@ export default class ZoneLocationPane extends Component {
   }]
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator }, zoneList, locations, locationLoading, warehouse } = this.props;
+    const {
+      form: { getFieldDecorator }, zoneList, locations, locationLoading, warehouse,
+    } = this.props;
     const { zone, selectZone, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,

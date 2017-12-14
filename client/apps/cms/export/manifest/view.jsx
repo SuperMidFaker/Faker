@@ -12,11 +12,9 @@ function fetchData({ dispatch, params }) {
   return Promise.all(promises);
 }
 
-@connect(
-  state => ({
-    manifestSpinning: state.cmsManifest.manifestLoading,
-  })
-)
+@connect(state => ({
+  manifestSpinning: state.cmsManifest.manifestLoading,
+}))
 @connectFetch()(fetchData)
 export default class ExportManifestView extends React.Component {
   static propTypes = {

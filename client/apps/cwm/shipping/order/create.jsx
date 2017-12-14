@@ -70,7 +70,9 @@ export default class CreateShippingOrder extends Component {
     this.setState({ fullscreen });
   }
   handleSave = () => {
-    const { temporaryDetails, defaultWhse, owners, loginId, tenantName } = this.props;
+    const {
+      temporaryDetails, defaultWhse, owners, loginId, tenantName,
+    } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -85,16 +87,14 @@ export default class CreateShippingOrder extends Component {
         data.whseCode = defaultWhse.code;
         data.loginId = loginId;
         data.tenantName = tenantName;
-        this.props.createSO(data).then(
-          (result) => {
-            if (!result.error) {
-              message.success('出货订单已创建成功');
-              this.context.router.push('/cwm/shipping/order');
-            } else {
-              message.error('操作失败');
-            }
+        this.props.createSO(data).then((result) => {
+          if (!result.error) {
+            message.success('出货订单已创建成功');
+            this.context.router.push('/cwm/shipping/order');
+          } else {
+            message.error('操作失败');
           }
-        );
+        });
       }
     });
   }
@@ -119,7 +119,9 @@ export default class CreateShippingOrder extends Component {
     this.setState({ carrier_name: value });
   }
   render() {
-    const { form, submitting, defaultWhse, temporaryDetails } = this.props;
+    const {
+      form, submitting, defaultWhse, temporaryDetails,
+    } = this.props;
     const { region } = this.state;
     const disable = !(this.state.detailEnable && temporaryDetails.length !== 0);
     return (

@@ -53,10 +53,9 @@ export default class FlowNodePanel extends Component {
           <FormItem label={this.msg('nodeExecutor')}>
             {getFieldDecorator('person_id', {
               initialValue: model.person_id,
-            })(
-              <Select onChange={this.handleResponsiblerSelect} allowClear showSearch optionFilterProp="children">
-                {serviceTeam.map(st => <Option key={st.lid} value={st.lid}>{st.name}</Option>)}
-              </Select>)}
+            })(<Select onChange={this.handleResponsiblerSelect} allowClear showSearch optionFilterProp="children">
+              {serviceTeam.map(st => <Option key={st.lid} value={st.lid}>{st.name}</Option>)}
+            </Select>)}
           </FormItem>
         </Panel>
         <Panel header={this.msg('nodeEvents')} key="events">

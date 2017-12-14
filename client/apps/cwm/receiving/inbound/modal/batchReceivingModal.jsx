@@ -65,12 +65,16 @@ export default class BatchReceivingModal extends Component {
     this.setState({ receivedDate: date.toDate() });
   }
   handleSubmit = () => {
-    const { location, damageLevel, receivedDate, priority } = this.state;
+    const {
+      location, damageLevel, receivedDate, priority,
+    } = this.state;
     if (!location) {
       message.info('请选择库位');
       return;
     }
-    const { data, inboundNo, inboundHead, username } = this.props;
+    const {
+      data, inboundNo, inboundHead, username,
+    } = this.props;
     const seqNos = data.map(dt => dt.asn_seq_no);
     this.props.batchReceive(seqNos, location, damageLevel, inboundHead.asn_no, inboundNo, username, receivedDate, priority).then((result) => {
       if (!result.error) {

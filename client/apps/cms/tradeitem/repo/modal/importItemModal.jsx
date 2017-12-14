@@ -24,12 +24,14 @@ const formatMsg = format(messages);
     tempItems: state.cmsTradeitem.tempItems,
     visibleCompareModal: state.cmsTradeitem.visibleCompareModal,
   }),
-  { setCompareVisible,
+  {
+    setCompareVisible,
     saveComparedItemDatas,
     loadTradeItems,
     loadTempItems,
     comparedCancel,
-    deleteTempData }
+    deleteTempData,
+  }
 )
 
 export default class ImportComparisonModal extends React.Component {
@@ -111,7 +113,9 @@ export default class ImportComparisonModal extends React.Component {
     const { tenantId, loginId, loginName } = this.props;
     const { uuid, feedbackChanges } = this.state;
     const changes = JSON.stringify(feedbackChanges);
-    this.props.saveComparedItemDatas({ uuid, feedbackChanges: changes, tenantId, loginId, loginName }).then((result) => {
+    this.props.saveComparedItemDatas({
+      uuid, feedbackChanges: changes, tenantId, loginId, loginName,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

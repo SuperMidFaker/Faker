@@ -12,7 +12,7 @@ export default class AttchmentUpload extends Component {
   static propTypes = {
     onFileUpload: PropTypes.func,
     onFileRemove: PropTypes.func,
-    onFileListUpdate: PropTypes.func,    // 有任何一个附件改变时触发的回调函数, 参数为所有附件的文件
+    onFileListUpdate: PropTypes.func, // 有任何一个附件改变时触发的回调函数, 参数为所有附件的文件
     files: PropTypes.array.isRequired,
   }
   state = {

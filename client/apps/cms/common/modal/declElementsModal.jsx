@@ -117,9 +117,7 @@ export default class DeclElementsModal extends Component {
                   <FormItem {...formItemLayout} label={item} key={item}>
                     {getFieldDecorator(item, {
                       initialValue: gModel[index - 1] || '',
-                    })(
-                      <Input disabled={disabled} onChange={e => this.handleInputChange(e.target.value, item)} />
-                    )}
+                    })(<Input disabled={disabled} onChange={e => this.handleInputChange(e.target.value, item)} />)}
                   </FormItem>
                 );
               } else if (item && index === 0) {

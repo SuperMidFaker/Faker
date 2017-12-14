@@ -137,7 +137,9 @@ export function updateHsCodeCategory(id, name) {
   };
 }
 
-export function loadCategoryHsCode({ categoryId, current, pageSize, searchText }) {
+export function loadCategoryHsCode({
+  categoryId, current, pageSize, searchText,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -147,7 +149,9 @@ export function loadCategoryHsCode({ categoryId, current, pageSize, searchText }
       ],
       endpoint: 'v1/cms/cmsTradeitem/hscode/categoryHsCode',
       method: 'get',
-      params: { categoryId, current, pageSize, searchText },
+      params: {
+        categoryId, current, pageSize, searchText,
+      },
     },
   };
 }

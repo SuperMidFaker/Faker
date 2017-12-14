@@ -13,13 +13,11 @@ function textToBase64Barcode(text) {
 }
 
 @injectIntl
-@connect(
-  state => ({
-    defaultWhse: state.cwmContext.defaultWhse,
-    outboundHead: state.cwmOutbound.outboundFormHead,
-    pickDetails: state.cwmOutbound.pickDetails,
-  }),
-)
+@connect(state => ({
+  defaultWhse: state.cwmContext.defaultWhse,
+  outboundHead: state.cwmOutbound.outboundFormHead,
+  pickDetails: state.cwmOutbound.pickDetails,
+}), )
 
 export default class PrintShippingConfirm extends Component {
   static propTypes = {
@@ -30,29 +28,39 @@ export default class PrintShippingConfirm extends Component {
     const { outboundHead, defaultWhse, outboundNo } = this.props;
     const barcode = textToBase64Barcode(outboundNo);
     const headContent = [
-      { columns: [
-        { text: '', width: 150 },
-        { text: '出库确认单', style: 'title', alignment: 'center' },
-        { image: barcode, width: 150, alignment: 'right' },
-      ] },
-      { columns: [
-        { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
-        { text: `订单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
-        { text: '出库日期:  ', style: 'header' },
-      ] },
-      { columns: [
-        { text: `业务编号:  ${outboundHead.so_no || ''}`, style: 'header' },
-        { text: `客户:  ${outboundHead.owner_name || ''}`, style: 'header' },
-        { text: `仓库:  ${defaultWhse.name || ''}`, style: 'header' },
-      ] },
-      { columns: [
-        { text: '总体积:  ', style: 'header' },
-        { text: '提货单号:  ', style: 'header' },
-        { text: `收货人:  ${outboundHead.receiver_name || ''}`, style: 'header' },
-      ] },
-      { columns: [
-        { text: '备注: ', style: 'header' },
-      ] },
+      {
+        columns: [
+          { text: '', width: 150 },
+          { text: '出库确认单', style: 'title', alignment: 'center' },
+          { image: barcode, width: 150, alignment: 'right' },
+        ],
+      },
+      {
+        columns: [
+          { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
+          { text: `订单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
+          { text: '出库日期:  ', style: 'header' },
+        ],
+      },
+      {
+        columns: [
+          { text: `业务编号:  ${outboundHead.so_no || ''}`, style: 'header' },
+          { text: `客户:  ${outboundHead.owner_name || ''}`, style: 'header' },
+          { text: `仓库:  ${defaultWhse.name || ''}`, style: 'header' },
+        ],
+      },
+      {
+        columns: [
+          { text: '总体积:  ', style: 'header' },
+          { text: '提货单号:  ', style: 'header' },
+          { text: `收货人:  ${outboundHead.receiver_name || ''}`, style: 'header' },
+        ],
+      },
+      {
+        columns: [
+          { text: '备注: ', style: 'header' },
+        ],
+      },
     ];
     return headContent;
   }
@@ -82,15 +90,19 @@ export default class PrintShippingConfirm extends Component {
   }
   pdfSign = () => {
     const foot = [
-      { columns: [
-        { text: moment(new Date()).format('YYYY/MM/DD'), fontSize: 9, alignment: 'right' },
-      ] },
-      { columns: [
-        { text: '主管:', fontSize: 11 },
-        { text: '出库复核:', fontSize: 11 },
-        { text: '提货人:', fontSize: 11 },
-        { text: '归档:', fontSize: 11 },
-      ] },
+      {
+        columns: [
+          { text: moment(new Date()).format('YYYY/MM/DD'), fontSize: 9, alignment: 'right' },
+        ],
+      },
+      {
+        columns: [
+          { text: '主管:', fontSize: 11 },
+          { text: '出库复核:', fontSize: 11 },
+          { text: '提货人:', fontSize: 11 },
+          { text: '归档:', fontSize: 11 },
+        ],
+      },
     ];
     return foot;
   }

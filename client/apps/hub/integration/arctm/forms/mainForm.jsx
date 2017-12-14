@@ -66,13 +66,13 @@ export default class MainForm extends Component {
         {getFieldDecorator('uuid', { initialValue: formData.uuid })}
         <Col sm={24} lg={24}>
           <FormItem label={this.msg('hookUrl')} >
-            {getFieldDecorator('hook_url', { rules: [{ required: true, message: '输入接口地址需要生成' }],
+            {getFieldDecorator('hook_url', {
+ rules: [{ required: true, message: '输入接口地址需要生成' }],
               initialValue: formData.uuid && `https://openapi.welogix.cn/ar/hook/${formData.uuid}`,
-            })(
-              <Input addonAfter={
-                <ButtonGroup size="small"><Button disabled={this.props.form.getFieldValue('uuid')} icon="tag" onClick={this.handleGenUuid} /><Button icon="copy" /></ButtonGroup>
+            })(<Input addonAfter={
+              <ButtonGroup size="small"><Button disabled={this.props.form.getFieldValue('uuid')} icon="tag" onClick={this.handleGenUuid} /><Button icon="copy" /></ButtonGroup>
                   } readOnly
-              />)
+            />)
                 }
           </FormItem>
         </Col>

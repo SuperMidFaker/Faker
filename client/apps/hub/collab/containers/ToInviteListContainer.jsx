@@ -28,9 +28,9 @@ export default class ToInviteList extends Component {
   static propTypes = {
     tenantId: PropTypes.number.isRequired,
     toInvitesLoaded: PropTypes.bool.isRequired,
-    toInvites: PropTypes.array.isRequired,            // 待邀请的partner
-    inviteOnlinePartner: PropTypes.func.isRequired,   // 邀请线上partner的action creator
-    showInviteModal: PropTypes.func.isRequired,  // 邀请线下partner的action creator
+    toInvites: PropTypes.array.isRequired, // 待邀请的partner
+    inviteOnlinePartner: PropTypes.func.isRequired, // 邀请线上partner的action creator
+    showInviteModal: PropTypes.func.isRequired, // 邀请线下partner的action creator
     loadToInvites: PropTypes.func.isRequired,
   }
   componentWillReceiveProps(nextProps) {

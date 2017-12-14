@@ -46,7 +46,10 @@ function fetchData({ state, dispatch, cookie }) {
     formRequireJudgeParams: state.shipment.formRequireJudgeParams, // @Form.create... 这一层使用
     formRequire: state.shipment.formRequire,
   }),
-  { loadTable, savePending, saveAndAccept, saveDraft, onFormFieldsChange, setConsignFields })
+  {
+    loadTable, savePending, saveAndAccept, saveDraft, onFormFieldsChange, setConsignFields,
+  }
+)
 @connectNav({
   depth: 3,
   moduleName: 'transport',

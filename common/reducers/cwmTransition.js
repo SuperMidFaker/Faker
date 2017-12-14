@@ -59,7 +59,12 @@ export default function reducer(state = initialState, action) {
     case actionTypes.CLOSE_TRANSITION_MODAL:
       return { ...state, transitionModal: { ...state.transitionModal, visible: false, detail: {} } };
     case actionTypes.OPEN_TRANSITION_MODAL:
-      return { ...state, transitionModal: { ...state.transitionModal, visible: true, trace_id: action.data, needReload: true } };
+      return {
+        ...state,
+        transitionModal: {
+          ...state.transitionModal, visible: true, trace_id: action.data, needReload: true,
+        },
+      };
     case actionTypes.SPLIT_TRANSIT_SUCCEED:
     case actionTypes.MOVE_TRANSIT_SUCCEED:
     case actionTypes.ADJUST_TRANSIT_SUCCEED:
@@ -79,7 +84,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.OPEN_BATCH_FREEZE_MODAL:
       return { ...state, batchFreezeModal: { ...state.batchFreezeModal, visible: true, ...action.data } };
     case actionTypes.LOAD_TRANSITIONS:
-      return { ...state,
+      return {
+        ...state,
         listFilter: JSON.parse(action.params.filter),
         sortFilter: JSON.parse(action.params.sorter),
         loading: true,
@@ -193,7 +199,9 @@ export function moveTransit(traceIds, transit, targetLocation, movementNo, login
       ],
       endpoint: 'v1/cwm/stock/transition/move',
       method: 'post',
-      data: { traceIds, transit, targetLocation, movementNo, loginName },
+      data: {
+        traceIds, transit, targetLocation, movementNo, loginName,
+      },
     },
   };
 }
@@ -223,7 +231,9 @@ export function freezeTransit(traceIds, transit, loginName, qty) {
       ],
       endpoint: 'v1/cwm/stock/transition/freeze',
       method: 'post',
-      data: { traceIds, transit, loginName, qty },
+      data: {
+        traceIds, transit, loginName, qty,
+      },
     },
   };
 }
@@ -238,7 +248,9 @@ export function unfreezeTransit(traceIds, transit, loginName, qty) {
       ],
       endpoint: 'v1/cwm/stock/transition/unfreeze',
       method: 'post',
-      data: { traceIds, transit, loginName, qty },
+      data: {
+        traceIds, transit, loginName, qty,
+      },
     },
   };
 }

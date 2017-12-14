@@ -22,7 +22,9 @@ const formatMsg = format(messages);
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { showDetailModal, addTemporary, deleteTemporary, clearTemporary, showAsnSelectModal }
+  {
+    showDetailModal, addTemporary, deleteTemporary, clearTemporary, showAsnSelectModal,
+  }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
@@ -92,7 +94,9 @@ export default class DetailsPane extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { editable, temporaryDetails, detailEnable, units, currencies, form } = this.props;
+    const {
+      editable, temporaryDetails, detailEnable, units, currencies, form,
+    } = this.props;
     const { pagination } = this.state;
     const soType = form.getFieldValue('so_type');
     const bonded = form.getFieldValue('bonded');
@@ -141,7 +145,7 @@ export default class DetailsPane extends Component {
       title: 'SKU',
       dataIndex: 'product_sku',
       width: 150,
-      render: o => o ? (<SKUPopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,
+      render: o => o ? (<SKUPopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>请设置sku</span>,
     }, {
       title: '入库单号',
       dataIndex: 'asn_no',

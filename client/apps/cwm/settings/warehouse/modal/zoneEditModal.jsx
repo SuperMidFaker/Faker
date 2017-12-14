@@ -13,7 +13,9 @@ const FormItem = Form.Item;
   state => ({
     visible: state.cwmWarehouse.zoneModal.visible,
   }),
-  { updateZone, loadZones, loadLocations, hideZoneModal }
+  {
+    updateZone, loadZones, loadLocations, hideZoneModal,
+  }
 )
 @Form.create()
 export default class ZoneEditModal extends Component {
@@ -32,22 +34,18 @@ export default class ZoneEditModal extends Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { zoneCode, zoneName } = values;
-        this.props.updateZone(whseCode, zoneCode, id, zoneName).then(
-          (result) => {
-            if (!result.error) {
-              message.info('保存成功');
-              this.props.loadZones(whseCode).then(
-                (data) => {
-                  if (!data.error) {
-                    this.props.stateChange(data.data[0].zone_code, data.data);
-                    this.props.loadLocations(whseCode, data.data[0].zone_code);
-                    this.props.hideZoneModal();
-                  }
-                }
-              );
-            }
+        this.props.updateZone(whseCode, zoneCode, id, zoneName).then((result) => {
+          if (!result.error) {
+            message.info('保存成功');
+            this.props.loadZones(whseCode).then((data) => {
+              if (!data.error) {
+                this.props.stateChange(data.data[0].zone_code, data.data);
+                this.props.loadLocations(whseCode, data.data[0].zone_code);
+                this.props.hideZoneModal();
+              }
+            });
           }
-        );
+        });
       }
     });
   }

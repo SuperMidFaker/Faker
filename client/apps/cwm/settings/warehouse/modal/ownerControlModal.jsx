@@ -60,8 +60,10 @@ export default class OwnerControlModal extends Component {
   }
 
   handlePortionEnable = (checked) => {
-    this.setState({ ownerAuth: { ...this.state.ownerAuth, portion_enabled: checked },
-      control: { ...this.state.control, portion_enabled: checked } });
+    this.setState({
+      ownerAuth: { ...this.state.ownerAuth, portion_enabled: checked },
+      control: { ...this.state.control, portion_enabled: checked },
+    });
   }
   handleSubmit = () => {
     this.props.updateWhOwnerControl(this.props.ownerAuth.id, this.state.control, this.props.loginId).then((result) => {

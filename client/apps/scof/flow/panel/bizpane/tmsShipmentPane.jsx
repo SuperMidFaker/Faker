@@ -20,14 +20,14 @@ const quoteNoFieldWarning = {
 };
 
 @injectIntl
-@connect(
-  state => ({
-    tmsParams: state.scofFlow.tmsParams,
-    partnerId: state.scofFlow.currentFlow.partner_id,
-    partnerName: state.scofFlow.currentFlow.customer_partner_name,
-    needLoadTariff: state.scofFlow.needLoadTariff,
-  }), { loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal }
-)
+@connect(state => ({
+  tmsParams: state.scofFlow.tmsParams,
+  partnerId: state.scofFlow.currentFlow.partner_id,
+  partnerName: state.scofFlow.currentFlow.customer_partner_name,
+  needLoadTariff: state.scofFlow.needLoadTariff,
+}), {
+  loadTariffsByTransportInfo, toggleAddLineModal, isLineIntariff, toggleAddLocationModal,
+})
 export default class TMSShipmentPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -242,7 +242,9 @@ export default class TMSShipmentPane extends Component {
   }
   renderConsign = consign => `${consign.name} | ${Location.renderLoc(consign)} | ${consign.byname || ''} | ${consign.contact || ''} | ${consign.mobile || ''}`
   render() {
-    const { form: { getFieldDecorator }, model, tmsParams: { consigners, consignees, transitModes }, partnerId } = this.props;
+    const {
+      form: { getFieldDecorator }, model, tmsParams: { consigners, consignees, transitModes }, partnerId,
+    } = this.props;
     const { quoteNoField } = this.state;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
@@ -280,42 +282,40 @@ export default class TMSShipmentPane extends Component {
               <FormItem label={this.msg('consigner')}>
                 {getFieldDecorator('consigner_id', {
                   initialValue: model.consigner_id,
-                })(
-                  <Select allowClear
-                    dropdownMatchSelectWidth={false}
-                    dropdownStyle={{ width: 400 }}
-                    optionFilterProp="children"
-                    showSearch
-                    onSelect={this.handleConsignerSelect}
-                    notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
-                  >
-                    {
+                })(<Select allowClear
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 400 }}
+                  optionFilterProp="children"
+                  showSearch
+                  onSelect={this.handleConsignerSelect}
+                  notFoundContent={<a onClick={() => this.handleShowAddLocationModal(0)}>+ 添加地址</a>}
+                >
+                  {
                       consigners.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
-                    <Option value={-1} key={-1}>+ 添加地址</Option>
-                  </Select>)}
+                  <Option value={-1} key={-1}>+ 添加地址</Option>
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
               <FormItem label={this.msg('consignee')}>
                 {getFieldDecorator('consignee_id', {
                   initialValue: model.consignee_id,
-                })(
-                  <Select allowClear
-                    dropdownMatchSelectWidth={false}
-                    dropdownStyle={{ width: 400 }}
-                    optionFilterProp="children"
-                    showSearch
-                    onSelect={this.handleConsigneeSelect}
-                    notFoundContent={<a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
-                  >
-                    {
+                })(<Select allowClear
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 400 }}
+                  optionFilterProp="children"
+                  showSearch
+                  onSelect={this.handleConsigneeSelect}
+                  notFoundContent={<a onClick={() => this.handleShowAddLocationModal(1)}>+ 添加地址</a>}
+                >
+                  {
                       consignees.filter(cl => cl.ref_partner_id === partnerId || cl.ref_partner_id === -1)
                       .map(cg => <Option value={cg.node_id} key={cg.node_id}>{this.renderConsign(cg)}</Option>)
                     }
-                    <Option value={-1} key={-1}>+ 添加地址</Option>
-                  </Select>)}
+                  <Option value={-1} key={-1}>+ 添加地址</Option>
+                </Select>)}
               </FormItem>
             </Col>
 

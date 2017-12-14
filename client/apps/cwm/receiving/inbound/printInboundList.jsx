@@ -46,7 +46,9 @@ export default class Print extends Component {
     const { inboundHead, defaultWhse, inboundNo } = this.props;
     const pdf = [];
     const header = [];
-    header.push({ text: '入库单', style: 'tableHeader', colSpan: 6, alignment: 'center' }, {}, {}, {}, {}, {});
+    header.push({
+      text: '入库单', style: 'tableHeader', colSpan: 6, alignment: 'center',
+    }, {}, {}, {}, {}, {});
     pdf.push(header);
     pdf.push([{ text: '入库单号', style: 'table' }, { text: inboundNo, style: 'table' }, { text: '采购订单号', style: 'table' },
       { text: inboundHead.po_no, style: 'table' }, { text: '入库日期', style: 'table' }, { text: '', style: 'table' }]);
@@ -61,7 +63,9 @@ export default class Print extends Component {
     const { inboundHead, inboundProducts } = this.props;
     const pdf = [];
     const header = [];
-    header.push({ text: '货物清单', style: 'tableHeader', colSpan: 8, alignment: 'center' }, {}, {}, {}, {}, {}, {}, {});
+    header.push({
+      text: '货物清单', style: 'tableHeader', colSpan: 8, alignment: 'center',
+    }, {}, {}, {}, {}, {}, {}, {});
     pdf.push(header);
     pdf.push([{ text: '项', style: 'table', alignment: 'center' }, { text: '产品名称', style: 'table', alignment: 'center' },
       { text: '仓库料号', style: 'table', alignment: 'center' }, { text: '计划数量', style: 'table', alignment: 'center' },
@@ -76,7 +80,9 @@ export default class Print extends Component {
   }
   pdfSign = () => {
     const pdf = [];
-    pdf.push([{ text: '签字', style: 'tableHeader', colSpan: 8, alignment: 'center' }, {}, {}, {}, {}, {}, {}, {}]);
+    pdf.push([{
+      text: '签字', style: 'tableHeader', colSpan: 8, alignment: 'center',
+    }, {}, {}, {}, {}, {}, {}, {}]);
     pdf.push([{ text: '计划', style: 'table' }, '', { text: '收货', style: 'table' }, '', { text: '上架', style: 'table' },
       '', { text: '归档', style: 'table' }, '']);
     pdf.push([{ text: '实收包装件数', style: 'table' }, { text: '', colSpan: 2 }, {}, { text: '实测计价体积', style: 'table' },
@@ -113,7 +119,8 @@ export default class Print extends Component {
       ],
     };
     docDefinition.content = [
-      { style: 'table',
+      {
+        style: 'table',
         table: { widths: [60, 150, 60, 75, 50, 75], headerRows: 1, body: this.pdfInboundHead() },
       },
       {

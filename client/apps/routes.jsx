@@ -119,8 +119,10 @@ export default(store) => {
       const isAuthed = currState.auth.isAuthed;
       const subdomain = currState.corpDomain.subdomain;
       if (!isAuthed || (accountSubdomain && !__DEV__ && accountSubdomain !== subdomain)) {
-        warning(!(accountSubdomain && accountSubdomain !== subdomain),
-          'subdomain is not equal to account subdomain, maybe there are tenants with same unique code');
+        warning(
+          !(accountSubdomain && accountSubdomain !== subdomain),
+          'subdomain is not equal to account subdomain, maybe there are tenants with same unique code'
+        );
         const query = { next: nextState.location.pathname };
         replace({ pathname: '/login', query });
       }

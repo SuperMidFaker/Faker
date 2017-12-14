@@ -293,7 +293,9 @@ export function addLocation(whseCode, zoneCode, location, type, status, loginId)
       ],
       endpoint: 'v1/cwm/warehouse/location/add',
       method: 'get',
-      params: { whseCode, zoneCode, location, type, status, loginId },
+      params: {
+        whseCode, zoneCode, location, type, status, loginId,
+      },
     },
   };
 }
@@ -338,7 +340,9 @@ export function updateLocation(type, status, location, id, loginId) {
       ],
       endpoint: 'v1/cwm/warehouse/location/update',
       method: 'get',
-      params: { type, status, location, id, loginId },
+      params: {
+        type, status, location, id, loginId,
+      },
     },
   };
 }
@@ -368,7 +372,9 @@ export function updateZone(whseCode, zoneCode, id, zoneName) {
       ],
       endpoint: 'v1/cwm/warehouse/zone/update',
       method: 'get',
-      params: { whseCode, zoneCode, id, zoneName },
+      params: {
+        whseCode, zoneCode, id, zoneName,
+      },
     },
   };
 }
@@ -705,7 +711,9 @@ export function addSupplier(data, whseCode, loginId, ownerTenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/supplier/add',
       method: 'post',
-      data: { data, whseCode, loginId, ownerTenantId },
+      data: {
+        data, whseCode, loginId, ownerTenantId,
+      },
     },
   };
 }
@@ -787,7 +795,9 @@ export function addCarrier(data, whseCode, loginId, ownerTenantId) {
       ],
       endpoint: 'v1/cwm/warehouse/carrier/add',
       method: 'post',
-      data: { data, whseCode, loginId, ownerTenantId },
+      data: {
+        data, whseCode, loginId, ownerTenantId,
+      },
     },
   };
 }
@@ -869,7 +879,9 @@ export function addBroker(data, whseCode, loginId, partnerTenantId, partnerCode)
       ],
       endpoint: 'v1/cwm/warehouse/broker/add',
       method: 'post',
-      data: { data, whseCode, loginId, partnerTenantId, partnerCode },
+      data: {
+        data, whseCode, loginId, partnerTenantId, partnerCode,
+      },
     },
   };
 }

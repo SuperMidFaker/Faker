@@ -50,7 +50,9 @@ export default class CreateTradeItem extends Component {
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { tenantId, tenantName, loginId, loginName, slaves } = this.props;
+        const {
+          tenantId, tenantName, loginId, loginName, slaves,
+        } = this.props;
         const item = this.props.form.getFieldsValue();
         const broker = slaves.find(tr => tr.broker_tenant_id === item.broker);
         let baseinfo = {
@@ -62,7 +64,8 @@ export default class CreateTradeItem extends Component {
           contribute_tenant_name: tenantName,
         };
         if (broker) {
-          baseinfo = { ...baseinfo,
+          baseinfo = {
+            ...baseinfo,
             contribute_tenant_id: broker.broker_tenant_id,
             contribute_tenant_name: broker.broker_name,
           };

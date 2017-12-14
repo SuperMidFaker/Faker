@@ -54,14 +54,16 @@ function fetchData({ dispatch, params }) {
     })),
     whse: state.cwmContext.defaultWhse,
     receivers: state.cwmContext.whseAttrs.receivers.filter(recv =>
-        recv.customs_code && recv.ftz_whse_code && recv.name),
+      recv.customs_code && recv.ftz_whse_code && recv.name),
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadRelDetails,
+  {
+    loadRelDetails,
     updateRelReg,
     fileRelTransfers,
     cancelRelReg,
-    editReleaseWt }
+    editReleaseWt,
+  }
 )
 @connectNav({
   depth: 3,
@@ -259,7 +261,9 @@ export default class SHFTZTransferOutDetail extends Component {
     }
   }
   render() {
-    const { relSo, relRegs, whse, submitting, receivers } = this.props;
+    const {
+      relSo, relRegs, whse, submitting, receivers,
+    } = this.props;
     if (relRegs.length !== 1) {
       return null;
     }
@@ -296,7 +300,7 @@ export default class SHFTZTransferOutDetail extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
               上海自贸区监管
-            </Breadcrumb.Item>
+              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {whse.name}
               </Breadcrumb.Item>

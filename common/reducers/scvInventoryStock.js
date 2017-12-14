@@ -45,30 +45,37 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_STOCKS:
-      return { ...state,
+      return {
+        ...state,
         loading: true,
         listFilter: JSON.parse(action.params.filter),
         sortFilter: JSON.parse(action.params.sorter),
-        displayedColumns: { ...state.displayedColumns,
+        displayedColumns: {
+          ...state.displayedColumns,
           external_lot_no: false,
           serial_no: false,
           spec_date: false,
           unit_price: false,
-          stock_cost: false },
+          stock_cost: false,
+        },
       };
     case actionTypes.LOAD_STOCKS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_STOCKS_SUCCEED:
       return { ...state, list: action.result.data, loading: false };
     case actionTypes.LOAD_LOTSTOCKS:
-      return { ...state,
+      return {
+        ...state,
         loading: true,
         listFilter: JSON.parse(action.params.filter),
-        sortFilter: JSON.parse(action.params.sorter) };
+        sortFilter: JSON.parse(action.params.sorter),
+      };
     case actionTypes.LOAD_LOTSTOCKS_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_LOTSTOCKS_SUCCEED:
-      return { ...state, list: action.result.data, loading: false, displayedColumns: { ...state.displayedColumns, ...action.lot_column } };
+      return {
+        ...state, list: action.result.data, loading: false, displayedColumns: { ...state.displayedColumns, ...action.lot_column },
+      };
     case actionTypes.LOAD_STOCKSEARCHOPT_SUCCEED:
       return { ...state, searchOption: action.result.data };
     case actionTypes.CHECK_DISPLAY_COLUMN:

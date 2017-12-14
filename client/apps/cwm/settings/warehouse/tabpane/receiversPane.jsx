@@ -19,7 +19,9 @@ import * as Location from 'client/util/location';
     receivers: state.cwmWarehouse.receivers,
     loginId: state.account.loginId,
   }),
-  { toggleReceiverModal, loadReceivers, deleteReceiver, changeReceiverStatus }
+  {
+    toggleReceiverModal, loadReceivers, deleteReceiver, changeReceiverStatus,
+  }
 )
 export default class ReceiversPane extends Component {
   static propTypes = {
@@ -128,7 +130,9 @@ export default class ReceiversPane extends Component {
     this.props.loadReceivers(this.props.whseCode, this.props.whseTenantId);
   }
   render() {
-    const { whseCode, whseTenantId, whseOwners, receivers } = this.props;
+    const {
+      whseCode, whseTenantId, whseOwners, receivers,
+    } = this.props;
     return (
       <DataPane
         columns={this.columns} dataSource={receivers} rowKey="id"

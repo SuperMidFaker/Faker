@@ -45,7 +45,9 @@ const RadioButton = Radio.Button;
       search: `${ep.value}${ep.text}`,
     })),
   }),
-  { toggleDeclImportModal, loadDeclEntries, loadEntryGnoDetails, importDeclBodies }
+  {
+    toggleDeclImportModal, loadDeclEntries, loadEntryGnoDetails, importDeclBodies,
+  }
 )
 export default class ImportDeclaredBodyModal extends Component {
   static propTypes = {
@@ -173,8 +175,7 @@ export default class ImportDeclaredBodyModal extends Component {
     this.props.loadEntryGnoDetails(row.pre_entry_seq_no, this.state.filtered).then((result) => {
       if (!result.error) {
         const cusDeclNo = row.entry_id;
-        const entryDetails = this.state.entryDetails.filter(reg => reg.pre_entry_seq_no !== row.pre_entry_seq_no).concat(
-          result.data.map(dt => ({ ...dt, entry_id: cusDeclNo, pre_entry_seq_no: row.pre_entry_seq_no })));
+        const entryDetails = this.state.entryDetails.filter(reg => reg.pre_entry_seq_no !== row.pre_entry_seq_no).concat(result.data.map(dt => ({ ...dt, entry_id: cusDeclNo, pre_entry_seq_no: row.pre_entry_seq_no })));
         const declEntries = this.state.declEntries.map(pr => pr.entry_id === cusDeclNo ? { ...pr, added: true } : pr);
         this.setState({ entryDetails, declEntries });
       }
@@ -276,7 +277,9 @@ export default class ImportDeclaredBodyModal extends Component {
   }
   render() {
     const { submitting, exemptions, tradeCountries } = this.props;
-    const { cusDeclNo, entryDetails, dutyMode, destCountry, filtered, ietype } = this.state;
+    const {
+      cusDeclNo, entryDetails, dutyMode, destCountry, filtered, ietype,
+    } = this.state;
     const dataSource = entryDetails.filter((item) => {
       if (this.state.addedEntryId) {
         const reg = new RegExp(this.state.addedEntryId);
@@ -368,8 +371,7 @@ export default class ImportDeclaredBodyModal extends Component {
                             exemptions.map(data => (
                               <Option key={data.value} search={`${data.search}`} >
                                 {`${data.value}|${data.text}`}
-                              </Option>)
-                            )}
+                              </Option>))}
                         </Select>
                       </FormItem>
                       <FormItem label="最终目的国">
@@ -380,8 +382,7 @@ export default class ImportDeclaredBodyModal extends Component {
                             tradeCountries.map(data => (
                               <Option key={data.value} search={`${data.search}`} >
                                 {`${data.value}|${data.text}`}
-                              </Option>)
-                            )}
+                              </Option>))}
                         </Select>
                       </FormItem>
                     </div>

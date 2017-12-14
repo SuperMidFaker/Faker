@@ -58,7 +58,7 @@ function inlineRenderHtmls(store, content) {
   Object.keys(assets.styles).forEach((style) => {
     pageCss += `<link href=${assets.styles[style]} rel="stylesheet" type="text/css" />`;
   });
-            // manifest could be inline script
+  // manifest could be inline script
   let pageJs = `
             <script>
             __INITIAL_STATE__ = ${serialize(store.getState())};
@@ -66,14 +66,14 @@ function inlineRenderHtmls(store, content) {
   pageJs += assets.javascript.manifest ? `<script src=${assets.javascript.manifest}></script>` : '';
   pageJs += assets.javascript.vendor ? `<script src=${assets.javascript.vendor}></script>` : '';
   Object.keys(assets.javascript).filter(script => script !== 'vendor' && script !== 'manifest')
-            .forEach((script) => {
-              pageJs += `<script src=${assets.javascript[script]}></script>`;
-            });
+    .forEach((script) => {
+      pageJs += `<script src=${assets.javascript[script]}></script>`;
+    });
   return renderAsHtml(pageCss, pageJs, content);
 }
 
 // https://github.com/koa-modules/locale/blob/master/index.js
-  /* function getRequestLocale(request) {
+/* function getRequestLocale(request) {
   const accept = request.acceptsLanguages() || '';
   const reg = /(^|,\s*)([a-z-]+)/gi;
   let m = reg.exec(accept);
@@ -92,12 +92,12 @@ module.exports = function render(request/* , locale */) {
     webpackIsomorphicTools.refresh();
   }
   // return new Promise((resolve, reject) => {
-    // const url = request.url;
+  // const url = request.url;
   const store = createStore(undefined, request);
   store.getState().corpDomain.subdomain = request.query.subdomain;
-    // if (!__PROD__) {
+  // if (!__PROD__) {
   return inlineRenderHtmls(store, ''); // resolve(inlineRenderHtmls(store, ''));
-    /* }
+  /* }
     // const cookie = request.get('cookie');
     const curLocale = locale || getRequestLocale(request);
     store.getState().prefrence = { locale: curLocale };

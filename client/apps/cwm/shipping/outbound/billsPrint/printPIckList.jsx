@@ -37,24 +37,32 @@ export default class OutboundPickPrint extends Component {
     const { outboundHead, defaultWhse, outboundNo } = this.props;
     const barcode = textToBase64Barcode(outboundNo);
     const headContent = [
-      { columns: [
-        { text: '', width: 150 },
-        { text: '拣货单', style: 'title', alignment: 'center' },
-        { image: barcode, width: 150, alignment: 'right' },
-      ] },
-      { columns: [
-        { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
-        { text: `客户单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
-        { text: `订单数量:  ${outboundHead.total_alloc_qty || ''}`, style: 'header' },
-      ] },
-      { columns: [
-        { text: `货物属性:  ${outboundHead.bonded ? '保税' : '非保税'}`, style: 'header' },
-        { text: `客户:  ${outboundHead.owner_name || ''}`, style: 'header' },
-        { text: `仓库:  ${defaultWhse.name || ''}`, style: 'header' },
-      ] },
-      { columns: [
-        { text: '备注: ', style: 'header' },
-      ] },
+      {
+        columns: [
+          { text: '', width: 150 },
+          { text: '拣货单', style: 'title', alignment: 'center' },
+          { image: barcode, width: 150, alignment: 'right' },
+        ],
+      },
+      {
+        columns: [
+          { text: `出库单号:  ${outboundNo || ''}`, style: 'header' },
+          { text: `客户单号:  ${outboundHead.cust_order_no || ''}`, style: 'header' },
+          { text: `订单数量:  ${outboundHead.total_alloc_qty || ''}`, style: 'header' },
+        ],
+      },
+      {
+        columns: [
+          { text: `货物属性:  ${outboundHead.bonded ? '保税' : '非保税'}`, style: 'header' },
+          { text: `客户:  ${outboundHead.owner_name || ''}`, style: 'header' },
+          { text: `仓库:  ${defaultWhse.name || ''}`, style: 'header' },
+        ],
+      },
+      {
+        columns: [
+          { text: '备注: ', style: 'header' },
+        ],
+      },
     ];
     return headContent;
   }
@@ -86,15 +94,19 @@ export default class OutboundPickPrint extends Component {
   }
   pdfSign = () => {
     const foot = [
-      { columns: [
-        { text: moment(new Date()).format('YYYY/MM/DD'), fontSize: 9, alignment: 'right' },
-      ] },
-      { columns: [
-        { text: '计划:', fontSize: 11 },
-        { text: '收货:', fontSize: 11 },
-        { text: '上架:', fontSize: 11 },
-        { text: '归档:', fontSize: 11 },
-      ] },
+      {
+        columns: [
+          { text: moment(new Date()).format('YYYY/MM/DD'), fontSize: 9, alignment: 'right' },
+        ],
+      },
+      {
+        columns: [
+          { text: '计划:', fontSize: 11 },
+          { text: '收货:', fontSize: 11 },
+          { text: '上架:', fontSize: 11 },
+          { text: '归档:', fontSize: 11 },
+        ],
+      },
     ];
     return foot;
   }

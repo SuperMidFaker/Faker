@@ -26,7 +26,9 @@ function fetchData({ dispatch }) {
 @connect(state => ({
   tenantId: state.account.tenantId,
   brokers: state.cmsBrokers.brokers,
-}), { toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker })
+}), {
+  toggleBrokerModal, loadCmsBrokers, changeBrokerStatus, deleteBroker,
+})
 @connectNav({
   depth: 2,
   moduleName: 'clearance',
@@ -83,7 +85,7 @@ export default class BrokerList extends Component {
         <a onClick={() => this.handleStopBtnClick(itemInfo.id, false)}>停用</a>
       </span>
     </PrivilegeCover>
-    )
+  )
 
   renderDeleteAndResumeOperations = (itemInfo) => {
     const { id } = itemInfo;

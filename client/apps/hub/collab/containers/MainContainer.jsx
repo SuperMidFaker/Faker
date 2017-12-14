@@ -28,7 +28,6 @@ function fetchData({ state, dispatch }) {
 }), { changeInvitationType })
 @withPrivilege({ module: 'corp', feature: 'partners' })
 export default class MainContainer extends Component {
-
   handleInvitationTypeChange = (e) => {
     this.props.changeInvitationType(e.target.value);
   }

@@ -33,26 +33,22 @@ export default class CMSNodeCard extends React.Component {
   }
   componentWillMount() {
     const { uuid, kind } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]).then(
-      (result) => {
-        if (!result.data) return;
-        this.setState({
-          trigger: this.triggerStepMap[result.data.trigger_name],
-        });
-      }
-    );
+    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]).then((result) => {
+      if (!result.data) return;
+      this.setState({
+        trigger: this.triggerStepMap[result.data.trigger_name],
+      });
+    });
   }
   componentWillReceiveProps(nextProps) {
     const { uuid, kind } = nextProps;
     if (uuid !== this.props.uuid) {
-      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]).then(
-        (result) => {
-          if (!result.data) return;
-          this.setState({
-            trigger: this.triggerStepMap[result.data.trigger_name],
-          });
-        }
-      );
+      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key, NODE_BIZ_OBJECTS[kind][1].key]).then((result) => {
+        if (!result.data) return;
+        this.setState({
+          trigger: this.triggerStepMap[result.data.trigger_name],
+        });
+      });
     }
   }
   triggerStepMap = {
@@ -70,16 +66,18 @@ export default class CMSNodeCard extends React.Component {
     this.context.router.push(`${link}${this.props.uuid}`); // TODO
   }
   render() {
-    const { name, children, declWayCode, transMode, blWbNo, in_degree: indegree } = this.props;
+    const {
+      name, children, declWayCode, transMode, blWbNo, in_degree: indegree,
+    } = this.props;
     const declWayMap = this.props.kind === 'import' ? DECL_I_TYPE : DECL_E_TYPE;
     const declWayItem = declWayMap.find(item => item.key === declWayCode);
     const tm = TRANS_MODE.filter(item => item.value === transMode)[0];
     const extra = indegree === 0 ?
-    (<div>
-      <Tooltip title="进入详情">
-        <Button type="primary" size="small" shape="circle" icon="right" onClick={() => this.handleManifest()} />
-      </Tooltip>
-    </div>) : null;
+      (<div>
+        <Tooltip title="进入详情">
+          <Button type="primary" size="small" shape="circle" icon="right" onClick={() => this.handleManifest()} />
+        </Tooltip>
+      </div>) : null;
     return (
       <Card title={<span>{name}</span>} extra={extra} bodyStyle={{ padding: 8, paddingBottom: 56 }} onClick={() => this.handlePreview(this.props.uuid)}>
         <Row>

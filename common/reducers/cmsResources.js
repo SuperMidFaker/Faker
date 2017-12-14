@@ -34,7 +34,9 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_BUSINESS_UNITS_SUCCEED:
-      return { ...state, businessUnits: action.result.data, loading: false, loaded: true };
+      return {
+        ...state, businessUnits: action.result.data, loading: false, loaded: true,
+      };
     case actionTypes.ADD_BUSINESS_UNIT_SUCCEED: {
       const businessUnits = [...state.businessUnits];
       businessUnits.unshift(action.result.data);
@@ -100,7 +102,9 @@ export function updateBusinessUnit(id, name, code, customsCode, ciqCode) {
       ],
       endpoint: 'v1/cms/resources/business_unit/update',
       method: 'post',
-      data: { id, name, code, customsCode, ciqCode },
+      data: {
+        id, name, code, customsCode, ciqCode,
+      },
     },
   };
 }

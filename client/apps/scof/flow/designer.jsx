@@ -56,7 +56,9 @@ function fetchData({ state, dispatch }) {
     graphLoading: state.scofFlow.graphLoading,
     listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings }
+  {
+    toggleFlowList, delFlow, loadFlowGraph, loadFlowGraphItem, saveFlowGraph, setNodeActions, loadScvTrackings,
+  }
 )
 export default class FlowDesigner extends React.Component {
   static defaultProps ={
@@ -69,21 +71,27 @@ export default class FlowDesigner extends React.Component {
     graphLoading: PropTypes.bool.isRequired,
     listCollapsed: PropTypes.bool.isRequired,
     reloadOnDel: PropTypes.func.isRequired,
-    trackingFields: PropTypes.arrayOf(PropTypes.shape({ field: PropTypes.string,
+    trackingFields: PropTypes.arrayOf(PropTypes.shape({
+      field: PropTypes.string,
       title: PropTypes.string,
-      module: PropTypes.oneOf(['cms', 'tms', 'cwmrec', 'cwmship']) })),
-    currentFlow: PropTypes.shape({ id: PropTypes.number.isRequired,
+      module: PropTypes.oneOf(['cms', 'tms', 'cwmrec', 'cwmship']),
+    })),
+    currentFlow: PropTypes.shape({
+      id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       partner_id: PropTypes.number.isRequired,
       customer_tenant_id: PropTypes.number.isRequired,
-      tracking_id: PropTypes.number }).isRequired,
+      tracking_id: PropTypes.number,
+    }).isRequired,
   }
   constructor(...args) {
     super(...args);
     this.state = {
       rightSidercollapsed: true,
       activeItem: null,
-      trackDataSource: this.props.trackingFields.map(tf => ({ title: tf.title, field: tf.field, module: tf.module, node: null })),
+      trackDataSource: this.props.trackingFields.map(tf => ({
+        title: tf.title, field: tf.field, module: tf.module, node: null,
+      })),
       trackings: [],
       trackingId: null,
     };
@@ -132,12 +140,12 @@ export default class FlowDesigner extends React.Component {
   }
   componentDidMount() {
     this.graph = new window.G6.Graph({
-      id: 'flowchart',      // 容器ID
-      width: window.innerWidth - 370,    // 画布宽
-      height: 240,   // 画布高
+      id: 'flowchart', // 容器ID
+      width: window.innerWidth - 370, // 画布宽
+      height: 240, // 画布高
       grid: {
         forceAlign: true, // 是否支持网格对齐
-        cell: 10,          // 网格大小
+        cell: 10, // 网格大小
       },
     });
     const nodeColorMap = {
@@ -155,7 +163,9 @@ export default class FlowDesigner extends React.Component {
     this.graph.edge().shape('', () => 'smoothArrow');
     const data = {
       nodes: this.props.flowGraph.nodes.map(node => ({ ...node, actions: [] })),
-      edges: this.props.flowGraph.edges.map(edge => ({ ...edge, addedConds: [], delConds: [], updConds: [] })),
+      edges: this.props.flowGraph.edges.map(edge => ({
+        ...edge, addedConds: [], delConds: [], updConds: [],
+      })),
     };
     this.graph.source(data.nodes, data.edges);
     this.graph.render();
@@ -180,7 +190,7 @@ export default class FlowDesigner extends React.Component {
       const item = ev.item;
       this.graph.update(item, { loaded: true });
       if (item.get('type') === 'edge') {
-          /*
+        /*
         const source = item.get('source');
         const target = item.get('target');
         this.graph.update(source, { out_degree: source.get('model').out_degree + 1 });
@@ -220,7 +230,9 @@ export default class FlowDesigner extends React.Component {
       this.setState({
         activeItem: null,
         trackingId: nextProps.currentFlow.tracking_id,
-        trackDataSource: this.props.trackingFields.map(tf => ({ title: tf.title, field: tf.field, module: tf.module, node: null })),
+        trackDataSource: this.props.trackingFields.map(tf => ({
+          title: tf.title, field: tf.field, module: tf.module, node: null,
+        })),
       });
       this.props.loadFlowGraph(nextProps.currentFlow.id);
     }
@@ -238,7 +250,9 @@ export default class FlowDesigner extends React.Component {
     if (nextProps.flowGraph !== this.props.flowGraph) {
       const data = {
         nodes: nextProps.flowGraph.nodes.map(node => ({ ...node, actions: [] })),
-        edges: nextProps.flowGraph.edges.map(edge => ({ ...edge, addedConds: [], delConds: [], updConds: [] })),
+        edges: nextProps.flowGraph.edges.map(edge => ({
+          ...edge, addedConds: [], delConds: [], updConds: [],
+        })),
       };
       this.graph.changeData(data.nodes, data.edges);
       const dataSource = [...this.state.trackDataSource];
@@ -452,10 +466,10 @@ export default class FlowDesigner extends React.Component {
     const nodeActions = this.state.activeItem.get('model').actions;
     const actions = nodeActions.filter(na => !(nodeBizObject ?
       (na.node_biz_object === nodeBizObject && na.trigger_name === triggerName) : (na.trigger_name === triggerName))).concat(newActions.map(na => ({
-        ...na, node_biz_object: nodeBizObject, trigger_name: triggerName,
-      })));
+      ...na, node_biz_object: nodeBizObject, trigger_name: triggerName,
+    })));
     this.graph.update(this.state.activeItem, { actions });
-    this.props.setNodeActions(actions);  // connect nodeActions rerender FlowTriggerTable, model passed no effect
+    this.props.setNodeActions(actions); // connect nodeActions rerender FlowTriggerTable, model passed no effect
   }
   handleTrackingChange = (trackingId) => {
     this.setState({ trackingId });
@@ -597,19 +611,18 @@ export default class FlowDesigner extends React.Component {
               <h3>流程设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="tracking">
-              <Panel header={'追踪节点'} key="tracking">
+              <Panel header="追踪节点" key="tracking">
                 <FormItem label="追踪表" labelCol={{ span: 3 }} wrapperCol={{ span: 20 }}>
                   <Select value={this.state.trackingId} style={{ width: '100%' }} onChange={this.handleTrackingChange}>
                     {this.state.trackings.map(data => (
-                      <Option key={data.id} value={data.id}>{data.name}</Option>)
-                    )}
+                      <Option key={data.id} value={data.id}>{data.name}</Option>))}
                   </Select>
                 </FormItem>
                 <Table columns={this.trackingColumns} bordered={false} dataSource={this.state.trackDataSource}
                   rowKey="field" scroll={{ y: 400 }}
                 />
               </Panel>
-              <Panel header={'更多'} key="more">
+              <Panel header="更多" key="more">
                 <Alert message="警告" description="删除流程将无法恢复，请谨慎操作" type="warning" showIcon />
                 <Popconfirm title="是否确认删除?" onConfirm={this.handleDeleteFlow}>
                   <Button type="danger" icon="delete">删除流程</Button>

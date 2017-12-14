@@ -11,12 +11,13 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@connect(state => ({
-  loginId: state.account.loginId,
-  visible: state.scvClassification.addSlaveModal.visible,
-  tenantId: state.account.tenantId,
-  slaveList: state.scvClassification.slaveList,
-}),
+@connect(
+  state => ({
+    loginId: state.account.loginId,
+    visible: state.scvClassification.addSlaveModal.visible,
+    tenantId: state.account.tenantId,
+    slaveList: state.scvClassification.slaveList,
+  }),
   {
     closeAddSlaveModal,
     getSlaves,

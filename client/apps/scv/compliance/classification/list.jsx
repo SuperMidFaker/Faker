@@ -66,7 +66,9 @@ function fetchData({ state, dispatch }) {
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, loadConflictItems }
+  {
+    loadTradeItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, loadConflictItems,
+  }
 )
 @connectNav({
   depth: 2,
@@ -355,7 +357,9 @@ export default class TradeItemList extends Component {
     this.handleConflictListLoad(1, filter);
   }
   handleSetItemStatus = (ids, status, tenantId, conflicted) => {
-    this.props.setItemStatus({ ids, status, tenantId, conflicted }).then((result) => {
+    this.props.setItemStatus({
+      ids, status, tenantId, conflicted,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -384,14 +388,15 @@ export default class TradeItemList extends Component {
       status: TRADE_ITEM_STATUS.unclassified,
       tenantId: this.props.tenantId,
       reason,
-      conflicted: false }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.warning('归类拒绝');
-          this.handleItemListLoad();
-        }
-      });
+      conflicted: false,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.warning('归类拒绝');
+        this.handleItemListLoad();
+      }
+    });
   }
   handleItemsPass = () => {
     this.handleSetItemStatus(this.state.selectedRowKeys, TRADE_ITEM_STATUS.classified, this.props.tenantId, false);
@@ -444,11 +449,12 @@ export default class TradeItemList extends Component {
           <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
-          <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Popconfirm title="只能删除所选项中归类来源是当前租户的数据，确认删除？" onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" icon="delete">
             批量删除
-          </Button>
-          </Popconfirm></span>);
+            </Button>
+          </Popconfirm>
+        </span>);
       } else if (listFilter.status === 'pending') {
         batchOperation = (<span>
           <Dropdown.Button onClick={this.handleItemsPass} overlay={itemPassmenu}>
@@ -460,7 +466,7 @@ export default class TradeItemList extends Component {
           <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
           </Button>
-          <Popconfirm title={'只能删除所选项中归类来源是当前租户的数据，确认删除？'} onConfirm={() => this.handleDeleteSelected()}>
+          <Popconfirm title="只能删除所选项中归类来源是当前租户的数据，确认删除？" onConfirm={() => this.handleDeleteSelected()}>
             <Button type="danger" icon="delete">
               批量删除
             </Button>
@@ -608,10 +614,10 @@ export default class TradeItemList extends Component {
               <h3>物料库设置</h3>
             </div>
             <Collapse accordion defaultActiveKey="slave">
-              <Panel header={'从库同步'} key="slave">
+              <Panel header="从库同步" key="slave">
                 <SlaveSyncPane />
               </Panel>
-              <Panel header={'授权共享'} key="share">
+              <Panel header="授权共享" key="share">
                 <MasterSharePane />
               </Panel>
             </Collapse>

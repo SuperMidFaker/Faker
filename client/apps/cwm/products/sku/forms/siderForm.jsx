@@ -102,9 +102,9 @@ export default class SiderForm extends Component {
           <FormItem label={(
             <span>
                 内包装量&nbsp;
-                  <Tooltip title="每个内包装容纳的SKU件数、商品计量单位数量">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="每个内包装容纳的SKU件数、商品计量单位数量">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >
@@ -118,9 +118,9 @@ export default class SiderForm extends Component {
           <FormItem label={(
             <span>
                 装箱量&nbsp;
-                  <Tooltip title="每箱容纳的SKU件数、商品计量单位数量">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="每箱容纳的SKU件数、商品计量单位数量">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >
@@ -134,9 +134,9 @@ export default class SiderForm extends Component {
           <FormItem label={(
             <span>
                   码盘量&nbsp;
-                  <Tooltip title="每托盘容纳的箱数量、SKU件数、商品计量单位数量">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="每托盘容纳的箱数量、SKU件数、商品计量单位数量">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >
@@ -156,8 +156,7 @@ export default class SiderForm extends Component {
               <RadioButton value="INP">内包装</RadioButton>
               <RadioButton value="BOX">箱</RadioButton>
               <RadioButton value="PLT">托盘</RadioButton>
-            </RadioGroup>
-                  )}
+            </RadioGroup>)}
           </FormItem>
           <FormItem label={this.msg('默认入库包装')} required>
             {getFieldDecorator('inbound_convey', {
@@ -167,8 +166,7 @@ export default class SiderForm extends Component {
               <RadioButton value="INP">内包装</RadioButton>
               <RadioButton value="BOX">箱</RadioButton>
               <RadioButton value="PLT">托盘</RadioButton>
-            </RadioGroup>
-                  )}
+            </RadioGroup>)}
           </FormItem>
           <FormItem label={this.msg('默认补货包装')}>
             {getFieldDecorator('replenish_convey', {
@@ -176,8 +174,7 @@ export default class SiderForm extends Component {
             })(<RadioGroup >
               <RadioButton value="BOX">箱</RadioButton>
               <RadioButton value="PLT">托盘</RadioButton>
-            </RadioGroup>
-                  )}
+            </RadioGroup>)}
           </FormItem>
 
           <FormItem label={this.msg('默认出库包装')} required>
@@ -188,8 +185,7 @@ export default class SiderForm extends Component {
               <RadioButton value="INP">内包装</RadioButton>
               <RadioButton value="BOX">箱</RadioButton>
               <RadioButton value="PLT">托盘</RadioButton>
-            </RadioGroup>
-                  )}
+            </RadioGroup>)}
           </FormItem>
           <FormItem label={this.msg('默认ASN收货单位')}>
             {getFieldDecorator('asn_tag_unit', {
@@ -197,8 +193,7 @@ export default class SiderForm extends Component {
             })(<RadioGroup >
               <RadioButton value="primary">计量单位</RadioButton>
               <RadioButton value="sku">SKU包装单位</RadioButton>
-            </RadioGroup>
-                  )}
+            </RadioGroup>)}
           </FormItem>
           <FormItem label={this.msg('默认SO发货单位')}>
             {getFieldDecorator('so_tag_unit', {
@@ -206,17 +201,14 @@ export default class SiderForm extends Component {
             })(<RadioGroup >
               <RadioButton value="primary">计量单位</RadioButton>
               <RadioButton value="sku">SKU包装单位</RadioButton>
-            </RadioGroup>
-                  )}
+            </RadioGroup>)}
           </FormItem>
           <FormItem label={this.msg('lottingRule')}>
             {getFieldDecorator('lot_rule', {
               initialValue: skuForm.lot_rule,
-            })(
-              <Select showSearch optionFilterProp="search" placeholder="选择批次属性" >
-                <Option value="HumanScale">HumanScale</Option>
-              </Select>
-                  )}
+            })(<Select showSearch optionFilterProp="search" placeholder="选择批次属性" >
+              <Option value="HumanScale">HumanScale</Option>
+            </Select>)}
           </FormItem>
         </Card>
       </div>

@@ -95,8 +95,8 @@ export default class EditOrder extends Component {
       if (result.error) {
         notification.error({
           message: '错误信息',
-          description: result.error.message },
-        );
+          description: result.error.message,
+        }, );
       } else {
         message.success('保存成功');
         this.context.router.push('/scof/orders');

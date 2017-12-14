@@ -67,7 +67,9 @@ export default class TrackingModal extends React.Component {
       message.warning('请填写追踪名称');
     } else {
       const trackingItems = this.props.trackingFields.filter(item => targetKeys.indexOf(item.field) >= 0)
-          .map((item, index) => ({ title: item.title, field: item.field, datatype: item.type, position: index, source: 1 }));
+        .map((item, index) => ({
+          title: item.title, field: item.field, datatype: item.type, position: index, source: 1,
+        }));
       if (operation === 'add') {
         this.props.addTracking({
           name,
@@ -109,7 +111,9 @@ export default class TrackingModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { selectedKeys, targetKeys, leftSelectedKey, dataSource } = this.state;
+    const {
+      selectedKeys, targetKeys, leftSelectedKey, dataSource,
+    } = this.state;
     const modules = [...SCV_TRACKING_FIELD_MODELES].concat([{ key: '_all', text: '全部' }]);
     const leftTitle = (
       <Select

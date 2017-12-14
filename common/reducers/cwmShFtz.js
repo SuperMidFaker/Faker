@@ -186,7 +186,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.ENTRY_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.ENTRY_REG_LOAD_SUCCEED:
-      return { ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false };
+      return {
+        ...state, entryList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false,
+      };
     case actionTypes.ENTRY_REG_LOAD_FAIL:
       return { ...state, loading: false };
     case actionTypes.ENTRY_DETAILS_LOAD_SUCCEED:
@@ -198,7 +200,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.RELEASE_REG_LOAD:
       return { ...state, loading: true };
     case actionTypes.RELEASE_REG_LOAD_SUCCEED:
-      return { ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false };
+      return {
+        ...state, releaseList: action.result.data, listFilter: JSON.parse(action.params.filter), loading: false,
+      };
     case actionTypes.RELEASE_REG_LOAD_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_NSOREG_SUCCEED:
@@ -208,7 +212,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.PRODUCT_CARGO_LOAD:
       return { ...state, listFilter: JSON.parse(action.params.filter), loading: true };
     case actionTypes.PRODUCT_CARGO_LOAD_SUCCEED:
-      return { ...state, cargolist: action.result.data.list, cargoRule: action.result.data.rule, loading: false };
+      return {
+        ...state, cargolist: action.result.data.list, cargoRule: action.result.data.rule, loading: false,
+      };
     case actionTypes.UPDATE_ERFIELD_SUCCEED: {
       const regs = state.entry_regs.map((er) => {
         if (er.pre_ftz_ent_no === action.data.preFtzEntNo) {
@@ -222,14 +228,16 @@ export default function reducer(state = initialState, action) {
     case actionTypes.REL_DETAILS_LOAD_SUCCEED:
       return { ...state, rel_so: action.result.data.rel_so, rel_regs: action.result.data.rel_regs };
     case actionTypes.UPDATE_RRFIELD_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         rel_regs: state.rel_regs.map((rr) => {
           if (rr.pre_entry_seq_no === action.data.pre_entry_seq_no) {
             return { ...rr, [action.data.field]: action.data.value };
           } else {
             return rr;
           }
-        }) };
+        }),
+      };
     case actionTypes.FILE_RSO:
     case actionTypes.FILE_RTS:
     case actionTypes.FILE_BA:
@@ -299,7 +307,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.FILE_RSO_SUCCEED:
     case actionTypes.FILE_RTS_SUCCEED:
     case actionTypes.FILE_RPO_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         submitting: false,
         rel_regs: state.rel_regs.map(rr => ({ ...rr, status: action.result.data.status, ftz_rel_no: action.result.data.preSeqEnts[rr.pre_entry_seq_no] })),
       };
@@ -324,16 +333,19 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_APPLD_SUCCEED:
       return { ...state, batch_decl: action.result.data.batch_decl, batch_applies: action.result.data.batch_applies };
     case actionTypes.FILE_BA_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         batch_decl: { ...state.batch_decl, status: 'processing' },
         batch_applies: state.batch_applies.map(ba => ({ ...ba, ftz_apply_no: action.result.data.preEntApplyMap[ba.pre_entry_seq_no] })),
-        submitting: false };
+        submitting: false,
+      };
     case actionTypes.MAKE_BAL_SUCCEED:
       return { ...state, batch_decl: { ...state.batch_decl, status: 'applied' }, submitting: false };
     case actionTypes.CHECK_ENRSTU_SUCCEED:
       return { ...state, entry_asn: { ...state.entry_asn, reg_status: action.result.data.status }, submitting: false };
     case actionTypes.CANCEL_RER_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         submitting: false,
         rel_regs: state.rel_regs.map(rr => ({ ...rr, status: action.result.data.status })),
       };
@@ -686,7 +698,9 @@ export function updateEntryReg(preFtzEntNo, field, value, virtualTransfer) {
       ],
       endpoint: 'v1/cwm/shftz/entry/field/value',
       method: 'post',
-      data: { preFtzEntNo, field, value, virtualTransfer },
+      data: {
+        preFtzEntNo, field, value, virtualTransfer,
+      },
     },
   };
 }
@@ -731,7 +745,9 @@ export function queryEntryRegInfos(asnNo, preEntrySeqNo, whseCode, ftzWhseCode) 
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/query',
       method: 'post',
-      data: { asnNo, preEntrySeqNo, whse: whseCode, ftzWhseCode },
+      data: {
+        asnNo, preEntrySeqNo, whse: whseCode, ftzWhseCode,
+      },
     },
   };
 }
@@ -761,7 +777,9 @@ export function pairEntryRegProducts(preFtzEntNo, asnNo, whseCode, ftzWhseCode, 
       ],
       endpoint: 'v1/cwm/shftz/entry/regs/matchpair',
       method: 'post',
-      data: { preFtzEntNo, asnNo, whse: whseCode, ftzWhseCode, loginName },
+      data: {
+        preFtzEntNo, asnNo, whse: whseCode, ftzWhseCode, loginName,
+      },
     },
   };
 }
@@ -1076,7 +1094,9 @@ export function fileBatchApply(batchNo, whseCode, ftzWhseCode, loginId) {
       ],
       endpoint: 'v1/cwm/shftz/batch/decl/file',
       method: 'post',
-      data: { batchNo, whseCode, ftzWhseCode, loginId },
+      data: {
+        batchNo, whseCode, ftzWhseCode, loginId,
+      },
     },
   };
 }

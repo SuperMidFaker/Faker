@@ -27,7 +27,9 @@ const TabPane = Tabs.TabPane;
     tabKey: state.crmOrders.dock.tabKey,
     order: state.crmOrders.dock.order,
   }),
-  { hideDock, changeDockTab, cancelOrder, closeOrder }
+  {
+    hideDock, changeDockTab, cancelOrder, closeOrder,
+  }
 )
 export default class OrderDockPanel extends React.Component {
   static propTypes = {
@@ -48,27 +50,23 @@ export default class OrderDockPanel extends React.Component {
     this.props.hideDock();
   }
   handleCancelOrder = () => {
-    this.props.cancelOrder(this.props.order.shipmt_order_no, this.props.tenantId).then(
-      (result) => {
-        if (!result.error) {
-          message.info('订单已取消');
-          this.props.hideDock();
-          if (this.props.reload) {
-            this.props.reload();
-          }
+    this.props.cancelOrder(this.props.order.shipmt_order_no, this.props.tenantId).then((result) => {
+      if (!result.error) {
+        message.info('订单已取消');
+        this.props.hideDock();
+        if (this.props.reload) {
+          this.props.reload();
         }
       }
-    );
+    });
   }
   handleCloseOrder = () => {
-    this.props.closeOrder(this.props.order.shipmt_order_no, this.props.tenantId).then(
-      (result) => {
-        if (!result.error) {
-          message.info('订单已关闭');
-          this.props.hideDock();
-        }
+    this.props.closeOrder(this.props.order.shipmt_order_no, this.props.tenantId).then((result) => {
+      if (!result.error) {
+        message.info('订单已关闭');
+        this.props.hideDock();
       }
-    );
+    });
   }
   renderStatus(status) {
     switch (status) {

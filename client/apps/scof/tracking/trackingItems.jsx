@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Card, Input, Select, message } from 'antd';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import RowAction from 'client/components/RowAction';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -23,7 +23,9 @@ const colStyle = { paddingTop: 0, paddingBottom: 0 };
     trackingItems: state.scvTracking.trackingItems,
     trackingFields: state.scvTracking.trackingFields,
   }),
-  { loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition }
+  {
+    loadTrackingItems, addTrackingItem, updateTrackingItem, removeTrackingItem, updateTrackingItemPosition,
+  }
 )
 @DragDropContext(HTML5Backend)
 export default class TrackingItems extends React.Component {
@@ -194,7 +196,7 @@ export default class TrackingItems extends React.Component {
                   </td>
                   <td style={{ ...colStyle, width: 60 }}>
                       是
-                    </td>
+                  </td>
                   <td style={{ ...colStyle, width: 100 }} className="editable-row-operations">
                     <RowAction primary onClick={this.handleAddItem} icon="save" />
                   </td>

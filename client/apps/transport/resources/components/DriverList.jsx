@@ -15,8 +15,10 @@ const rowSelection = {
 };
 
 function DriverList(props) {
-  const { dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick,
-    handleEditDriverLogin, onEditDriver, onRemoveDriver } = props;
+  const {
+    dataSource, onAddDriverBtnClicked, onStopDriverBtnClick, onResumeDriverBtnClick,
+    handleEditDriverLogin, onEditDriver, onRemoveDriver,
+  } = props;
 
   function phoneLogin(record) {
     if (record.login_disabled === 1 || record.login_disabled === null) {
@@ -167,9 +169,9 @@ function DriverList(props) {
 
 DriverList.propTyps = {
   dataSource: PropTypes.array,
-  onAddDriverBtnClicked: PropTypes.func.isRequired,   // 点击新建司机按钮后执行的回调函数
-  onStopDriverBtnClick: PropTypes.func.isRequired,    // 点击停止车辆按钮的回调函数
-  onResumeDriverBtnClick: PropTypes.func.isRequired,  // 点击启用车辆按钮的回调函数
+  onAddDriverBtnClicked: PropTypes.func.isRequired, // 点击新建司机按钮后执行的回调函数
+  onStopDriverBtnClick: PropTypes.func.isRequired, // 点击停止车辆按钮的回调函数
+  onResumeDriverBtnClick: PropTypes.func.isRequired, // 点击启用车辆按钮的回调函数
   onSearch: PropTypes.func.isRequired,
   searchText: PropTypes.string.isRequired,
 };

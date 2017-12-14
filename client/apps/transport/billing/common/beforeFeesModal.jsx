@@ -50,7 +50,9 @@ export default class BeforeFeesModal extends React.Component {
   }
   componentDidMount() {
     const { tenantId, type } = this.props;
-    const { beginDate, endDate, chooseModel, partnerId, partnerTenantId } = this.context.location.query;
+    const {
+      beginDate, endDate, chooseModel, partnerId, partnerTenantId,
+    } = this.context.location.query;
     this.props.loadFeesBeforeTime({
       type,
       beginDate: moment(beginDate).format('YYYY-MM-DD 00:00:00'),

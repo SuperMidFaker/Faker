@@ -14,11 +14,9 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @injectIntl
-@connect(
-  state => ({
-    shipParams: state.scofFlow.cwmParams,
-  })
-)
+@connect(state => ({
+  shipParams: state.scofFlow.cwmParams,
+}))
 export default class CWMShippingPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -55,11 +53,9 @@ export default class CWMShippingPane extends Component {
               <FormItem label="SO类型">
                 {getFieldDecorator('so_type', {
                   initialValue: model.so_type,
-                })(
-                  <Select placeholder="SO类型" allowClear>
-                    {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
-                  </Select>
-                    )}
+                })(<Select placeholder="SO类型" allowClear>
+                  {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={24} lg={8}>
@@ -67,12 +63,10 @@ export default class CWMShippingPane extends Component {
                 {getFieldDecorator('bonded', {
                   initialValue: model.bonded,
                   onChange: this.handleBondedChange,
-                })(
-                  <RadioGroup>
-                    <RadioButton value={0}>非保税</RadioButton>
-                    <RadioButton value={1}>保税</RadioButton>
-                  </RadioGroup>
-                    )}
+                })(<RadioGroup>
+                  <RadioButton value={0}>非保税</RadioButton>
+                  <RadioButton value={1}>保税</RadioButton>
+                </RadioGroup>)}
               </FormItem>
             </Col>
             {
@@ -81,11 +75,9 @@ export default class CWMShippingPane extends Component {
                 <FormItem label="保税监管方式">
                   {getFieldDecorator('bonded_reg_type', {
                     initialValue: model.bonded_reg_type,
-                  })(
-                    <RadioGroup>
-                      {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
-                    </RadioGroup>
-                  )}
+                  })(<RadioGroup>
+                    {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext}</RadioButton>)}
+                  </RadioGroup>)}
                 </FormItem>
               </Col>
             }

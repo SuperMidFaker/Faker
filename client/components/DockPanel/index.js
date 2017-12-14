@@ -67,7 +67,9 @@ export default class DockPanel extends PureComponent {
     });
   }
   render() {
-    const { prefixCls, size = '', className, visible, title, status, statusText, overlay, extra, loading, alert, alertType, children } = this.props;
+    const {
+      prefixCls, size = '', className, visible, title, status, statusText, overlay, extra, loading, alert, alertType, children,
+    } = this.props;
     const sizeCls = ({
       large: 'lg',
       middle: 'md',

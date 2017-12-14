@@ -54,9 +54,7 @@ export default class manifestRuleCloneModal extends React.Component {
           <FormItem label="规则名称" {...formItemLayout}>
             {getFieldDecorator('template_name', {
               rules: [{ required: true, message: '规则名称必填' }],
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
         </Form>
       </Modal>

@@ -10,7 +10,9 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnSelect(props) {
-  const { record, field, options, onChange, index } = props;
+  const {
+    record, field, options, onChange, index,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, index, field, value);
@@ -34,11 +36,9 @@ ColumnSelect.proptypes = {
 };
 
 @injectIntl
-@connect(
-  state => ({
-    easilist: state.cmsDeclare.batchSendModal.easilist,
-  })
-)
+@connect(state => ({
+  easilist: state.cmsDeclare.batchSendModal.easilist,
+}))
 export default class Expander extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -91,7 +91,7 @@ export default class Expander extends Component {
           return <span />;
         }
       },
- /*   }, {
+      /*   }, {
       title: this.msg('trafMode'),
       dataIndex: 'traf_mode',
       width: 100, */

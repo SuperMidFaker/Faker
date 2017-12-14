@@ -34,7 +34,9 @@ const FormItem = Form.Item;
       text: `${tm.trx_mode} | ${tm.trx_spec}`,
     })),
   }),
-  { loadTempParams, loadDocuDatas, loadDocuBody, loadInvTemplates, updateDocuTemplate, setDocu }
+  {
+    loadTempParams, loadDocuDatas, loadDocuBody, loadInvTemplates, updateDocuTemplate, setDocu,
+  }
 )
 
 export default class DocuPane extends React.Component {
@@ -290,7 +292,8 @@ export default class DocuPane extends React.Component {
         { text: `日期 Invoice Date :  ${moment(docu.date).format('YYYY.MM.DD')}` },
         { text: `买方 Buyer :  ${docu.buyer || ''}` },
         { text: `卖方 Seller :  ${docu.seller || ''}` },
-        { style: 'table',
+        {
+          style: 'table',
           table: { headerRows: 1, body: this.pdfBody() },
         },
         { text: `付款条件 Terms Of Payment :  ${docu.payment_terms || ''}` },
@@ -319,7 +322,8 @@ export default class DocuPane extends React.Component {
         { text: `买方 Buyer :  ${docu.buyer || ''}` },
         { text: `卖方 Seller :  ${docu.seller || ''}` },
         { text: '兹经买卖双方同意，由买方购进，卖方出售下列货物，并按下列条款签订本合同：' },
-        { style: 'table',
+        {
+          style: 'table',
           table: { headerRows: 1, body: this.pdfBody() },
         },
         { text: `付款条件 Terms Of Payment :  ${docu.payment_terms || ''}` },
@@ -337,10 +341,12 @@ export default class DocuPane extends React.Component {
       docDefinition.content.push({ text: '本合同一式二份，买卖双方各执一份为证。', style: 'footer' });
       docDefinition.content.push({ text: 'This contract is mad outin two original copies, one copy to be held by each party in witness thereof.' });
       if (docu.sign_en) {
-        docDefinition.content.push({ columns: [
-          { text: '买方  THE BUYERS', style: 'sign' },
-          { text: '卖方  THE SELLERS', style: 'sign' },
-        ] });
+        docDefinition.content.push({
+          columns: [
+            { text: '买方  THE BUYERS', style: 'sign' },
+            { text: '卖方  THE SELLERS', style: 'sign' },
+          ],
+        });
       }
     } else if (docu.docu_type === CMS_DOCU_TYPE.packingList) {
       docDefinition.header = {
@@ -355,7 +361,8 @@ export default class DocuPane extends React.Component {
         { text: `日期 Date :  ${moment(docu.date).format('YYYY.MM.DD')}` },
         { text: `买方 Buyer :  ${docu.buyer || ''}` },
         { text: `卖方 Seller :  ${docu.seller || ''}` },
-        { style: 'table',
+        {
+          style: 'table',
           table: { headerRows: 1, body: this.pdfBody() },
         },
         { text: `付款条件 Terms Of Payment :  ${docu.payment_terms || ''}` },
@@ -390,7 +397,9 @@ export default class DocuPane extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { invoices, contracts, packlists, invtemps, contemps, paktemps } = this.state;
+    const {
+      invoices, contracts, packlists, invtemps, contemps, paktemps,
+    } = this.state;
     const docu = this.props.docu ? this.props.docu : {};
     const invTempId = (docu.docu_type === 0 && docu.template_id) ? docu.template_id : null;
     const conTempId = (docu.docu_type === 1 && docu.template_id) ? docu.template_id : null;
@@ -418,8 +427,8 @@ export default class DocuPane extends React.Component {
                     <OptGroup>
                       {invtemps.map(data => (<Option key={data.id} value={data.id}
                         search={`${data.id}${data.template_name}`}
-                      ><Icon type="file-text" /> {data.template_name}</Option>)
-                        )}
+                      ><Icon type="file-text" /> {data.template_name}
+                      </Option>))}
                     </OptGroup>
                   </Select>
                 </FormItem>
@@ -443,8 +452,8 @@ export default class DocuPane extends React.Component {
                     <OptGroup>
                       {contemps.map(data => (<Option key={data.id} value={data.id}
                         search={`${data.id}${data.template_name}`}
-                      ><Icon type="file-text" /> {data.template_name}</Option>)
-                        )}
+                      ><Icon type="file-text" /> {data.template_name}
+                      </Option>))}
                     </OptGroup>
                   </Select>
                 </FormItem>
@@ -468,8 +477,8 @@ export default class DocuPane extends React.Component {
                     <OptGroup>
                       {paktemps.map(data => (<Option key={data.id} value={data.id}
                         search={`${data.id}${data.template_name}`}
-                      ><Icon type="file-text" /> {data.template_name}</Option>)
-                        )}
+                      ><Icon type="file-text" /> {data.template_name}
+                      </Option>))}
                     </OptGroup>
                   </Select>
                 </FormItem>

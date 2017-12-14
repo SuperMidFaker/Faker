@@ -38,7 +38,9 @@ export default class InstallSHFTZ extends React.Component {
       if (!err) {
         const uuid = uuidWithoutDash();
         this.setState({ submitting: true });
-        this.props.installShftzApp({ ...values, uuid, tenant_id: tenantId, login_id: loginId }).then((result) => {
+        this.props.installShftzApp({
+          ...values, uuid, tenant_id: tenantId, login_id: loginId,
+        }).then((result) => {
           this.setState({ submitting: false });
           if (result.error) {
             message.error(result.error.message, 10);

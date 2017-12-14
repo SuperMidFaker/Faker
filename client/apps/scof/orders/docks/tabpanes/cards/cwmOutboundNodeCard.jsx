@@ -15,7 +15,9 @@ const Step = Steps.Step;
     tenantId: state.account.tenantId,
     so: state.crmOrders.dockInstMap[props.uuid],
   }),
-  { hideDock, showDock, loadOrderNodesTriggers, getSoFromFlow }
+  {
+    hideDock, showDock, loadOrderNodesTriggers, getSoFromFlow,
+  }
 )
 export default class CWMOutboundNodeCard extends React.Component {
   static propTypes = {
@@ -29,27 +31,23 @@ export default class CWMOutboundNodeCard extends React.Component {
   }
   componentWillMount() {
     const { uuid, kind, tenantId } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then(
-      (result) => {
-        if (!result.data) return;
-        this.setState({
-          trigger: this.triggerStepMap[result.data.trigger_name],
-        });
-      }
-    );
+    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
+      if (!result.data) return;
+      this.setState({
+        trigger: this.triggerStepMap[result.data.trigger_name],
+      });
+    });
     this.props.getSoFromFlow(uuid, tenantId);
   }
   componentWillReceiveProps(nextProps) {
     const { uuid, kind, tenantId } = nextProps;
     if (uuid !== this.props.uuid) {
-      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then(
-        (result) => {
-          if (!result.data) return;
-          this.setState({
-            trigger: this.triggerStepMap[result.data.trigger_name],
-          });
-        }
-      );
+      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
+        if (!result.data) return;
+        this.setState({
+          trigger: this.triggerStepMap[result.data.trigger_name],
+        });
+      });
       this.props.getSoFromFlow(uuid, tenantId);
     }
   }

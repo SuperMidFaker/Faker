@@ -57,7 +57,9 @@ const RadioButton = Radio.Button;
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
   }),
-  { loadBrokers, loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers }
+  {
+    loadBrokers, loadManifestTemplates, closeNormalDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginNormalDecl, getSuppliers,
+  }
 )
 @Form.create()
 export default class NormalDeclModal extends Component {
@@ -183,8 +185,7 @@ export default class NormalDeclModal extends Component {
     this.props.loadBatchRegDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relNo = row.ftz_rel_no;
-        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(
-          result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
+        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
         const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
         this.setState({ regDetails, normalRegs });
       }
@@ -198,7 +199,9 @@ export default class NormalDeclModal extends Component {
       if (!result.error) {
         const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
         const normalRegs = this.state.normalRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
-        this.setState({ regDetails, normalRegs, normalRowSelKeys: [], normalSelRows: [] });
+        this.setState({
+          regDetails, normalRegs, normalRowSelKeys: [], normalSelRows: [],
+        });
       }
     });
   }
@@ -226,7 +229,8 @@ export default class NormalDeclModal extends Component {
     });
   }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '',
+    this.setState({
+      ownerCusCode: '',
       normalRegs: [],
       regDetails: [],
       relNo: '',
@@ -248,7 +252,9 @@ export default class NormalDeclModal extends Component {
   }
   handleSupplierChange = (supplier) => {
     this.setState({ supplier });
-    const { ownerCusCode, relNo, relDateRange, currency } = this.state;
+    const {
+      ownerCusCode, relNo, relDateRange, currency,
+    } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
       owner_cus_code: ownerCusCode,
@@ -264,7 +270,9 @@ export default class NormalDeclModal extends Component {
   }
   handleCurrencyChange = (currency) => {
     this.setState({ currency });
-    const { ownerCusCode, relNo, relDateRange, supplier } = this.state;
+    const {
+      ownerCusCode, relNo, relDateRange, supplier,
+    } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
       owner_cus_code: ownerCusCode,
@@ -288,7 +296,9 @@ export default class NormalDeclModal extends Component {
     this.setState({ ftzRelNo: ev.target.value });
   }
   handleNormalOutsQuery = () => {
-    const { ownerCusCode, relNo, relDateRange, currency, supplier } = this.state;
+    const {
+      ownerCusCode, relNo, relDateRange, currency, supplier,
+    } = this.state;
     const trxMode = this.props.form.getFieldValue('trxn_mode');
     this.props.loadBatchOutRegs({
       owner_cus_code: ownerCusCode,
@@ -327,7 +337,9 @@ export default class NormalDeclModal extends Component {
       customs_code: own.customs_code,
       name: own.name,
     }))[0];
-    const { loginId, loginName, tenantName, defaultWhse } = this.props;
+    const {
+      loginId, loginName, tenantName, defaultWhse,
+    } = this.props;
     const { destCountry, dutyMode } = this.state;
     this.props.form.validateFields((errors, values) => {
       const fbroker = this.props.brokers.find(bk => bk.customs_code === values.broker);
@@ -385,8 +397,12 @@ export default class NormalDeclModal extends Component {
     this.setState({ destCountry });
   }
   render() {
-    const { form: { getFieldDecorator }, owners, ownerCusCode, brokers, customsCode, tenantName, submitting, billTemplates, exemptions, tradeCountries } = this.props;
-    const { relNo, template, regDetails, dutyMode, destCountry } = this.state;
+    const {
+      form: { getFieldDecorator }, owners, ownerCusCode, brokers, customsCode, tenantName, submitting, billTemplates, exemptions, tradeCountries,
+    } = this.props;
+    const {
+      relNo, template, regDetails, dutyMode, destCountry,
+    } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
@@ -487,44 +503,39 @@ export default class NormalDeclModal extends Component {
             <Row gutter={16}>
               <Col span={4}>
                 <FormItem label="货主">
-                  {getFieldDecorator('owner', { initialValue: ownerCusCode,
+                  {getFieldDecorator('owner', {
+ initialValue: ownerCusCode,
                     rules: [{ required: true, message: '提货单位必选' }],
-                  })(
-                    <Select placeholder="请选择提货单位" showSearch optionFilterProp="children" onChange={this.handleOwnerChange}>
-                      {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
-                    </Select>)}
+                  })(<Select placeholder="请选择提货单位" showSearch optionFilterProp="children" onChange={this.handleOwnerChange}>
+                    {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span={4}>
                 <FormItem label="报关代理">
                   {getFieldDecorator('broker', {
                     rules: [{ required: true, message: '报关代理必选' }],
-                  })(
-                    <Select placeholder="请选择报关代理">
-                      {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(
-                        <Option value={customsCode} key={customsCode}>{tenantName}</Option>
-                      )}
-                    </Select>)}
+                  })(<Select placeholder="请选择报关代理">
+                    {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(<Option value={customsCode} key={customsCode}>{tenantName}</Option>)}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span={3}>
                 <FormItem label="类型">
-                  {getFieldDecorator('ietype', { initialValue: 'import' })(
-                    <RadioGroup>
-                      <RadioButton value="import">进口</RadioButton>
-                      <RadioButton value="export">出口</RadioButton>
-                    </RadioGroup>)}
+                  {getFieldDecorator('ietype', { initialValue: 'import' })(<RadioGroup>
+                    <RadioButton value="import">进口</RadioButton>
+                    <RadioButton value="export">出口</RadioButton>
+                  </RadioGroup>)}
                 </FormItem>
               </Col>
               <Col span={3}>
                 <FormItem label="成交方式">
-                  {getFieldDecorator('trxn_mode')(
-                    <Select placeholder="请选择成交方式" allowClear>
-                      {this.props.trxModes.map(data => (
-                        <Option key={data.value} value={data.value}>
-                          {data.text}
-                        </Option>))}
-                    </Select>)}
+                  {getFieldDecorator('trxn_mode')(<Select placeholder="请选择成交方式" allowClear>
+                    {this.props.trxModes.map(data => (
+                      <Option key={data.value} value={data.value}>
+                        {data.text}
+                      </Option>))}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span={3}>

@@ -28,13 +28,15 @@ const { Header, Content } = Layout;
     billing: state.crmBilling.billing,
     billingFees: state.crmBilling.billingFees,
   }),
-  { loadFeesByChooseModal,
+  {
+    loadFeesByChooseModal,
     loadClearanceFeesByChooseModal,
     loadTransportFeesByChooseModal,
     createBilling,
     updateBillingFees,
     loadOrderDetail,
-    showBeforeFeesModal }
+    showBeforeFeesModal,
+  }
 )
 export default class CreateBilling extends React.Component {
   static propTypes = {
@@ -84,9 +86,15 @@ export default class CreateBilling extends React.Component {
   msg = (key, values) => formatMsg(this.props.intl, key, values)
 
   handleSave = () => {
-    const { loginId, tenantId, tenantName, loginName } = this.props;
-    const { ccbCharge, trsCharge, adjustCharge, totalCharge } = this.props.billing;
-    const { beginDate, endDate, partnerName, partnerId, partnerCode, partnerTenantId, name } = this.context.location.query;
+    const {
+      loginId, tenantId, tenantName, loginName,
+    } = this.props;
+    const {
+      ccbCharge, trsCharge, adjustCharge, totalCharge,
+    } = this.props.billing;
+    const {
+      beginDate, endDate, partnerName, partnerId, partnerCode, partnerTenantId, name,
+    } = this.context.location.query;
     const fees = this.props.billingFees.data.map(item => ({
       ...item,
       customer_tenant_id: partnerTenantId,

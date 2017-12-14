@@ -80,7 +80,8 @@ export default class ConflictItemTable extends React.Component {
     },
     remotes: this.props.conflictList,
   })
-  conflictColumns = makeColumns({ msg: this.msg,
+  conflictColumns = makeColumns({
+    msg: this.msg,
     units: this.props.units,
     tradeCountries: this.props.tradeCountries,
     currencies: this.props.currencies,
@@ -172,7 +173,9 @@ export default class ConflictItemTable extends React.Component {
     this.setState({ conflictSelRowKeys: [] });
   }
   render() {
-    const { loading, withRepo, repos, conflictList, noBorder } = this.props;
+    const {
+      loading, withRepo, repos, conflictList, noBorder,
+    } = this.props;
     const { conflictSelRowKeys } = this.state;
     this.conflictDataSource.remotes = conflictList;
     const conflictSelRows = {

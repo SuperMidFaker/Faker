@@ -94,7 +94,9 @@ export default class ClearanceForm extends Component {
     this.handleSetClientForm(related);
   }
   render() {
-    const { formData, formRequires, serviceTeam, cmsQuotes } = this.props;
+    const {
+      formData, formRequires, serviceTeam, cmsQuotes,
+    } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 18 },
@@ -178,8 +180,7 @@ export default class ClearanceForm extends Component {
                 >
                   {
                     WRAP_TYPE.map(wt =>
-                      <Option value={wt.value} key={wt.value}>{wt.text}</Option>
-                      )
+                      <Option value={wt.value} key={wt.value}>{wt.text}</Option>)
                   }
                 </Select>
               </InputGroup>
@@ -204,8 +205,7 @@ export default class ClearanceForm extends Component {
               <Select allowClear showSearch value={node.customs_partner_id} onChange={value => this.handleChange('customs_partner_id', value)}>
                 {
                   formRequires.customsBrokers.map(cb =>
-                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
-                  )
+                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>)
                 }
               </Select>
             </FormItem>
@@ -215,8 +215,7 @@ export default class ClearanceForm extends Component {
               <Select allowClear showSearch value={node.ciq_partner_id} onChange={value => this.handleChange('ciq_partner_id', value)}>
                 {
                   formRequires.ciqBrokers.map(cb =>
-                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>
-                  )
+                    <Option value={cb.partner_id} key={cb.partner_id}>{cb.partner_code}|{cb.name}</Option>)
                 }
               </Select>
             </FormItem>

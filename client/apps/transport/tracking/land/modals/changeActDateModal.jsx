@@ -54,9 +54,12 @@ export default class ChangeActDateModal extends React.Component {
     });
   }
   handleOk = () => {
-    const { dispId, shipmtNo, loginName, loginId, tenantId, tenantName } = this.props;
+    const {
+      dispId, shipmtNo, loginName, loginId, tenantId, tenantName,
+    } = this.props;
     const { pickupActDate, deliverActDate } = this.state;
-    const data = { dispId,
+    const data = {
+      dispId,
       shipmtNo,
       loginName,
       loginId,

@@ -44,25 +44,30 @@ export default class PickupDeliverUpdater extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { form, type, shipments, onOK, loginId, loginName, tenantId, tenantName } = this.props;
+        const {
+          form, type, shipments, onOK, loginId, loginName, tenantId, tenantName,
+        } = this.props;
         const { actDate } = form.getFieldsValue();
-        this.props.saveBatchPickOrDeliverDate({ type, shipments: JSON.stringify(shipments), actDate, loginId, tenantId, loginName, tenantName }).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message, 10);
-            } else {
-              for (let i = 0; i < shipments.length; i++) {
-                const { dispId, shipmtNo, parentNo, location } = shipments[i];
+        this.props.saveBatchPickOrDeliverDate({
+          type, shipments: JSON.stringify(shipments), actDate, loginId, tenantId, loginName, tenantName,
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            for (let i = 0; i < shipments.length; i++) {
+              const {
+                dispId, shipmtNo, parentNo, location,
+              } = shipments[i];
                 // 上报位置
-                location.location_time = actDate;
-                location.from = TRACKING_POINT_FROM_TYPE.manual;
-                this.props.reportLoc(tenantId, shipmtNo, parentNo, dispId, location);
-              }
-              this.props.closeDateModal();
-              form.resetFields();
-              onOK();
+              location.location_time = actDate;
+              location.from = TRACKING_POINT_FROM_TYPE.manual;
+              this.props.reportLoc(tenantId, shipmtNo, parentNo, dispId, location);
             }
-          });
+            this.props.closeDateModal();
+            form.resetFields();
+            onOK();
+          }
+        });
       }
     });
   }

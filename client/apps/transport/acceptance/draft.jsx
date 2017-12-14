@@ -20,14 +20,14 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
-function fetchData({ state, dispatch, params, cookie }) {
+function fetchData({
+  state, dispatch, params, cookie,
+}) {
   const promises = [];
   promises.push(dispatch(loadDraftForm(cookie, {
     shipmtno: params.shipmt,
   })));
-  promises.push(dispatch(loadFormRequire(
-    cookie, state.account.tenantId
-  )));
+  promises.push(dispatch(loadFormRequire(cookie, state.account.tenantId)));
   return Promise.all(promises);
 }
 
@@ -46,7 +46,8 @@ function fetchData({ state, dispatch, params, cookie }) {
     pageSize: state.transportAcceptance.table.shipmentlist.pageSize,
     current: state.transportAcceptance.table.shipmentlist.current,
   }),
-  { acceptDraft, loadTable, saveEdit })
+  { acceptDraft, loadTable, saveEdit }
+)
 @connectNav({
   depth: 3,
   text: props => `${formatMsg(props.intl, 'draftShipmt')} ${props.formData.shipmt_no}`,
@@ -90,22 +91,22 @@ export default class ShipmentDraftEdit extends React.Component {
           ...this.props.form.getFieldsValue(),
         };
         this.props.acceptDraft(form, loginId, loginName, tenantId)
-        .then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.success(this.msg('shipmtOpSuccess'));
-            this.context.router.goBack();
-            this.props.loadTable(null, {
-              tenantId: this.props.tenantId,
-              pageSize: this.props.pageSize,
-              currentPage: this.props.current,
-              filters: JSON.stringify(this.props.filters),
-              sortField: this.props.sortField,
-              sortOrder: this.props.sortOrder,
-            });
-          }
-        });
+          .then((result) => {
+            if (result.error) {
+              message.error(result.error.message, 10);
+            } else {
+              message.success(this.msg('shipmtOpSuccess'));
+              this.context.router.goBack();
+              this.props.loadTable(null, {
+                tenantId: this.props.tenantId,
+                pageSize: this.props.pageSize,
+                currentPage: this.props.current,
+                filters: JSON.stringify(this.props.filters),
+                sortField: this.props.sortField,
+                sortOrder: this.props.sortOrder,
+              });
+            }
+          });
       }
     });
   }

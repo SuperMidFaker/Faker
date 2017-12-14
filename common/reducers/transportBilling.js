@@ -142,7 +142,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_BILLINGFEES: {
       const billingFees = state.billingFees.data.map((item) => {
         if (item.id === action.data.feeId) {
-          const fee = { ...item,
+          const fee = {
+            ...item,
             [action.data.field]: action.data.value,
             last_updated_tenant_id: action.data.tenantId,
             last_updated_date: new Date(),
@@ -165,7 +166,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_FEES:
       return { ...state, loading: true, loaded: true };
     case actionTypes.LOAD_FEES_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         fees: {
           ...state.fees,
           ...action.result.data,
@@ -189,7 +191,8 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_FEES_BYBILLINGID_SUCCEED: {
       const billing = action.result.data.billing;
-      return { ...state,
+      return {
+        ...state,
         billingFees: action.result.data,
         billing: {
           id: billing.id,
@@ -207,12 +210,15 @@ export default function reducer(state = initialState, action) {
           adjustCharge: billing.adjust_charge,
           totalCharge: billing.total_charge,
           modifyTimes: billing.modify_times,
-        } };
+        },
+      };
     }
     case actionTypes.LOAD_BILLINGS:
       return { ...state, loading: true };
     case actionTypes.LOAD_BILLINGS_SUCCEED:
-      return { ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees, loading: false };
+      return {
+        ...state, billings: { ...state.billings, ...action.result.data }, billingFees: initialState.billingFees, loading: false,
+      };
     case actionTypes.LOAD_BILLINGS_FAIL:
       return { ...state, loading: false };
     case actionTypes.CREATE_BILLING:
@@ -266,7 +272,12 @@ export default function reducer(state = initialState, action) {
 }
 
 export function updateBillingFees(tenantId, feeId, field, value) {
-  return { type: actionTypes.UPDATE_BILLINGFEES, data: { tenantId, feeId, field, value } };
+  return {
+    type: actionTypes.UPDATE_BILLINGFEES,
+    data: {
+      tenantId, feeId, field, value,
+    },
+  };
 }
 
 export function alterBillingFees(fee) {
@@ -288,7 +299,9 @@ export function loadPartners(tenantId, roles, businessTypes) {
   };
 }
 
-export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters, startDate, endDate }) {
+export function loadFees({
+  tenantId, pageSize, currentPage, searchValue, filters, startDate, endDate,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -312,7 +325,9 @@ export function loadFees({ tenantId, pageSize, currentPage, searchValue, filters
   };
 }
 
-export function loadFeesByChooseModal({ type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId }) {
+export function loadFeesByChooseModal({
+  type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -322,12 +337,16 @@ export function loadFeesByChooseModal({ type, beginDate, endDate, chooseModel, p
       ],
       endpoint: 'v1/transport/feesByChooseModal',
       method: 'get',
-      params: { type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId },
+      params: {
+        type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId,
+      },
     },
   };
 }
 
-export function loadFeesBeforeTime({ type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId }) {
+export function loadFeesBeforeTime({
+  type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -337,7 +356,9 @@ export function loadFeesBeforeTime({ type, beginDate, endDate, chooseModel, part
       ],
       endpoint: 'v1/transport/feesBeforeTime',
       method: 'get',
-      params: { type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId },
+      params: {
+        type, beginDate, endDate, chooseModel, partnerId, partnerTenantId, tenantId,
+      },
     },
   };
 }
@@ -357,7 +378,9 @@ export function loadFeesByBillingId({ billingId, pageSize, currentPage }) {
   };
 }
 
-export function loadBillings({ type, tenantId, pageSize, currentPage, searchValue, filters }) {
+export function loadBillings({
+  type, tenantId, pageSize, currentPage, searchValue, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -367,14 +390,18 @@ export function loadBillings({ type, tenantId, pageSize, currentPage, searchValu
       ],
       endpoint: 'v1/transport/billings',
       method: 'get',
-      params: { type, tenantId, pageSize, currentPage, searchValue, filters: JSON.stringify(filters) },
+      params: {
+        type, tenantId, pageSize, currentPage, searchValue, filters: JSON.stringify(filters),
+      },
     },
   };
 }
 
-export function createBilling({ tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, freightCharge,
-    advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srPartnerId, srName, spTenantId, spPartnerId, spName, toTenantId,
-    shipmtCount, fees }) {
+export function createBilling({
+  tenantId, loginId, loginName, name, chooseModel, beginDate, endDate, freightCharge,
+  advanceCharge, excpCharge, adjustCharge, totalCharge, srTenantId, srPartnerId, srName, spTenantId, spPartnerId, spName, toTenantId,
+  shipmtCount, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -384,7 +411,8 @@ export function createBilling({ tenantId, loginId, loginName, name, chooseModel,
       ],
       endpoint: 'v1/transport/billing',
       method: 'post',
-      data: { tenantId,
+      data: {
+        tenantId,
         loginId,
         loginName,
         name,
@@ -404,12 +432,15 @@ export function createBilling({ tenantId, loginId, loginName, name, chooseModel,
         spName,
         toTenantId,
         shipmtCount,
-        fees },
+        fees,
+      },
     },
   };
 }
 
-export function sendBilling({ tenantId, loginId, loginName, billingId }) {
+export function sendBilling({
+  tenantId, loginId, loginName, billingId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -419,12 +450,16 @@ export function sendBilling({ tenantId, loginId, loginName, billingId }) {
       ],
       endpoint: 'v1/transport/sendBilling',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId },
+      data: {
+        tenantId, loginId, loginName, billingId,
+      },
     },
   };
 }
 
-export function checkBilling({ tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees }) {
+export function checkBilling({
+  tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -434,12 +469,16 @@ export function checkBilling({ tenantId, loginId, loginName, billingId, freightC
       ],
       endpoint: 'v1/transport/checkBilling',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees },
+      data: {
+        tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, modifyTimes, shipmtCount, fees,
+      },
     },
   };
 }
 
-export function editBilling({ tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, shipmtCount, fees }) {
+export function editBilling({
+  tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, shipmtCount, fees,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -449,12 +488,16 @@ export function editBilling({ tenantId, loginId, loginName, billingId, freightCh
       ],
       endpoint: 'v1/transport/editBilling',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, shipmtCount, fees },
+      data: {
+        tenantId, loginId, loginName, billingId, freightCharge, advanceCharge, excpCharge, adjustCharge, totalCharge, shipmtCount, fees,
+      },
     },
   };
 }
 
-export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
+export function acceptBilling({
+  tenantId, loginId, loginName, billingId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -464,12 +507,16 @@ export function acceptBilling({ tenantId, loginId, loginName, billingId }) {
       ],
       endpoint: 'v1/transport/acceptBilling',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId },
+      data: {
+        tenantId, loginId, loginName, billingId,
+      },
     },
   };
 }
 
-export function removeBilling({ tenantId, loginId, loginName, billingId }) {
+export function removeBilling({
+  tenantId, loginId, loginName, billingId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -479,12 +526,16 @@ export function removeBilling({ tenantId, loginId, loginName, billingId }) {
       ],
       endpoint: 'v1/transport/removeBilling',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId },
+      data: {
+        tenantId, loginId, loginName, billingId,
+      },
     },
   };
 }
 
-export function changeCancelCharge({ tenantId, loginId, loginName, billingId, cancelCharge }) {
+export function changeCancelCharge({
+  tenantId, loginId, loginName, billingId, cancelCharge,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -494,7 +545,9 @@ export function changeCancelCharge({ tenantId, loginId, loginName, billingId, ca
       ],
       endpoint: 'v1/transport/billing/changeCancelCharge',
       method: 'post',
-      data: { tenantId, loginId, loginName, billingId, cancelCharge },
+      data: {
+        tenantId, loginId, loginName, billingId, cancelCharge,
+      },
     },
   };
 }
@@ -537,7 +590,9 @@ export function changeBillingsFilter(key, value) {
   return { type: actionTypes.CHANGE_BILLINGS_FILTER, data: { key, value } };
 }
 
-export function showAdvanceModal({ visible, dispId, shipmtNo, transModeCode, goodsType, type }) {
+export function showAdvanceModal({
+  visible, dispId, shipmtNo, transModeCode, goodsType, type,
+}) {
   if (visible) {
     return {
       [CLIENT_API]: {
@@ -549,22 +604,35 @@ export function showAdvanceModal({ visible, dispId, shipmtNo, transModeCode, goo
         endpoint: 'v1/transport/advanceCharges',
         method: 'get',
         params: { dispId },
-        data: { visible, dispId, shipmtNo, transModeCode, goodsType, type },
+        data: {
+          visible, dispId, shipmtNo, transModeCode, goodsType, type,
+        },
       },
     };
   } else {
-    return { type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL, data: { visible, dispId, shipmtNo, transModeCode, goodsType } };
+    return {
+      type: actionTypes.SHOW_SHIPMENT_ADVANCE_MODAL,
+      data: {
+        visible, dispId, shipmtNo, transModeCode, goodsType,
+      },
+    };
   }
 }
 
-export function showSpecialChargeModal({ visible, dispId, shipmtNo, spTenantId, type }) {
+export function showSpecialChargeModal({
+  visible, dispId, shipmtNo, spTenantId, type,
+}) {
   return {
     type: actionTypes.SHOW_SPECIAL_CHARGE_MODAL,
-    data: { visible, dispId, shipmtNo, spTenantId, type },
+    data: {
+      visible, dispId, shipmtNo, spTenantId, type,
+    },
   };
 }
 
-export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId }) {
+export function createSpecialCharge({
+  shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -574,7 +642,9 @@ export function createSpecialCharge({ shipmtNo, dispId, type, remark, submitter,
       ],
       endpoint: 'v1/transport/billing/createSpecialCharge',
       method: 'post',
-      data: { shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId },
+      data: {
+        shipmtNo, dispId, type, remark, submitter, charge, tenantId, loginId,
+      },
     },
   };
 }

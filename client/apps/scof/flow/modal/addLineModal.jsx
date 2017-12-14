@@ -22,9 +22,11 @@ const FormItem = Form.Item;
     loginName: state.account.username,
     formRequires: state.crmOrders.formRequires,
   }),
-  { toggleAddLineModal,
+  {
+    toggleAddLineModal,
     addLineAndPublish,
-    setNeedLoadTariff }
+    setNeedLoadTariff,
+  }
 )
 
 export default class AddLineModal extends React.Component {
@@ -121,7 +123,9 @@ export default class AddLineModal extends React.Component {
   render() {
     const { visible, tariff, formRequires: { transitModes, vehicleTypes, vehicleLengths } } = this.props;
     const { line } = this.state;
-    const style = { width: '33.33%', display: 'inline-block', paddingLeft: 5, paddingRight: 5 };
+    const style = {
+      width: '33.33%', display: 'inline-block', paddingLeft: 5, paddingRight: 5,
+    };
     let varColumns = [];
     if (tariff.intervals) varColumns = getEndTableVarColumns(tariff, transitModes, vehicleTypes, vehicleLengths);
 

@@ -32,23 +32,21 @@ const ACTIVITY_DESC_MAP = {
 };
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    previewer: state.cmsDelgInfoHub.previewer,
-    tabKey: state.cmsDelgInfoHub.tabKey,
-    declHeadsPane: state.cmsDeclare.decl_heads,
-  }), {
-    exchangeBlNo,
-    loadDeclHead,
-    setInspect,
-    loadCustPanel,
-    loadBasicInfo,
-    updateCertParam,
-    loadDeclCiqPanel,
-    loadPaneExp,
-  }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  previewer: state.cmsDelgInfoHub.previewer,
+  tabKey: state.cmsDelgInfoHub.tabKey,
+  declHeadsPane: state.cmsDeclare.decl_heads,
+}), {
+  exchangeBlNo,
+  loadDeclHead,
+  setInspect,
+  loadCustPanel,
+  loadBasicInfo,
+  updateCertParam,
+  loadDeclCiqPanel,
+  loadPaneExp,
+})
 @Form.create()
 export default class DelegationPane extends React.Component {
   static propTypes = {
@@ -71,8 +69,12 @@ export default class DelegationPane extends React.Component {
   handleCancel = () => {
     this.props.form.resetFields();
   }
-  handleInspectSave = ({ preEntrySeqNo, delgNo, enabled, field }) => {
-    this.props.setInspect({ preEntrySeqNo, delgNo, field, enabled }).then((result) => {
+  handleInspectSave = ({
+    preEntrySeqNo, delgNo, enabled, field,
+  }) => {
+    this.props.setInspect({
+      preEntrySeqNo, delgNo, field, enabled,
+    }).then((result) => {
       if (result.error) {
         if (result.error.message === 'repeated') {
           if (enabled === 'passed') {
@@ -88,10 +90,10 @@ export default class DelegationPane extends React.Component {
       } else {
         message.info('保存成功', 5);
         this.props.loadBasicInfo(
-            this.props.tenantId,
-            this.props.previewer.delegation.delg_no,
-            this.props.tabKey
-          );
+          this.props.tenantId,
+          this.props.previewer.delegation.delg_no,
+          this.props.tabKey
+        );
         if (enabled === true || enabled === false) {
           this.props.loadPaneExp(this.props.previewer.delegation.delg_no, this.props.tenantId);
         }
@@ -151,9 +153,11 @@ export default class DelegationPane extends React.Component {
       } else if (this.state.filterKey !== '' && this.state.filterKey !== filterKey) {
         this.setState({ filterKey: 'all', filterActivities: null });
       } else {
-        this.setState({ filterKey,
+        this.setState({
+          filterKey,
           filterActivities:
-            this.props.previewer.activities.filter(acty => acty.category === filterKey) });
+            this.props.previewer.activities.filter(acty => acty.category === filterKey),
+        });
       }
     } else if (filterKey === 'all') {
       this.setState({ filterKey: '', filterActivities: [] });
@@ -250,7 +254,8 @@ export default class DelegationPane extends React.Component {
                       }
                       return (<Timeline.Item dot={<Icon type="exception" />} color="red" key={activity.id}>
                         <Card title={<span>{ACTIVITY_DESC_MAP[activity.type].text}
-                          <small className="timestamp">{moment(activity.oper_date).format('YYYY-MM-DD HH:mm')}</small></span>}
+                          <small className="timestamp">{moment(activity.oper_date).format('YYYY-MM-DD HH:mm')}</small>
+                        </span>}
                           extra={<span className="toolbar-right">
                             {inspect !== INSPECT_STATUS.finish &&
                             <Tooltip title="标记查验通过" placement="left">
@@ -263,17 +268,20 @@ export default class DelegationPane extends React.Component {
                             <Popover trigger="click" content={
                               <div>
                                 <a className="mdc-text-red" onClick={() =>
-                                  this.handleInspectSave({ preEntrySeqNo: activity.field,
+                                  this.handleInspectSave({
+ preEntrySeqNo: activity.field,
                                     delgNo: delegation.delg_no,
                                     enabled: false,
-                                    field: activity.type })}
+                                    field: activity.type,
+})}
                                 >
                                   删除
                                 </a>
                               </div>}
                             >
                               <Button type="ghost" shape="circle" size="small" icon="ellipsis" />
-                            </Popover></span>} bodyStyle={{ padding: 8 }}
+                            </Popover>
+                          </span>} bodyStyle={{ padding: 8 }}
                         >
                           <Row>
                             <Col span={12}>

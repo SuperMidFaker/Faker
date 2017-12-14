@@ -7,7 +7,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import connectNav from 'client/common/decorators/connect-nav';
 import { format } from 'client/common/i18n/helpers';
 import { loadHsCodeCategories, addHsCodeCategory, removeHsCodeCategory, updateHsCodeCategory,
-loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
+  loadCategoryHsCode, addCategoryHsCode, removeCategoryHsCode } from 'common/reducers/cmsHsCode';
 import HSCodeSpecialList from './specialList';
 import PageHeader from 'client/components/PageHeader';
 import NavLink from 'client/components/NavLink';
@@ -30,13 +30,15 @@ function fetchData({ state, dispatch }) {
     hscodeCategories: state.cmsHsCode.hscodeCategories,
     categoryHscodes: state.cmsHsCode.categoryHscodes,
   }),
-  { loadHsCodeCategories,
+  {
+    loadHsCodeCategories,
     addHsCodeCategory,
     removeHsCodeCategory,
     updateHsCodeCategory,
     loadCategoryHsCode,
     addCategoryHsCode,
-    removeCategoryHsCode }
+    removeCategoryHsCode,
+  }
 )
 @connectNav({
   depth: 2,
@@ -197,7 +199,8 @@ export default class HSCodeSpecial extends React.Component {
               <a onClick={() => {
                 this.setState({ editIndex: index });
               }}
-              ><Icon type="edit" /></a>
+              ><Icon type="edit" />
+              </a>
               <span className="ant-divider" />
               <Popconfirm title="确认删除该分类?" onConfirm={() => this.handleRemove(row.id)}>
                 <a role="presentation"><Icon type="delete" /></a>

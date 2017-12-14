@@ -53,7 +53,9 @@ export default class WorkItemPage extends Component {
         const value = this.props.form.getFieldsValue();
         const specialMark = value.specialMark.join('/');
         const pass = value.pass === true ? 'Y' : null;
-        const item = { ...this.props.itemData, ...value, special_mark: specialMark, pass };
+        const item = {
+          ...this.props.itemData, ...value, special_mark: specialMark, pass,
+        };
         this.props.saveWorkspaceItem(item).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);

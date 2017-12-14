@@ -10,12 +10,12 @@ import { formatMsg } from '../message.i18n';
 
 @injectIntl
 @connect(
-    state => ({
-      defaultWhse: state.cwmContext.defaultWhse,
-      ftzTaskList: state.cwmShFtz.ftzTaskList,
-    }),
-    { loadStockTasks }
-  )
+  state => ({
+    defaultWhse: state.cwmContext.defaultWhse,
+    ftzTaskList: state.cwmShFtz.ftzTaskList,
+  }),
+  { loadStockTasks }
+)
 export default class TasksPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

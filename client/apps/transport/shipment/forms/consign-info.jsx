@@ -6,7 +6,6 @@ import { Row, Col, Form, Input, Select } from 'antd';
 import * as Location from 'client/util/location';
 import InputItem from './input-item';
 import { setConsignFields, loadTariffByQuoteNo } from 'common/reducers/shipment';
-import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
@@ -82,7 +81,7 @@ export default class ConsignInfo extends React.Component {
   }
   constructor(...args) {
     super(...args);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+    this.shouldComponentUpdate = React.PureComponent.shouldComponentUpdate.bind(this);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAutoInputChange = (val) => {
@@ -204,7 +203,9 @@ export default class ConsignInfo extends React.Component {
       formhoc, consignLocations, customerPartnerId,
       fieldDefaults, vertical, type,
     } = this.props;
-    const { name, byname, addr, contact, mobile, email } = this.renderFields;
+    const {
+      name, byname, addr, contact, mobile, email,
+    } = this.renderFields;
     const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname] : Location.renderConsignLocation(fieldDefaults, type);
     let content = '';
     if (vertical) {

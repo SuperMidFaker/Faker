@@ -21,7 +21,9 @@ const InputGroup = Input.Group;
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos }
+  {
+    hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos,
+  }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
@@ -167,7 +169,9 @@ export default class AddDetailModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, productNos, units, currencies, poNo } = this.props;
+    const {
+      form: { getFieldDecorator }, visible, productNos, units, currencies, poNo,
+    } = this.props;
     const { skus } = this.state;
     const product = this.state.product;
     const formItemLayout = {
@@ -180,11 +184,9 @@ export default class AddDetailModal extends Component {
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
-            })(
-              <Select mode="combobox" placeholder="请至少输入三位货号" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
-                {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
-              </Select>
-            )}
+            })(<Select mode="combobox" placeholder="请至少输入三位货号" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
+              {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
+            </Select>)}
           </FormItem>
           <FormItem label="SKU" {...formItemLayout}>
             <Select value={product.product_sku} onSelect={this.handleSelectSku}>
@@ -198,9 +200,7 @@ export default class AddDetailModal extends Component {
             <InputGroup compact>
               {getFieldDecorator('order_qty', {
                 rules: [{ required: true, message: '请输入订单数量' }],
-              })(
-                <Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />
-              )}
+              })(<Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />)}
               <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit}
                 style={{ width: '30%' }} onChange={this.handleUnitChange}
               >
@@ -211,31 +211,23 @@ export default class AddDetailModal extends Component {
           <FormItem label="库别" {...formItemLayout}>
             {getFieldDecorator('virtual_whse', {
               initialValue: product.virtual_whse,
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem label="采购订单号" {...formItemLayout}>
             {getFieldDecorator('po_no', {
               initialValue: poNo || product.po_no,
-            })(
-              <Input disabled={!!poNo} />
-            )}
+            })(<Input disabled={!!poNo} />)}
           </FormItem>
           <FormItem label="集装箱号" {...formItemLayout}>
             {getFieldDecorator('container_no', {
               initialValue: product.container_no,
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem label="金额" {...formItemLayout}>
             <InputGroup compact>
               {getFieldDecorator('unit_price', {
                 initialValue: product.unit_price,
-              })(
-                <Input placeholder="单价" type="number" onChange={this.handlePriceChange} style={{ width: '30%' }} />
-              )}
+              })(<Input placeholder="单价" type="number" onChange={this.handlePriceChange} style={{ width: '30%' }} />)}
               <Input placeholder="总价" type="number" value={this.state.amount || product.amount} onChange={this.handleAmountChange} style={{ width: '30%' }} />
               <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency && String(product.currency)}
                 style={{ width: '40%' }} onChange={this.handleCurrChange}

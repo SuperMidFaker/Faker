@@ -30,7 +30,9 @@ const Description = DescriptionList.Description;
     agentCustCo: state.cmsDeclare.sendDeclModal.agentCustCo,
     loginName: state.account.username,
   }),
-  { showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl }
+  {
+    showSendDeclModal, loadLatestSendRecord, getEasipassList, sendDecl,
+  }
 )
 @Form.create()
 export default class SendDeclMsgModal extends React.Component {
@@ -67,13 +69,17 @@ export default class SendDeclMsgModal extends React.Component {
     this.props.showSendDeclModal({ visible: false });
   }
   handleOk = () => {
-    const { delgNo, preEntrySeqNo, subdomain, loginName } = this.props;
+    const {
+      delgNo, preEntrySeqNo, subdomain, loginName,
+    } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const uuid = values.easipass;
         const declType = values.declType;
         const channel = values.declChannel;
-        this.props.sendDecl({ preEntrySeqNo, delgNo, subdomain, uuid, channel, declType, username: loginName }).then((result) => {
+        this.props.sendDecl({
+          preEntrySeqNo, delgNo, subdomain, uuid, channel, declType, username: loginName,
+        }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
           } else {
@@ -88,7 +94,9 @@ export default class SendDeclMsgModal extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { visible, form: { getFieldDecorator, getFieldValue }, ietype, defaultDecl } = this.props;
+    const {
+      visible, form: { getFieldDecorator, getFieldValue }, ietype, defaultDecl,
+    } = this.props;
     const { preSentRecord, easipassList, quickpassList } = this.state;
     const formItemLayout = {
       labelCol: {
@@ -119,40 +127,32 @@ export default class SendDeclMsgModal extends React.Component {
           />
           }
           <FormItem label={this.msg('declChannel')} {...formItemLayout}>
-            {getFieldDecorator('declChannel', { initialValue: defaultDecl && defaultDecl.channel, rules: [{ required: true, message: '请选择申报通道' }] })(
-              <RadioGroup onChange={this.handleChannelChange}>
-                {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
+            {getFieldDecorator('declChannel', { initialValue: defaultDecl && defaultDecl.channel, rules: [{ required: true, message: '请选择申报通道' }] })(<RadioGroup onChange={this.handleChannelChange}>
+              {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
                   const channel = CMS_DECL_CHANNEL[declChannel];
                   return <RadioButton value={channel.value} key={channel.value} disabled={channel.disabled}>{channel.text}</RadioButton>;
                 })}
-              </RadioGroup>
-            )}
+            </RadioGroup>)}
           </FormItem>
           <FormItem label={this.msg('declType')} {...formItemLayout}>
-            {getFieldDecorator('declType', { initialValue: defaultDecl && defaultDecl.dectype, rules: [{ required: true, message: '请选择单证类型' }] })(
-              <Select placeholder="请选择">
-                {declList.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
-              </Select>
-            )}
+            {getFieldDecorator('declType', { initialValue: defaultDecl && defaultDecl.dectype, rules: [{ required: true, message: '请选择单证类型' }] })(<Select placeholder="请选择">
+              {declList.map(item => (<Option key={item.value} value={item.value}>{item.text}</Option>))}
+            </Select>)}
           </FormItem>
           {
           getFieldValue('declChannel') === CMS_DECL_CHANNEL.EP.value &&
           <FormItem label={this.msg('easipassList')} {...formItemLayout}>
-              {getFieldDecorator('easipass', { initialValue: defaultDecl && defaultDecl.appuuid, rules: [{ required: true, message: '请选择EDI' }] })(
-                <Select placeholder="请选择">
-                  {easipassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
-                </Select>
-            )}
-            </FormItem>}
+              {getFieldDecorator('easipass', { initialValue: defaultDecl && defaultDecl.appuuid, rules: [{ required: true, message: '请选择EDI' }] })(<Select placeholder="请选择">
+                {easipassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
+              </Select>)}
+          </FormItem>}
           {
           getFieldValue('declChannel') === CMS_DECL_CHANNEL.QP.value &&
           <FormItem label={this.msg('quickpassList')} {...formItemLayout}>
-              {getFieldDecorator('quickpass', { initialValue: defaultDecl && defaultDecl.appuuid/* , rules: [{ required: true, message: '请选择QP' }] */ })(
-                <Select placeholder="请选择">
-                  {quickpassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
-                </Select>
-            )}
-            </FormItem>}
+              {getFieldDecorator('quickpass', { initialValue: defaultDecl && defaultDecl.appuuid/* , rules: [{ required: true, message: '请选择QP' }] */ })(<Select placeholder="请选择">
+                {quickpassList.map(item => (<Option key={item.app_uuid} value={item.app_uuid}>{item.name}</Option>))}
+              </Select>)}
+          </FormItem>}
         </Form>
       </Modal>
     );

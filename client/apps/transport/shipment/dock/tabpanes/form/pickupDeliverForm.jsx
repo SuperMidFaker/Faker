@@ -43,21 +43,24 @@ export default class PickupDeliverForm extends React.Component {
 
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleSubmit = () => {
-    const { form, type, shipmtNo, parentNo, dispId, loginId, loginName, tenantId, tenantName, location } = this.props;
+    const {
+      form, type, shipmtNo, parentNo, dispId, loginId, loginName, tenantId, tenantName, location,
+    } = this.props;
     const { actDate } = form.getFieldsValue();
     if (actDate) {
-      this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate: actDate.toString(), loginId, tenantId, loginName, tenantName }).then(
-        (result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            // 上报位置
-            location.location_time = actDate.toString();
-            location.from = TRACKING_POINT_FROM_TYPE.manual;
-            this.props.reportLoc(tenantId, shipmtNo, parentNo, dispId, location);
-            form.resetFields();
-          }
-        });
+      this.props.savePickOrDeliverDate({
+        type, shipmtNo, dispId, actDate: actDate.toString(), loginId, tenantId, loginName, tenantName,
+      }).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          // 上报位置
+          location.location_time = actDate.toString();
+          location.from = TRACKING_POINT_FROM_TYPE.manual;
+          this.props.reportLoc(tenantId, shipmtNo, parentNo, dispId, location);
+          form.resetFields();
+        }
+      });
     } else {
       message.warn('请选择日期');
     }

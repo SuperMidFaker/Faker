@@ -26,7 +26,8 @@ const { Header, Content, Sider } = Layout;
 @connect(
   () => ({
   }),
-  { changeDockStatus })
+  { changeDockStatus }
+)
 @connectNav({
   depth: 2,
   moduleName: 'transport',

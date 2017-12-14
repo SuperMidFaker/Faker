@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Select, Button } from 'antd';
 
@@ -27,8 +27,7 @@ function IntervalSelect(props) {
         <Select disabled={readonly} value={vl} onChange={handleVlChange}>
           {
             VEHICLE_LENGTH_TYPES.map(vlt =>
-              <Option key={vlt.value} value={vlt.value}>{vlt.text}</Option>
-            )
+              <Option key={vlt.value} value={vlt.value}>{vlt.text}</Option>)
           }
         </Select>
       </Col>
@@ -36,8 +35,7 @@ function IntervalSelect(props) {
         <Select disabled={readonly} value={vt} onChange={handleVtChange}>
           {
             VEHICLE_TYPES.map(ovt =>
-              <Option key={ovt.value} value={ovt.value}>{ovt.text}</Option>
-            )
+              <Option key={ovt.value} value={ovt.value}>{ovt.text}</Option>)
           }
         </Select>
       </Col>
@@ -69,14 +67,12 @@ IntervalSelect.propTypes = {
   onVlChange: PropTypes.func.isRequired,
 };
 
-@connect(
-  state => ({
-    vehicleTypes: state.transportTariff.agreement.vehicleTypes,
-    vehicleLengths: state.transportTariff.agreement.intervals,
-    vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
-    vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
-  })
-)
+@connect(state => ({
+  vehicleTypes: state.transportTariff.agreement.vehicleTypes,
+  vehicleLengths: state.transportTariff.agreement.intervals,
+  vehicleTypeParams: state.transportTariff.formParams.vehicleTypeParams,
+  vehicleLengthParams: state.transportTariff.formParams.vehicleLengthParams,
+}))
 export default class PricingLTL extends React.Component {
   static propTypes = {
     readonly: PropTypes.bool,
@@ -145,18 +141,19 @@ export default class PricingLTL extends React.Component {
   render() {
     const items = [];
     const { vehicleTypes, vehicleLengths } = this.state;
-    const { readonly, formItemLayout, vehicleTypeParams, vehicleLengthParams } = this.props;
+    const {
+      readonly, formItemLayout, vehicleTypeParams, vehicleLengthParams,
+    } = this.props;
     for (let i = 0; i < vehicleTypes.length; i++) {
-      items.push(
-        <IntervalSelect index={i} vt={vehicleTypes[i]} vl={vehicleLengths[i]}
-          readonly={readonly}
-          onRemove={this.handleLimitRemove}
-          onVtChange={this.handleVtChange}
-          onVlChange={this.handleVlChange}
-          VEHICLE_TYPES={vehicleTypeParams}
-          VEHICLE_LENGTH_TYPES={vehicleLengthParams}
-          key={`vehicle-length-type-${i}`}
-        />);
+      items.push(<IntervalSelect index={i} vt={vehicleTypes[i]} vl={vehicleLengths[i]}
+        readonly={readonly}
+        onRemove={this.handleLimitRemove}
+        onVtChange={this.handleVtChange}
+        onVlChange={this.handleVlChange}
+        VEHICLE_TYPES={vehicleTypeParams}
+        VEHICLE_LENGTH_TYPES={vehicleLengthParams}
+        key={`vehicle-length-type-${i}`}
+      />);
     }
     return (
       <Col sm={12}>

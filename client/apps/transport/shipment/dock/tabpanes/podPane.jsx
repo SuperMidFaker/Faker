@@ -13,13 +13,11 @@ const formatMsg = format(messages);
 
 
 @injectIntl
-@connect(
-  state => ({
-    podId: state.shipment.previewer.dispatch.pod_id,
-    shipmt: state.shipment.previewer.shipmt,
-    disp: state.shipment.previewer.dispatch,
-  }), { loadPod }
-)
+@connect(state => ({
+  podId: state.shipment.previewer.dispatch.pod_id,
+  shipmt: state.shipment.previewer.shipmt,
+  disp: state.shipment.previewer.dispatch,
+}), { loadPod })
 export default class PodPanel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

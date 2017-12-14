@@ -70,8 +70,10 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_ROLES_SUCCEED:
       return { ...state, roles: action.result.data };
     default:
-      return formReducer(actionTypes, state, action, { key: null },
-                         'memberlist') || state;
+      return formReducer(
+        actionTypes, state, action, { key: null },
+        'memberlist'
+      ) || state;
   }
 }
 
@@ -147,7 +149,9 @@ export function submit(personnel, code, tenantId, parentTenantId) {
       types: [actionTypes.SUBMIT_MEMBER, actionTypes.SUBMIT_MEMBER_SUCCEED, actionTypes.SUBMIT_MEMBER_FAIL],
       endpoint: 'v1/personnel/new/member',
       method: 'post',
-      data: { personnel, code, tenantId, parentTenantId },
+      data: {
+        personnel, code, tenantId, parentTenantId,
+      },
     },
   };
 }

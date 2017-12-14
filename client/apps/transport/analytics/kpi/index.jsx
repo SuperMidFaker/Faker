@@ -181,18 +181,21 @@ export default class Kpi extends React.Component {
       clients.length > 0 ? clients[0].partner_id : -1,
       clients.length > 0 ? clients[0].tid : -1,
       query.separationDate,
-      sourceType);
+      sourceType
+    );
   }
   handleMenuChange = (e) => {
     this.setState({ selectedKey: e.key });
   }
   handleExportExcel = (type) => {
     const { modes } = this.props;
-    const { transitModes, range, shipmentCounts, punctualShipmentCounts, shipmentFees, exceptionalShipmentCounts } = this.props.kpi;
+    const {
+      transitModes, range, shipmentCounts, punctualShipmentCounts, shipmentFees, exceptionalShipmentCounts,
+    } = this.props.kpi;
     window.open(`${API_ROOTS.default}v1/transport/kpi/exportExcel/${createFilename('KPI')}.xlsx?transitModes=${JSON.stringify(transitModes)}&range=${
       JSON.stringify(range)}&shipmentCounts=${JSON.stringify(shipmentCounts)}&punctualShipmentCounts=${JSON.stringify(punctualShipmentCounts)
-      }&shipmentFees=${JSON.stringify(shipmentFees)}&exceptionalShipmentCounts=${JSON.stringify(exceptionalShipmentCounts)}&modes=${JSON.stringify(modes)
-      }&type=${type}`);
+    }&shipmentFees=${JSON.stringify(shipmentFees)}&exceptionalShipmentCounts=${JSON.stringify(exceptionalShipmentCounts)}&modes=${JSON.stringify(modes)
+    }&type=${type}`);
   }
   handleModesChange = (modes) => {
     this.props.changeModes(modes);
@@ -211,8 +214,12 @@ export default class Kpi extends React.Component {
     return options;
   }
   render() {
-    const { query, kpi, loading, modes } = this.props;
-    const { selectedKey, customer, collapsed, loaded, sourceType } = this.state;
+    const {
+      query, kpi, loading, modes,
+    } = this.props;
+    const {
+      selectedKey, customer, collapsed, loaded, sourceType,
+    } = this.state;
     let content = (<span />);
     if (selectedKey === '1') {
       content = (<Punctual kpi={kpi} loading={loading} loaded={loaded} modes={modes.punctual} onModesChange={this.handleModesChange} />);

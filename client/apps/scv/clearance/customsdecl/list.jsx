@@ -189,13 +189,13 @@ export default class ScvCustomsDeclList extends Component {
     dataIndex: 'created_date',
     width: 100,
     render: (o, record) => (record.id ?
-    record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
+      record.created_date && moment(record.created_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: '申报时间',
     dataIndex: 'epsend_date',
     width: 100,
     render: (o, record) => (record.id ?
-    record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
+      record.d_date && moment(record.d_date).format('MM.DD HH:mm') : '-'),
   }, {
     title: '申报人员',
     dataIndex: 'epsend_login_name  ',
@@ -205,7 +205,7 @@ export default class ScvCustomsDeclList extends Component {
     dataIndex: 'backfill_date',
     width: 100,
     render: (o, record) => (record.id ?
-    record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),
+      record.backfill_date && moment(record.backfill_date).format('YYYY.MM.DD') : '-'),
   }]
   dataSource = new Table.DataSource({
     fetcher: params => this.props.loadCustomsDecls(params),
@@ -304,8 +304,7 @@ export default class ScvCustomsDeclList extends Component {
           <RadioGroup value={customsFilters.status} onChange={this.handleRadioChange} >
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             {Object.keys(CMS_DECL_STATUS).map(declkey =>
-              <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
-            )}
+              <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>)}
           </RadioGroup>
           <div className="page-header-tools" />
         </Header>

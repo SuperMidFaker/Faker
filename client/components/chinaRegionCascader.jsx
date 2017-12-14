@@ -81,8 +81,8 @@ export default class ChinaRegionCascader extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     country: PropTypes.string, // undefined 不显示country编辑框
-    defaultRegion: PropTypes.array,  // 初值 [ 'province', 'city', 'district', 'street' ]
-    region: PropTypes.array,  // 受控值 [ 'province', 'city', 'district', 'street' ]
+    defaultRegion: PropTypes.array, // 初值 [ 'province', 'city', 'district', 'street' ]
+    region: PropTypes.array, // 受控值 [ 'province', 'city', 'district', 'street' ]
     provinces: PropTypes.array.isRequired,
     provLoaded: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired, // value参数 ['region_code', 'province', 'city','district', 'street'], country
@@ -155,10 +155,12 @@ export default class ChinaRegionCascader extends React.Component {
     } else if (!isEmptyRegionProp(nextProps.defaultRegion) &&
       isEmptyRegionProp(this.props.defaultRegion)) {
       const areaItems = getRegionProps(nextProps.defaultRegion);
-      getNextChinaRegions(areaItems, nextProps,
+      getNextChinaRegions(
+        areaItems, nextProps,
         (chinaRegions) => {
           this.setState({ chinaRegions });
-        });
+        }
+      );
       this.setState({ cascadeRegion: areaItems });
     } else if (nextProps.region !== this.props.region) {
       if (isEmptyRegionProp(nextProps.region)) {
@@ -166,10 +168,12 @@ export default class ChinaRegionCascader extends React.Component {
       } else {
         // this.state.cascadeRegion未变成onChange后值,不能直接与areaItems比较
         const areaItems = getRegionProps(nextProps.region);
-        getNextChinaRegions(areaItems, nextProps,
+        getNextChinaRegions(
+          areaItems, nextProps,
           (chinaRegions) => {
             this.setState({ chinaRegions });
-          });
+          }
+        );
         this.setState({ cascadeRegion: areaItems });
       }
     }

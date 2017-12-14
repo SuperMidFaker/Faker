@@ -16,7 +16,9 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
-  const { inEdit, edit, record, field, onChange, type, autosize, decimal } = props;
+  const {
+    inEdit, edit, record, field, onChange, type, autosize, decimal,
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(field, ev.target.value);
@@ -43,7 +45,9 @@ ColumnInput.propTypes = {
 };
 
 function ColumnSelect(props) {
-  const { inEdit, edit, record, field, options, onChange } = props;
+  const {
+    inEdit, edit, record, field, options, onChange,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(field, value);
@@ -95,41 +99,41 @@ function calculateTotal(bodies, currencies) {
       totPcs += Number(body.qty_pcs);
     }
   }
-  return { totGrossWt, totWetWt, totTrade, totPcs };
+  return {
+    totGrossWt, totWetWt, totTrade, totPcs,
+  };
 }
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    units: state.cmsManifest.params.units.map(un => ({
-      value: un.unit_code,
-      text: un.unit_name,
-      search: `${un.unit_code}${un.unit_name}`,
-    })),
-    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-      search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
-    })),
-    currencies: state.cmsManifest.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-      search: `${cr.curr_code}${cr.curr_symb}${cr.curr_name}`,
-      rate_cny: cr.rate_CNY,
-    })),
-    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
-      value: ep.value,
-      text: ep.text,
-      search: `${ep.value}${ep.text}`,
-    })),
-    loginId: state.account.loginId,
-    billHead: state.cmsManifest.billHead,
-    bodyItem: state.cmsTradeitem.bodyItem,
-    bodyHscode: state.cmsTradeitem.bodyHscode,
-    entryHead: state.cmsManifest.entryHead,
-  }), { showDeclElementsModal, getElementByHscode }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  units: state.cmsManifest.params.units.map(un => ({
+    value: un.unit_code,
+    text: un.unit_name,
+    search: `${un.unit_code}${un.unit_name}`,
+  })),
+  countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+    search: `${tc.cntry_co}${tc.cntry_name_en}${tc.cntry_name_cn}${tc.cntry_en_short}`,
+  })),
+  currencies: state.cmsManifest.params.currencies.map(cr => ({
+    value: cr.curr_code,
+    text: cr.curr_name,
+    search: `${cr.curr_code}${cr.curr_symb}${cr.curr_name}`,
+    rate_cny: cr.rate_CNY,
+  })),
+  exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+    value: ep.value,
+    text: ep.text,
+    search: `${ep.value}${ep.text}`,
+  })),
+  loginId: state.account.loginId,
+  billHead: state.cmsManifest.billHead,
+  bodyItem: state.cmsTradeitem.bodyItem,
+  bodyHscode: state.cmsTradeitem.bodyHscode,
+  entryHead: state.cmsManifest.entryHead,
+}), { showDeclElementsModal, getElementByHscode })
 export default class CusDeclBodyPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -256,7 +260,9 @@ export default class CusDeclBodyPane extends React.Component {
     }
   }
   getColumns() {
-    const { units, countries, currencies, exemptions } = this.props;
+    const {
+      units, countries, currencies, exemptions,
+    } = this.props;
     const { editIndex, editBody } = this.state;
     const columns = [{
       title: this.msg('itemNo'),
@@ -264,7 +270,7 @@ export default class CusDeclBodyPane extends React.Component {
       fixed: 'left',
       width: 45,
       className: 'cell-align-center',
-/*    }, {
+      /*    }, {
       title: this.msg('copGNo'),
       fixed: 'left',
       width: 150,

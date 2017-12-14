@@ -16,7 +16,9 @@ const rowSelection = {
 };
 
 export default function VehicleList(props) {
-  const { onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick, onEditVehicleBtnClick, onRemoveVehicle } = props;
+  const {
+    onAddCarBtnClick, dataSource, onStopCarBtnClick, onResumeCarBtnClick, onEditVehicleBtnClick, onRemoveVehicle,
+  } = props;
 
   function editAndStopCarOperations(record) {
     return (
@@ -161,8 +163,8 @@ export default function VehicleList(props) {
 
 VehicleList.propTypes = {
   dataSource: PropTypes.array,
-  onAddCarBtnClick: PropTypes.func.isRequired,    // 点击新建车辆时触发的回调函数
-  onStopCarBtnClick: PropTypes.func.isRequired,   // 停用按钮点击后执行的回调函数
+  onAddCarBtnClick: PropTypes.func.isRequired, // 点击新建车辆时触发的回调函数
+  onStopCarBtnClick: PropTypes.func.isRequired, // 停用按钮点击后执行的回调函数
   onResumeCarBtnClick: PropTypes.func.isRequired, // 启用按钮点击后执行的回调函数
   onEditVehicleBtnClick: PropTypes.func.isRequired,
   onRemoveVehicle: PropTypes.func.isRequired,

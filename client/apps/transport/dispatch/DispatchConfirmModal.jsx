@@ -81,9 +81,9 @@ export default class DispatchConfirmModal extends Component {
         <div className="dispatch-confirm">
           <div style={{ marginBottom: 10 }} />
           <RadioGroup onChange={e => this.handlePodTypeChange(e)} value={this.state.podType}>
-            <RadioButton key="a" value={'ePOD'}><Icon type="scan" /> 拍摄上传</RadioButton>
-            <RadioButton key="c" value={'qrPOD'}><Icon type="qrcode" /> 扫码签收</RadioButton>
-            <RadioButton key="b" value={'none'}><Icon type="file-excel" /> 无须上传</RadioButton>
+            <RadioButton key="a" value="ePOD"><Icon type="scan" /> 拍摄上传</RadioButton>
+            <RadioButton key="c" value="qrPOD"><Icon type="qrcode" /> 扫码签收</RadioButton>
+            <RadioButton key="b" value="none"><Icon type="file-excel" /> 无须上传</RadioButton>
           </RadioGroup>
         </div>
       </Modal>

@@ -18,7 +18,9 @@ const InputGroup = Input.Group;
 // 进出口口岸
 export function IEPort(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, ietype, required } = props;
+  const {
+    getFieldDecorator, disabled, formData, formRequire, ietype, required,
+  } = props;
   const customsProps = {
     outercol: 24,
     col: 8,
@@ -53,7 +55,9 @@ IEPort.propTypes = {
 // 进出口日期
 export function IEDate(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, ietype } = props;
+  const {
+    getFieldDecorator, disabled, formData, ietype,
+  } = props;
   const ieDateProps = {
     outercol: 24,
     col: 8,
@@ -123,13 +127,17 @@ export class RelationAutoCompSelect extends React.Component {
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   handleSelect = (value) => {
-    const { onSelect, codeField, custCodeField, nameField } = this.props;
+    const {
+      onSelect, codeField, custCodeField, nameField,
+    } = this.props;
     if (onSelect) {
       onSelect(codeField, custCodeField, nameField, value);
     }
   }
   handleInputChange = (value) => {
-    const { onChange, codeField, custCodeField, nameField } = this.props;
+    const {
+      onChange, codeField, custCodeField, nameField,
+    } = this.props;
     if (onChange) {
       onChange(codeField, custCodeField, nameField, value);
     }
@@ -205,7 +213,9 @@ export class RelationAutoCompSelect extends React.Component {
 // 申报地海关
 export function DeclCustoms(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, required } = props;
+  const {
+    getFieldDecorator, disabled, formData, formRequire, required,
+  } = props;
   const declPortProps = {
     outercol: 24,
     col: 5,
@@ -314,7 +324,9 @@ ManualNo.propTypes = {
 // 运输方式、运输工具名称、提运单号
 export function Transport(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, getFieldValue, disabled, formData, formRequire, required } = props;
+  const {
+    getFieldDecorator, getFieldValue, disabled, formData, formRequire, required,
+  } = props;
   const trafMode = getFieldValue('traf_mode') === '2' || getFieldValue('traf_mode') === '5';
   const trafModeProps = {
     outercol: 24,
@@ -390,7 +402,9 @@ Transport.propTypes = {
 // 航次号（未使用）
 export function DelVoyageNo(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, getFieldValue, disabled, formData, required } = props;
+  const {
+    getFieldDecorator, getFieldValue, disabled, formData, required,
+  } = props;
   const voyageNoProps = {
     outercol: 24,
     col: 8,
@@ -421,7 +435,9 @@ DelVoyageNo.propTypes = {
 // 监管方式、征免性质、备案号
 export function TradeRemission(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, required } = props;
+  const {
+    getFieldDecorator, disabled, formData, formRequire, required,
+  } = props;
   const emsNoProps = {
     outercol: 24,
     col: 8,
@@ -491,7 +507,9 @@ TradeRemission.propTypes = {
 // 贸易国、起运国、装卸货港、境内目的地
 export function CountryAttr(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, onSearch, ietype, required } = props;
+  const {
+    getFieldDecorator, disabled, formData, formRequire, onSearch, ietype, required,
+  } = props;
   const tradeCountryProps = {
     outercol: 24,
     col: 5,
@@ -588,7 +606,9 @@ CountryAttr.propTypes = {
 // 成交方式
 export function TradeMode(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { getFieldDecorator, disabled, formData, formRequire, required } = props;
+  const {
+    getFieldDecorator, disabled, formData, formRequire, required,
+  } = props;
   const trxModeProps = {
     outercol: 24,
     col: 10,
@@ -621,8 +641,10 @@ TradeMode.propTypes = {
 
 // 费用
 function FeeFormItem(props) {
-  const { feeField, currencyField, markField, label, disabled, formData,
-    getFieldDecorator, formRequire, require, feeCurrReq, insurCurrReq, required } = props;
+  const {
+    feeField, currencyField, markField, label, disabled, formData,
+    getFieldDecorator, formRequire, require, feeCurrReq, insurCurrReq, required,
+  } = props;
   let currReq = false;
   if (currencyField === 'fee_curr') {
     currReq = feeCurrReq && require;
@@ -760,7 +782,9 @@ ContainerNo.propTypes = {
 // 件数
 export function Pieces(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { disabled, formData, getFieldDecorator, required } = props;
+  const {
+    disabled, formData, getFieldDecorator, required,
+  } = props;
   const packCountProps = {
     outercol: 24,
     col: 10,
@@ -786,7 +810,9 @@ Pieces.propTypes = {
 // 包装、毛重、净重
 export function PackWeight(props) {
   const msg = (descriptor, values) => formatMsg(props.intl, descriptor, values);
-  const { disabled, formData, getFieldDecorator, formRequire, required } = props;
+  const {
+    disabled, formData, getFieldDecorator, formRequire, required,
+  } = props;
   const packProps = {
     outercol: 24,
     col: 8,
@@ -1000,7 +1026,9 @@ export class CiqCodeAutoCompSelect extends React.Component {
 
   msg = (descriptor, values) => formatMsg(this.props.intl, descriptor, values);
   handleSelect = (value) => {
-    const { onSelect, codeField, cnameField, enameField } = this.props;
+    const {
+      onSelect, codeField, cnameField, enameField,
+    } = this.props;
     if (onSelect) {
       onSelect(codeField, cnameField, enameField, value);
     }

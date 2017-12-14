@@ -63,7 +63,8 @@ export default class PendingItemsList extends React.Component {
     this.handleReload(1);
   }
   msg = formatMsg(this.props.intl)
-  columns = makeColumns({ msg: this.msg,
+  columns = makeColumns({
+    msg: this.msg,
     units: this.props.units,
     tradeCountries: this.props.tradeCountries,
     currencies: this.props.currencies,
@@ -85,48 +86,44 @@ export default class PendingItemsList extends React.Component {
       </span>),
   }])
   handleItemPass = (row) => {
-    this.props.auditItems([row.id], { action: 'pass' }).then(
-      (result) => {
-        if (result.error) {
-          notification.error({ title: 'Error', description: result.error.message });
-          return;
-        }
-        this.handleReload(1);
-      });
+    this.props.auditItems([row.id], { action: 'pass' }).then((result) => {
+      if (result.error) {
+        notification.error({ title: 'Error', description: result.error.message });
+        return;
+      }
+      this.handleReload(1);
+    });
   }
   handleRefuseReason = (ev) => {
     this.setState({ refuseReason: ev.target.value });
   }
   handleItemRefused = (row) => {
-    this.props.auditItems([row.id], { action: 'refuse', reason: this.state.refuseReason }).then(
-      (result) => {
-        if (result.error) {
-          notification.error({ title: 'Error', description: result.error.message });
-          return;
-        }
-        this.handleReload(1);
-      });
+    this.props.auditItems([row.id], { action: 'refuse', reason: this.state.refuseReason }).then((result) => {
+      if (result.error) {
+        notification.error({ title: 'Error', description: result.error.message });
+        return;
+      }
+      this.handleReload(1);
+    });
     this.setState({ refuseReason: '' });
   }
   handleBatchPass = () => {
-    this.props.auditItems(null, { action: 'pass' }).then(
-      (result) => {
-        if (result.error) {
-          notification.error({ title: 'Error', description: result.error.message });
-          return;
-        }
-        this.handleReload(1);
-      });
+    this.props.auditItems(null, { action: 'pass' }).then((result) => {
+      if (result.error) {
+        notification.error({ title: 'Error', description: result.error.message });
+        return;
+      }
+      this.handleReload(1);
+    });
   }
   handleBatchRefuse = () => {
-    this.props.auditItems(null, { action: 'refuse' }).then(
-      (result) => {
-        if (result.error) {
-          notification.error({ title: 'Error', description: result.error.message });
-          return;
-        }
-        this.handleReload(1);
-      });
+    this.props.auditItems(null, { action: 'refuse' }).then((result) => {
+      if (result.error) {
+        notification.error({ title: 'Error', description: result.error.message });
+        return;
+      }
+      this.handleReload(1);
+    });
   }
   handleReload = (current, pageSize, filter) => {
     this.props.loadWorkspaceItems({

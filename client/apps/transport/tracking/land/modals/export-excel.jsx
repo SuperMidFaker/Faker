@@ -22,7 +22,8 @@ startDate.setDate(1);
   state => ({
     tenantId: state.account.tenantId,
   }),
-  { })
+  { }
+)
 export default class ExportExcel extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

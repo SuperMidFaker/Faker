@@ -52,7 +52,10 @@ export default class ShipmentPod extends React.Component {
       tagColor = 'red';
     }
     return (
-      <div className="panel-body" style={{ backgroundColor: '#fff', width: 800, height: 1080, padding: 50 }}>
+      <div className="panel-body" style={{
+ backgroundColor: '#fff', width: 800, height: 1080, padding: 50,
+}}
+      >
         <Row >
           <div style={{ float: 'right', fontSize: 16 }}>
             {moment(new Date()).format('YYYY-MM-DD')}

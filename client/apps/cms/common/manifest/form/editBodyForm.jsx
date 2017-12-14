@@ -180,7 +180,9 @@ export default class EditBodyForm extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { form: { getFieldDecorator }, editBody, currencies, units, tradeCountries, hscodes, exemptions } = this.props;
+    const {
+      form: { getFieldDecorator }, editBody, currencies, units, tradeCountries, hscodes, exemptions,
+    } = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -244,10 +246,9 @@ export default class EditBodyForm extends Component {
                 {
                   hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
                     search={data.hscode}
-                  >{data.hscode}</Option>)
-                  )}
-              </Select>
-                )}
+                  >{data.hscode}
+                  </Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={12}>
@@ -287,8 +288,7 @@ export default class EditBodyForm extends Component {
               })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
                 {
                   units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
               </Select>)}
             </FormItem>
@@ -314,16 +314,13 @@ export default class EditBodyForm extends Component {
             <FormItem {...formItemLayout} colon={false} label={this.msg('currency')}>
               {getFieldDecorator('trade_curr', {
                 initialValue: editBody.trade_curr,
-              })(
-                <Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
-                  {
+              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
+                {
                     currencies.map(data => (
                       <Option key={data.value} search={`${data.search}`} >
                         {`${data.text}`}
-                      </Option>)
-                    )}
-                </Select>
-                )}
+                      </Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
@@ -331,16 +328,13 @@ export default class EditBodyForm extends Component {
               {getFieldDecorator('duty_mode', {
                 rules: [{ required: true, message: '征免方式必填' }],
                 initialValue: editBody.duty_mode,
-              })(
-                <Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
-                  {
+              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
+                {
                     exemptions.map(data => (
                       <Option key={data.value} search={`${data.search}`} >
                         {`${data.text}`}
-                      </Option>)
-                    )}
-                </Select>
-                )}
+                      </Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
@@ -348,32 +342,26 @@ export default class EditBodyForm extends Component {
               {getFieldDecorator('dest_country', {
                 rules: [{ required: true, message: '目的国必填' }],
                 initialValue: editBody.dest_country,
-              })(
-                <Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
-                  {
+              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
+                {
                     tradeCountries.map(data => (
                       <Option key={data.value} search={`${data.search}`} >
                         {`${data.text}`}
-                      </Option>)
-                    )}
-                </Select>
-                )}
+                      </Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
             <FormItem {...formItemLayout} colon={false} label={this.msg('icountry')}>
               {getFieldDecorator('orig_country', {
                 initialValue: editBody.orig_country,
-              })(
-                <Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
-                  {
+              })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
+                {
                     tradeCountries.map(data => (
                       <Option key={data.value} search={`${data.search}`} >
                         {`${data.text}`}
-                      </Option>)
-                    )}
-                </Select>
-                )}
+                      </Option>))}
+              </Select>)}
             </FormItem>
           </Col>
         </Row>
@@ -406,8 +394,7 @@ export default class EditBodyForm extends Component {
               })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
                 {
                   units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
               </Select>)}
             </FormItem>
@@ -428,8 +415,7 @@ export default class EditBodyForm extends Component {
               })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
                 {
                   units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
               </Select>)}
             </FormItem>
@@ -448,8 +434,7 @@ export default class EditBodyForm extends Component {
               })(<Select showSearch showArrow optionFilterProp="search" style={{ width: '100%' }}>
                 {
                   units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
               </Select>)}
             </FormItem>

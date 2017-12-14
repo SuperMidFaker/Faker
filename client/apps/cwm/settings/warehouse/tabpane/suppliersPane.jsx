@@ -18,7 +18,9 @@ import { formatMsg } from '../message.i18n';
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus }
+  {
+    toggleSupplierModal, loadSuppliers, deleteSupplier, changeSupplierStatus,
+  }
 )
 export default class SuppliersPane extends Component {
   static propTypes = {

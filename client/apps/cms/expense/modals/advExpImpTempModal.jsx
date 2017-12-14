@@ -182,11 +182,10 @@ export default class AdvExpsImpTempModal extends Component {
       </TabPane>,
     ];
     if (advImportParams.calculateAll) {
-      tabs.push(
-        <TabPane tab="付款方应收" key="recpt">
-          <Alert message={payerStr} type="info" showIcon />
-          <Table columns={columns} dataSource={this.state.ptDatas} pagination={false} scroll={{ x: '130%', y: 200 }} />
-        </TabPane>);
+      tabs.push(<TabPane tab="付款方应收" key="recpt">
+        <Alert message={payerStr} type="info" showIcon />
+        <Table columns={columns} dataSource={this.state.ptDatas} pagination={false} scroll={{ x: '130%', y: 200 }} />
+      </TabPane>);
     }
     return (
       <Modal maskClosable={false} visible={advImpTempVisible} title={this.msg('advanceFee')} onCancel={this.handleCancel} onOk={this.handleSave} width={1000} okText="保存">

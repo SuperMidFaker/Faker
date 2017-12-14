@@ -57,7 +57,9 @@ export default class TradeItemFork extends Component {
           return message.error('请修改商品编码或中文品名', 5);
         }
         const specialMark = value.specialMark.join('/');
-        const item = { ...this.props.itemData, ...value, special_mark: specialMark, created_tenant_id: this.props.tenantId };
+        const item = {
+          ...this.props.itemData, ...value, special_mark: specialMark, created_tenant_id: this.props.tenantId,
+        };
         this.props.saveRepoForkItem({ item }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -76,10 +78,9 @@ export default class TradeItemFork extends Component {
   render() {
     const { form, submitting, itemData } = this.props;
     const tabs = [];
-    tabs.push(
-      <TabPane tab="主数据" key="master">
-        <ItemMasterPane action="fork" form={form} itemData={itemData} />
-      </TabPane>);
+    tabs.push(<TabPane tab="主数据" key="master">
+      <ItemMasterPane action="fork" form={form} itemData={itemData} />
+    </TabPane>);
     return (
       <Layout>
         <PageHeader>

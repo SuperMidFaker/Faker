@@ -13,7 +13,7 @@ import connectNav from 'client/common/decorators/connect-nav';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { Logixon } from 'client/components/FontIcon';
 import { loadTable, revokeOrReject, delDraft, acceptDispShipment, returnShipment } from
-'common/reducers/transport-acceptance';
+  'common/reducers/transport-acceptance';
 import { loadShipmtDetail } from 'common/reducers/shipment';
 import { SHIPMENT_SOURCE, SHIPMENT_EFFECTIVES, DEFAULT_MODULES, SHIPMENT_TRACK_STATUS, TRANS_MODE_INDICATOR } from 'common/constants';
 import RevokeModal from '../common/modal/revokeModal';
@@ -76,7 +76,10 @@ function TransitTimeLabel(props) {
     sortOrder: state.transportAcceptance.table.sortOrder,
     todos: state.shipment.statistics.todos,
   }),
-  { loadTable, revokeOrReject, loadShipmtDetail, delDraft, acceptDispShipment, returnShipment })
+  {
+    loadTable, revokeOrReject, loadShipmtDetail, delDraft, acceptDispShipment, returnShipment,
+  }
+)
 @connectNav({
   depth: 2,
   text: DEFAULT_MODULES.transport.text,
@@ -274,7 +277,7 @@ export default class AcceptList extends React.Component {
     sorter: true,
     width: 120,
     render: (text, record) => (record.acpt_time ?
-     moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
+      moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
   }, {
     title: this.msg('opColumn'),
     fixed: 'right',
@@ -419,7 +422,9 @@ export default class AcceptList extends React.Component {
   handleReturn = (dispId) => {
     const { tenantId, loginId, loginName } = this.props;
     const shipmtDispIds = [dispId];
-    this.props.returnShipment({ shipmtDispIds, tenantId, loginId, loginName }).then((result) => {
+    this.props.returnShipment({
+      shipmtDispIds, tenantId, loginId, loginName,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

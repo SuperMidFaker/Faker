@@ -26,10 +26,10 @@ const formItemLayout = {
 @Form.create()
 export default class DriverModal extends Component {
   static propTypes = {
-    operation: PropTypes.string.isRequired,              // operation='add'表示添加司机,operation='edit'表示编辑司机信息
-    form: PropTypes.object.isRequired,              // DriverFormContainer中props.form对象
-    driver: PropTypes.object,                       // 只有在mode='edit'下才需要
-    addDriver: PropTypes.func.isRequired,  // 增加车辆的actionCreator
+    operation: PropTypes.string.isRequired, // operation='add'表示添加司机,operation='edit'表示编辑司机信息
+    form: PropTypes.object.isRequired, // DriverFormContainer中props.form对象
+    driver: PropTypes.object, // 只有在mode='edit'下才需要
+    addDriver: PropTypes.func.isRequired, // 增加车辆的actionCreator
     editDriver: PropTypes.func.isRequired, // 修改车辆信息的actionCreator
     tenantId: PropTypes.number.isRequired,
     toggleDriverModal: PropTypes.func.isRequired,

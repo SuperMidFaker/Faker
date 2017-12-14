@@ -47,7 +47,6 @@ export default class FeeSummaryList extends React.Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentWillReceiveProps(nextProps) {
     if (!nextProps.asnlist.loaded && !nextProps.asnlist.loading) {

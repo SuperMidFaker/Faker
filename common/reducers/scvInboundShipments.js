@@ -42,15 +42,19 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_INBOUND:
-      return { ...state, loading: true, reload: false, listFilter: JSON.parse(action.params.filter) };
+      return {
+        ...state, loading: true, reload: false, listFilter: JSON.parse(action.params.filter),
+      };
     case actionTypes.LOAD_INBOUND_SUCCEED:
       return { ...state, loading: false, list: action.result.data };
     case actionTypes.LOAD_INBOUND_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         brokerPartners: action.result.data.brokers,
-        transpPartners: action.result.data.transps };
+        transpPartners: action.result.data.transps,
+      };
     case actionTypes.OPEN_MODAL:
       return { ...state, sendModal: { visible: true, shipment: action.data } };
     case actionTypes.CLOSE_MODAL:

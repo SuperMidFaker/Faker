@@ -36,7 +36,9 @@ const OptGroup = Select.OptGroup;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { loadEntryRegDatas, switchDefaultWhse, showTransferInModal, deleteVirtualTransfer }
+  {
+    loadEntryRegDatas, switchDefaultWhse, showTransferInModal, deleteVirtualTransfer,
+  }
 )
 @connectNav({
   depth: 2,
@@ -66,7 +68,9 @@ export default class SHFTZTransferSelfList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'vtransfer', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'vtransfer', ownerView,
+    };
     this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -142,17 +146,17 @@ export default class SHFTZTransferSelfList extends React.Component {
     width: 100,
     fixed: 'right',
     render: (o, record) =>
-        (
-          <span>
-            {record.status === CWM_SHFTZ_APIREG_STATUS.pending ?
-              <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
-              <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
+      (
+        <span>
+          {record.status === CWM_SHFTZ_APIREG_STATUS.pending ?
+            <RowAction onClick={this.handleDetail} icon="form" label="详情" row={record} /> :
+            <RowAction onClick={this.handleDetail} icon="eye-o" label="详情" row={record} />
             }
-            {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
-              <RowAction confirm="确认删除?" onConfirm={this.handleVTransDel} icon="delete" tooltip="删除" row={record} />
+          {record.status === CWM_SHFTZ_APIREG_STATUS.pending &&
+          <RowAction confirm="确认删除?" onConfirm={this.handleVTransDel} icon="delete" tooltip="删除" row={record} />
             }
-          </span>
-        ),
+        </span>
+      ),
   }]
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadEntryRegDatas(params),
@@ -247,8 +251,7 @@ export default class SHFTZTransferSelfList extends React.Component {
       >
         <OptGroup>
           <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-            )}
+          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
         </OptGroup>
       </Select>
     </span>);
@@ -259,7 +262,7 @@ export default class SHFTZTransferSelfList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

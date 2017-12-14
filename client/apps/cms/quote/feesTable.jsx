@@ -17,7 +17,9 @@ function getRowKey(row) {
   return row.id;
 }
 function ColumnInput(props) {
-  const { inEdit, record, field, onChange } = props;
+  const {
+    inEdit, record, field, onChange,
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(record, field, ev.target.value);
@@ -31,7 +33,7 @@ function ColumnInput(props) {
     return <span />;
   } else {
     return inEdit ? <Input value={record[field] || ''} disabled={!record.enabled} onChange={handleChange} />
-    : <span style={style}>{record[field] || ''}</span>;
+      : <span style={style}>{record[field] || ''}</span>;
   }
 }
 ColumnInput.propTypes = {
@@ -41,7 +43,9 @@ ColumnInput.propTypes = {
   onChange: PropTypes.func,
 };
 function CustomInput(props) {
-  const { Edit, record, field, onChange, placeholder } = props;
+  const {
+    Edit, record, field, onChange, placeholder,
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(record, field, ev.target.value);
@@ -65,7 +69,9 @@ CustomInput.propTypes = {
   placeholder: PropTypes.string.isRequired,
 };
 function TaxInput(props) {
-  const { inEdit, record, field, onChange } = props;
+  const {
+    inEdit, record, field, onChange,
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(record, field, ev.target.value);
@@ -76,7 +82,7 @@ function TaxInput(props) {
     style = { color: '#CCCCCC' };
   }
   return inEdit ? <Input disabled={!(record.invoice_en && record.enabled)} value={record[field] || ''} onChange={handleChange} addonAfter="%" />
-  : <span style={style}>{record[field] || ''}%</span>;
+    : <span style={style}>{record[field] || ''}%</span>;
 }
 TaxInput.propTypes = {
   inEdit: PropTypes.bool,
@@ -85,7 +91,9 @@ TaxInput.propTypes = {
   onChange: PropTypes.func,
 };
 function ColumnSwitch(props) {
-  const { record, field, onChange, inEdit } = props;
+  const {
+    record, field, onChange, inEdit,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, field, value);
@@ -109,7 +117,9 @@ ColumnSwitch.propTypes = {
   onChange: PropTypes.func,
 };
 function ColumnSelect(props) {
-  const { inEdit, record, field, options, onChange } = props;
+  const {
+    inEdit, record, field, options, onChange,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, field, value);
@@ -152,7 +162,9 @@ ColumnSelect.proptypes = {
     loginId: state.account.loginId,
     loginName: state.account.username,
   }),
-  { feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote }
+  {
+    feeUpdate, feeAdd, feeDelete, saveQuoteModel, saveQuoteBatchEdit, loadEditQuote,
+  }
 )
 export default class FeesTable extends Component {
   static propTypes = {
@@ -348,8 +360,7 @@ export default class FeesTable extends Component {
       if (catgfees.length > 0 && stylfees.length > 0) {
         catgfees.forEach((fe) => {
           fees = fees.concat(stylfees.filter(sf =>
-            (sf.category === fe.category && sf.fee_code === fe.fee_code))
-          );
+            (sf.category === fe.category && sf.fee_code === fe.fee_code)));
         });
       } else {
         fees = catgfees.length > 0 ? catgfees : stylfees;
@@ -362,9 +373,7 @@ export default class FeesTable extends Component {
   }
   handlebatchSave = () => {
     this.setState({ editable: this.props.editable, batchSaved: 0 });
-    this.props.saveQuoteBatchEdit(
-      this.props.quoteData
-    ).then((result) => {
+    this.props.saveQuoteBatchEdit(this.props.quoteData).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -400,8 +409,7 @@ export default class FeesTable extends Component {
   handleSearch = (value) => {
     const searchValue = value.toLowerCase();
     const filtered = this.formulaParams.filter(item =>
-      item.value.toLowerCase().indexOf(searchValue) !== -1
-    );
+      item.value.toLowerCase().indexOf(searchValue) !== -1);
     const suggestions = filtered.map(suggestion =>
       (<Nav value={suggestion.value} data={suggestion}>
         <span>{suggestion.text} - {suggestion.value} </span>
@@ -433,7 +441,9 @@ export default class FeesTable extends Component {
   }
   render() {
     const { quoteData, action } = this.props;
-    const { editIndex, addedit, dataSource, editable, batchSaved } = this.state;
+    const {
+      editIndex, addedit, dataSource, editable, batchSaved,
+    } = this.state;
     const msg = key => formatMsg(this.props.intl, key);
     const columns = [
       {

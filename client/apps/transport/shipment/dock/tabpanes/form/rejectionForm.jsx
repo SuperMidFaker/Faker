@@ -42,7 +42,9 @@ export default class RejectionForm extends React.Component {
     this.props.loadExceptionReasons(this.props.tenantId);
   }
   handleSubmit = () => {
-    const { dispId, tenantId, tenantName, loginId, loginName } = this.props;
+    const {
+      dispId, tenantId, tenantName, loginId, loginName,
+    } = this.props;
     const exception = TRANSPORT_EXCEPTIONS.find(item => item.key === 'SHIPMENT_EXCEPTION_DELIVER_REJECTED');
     const { rejectedQty, excpReason, remark } = this.props.form.getFieldsValue();
     if (!rejectedQty && !excpReason) {
@@ -53,13 +55,14 @@ export default class RejectionForm extends React.Component {
         {
           rejected_qty: rejectedQty,
           reason_id: excpReason,
-        }, tenantId, tenantName, loginId, loginName).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            this.handleClear();
-          }
-        });
+        }, tenantId, tenantName, loginId, loginName
+      ).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.handleClear();
+        }
+      });
     }
   }
   handleClear = () => {

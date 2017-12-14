@@ -22,9 +22,9 @@ import VehicleModal from '../../tracking/land/modals/vehicle-updater';
 import { loadOrderDetail } from 'common/reducers/crmOrders';
 import { returnShipment, acceptDispShipment, revokeOrReject } from 'common/reducers/transport-acceptance';
 import { doSend,
-         doReturn,
-         changeDockStatus,
-         withDraw } from 'common/reducers/transportDispatch';
+  doReturn,
+  changeDockStatus,
+  withDraw } from 'common/reducers/transportDispatch';
 import { showVehicleModal } from 'common/reducers/trackingLandStatus';
 import { passAudit, returnAudit } from 'common/reducers/trackingLandPod';
 import { createFilename } from 'client/util/dataTransform';
@@ -81,7 +81,8 @@ function getTrackStatusMsg(status, eff) {
     expandList: state.transportDispatch.expandList,
     charges: state.shipment.charges,
   }),
-  { hideDock,
+  {
+    hideDock,
     sendTrackingDetailSMSMessage,
     changePreviewerTab,
     loadShipmtDetail,
@@ -100,7 +101,8 @@ function getTrackStatusMsg(status, eff) {
     sendMessage,
     acceptDispShipment,
     revokeOrReject,
-    toggleShareShipmentModal }
+    toggleShareShipmentModal,
+  }
 )
 export default class ShipmentDockPanel extends React.Component {
   static propTypes = {
@@ -153,7 +155,11 @@ export default class ShipmentDockPanel extends React.Component {
     };
   }
   componentWillReceiveProps(nextProps) {
-    const { previewer: { visible, loaded, params: { No: shipmtNo, tenantId, sourceType }, tabKey } } = nextProps;
+    const {
+      previewer: {
+        visible, loaded, params: { No: shipmtNo, tenantId, sourceType }, tabKey,
+      },
+    } = nextProps;
     if (!loaded && visible) {
       this.props.loadShipmtDetail(shipmtNo, tenantId, sourceType, tabKey);
       this.props.loadForm(null, {
@@ -179,16 +185,16 @@ export default class ShipmentDockPanel extends React.Component {
   }
   handleShipmtAccept = () => {
     const dispId = this.props.previewer.dispatch.id;
-    this.props.acceptDispShipment([dispId], this.props.loginId, this.props.loginName, this.props.loginId, this.props.loginName).then(
-      (result) => {
-        if (!result.error) {
-          return this.props.reload && this.props.reload();
-        }
+    this.props.acceptDispShipment([dispId], this.props.loginId, this.props.loginName, this.props.loginId, this.props.loginName).then((result) => {
+      if (!result.error) {
+        return this.props.reload && this.props.reload();
       }
-    );
+    });
   }
   handleShipmtSend = () => {
-    const { tenantId, loginId, avatar, loginName, previewer: { shipmt, dispatch } } = this.props;
+    const {
+      tenantId, loginId, avatar, loginName, previewer: { shipmt, dispatch },
+    } = this.props;
     let msg = `将【${shipmt.shipmt_no}】运单发送给【${dispatch.sp_name}】？`;
     if (!dispatch.sp_tenant_id && dispatch.task_id > 0) {
       msg = `将【${shipmt.shipmt_no}】运单发送给【${dispatch.task_vehicle}】？`;
@@ -204,7 +210,8 @@ export default class ShipmentDockPanel extends React.Component {
           loginId,
           avatar,
           loginName,
-          list: JSON.stringify([{ dispId: dispatch.id,
+          list: JSON.stringify([{
+            dispId: dispatch.id,
             shipmtNo: shipmt.shipmt_no,
             sp_tenant_id: dispatch.sp_tenant_id,
             sr_name: dispatch.sr_name,
@@ -215,7 +222,8 @@ export default class ShipmentDockPanel extends React.Component {
             consignee_province: shipmt.consignee_province,
             consignee_city: shipmt.consignee_city,
             consignee_district: shipmt.consignee_district,
-            parentId: dispatch.parent_id }]),
+            parentId: dispatch.parent_id,
+          }]),
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);
@@ -285,7 +293,9 @@ export default class ShipmentDockPanel extends React.Component {
   handleWithDraw = (shipmtNo, dispId, parentId) => {
     const { tenantId, loginId, loginName } = this.props;
     const list = [{ dispId, shipmtNo, parentId }];
-    this.props.withDraw({ tenantId, loginId, loginName, list: JSON.stringify(list) }).then((result) => {
+    this.props.withDraw({
+      tenantId, loginId, loginName, list: JSON.stringify(list),
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -296,7 +306,9 @@ export default class ShipmentDockPanel extends React.Component {
   handleReturn = (dispId) => {
     const { tenantId, loginId, loginName } = this.props;
     const shipmtDispIds = [dispId];
-    this.props.returnShipment({ shipmtDispIds, tenantId, loginId, loginName }).then((result) => {
+    this.props.returnShipment({
+      shipmtDispIds, tenantId, loginId, loginName,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -342,12 +354,10 @@ export default class ShipmentDockPanel extends React.Component {
   }
   goHomeDock = () => {
     const { shipmt } = this.props;
-    this.props.getShipmtOrderNo(shipmt.flow_instance_uuid).then(
-      (result) => {
-        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
-        this.props.hideDock();
-      }
-    );
+    this.props.getShipmtOrderNo(shipmt.flow_instance_uuid).then((result) => {
+      this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+      this.props.hideDock();
+    });
   }
   handleMenuClick = (e) => {
     const { shipmt, dispatch } = this.props;
@@ -360,42 +370,44 @@ export default class ShipmentDockPanel extends React.Component {
     }
   }
   renderButtons = () => {
-    const { tenantId, previewer: { shipmt, dispatch, upstream, downstream, params: { sourceType } }, charges } = this.props;
+    const {
+      tenantId, previewer: {
+        shipmt, dispatch, upstream, downstream, params: { sourceType },
+      }, charges,
+    } = this.props;
     const needRecalculate = charges.revenue.need_recalculate === 1 || charges.expense.need_recalculate === 1;
     let buttons = [];
     if (sourceType === 'sp') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
         if (dispatch.source === SHIPMENT_SOURCE.consigned) {
-          buttons.push(<PrivilegeCover module="transport" feature="shipment" action="edit">
-            <Button key="change" onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)} style={{ marginRight: 8 }}>
-              修改
-            </Button>
-          </PrivilegeCover>,
-            <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Button key="accept" type="primary" icon="check" onClick={this.handleShipmtAccept}>
-                接单
-              </Button>
-            </PrivilegeCover>);
-        } else if (dispatch.source === SHIPMENT_SOURCE.subcontracted) {
           buttons.push(
+            <PrivilegeCover module="transport" feature="shipment" action="edit">
+              <Button key="change" onClick={() => this.context.router.push(`/transport/shipment/edit/${shipmt.shipmt_no}`)} style={{ marginRight: 8 }}>
+              修改
+              </Button>
+            </PrivilegeCover>,
             <PrivilegeCover module="transport" feature="shipment" action="edit">
               <Button key="accept" type="primary" icon="check" onClick={this.handleShipmtAccept}>
                 接单
               </Button>
             </PrivilegeCover>
           );
+        } else if (dispatch.source === SHIPMENT_SOURCE.subcontracted) {
+          buttons.push(<PrivilegeCover module="transport" feature="shipment" action="edit">
+            <Button key="accept" type="primary" icon="check" onClick={this.handleShipmtAccept}>
+                接单
+            </Button>
+          </PrivilegeCover>);
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (dispatch.child_send_status === 0 && dispatch.disp_status === 1 && dispatch.sp_tenant_id === tenantId) {
-          buttons.push(
-            <PrivilegeCover module="transport" feature="shipment" action="edit">
-              <Tooltip placement="bottom" title="退回至未接单状态">
-                <Button key="return" type="ghost" onClick={() => this.handleReturn(dispatch.id)}>
+          buttons.push(<PrivilegeCover module="transport" feature="shipment" action="edit">
+            <Tooltip placement="bottom" title="退回至未接单状态">
+              <Button key="return" type="ghost" onClick={() => this.handleReturn(dispatch.id)}>
                   退回
-                </Button>
-              </Tooltip>
-            </PrivilegeCover>
-          );
+              </Button>
+            </Tooltip>
+          </PrivilegeCover>);
         }
         if (dispatch.child_send_status === 0 && dispatch.disp_status === 1 && dispatch.sp_tenant_id === tenantId) {
           buttons.push(
@@ -427,74 +439,62 @@ export default class ShipmentDockPanel extends React.Component {
       }
     } else if (sourceType === 'sr') {
       if (dispatch.status === SHIPMENT_TRACK_STATUS.unaccepted) {
-        buttons.push(
-          <PrivilegeCover module="transport" feature="tracking" action="create">
-            <Button key="promptAccept" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptAccept)}>
+        buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
+          <Button key="promptAccept" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptAccept)}>
               催促接单
-            </Button>
-          </PrivilegeCover>
-        );
+          </Button>
+        </PrivilegeCover>);
         if (downstream.sr_tenant_id === tenantId) {
-          buttons.push(
-            <PrivilegeCover module="transport" feature="dispatch" action="edit">
-              <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
-                <Button key="withDraw" type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, downstream.disp_id, downstream.parent_id)} style={{ marginLeft: 8 }} >
+          buttons.push(<PrivilegeCover module="transport" feature="dispatch" action="edit">
+            <Tooltip placement="bottom" title="承运商尚未接单，可立即撤回">
+              <Button key="withDraw" type="ghost" onClick={() => this.handleWithDraw(shipmt.shipmt_no, downstream.disp_id, downstream.parent_id)} style={{ marginLeft: 8 }} >
                   撤回
-                </Button>
-              </Tooltip>
-            </PrivilegeCover>
-          );
+              </Button>
+            </Tooltip>
+          </PrivilegeCover>);
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.accepted) {
         if (dispatch.sp_tenant_id === -1) {
-            // 线下客户手动更新
-          buttons.push(
-            <PrivilegeCover module="transport" feature="tracking" action="edit">
-              <Button key="updateDriver" type="ghost" onClick={() => this.handleShowVehicleModal(dispatch.id, shipmt.shipmt_no)} >
+          // 线下客户手动更新
+          buttons.push(<PrivilegeCover module="transport" feature="tracking" action="edit">
+            <Button key="updateDriver" type="ghost" onClick={() => this.handleShowVehicleModal(dispatch.id, shipmt.shipmt_no)} >
                 更新车辆司机
-              </Button>
-            </PrivilegeCover>
-          );
+            </Button>
+          </PrivilegeCover>);
         } else {
-          buttons.push(
-            <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button key="promptDispatch" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptDispatch)} >
+          buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
+            <Button key="promptDispatch" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptDispatch)} >
                 催促调度
-              </Button>
-            </PrivilegeCover>
-          );
+            </Button>
+          </PrivilegeCover>);
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.dispatched) {
         if (dispatch.sp_tenant_id === -1) {
           buttons = [];
         } else if (dispatch.sp_tenant_id === 0) {
-            // 已分配给车队
+          // 已分配给车队
           if (dispatch.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-              // 线下司机
+            // 线下司机
             buttons = [];
           } else {
             // 司机更新
-            buttons.push(
-              <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button key="promptPickup" type="ghost"
-                  onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPickup)}
-                >
+            buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
+              <Button key="promptPickup" type="ghost"
+                onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPickup)}
+              >
                     催促提货
-                  </Button>
-              </PrivilegeCover>
-            );
+              </Button>
+            </PrivilegeCover>);
           }
         } else {
-          buttons.push(
-            <PrivilegeCover module="transport" feature="tracking" action="create">
-              <Button key="promptPickup" type="ghost" onClick={
+          buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
+            <Button key="promptPickup" type="ghost" onClick={
                   () => this.handlePrompt(PROMPT_TYPES.promptSpPickup)
                 }
-              >
+            >
                 催促提货
-              </Button>
-            </PrivilegeCover>
-          );
+            </Button>
+          </PrivilegeCover>);
         }
       } else if (dispatch.status === SHIPMENT_TRACK_STATUS.intransit) {
         if (dispatch.sp_tenant_id === -1) {
@@ -523,23 +523,19 @@ export default class ShipmentDockPanel extends React.Component {
               buttons = [];
             } else {
               // 司机上传
-              buttons.push(
-                <PrivilegeCover module="transport" feature="tracking" action="create">
-                  <Button key="promptPod" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPod)}>
+              buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
+                <Button key="promptPod" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptDriverPod)}>
                     催促回单
-                  </Button>
-                </PrivilegeCover>
-              );
+                </Button>
+              </PrivilegeCover>);
             }
           } else {
             // 承运商上传
-            buttons.push(
-              <PrivilegeCover module="transport" feature="tracking" action="create">
-                <Button key="promptPod" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptSpPod)}>
+            buttons.push(<PrivilegeCover module="transport" feature="tracking" action="create">
+              <Button key="promptPod" type="ghost" onClick={() => this.handlePrompt(PROMPT_TYPES.promptSpPod)}>
                   催促回单
-                </Button>
-              </PrivilegeCover>
-            );
+              </Button>
+            </PrivilegeCover>);
           }
         } else if (dispatch.pod_status === SHIPMENT_POD_STATUS.rejectByClient) {
           // 重新上传
@@ -571,10 +567,9 @@ export default class ShipmentDockPanel extends React.Component {
       }
     }
     if (needRecalculate) {
-      buttons.push(
-        <Button key="recalculateCharges" type="ghost" style={{ marginLeft: 8 }} onClick={() => this.props.toggleRecalculateChargeModal(true, shipmt.shipmt_no)} >
+      buttons.push(<Button key="recalculateCharges" type="ghost" style={{ marginLeft: 8 }} onClick={() => this.props.toggleRecalculateChargeModal(true, shipmt.shipmt_no)} >
           重新计算费用
-        </Button>);
+      </Button>);
     }
     return buttons.length > 0 ? (<span>{buttons}</span>) : null;
   }
@@ -689,7 +684,9 @@ export default class ShipmentDockPanel extends React.Component {
     return <Menu onClick={this.handleMenuClick}>{menuItems}</Menu>;
   }
   render() {
-    const { shipmt, visible, shipmtNo, dispatch, effective, previewer: { params: { sourceType } } } = this.props;
+    const {
+      shipmt, visible, shipmtNo, dispatch, effective, previewer: { params: { sourceType } },
+    } = this.props;
     return (
       shipmtNo ?
         <DockPanel size="large" visible={visible} onClose={this.handleClose}
@@ -706,7 +703,7 @@ export default class ShipmentDockPanel extends React.Component {
           <VehicleModal onOK={() => {}} />
           <RecalculateChargeModal />
         </DockPanel>
-      : null
+        : null
     );
   }
 }

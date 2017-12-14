@@ -42,7 +42,8 @@ function goBack(router) {
     submitting: state.corps.submitting,
     account: state.account,
   }),
-  { editOrganization, submit, checkLoginName })
+  { editOrganization, submit, checkLoginName }
+)
 @withPrivilege({
   module: 'corp',
   feature: 'organization',
@@ -85,7 +86,11 @@ export default class CorpEdit extends React.Component {
             this.onSubmitReturn(result.error);
           });
         } else {
-          const { account: { tenantId, aspect, code, subdomain, category_id } } = this.props;
+          const {
+            account: {
+              tenantId, aspect, code, subdomain, category_id,
+            },
+          } = this.props;
           const tenant = {
             tenantId,
             aspect,
@@ -118,7 +123,9 @@ export default class CorpEdit extends React.Component {
   renderOwnerForm() {
     const {
       form: { getFieldDecorator }, intl,
-      formData: { contact, loginName, phone, email }, account: { code, tenantId },
+      formData: {
+        contact, loginName, phone, email,
+      }, account: { code, tenantId },
     } = this.props;
     return (
       <div>
@@ -148,10 +155,13 @@ export default class CorpEdit extends React.Component {
             (msgs, descriptor) => format(msgs)(intl, descriptor)
           ),
         }], { initialValue: phone })}
-        {this.renderTextInput('Email', '', 'email', false, [{
+        {this.renderTextInput(
+'Email', '', 'email', false, [{
           type: 'email',
-          message: formatContainerMsg(intl, 'emailError') }],
-          { initialValue: email })}
+          message: formatContainerMsg(intl, 'emailError'),
+}],
+          { initialValue: email }
+)}
       </div>
     );
   }
@@ -161,8 +171,7 @@ export default class CorpEdit extends React.Component {
       <FormItem label={formatMsg(intl, 'chief')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
         required
       >
-        {getFieldDecorator(
-          'coid', {
+        {getFieldDecorator('coid', {
             rules: [{ required: true, message: formatMsg(intl, 'chiefRequired') }],
             initialValue: this.props.formData.coid,
           })(<Select style={{ width: '100%' }}>

@@ -34,7 +34,7 @@ export default class DriverList extends Component {
         <a onClick={() => this.props.onStopBtnClick(itemInfo.id)}>停用</a>
       </span>
     </PrivilegeCover>
-    )
+  )
 
   renderDeleteAndResumeOperations = (itemInfo) => {
     const { id } = itemInfo;

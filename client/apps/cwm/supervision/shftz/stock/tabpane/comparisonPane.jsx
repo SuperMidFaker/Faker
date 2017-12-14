@@ -6,11 +6,9 @@ import DataPane from 'client/components/DataPane';
 import { formatMsg } from '../message.i18n';
 
 @injectIntl
-@connect(
-    state => ({
-      views: state.cwmShFtz.compareTask.views,
-    })
-  )
+@connect(state => ({
+  views: state.cwmShFtz.compareTask.views,
+}))
 export default class FTZComparisonPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

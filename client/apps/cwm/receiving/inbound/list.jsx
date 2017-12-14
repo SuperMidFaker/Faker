@@ -219,7 +219,9 @@ export default class ReceivingInboundList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, owners, filters, loading } = this.props;
+    const {
+      whses, defaultWhse, owners, filters, loading,
+    } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -259,7 +261,8 @@ export default class ReceivingInboundList extends React.Component {
         {
           owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
         }
-      </Select></span>);
+      </Select>
+    </span>);
     return (
       <QueueAnim type={['bottom', 'up']}>
         <PageHeader>

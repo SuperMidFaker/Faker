@@ -10,7 +10,8 @@ import { formatMsg } from '../message.i18n';
   state => ({
     subdomain: state.account.subdomain,
   }),
-  { })
+  { }
+)
 
 export default class MoreApplications extends React.Component {
   static propTypes = {

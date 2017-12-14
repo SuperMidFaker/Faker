@@ -17,12 +17,10 @@ function fetchData({ state, dispatch }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    transitModes: state.crmOrders.formRequires.transitModes,
-  }), { loadTransportTariffs, loadCmsQuotes }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  transitModes: state.crmOrders.formRequires.transitModes,
+}), { loadTransportTariffs, loadCmsQuotes })
 
 export default class TariffPane extends React.Component {
   static propTypes = {

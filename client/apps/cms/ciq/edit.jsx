@@ -77,16 +77,16 @@ export default class CiqDeclEdit extends React.Component {
     });
   }
   render() {
-    const { form, entries, ciqDeclHead, ciqs } = this.props;
+    const {
+      form, entries, ciqDeclHead, ciqs,
+    } = this.props;
     const tabs = [];
-    tabs.push(
-      <TabPane tab="基本信息" key="header">
-        <CiqDeclHeadPane ioType={this.props.params.ioType} form={form} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="商品信息" key="body">
-        <CiqDeclGoodsPane ioType={this.props.params.ioType} fullscreen={this.state.fullscreen} />
-      </TabPane>);
+    tabs.push(<TabPane tab="基本信息" key="header">
+      <CiqDeclHeadPane ioType={this.props.params.ioType} form={form} />
+    </TabPane>);
+    tabs.push(<TabPane tab="商品信息" key="body">
+      <CiqDeclGoodsPane ioType={this.props.params.ioType} fullscreen={this.state.fullscreen} />
+    </TabPane>);
     return (
       <Layout>
         <PageHeader>

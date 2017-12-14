@@ -75,9 +75,7 @@ export default class SurchargeForm extends React.Component {
     });
     const row = this.props.fees[index];
     if (row._id) {
-      this.props.updateFee(
-        this.props.tariffId, row._id, row
-      ).then((result) => {
+      this.props.updateFee(this.props.tariffId, row._id, row).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         }

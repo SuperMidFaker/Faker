@@ -109,15 +109,11 @@ export default class PublishTariffModal extends React.Component {
           <FormItem label="生效起始时间" {...formItemLayout}>
             {getFieldDecorator('effectiveDate', {
               rules: [{ required: true, message: '生效起始时间必选', type: 'object' }],
-            })(
-              <DatePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} />
-            )}
+            })(<DatePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} />)}
           </FormItem>
           <FormItem label="备注" {...formItemLayout}>
             {getFieldDecorator('publishCommit', {
-            })(
-              <Input.TextArea />
-            )}
+            })(<Input.TextArea />)}
           </FormItem>
         </Form>
       </Modal>

@@ -2,7 +2,9 @@ import React from 'react';
 import { Icon, Popover, Tooltip, Tag } from 'antd';
 import { Fontello } from 'client/components/FontIcon';
 
-export default function makeColumns({ msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit }) {
+export default function makeColumns({
+  msg, units, tradeCountries, currencies, withRepo, withRepoItem, audit,
+}) {
   const columns = [{
     dataIndex: 'classified',
     width: 40,
@@ -258,7 +260,8 @@ export default function makeColumns({ msg, units, tradeCountries, currencies, wi
         } else {
           return <Tooltip title="只可提交本库"><span><Fontello type="circle" color="gray" /></span></Tooltip>;
         }
-      } });
+      },
+    });
   }
   return columns;
 }

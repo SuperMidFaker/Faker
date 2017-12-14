@@ -7,7 +7,9 @@ import { formatMsg } from '../../message.i18n';
 const Option = Select.Option;
 
 function EditableCell(props) {
-  const { cellKey, value, index, text, options, editable, onChange } = props;
+  const {
+    cellKey, value, index, text, options, editable, onChange,
+  } = props;
   function handleChange(optValue) {
     onChange(cellKey, optValue, index);
   }
@@ -18,7 +20,7 @@ function EditableCell(props) {
           options.map(opt => <Option key={opt.key} value={opt.key}>{opt.text}</Option>)
         }
       </Select>
-    : <div>{text}</div>
+      : <div>{text}</div>
   );
 }
 
@@ -36,9 +38,11 @@ export default class ConditionTable extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
     bizObjects: PropTypes.arrayOf(PropTypes.shape({ key: PropTypes.string.isRequired })),
-    conditions: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired,
+    conditions: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number.isRequired,
       biz_object: PropTypes.string.isRequired,
-      event: PropTypes.string.isRequired })),
+      event: PropTypes.string.isRequired,
+    })),
     onAdd: PropTypes.func.isRequired,
     onDel: PropTypes.func.isRequired,
     onUpdate: PropTypes.func.isRequired,
@@ -126,7 +130,9 @@ export default class ConditionTable extends React.Component {
     if (!(row.pending.biz_object && row.pending.event)) {
       return;
     }
-    const cond = { id: row.id, key: row.key, biz_object: row.pending.biz_object, event: row.pending.event };
+    const cond = {
+      id: row.id, key: row.key, biz_object: row.pending.biz_object, event: row.pending.event,
+    };
     rows[index].editable = false;
     rows[index].biz_object = cond.biz_object;
     rows[index].event = cond.event;

@@ -28,7 +28,8 @@ const TabPane = Tabs.TabPane;
     asn: state.cwmReceive.dock.asn,
     uuid: state.cwmReceive.dock.asn.uuid,
   }),
-  { hideDock,
+  {
+    hideDock,
     changeDockTab,
     loadAsn,
     getInstanceUuid,
@@ -36,7 +37,8 @@ const TabPane = Tabs.TabPane;
     getAsnUuid,
     getShipmtOrderNo,
     cancelAsn,
-    closeAsn }
+    closeAsn,
+  }
 )
 export default class ReceivingDockPanel extends React.Component {
   static propTypes = {
@@ -56,16 +58,14 @@ export default class ReceivingDockPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.asn.asn_no && !this.props.visible && nextProps.visible) {
       this.props.getAsnUuid(nextProps.asn.asn_no);
-      this.props.loadAsn(nextProps.asn.asn_no).then(
-        (result) => {
-          if (!result.error) {
-            this.setState({
-              asnHead: result.data.asnHead ? result.data.asnHead : {},
-              asnBody: result.data.asnBody,
-            });
-          }
+      this.props.loadAsn(nextProps.asn.asn_no).then((result) => {
+        if (!result.error) {
+          this.setState({
+            asnHead: result.data.asnHead ? result.data.asnHead : {},
+            asnBody: result.data.asnBody,
+          });
         }
-      );
+      });
     }
   }
   componentWillUnmount() {
@@ -116,12 +116,10 @@ export default class ReceivingDockPanel extends React.Component {
   }
   goHomeDock = () => {
     const { uuid } = this.props;
-    this.props.getShipmtOrderNo(uuid).then(
-      (result) => {
-        this.props.loadOrderDetail(result.data.order_no);
-        this.props.hideDock();
-      }
-    );
+    this.props.getShipmtOrderNo(uuid).then((result) => {
+      this.props.loadOrderDetail(result.data.order_no);
+      this.props.hideDock();
+    });
   }
   handleExportExcel = () => {
     window.open(`${API_ROOTS.default}v1/cwm/receiving/exportAsnExcel/${createFilename('asn')}.xlsx?asnNo=${this.props.asn.asn_no}`);
@@ -160,16 +158,14 @@ export default class ReceivingDockPanel extends React.Component {
       </TabPane>,
     ];
     if (asnHead.bonded) {
-      tabs.push(
-        <TabPane tab={this.msg('tabFTZ')} key="ftz">
-          <FTZPane asnNo={asn.asn_no} />
-        </TabPane>);
+      tabs.push(<TabPane tab={this.msg('tabFTZ')} key="ftz">
+        <FTZPane asnNo={asn.asn_no} />
+      </TabPane>);
     }
     if (asnHead.status > CWM_ASN_STATUS.PENDING.value) {
-      tabs.push(
-        <TabPane tab={this.msg('tabInbound')} key="inbound">
-          <InboundPane asnNo={asn.asn_no} />
-        </TabPane>);
+      tabs.push(<TabPane tab={this.msg('tabInbound')} key="inbound">
+        <InboundPane asnNo={asn.asn_no} />
+      </TabPane>);
     }
     return (
       <Tabs defaultActiveKey="asn" onChange={this.handleTabChange}>

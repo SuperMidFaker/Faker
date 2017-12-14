@@ -62,7 +62,9 @@ function fetchData({ cookie, state, dispatch }) {
     loading: state.transportBilling.loading,
     loaded: state.transportBilling.loaded,
   }),
-  { loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, showAdvanceModal, showSpecialChargeModal }
+  {
+    loadFees, loadShipmtDetail, changeFeesFilter, loadPartners, showAdvanceModal, showSpecialChargeModal,
+  }
 )
 
 export default class FeesList extends React.Component {
@@ -110,7 +112,9 @@ export default class FeesList extends React.Component {
   handleTableLoad = (props) => {
     this.handleSelectionClear();
     const { tenantId } = props;
-    const { pageSize, currentPage, filters, startDate, endDate, searchValue } = props.fees;
+    const {
+      pageSize, currentPage, filters, startDate, endDate, searchValue,
+    } = props.fees;
     this.props.loadFees({
       tenantId,
       pageSize,
@@ -124,7 +128,9 @@ export default class FeesList extends React.Component {
   handleRadioChange = (e) => {
     this.handleSelectionClear();
     const { tenantId } = this.props;
-    const { pageSize, currentPage, filters, startDate, endDate, searchValue } = this.props.fees;
+    const {
+      pageSize, currentPage, filters, startDate, endDate, searchValue,
+    } = this.props.fees;
     this.props.loadFees({
       tenantId,
       pageSize,
@@ -146,12 +152,18 @@ export default class FeesList extends React.Component {
   handleSearchInput = (value) => {
     this.props.changeFeesFilter('searchValue', value);
   }
-  handleShowShipmentAdvanceModal = ({ visible, dispId, shipmtNo, transModeCode, goodsType, type }) => {
+  handleShowShipmentAdvanceModal = ({
+    visible, dispId, shipmtNo, transModeCode, goodsType, type,
+  }) => {
     // todo 取parentDisp sr_tenant_id
-    this.props.showAdvanceModal({ visible, dispId, shipmtNo, transModeCode, goodsType, type });
+    this.props.showAdvanceModal({
+      visible, dispId, shipmtNo, transModeCode, goodsType, type,
+    });
   }
   handleShowSpecialChargeModal = (row, dispId, type) => {
-    this.props.showSpecialChargeModal({ visible: true, dispId, shipmtNo: row.shipmt_no, spTenantId: row.sp_tenant_id, type });
+    this.props.showSpecialChargeModal({
+      visible: true, dispId, shipmtNo: row.shipmt_no, spTenantId: row.sp_tenant_id, type,
+    });
   }
   handleBillingTypeChange = (value) => {
     this.setState({ billingType: value });
@@ -202,7 +214,8 @@ export default class FeesList extends React.Component {
                 shipmtNo: row.shipmt_no,
                 transModeCode: row.transport_mode_code,
                 goodsType: row.goods_type,
-                type: 1 })}
+                type: 1,
+})}
               >
                 {o ? o.toFixed(2) : '0.00'}
                 <Icon type="edit" />
@@ -300,7 +313,8 @@ export default class FeesList extends React.Component {
                 shipmtNo: row.shipmt_no,
                 transModeCode: row.transport_mode_code,
                 goodsType: row.goods_type,
-                type: -1 })}
+                type: -1,
+})}
               >
                 {o ? o.toFixed(2) : '0.00'}
                 <Icon type="edit" />

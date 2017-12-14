@@ -1,9 +1,9 @@
 /* eslint no-loop-func: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import { intlShape, injectIntl } from 'react-intl';
-import { Badge, Tag, Button, Popover, message, Row, Col, Tabs } from 'antd';
+import { Badge, Tag, Button, /* Popover, */ message, Row, Col, Tabs } from 'antd';
 import DockPanel from 'client/components/DockPanel';
 import DataTable from 'client/components/DataTable';
 import InfoItem from 'client/components/InfoItem';
@@ -12,7 +12,7 @@ import connectFetch from 'client/common/decorators/connect-fetch';
 import { loadLsps, loadVehicles, doDispatch, doDispatchAndSend, showDispatchConfirmModal, changeDockStatus } from 'common/reducers/transportDispatch';
 import { addPartner } from 'common/reducers/partner';
 import { computeCostCharges } from 'common/reducers/shipment';
-import ChargeSpecForm from '../shipment/forms/chargeSpec';
+// import ChargeSpecForm from '../shipment/forms/chargeSpec';
 import SearchBar from 'client/components/SearchBar';
 import DispatchConfirmModal from './DispatchConfirmModal';
 import CarrierModal from '../resources/modals/carrierModal';
@@ -24,7 +24,9 @@ const TabPane = Tabs.TabPane;
 const formatMsg = format(messages);
 
 export function RowClick(props) {
-  const { text, onClick, row, index } = props;
+  const {
+    text, onClick, row, index,
+  } = props;
   function handleClick(ev) {
     onClick(ev, row, index);
   }
@@ -48,23 +50,25 @@ function fetch({ state, dispatch, cookie }) {
 
 @connectFetch()(fetch)
 @injectIntl
-@connect(state => ({
-  tenantId: state.account.tenantId,
-  loginId: state.account.loginId,
-  loginName: state.account.username,
-  avatar: state.account.profile.avatar,
-  lsps: state.transportDispatch.lsps,
-  vehicles: state.transportDispatch.vehicles,
-  vehicleLoaded: state.transportDispatch.vehicleLoaded,
-  lspLoaded: state.transportDispatch.lspLoaded,
-  dispatched: state.transportDispatch.dispatched,
-  vehicleTypes: state.transportDispatch.vehicleTypes,
-  vehicleLengths: state.transportDispatch.vehicleLengths,
-  shipmts: state.transportDispatch.shipmts,
-  dispatchConfirmModal: state.transportDispatch.dispatchConfirmModal,
-  visible: state.transportDispatch.dispDockShow,
-}),
-  { loadLsps,
+@connect(
+  state => ({
+    tenantId: state.account.tenantId,
+    loginId: state.account.loginId,
+    loginName: state.account.username,
+    avatar: state.account.profile.avatar,
+    lsps: state.transportDispatch.lsps,
+    vehicles: state.transportDispatch.vehicles,
+    vehicleLoaded: state.transportDispatch.vehicleLoaded,
+    lspLoaded: state.transportDispatch.lspLoaded,
+    dispatched: state.transportDispatch.dispatched,
+    vehicleTypes: state.transportDispatch.vehicleTypes,
+    vehicleLengths: state.transportDispatch.vehicleLengths,
+    shipmts: state.transportDispatch.shipmts,
+    dispatchConfirmModal: state.transportDispatch.dispatchConfirmModal,
+    visible: state.transportDispatch.dispDockShow,
+  }),
+  {
+    loadLsps,
     loadVehicles,
     doDispatch,
     doDispatchAndSend,
@@ -72,7 +76,8 @@ function fetch({ state, dispatch, cookie }) {
     computeCostCharges,
     toggleCarrierModal,
     showDispatchConfirmModal,
-    changeDockStatus }
+    changeDockStatus,
+  }
 )
 export default class DispatchDock extends Component {
   static propTypes = {
@@ -136,14 +141,14 @@ export default class DispatchDock extends Component {
             deliver_charge: 0,
             total_charge: 0,
           });
-          return (
+          return <span>{charge.total_charge.toFixed(2)}</span>;
+          { /*
             <Popover placement="rightBottom" title={`${record.partner_name} 价格明细`} content={
               <ChargeSpecForm charges={o} onChange={this.handleChargeChange} index={index} />
               }
             >
               <span>{charge.total_charge.toFixed(2)}</span>
-            </Popover>
-          );
+            </Popover> */ }
         } else {
           return '';
         }
@@ -399,7 +404,9 @@ export default class DispatchDock extends Component {
   handleShipmtDispatchAndSend = () => {
     // TODO multi shipments dispatch
     const { type, target } = this.props.dispatchConfirmModal;
-    const { tenantId, loginId, loginName, shipmts } = this.props;
+    const {
+      tenantId, loginId, loginName, shipmts,
+    } = this.props;
     const podType = this.state.podType;
     const shipmtNos = shipmts.map(s => ({ shipmtNo: s.shipmt_no, dispId: s.key, deliverPrmDate: s.deliver_prm_date }));
     if (type === 'tenant') {
@@ -532,8 +539,12 @@ export default class DispatchDock extends Component {
     });
   }
   handleChargeChange = (charges, index) => {
-    const state = update(this.state, { lspsVar: { data:
-      { [index]: { charge: { $set: charges } } } } });
+    const state = update(this.state, {
+      lspsVar: {
+        data:
+      { [index]: { charge: { $set: charges } } },
+      },
+    });
     this.setState(state);
   }
   showConfirm(type, target) {

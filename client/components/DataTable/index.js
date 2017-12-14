@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tooltip, Button, Popover, message } from 'antd';
 import classNames from 'classnames';
-import update from 'react/lib/update';
+import update from 'immutability-helper';
 import SelectItem from './selectItem';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -107,7 +107,8 @@ class DataTable extends React.Component {
       popoverColumns = popoverColumns.map((column, index) => ({
         ...column,
         checked: true,
-        index }));
+        index,
+      }));
       this.setState({
         tableColumns,
         popoverColumns,
@@ -126,7 +127,8 @@ class DataTable extends React.Component {
       popoverColumns = popoverColumns.map((column, index) => ({
         ...column,
         checked: true,
-        index }));
+        index,
+      }));
       this.setState({
         popoverColumns,
         tableColumns,
@@ -266,12 +268,10 @@ class DataTable extends React.Component {
       <SelectItem id={index} key={column.index} index={column.index} checked={column.checked} title={column.title} moveSelect={this.moveSelect}
         onChange={this.handleCheckBoxChange} onFixed={this.fixedColumns} fixed={column.fixed}
       />));
-    content.push(
-      <div className="col-selection-actions" key="col-sel-buttons">
-        <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>确定</Button>
-        <Button onClick={this.hidePopover}>取消</Button>
-      </div>
-    );
+    content.push(<div className="col-selection-actions" key="col-sel-buttons">
+      <Button type="primary" style={{ marginRight: 8 }} onClick={this.handleSave}>确定</Button>
+      <Button onClick={this.hidePopover}>取消</Button>
+    </div>);
     const classes = classNames(baseCls, {
       [`${baseCls}-no-border`]: noBorder,
     });

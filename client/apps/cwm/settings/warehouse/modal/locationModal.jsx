@@ -18,7 +18,9 @@ const RadioButton = Radio.Button;
     visible: state.cwmWarehouse.locationModal.visible,
     record: state.cwmWarehouse.record,
   }),
-  { hideLocationModal, addLocation, loadLocations, updateLocation }
+  {
+    hideLocationModal, addLocation, loadLocations, updateLocation,
+  }
 )
 @Form.create()
 export default class AddLocationModal extends Component {
@@ -64,32 +66,30 @@ export default class AddLocationModal extends Component {
     });
   }
   handleSubmit = () => {
-    const { whseCode, zoneCode, record, loginId } = this.props;
+    const {
+      whseCode, zoneCode, record, loginId,
+    } = this.props;
     const { type, status, location } = this.state;
     if (record.id) {
-      this.props.updateLocation(type, status, location, record.id, loginId).then(
-        (result) => {
-          if (!result.error) {
-            message.info('保存成功');
-            this.props.hideLocationModal();
-            this.props.loadLocations(whseCode, zoneCode);
-          } else {
-            message.error(result.error.message);
-          }
+      this.props.updateLocation(type, status, location, record.id, loginId).then((result) => {
+        if (!result.error) {
+          message.info('保存成功');
+          this.props.hideLocationModal();
+          this.props.loadLocations(whseCode, zoneCode);
+        } else {
+          message.error(result.error.message);
         }
-      );
+      });
     } else {
-      this.props.addLocation(whseCode, zoneCode, location, type, status, loginId).then(
-        (result) => {
-          if (!result.error) {
-            message.info('创建成功');
-            this.props.hideLocationModal();
-            this.props.loadLocations(whseCode, zoneCode);
-          } else {
-            message.error(result.error.message);
-          }
+      this.props.addLocation(whseCode, zoneCode, location, type, status, loginId).then((result) => {
+        if (!result.error) {
+          message.info('创建成功');
+          this.props.hideLocationModal();
+          this.props.loadLocations(whseCode, zoneCode);
+        } else {
+          message.error(result.error.message);
         }
-      );
+      });
     }
   }
   render() {

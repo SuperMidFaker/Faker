@@ -12,7 +12,8 @@ const TimelineItem = Timeline.Item;
     results: state.scvClearance.customsResults,
     loading: state.scvClearance.customsResultsLoading,
   }),
-  { loadClearanceResults, clearClearanceResults })
+  { loadClearanceResults, clearClearanceResults }
+)
 export default class DeclStatusPopover extends React.Component {
   static propTypes = {
     results: PropTypes.arrayOf(PropTypes.shape({

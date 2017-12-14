@@ -27,7 +27,9 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 function ColumnSwitch(props) {
-  const { record, field, checked, onChange } = props;
+  const {
+    record, field, checked, onChange,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, field, value);
@@ -50,7 +52,9 @@ ColumnSwitch.propTypes = {
     listFilter: state.cmsCiqDeclare.ciqListFilter,
     organizations: state.cmsCiqDeclare.ciqParams.organizations,
   }),
-  { loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams }
+  {
+    loadCiqDecls, openCiqModal, setInspect, showPreviewer, loadCiqParams,
+  }
 )
 @connectNav({
   depth: 2,

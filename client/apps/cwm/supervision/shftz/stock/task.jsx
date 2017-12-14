@@ -61,7 +61,7 @@ export default class SHFTZStockTask extends Component {
             <Breadcrumb>
               <Breadcrumb.Item>
               上海自贸区监管
-            </Breadcrumb.Item>
+              </Breadcrumb.Item>
               <Breadcrumb.Item>
                 {whse.name}
               </Breadcrumb.Item>

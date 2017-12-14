@@ -236,7 +236,7 @@ export default class SHFTZNonBondedStockList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

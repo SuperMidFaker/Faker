@@ -26,7 +26,9 @@ const formatMsg = format(messages);
     visibleCompareModal: state.scvClassification.visibleCompareModal,
     compareduuid: state.scvClassification.compareduuid,
   }),
-  { setCompareVisible, saveComparedItemDatas, loadTradeItems, loadTempItems, comparedCancel, deleteTempData }
+  {
+    setCompareVisible, saveComparedItemDatas, loadTradeItems, loadTempItems, comparedCancel, deleteTempData,
+  }
 )
 export default class ImportComparisonModal extends React.Component {
   static propTypes = {
@@ -104,7 +106,9 @@ export default class ImportComparisonModal extends React.Component {
     this.props.setCompareVisible(false);
   }
   handleOk = () => {
-    const { tenantId, tenantName, loginId, loginName } = this.props;
+    const {
+      tenantId, tenantName, loginId, loginName,
+    } = this.props;
     const { uuid, feedbackChanges } = this.state;
     const changes = JSON.stringify(feedbackChanges);
     const baseInfo = {

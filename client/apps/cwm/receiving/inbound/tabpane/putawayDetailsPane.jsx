@@ -24,7 +24,9 @@ const Search = Input.Search;
     reload: state.cwmReceive.inboundReload,
     submitting: state.cwmReceive.submitting,
   }),
-  { loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways }
+  {
+    loadInboundPutaways, showPuttingAwayModal, undoReceives, expressPutaways,
+  }
 )
 export default class PutawayDetailsPane extends React.Component {
   static propTypes = {
@@ -85,7 +87,7 @@ export default class PutawayDetailsPane extends React.Component {
     dataIndex: 'putaway_location',
     width: 120,
     render: o => (o && <Tag color="green">{o}</Tag>),
-/*  }, {
+    /*  }, {
     title: '目标库位',
     dataIndex: 'target_location',
     width: 120, */
@@ -106,7 +108,7 @@ export default class PutawayDetailsPane extends React.Component {
     width: 150,
     fixed: 'right',
     render: (o, record) => {
-      if (!record.result) {  // 上架明细的状态 0 未上架 1 已上架
+      if (!record.result) { // 上架明细的状态 0 未上架 1 已上架
         return (<span>
           <RowAction onClick={this.handlePutAway} icon="check-circle-o" label="上架确认" row={record} />
           <RowAction onClick={this.handleUndoReceive} icon="close-circle-o" tooltip="取消收货" row={record} />
@@ -218,17 +220,17 @@ export default class PutawayDetailsPane extends React.Component {
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
             <Button onClick={this.handleBatchPutAways} icon="check">
           批量上架确认
-        </Button>
+            </Button>
             <Button loading={submitting} onClick={this.handleBatchUndoReceives} icon="rollback">
           批量取消收货
-        </Button>
+            </Button>
           </DataPane.BulkActions>
           <DataPane.Actions>
             {inboundHead.rec_mode === 'manual' &&
               dataSource.filter(ds => ds.receive_location && ds.result === 0).length > 0 &&
               <Button loading={submitting} type="primary" ghost icon="check" onClick={this.handleExpressPutAway}>
               快捷上架
-            </Button>
+              </Button>
             }
           </DataPane.Actions>
         </DataPane.Toolbar>

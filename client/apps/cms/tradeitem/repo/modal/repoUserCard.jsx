@@ -24,7 +24,9 @@ const RadioButton = Radio.Button;
     loginId: state.account.loginId,
     repoUsers: state.cmsTradeitem.repoUsers,
   }),
-  { loadPartners, loadRepoUsers, addRepoUser, deleteRepoUser }
+  {
+    loadPartners, loadRepoUsers, addRepoUser, deleteRepoUser,
+  }
 )
 export default class RepoUsersCard extends React.Component {
   static propTypes = {
@@ -67,16 +69,14 @@ export default class RepoUsersCard extends React.Component {
     this.setState({ repoUserList: data, addOne });
   }
   handleSave = (record) => {
-    this.props.addRepoUser(this.props.tenantId, this.props.repo.id, record.partnerTenantId, record.name, record.permission).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功', 5);
-          this.props.loadRepoUsers(this.props.repo.id);
-        }
+    this.props.addRepoUser(this.props.tenantId, this.props.repo.id, record.partnerTenantId, record.name, record.permission).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+        this.props.loadRepoUsers(this.props.repo.id);
       }
-    );
+    });
   }
   handleDelete = (record, index) => {
     this.props.deleteRepoUser(record.id).then((result) => {
@@ -136,10 +136,10 @@ export default class RepoUsersCard extends React.Component {
       dataIndex: 'permission',
       width: 120,
       render: (perm, record) =>
-          (<RadioGroup value={perm} disabled={record.id} onChange={this.handlePermission}>
-            <RadioButton value={CMS_TRADE_REPO_PERMISSION.edit}>编辑</RadioButton>
-            <RadioButton value={CMS_TRADE_REPO_PERMISSION.view}>只读</RadioButton>
-          </RadioGroup>),
+        (<RadioGroup value={perm} disabled={record.id} onChange={this.handlePermission}>
+          <RadioButton value={CMS_TRADE_REPO_PERMISSION.edit}>编辑</RadioButton>
+          <RadioButton value={CMS_TRADE_REPO_PERMISSION.view}>只读</RadioButton>
+        </RadioGroup>),
     }, {
       width: 80,
       render: (o, record, index) => {
@@ -150,7 +150,7 @@ export default class RepoUsersCard extends React.Component {
               <RowAction onClick={this.handleSave} icon="save" row={record} />
               <RowAction onClick={this.handleAddCancel} icon="close" index={index} />
             </span>
-            );
+          );
         }
         return (<div className="editable-row-operations">
           {ruAction}

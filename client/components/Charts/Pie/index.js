@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Divider } from 'antd';
 import classNames from 'classnames';
-import ReactFitText from 'react-fittext';
+// import ReactFitText from 'react-fittext';
 import Debounce from 'lodash-decorators/debounce';
 import equal from '../equal';
 import styles from './index.less';
@@ -202,7 +202,9 @@ class Pie extends Component {
   }
 
   render() {
-    const { valueFormat, subTitle, total, hasLegend, className, style } = this.props;
+    const {
+      valueFormat, subTitle, total, hasLegend, className, style,
+    } = this.props;
     const { legendData, legendBlock } = this.state;
     const pieClassName = classNames(styles.pie, className, {
       [styles.hasLegend]: !!hasLegend,
@@ -211,10 +213,10 @@ class Pie extends Component {
 
     return (
       <div ref={this.handleRoot} className={pieClassName} style={style}>
-        <ReactFitText maxFontSize={25}>
-          <div className={styles.chart}>
-            <div ref={this.handleRef} style={{ fontSize: 0 }} />
-            {
+        {/* <ReactFitText maxFontSize={25}> */}
+        <div className={styles.chart}>
+          <div ref={this.handleRef} style={{ fontSize: 0 }} />
+          {
               (subTitle || total) && (
                 <div className={styles.total}>
                   {subTitle && <h4 className="pie-sub-title">{subTitle}</h4>}
@@ -225,8 +227,8 @@ class Pie extends Component {
                 </div>
               )
             }
-          </div>
-        </ReactFitText>
+        </div>
+        {/* </ReactFitText> */}
 
         {
           hasLegend && (

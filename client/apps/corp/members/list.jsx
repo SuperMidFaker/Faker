@@ -47,7 +47,10 @@ function fetchData({ state, dispatch }) {
     tenantId: state.account.tenantId,
     loading: state.personnel.loading,
   }),
-  { delMember, switchStatus, loadDepartments, createDepartment, loadMembers, openMemberModal })
+  {
+    delMember, switchStatus, loadDepartments, createDepartment, loadMembers, openMemberModal,
+  }
+)
 @withPrivilege({ module: 'corp', feature: 'personnel' })
 export default class MemberDepartmentView extends React.Component {
   static propTypes = {
@@ -56,8 +59,7 @@ export default class MemberDepartmentView extends React.Component {
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.shape({ totalCount: PropTypes.number.isRequired }).isRequired,
     filters: PropTypes.shape({ dept_id: PropTypes.number, name: PropTypes.string }).isRequired,
-    departments: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired, name: PropTypes.string.isRequired })).isRequired,
+    departments: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired, name: PropTypes.string.isRequired })).isRequired,
     tenantId: PropTypes.number.isRequired,
     loadMembers: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
@@ -81,8 +83,10 @@ export default class MemberDepartmentView extends React.Component {
   }, {
     title: this.msg('username'),
     width: 100,
-    render: (o, record) => this.renderColumnText(record.status,
-      record.username && record.username.split('@')[0]),
+    render: (o, record) => this.renderColumnText(
+      record.status,
+      record.username && record.username.split('@')[0]
+    ),
   }, {
     title: this.msg('phone'),
     width: 100,
@@ -113,8 +117,8 @@ export default class MemberDepartmentView extends React.Component {
     render: (role, record) => this.renderColumnText(
       record.status,
       PRESET_ROLE_NAME_KEYS[role] ?
-      formatContainerMsg(this.props.intl, PRESET_ROLE_NAME_KEYS[role].text)
-      : role,
+        formatContainerMsg(this.props.intl, PRESET_ROLE_NAME_KEYS[role].text)
+        : role,
     ),
   }, {
     title: formatContainerMsg(this.props.intl, 'statusColumn'),
@@ -241,10 +245,10 @@ export default class MemberDepartmentView extends React.Component {
   handleStatusSwitch(personnel, index) {
     this.props.switchStatus(index, personnel.key, personnel.status === ACCOUNT_STATUS.normal.id
       ? ACCOUNT_STATUS.blocked.id : ACCOUNT_STATUS.normal.id).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        }
-      });
+      if (result.error) {
+        message.error(result.error.message, 10);
+      }
+    });
   }
   handlePersonnelDel(record) {
     const { tenantId, filters, personnelist: { totalCount, current, pageSize } } = this.props;
@@ -306,7 +310,9 @@ export default class MemberDepartmentView extends React.Component {
     return <span style={style}>{text}</span>;
   }
   render() {
-    const { personnelist, departments, filters, loading } = this.props;
+    const {
+      personnelist, departments, filters, loading,
+    } = this.props;
     this.dataSource.remotes = personnelist;
     const selectMenuKeys = [];
     let contentHeadAction;

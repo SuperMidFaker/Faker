@@ -53,7 +53,8 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.SHOW_PREVIEWER:
-      return { ...state,
+      return {
+        ...state,
         previewer: { ...state.previewer, visible: true },
         previewKey: action.payload.previewKey,
         tabKey: action.payload.tabKey,
@@ -63,11 +64,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_BASIC_INFO_FAILED:
       return { ...state, basicPreviewLoading: false };
     case actionTypes.LOAD_BASIC_INFO_SUCCEED: {
-      return { ...state,
+      return {
+        ...state,
         previewer: { ...state.previewer, ...action.result.data },
         preStatus: '',
         basicPreviewLoading: false,
-        tabKey: action.payload.tabKey };
+        tabKey: action.payload.tabKey,
+      };
     }
     case actionTypes.HIDE_PREVIEWER:
       return { ...state, previewer: { ...state.previewer, visible: false } };
@@ -94,7 +97,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SET_OPERATOR_SUCCEED:
       return { ...state, customsPanel: { ...state.customsPanel, bill: { ...state.customsPanel.bill, preparer_name: action.payload.loginName } } };
     case actionTypes.TAX_PANE_LOAD_SUCCEED:
-      return { ...state, taxTots: action.result.data.taxTots, taxMaps: action.result.data.taxG, params: action.result.data.params };
+      return {
+        ...state, taxTots: action.result.data.taxTots, taxMaps: action.result.data.taxG, params: action.result.data.params,
+      };
     default:
       return state;
   }
@@ -183,7 +188,9 @@ export function updateCertParam(delgNo, dispId, cert, qty) {
       ],
       endpoint: 'v1/cms/delegation/update/certParam',
       method: 'post',
-      data: { delgNo, dispId, cert, qty },
+      data: {
+        delgNo, dispId, cert, qty,
+      },
       origin: 'mongo',
     },
   };

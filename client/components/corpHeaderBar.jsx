@@ -67,7 +67,7 @@ export default class CorpHeaderBar extends React.Component {
       <NavLink to="/" className="navbar-toggle">
         <i className="zmdi zmdi-apps" />
       </NavLink>
-      );
+    );
     return (
       <nav className="navbar navbar-fixed-top layout-header">
         <div className="navbar-header">

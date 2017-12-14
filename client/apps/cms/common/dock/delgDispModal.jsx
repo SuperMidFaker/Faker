@@ -47,7 +47,9 @@ function getFieldInits(delgDisp, dispatch) {
     tabKey: state.cmsDelgInfoHub.tabKey,
     fieldInits: getFieldInits(state.cmsDelegation.assign.delgDisp, state.cmsDelegation.assign.dispatch),
   }),
-  { delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel, reloadDelegationList }
+  {
+    delgDispSave, setDispStatus, loadciqSups, loadBasicInfo, loadCustPanel, loadDeclCiqPanel, reloadDelegationList,
+  }
 )
 @Form.create()
 export default class DelgDispModal extends Component {
@@ -70,7 +72,9 @@ export default class DelgDispModal extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   handleSave = () => {
-    const { delgDisp, dispatch, partners, ciqSups, loginId, loginName } = this.props;
+    const {
+      delgDisp, dispatch, partners, ciqSups, loginId, loginName,
+    } = this.props;
     const recv = this.props.form.getFieldsValue();
     const appointedOption = recv.appointed_option || delgDisp.appointed_option;
     let partner = {};
@@ -86,8 +90,7 @@ export default class DelgDispModal extends Component {
       }
     }
     const delegation = { ...delgDisp, appointed_option: appointedOption };
-    this.props.delgDispSave(delegation, dispatch, partner, ciqSup, loginId, loginName
-    ).then((result) => {
+    this.props.delgDispSave(delegation, dispatch, partner, ciqSup, loginId, loginName).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -122,30 +125,30 @@ export default class DelgDispModal extends Component {
     this.setState({ ciqSups: sups });
   }
   render() {
-    const { form: { getFieldDecorator }, partners, delgDisp, delgDispShow, fieldInits } = this.props;
+    const {
+      form: { getFieldDecorator }, partners, delgDisp, delgDispShow, fieldInits,
+    } = this.props;
     const { appoint, ciqSups } = this.state;
     return (
       <Modal maskClosable={false} visible={delgDispShow} title="分配" onOk={this.handleSave} onCancel={this.handleCancel} >
         <Form layout="vertical">
           <FormItem label="报关代理">
-            {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name }
-              )(<Select
-                showSearch
-                showArrow
-                optionFilterProp="searched"
-                placeholder={this.msg('dispatchMessage')}
-                onChange={this.handleSelectChange}
-              >
-                {
+            {getFieldDecorator('customs_name', { initialValue: fieldInits.customs_name })(<Select
+              showSearch
+              showArrow
+              optionFilterProp="searched"
+              placeholder={this.msg('dispatchMessage')}
+              onChange={this.handleSelectChange}
+            >
+              {
                 partners.map(pt => (
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
                   >
                     {pt.name}
-                  </Option>)
-                )
+                  </Option>))
               }
-              </Select>)}
+            </Select>)}
           </FormItem>
           <FormItem label="报检供应商" >
             <Col span={6}>
@@ -154,20 +157,18 @@ export default class DelgDispModal extends Component {
               />
             </Col>
             <Col span={18}>
-              {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(
-                <Select showSearch showArrow optionFilterProp="searched"
-                  placeholder={this.msg('dispatchMessage')}
-                >
-                  {
+              {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(<Select showSearch showArrow optionFilterProp="searched"
+                placeholder={this.msg('dispatchMessage')}
+              >
+                {
                   ciqSups.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
                       {pt.name}
-                    </Option>)
-                  )
+                    </Option>))
                 }
-                </Select>)}
+              </Select>)}
             </Col>
           </FormItem>
 

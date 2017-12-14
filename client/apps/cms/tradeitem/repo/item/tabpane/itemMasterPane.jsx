@@ -151,7 +151,9 @@ export default class ItemMasterPane extends React.Component {
     this.props.form.setFieldsValue({ g_model: model });
   }
   render() {
-    const { form: { getFieldDecorator }, currencies, units, tradeCountries, hscodes, action } = this.props;
+    const {
+      form: { getFieldDecorator }, currencies, units, tradeCountries, hscodes, action,
+    } = this.props;
     const { fieldInits } = this.state;
     const currencyOptions = currencies.map(curr => ({
       value: curr.curr_code,
@@ -215,8 +217,7 @@ export default class ItemMasterPane extends React.Component {
                   initialValue: fieldInits.item_type,
                 })(<Select onChange={this.handleItemTypeChange}>
                   {CMS_TRADE_ITEM_TYPE.map(it =>
-                    <Option key={it.value}>{it.text}</Option>
-                  )}
+                    <Option key={it.value}>{it.text}</Option>)}
                 </Select>)}
               </FormItem>
             </Col>
@@ -260,10 +261,9 @@ export default class ItemMasterPane extends React.Component {
                 })(<Select allowClear mode="combobox" optionFilterProp="search" onChange={this.handleHscodeChange} >
                   { hscodes.data.map(data => (<Option value={data.hscode} key={data.hscode}
                     search={data.hscode}
-                  >{data.hscode}</Option>)
-                    )}
-                </Select>
-                )}
+                  >{data.hscode}
+                  </Option>))}
+                </Select>)}
               </FormItem>
             </Col>
             <Col span={12}>
@@ -290,8 +290,7 @@ export default class ItemMasterPane extends React.Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -303,8 +302,7 @@ export default class ItemMasterPane extends React.Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                     units.map(gt =>
-                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                    )
+                      <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -317,8 +315,7 @@ export default class ItemMasterPane extends React.Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                   units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
                 </Select>)}
               </FormItem>
@@ -330,8 +327,7 @@ export default class ItemMasterPane extends React.Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                   units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
                 </Select>)}
               </FormItem>
@@ -343,8 +339,7 @@ export default class ItemMasterPane extends React.Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                   units.map(gt =>
-                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                  )
+                    <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
                 }
                 </Select>)}
               </FormItem>
@@ -367,16 +362,13 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('currency')}>
                 {getFieldDecorator('currency', {
                   initialValue: fieldInits.currency,
-                })(
-                  <Select showSearch showArrow optionFilterProp="search">
-                    {
+                })(<Select showSearch showArrow optionFilterProp="search">
+                  {
                   currencyOptions.map(data => (
                     <Option key={data.value} search={`${data.search}`} >
                       {`${data.text}`}
-                    </Option>)
-                  )}
-                  </Select>
-              )}
+                    </Option>))}
+                </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>
@@ -393,8 +385,7 @@ export default class ItemMasterPane extends React.Component {
                 })(<Select showSearch showArrow optionFilterProp="search">
                   {
                 units.map(gt =>
-                  <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>
-                )
+                  <Option key={gt.value} search={`${gt.value}${gt.text}`}>{`${gt.value} | ${gt.text}`}</Option>)
               }
                 </Select>)}
               </FormItem>
@@ -403,16 +394,13 @@ export default class ItemMasterPane extends React.Component {
               <FormItem {...formItemLayout} label={this.msg('origCountry')}>
                 {getFieldDecorator('origin_country', {
                   initialValue: fieldInits.origin_country,
-                })(
-                  <Select showSearch showArrow optionFilterProp="search">
-                    {
+                })(<Select showSearch showArrow optionFilterProp="search">
+                  {
                   tradeCountriesOpts.map(data => (
                     <Option key={data.value} search={`${data.search}`} >
                       {`${data.text}`}
-                    </Option>)
-                  )}
-                  </Select>
-              )}
+                    </Option>))}
+                </Select>)}
               </FormItem>
             </Col>
             <Col span={6}>

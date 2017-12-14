@@ -58,12 +58,16 @@ class Condition extends React.Component {
 
     const filterView = [];
     if (type === 'consigner' || type === 'subline') {
-      filterView.push((<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignor')}：</h3></Row>),
-      (<Row><Slider key="consignor" step={null} max="80" marks={markscor} defaultValue={this.state.consignerStep} onChange={this.handleSliderChange.bind(this, 'consignor')} /></Row>));
+      filterView.push(
+        (<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignor')}：</h3></Row>),
+        (<Row><Slider key="consignor" step={null} max="80" marks={markscor} defaultValue={this.state.consignerStep} onChange={this.handleSliderChange.bind(this, 'consignor')} /></Row>)
+      );
     }
     if (type === 'consignee' || type === 'subline') {
-      filterView.push((<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignee')}：</h3></Row>),
-      (<Row><Slider key="consignee" step={null} max="80" marks={markscee} defaultValue={this.state.consigneeStep} onChange={this.handleSliderChange.bind(this, 'consignee')} /></Row>));
+      filterView.push(
+        (<Row type="flex" justify="start"><h3>{this.msg('filterTextConsignee')}：</h3></Row>),
+        (<Row><Slider key="consignee" step={null} max="80" marks={markscee} defaultValue={this.state.consigneeStep} onChange={this.handleSliderChange.bind(this, 'consignee')} /></Row>)
+      );
     }
     this.setState({ filterView, type });
   }

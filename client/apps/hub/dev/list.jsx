@@ -11,15 +11,13 @@ const formatMsg = format(messages);
 const { Content } = Layout;
 
 @injectIntl
-@connect(
-  state => ({
-    profile: state.account.profile,
-    role: state.account.role_name,
-    tenantId: state.account.tenantId,
-    parentTenantId: state.account.parentTenantId,
-    code: state.account.code,
-  }),
-)
+@connect(state => ({
+  profile: state.account.profile,
+  role: state.account.role_name,
+  tenantId: state.account.tenantId,
+  parentTenantId: state.account.parentTenantId,
+  code: state.account.code,
+}), )
 
 export default class DevAppList extends React.Component {
   static propTypes = {
@@ -60,7 +58,7 @@ export default class DevAppList extends React.Component {
         <span className="ant-divider" />
         <a href="#"><Icon type="delete" /></a>
       </span>
-  ),
+    ),
   }];
 
   mockDataSource = [{

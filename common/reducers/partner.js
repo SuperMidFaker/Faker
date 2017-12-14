@@ -26,8 +26,8 @@ const initialState = {
     /* { id:, name: } */
   ],
   partners: [],
-  selectedMenuItemKey: '0',  // 记录当前MenuItemKey的值,
-  providerType: 'ALL',        // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
+  selectedMenuItemKey: '0', // 记录当前MenuItemKey的值,
+  providerType: 'ALL', // 记录当前被选中的物流供应商, 值对应为:['ALL', 'FWD', 'CCB', 'TRS', 'WHS']
   visibleSpModal: false,
   spModal: { partner: {} },
 };
@@ -38,7 +38,9 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.LOAD_PARTNERS_SUCCEED:
     case actionTypes.LOAD_TYPEPARTNERS_SUCCEED:
-      return { ...state, partners: action.result.data, loaded: true, loading: false };
+      return {
+        ...state, partners: action.result.data, loaded: true, loading: false,
+      };
     case actionTypes.SET_PROVIDER_TYPE:
       return { ...state, providerType: action.providerType };
     case actionTypes.ADD_PARTNER_SUCCEED: {
@@ -55,7 +57,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.EDIT_PROVIDER_TYPES_SUCCEED:
       return { ...state, loaded: false };
     case actionTypes.CLOSE_SPMODAL:
-      return { ...state, visibleSpModal: false, spModal: initialState.spModal, matchedPartners: [] };
+      return {
+        ...state, visibleSpModal: false, spModal: initialState.spModal, matchedPartners: [],
+      };
     case actionTypes.OPEN_SPMODAL:
       return { ...state, spModal: action.data, visibleSpModal: true };
     default:
@@ -93,7 +97,9 @@ export function loadPartnersByTypes(tenantId, roles, businessTypes) {
   };
 }
 
-export function addPartner({ tenantId, partnerInfo, role, business, businessType }) {
+export function addPartner({
+  tenantId, partnerInfo, role, business, businessType,
+}) {
   return {
     [CLIENT_API]: {
       types: [

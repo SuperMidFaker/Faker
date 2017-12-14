@@ -99,7 +99,9 @@ const initialState = {
     masterRepo: {},
     slaves: [],
   },
-  workspaceStat: { task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {} },
+  workspaceStat: {
+    task: {}, emerge: {}, conflict: {}, invalid: {}, pending: {},
+  },
   wsStatReload: false,
   workspaceLoading: false,
   workspaceTaskList: [],
@@ -130,7 +132,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_REPOS:
       return { ...state, reposLoading: true };
     case actionTypes.LOAD_REPOS_SUCCEED:
-      return { ...state, repos: action.result.data, reposLoading: false, reposLoaded: true };
+      return {
+        ...state, repos: action.result.data, reposLoading: false, reposLoaded: true,
+      };
     case actionTypes.LOAD_REPOS_FAIL:
       return { ...state, reposLoading: false };
     case actionTypes.LOAD_REPO:
@@ -152,7 +156,9 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_TRADE_ITEMS:
       return { ...state, tradeItemsLoading: true, itemData: initialState.itemData };
     case actionTypes.LOAD_TRADE_ITEMS_SUCCEED:
-      return { ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false };
+      return {
+        ...state, tradeItemlist: action.result.data, listFilter: JSON.parse(action.params.filter), tradeItemsLoading: false,
+      };
     case actionTypes.LOAD_TRADE_ITEMS_FAIL:
       return { ...state, tradeItemsLoading: false };
     case actionTypes.LOAD_PARAMS_SUCCEED:
@@ -523,7 +529,9 @@ export function addRepoUser(tenantId, repoId, partnerTenantId, name, permission)
       ],
       endpoint: 'v1/cms/tradeitem/repoUser/add',
       method: 'post',
-      data: { tenantId, repoId, partnerTenantId, name, permission },
+      data: {
+        tenantId, repoId, partnerTenantId, name, permission,
+      },
     },
   };
 }

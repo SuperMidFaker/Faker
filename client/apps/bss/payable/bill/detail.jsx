@@ -39,16 +39,11 @@ export default class ReceivableBillDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    printed: false,
     activeTab: '',
-    fullscreen: true,
     summary: {},
   }
 
   msg = key => formatMsg(this.props.intl, key);
-  toggleFullscreen = (fullscreen) => {
-    this.setState({ fullscreen });
-  }
 
   handleTabChange = (activeTab) => {
     this.setState({ activeTab });
@@ -86,7 +81,7 @@ export default class ReceivableBillDetail extends Component {
               <Description term="入库时间">{summary.completed_date && moment(summary.completed_date).format('YYYY.MM.DD HH:mm')}</Description>
             </DescriptionList>
           </Card>
-          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false} onSizeChange={this.toggleFullscreen}>
+          <MagicCard bodyStyle={{ padding: 0 }} hoverable={false}>
             <Tabs activeKey={this.state.activeTab} onChange={this.handleTabChange}>
               <TabPane tab="应收明细" key="receiveDetails" />
               <TabPane tab="应付明细" key="putawayDetails" />

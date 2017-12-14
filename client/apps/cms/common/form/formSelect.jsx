@@ -36,22 +36,21 @@ export class FormLocalSearchSelect extends React.Component {
           required={required}
         >
           { disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
-            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
-              <Select
-                optionLabelProp="children"
-                showSearch={!!searchKeyFn}
-                showArrow
-                allowClear
-                optionFilterProp={searchKeyFn ? 'search' : undefined}
-                placeholder={placeholder}
-              >
-                {
+            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<Select
+              optionLabelProp="children"
+              showSearch={!!searchKeyFn}
+              showArrow
+              allowClear
+              optionFilterProp={searchKeyFn ? 'search' : undefined}
+              placeholder={placeholder}
+            >
+              {
               options.map(opt => (
                 <Option key={opt.value} search={searchKeyFn ? searchKeyFn(opt) : undefined}>
                   {opt.text}
                 </Option>))
             }
-              </Select>)}
+            </Select>)}
         </FormItem>
       </Col>
     );
@@ -99,20 +98,19 @@ export class FormRemoteSearchSelect extends React.Component {
           required={required} style={{ marginBottom: 0 }}
         >
           {disabled ? <Input disabled value={filterOpt && filterOpt.text} /> :
-            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
-              <Select
-                optionLabelProp="children"
-                disabled={disabled}
-                showSearch
-                allowClear
-                onSearch={this.handleSearch}
-                optionFilterProp="children"
-                onSelect={this.handleSelect}
-              >
-                {
+            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<Select
+              optionLabelProp="children"
+              disabled={disabled}
+              showSearch
+              allowClear
+              onSearch={this.handleSearch}
+              optionFilterProp="children"
+              onSelect={this.handleSelect}
+            >
+              {
               options.map(opt => <Option key={opt.value}>{opt.text}</Option>)
             }
-              </Select>)}
+            </Select>)}
         </FormItem>
       </Col>
     );

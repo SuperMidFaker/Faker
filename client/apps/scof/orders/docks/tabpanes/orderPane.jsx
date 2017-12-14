@@ -9,12 +9,10 @@ import { MdIcon } from 'client/components/FontIcon';
 
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    order: state.crmOrders.dock.order,
-  }), { }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  order: state.crmOrders.dock.order,
+}), { })
 export default class OrderPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

@@ -34,7 +34,9 @@ export default class BillingPanel extends React.Component {
     tabKey: '',
   }
   componentWillMount() {
-    const { delgNos, transports, order, clearanceFees } = this.props;
+    const {
+      delgNos, transports, order, clearanceFees,
+    } = this.props;
     if (delgNos) {
       this.props.loadClearanceFees(delgNos);
     }
@@ -47,7 +49,9 @@ export default class BillingPanel extends React.Component {
     });
   }
   componentWillReceiveProps(nextProps) {
-    const { delgNos, transports, order, clearanceFees } = nextProps;
+    const {
+      delgNos, transports, order, clearanceFees,
+    } = nextProps;
     if (delgNos && delgNos !== this.props.delgNos) {
       this.props.loadClearanceFees(delgNos);
     }
@@ -327,7 +331,9 @@ export default class BillingPanel extends React.Component {
     );
   }
   render() {
-    const { intl, order, transports, clearanceFees } = this.props;
+    const {
+      intl, order, transports, clearanceFees,
+    } = this.props;
     let clearanceFee = 0;
     let transportFee = 0;
     if (order.shipmt_order_mode.indexOf(CRM_ORDER_MODE.clearance) >= 0) {
@@ -366,7 +372,8 @@ export default class BillingPanel extends React.Component {
                 <h5>清关</h5>
                 <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }</div>
+                  }
+                </div>
               </Row>
             </Card>
             {this.renderClearanceFees(clearanceFees[0])}
@@ -380,7 +387,8 @@ export default class BillingPanel extends React.Component {
                 <h5>清关</h5>
                 <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }</div>
+                  }
+                </div>
               </Row>
             </Card>
             <Card bodyStyle={{ padding: 16 }}>
@@ -404,7 +412,8 @@ export default class BillingPanel extends React.Component {
                 <h5>运输</h5>
                 <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }</div>
+                  }
+                </div>
               </Row>
             </Card>
             {this.renderTransportFees(transports[0])}
@@ -418,7 +427,8 @@ export default class BillingPanel extends React.Component {
                 <h5>运输</h5>
                 <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }</div>
+                  }
+                </div>
               </Row>
             </Card>
             <Card bodyStyle={{ padding: 16 }}>
@@ -442,19 +452,22 @@ export default class BillingPanel extends React.Component {
                 <h5>清关</h5>
                 <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(clearanceFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }</div>
+                  }
+                </div>
               </Col>
               <Col span="8">
                 <h5>运输</h5>
                 <div style={{ color: '#2DB7F5', fontSize: '18px' }}>{
                     intl.formatNumber(transportFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }</div>
+                  }
+                </div>
               </Col>
               <Col span="8">
                 <h5>总计</h5>
                 <div style={{ color: '#666', fontSize: '18px' }}>{
                     intl.formatNumber(totalFee.toFixed(2), { style: 'currency', currency: 'cny' })
-                  }</div>
+                  }
+                </div>
               </Col>
             </Row>
           </Card>

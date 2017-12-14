@@ -45,7 +45,9 @@ function fetchData({ state, dispatch }) {
     loading: state.cwmMovement.movements.loading,
     filter: state.cwmMovement.movementFilter,
   }),
-  { openMovementModal, switchDefaultWhse, showDock, loadMovements, cancelMovement }
+  {
+    openMovementModal, switchDefaultWhse, showDock, loadMovements, cancelMovement,
+  }
 )
 @connectNav({
   depth: 2,
@@ -191,7 +193,9 @@ export default class MovementList extends React.Component {
     });
   }
   render() {
-    const { defaultWhse, whses, owners, loading } = this.props;
+    const {
+      defaultWhse, whses, owners, loading,
+    } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadMovements(params),
       resolve: result => result.data,
@@ -230,7 +234,8 @@ export default class MovementList extends React.Component {
         {
             owners.map(owner => (<Option value={owner.id} key={owner.name}>{owner.name}</Option>))
           }
-      </Select></span>);
+      </Select>
+    </span>);
     const bulkActions = (<Button>批量移库</Button>);
 
     return (

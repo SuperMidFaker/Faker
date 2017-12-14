@@ -9,12 +9,8 @@ const Option = Select.Option;
 export default class SyncShareEditCell extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    checkedBrokers: PropTypes.arrayOf(
-      PropTypes.shape({ sharee_id: PropTypes.number.isRequired })
-    ).isRequired,
-    shareBrokers: PropTypes.arrayOf(
-      PropTypes.shape({ tenant_id: PropTypes.number.isRequired })
-    ).isRequired,
+    checkedBrokers: PropTypes.arrayOf(PropTypes.shape({ sharee_id: PropTypes.number.isRequired })).isRequired,
+    shareBrokers: PropTypes.arrayOf(PropTypes.shape({ tenant_id: PropTypes.number.isRequired })).isRequired,
     contribute: PropTypes.number.isRequired,
     onSave: PropTypes.func.isRequired,
   }

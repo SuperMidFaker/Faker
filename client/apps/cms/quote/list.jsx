@@ -39,7 +39,9 @@ function fetchData({ state, dispatch }) {
     quotesList: state.cmsQuote.quotesList,
     listFilter: state.cmsQuote.listFilter,
   }),
-  { loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote }
+  {
+    loadQuoteTable, updateQuoteStatus, deleteQuote, deleteDraftQuote, openCreateModal, createDraftQuote,
+  }
 )
 @connectNav({
   depth: 2,
@@ -88,8 +90,10 @@ export default class QuoteList extends Component {
     this.context.router.push({ pathname: to, query });
   }
   handleQuoteTableLoad = (currentPage, filter) => {
-    const { tenantId, listFilter,
-      quotesList: { pageSize, current } } = this.props;
+    const {
+      tenantId, listFilter,
+      quotesList: { pageSize, current },
+    } = this.props;
     this.props.loadQuoteTable({
       tenantId,
       filter: JSON.stringify(filter || listFilter),

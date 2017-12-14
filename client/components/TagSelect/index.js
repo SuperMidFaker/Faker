@@ -5,7 +5,9 @@ import styles from './index.less';
 
 const CheckableTag = Tag.CheckableTag;
 
-const TagSelectOption = ({ children, checked, onChange, value }) => (
+const TagSelectOption = ({
+  children, checked, onChange, value,
+}) => (
   <CheckableTag
     checked={checked}
     key={value}
@@ -65,9 +67,7 @@ class TagSelect extends PureComponent {
     let checkedTags = children.filter(child => child.props.displayName === 'TagSelectOption').map(child => child.props.value);
     const expandChild = children.filter(child => child.props.displayName === 'TagSelectExpand')[0];
     if (expandChild) {
-      checkedTags = checkedTags.concat(
-        expandChild.props.children.map(child => child.props.value)
-      );
+      checkedTags = checkedTags.concat(expandChild.props.children.map(child => child.props.value));
       expand = true;
     }
     return {

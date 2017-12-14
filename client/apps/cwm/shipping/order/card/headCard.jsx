@@ -85,7 +85,9 @@ export default class HeadCard extends Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, owners, soHead, defaultWhse } = this.props;
+    const {
+      form: { getFieldDecorator }, owners, soHead, defaultWhse,
+    } = this.props;
     const { bonded } = this.state;
     return (
       <Card bodyStyle={{ paddingBottom: 8 }} hoverable={false}>
@@ -95,18 +97,17 @@ export default class HeadCard extends Component {
               {getFieldDecorator('owner_partner_id', {
                 rules: [{ required: true, message: '请选择货主' }],
                 initialValue: soHead && soHead.owner_partner_id,
-              })(
-                <Select placeholder="选择货主" onSelect={this.handleSelect}>
-                  {
+              })(<Select placeholder="选择货主" onSelect={this.handleSelect}>
+                {
                       owners.map(owner => <Option value={owner.id} key={owner.id}>{owner.name}</Option>)
                     }
-                </Select>
-                )}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
             <FormItem label="要求出货日期" >
-              {getFieldDecorator('expect_shipping_date', { rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+              {getFieldDecorator('expect_shipping_date', {
+ rules: [{ type: 'object', required: true, message: 'Please select time!' }],
                 initialValue: soHead ? moment(new Date(soHead.expect_shipping_date)) : moment(new Date()),
               })(<DatePicker format={dateFormat} style={{ width: '100%' }} />)}
             </FormItem>
@@ -115,9 +116,7 @@ export default class HeadCard extends Component {
             <FormItem label="客户单号">
               {getFieldDecorator('cust_order_no', {
                 initialValue: soHead && soHead.cust_order_no,
-              })(
-                <Input />
-                    )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>
@@ -126,24 +125,20 @@ export default class HeadCard extends Component {
             <FormItem label="SO类型">
               {getFieldDecorator('so_type', {
                 initialValue: soHead ? soHead.so_type : CWM_SO_TYPES[0].value,
-              })(
-                <Select placeholder="SO类型" onChange={this.handleSoTypeChange}>
-                  {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
-                </Select>
-                    )}
+              })(<Select placeholder="SO类型" onChange={this.handleSoTypeChange}>
+                {CWM_SO_TYPES.map(cat => <Option value={cat.value} key={cat.value}>{cat.text}</Option>)}
+              </Select>)}
             </FormItem>
           </Col>
           <Col sm={24} lg={6}>
             <FormItem label="货物属性">
               {getFieldDecorator('bonded', {
                 initialValue: soHead ? soHead.bonded : bonded,
-              })(
-                <RadioGroup onChange={this.handleBondedChange}>
-                  { !!defaultWhse.bonded && <RadioButton value={-1}>不限</RadioButton>}
-                  <RadioButton value={0}>非保税</RadioButton>
-                  { !!defaultWhse.bonded && <RadioButton value={1}>保税</RadioButton> }
-                </RadioGroup>
-                )}
+              })(<RadioGroup onChange={this.handleBondedChange}>
+                { !!defaultWhse.bonded && <RadioButton value={-1}>不限</RadioButton>}
+                <RadioButton value={0}>非保税</RadioButton>
+                { !!defaultWhse.bonded && <RadioButton value={1}>保税</RadioButton> }
+              </RadioGroup>)}
             </FormItem>
           </Col>
           {bonded > 0 &&
@@ -152,11 +147,9 @@ export default class HeadCard extends Component {
               {getFieldDecorator('reg_type', {
                 initialValue: soHead && soHead.bonded_outtype,
                 rules: [{ required: bonded, message: '请选择监管方式' }],
-              })(
-                <RadioGroup>
-                  {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext || cabr.text}</RadioButton>)}
-                </RadioGroup>
-                  )}
+              })(<RadioGroup>
+                {CWM_SO_BONDED_REGTYPES.map(cabr => <RadioButton value={cabr.value} key={cabr.value}>{cabr.ftztext || cabr.text}</RadioButton>)}
+              </RadioGroup>)}
             </FormItem>
           </Col>
           }

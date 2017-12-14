@@ -32,31 +32,31 @@ function calculateTotal(bodies, currencies) {
       totPcs += Number(body.qty_pcs);
     }
   }
-  return { totGrossWt, totWetWt, totTrade, totPcs };
+  return {
+    totGrossWt, totWetWt, totTrade, totPcs,
+  };
 }
 
 @injectIntl
-@connect(
-  state => ({
-    billDetails: state.cmsManifest.billDetails,
-    units: state.cmsManifest.params.units.map(un => ({
-      value: un.unit_code,
-      text: un.unit_name,
-    })),
-    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
-    currencies: state.cmsManifest.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-    })),
-    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
-      value: ep.value,
-      text: ep.text,
-    })),
-  }),
-)
+@connect(state => ({
+  billDetails: state.cmsManifest.billDetails,
+  units: state.cmsManifest.params.units.map(un => ({
+    value: un.unit_code,
+    text: un.unit_name,
+  })),
+  countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+  })),
+  currencies: state.cmsManifest.params.currencies.map(cr => ({
+    value: cr.curr_code,
+    text: cr.curr_name,
+  })),
+  exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+    value: ep.value,
+    text: ep.text,
+  })),
+}), )
 export default class ManifestDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

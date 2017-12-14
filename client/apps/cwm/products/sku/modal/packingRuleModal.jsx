@@ -132,8 +132,7 @@ export default class PackingRuleModal extends Component {
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
                   <RadioButton value="PLT">托盘</RadioButton>
-                </RadioGroup>
-                  )}
+                </RadioGroup>)}
               </FormItem>
             </Col>
             <Col sm={12}>
@@ -145,8 +144,7 @@ export default class PackingRuleModal extends Component {
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
                   <RadioButton value="PLT">托盘</RadioButton>
-                </RadioGroup>
-                  )}
+                </RadioGroup>)}
               </FormItem>
             </Col>
             <Col sm={12}>
@@ -158,8 +156,7 @@ export default class PackingRuleModal extends Component {
                   <RadioButton value="INP">内包装</RadioButton>
                   <RadioButton value="BOX">箱</RadioButton>
                   <RadioButton value="PLT">托盘</RadioButton>
-                </RadioGroup>
-                  )}
+                </RadioGroup>)}
               </FormItem>
             </Col>
             <Col sm={12}>
@@ -169,8 +166,7 @@ export default class PackingRuleModal extends Component {
                 })(<RadioGroup >
                   <RadioButton value="BOX">箱</RadioButton>
                   <RadioButton value="PLT">托盘</RadioButton>
-                </RadioGroup>
-                  )}
+                </RadioGroup>)}
               </FormItem>
             </Col>
             <Col sm={12}>
@@ -180,8 +176,7 @@ export default class PackingRuleModal extends Component {
                 })(<RadioGroup >
                   <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
-                </RadioGroup>
-                  )}
+                </RadioGroup>)}
               </FormItem>
             </Col>
             <Col sm={12}>
@@ -191,8 +186,7 @@ export default class PackingRuleModal extends Component {
                 })(<RadioGroup >
                   <RadioButton value="primary">计量单位</RadioButton>
                   <RadioButton value="sku">SKU包装单位</RadioButton>
-                </RadioGroup>
-                  )}
+                </RadioGroup>)}
               </FormItem>
             </Col>
           </Row>
