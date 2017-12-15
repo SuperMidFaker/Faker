@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape, injectIntl } from 'react-intl';
 import { Form, Select, Modal, Radio, Checkbox, Upload, Button, Col, message } from 'antd';
+import { advExpImport, showAdvImpTempModal } from 'common/reducers/cmsExpense';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
-import { advExpImport, showAdvImpTempModal } from 'common/reducers/cmsExpense';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 const RadioGroup = Radio.Group;
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -50,9 +50,11 @@ export default class AdvUploadModal extends React.Component {
     const fieldsValue = this.props.form.getFieldsValue();
     let partner = {};
     if (this.state.importMode === 'recpt') {
-      partner = this.props.partners.customer.filter(pt => pt.partner_id === fieldsValue.partnerIdPay)[0];
+      [partner] = this.props.partners.customer.filter(pt =>
+        pt.partner_id === fieldsValue.partnerIdPay);
     } else {
-      partner = this.props.partners.supplier.filter(pt => pt.partner_id === fieldsValue.partnerIdRec)[0];
+      [partner] = this.props.partners.supplier.filter(pt =>
+        pt.partner_id === fieldsValue.partnerIdRec);
     }
     const params = {
       ...fieldsValue,
@@ -91,7 +93,7 @@ export default class AdvUploadModal extends React.Component {
       message.error(info.file.response.msg);
       return;
     }
-    const file = info.file;
+    const { file } = info;
     const nextFile = {
       uid: file.uid,
       name: file.name,
@@ -118,12 +120,7 @@ export default class AdvUploadModal extends React.Component {
             </Select>
           </FormItem>
           <FormItem label={this.msg('payer')} {...formItemLayout} >
-            {getFieldDecorator('partnerIdPay', { rules: [{ required: true }] })(<Select
-              showSearch
-              showArrow
-              optionFilterProp="searched"
-              style={{ width: '80%' }}
-            >
+            {getFieldDecorator('partnerIdPay', { rules: [{ required: true }] })(<Select showSearch showArrow optionFilterProp="searched" style={{ width: '80%' }}>
               {partners.customer.map(pt => (
                 <Option searched={`${pt.partner_code}${pt.name}`} value={pt.partner_id} key={pt.partner_id}>
                   {pt.name}
@@ -137,35 +134,34 @@ export default class AdvUploadModal extends React.Component {
           </Col>
         </div>
       );
-    } else {
-      return (
-        <div>
-          <FormItem label={this.msg('recipient')} {...formItemLayout} >
-            {getFieldDecorator('partnerIdRec', { rules: [{ required: true }] })(<Select
-              showSearch
-              showArrow
-              optionFilterProp="searched"
-              style={{ width: '80%' }}
-            >
-              {partners.supplier.map(pt => (
-                <Option searched={`${pt.partner_code}${pt.name}`} value={pt.partner_id} key={pt.partner_id}>
-                  {pt.name}
-                </Option>))}
-            </Select>)}
-          </FormItem>
-          <FormItem label={this.msg('payer')} {...formItemLayout} >
-            <Select value={tenantId} style={{ width: '80%' }} disabled>
-              <Option value={tenantId}>{tenantName}</Option>
-            </Select>
-          </FormItem>
-          <Col offset={6}>
-            <FormItem>
-              {getFieldDecorator('calculateAll', { initialValue: false })(<Checkbox>同时计算付款方应收代垫费用</Checkbox>)}
-            </FormItem>
-          </Col>
-        </div>
-      );
     }
+    return (
+      <div>
+        <FormItem label={this.msg('recipient')} {...formItemLayout} >
+          {getFieldDecorator('partnerIdRec', { rules: [{ required: true }] })(<Select
+            showSearch
+            showArrow
+            optionFilterProp="searched"
+            style={{ width: '80%' }}
+          >
+            {partners.supplier.map(pt => (
+              <Option searched={`${pt.partner_code}${pt.name}`} value={pt.partner_id} key={pt.partner_id}>
+                {pt.name}
+              </Option>))}
+          </Select>)}
+        </FormItem>
+        <FormItem label={this.msg('payer')} {...formItemLayout} >
+          <Select value={tenantId} style={{ width: '80%' }} disabled>
+            <Option value={tenantId}>{tenantName}</Option>
+          </Select>
+        </FormItem>
+        <Col offset={6}>
+          <FormItem>
+            {getFieldDecorator('calculateAll', { initialValue: false })(<Checkbox>同时计算付款方应收代垫费用</Checkbox>)}
+          </FormItem>
+        </Col>
+      </div>
+    );
   }
   render() {
     const { visible } = this.props;
@@ -187,8 +183,13 @@ export default class AdvUploadModal extends React.Component {
           {this.renderForm()}
           <Col offset={6}>
             <FormItem {...formItemLayout} >
-              <Upload accept=".xls,.xlsx" onChange={this.handleImport} onRemove={this.handleRemove}
-                fileList={this.state.attachments} action={`${API_ROOTS.default}v1/upload/excel/`} withCredentials
+              <Upload
+                accept=".xls,.xlsx"
+                onChange={this.handleImport}
+                onRemove={this.handleRemove}
+                fileList={this.state.attachments}
+                action={`${API_ROOTS.default}v1/upload/excel/`}
+                withCredentials
               >
                 <Button icon="upload">上传</Button>
               </Upload>
