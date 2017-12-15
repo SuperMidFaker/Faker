@@ -11,6 +11,7 @@ import ButtonToggle from 'client/components/ButtonToggle';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadCustomsDecls, loadTableParams, deleteDecl, setDeclReviewed, showSendDeclModal, openDeclReleasedModal, showBatchSendModal, showDeclMsgDock } from 'common/reducers/cmsDeclare';
+import { toggleDeclMsgModal } from 'common/reducers/cmsCiqDeclare';
 import { showPreviewer } from 'common/reducers/cmsDelgInfoHub';
 import { openEfModal } from 'common/reducers/cmsDelegation';
 import TrimSpan from 'client/components/trimSpan';
@@ -26,6 +27,7 @@ import FillCustomsNoModal from './modals/fillCustomsNoModal';
 import DeclReleasedModal from './modals/declReleasedModal';
 import SendDeclMsgModal from './modals/sendDeclMsgModal';
 import DeclMsgPanel from './panel/declMsgPanel';
+import DeclMsgModal from './modals/declMsgModal';
 
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import { CMS_DECL_STATUS, CMS_DECL_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
@@ -63,7 +65,8 @@ const RangePicker = DatePicker.RangePicker;
     showPreviewer,
     openDeclReleasedModal,
     showBatchSendModal,
-    showDeclMsgDock }
+    showDeclMsgDock,
+    toggleDeclMsgModal }
 )
 @connectNav({
   depth: 2,
@@ -312,7 +315,7 @@ export default class CustomsList extends Component {
           </PrivilegeCover>);
         }
         if (record.status === CMS_DECL_STATUS.sent.value) {
-          spanElems.push(<RowAction overlay={<Menu><Menu.Item key="viewDeclMsg">{this.msg('viewDeclMsg')}</Menu.Item></Menu>} row={record} />);
+          spanElems.push(<RowAction overlay={<Menu onClick={this.showDeclMsgModal}><Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item></Menu>} row={record} />);
         }
         if (record.status === CMS_DECL_STATUS.entered.value) {
           spanElems.push(
@@ -324,8 +327,9 @@ export default class CustomsList extends Component {
         }
         if (record.status >= CMS_DECL_STATUS.entered.value) {
           spanElems.push(<RowAction overlay={<Menu>
-            <Menu.Item key="viewDeclMsg">{this.msg('viewDeclMsg')}</Menu.Item>
-            <Menu.Item key="viewResultMsg">{this.msg('viewResultMsg')}</Menu.Item></Menu>} row={record}
+            {record.sent_file && <Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item>}
+            {record.return_file && <Menu.Item key={`${record.return_file}|return`}>{this.msg('viewResultMsg')}</Menu.Item>}
+          </Menu>} row={record}
           />);
         }
         return (<span>
@@ -335,6 +339,10 @@ export default class CustomsList extends Component {
       }
     },
   }]
+  showDeclMsgModal = ({ key }) => {
+    const [fileName, fileType] = key.split('|');
+    this.props.toggleDeclMsgModal(true, fileName, fileType);
+  }
   dataSource = new DataTable.DataSource({
     fetcher: params => this.props.loadCustomsDecls(params),
     resolve: result => result.data,
@@ -678,6 +686,7 @@ export default class CustomsList extends Component {
         <DelegationDockPanel />
         <OrderDockPanel />
         <ShipmentDockPanel />
+        <DeclMsgModal />
       </Layout>
     );
   }
