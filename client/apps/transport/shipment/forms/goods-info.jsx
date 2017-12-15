@@ -3,23 +3,23 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { intlShape } from 'react-intl';
 import { Row, Col, Form, Input, Select, Table } from 'antd';
-import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'common/reducers/shipment';
 import { PRESET_TRANSMODES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import globalMessages from 'client/common/root.i18n';
+import InputItem from './input-item';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 function asNumber(str) {
   const num = Number(str);
-  return !isNaN(num) ? num : 0;
+  return !Number.isNaN(num) ? num : 0;
 }
 
 function showValue(val) {
@@ -42,8 +42,6 @@ function ColumnInput(props) {
 }
 ColumnInput.propTypes = {
   index: PropTypes.number.isRequired,
-  state: PropTypes.object.isRequired,
-  record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
@@ -72,10 +70,7 @@ function ColumnSelect(props) {
 }
 ColumnSelect.propTypes = {
   index: PropTypes.number.isRequired,
-  state: PropTypes.object.isRequired,
-  record: PropTypes.object.isRequired,
   field: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
@@ -100,16 +95,10 @@ ColumnSelect.propTypes = {
     saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields,
   }
 )
-export default class GoodsInfo extends React.Component {
+export default class GoodsInfo extends React.PureComponent {
   static propTypes = {
     intl: intlShape.isRequired,
-    goods: PropTypes.array.isRequired,
-    fieldDefaults: PropTypes.object.isRequired,
-    labelColSpan: PropTypes.number.isRequired,
     modeCode: PropTypes.string,
-    goodsTypes: PropTypes.array.isRequired,
-    packagings: PropTypes.array.isRequired,
-    formhoc: PropTypes.object.isRequired,
     saveLocalGoods: PropTypes.func.isRequired,
     editLocalGoods: PropTypes.func.isRequired,
     removeLocalGoods: PropTypes.func.isRequired,
@@ -117,9 +106,6 @@ export default class GoodsInfo extends React.Component {
     vertical: PropTypes.bool,
     totalWeightRequired: PropTypes.bool.isRequired,
     totalVolumeRequired: PropTypes.bool.isRequired,
-  }
-  constructor(...args) {
-    super(...args);
   }
   state = {
     editGoods: {
@@ -165,7 +151,7 @@ export default class GoodsInfo extends React.Component {
   }
   handleGoodsSave = () => {
     const { length, width, height } = this.state.editGoods;
-    let volume = this.state.editGoods.volume;
+    let { volume } = this.state.editGoods;
     if (volume === undefined || volume === null) {
       volume = asNumber(length) * asNumber(width) * asNumber(height);
     }
@@ -212,7 +198,12 @@ export default class GoodsInfo extends React.Component {
       formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
       packagings,
       fieldDefaults: {
-        goods_type, total_count, packageform, total_weight, insure_value, total_volume,
+        goods_type: gdt,
+        total_count: tc,
+        packageform,
+        total_weight: tw,
+        insure_value: iv,
+        total_volume: tv,
       },
       vertical, modeCode,
       totalWeightRequired, totalVolumeRequired,
@@ -379,7 +370,7 @@ export default class GoodsInfo extends React.Component {
               rules: [{
                 required: true, type: 'number', message: this.msg('goodsTypeMust'),
               }],
-              initialValue: goods_type,
+              initialValue: gdt,
             })(<Select>
               {goodsTypes.map(gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>)}
             </Select>)}
@@ -387,30 +378,31 @@ export default class GoodsInfo extends React.Component {
           <InputItem formhoc={formhoc}
             labelName={this.msg('totalCount')}
             field="total_count"
-            fieldProps={{ initialValue: total_count }}
+            fieldProps={{ initialValue: tc }}
           />
           <InputItem formhoc={formhoc}
             labelName={this.msg('totalWeight')}
             field="total_weight"
             addonAfter={this.msg('kilogram')}
-            fieldProps={{ initialValue: total_weight }}
+            fieldProps={{ initialValue: tw }}
           />
           <InputItem formhoc={formhoc}
             labelName={this.msg('totalVolume')}
             field="total_volume"
             addonAfter={this.msg('cubicMeter')}
-            fieldProps={{ initialValue: total_volume }}
+            fieldProps={{ initialValue: tv }}
           />
           <FormItem label={this.msg('goodsPackage')}>
             {getFieldDecorator('package', { initialValue: packageform })(<Select>
-              {packagings.map(pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>)}
+              {packagings.map(pk => (<Option value={pk.package_code} key={pk.package_code}>
+                {pk.package_name}</Option>))}
             </Select>)}
           </FormItem>
           <InputItem formhoc={formhoc}
             labelName={this.msg('insuranceValue')}
             field="insure_value"
             addonAfter={this.msg('CNY')}
-            fieldProps={{ initialValue: insure_value }}
+            fieldProps={{ initialValue: iv }}
           />
         </div>
       );
@@ -424,7 +416,7 @@ export default class GoodsInfo extends React.Component {
                   rules: [{
                     required: true, type: 'number', message: this.msg('goodsTypeMust'),
                   }],
-                  initialValue: goods_type,
+                  initialValue: gdt,
                 })(<Select>
                   {goodsTypes.map(gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>)}
                 </Select>)}
@@ -432,20 +424,21 @@ export default class GoodsInfo extends React.Component {
               <InputItem formhoc={formhoc}
                 labelName={this.msg('totalCount')}
                 field="total_count"
-                fieldProps={{ initialValue: total_count }}
+                fieldProps={{ initialValue: tc }}
               />
             </Col>
             <Col sm={24} md={8}>
               <FormItem label={this.msg('goodsPackage')} required={modeCode === PRESET_TRANSMODES.ctn}>
                 {getFieldDecorator('package', { initialValue: packageform })(<Select>
-                  {packagings.map(pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>)}
+                  {packagings.map(pk => (<Option value={pk.package_code} key={pk.package_code}>
+                    {pk.package_name}</Option>))}
                 </Select>)}
               </FormItem>
               <InputItem formhoc={formhoc}
                 labelName={this.msg('totalWeight')}
                 field="total_weight"
                 addonAfter={this.msg('kilogram')}
-                fieldProps={{ initialValue: total_weight }}
+                fieldProps={{ initialValue: tw }}
                 required={totalWeightRequired}
               />
             </Col>
@@ -454,13 +447,13 @@ export default class GoodsInfo extends React.Component {
                 labelName={this.msg('insuranceValue')}
                 field="insure_value"
                 addonAfter={this.msg('CNY')}
-                fieldProps={{ initialValue: insure_value }}
+                fieldProps={{ initialValue: iv }}
               />
               <InputItem formhoc={formhoc}
                 labelName={this.msg('totalVolume')}
                 field="total_volume"
                 addonAfter={this.msg('cubicMeter')}
-                fieldProps={{ initialValue: total_volume }}
+                fieldProps={{ initialValue: tv }}
                 required={totalVolumeRequired}
               />
             </Col>

@@ -10,15 +10,15 @@ import connectNav from 'client/common/decorators/connect-nav';
 import { loadCustomsDecls } from 'common/reducers/scvClearance';
 import TrimSpan from 'client/components/trimSpan';
 import SearchBar from 'client/components/SearchBar';
-import DeclStatusPopover from './declStatusPopover';
 import NavLink from 'client/components/NavLink';
 import { format } from 'client/common/i18n/helpers';
-import messages from '../message.i18n';
 import { CMS_DECL_STATUS } from 'common/constants';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import RowAction from 'client/components/RowAction';
 import { Logixon } from 'client/components/FontIcon';
+import DeclStatusPopover from './declStatusPopover';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
@@ -38,8 +38,6 @@ function fetchData({ state, dispatch }) {
 @connect(
   state => ({
     tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    loginName: state.account.username,
     customsList: state.scvClearance.customsList,
     customs: state.scvClearance.customsDeclParams.customs.map(cus => ({
       value: cus.customs_code,
@@ -59,17 +57,12 @@ export default class ScvCustomsDeclList extends Component {
     intl: intlShape.isRequired,
     ietype: PropTypes.oneOf(['import', 'export']),
     tenantId: PropTypes.number.isRequired,
-    loginId: PropTypes.number.isRequired,
-    loginName: PropTypes.string.isRequired,
-    customsList: PropTypes.object.isRequired,
-    customsFilters: PropTypes.object.isRequired,
   }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
   }
 
   msg = key => formatMsg(this.props.intl, key);
@@ -101,8 +94,10 @@ export default class ScvCustomsDeclList extends Component {
               <Tag>预</Tag>
               {preEntryLink}
               <PrivilegeCover module="clearance" feature={ietype} action="edit" key="entry_no">
-                <RowAction onClick={this.handleDeclNoFill} row={record}
-                  label={<Icon type="edit" />} tooltip="回填海关编号"
+                <RowAction onClick={this.handleDeclNoFill}
+                  row={record}
+                  label={<Icon type="edit" />}
+                  tooltip="回填海关编号"
                 />
               </PrivilegeCover>
             </span>);
@@ -134,7 +129,7 @@ export default class ScvCustomsDeclList extends Component {
     title: '明细记录数',
     dataIndex: 'detail_count',
     width: 100,
-    render: dc => !isNaN(dc) ? dc : null,
+    render: dc => (!Number.isNaN(Number(dc)) ? dc : null),
   }, {
     title: '收发货人',
     dataIndex: 'trade_name',
@@ -161,22 +156,21 @@ export default class ScvCustomsDeclList extends Component {
         return <Tag color="blue-inverse">报关单</Tag>;
       } else if (o === 'FTZ') {
         return <Tag color="blue">备案清单</Tag>;
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     title: '状态',
     width: 120,
     dataIndex: 'status',
     render: (ost) => {
-      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey => CMS_DECL_STATUS[stkey].value === ost)[0];
+      const declkey = Object.keys(CMS_DECL_STATUS).filter(stkey =>
+        CMS_DECL_STATUS[stkey].value === ost)[0];
       if (declkey) {
         const decl = CMS_DECL_STATUS[declkey];
         return <Badge status={decl.badge} text={decl.text} />;
-      } else {
-        return null;
       }
+      return null;
     },
   }, {
     title: '进出口日期',
@@ -232,7 +226,6 @@ export default class ScvCustomsDeclList extends Component {
     remotes: this.props.customsList,
   })
   handleTableLoad = (currentPage, filter) => {
-    this.setState({ expandedKeys: [] });
     this.props.loadCustomsDecls({
       ietype: this.props.ietype,
       tenantId: this.props.tenantId,
@@ -246,20 +239,18 @@ export default class ScvCustomsDeclList extends Component {
     });
   }
   handleSearch = (searchVal) => {
-    const filters = this.mergeFilters(this.props.customsFilters, searchVal);
-    this.handleTableLoad(1, filters);
-  }
-  mergeFilters(curFilters, value) {
-    const newFilters = {};
+    const curFilters = this.props.customsFilters;
+    const filters = {};
     Object.keys(curFilters).forEach((key) => {
       if (key !== 'filterNo') {
-        newFilters[key] = curFilters[key];
+        filters[key] = curFilters[key];
       }
     });
+    const value = searchVal;
     if (value !== null && value !== undefined && value !== '') {
-      newFilters.filterNo = value;
+      filters.filterNo = value;
     }
-    return newFilters;
+    this.handleTableLoad(1, filters);
   }
   handleRadioChange = (ev) => {
     if (ev.target.value === this.props.customsFilters.status) {
@@ -304,7 +295,8 @@ export default class ScvCustomsDeclList extends Component {
           <RadioGroup value={customsFilters.status} onChange={this.handleRadioChange} >
             <RadioButton value="all">{this.msg('all')}</RadioButton>
             {Object.keys(CMS_DECL_STATUS).map(declkey =>
-              <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>)}
+              (<RadioButton value={declkey} key={declkey}>
+                {CMS_DECL_STATUS[declkey].text}</RadioButton>))}
           </RadioGroup>
           <div className="page-header-tools" />
         </Header>
@@ -317,8 +309,12 @@ export default class ScvCustomsDeclList extends Component {
               </div>
             </div>
             <div className="panel-body table-panel table-fixed-layout expandable">
-              <Table rowSelection={rowSelection} columns={this.columns} rowKey="pre_entry_seq_no" dataSource={this.dataSource}
-                loading={loading} scroll={{ x: 1600 }}
+              <Table rowSelection={rowSelection}
+                columns={this.columns}
+                rowKey="pre_entry_seq_no"
+                dataSource={this.dataSource}
+                loading={loading}
+                scroll={{ x: 1600 }}
               />
             </div>
           </div>
