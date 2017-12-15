@@ -14,7 +14,7 @@ const actionTypes = createActionTypes('@@welogix/cms/ciq/declaration/', [
   'UPDATE_CIQ_HEAD', 'UPDATE_CIQ_HEAD_SUCCEED', 'UPDATE_CIQ_HEAD_FAIL',
   'SET_FIXED_COUNTRY', 'SET_FIXED_ORGANIZATIONS', 'SET_FIXED_WORLDPORTS',
   'UPDATE_CIQ_HEAD_FIELD', 'UPDATE_CIQ_HEAD_FIELD_SUCCEED', 'UPDATE_CIQ_HEAD_FIELD_FAIL',
-  'CIQ_HEAD_CHANGE', 'TOGGLE_ATT_DOCU_MODAL',
+  'CIQ_HEAD_CHANGE', 'TOGGLE_ATT_DOCU_MODAL', 'TOGGLE_DECL_MSG_MODAL',
   'UPDATE_CIQ_GOOD', 'UPDATE_CIQ_GOOD_SUCCEED', 'UPDATE_CIQ_GOOD_FAIL',
   'EXTEND_COUNTRY_CODE', 'EXTEND_COUNTRY_CODE_SUCCEED', 'EXTEND_COUNTRY_CODE_FAIL',
   'SEARCH_CUSTOMS', 'SEARCH_CUSTOMS_SUCCEED', 'SEARCH_CUSTOMS_FAIL',
@@ -69,6 +69,11 @@ const initialState = {
   },
   attDocuModal: {
     visible: false,
+  },
+  declMsgModal: {
+    visible: false,
+    fileName: '',
+    fileType: '',
   },
 };
 
@@ -140,6 +145,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, requiredDocuModal: { ...state.entQualifictaionModal, visible: action.visible } };
     case actionTypes.TOGGLE_ATT_DOCU_MODAL:
       return { ...state, attDocuModal: { ...state.attDocuModal, visible: action.visible } };
+    case actionTypes.TOGGLE_DECL_MSG_MODAL:
+      return { ...state, declMsgModal: { ...state.declMsgModal, visible: action.visible, fileName: action.fileName, fileType: action.fileType } };
     default:
       return state;
   }
@@ -487,5 +494,14 @@ export function loadAttDocuments(preEntrySeqNo) {
       method: 'get',
       params: { preEntrySeqNo },
     },
+  };
+}
+
+export function toggleDeclMsgModal(visible, fileName = '', fileType = '') {
+  return {
+    type: actionTypes.TOGGLE_DECL_MSG_MODAL,
+    visible,
+    fileName,
+    fileType,
   };
 }
