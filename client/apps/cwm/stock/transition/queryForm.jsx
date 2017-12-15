@@ -120,16 +120,10 @@ export default class QueryForm extends React.Component {
             </FormItem>
           </Col>
           <Col span={5}>
-            <FormItem {...formItemLayout} label="包装情况">
-              {getFieldDecorator('damage_level', {
-                initialValue: filter.damage_level,
-              })(<Select style={{ width: '100%' }}>
-                <Option value={0}>完好</Option>
-                <Option value={1}>轻微擦痕</Option>
-                <Option value={2}>中度</Option>
-                <Option value={3}>重度</Option>
-                <Option value={4}>严重磨损</Option>
-              </Select>)}
+            <FormItem {...formItemLayout} label="采购订单号">
+              {getFieldDecorator('po_no', {
+                initialValue: filter.po_no,
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>}
