@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Col, DatePicker, Form, Row, Input, Select, Modal, Button } from 'antd';
+import { Card, Col, DatePicker, Form, Row, Icon, Input, Select, Modal, Button } from 'antd';
 import { CIQ_PACK_TYPE } from 'common/constants';
 import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam, toggleGoodsLicenceModal } from 'common/reducers/cmsCiqDeclare';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
@@ -110,7 +110,8 @@ export default class GoodsModal extends Component {
     return (
       <Modal title="商品信息" visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} width={1200}>
         <Form layout="horizontal" hideRequiredMark className="form-layout-multi-col">
-          <Card bodyStyle={{ padding: 16, paddingBottom: 0 }}
+          <Card
+            bodyStyle={{ padding: 16, paddingBottom: 0 }}
             style={{ marginBottom: 0 }}
             hoverable={false}
           >
@@ -201,10 +202,7 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('g_unit', {
                       initialValue: data.g_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit =>
-                        (<Option key={unit.unit_code} value={unit.unit_code}>
-                          {unit.unit_name}
-                        </Option>))}
+                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -218,10 +216,7 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('wt_meas_unit', {
                       initialValue: data.wt_meas_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit =>
-                        (<Option key={unit.unit_code} value={unit.unit_code}>
-                          {unit.unit_name}
-                        </Option>))}
+                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -235,10 +230,7 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('std_unit', {
                       initialValue: data.std_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit =>
-                        (<Option key={unit.unit_code} value={unit.unit_code}>
-                          {unit.unit_name}
-                        </Option>))}
+                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -273,7 +265,8 @@ export default class GoodsModal extends Component {
                 </FormItem>
               </Col>
               {ioType === 'in' &&
-                <FormRemoteSearchSelect outercol={6}
+                <FormRemoteSearchSelect
+                  outercol={6}
                   label="原产国"
                   col={8}
                   field="orig_country"
@@ -350,14 +343,54 @@ export default class GoodsModal extends Component {
                   })(<Input addonAfter="天" />)}
                 </FormItem>
                 </Col>}
-              {<Col span="10">
-                <Button style={{ marginLeft: 16 }}
-                  onClick={this.showGoodsLicenceModal}
-                >产品资质</Button>
-                <Button style={{ marginLeft: 8 }}>危险货物信息</Button>
-                <Button style={{ marginLeft: 8 }}>备用信息</Button>
-                <Button style={{ marginLeft: 8 }}>籍货关联信息</Button>
-              </Col>}
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="产品资质" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="危险货物信息" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="备用信息" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="箱货关联信息" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
             </Row>
           </Card>
         </Form>

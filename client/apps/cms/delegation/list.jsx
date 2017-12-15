@@ -14,6 +14,8 @@ import {
   TRANS_MODE, CMS_DECL_WAY_TYPE, PARTNER_ROLES, PARTNER_BUSINESSE_TYPES } from 'common/constants';
 import connectNav from 'client/common/decorators/connect-nav';
 import { PrivilegeCover } from 'client/common/decorators/withPrivilege';
+import { format } from 'client/common/i18n/helpers';
+import OperatorPopover from 'client/common/operatorsPopover';
 import SearchBar from 'client/components/SearchBar';
 import RowAction from 'client/components/RowAction';
 import { Logixon, MdIcon, Fontello } from 'client/components/FontIcon';
@@ -23,10 +25,8 @@ import { showPreviewer, loadBasicInfo, loadCustPanel, loadDeclCiqPanel } from 'c
 import { loadPartnersByTypes } from 'common/reducers/partner';
 import DelegationDockPanel from '../common/dock/delegationDockPanel';
 import messages from './message.i18n';
-import { format } from 'client/common/i18n/helpers';
 import OrderDockPanel from '../../scof/orders/docks/orderDockPanel';
 import ShipmentDockPanel from '../../transport/shipment/dock/shipmentDockPanel';
-import OperatorPopover from 'client/common/operatorsPopover';
 import ReceiveDockPanel from '../../cwm/receiving/dock/receivingDockPanel';
 import ShippingDockPanel from '../../cwm/shipping/dock/shippingDockPanel';
 
@@ -34,9 +34,9 @@ const formatMsg = format(messages);
 const { Content } = Layout;
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
-const Option = Select.Option;
-const OptGroup = Select.OptGroup;
-const RangePicker = DatePicker.RangePicker;
+const { Option } = Select;
+const { OptGroup } = Select;
+const { RangePicker } = DatePicker;
 
 @injectIntl
 @connect(
@@ -85,16 +85,12 @@ export default class DelegationList extends Component {
     tenantId: PropTypes.number.isRequired,
     loginId: PropTypes.number.isRequired,
     loginName: PropTypes.string.isRequired,
-    delegationlist: PropTypes.object.isRequired,
-    listFilter: PropTypes.object.isRequired,
     loadDelegationList: PropTypes.func.isRequired,
     ensureManifestMeta: PropTypes.func.isRequired,
     acceptDelg: PropTypes.func.isRequired,
     delDelg: PropTypes.func.isRequired,
     reload: PropTypes.bool.isRequired,
     preStatus: PropTypes.string.isRequired,
-    previewer: PropTypes.object.isRequired,
-    delegation: PropTypes.object.isRequired,
     loadCiqTable: PropTypes.func.isRequired,
     tabKey: PropTypes.string.isRequired,
   }
@@ -103,9 +99,6 @@ export default class DelegationList extends Component {
   }
   state = {
     selectedRowKeys: [],
-    searchInput: '',
-    expandedKeys: [],
-    popoverVisible: false,
     rightSiderCollapsed: true,
   }
   componentDidMount() {
@@ -113,7 +106,11 @@ export default class DelegationList extends Component {
     if (window.location.search.indexOf('dashboard') < 0) {
       filters.acptDate = [];
     }
-    this.props.loadPartnersByTypes(this.props.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance);
+    this.props.loadPartnersByTypes(
+      this.props.tenantId,
+      [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
+      PARTNER_BUSINESSE_TYPES.clearance
+    );
     this.handleDelgListLoad(this.props.delegationlist.current, { ...this.props.listFilter, ...filters, filterNo: '' });
     this.props.loadFormRequire();
   }
@@ -152,9 +149,8 @@ export default class DelegationList extends Component {
         return <Fontello type="circle" color="blue" />;
       } else if (record.status === 1) {
         return <Fontello type="circle" color="green" />;
-      } else {
-        return <Fontello type="circle" color="gray" />;
       }
+      return <Fontello type="circle" color="gray" />;
     },
   }, {
     title: this.msg('delgNo'),
@@ -220,16 +216,15 @@ export default class DelegationList extends Component {
       } else if (record.status === CMS_DELEGATION_STATUS.declaring) {
         if (record.sub_status === 1) {
           return <Badge status="processing" text={this.msg('declaredPart')} />;
-        } else {
-          return <Badge status="processing" text="申报中" />;
         }
+        return <Badge status="processing" text="申报中" />;
       } else if (record.status === CMS_DELEGATION_STATUS.released) {
         if (record.sub_status === 1) {
           return <Badge status="success" text={this.msg('releasedPart')} />;
-        } else {
-          return <Badge status="success" text="已放行" />;
         }
+        return <Badge status="success" text="已放行" />;
       }
+      return <span />;
     },
   }, {
     title: this.msg('declareWay'),
@@ -248,9 +243,8 @@ export default class DelegationList extends Component {
         } else if (o === CMS_DECL_WAY_TYPE.EXTR || o === CMS_DECL_WAY_TYPE.EBTR) {
           return (<Tag color="lime">{type.value}</Tag>);
         }
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }, {
     title: this.msg('customsBroker'),
@@ -281,27 +275,7 @@ export default class DelegationList extends Component {
   }, {
     title: this.msg('lastActTime'),
     dataIndex: 'last_act_time',
-    render: (o, record) => record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-',
-    /* {
-      if (record.status === CMS_DELEGATION_STATUS.unaccepted && record.last_act_time) {
-        return `${this.msg('createdEvent')}
-        ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.accepted && record.last_act_time) {
-        return `${this.msg('acceptedEvent')}
-        ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.processing && record.last_act_time) {
-        return `${this.msg('processedEvent')}
-        ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.declaring && record.last_act_time) {
-        return `${this.msg('declaredEvent')}
-        ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else if (record.status === CMS_DELEGATION_STATUS.released && record.last_act_time) {
-        return `${this.msg('releasedEvent')}
-        ${moment(record.last_act_time).format('MM.DD HH:mm')}`;
-      } else {
-        return '--';
-      }
-    }, */
+    render: (o, record) => (record.last_act_time ? moment(record.last_act_time).format('MM.DD HH:mm') : '-'),
   }]
   toggleRightSider = () => {
     this.setState({
@@ -324,7 +298,6 @@ export default class DelegationList extends Component {
       tenantId, listFilter, loginId,
       delegationlist: { pageSize, current },
     } = this.props;
-    this.setState({ expandedKeys: [] });
     this.props.loadDelegationList({
       tenantId,
       loginId,
@@ -448,9 +421,6 @@ export default class DelegationList extends Component {
       }
     });
   }
-  handleExpandedChange = (expandedKeys) => {
-    this.setState({ expandedKeys });
-  }
   handleViewChange = (value) => {
     const filter = { ...this.props.listFilter, viewStatus: value };
     this.handleDelgListLoad(1, filter);
@@ -509,7 +479,11 @@ export default class DelegationList extends Component {
           pageSize: pagination.pageSize,
           currentPage: pagination.current,
         };
-        const filter = { ...this.props.listFilter, sortField: sorter.field, sortOrder: sorter.order };
+        const filter = {
+          ...this.props.listFilter,
+          sortField: sorter.field,
+          sortOrder: sorter.order,
+        };
         params.filter = JSON.stringify(filter);
         return params;
       },
@@ -527,25 +501,35 @@ export default class DelegationList extends Component {
     }
     let clientPid = -1;
     if (listFilter.clientView.partnerIds.length > 0) {
-      clientPid = listFilter.clientView.partnerIds[0];
+      [clientPid] = listFilter.clientView.partnerIds;
     }
     const clients = [{
       name: '全部客户',
       partner_id: -1,
     }].concat(this.props.clients);
     const toolbarActions = (<span>
-      <SearchBar placeholder={this.msg('searchPlaceholder')}
-        onInputSearch={this.handleSearch} value={listFilter.filterNo}
+      <SearchBar
+        placeholder={this.msg('searchPlaceholder')}
+        onInputSearch={this.handleSearch}
+        value={listFilter.filterNo}
       />
-      <Select showSearch optionFilterProp="children" style={{ width: 160 }}
-        onChange={this.handleClientSelectChange} value={clientPid}
-        dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
+      <Select
+        showSearch
+        optionFilterProp="children"
+        style={{ width: 160 }}
+        onChange={this.handleClientSelectChange}
+        value={clientPid}
+        dropdownMatchSelectWidth={false}
+        dropdownStyle={{ width: 360 }}
       >
         {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}>
           {data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
         </Option>))}
       </Select>
-      <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}
+      <Select
+        value={listFilter.viewStatus}
+        style={{ width: 160 }}
+        showSearch={false}
         onChange={this.handleViewChange}
       >
         <OptGroup label="常用视图">
@@ -553,7 +537,8 @@ export default class DelegationList extends Component {
           <Option value="my">我负责的委托</Option>
         </OptGroup>
       </Select>
-      <RangePicker value={dateVal}
+      <RangePicker
+        value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
       />
@@ -603,14 +588,21 @@ export default class DelegationList extends Component {
           let extraOp = null;
           if (record.customs_tenant_id === tenantId) { // 2.1 报关单位为当前租户(未作分配)
             extraOp = (
-              <RowAction onClick={() => this.handleDelegationAssign(record)} row={record}
-                label={<Icon type="share-alt" />} tooltip={this.msg('delgDispatch')}
+              <RowAction
+                onClick={() => this.handleDelegationAssign(record)}
+                row={record}
+                label={<Icon type="share-alt" />}
+                tooltip={this.msg('delgDispatch')}
               />);
           } else if (record.customs_tenant_id === -1 || // 2.2 报关单位为线下企业(已作分配)
               record.sub_status === CMS_DELEGATION_STATUS.unaccepted) { // 2.3 报关供应商尚未接单(已作分配)
             extraOp = (
-              <RowAction confirm="你确定撤回分配吗?" onConfirm={this.handleDelgAssignRecall} row={record}
-                label={<Icon type="rollback" />} tooltip={this.msg('delgRecall')}
+              <RowAction
+                confirm="你确定撤回分配吗?"
+                onConfirm={this.handleDelgAssignRecall}
+                row={record}
+                label={<Icon type="rollback" />}
+                tooltip={this.msg('delgRecall')}
               />);
           }
           return (
@@ -663,6 +655,7 @@ export default class DelegationList extends Component {
               <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />
             </PrivilegeCover>);
         }
+        return <span />;
       },
     });
 
@@ -699,9 +692,15 @@ export default class DelegationList extends Component {
           </PageHeader.Actions>
         </PageHeader>
         <Content className="page-content" key="main">
-          <DataTable toolbarActions={toolbarActions}
-            rowSelection={rowSelection} selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}
-            columns={columns} dataSource={dataSource} rowKey="delg_no" loading={delegationlist.loading}
+          <DataTable
+            toolbarActions={toolbarActions}
+            rowSelection={rowSelection}
+            selectedRowKeys={this.state.selectedRowKeys}
+            handleDeselectRows={this.handleDeselectRows}
+            columns={columns}
+            dataSource={dataSource}
+            rowKey="delg_no"
+            loading={delegationlist.loading}
             onRow={record => ({
               onClick: () => {},
               onDoubleClick: () => { this.handleDetail(record); },

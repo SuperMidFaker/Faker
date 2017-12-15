@@ -3,14 +3,14 @@ import moment from 'moment';
 import superAgent from 'superagent';
 import { Tabs, Input, Modal } from 'antd';
 import Table from 'client/components/remoteAntTable';
-import { intlShape, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import DockPanel from 'client/components/DockPanel';
 import TrimSpan from 'client/components/trimSpan';
 import { connect } from 'react-redux';
 import { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal } from 'common/reducers/cmsDeclare';
 
-const TabPane = Tabs.TabPane;
-const Search = Input.Search;
+const { TabPane } = Tabs;
+const { Search } = Input;
 
 @injectIntl
 @connect(
@@ -27,7 +27,6 @@ const Search = Input.Search;
 )
 export default class DeclMsgPanel extends React.Component {
   static propTypes = {
-    intl: intlShape.isRequired,
   }
   state = {
     sendText: '',
@@ -108,13 +107,13 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '发送时间',
     dataIndex: 'sent_date',
-    width: 140,
+    width: 150,
     render: o => moment(o).format('YYYY.MM.DD HH:mm'),
   }];
   recvColumns = [{
     title: '统一编号',
     dataIndex: 'pre_entry_seq_no',
-    width: 170,
+    width: 180,
   }, {
     title: '回执报文',
     dataIndex: 'return_file',
@@ -122,7 +121,7 @@ export default class DeclMsgPanel extends React.Component {
   }, {
     title: '接收时间',
     dataIndex: 'return_date',
-    width: 140,
+    width: 150,
     render: o => moment(o).format('YYYY.MM.DD HH:mm'),
   }];
   hideDock = () => {
@@ -188,18 +187,42 @@ export default class DeclMsgPanel extends React.Component {
       <Tabs defaultActiveKey="sent">
         <TabPane tab="发送记录" key="sent">
           <div className="toolbar">
-            <Search style={{ width: 200 }} value={this.state.sendText} onChange={this.searchSend} onSearch={this.handleSearchSend} />
+            <Search
+              style={{ width: 200 }}
+              value={this.state.sendText}
+              onChange={this.searchSend}
+              onSearch={this.handleSearchSend}
+            />
           </div>
-          <Table size="middle" columns={this.sentColumns} dataSource={this.sendDataSource} scrollOffset="400" rowkey="sent_file"
-            scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          <Table
+            size="middle"
+            columns={this.sentColumns}
+            dataSource={this.sendDataSource}
+            scrollOffset="400"
+            rowkey="sent_file"
+            scroll={{
+              x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0),
+            }}
           />
         </TabPane>
         <TabPane tab="接收记录" key="recv">
           <div className="toolbar">
-            <Search style={{ width: 200 }} value={this.state.recvText} onChange={this.searchRecv} onSearch={this.handleSearchRecv} />
+            <Search
+              style={{ width: 200 }}
+              value={this.state.recvText}
+              onChange={this.searchRecv}
+              onSearch={this.handleSearchRecv}
+            />
           </div>
-          <Table size="middle" columns={this.recvColumns} dataSource={this.recvDataSource} scrollOffset="400" rowkey="return_file"
-            scroll={{ x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0) }}
+          <Table
+            size="middle"
+            columns={this.recvColumns}
+            dataSource={this.recvDataSource}
+            scrollOffset="400"
+            rowkey="return_file"
+            scroll={{
+              x: this.sentColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 200), 0),
+            }}
           />
         </TabPane>
       </Tabs>
@@ -210,7 +233,7 @@ export default class DeclMsgPanel extends React.Component {
     return (
       <DockPanel title="报文收发记录" size="large" visible={visible} onClose={this.hideDock}>
         {visible && this.renderTabs()}
-        <Modal width="800" maskClosable={false} visible={modalVisible} title="declMsg" onCancel={this.hideDeclMsgModal} onOk={this.hideDeclMsgModal}>
+        <Modal width={800} maskClosable={false} visible={modalVisible} title="declMsg" onCancel={this.hideDeclMsgModal} onOk={this.hideDeclMsgModal}>
           <pre>{this.state.text}</pre>
         </Modal>
       </DockPanel>
