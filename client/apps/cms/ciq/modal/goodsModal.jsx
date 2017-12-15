@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Card, Col, DatePicker, Form, Row, Input, Select, Modal } from 'antd';
-import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam } from 'common/reducers/cmsCiqDeclare';
+import { Card, Col, DatePicker, Form, Row, Icon, Input, Select, Modal, Button } from 'antd';
+import { CIQ_PACK_TYPE } from 'common/constants';
+import { hideGoodsModal, updateCiqGood, loadCiqDeclGoods, searchCountries, setFixedCountry, extendCountryParam, toggleGoodsLicenceModal } from 'common/reducers/cmsCiqDeclare';
 import { FormRemoteSearchSelect } from '../../common/form/formSelect';
+import GoodsLicenceModal from './goodsLecenceModal';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
@@ -25,6 +27,7 @@ const { Option } = Select;
     searchCountries,
     setFixedCountry,
     extendCountryParam,
+    toggleGoodsLicenceModal,
   }
 )
 @Form.create()
@@ -68,6 +71,17 @@ export default class GoodsModal extends Component {
       fixedCountries.push(country);
     }
     this.props.setFixedCountry(fixedCountries);
+  }
+  showGoodsLicenceModal = () => {
+    const { data } = this.props;
+    this.props.toggleGoodsLicenceModal(true, {
+      hscode: data.hscode,
+      gName: data.g_name,
+      ciqCode: data.ciq_code,
+      gNo: data.g_no,
+      id: data.id,
+      preEntrySeqNo: data.pre_entry_seq_no,
+    });
   }
   render() {
     const {
@@ -229,7 +243,10 @@ export default class GoodsModal extends Component {
                     })(<Input style={{ width: '40%' }} />)}
                     {getFieldDecorator('std_pack_type', {
                       initialValue: data.std_pack_type,
-                    })(<Input style={{ width: '60%' }} />)}
+                    })(<Select showSearch optionFilterProp="children" style={{ width: '60%' }}>
+                      {CIQ_PACK_TYPE.map(type =>
+                        <Option key={type.value} value={type.value}>{type.text}</Option>)}
+                    </Select>)}
                   </InputGroup>
                 </FormItem>
               </Col>
@@ -325,10 +342,59 @@ export default class GoodsModal extends Component {
                     initialValue: data.prod_qgp,
                   })(<Input addonAfter="天" />)}
                 </FormItem>
-              </Col>}
+                </Col>}
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="产品资质" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="危险货物信息" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="备用信息" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
+              <Col span="6">
+                <FormItem {...formItemLayout} colon={false} label="箱货关联信息" >
+                  <Input addonAfter={
+                    <Button
+                      type="primary"
+                      size="small"
+                      ghost
+                      onClick={this.showGoodsLicenceModal}
+                    ><Icon type="ellipsis" /></Button>}
+                  />
+                </FormItem>
+              </Col>
             </Row>
           </Card>
         </Form>
+        <GoodsLicenceModal />
       </Modal>
     );
   }
