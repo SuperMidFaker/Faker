@@ -225,7 +225,8 @@ export default class SHFTZEntryDetail extends Component {
           mergedRegDetails[erd.ent_g_no - 1].amount += erd.amount;
           mergedRegDetails[erd.ent_g_no - 1].amount_usd += erd.amount_usd;
         } else {
-          mergedRegDetails.push({ ftz_cargo_no: erd.ftz_cargo_no,
+          mergedRegDetails.push({
+            ftz_cargo_no: erd.ftz_cargo_no,
             hscode: erd.hscode,
             g_name: erd.g_name,
             model: erd.model,
@@ -234,16 +235,15 @@ export default class SHFTZEntryDetail extends Component {
             net_wt: erd.net_wt,
             gross_wt: erd.gross_wt,
             amount: erd.amount,
-            currency: erd.currency,
             country: erd.country,
-            amount_usd: erd.amount_usd,
+            currency: erd.currency,
             tag: `*${er.pre_ftz_ent_no}_${erd.ent_g_no}`,
           });
         }
       });
       const csvData = mergedRegDetails.map(mrd => ({
         备件号: mrd.ftz_cargo_no,
-        HS: mrd.hscode,
+        HS编码: mrd.hscode,
         中文品名: mrd.g_name,
         规格型号: mrd.model,
         单位: mrd.unit,
@@ -252,9 +252,8 @@ export default class SHFTZEntryDetail extends Component {
         净重: mrd.net_wt,
         毛重: mrd.gross_wt,
         金额: mrd.amount,
-        币值: mrd.currency,
         原产国: mrd.country,
-        美元货值: mrd.amount_usd,
+        币值: mrd.currency,
         库位: null,
         标签: mrd.tag,
       }));
