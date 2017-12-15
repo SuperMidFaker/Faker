@@ -202,7 +202,10 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('g_unit', {
                       initialValue: data.g_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
+                      {units.map(unit =>
+                        (<Option key={unit.unit_code} value={unit.unit_code}>
+                          {unit.unit_name}
+                        </Option>))}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -216,7 +219,10 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('wt_meas_unit', {
                       initialValue: data.wt_meas_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
+                      {units.map(unit =>
+                        (<Option key={unit.unit_code} value={unit.unit_code}>
+                          {unit.unit_name}
+                        </Option>))}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
@@ -230,7 +236,10 @@ export default class GoodsModal extends Component {
                     {getFieldDecorator('std_unit', {
                       initialValue: data.std_unit,
                     })(<Select showSearch optionFilterProp="children">
-                      {units.map(unit => <Option key={unit.unit_code}>{unit.unit_name}</Option>)}
+                      {units.map(unit =>
+                        (<Option key={unit.unit_code} value={unit.unit_code}>
+                          {unit.unit_name}
+                        </Option>))}
                     </Select>)}
                   </InputGroup>
                 </FormItem>
