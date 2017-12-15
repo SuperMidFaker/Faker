@@ -106,7 +106,10 @@ export default function reducer(state = initialState, action) {
           currencies: [...action.result.data.currencies],
           chinaPorts: [...action.result.data.chinaPorts],
           customs: [...action.result.data.customs],
-          organizations: [...action.result.data.organizations, ...state.ciqParams.fixedOrganizations],
+          organizations: [
+            ...action.result.data.organizations,
+            ...state.ciqParams.fixedOrganizations,
+          ],
           countries: [...action.result.data.countries, ...state.ciqParams.countries],
           worldPorts: [...action.result.data.worldPorts, ...state.ciqParams.worldPorts],
         },
@@ -118,7 +121,11 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CIQ_DECL_HEAD_SUCCEED:
       return {
         ...state,
-        ciqDeclHead: { head: action.result.data.head, entries: action.result.data.entries, ciqs: action.result.data.ciqs },
+        ciqDeclHead: {
+          head: action.result.data.head,
+          entries: action.result.data.entries,
+          ciqs: action.result.data.ciqs,
+        },
         ciqParams: {
           ...state.ciqParams,
           organizations: [...state.ciqParams.organizations, ...action.result.data.organizations],
@@ -133,19 +140,43 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CIQ_DECL_GOODS_SUCCEED:
       return { ...state, ciqDeclGoods: action.result.data };
     case actionTypes.SEARCH_ORGANIZATIONS_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, organizations: [...action.result.data, ...state.ciqParams.fixedOrganizations] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          organizations: [...action.result.data, ...state.ciqParams.fixedOrganizations],
+        },
+      };
     case actionTypes.SEARCH_WORLDPORTS_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, worldPorts: [...action.result.data, ...state.ciqParams.fixedWorldPorts] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          worldPorts: [...action.result.data, ...state.ciqParams.fixedWorldPorts],
+        },
+      };
     case actionTypes.SEARCH_CHINAPORTS_SUCCEED:
       return { ...state, ciqParams: { ...state.ciqParams, chinaPorts: [...action.result.data] } };
     case actionTypes.SEARCH_COUNTRIES_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, countries: [...action.result.data, ...state.ciqParams.fixedCountries] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          countries: [...action.result.data, ...state.ciqParams.fixedCountries],
+        },
+      };
     case actionTypes.SEARCH_CUSTOMS_SUCCEED:
       return { ...state, ciqParams: { ...state.ciqParams, customs: [...action.result.data] } };
     case actionTypes.SET_FIXED_COUNTRY:
       return { ...state, ciqParams: { ...state.ciqParams, fixedCountries: [...action.records] } };
     case actionTypes.SET_FIXED_ORGANIZATIONS:
-      return { ...state, ciqParams: { ...state.ciqParams, fixedOrganizations: [...action.records] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          fixedOrganizations: [...action.records],
+        },
+      };
     case actionTypes.SET_FIXED_WORLDPORTS:
       return { ...state, ciqParams: { ...state.ciqParams, fixedWorldPorts: [...action.records] } };
     case actionTypes.CIQ_HEAD_CHANGE:
@@ -153,19 +184,49 @@ export default function reducer(state = initialState, action) {
     case actionTypes.UPDATE_CIQ_HEAD_SUCCEED:
       return { ...state, ciqHeadChangeTimes: 0 };
     case actionTypes.EXTEND_COUNTRY_CODE_SUCCEED:
-      return { ...state, ciqParams: { ...state.ciqParams, countries: [...state.ciqParams.countries, action.result.data] } };
+      return {
+        ...state,
+        ciqParams: {
+          ...state.ciqParams,
+          countries: [...state.ciqParams.countries, action.result.data],
+        },
+      };
     case actionTypes.TOGGLE_ENTQUALIFI_MODAL:
-      return { ...state, entQualifictaionModal: { ...state.entQualifictaionModal, visible: action.visible } };
+      return {
+        ...state,
+        entQualifictaionModal: { ...state.entQualifictaionModal, visible: action.visible },
+      };
     case actionTypes.LOAD_ENT_QUALIF_SUCCEED:
       return { ...state, entQualifs: action.result.data };
     case actionTypes.TOGGLE_INSP_QUARANTINE_DOCUMENTS_REQUIRED_MODAL:
-      return { ...state, requiredDocuModal: { ...state.entQualifictaionModal, visible: action.visible } };
+      return {
+        ...state,
+        requiredDocuModal: {
+          ...state.entQualifictaionModal,
+          visible: action.visible,
+        },
+      };
     case actionTypes.TOGGLE_ATT_DOCU_MODAL:
       return { ...state, attDocuModal: { ...state.attDocuModal, visible: action.visible } };
     case actionTypes.TOGGLE_DECL_MSG_MODAL:
-      return { ...state, declMsgModal: { ...state.declMsgModal, visible: action.visible, fileName: action.fileName, fileType: action.fileType } };
+      return {
+        ...state,
+        declMsgModal: {
+          ...state.declMsgModal,
+          visible: action.visible,
+          fileName: action.fileName,
+          fileType: action.fileType,
+        },
+      };
     case actionTypes.TOGGLE_GOODS_LICENCE_MODAL:
-      return { ...state, goodsLicenceModal: { ...state.goodsLicenceModal, visible: action.visible, goodsData: action.goodsData } };
+      return {
+        ...state,
+        goodsLicenceModal: {
+          ...state.goodsLicenceModal,
+          visible: action.visible,
+          goodsData: action.goodsData,
+        },
+      };
     default:
       return state;
   }
@@ -533,7 +594,7 @@ export function toggleGoodsLicenceModal(visible, goodsData = {}) {
   };
 }
 
-export function addGoodsLicence(preEntrySeqNo, id, gNo, data) {
+export function addGoodsLicence(preEntrySeqNo, id, data) {
   return {
     [CLIENT_API]: {
       types: [
@@ -543,7 +604,7 @@ export function addGoodsLicence(preEntrySeqNo, id, gNo, data) {
       ],
       endpoint: 'v1/cms/ciq/goods/licence/add',
       method: 'post',
-      data: { preEntrySeqNo, id, gNo, data },
+      data: { preEntrySeqNo, id, data },
     },
   };
 }

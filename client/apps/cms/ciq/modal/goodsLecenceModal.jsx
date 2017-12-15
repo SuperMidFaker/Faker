@@ -5,14 +5,16 @@ import { toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGood
 import { CIQ_LICENCE_TYPE } from 'common/constants';
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+const { Option } = Select;
 
 @connect(
   state => ({
     visible: state.cmsCiqDeclare.goodsLicenceModal.visible,
     goodsData: state.cmsCiqDeclare.goodsLicenceModal.goodsData,
   }),
-  { toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences }
+  {
+    toggleGoodsLicenceModal, addGoodsLicence, loadGoodsLicences, deleteGoodsLicences,
+  }
 )
 @Form.create()
 export default class GoodsLicenceModal extends Component {
@@ -38,10 +40,10 @@ export default class GoodsLicenceModal extends Component {
     });
   }
   handleSave = () => {
-    const { pre_entry_seq_no, id, g_no } = this.props.goodsData;
+    const { preEntrySeqNo, id } = this.props.goodsData;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.addGoodsLicence(pre_entry_seq_no, id, g_no, values).then((result) => {
+        this.props.addGoodsLicence(preEntrySeqNo, id, values).then((result) => {
           this.props.form.resetFields();
           if (!result.error) {
             this.loadDataSource(id);
@@ -86,7 +88,8 @@ export default class GoodsLicenceModal extends Component {
     }, {
       title: '许可证类别',
       dataIndex: 'lic_type_code',
-      render: o => CIQ_LICENCE_TYPE.find(type => type.value === o) && CIQ_LICENCE_TYPE.find(type => type.value === o).text,
+      render: o => CIQ_LICENCE_TYPE.find(type => type.value === o) &&
+                   CIQ_LICENCE_TYPE.find(type => type.value === o).text,
     }, {
       title: '许可证编号',
       dataIndex: 'licence_no',
@@ -104,84 +107,75 @@ export default class GoodsLicenceModal extends Component {
       dataIndex: 'lic_wrtof_left',
     }];
     return (
-      <Modal width="1000" title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
+      <Modal width={1000} title="产品资质" visible={visible} onCancel={this.handleCancel} onOk={this.handleCancel}>
         <Row>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'商品编码'} >
+            <FormItem {...formItemLayout} colon={false} label="商品编码" >
               <Input value={goodsData.hscode} disabled />
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'商品名称'} >
-              <Input value={goodsData.g_name} disabled />
+            <FormItem {...formItemLayout} colon={false} label="商品名称" >
+              <Input value={goodsData.gName} disabled />
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'CIQ代码'} >
-              <Input value={goodsData.ciq_code} disabled />
+            <FormItem {...formItemLayout} colon={false} label="CIQ代码" >
+              <Input value={goodsData.ciqCode} disabled />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'序号'} >
-              <Input value={goodsData.g_no} disabled />
+            <FormItem {...formItemLayout} colon={false} label="序号" >
+              <Input value={goodsData.gNo} disabled />
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'许可证类别'} >
+            <FormItem {...formItemLayout} colon={false} label="许可证类别" >
               {getFieldDecorator('lic_type_code', {
                 required: true,
-              })(
-                <Select showSearch optionFilterProp="children" style={{ width: '100%' }}>
-                  {CIQ_LICENCE_TYPE.map(type => <Option key={type.value} value={type.value}>{type.text}</Option>)}
-                </Select>
-              )}
+              })(<Select showSearch optionFilterProp="children" style={{ width: '100%' }}>
+                {CIQ_LICENCE_TYPE.map(type =>
+                  (<Option key={type.value} value={type.value}>
+                    {type.text}
+                  </Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'许可证编号'} >
+            <FormItem {...formItemLayout} colon={false} label="许可证编号" >
               {getFieldDecorator('licence_no', {
                 required: true,
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'核销货物序号'} >
+            <FormItem {...formItemLayout} colon={false} label="核销货物序号" >
               {getFieldDecorator('lic_wrtof_detail_no', {
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'核销数量'} >
+            <FormItem {...formItemLayout} colon={false} label="核销数量" >
               {getFieldDecorator('lic_wrtof_qty', {
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'核销明细余量'} >
+            <FormItem {...formItemLayout} colon={false} label="核销明细余量" >
               {getFieldDecorator('lic_detail_left', {
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span="8">
-            <FormItem {...formItemLayout} colon={false} label={'核销后余量'} >
+            <FormItem {...formItemLayout} colon={false} label="核销后余量" >
               {getFieldDecorator('lic_wrtof_left', {
-              })(
-                <Input />
-              )}
+              })(<Input />)}
             </FormItem>
           </Col>
         </Row>
