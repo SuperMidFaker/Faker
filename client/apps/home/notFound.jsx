@@ -22,6 +22,9 @@ export default class NotFound extends React.Component {
     intl: intlShape.isRequired,
     setNavTitle: PropTypes.func.isRequired,
   };
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   componentWillMount() {
     this.props.setNavTitle({
       depth: 1,
