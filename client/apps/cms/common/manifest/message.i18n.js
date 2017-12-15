@@ -479,7 +479,7 @@ export default defineMessages({
   },
   deleteConfirm: {
     id: 'cms.app.settings.delete.confirm',
-    defaultMessage: '确认删除该关联客户？',
+    defaultMessage: '确定删除该关联客户？',
   },
   billTemplates: {
     id: 'cms.app.settings.bill.templates',

@@ -239,7 +239,7 @@ export default defineMessages({
   },
   deleteConfirm: {
     id: 'cms.delegation.delete.confirm',
-    defaultMessage: '确认删除？',
+    defaultMessage: '确定删除？',
   },
   delgRecall: {
     id: 'cms.delegation.recall',

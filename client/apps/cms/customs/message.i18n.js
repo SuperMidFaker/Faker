@@ -147,7 +147,7 @@ export default defineMessages({
   },
   deleteConfirm: {
     id: 'cms.customs.decl.delete.confirm',
-    defaultMessage: '确认删除该报关单?',
+    defaultMessage: '确定删除该报关单?',
   },
   delete: {
     id: 'cms.customs.decl.delete',
