@@ -21,6 +21,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
@@ -68,7 +69,7 @@ export default class CorpList extends React.Component {
     loadOrgans: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -197,8 +198,11 @@ export default class CorpList extends React.Component {
           <span>
             {modComp}
             <PrivilegeCover module="corp" feature="organization" action="edit">
-              <Button shape="circle" type="primary" title={formatGlobalMsg(intl, 'edit')}
-                onClick={() => this.handleEnabledAppEdit(record, index)} size="small"
+              <Button shape="circle"
+                type="primary"
+                title={formatGlobalMsg(intl, 'edit')}
+                onClick={() => this.handleEnabledAppEdit(record, index)}
+                size="small"
               >
                 <Icon type="edit" />
               </Button>
@@ -247,9 +251,8 @@ export default class CorpList extends React.Component {
                 </a>
               </PrivilegeCover>
             </span>);
-        } else {
-          return <span />;
         }
+        return <span />;
       },
     }];
     return (
@@ -262,8 +265,10 @@ export default class CorpList extends React.Component {
             <span style={{ fontSize: 20, fontWeight: 700, color: '#333' }}>10</span>
           </div>
           <PrivilegeCover module="corp" feature="organization" action="create">
-            <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT} type="primary"
-              onClick={() => this.handleNavigationTo('/corp/organization/new')} icon="plus-circle-o"
+            <Button disabled={this.props.corplist.totalCount >= MAX_STANDARD_TENANT}
+              type="primary"
+              onClick={() => this.handleNavigationTo('/corp/organization/new')}
+              icon="plus-circle-o"
             >
               {formatGlobalMsg(intl, 'createNew')}
             </Button>
@@ -272,8 +277,10 @@ export default class CorpList extends React.Component {
         <div className="panel-body table-panel table-fixed-layout">
           <Table rowSelection={rowSelection} columns={columns} loading={loading} dataSource={dataSource} useFixedHeader />
         </div>
-        <AppEditor {...this.props.appEditor} switchTenantApp={this.props.switchTenantApp}
-          appPackage={this.props.corplist.tenantAppPackage} onCancel={this.handleEditorHide}
+        <AppEditor {...this.props.appEditor}
+          switchTenantApp={this.props.switchTenantApp}
+          appPackage={this.props.corplist.tenantAppPackage}
+          onCancel={this.handleEditorHide}
         />
       </div>);
   }

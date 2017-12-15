@@ -186,7 +186,7 @@ export default class NormalDeclModal extends Component {
       if (!result.error) {
         const relNo = row.ftz_rel_no;
         const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
-        const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
+        const normalRegs = this.state.normalRegs.map(pr => (pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr));
         this.setState({ regDetails, normalRegs });
       }
     });
@@ -198,7 +198,7 @@ export default class NormalDeclModal extends Component {
     this.props.loadBatchRegDetails(preEntrySeqNos).then((result) => {
       if (!result.error) {
         const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
-        const normalRegs = this.state.normalRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
+        const normalRegs = this.state.normalRegs.map(pr => (relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr));
         this.setState({
           regDetails, normalRegs, normalRowSelKeys: [], normalSelRows: [],
         });
@@ -207,7 +207,7 @@ export default class NormalDeclModal extends Component {
   }
   handleDelDetail = (detail) => {
     const regDetails = this.state.regDetails.filter(reg => reg.id !== detail.id);
-    const normalRegs = this.state.normalRegs.map(pr => pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr);
+    const normalRegs = this.state.normalRegs.map(pr => (pr.ftz_rel_no === detail.ftz_rel_no ? { ...pr, added: false } : pr));
     this.setState({ regDetails, normalRegs });
   }
   batchDelete = () => {
@@ -407,9 +407,8 @@ export default class NormalDeclModal extends Component {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
         return reg.test(item.ftz_rel_no);
-      } else {
-        return true;
       }
+      return true;
     });
     const normalRegColumns = [{
       title: '出库单号',
@@ -433,7 +432,10 @@ export default class NormalDeclModal extends Component {
       title: '币制',
       dataIndex: 'currency',
       width: 80,
-      render: o => o && this.props.currencies.find(currency => currency.value === o).text,
+      render: (o) => {
+        const currency = this.props.currencies.find(currency => currency.value === o);
+        return currency.text;
+      },
       filterDropdown: (
         <div className="filter-dropdown">
           <Select allowClear placeholder="币制" onChange={this.handleCurrencyChange} style={{ width: 80 }} value={this.state.currency}>
@@ -495,8 +497,13 @@ export default class NormalDeclModal extends Component {
       </div>
     </div>);
     return (
-      <Modal maskClosable={false} title={title} width="100%" wrapClassName="fullscreen-modal" closable={false}
-        footer={null} visible={this.props.visible}
+      <Modal maskClosable={false}
+        title={title}
+        width="100%"
+        wrapClassName="fullscreen-modal"
+        closable={false}
+        footer={null}
+        visible={this.props.visible}
       >
         <Card hoverable={false} bodyStyle={{ paddingBottom: 16 }}>
           <Form className="form-layout-compact">
@@ -579,7 +586,10 @@ export default class NormalDeclModal extends Component {
                       {this.state.normalRowSelKeys.length !== 0 && <Button onClick={this.batchAdd}>批量添加</Button>}
                     </div>
                   </div>
-                  <Table columns={normalRegColumns} dataSource={this.state.normalRegs} rowKey="id" rowSelection={normalRowSelection}
+                  <Table columns={normalRegColumns}
+                    dataSource={this.state.normalRegs}
+                    rowKey="id"
+                    rowSelection={normalRowSelection}
                     scroll={{ x: normalRegColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 240), 0), y: this.state.scrollY }}
                   />
                 </div>
@@ -595,7 +605,10 @@ export default class NormalDeclModal extends Component {
                       {this.state.selectedRowKeys.length !== 0 && <Button onClick={this.batchDelete}>批量删除</Button>}
                     </div>
                   </div>
-                  <Table columns={this.regDetailColumns} dataSource={dataSource} rowKey="id" rowSelection={rowSelection}
+                  <Table columns={this.regDetailColumns}
+                    dataSource={dataSource}
+                    rowKey="id"
+                    rowSelection={rowSelection}
                     scroll={{ x: this.regDetailColumns.reduce((acc, cur) => acc + (cur.width ? cur.width : 500), 0), y: this.state.scrollY }}
                   />
                 </div>

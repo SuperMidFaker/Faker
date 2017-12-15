@@ -7,8 +7,8 @@ import { setClientForm, loadFlowNodeData } from 'common/reducers/crmOrders';
 import { intlShape, injectIntl } from 'react-intl';
 import { uuidWithoutDash } from 'client/common/uuid';
 import { Ikons } from 'client/components/FontIcon';
-import messages from '../message.i18n';
 import { format } from 'client/common/i18n/helpers';
+import messages from '../message.i18n';
 
 const formatMsg = format(messages);
 const FormItem = Form.Item;
@@ -43,8 +43,7 @@ export default class ClearanceForm extends Component {
     setClientForm: PropTypes.func.isRequired,
   }
   componentDidMount() {
-    const { formData } = this.props;
-    const node = formData.node;
+    const { formData: { node } } = this.props;
     if (!node.uuid && node.node_uuid) {
       this.props.loadFlowNodeData(node.node_uuid, node.kind).then((result) => {
         if (!result.error) {
@@ -175,8 +174,10 @@ export default class ClearanceForm extends Component {
             <FormItem label={this.msg('packageNum')} {...formItemLayout}>
               <InputGroup compact>
                 <Input type="number" style={{ width: '50%' }} value={node.pack_count} onChange={e => this.handleChange('pack_count', e.target.value)} />
-                <Select style={{ width: '50%' }} placeholder="选择包装方式"
-                  onChange={value => this.handleChange('wrap_type', value)} value={node.wrap_type}
+                <Select style={{ width: '50%' }}
+                  placeholder="选择包装方式"
+                  onChange={value => this.handleChange('wrap_type', value)}
+                  value={node.wrap_type}
                 >
                   {
                     WRAP_TYPE.map(wt =>
@@ -188,7 +189,9 @@ export default class ClearanceForm extends Component {
           </Col>
           <Col sm={24} lg={8}>
             <FormItem label={this.msg('delgGrossWt')} {...formItemLayout}>
-              <Input value={node.gross_wt} addonAfter="千克" type="number"
+              <Input value={node.gross_wt}
+                addonAfter="千克"
+                type="number"
                 onChange={ev => this.handleChange('gross_wt', ev.target.value)}
               />
             </FormItem>

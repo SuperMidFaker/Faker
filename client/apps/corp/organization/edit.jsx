@@ -14,6 +14,7 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
+
 const formatMsg = format(messages);
 const formatContainerMsg = format(containerMessages);
 const formatGlobalMsg = format(globalMessages);
@@ -24,9 +25,8 @@ function fetchData({ dispatch, cookie, params }) {
   const corpId = parseInt(params.id, 10);
   if (corpId) {
     return dispatch(loadOrganizationForm(cookie, corpId));
-  } else {
-    return dispatch(clearForm());
   }
+  return dispatch(clearForm());
 }
 
 function goBack(router) {
@@ -47,7 +47,7 @@ function goBack(router) {
 @withPrivilege({
   module: 'corp',
   feature: 'organization',
-  action: props => props.formData.key === null ? 'create' : 'edit',
+  action: props => (props.formData.key === null ? 'create' : 'edit'),
 })
 @Form.create()
 export default class CorpEdit extends React.Component {
@@ -63,7 +63,7 @@ export default class CorpEdit extends React.Component {
     checkLoginName: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   }
   onSubmitReturn(error) {
     if (error) {
@@ -113,8 +113,11 @@ export default class CorpEdit extends React.Component {
   renderTextInput(labelName, placeholder, field, required, rules, fieldProps) {
     const { form: { getFieldDecorator } } = this.props;
     return (
-      <FormItem label={labelName} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
-        hasFeedback required={required}
+      <FormItem label={labelName}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        hasFeedback
+        required={required}
       >
         {getFieldDecorator(field, { rules, ...fieldProps })(<Input type="text" placeholder={placeholder} />)}
       </FormItem>
@@ -134,8 +137,11 @@ export default class CorpEdit extends React.Component {
           true, [{ required: true, min: 2, message: formatMsg(intl, 'nameMessage') }],
           { initialValue: contact }
         )}
-        <FormItem label={formatMsg(intl, 'username')} labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }} hasFeedback required
+        <FormItem label={formatMsg(intl, 'username')}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
+          hasFeedback
+          required
         >
           {getFieldDecorator('loginName', {
             rules: [{
@@ -168,7 +174,9 @@ export default class CorpEdit extends React.Component {
   renderOwnerSelect() {
     const { corpUsers, intl, form: { getFieldDecorator } } = this.props;
     return (
-      <FormItem label={formatMsg(intl, 'chief')} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}
+      <FormItem label={formatMsg(intl, 'chief')}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
         required
       >
         {getFieldDecorator('coid', {
@@ -186,7 +194,8 @@ export default class CorpEdit extends React.Component {
     const { formData: { name, subCode }, intl, submitting } = this.props;
     return (
       <div className="page-body">
-        <Form layout="horizontal" onSubmit={this.handleSubmit}
+        <Form layout="horizontal"
+          onSubmit={this.handleSubmit}
           className="form-edit-content offset-right-col"
         >
           {

@@ -1,17 +1,18 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // import pdfMake from 'pdfmake/build/pdfmake';
 // import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from 'moment';
 import { intlShape, injectIntl } from 'react-intl';
 import { Layout, Collapse, Button, Breadcrumb, Table, Select, Icon, Form, message } from 'antd';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../docus/message.i18n';
 import { loadTempParams, loadDocuDatas, loadDocuBody, loadInvTemplates, updateDocuTemplate, setDocu } from 'common/reducers/cmsInvoice';
+import { CMS_DOCU_TYPE } from 'common/constants';
 import InvoiceDetails from '../docus/invoiceDetails';
 import ContractDetails from '../docus/contractDetails';
 import PacklistDetails from '../docus/packlistDetails';
-import { CMS_DOCU_TYPE } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import messages from '../docus/message.i18n';
 
 const formatMsg = format(messages);
 const Panel = Collapse.Panel;
@@ -425,15 +426,21 @@ export default class DocuPane extends React.Component {
                     value={invTempId}
                   >
                     <OptGroup>
-                      {invtemps.map(data => (<Option key={data.id} value={data.id}
+                      {invtemps.map(data => (<Option key={data.id}
+                        value={data.id}
                         search={`${data.id}${data.template_name}`}
                       ><Icon type="file-text" /> {data.template_name}
                       </Option>))}
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle" dataSource={invoices} columns={docuCols} showHeader={false}
-                  rowKey="id" pagination={false} rowClassName={record => record.id === docu.id ? 'table-row-selected' : ''}
+                <Table size="middle"
+                  dataSource={invoices}
+                  columns={docuCols}
+                  showHeader={false}
+                  rowKey="id"
+                  pagination={false}
+                  rowClassName={record => (record.id === docu.id ? 'table-row-selected' : '')}
                   onRow={record => ({
                     onClick: () => { this.handleRowClick(record); },
                   })}
@@ -450,15 +457,21 @@ export default class DocuPane extends React.Component {
                     value={conTempId}
                   >
                     <OptGroup>
-                      {contemps.map(data => (<Option key={data.id} value={data.id}
+                      {contemps.map(data => (<Option key={data.id}
+                        value={data.id}
                         search={`${data.id}${data.template_name}`}
                       ><Icon type="file-text" /> {data.template_name}
                       </Option>))}
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle" dataSource={contracts} columns={docuCols} showHeader={false}
-                  rowKey="id" pagination={false} rowClassName={record => record.id === docu.id ? 'table-row-selected' : ''}
+                <Table size="middle"
+                  dataSource={contracts}
+                  columns={docuCols}
+                  showHeader={false}
+                  rowKey="id"
+                  pagination={false}
+                  rowClassName={record => (record.id === docu.id ? 'table-row-selected' : '')}
                   onRow={record => ({
                     onClick: () => { this.handleRowClick(record); },
                   })}
@@ -475,15 +488,21 @@ export default class DocuPane extends React.Component {
                     value={pakTempId}
                   >
                     <OptGroup>
-                      {paktemps.map(data => (<Option key={data.id} value={data.id}
+                      {paktemps.map(data => (<Option key={data.id}
+                        value={data.id}
                         search={`${data.id}${data.template_name}`}
                       ><Icon type="file-text" /> {data.template_name}
                       </Option>))}
                     </OptGroup>
                   </Select>
                 </FormItem>
-                <Table size="middle" dataSource={packlists} columns={docuCols} showHeader={false}
-                  rowKey="id" pagination={false} rowClassName={record => record.id === docu.id ? 'table-row-selected' : ''}
+                <Table size="middle"
+                  dataSource={packlists}
+                  columns={docuCols}
+                  showHeader={false}
+                  rowKey="id"
+                  pagination={false}
+                  rowClassName={record => (record.id === docu.id ? 'table-row-selected' : '')}
                   onRow={record => ({
                     onClick: () => { this.handleRowClick(record); },
                   })}

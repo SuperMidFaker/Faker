@@ -27,7 +27,7 @@ const Option = Select.Option;
 @Form.create()
 
 export default class addSlaveModal extends React.Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,
@@ -51,7 +51,7 @@ export default class addSlaveModal extends React.Component {
         const formData = this.props.form.getFieldsValue();
         formData.tenant_id = this.props.tenantId;
         formData.login_id = this.props.loginId;
-        for (let i = 0; i < slaveList.length; i++) {
+        for (let i = 0; i < slaveList.length; i += 1) {
           if (slaveList[i].partner_tenant_id === formData.partner_tenant_id) {
             formData.name = slaveList[i].name;
           }

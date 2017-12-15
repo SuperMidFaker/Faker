@@ -53,7 +53,7 @@ function getFieldInits(delgDisp, dispatch) {
 )
 @Form.create()
 export default class DelgDispModal extends Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     assign: PropTypes.object.isRequired,
     delgDisp: PropTypes.object.isRequired,
@@ -143,7 +143,8 @@ export default class DelgDispModal extends Component {
               {
                 partners.map(pt => (
                   <Option searched={`${pt.partner_code}${pt.name}`}
-                    value={pt.partner_id} key={pt.partner_id}
+                    value={pt.partner_id}
+                    key={pt.partner_id}
                   >
                     {pt.name}
                   </Option>))
@@ -152,18 +153,24 @@ export default class DelgDispModal extends Component {
           </FormItem>
           <FormItem label="报检供应商" >
             <Col span={6}>
-              <Switch checked={appoint} onChange={this.handleOnChange} checkedChildren="指定" unCheckedChildren="不指定"
+              <Switch checked={appoint}
+                onChange={this.handleOnChange}
+                checkedChildren="指定"
+                unCheckedChildren="不指定"
                 disabled={fieldInits.appointed || delgDisp.appointed_option === 3}
               />
             </Col>
             <Col span={18}>
-              {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(<Select showSearch showArrow optionFilterProp="searched"
+              {(appoint || fieldInits.appointed) && getFieldDecorator('ciq_name', { initialValue: fieldInits.ciq_name })(<Select showSearch
+                showArrow
+                optionFilterProp="searched"
                 placeholder={this.msg('dispatchMessage')}
               >
                 {
                   ciqSups.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
-                      value={pt.partner_id} key={pt.partner_id}
+                      value={pt.partner_id}
+                      key={pt.partner_id}
                     >
                       {pt.name}
                     </Option>))

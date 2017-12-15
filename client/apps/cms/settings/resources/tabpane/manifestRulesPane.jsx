@@ -7,12 +7,12 @@ import { Table, Button, Layout, Tag, message } from 'antd';
 import NavLink from 'client/components/NavLink';
 import RowAction from 'client/components/RowAction';
 import { loadPartners } from 'common/reducers/partner';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-import AddManifestRuleModal from '../modal/addManifestRuleModal';
-import ManifestRuleCloneModal from '../modal/manifestRuleCloneModal';
 import { loadBillemplates, deleteTemplate, toggleBillTempModal, showManifestRulesCloneModal } from 'common/reducers/cmsManifest';
 import { CMS_BILL_TEMPLATE_PERMISSION } from 'common/constants';
+import { format } from 'client/common/i18n/helpers';
+import AddManifestRuleModal from '../modal/addManifestRuleModal';
+import ManifestRuleCloneModal from '../modal/manifestRuleCloneModal';
+import messages from '../../message.i18n';
 
 const { Content } = Layout;
 const formatMsg = format(messages);
@@ -30,7 +30,7 @@ const formatMsg = format(messages);
 )
 
 export default class ManifestRulesPane extends React.Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     billtemplates: PropTypes.array,
@@ -81,7 +81,7 @@ export default class ManifestRulesPane extends React.Component {
         dataIndex: 'modify_date',
         key: 'modify_date',
         width: 120,
-        render: date => date ? moment(date).format('MM.DD HH:mm') : '-',
+        render: date => (date ? moment(date).format('MM.DD HH:mm') : '-'),
       }, {
         title: '修改人',
         dataIndex: 'modify_name',

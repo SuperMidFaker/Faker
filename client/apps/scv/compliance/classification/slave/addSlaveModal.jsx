@@ -27,7 +27,7 @@ const Option = Select.Option;
 @Form.create()
 
 export default class addSlaveModal extends React.Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     loginId: PropTypes.number.isRequired,
     visible: PropTypes.bool.isRequired,

@@ -26,7 +26,7 @@ const formatMsg = format(messages);
 )
 
 export default class ManifestTemplateList extends React.Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     billtemplates: PropTypes.array,

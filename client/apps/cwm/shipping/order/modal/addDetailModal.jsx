@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -231,8 +232,13 @@ export default class AddDetailModal extends Component {
               {getFieldDecorator('order_qty', {
                 rules: [{ required: true, message: '请输入订单数量' }],
               })(<Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />)}
-              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit}
-                style={{ width: '30%' }} onChange={this.handleUnitChange}
+              <Select showSearch
+                allowClear
+                optionFilterProp="children"
+                placeholder="计量单位"
+                value={product.unit}
+                style={{ width: '30%' }}
+                onChange={this.handleUnitChange}
               >
                 {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
               </Select>
@@ -271,8 +277,13 @@ export default class AddDetailModal extends Component {
                 initialValue: product.unit_price,
               })(<Input type="number" placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />)}
               <Input type="number" placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleAmountChange} style={{ width: '30%' }} />
-              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency && String(product.currency)}
-                style={{ width: '40%' }} onChange={this.handleCurrChange}
+              <Select showSearch
+                allowClear
+                optionFilterProp="children"
+                placeholder="币制"
+                value={product.currency && String(product.currency)}
+                style={{ width: '40%' }}
+                onChange={this.handleCurrChange}
               >
                 {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}
               </Select>

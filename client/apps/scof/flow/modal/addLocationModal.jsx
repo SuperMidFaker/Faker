@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { intlShape, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Row, Col, AutoComplete } from 'antd';
@@ -147,8 +148,11 @@ export default class AddLocationModal extends React.Component {
       typeDesc = '收货方';
     }
     return (
-      <Modal maskClosable={false} visible={visible} title={`添加${typeDesc}`}
-        onCancel={this.handleCancel} onOk={this.handleOk}
+      <Modal maskClosable={false}
+        visible={visible}
+        title={`添加${typeDesc}`}
+        onCancel={this.handleCancel}
+        onOk={this.handleOk}
       >
         <Row>
           <Col span="14">
@@ -168,7 +172,8 @@ export default class AddLocationModal extends React.Component {
           </Col>
           <Col span="10">
             <FormItem label="地点别名">
-              {getFieldDecorator('byname')(<AutoComplete style={{ width: '100%' }} placeholder="地点别名"
+              {getFieldDecorator('byname')(<AutoComplete style={{ width: '100%' }}
+                placeholder="地点别名"
                 dataSource={this.state.locations.map(item => item.name)}
                 onChange={this.handleNameChange}
                 onSelect={this.handleNameSelect}

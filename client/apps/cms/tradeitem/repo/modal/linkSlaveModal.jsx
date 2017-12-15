@@ -17,7 +17,7 @@ import { formatMsg } from '../../message.i18n';
   { showLinkSlaveModal, getUnlinkSlavesByOwner, linkMasterSlaves }
 )
 export default class LinkSlaveModal extends React.Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     visible: PropTypes.bool.isRequired,
     showLinkSlaveModal: PropTypes.func.isRequired,
@@ -58,7 +58,7 @@ export default class LinkSlaveModal extends React.Component {
   }, {
     title: '最后更新时间',
     dataIndex: 'last_modified_date',
-    render: (modifdate, row) => modifdate ? moment(modifdate).format('YYYY-MM-DD') : moment(row.created_date).format('YYYY-MM-DD'),
+    render: (modifdate, row) => (modifdate ? moment(modifdate).format('YYYY-MM-DD') : moment(row.created_date).format('YYYY-MM-DD')),
   }];
   render() {
     const { visible, slaveList } = this.props;

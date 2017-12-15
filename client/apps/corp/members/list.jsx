@@ -6,7 +6,6 @@ import QueueAnim from 'rc-queue-anim';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import Table from 'client/components/remoteAntTable';
 import { MdIcon } from 'client/components/FontIcon';
-import AddMemberModal from './addMemberModal';
 import { intlShape, injectIntl } from 'react-intl';
 import { loadMembers, loadDepartments, delMember, createDepartment, switchStatus, openMemberModal } from 'common/reducers/personnel';
 import NavLink from 'client/components/NavLink';
@@ -14,15 +13,16 @@ import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPriv
 import { resolveCurrentPageNumber } from 'client/util/react-ant';
 import { ACCOUNT_STATUS, PRESET_TENANT_ROLE, PRESET_ROLE_NAME_KEYS } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
-import { formatMsg } from './message.i18n';
 import globalMessages from 'client/common/root.i18n';
 import containerMessages from 'client/apps/message.i18n';
+import AddMemberModal from './addMemberModal';
+import { formatMsg } from './message.i18n';
 
 const formatGlobalMsg = format(globalMessages);
 const formatContainerMsg = format(containerMessages);
 const { Header, Content, Sider } = Layout;
-const Search = Input.Search;
-const SubMenu = Menu.SubMenu;
+const { Search } = Input;
+const { SubMenu } = Menu;
 
 function fetchData({ state, dispatch }) {
   const promises = [
@@ -55,7 +55,6 @@ function fetchData({ state, dispatch }) {
 export default class MemberDepartmentView extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
-    selectIndex: PropTypes.number,
     loading: PropTypes.bool.isRequired,
     personnelist: PropTypes.shape({ totalCount: PropTypes.number.isRequired }).isRequired,
     filters: PropTypes.shape({ dept_id: PropTypes.number, name: PropTypes.string }).isRequired,
@@ -66,7 +65,7 @@ export default class MemberDepartmentView extends React.Component {
     delMember: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -125,7 +124,7 @@ export default class MemberDepartmentView extends React.Component {
     width: 50,
     render: (o, record) => {
       let style = { color: '#51C23A' };
-      let text = ACCOUNT_STATUS.normal.text;
+      let { text } = ACCOUNT_STATUS.normal;
       if (record.status === ACCOUNT_STATUS.blocked.id) {
         style = { color: '#CCC' };
         text = ACCOUNT_STATUS.blocked.text;
@@ -176,9 +175,8 @@ export default class MemberDepartmentView extends React.Component {
             </PrivilegeCover>
           </span>
         );
-      } else {
-        return <span />;
       }
+      return <span />;
     },
   }]
   dataSource = new Table.DataSource({
@@ -354,7 +352,9 @@ export default class MemberDepartmentView extends React.Component {
                 <div className="nav-sider-head">
                   <Search placeholder="搜索用户" onSearch={this.handleSearch} />
                 </div>
-                <Menu defaultOpenKeys={['deptMenu']} mode="inline" selectedKeys={selectMenuKeys}
+                <Menu defaultOpenKeys={['deptMenu']}
+                  mode="inline"
+                  selectedKeys={selectMenuKeys}
                   onClick={this.handleMenuClick}
                 >
                   <Menu.Item key="members"><NavLink to="/corp/members"><Icon type="team" />所有成员</NavLink></Menu.Item>
@@ -365,7 +365,11 @@ export default class MemberDepartmentView extends React.Component {
                   </SubMenu>
                 </Menu>
                 <div className="nav-sider-footer">
-                  <Popover content={departmentPopover} placement="bottom" title="创建部门" trigger="click" visible={this.state.deptPopVisible}
+                  <Popover content={departmentPopover}
+                    placement="bottom"
+                    title="创建部门"
+                    trigger="click"
+                    visible={this.state.deptPopVisible}
                     onVisibleChange={this.handleDeptPopVisibleChange}
                   >
                     <Button type="dashed" icon="plus-circle">创建部门</Button>

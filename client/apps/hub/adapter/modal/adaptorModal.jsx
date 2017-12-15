@@ -25,8 +25,6 @@ const formItemLayout = {
 )
 
 export default class AdaptorModal extends Component {
-  static PropTypes = {
-  }
   state = {
     adaptorName: '',
     ownerPid: '',
@@ -77,8 +75,11 @@ export default class AdaptorModal extends Component {
     const { visible, customers } = this.props;
     const { adaptorName, model } = this.state;
     return (
-      <Modal maskClosable={false} title="新增适配器" onOk={this.handleAddAdaptor}
-        onCancel={this.handleCancel} visible={visible}
+      <Modal maskClosable={false}
+        title="新增适配器"
+        onOk={this.handleAddAdaptor}
+        onCancel={this.handleCancel}
+        visible={visible}
       >
         <Form layout="horizontal">
           <FormItem label="企业名称" {...formItemLayout}>
