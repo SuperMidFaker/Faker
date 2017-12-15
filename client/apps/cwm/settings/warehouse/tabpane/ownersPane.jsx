@@ -29,7 +29,9 @@ const confirm = Modal.confirm;
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition }
+  {
+    showWhseOwnersModal, loadwhseOwners, showOwnerControlModal, changeOwnerStatus, loadWhse, clearTransition,
+  }
 )
 export default class OwnersPane extends Component {
   static propTypes = {
@@ -168,13 +170,15 @@ export default class OwnersPane extends Component {
   }
   handleInitData = (record) => {
     this.setState({
-      seletedOwner: { id: record.owner_partner_id,
+      seletedOwner: {
+        id: record.owner_partner_id,
         partner_tenant_id: record.owner_tenant_id,
         name: record.owner_name,
         portion_enabled: record.portion_enabled,
         customs_code: record.customs_code,
       },
-      importPanelVisible: true });
+      importPanelVisible: true,
+    });
   }
   handleBackupData = (record) => {
     const { whseCode } = this.props;
@@ -195,7 +199,9 @@ export default class OwnersPane extends Component {
     });
   };
   render() {
-    const { warehouse, whseCode, whseName, whseTenantId, whseOwners } = this.props;
+    const {
+      warehouse, whseCode, whseName, whseTenantId, whseOwners,
+    } = this.props;
     return (
       <DataPane columns={this.columns} dataSource={whseOwners} rowKey="id">
         <DataPane.Toolbar>

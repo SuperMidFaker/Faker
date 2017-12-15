@@ -11,7 +11,9 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 function ColumnInput(props) {
-  const { inEdit, record, field, onChange } = props;
+  const {
+    inEdit, record, field, onChange,
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(record, field, ev.target.value);
@@ -80,15 +82,13 @@ export default class ContainersPane extends React.Component {
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.saveContainer(record).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功', 5);
-        }
+    this.props.saveContainer(record).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
       }
-    );
+    });
   }
   handleDelete = (record, index) => {
     this.props.delContainer(record.id).then((result) => {

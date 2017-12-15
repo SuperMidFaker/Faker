@@ -20,15 +20,17 @@ const formItemLayout = {
     vehicleValidate: state.transportResources.vehicleValidate,
     vehicleParams: state.transportResources.vehicleParams,
   }),
-  { addVehicle, validateVehicle, loadVehicles, loadVehicleParams }
+  {
+    addVehicle, validateVehicle, loadVehicles, loadVehicleParams,
+  }
 )
 class VehicleFormMini extends Component {
   static propTypes = {
-    form: PropTypes.object.isRequired,              // 对应于antd中的form对象
-    vehicleValidate: PropTypes.bool,                // 表示车牌号是否可用
-    onVehicleNumberBlur: PropTypes.func,            // 车牌号改变执行的回调函数
-    vehicles: PropTypes.object.isRequired,              // 对应于antd中的form对象
-    car: PropTypes.object,                          // 编辑的车辆信息, 只有在mode='edit'时才需要
+    form: PropTypes.object.isRequired, // 对应于antd中的form对象
+    vehicleValidate: PropTypes.bool, // 表示车牌号是否可用
+    onVehicleNumberBlur: PropTypes.func, // 车牌号改变执行的回调函数
+    vehicles: PropTypes.object.isRequired, // 对应于antd中的form对象
+    car: PropTypes.object, // 编辑的车辆信息, 只有在mode='edit'时才需要
     loadVehicleParams: PropTypes.func.isRequired,
   };
   state = {

@@ -104,8 +104,10 @@ export default class AgreementForm extends React.Component {
     this.props.changeTariff({ priceChanged: true });
   }
   render() {
-    const { form, formData, formParams,
-      form: { getFieldDecorator } } = this.props;
+    const {
+      form, formData, formParams,
+      form: { getFieldDecorator },
+    } = this.props;
     const { partnerVisible, readonly, transMode } = this.state;
     return (
       <div style={{ padding: 10 }}>
@@ -130,12 +132,10 @@ export default class AgreementForm extends React.Component {
                   {getFieldDecorator('partnerPermission', {
                     initialValue: formData.partnerPermission || TARIFF_PARTNER_PERMISSION.viewable,
                     rules: [{ required: true, type: 'number' }],
-                  })(
-                    <RadioGroup disabled={readonly}>
-                      <Radio value={TARIFF_PARTNER_PERMISSION.viewable}>查看</Radio>
-                      <Radio value={TARIFF_PARTNER_PERMISSION.editable}>修改</Radio>
-                    </RadioGroup>
-                  )}
+                  })(<RadioGroup disabled={readonly}>
+                    <Radio value={TARIFF_PARTNER_PERMISSION.viewable}>查看</Radio>
+                    <Radio value={TARIFF_PARTNER_PERMISSION.editable}>修改</Radio>
+                  </RadioGroup>)}
                 </FormItem>
               </Col>
             </Row>
@@ -148,8 +148,7 @@ export default class AgreementForm extends React.Component {
                   })(<Select disabled={readonly}>
                     {
                       GOODS_TYPES.map(gt =>
-                        <Option value={gt.value} key={gt.value}>{gt.text}</Option>
-                      )
+                        <Option value={gt.value} key={gt.value}>{gt.text}</Option>)
                     }
                   </Select>)}
                 </FormItem>
@@ -164,19 +163,15 @@ export default class AgreementForm extends React.Component {
               </Col>
               <Col sm={5}>
                 <FormItem label="税率" {...formItemLayout}>
-                  {getFieldDecorator('taxrate.mode', {
-                    initialValue: formData.taxrate.mode })(
-                      <RadioGroup>
-                        <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
-                        <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
-                      </RadioGroup>)}
+                  {getFieldDecorator('taxrate.mode', { initialValue: formData.taxrate.mode })(<RadioGroup>
+                    <RadioButton value={TAX_STATUS.exctax.key}>{TAX_STATUS.exctax.value}</RadioButton>
+                    <RadioButton value={TAX_STATUS.inctax.key}>{TAX_STATUS.inctax.value}</RadioButton>
+                  </RadioGroup>)}
                 </FormItem>
               </Col>
               <Col sm={3}>
                 <FormItem label="税率值" labelCol={{ span: 9 }} wrapperCol={{ span: 15 }}>
-                  {getFieldDecorator('taxrate.value', {
-                    initialValue: formData.taxrate.value })(
-                      <Input type="number" addonAfter="％" placeholder="请输入税率" />)}
+                  {getFieldDecorator('taxrate.value', { initialValue: formData.taxrate.value })(<Input type="number" addonAfter="％" placeholder="请输入税率" />)}
                 </FormItem>
               </Col>
             </Row>
@@ -189,8 +184,7 @@ export default class AgreementForm extends React.Component {
                   })(<Select onSelect={this.handleModeSelect} disabled={readonly}>
                     {
                       formParams.transModes.map(tm =>
-                        <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>
-                      )
+                        <Option value={tm.mode_code} key={tm.mode_code}>{tm.mode_name}</Option>)
                     }
                   </Select>)}
                 </FormItem>

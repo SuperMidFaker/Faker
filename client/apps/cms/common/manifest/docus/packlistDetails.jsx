@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Card, Row, Col, Table } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -83,7 +84,9 @@ export default class PacklistDetails extends React.Component {
     this.props.saveDocuChange(change, this.props.invoice.id);
   }
   render() {
-    const { invoice, trxModes, customs, docuBody } = this.props;
+    const {
+      invoice, trxModes, customs, docuBody,
+    } = this.props;
     const columns = [...this.columns];
     const totCols = [...this.totCols];
     if (invoice.eng_name_en) {
@@ -175,13 +178,23 @@ export default class PacklistDetails extends React.Component {
               <InfoItem label="付款条件  Terms Of Payment" field={invoice.payment_terms} editable placeholder="输入付款条件" dataIndex="payment_terms" onEdit={this.handleFill} />
             </Col>
             <Col sm={24}>
-              {!!invoice.dest_port_en && <InfoItem type="select" label="目的口岸  Port Of Destination" placeholder="点击选择"
-                field={invoice.dest_port} editable options={customs} onEdit={value => this.handleFill(value, 'dest_port')}
+              {!!invoice.dest_port_en && <InfoItem type="select"
+                label="目的口岸  Port Of Destination"
+                placeholder="点击选择"
+                field={invoice.dest_port}
+                editable
+                options={customs}
+                onEdit={value => this.handleFill(value, 'dest_port')}
               />}
             </Col>
             <Col sm={24}>
-              <InfoItem type="select" label="成交方式  Terms Of Delivery" placeholder="点击选择"
-                field={invoice.trxn_mode} editable options={trxModes} onEdit={value => this.handleFill(value, 'trxn_mode')}
+              <InfoItem type="select"
+                label="成交方式  Terms Of Delivery"
+                placeholder="点击选择"
+                field={invoice.trxn_mode}
+                editable
+                options={trxModes}
+                onEdit={value => this.handleFill(value, 'trxn_mode')}
               />
             </Col>
             <Col sm={24}>

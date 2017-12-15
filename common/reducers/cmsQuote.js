@@ -305,7 +305,9 @@ export function updateQuoteStatus(quoteId, valid, tenantId, modifyBy, modifyById
       ],
       endpoint: 'v1/cms/quote/statusUpdate',
       method: 'post',
-      data: { quoteId, valid, tenantId, modifyBy, modifyById },
+      data: {
+        quoteId, valid, tenantId, modifyBy, modifyById,
+      },
       origin: 'mongo',
     },
   };

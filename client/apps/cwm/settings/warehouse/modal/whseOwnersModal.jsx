@@ -16,7 +16,9 @@ import { formatMsg } from '../message.i18n';
     visible: state.cwmWarehouse.whseOwnersModal.visible,
     loginId: state.account.loginId,
   }),
-  { loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode, loadWhse }
+  {
+    loadwhseOwners, loadPartners, addWhseOwners, hideWhseOwnersModal, saveOwnerCode, loadWhse,
+  }
 )
 export default class WhseOwnersModal extends Component {
   static propTypes = {
@@ -101,22 +103,20 @@ export default class WhseOwnersModal extends Component {
       receivingMode: WHSE_OPERATION_MODES.manual.value,
       shippingMode: WHSE_OPERATION_MODES.manual.value,
     }));
-    this.props.addWhseOwners(data, this.props.loginId).then(
-      (result) => {
-        if (!result.error) {
-          message.info('添加成功');
-          this.props.hideWhseOwnersModal();
-          this.props.loadwhseOwners(whseCode, this.props.whseTenantId);
-          this.props.loadWhse(whseCode);
-          const filterPartners = this.state.filterPartners.filter(partner => !this.state.selectedRows.find(owners => owners.id === partner.id));
-          this.setState({
-            filterPartners,
-            selectedRowKeys: [],
-            selectedRows: [],
-          });
-        }
+    this.props.addWhseOwners(data, this.props.loginId).then((result) => {
+      if (!result.error) {
+        message.info('添加成功');
+        this.props.hideWhseOwnersModal();
+        this.props.loadwhseOwners(whseCode, this.props.whseTenantId);
+        this.props.loadWhse(whseCode);
+        const filterPartners = this.state.filterPartners.filter(partner => !this.state.selectedRows.find(owners => owners.id === partner.id));
+        this.setState({
+          filterPartners,
+          selectedRowKeys: [],
+          selectedRows: [],
+        });
       }
-    );
+    });
   }
   render() {
     const { visible } = this.props;

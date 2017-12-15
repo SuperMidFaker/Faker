@@ -23,7 +23,9 @@ const formatMsg = format(messages);
     vendor: state.sofVendors.vendorModal.vendor,
     operation: state.sofVendors.vendorModal.operation,
   }),
-  { addPartner, editPartner, checkPartner, hideVendorModal, getCompanyInfo }
+  {
+    addPartner, editPartner, checkPartner, hideVendorModal, getCompanyInfo,
+  }
 )
 
 export default class VendorModal extends React.Component {
@@ -100,7 +102,9 @@ export default class VendorModal extends React.Component {
     });
   }
   handleOk = () => {
-    const { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
+    const {
+      id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
+    } = this.state;
     const { tenantId, operation } = this.props;
     let business;
     if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
@@ -123,16 +127,15 @@ export default class VendorModal extends React.Component {
     } else if (businessType === '') {
       message.error('请选择供应商业务类型');
     } else if (this.props.operation === 'edit') {
-      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'SUP', business, customsCode, businessType, contact, phone, email
-        ).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.success('修改成功');
-            this.handleCancel();
-            this.props.onOk();
-          }
-        });
+      this.props.editPartner(id, name, partnerUniqueCode, partnerCode, 'SUP', business, customsCode, businessType, contact, phone, email).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.success('修改成功');
+          this.handleCancel();
+          this.props.onOk();
+        }
+      });
     } else if (partnerUniqueCode) {
       this.props.checkPartner({
         tenantId,
@@ -153,7 +156,9 @@ export default class VendorModal extends React.Component {
     }
   }
   handleAddVendor = () => {
-    const { name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
+    const {
+      name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
+    } = this.state;
     const { tenantId } = this.props;
     let business;
     if (businessType.indexOf('clearance') !== -1 && businessType.indexOf('transport') !== -1) {
@@ -167,7 +172,9 @@ export default class VendorModal extends React.Component {
     }
     this.props.addPartner({
       tenantId,
-      partnerInfo: { partnerName: name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
+      partnerInfo: {
+        partnerName: name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email,
+      },
       businessType,
       role: 'SUP',
       business,

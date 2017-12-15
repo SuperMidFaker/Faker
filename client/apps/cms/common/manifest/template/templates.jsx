@@ -20,11 +20,13 @@ const formatMsg = format(messages);
     tenantId: state.account.tenantId,
     billtemplates: state.cmsManifest.billtemplates,
   }),
-  { loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, loadCustomers }
+  {
+    loadPartners, loadBillemplates, deleteTemplate, toggleBillTempModal, loadCustomers,
+  }
 )
 
 export default class ManifestTemplateList extends React.Component {
-  static PropTypes = {
+  static propTypes = {
     intl: intlShape.isRequired,
     tenantId: PropTypes.number.isRequired,
     billtemplates: PropTypes.array,

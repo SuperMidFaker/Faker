@@ -99,9 +99,9 @@ export default function makeColumns(type, handlers, msg) {
             </PrivilegeCover>
           );
         } else if (record.sp_tenant_id === 0) {
-            // 已分配给车队
+          // 已分配给车队
           if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-              // 线下司机
+            // 线下司机
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">
                 <PickupDeliverPopover
@@ -263,7 +263,7 @@ export default function makeColumns(type, handlers, msg) {
       if (record.sp_name) {
         const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
         if (record.sp_tenant_id > 0) {
-            // todo pure css circle
+          // todo pure css circle
           return (
             <span>
               {spSpan}
@@ -499,7 +499,7 @@ export default function makeColumns(type, handlers, msg) {
       fixed: 'right',
       dataIndex: 'OPS_COL',
       render: (o, record) => {
-        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) {   // 待接单
+        if (record.status === SHIPMENT_TRACK_STATUS.unaccepted) { // 待接单
           return (
             <div>
               <PrivilegeCover module="transport" feature="tracking" action="create">
@@ -509,9 +509,9 @@ export default function makeColumns(type, handlers, msg) {
               </PrivilegeCover>
             </div>
           );
-        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) {  // 待调度
+        } else if (record.status === SHIPMENT_TRACK_STATUS.accepted) { // 待调度
           if (record.sp_tenant_id === -1) {
-              // 线下客户手动更新
+            // 线下客户手动更新
             return (
               <div>
                 <PrivilegeCover module="transport" feature="tracking" action="edit">
@@ -536,9 +536,9 @@ export default function makeColumns(type, handlers, msg) {
           if (record.sp_tenant_id === -1) {
             return (<div />);
           } else if (record.sp_tenant_id === 0) {
-              // 已分配给车队
+            // 已分配给车队
             if (record.vehicle_connect_type === SHIPMENT_VEHICLE_CONNECT.disconnected) {
-                // 线下司机
+              // 线下司机
               return (<div />);
             } else {
               // 催促司机提货
@@ -574,7 +574,7 @@ export default function makeColumns(type, handlers, msg) {
           } else {
             return (<div />);
           }
-        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) {   // 已送货
+        } else if (record.status === SHIPMENT_TRACK_STATUS.delivered) { // 已送货
           if (record.deliver_confirmed === 0 && handlers.tenantId === record.tenant_id) {
             return (
               <PrivilegeCover module="transport" feature="tracking" action="edit">

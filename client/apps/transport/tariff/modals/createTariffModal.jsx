@@ -42,8 +42,7 @@ export default class CreateTariffModal extends React.Component {
     } else if ((editForm.kind === 0 || editForm.kind === 1) && editForm.partnerId === undefined) {
       message.error('请选择合作伙伴');
     } else {
-      const selpartners = this.props.partners.find(
-        pt => pt.partner_id === editForm.partnerId);
+      const selpartners = this.props.partners.find(pt => pt.partner_id === editForm.partnerId);
       let partnerName = '';
       let partnerTid = -1;
       if (selpartners) {
@@ -66,9 +65,11 @@ export default class CreateTariffModal extends React.Component {
     if (kind.isBase) {
       this.setState({ partnerVisible: false });
     } else if (kind.value === 'sales') {
-      this.props.loadPartners(this.props.tenantId,
+      this.props.loadPartners(
+        this.props.tenantId,
         [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS],
-        [PARTNER_BUSINESSE_TYPES.transport])
+        [PARTNER_BUSINESSE_TYPES.transport]
+      )
         .then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -77,9 +78,11 @@ export default class CreateTariffModal extends React.Component {
           }
         });
     } else if (kind.value === 'cost') {
-      this.props.loadPartners(this.props.tenantId,
+      this.props.loadPartners(
+        this.props.tenantId,
         [PARTNER_ROLES.SUP],
-        [PARTNER_BUSINESSE_TYPES.transport])
+        [PARTNER_BUSINESSE_TYPES.transport]
+      )
         .then((result) => {
           if (result.error) {
             message.error(result.error.message, 10);
@@ -108,10 +111,8 @@ export default class CreateTariffModal extends React.Component {
               rules: [{ required: true, message: '价格类型必选', type: 'number' }],
             })(<Select onSelect={this.handleTariffKindSelect}>
               {
-                TARIFF_KINDS.map(
-                  (tk, idx) =>
-                    <Option value={idx} key={tk.value}>{TARIFF_KINDS[idx].text}</Option>
-                )
+                TARIFF_KINDS.map((tk, idx) =>
+                  <Option value={idx} key={tk.value}>{TARIFF_KINDS[idx].text}</Option>)
               }
             </Select>)}
           </FormItem>
@@ -120,19 +121,16 @@ export default class CreateTariffModal extends React.Component {
               {getFieldDecorator('partnerId', {
                 initialValue: formData.partnerId,
                 rules: [{ required: true, message: '合作伙伴必选', type: 'number' }],
-              })(
-                <Select showSearch optionFilterProp="searched" allowClear>
-                  {
+              })(<Select showSearch optionFilterProp="searched" allowClear>
+                {
                   partners.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
                       {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                    </Option>)
-                  )
+                    </Option>))
                 }
-                </Select>
-              )}
+              </Select>)}
             </FormItem>
           )}
         </Form>

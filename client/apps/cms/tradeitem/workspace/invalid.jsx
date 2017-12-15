@@ -67,7 +67,8 @@ export default class InvalidItemsList extends React.Component {
     });
   }
   msg = formatMsg(this.props.intl)
-  columns = makeColumns({ msg: this.msg,
+  columns = makeColumns({
+    msg: this.msg,
     units: this.props.units,
     tradeCountries: this.props.tradeCountries,
     currencies: this.props.currencies,
@@ -106,7 +107,9 @@ export default class InvalidItemsList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { workspaceLoading, workspaceItemList, repos, invalidStat } = this.props;
+    const {
+      workspaceLoading, workspaceItemList, repos, invalidStat,
+    } = this.props;
     const { filter } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,

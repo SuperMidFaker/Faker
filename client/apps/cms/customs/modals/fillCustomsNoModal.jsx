@@ -54,16 +54,15 @@ export default class FillCustomsNoModal extends React.Component {
       entryNo: this.state.entryNo,
       billSeqNo: this.props.billSeqNo,
       delgNo: this.props.delgNo,
-    }).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.setState({ entryNo: '' });
-          this.props.closeEfModal();
-          this.props.reload();
-        }
-      });
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ entryNo: '' });
+        this.props.closeEfModal();
+        this.props.reload();
+      }
+    });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {

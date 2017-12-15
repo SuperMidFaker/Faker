@@ -40,13 +40,15 @@ const Panel = Collapse.Panel;
     formData: state.shipment.formData,
     charges: state.shipment.charges,
   }),
-  { showChangeShipmentModal,
+  {
+    showChangeShipmentModal,
     loadForm,
     saveEdit,
     computeSaleCharge,
     updateFee,
     showChangeActDateModal,
-    loadShipmtCharges }
+    loadShipmtCharges,
+  }
 )
 export default class DetailPane extends React.Component {
   static propTypes = {
@@ -126,7 +128,9 @@ export default class DetailPane extends React.Component {
     dataIndex: 'remark',
   }]
   computeSaleCharge = (changedData, form, type, msg) => {
-    const { upstream, downstream, tenantId, charges } = this.props;
+    const {
+      upstream, downstream, tenantId, charges,
+    } = this.props;
     const promises = [];
     const {
       customer_partner_id, consigner_region_code, consignee_region_code,
@@ -185,7 +189,9 @@ export default class DetailPane extends React.Component {
               message: msg,
               description: `原收入：${charges.revenue.freight_charge}, 现收入：${charge.freight}`,
             });
-            const { meter, gradient, miles, quantity, unitRatio, coefficient } = charge;
+            const {
+              meter, gradient, miles, quantity, unitRatio, coefficient,
+            } = charge;
             this.props.updateFee(upstream.id, {
               freight_charge: charge.freight,
               quote_no: charge.quoteNo,
@@ -198,8 +204,10 @@ export default class DetailPane extends React.Component {
               charge_gradient: charge.gradient,
               adjust_coefficient: charge.coefficient,
               total_charge: charges.revenue.total_charge + (charge.freight - charges.revenue.freight_charge),
-              charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
-              unitRatio, coefficient),
+              charge_amount: getChargeAmountExpression(
+                meter, gradient, miles, quantity,
+                unitRatio, coefficient
+              ),
             });
           }
         } else {
@@ -218,7 +226,9 @@ export default class DetailPane extends React.Component {
               message: msg,
               description: `原成本：${charges.expense.freight_charge}, 现成本：${charge.freight}`,
             });
-            const { meter, gradient, miles, quantity, unitRatio, coefficient } = charge;
+            const {
+              meter, gradient, miles, quantity, unitRatio, coefficient,
+            } = charge;
             this.props.updateFee(downstream.id, {
               freight_charge: charge.freight,
               quote_no: charge.quoteNo,
@@ -231,8 +241,10 @@ export default class DetailPane extends React.Component {
               charge_gradient: charge.gradient,
               adjust_coefficient: charge.coefficient,
               total_charge: charges.expense.total_charge + (charge.freight - charges.expense.freight_charge),
-              charge_amount: getChargeAmountExpression(meter, gradient, miles, quantity,
-              unitRatio, coefficient),
+              charge_amount: getChargeAmountExpression(
+                meter, gradient, miles, quantity,
+                unitRatio, coefficient
+              ),
             });
           }
         } else {
@@ -266,13 +278,13 @@ export default class DetailPane extends React.Component {
   handleSave = (shipment, type, msg = '') => {
     const { tenantId, loginId } = this.props;
     this.props.saveEdit(shipment, tenantId, loginId, type, msg)
-    .then((result) => {
-      if (result.error) {
-        message.error(result.error.message, 10);
-      } else {
-        message.success(this.msg('changeShipmentSuccess'));
-      }
-    });
+      .then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          message.success(this.msg('changeShipmentSuccess'));
+        }
+      });
   }
   handleSaveShipment = (field, value, type = '') => {
     const { formData, goodsTypes } = this.props;
@@ -362,32 +374,34 @@ export default class DetailPane extends React.Component {
     this.props.showChangeActDateModal(true, type);
   }
   render() {
-    const { upstream, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, transitModes, containerPackagings, charges } = this.props;
+    const {
+      upstream, shipmt, goodsTypes, packagings, vehicleTypes, vehicleLengths, transitModes, containerPackagings, charges,
+    } = this.props;
     const pckg = packagings.find(item => item.package_code === shipmt.package);
     const goodsType = goodsTypes.find(item => item.value === shipmt.goods_type);
     const vehicleType = vehicleTypes.find(item => item.value === shipmt.vehicle_type_id);
     const vehicleLength = vehicleLengths.find(item => item.value === shipmt.vehicle_length_id);
     const editable = !upstream.parent_id && upstream.status > SHIPMENT_TRACK_STATUS.unaccepted && upstream.status < SHIPMENT_TRACK_STATUS.intransit;
     const changeDropdown = !upstream.parent_id && upstream.status > SHIPMENT_TRACK_STATUS.unaccepted ?
-    (
-      <Dropdown overlay={(
-        <Menu>
-          <Menu.Item>
-            <a onClick={this.handleChangeTransitConsigner}>变更发货信息</a>
-          </Menu.Item>
-          <Menu.Item>
-            <a onClick={this.handleChangeTransitConsignee}>变更收货信息</a>
-          </Menu.Item>
-          <Menu.Item disabled>
-            <a onClick={this.handleChangeDistance}>变更里程数</a>
-          </Menu.Item>
-        </Menu>)}
-      >
-        <a className="ant-dropdown-link" onClick={ev => ev.stopPropagation()}>
-          <Icon type="edit" /> 变更 <Icon type="down" />
-        </a>
-      </Dropdown>
-    ) : <span />;
+      (
+        <Dropdown overlay={(
+          <Menu>
+            <Menu.Item>
+              <a onClick={this.handleChangeTransitConsigner}>变更发货信息</a>
+            </Menu.Item>
+            <Menu.Item>
+              <a onClick={this.handleChangeTransitConsignee}>变更收货信息</a>
+            </Menu.Item>
+            <Menu.Item disabled>
+              <a onClick={this.handleChangeDistance}>变更里程数</a>
+            </Menu.Item>
+          </Menu>)}
+        >
+          <a className="ant-dropdown-link" onClick={ev => ev.stopPropagation()}>
+            <Icon type="edit" /> 变更 <Icon type="down" />
+          </a>
+        </Dropdown>
+      ) : <span />;
     const shipmtModeExtra = (<span>时效: {shipmt.transit_time}{this.msg('day')}/里程: {charges.revenue.miles}公里</span>);
     return (
       <div className="pane-content tab-pane">

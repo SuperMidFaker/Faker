@@ -29,7 +29,9 @@ const Search = Input.Search;
     reload: state.cwmReceive.inboundReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound }
+  {
+    openReceiveModal, updateInbProductVol, loadInboundProductDetails, showBatchReceivingModal, expressReceive, markReloadInbound,
+  }
 )
 @connectNav({
   depth: 3,
@@ -250,7 +252,7 @@ export default class ReceiveDetailsPane extends React.Component {
             {inboundHead.rec_mode === 'manual' &&
             <Button onClick={this.handleBatchProductReceive}>
             批量收货确认
-          </Button>
+            </Button>
           }
           </DataPane.BulkActions>
           <DataPane.Actions>

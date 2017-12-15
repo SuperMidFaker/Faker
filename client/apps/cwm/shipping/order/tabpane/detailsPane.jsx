@@ -5,13 +5,13 @@ import { Button } from 'antd';
 import RowAction from 'client/components/RowAction';
 import DataPane from 'client/components/DataPane';
 import { intlShape, injectIntl } from 'react-intl';
-import { format } from 'client/common/i18n/helpers';
-import messages from '../../message.i18n';
-import SKUPopover from '../../../common/popover/skuPopover';
 import { showDetailModal, addTemporary, deleteTemporary, clearTemporary } from 'common/reducers/cwmReceive';
 import { showAsnSelectModal } from 'common/reducers/cwmShippingOrder';
+import { format } from 'client/common/i18n/helpers';
 import AddDetailModal from '../modal/addDetailModal';
 import AsnSelectModal from '../modal/asnSelectModal';
+import messages from '../../message.i18n';
+import SKUPopover from '../../../common/popover/skuPopover';
 
 const formatMsg = format(messages);
 
@@ -22,7 +22,9 @@ const formatMsg = format(messages);
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { showDetailModal, addTemporary, deleteTemporary, clearTemporary, showAsnSelectModal }
+  {
+    showDetailModal, addTemporary, deleteTemporary, clearTemporary, showAsnSelectModal,
+  }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
@@ -92,7 +94,9 @@ export default class DetailsPane extends Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { editable, temporaryDetails, detailEnable, units, currencies, form } = this.props;
+    const {
+      editable, temporaryDetails, detailEnable, units, currencies, form,
+    } = this.props;
     const { pagination } = this.state;
     const soType = form.getFieldValue('so_type');
     const bonded = form.getFieldValue('bonded');
@@ -141,7 +145,7 @@ export default class DetailsPane extends Component {
       title: 'SKU',
       dataIndex: 'product_sku',
       width: 150,
-      render: o => o ? (<SKUPopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>{'请设置sku'}</span>,
+      render: o => (o ? (<SKUPopover ownerPartnerId={this.props.selectedOwner} sku={o} />) : <span style={{ color: 'red' }}>请设置sku</span>),
     }, {
       title: '入库单号',
       dataIndex: 'asn_no',
@@ -167,7 +171,13 @@ export default class DetailsPane extends Component {
     }, {
       title: '币制',
       dataIndex: 'currency',
-      render: o => o && <span>{`${o}|${currencies.find(currency => Number(currency.code) === Number(o)).name}`}</span>,
+      render: (o) => {
+        const currency = currencies.find(currency => Number(currency.code) === Number(o));
+        if (currency) {
+          return <span>{currency.name}</span>;
+        }
+        return o;
+      },
     }, {
       title: '操作',
       width: 80,
@@ -181,8 +191,12 @@ export default class DetailsPane extends Component {
     }];
     return (
       <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+        columns={columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        rowKey="index"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           {editable && <Button type="primary" icon="plus-circle-o" disabled={(detailEnable && Number(soType) !== 3) ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}

@@ -58,7 +58,9 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadEntryDetails, updateEntryReg, refreshEntryRegFtzCargos, splitCustomEntryDetails, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus }
+  {
+    loadEntryDetails, updateEntryReg, refreshEntryRegFtzCargos, splitCustomEntryDetails, fileEntryRegs, queryEntryRegInfos, checkEntryRegStatus,
+  }
 )
 @connectNav({
   depth: 3,
@@ -225,7 +227,8 @@ export default class SHFTZEntryDetail extends Component {
           mergedRegDetails[erd.ent_g_no - 1].amount += erd.amount;
           mergedRegDetails[erd.ent_g_no - 1].amount_usd += erd.amount_usd;
         } else {
-          mergedRegDetails.push({ ftz_cargo_no: erd.ftz_cargo_no,
+          mergedRegDetails.push({
+            ftz_cargo_no: erd.ftz_cargo_no,
             hscode: erd.hscode,
             g_name: erd.g_name,
             model: erd.model,
@@ -524,8 +527,12 @@ export default class SHFTZEntryDetail extends Component {
     },
   }]
   render() {
-    const { primaryEntryReg, entryRegs, whse, submitting } = this.props;
-    const { reg, alertInfo, splitNum, filingDetails } = this.state;
+    const {
+      primaryEntryReg, entryRegs, whse, submitting,
+    } = this.props;
+    const {
+      reg, alertInfo, splitNum, filingDetails,
+    } = this.state;
     const entType = CWM_ASN_BONDED_REGTYPES.filter(regtype => regtype.value === primaryEntryReg.ftz_ent_type)[0];
     const entryEditable = primaryEntryReg.reg_status < CWM_SHFTZ_APIREG_STATUS.completed;
     const sent = primaryEntryReg.reg_status === CWM_SHFTZ_APIREG_STATUS.processing;

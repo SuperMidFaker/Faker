@@ -22,7 +22,9 @@ const Option = Select.Option;
     loginId: state.account.loginId,
     templateUsers: state.cmsManifest.templateUsers,
   }),
-  { loadPartners, loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser }
+  {
+    loadPartners, loadBillTemplateUsers, addBillTemplateUser, deleteBillTemplateUser,
+  }
 )
 export default class TemplateUsersPane extends React.Component {
   static propTypes = {
@@ -64,16 +66,14 @@ export default class TemplateUsersPane extends React.Component {
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.addBillTemplateUser(record).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功', 5);
-          this.props.loadBillTemplateUsers(this.props.template.id);
-        }
+    this.props.addBillTemplateUser(record).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+        this.props.loadBillTemplateUsers(this.props.template.id);
       }
-    );
+    });
   }
   handleDelete = (record, index) => {
     this.props.deleteBillTemplateUser(record.id).then((result) => {

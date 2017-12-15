@@ -34,11 +34,9 @@ export default class InputItem extends React.Component {
         hasFeedback={hasFeedback} required={required} colon={colon}
       >
         {
-          fieldHOC(
-            <Input type={type} placeholder={placeholder} addonBefore={addonBefore}
-              disabled={disabled} addonAfter={addonAfter} readOnly={readOnly}
-            />
-          )
+          fieldHOC(<Input type={type} placeholder={placeholder} addonBefore={addonBefore}
+            disabled={disabled} addonAfter={addonAfter} readOnly={readOnly}
+          />)
         }
       </FormItem>
     );

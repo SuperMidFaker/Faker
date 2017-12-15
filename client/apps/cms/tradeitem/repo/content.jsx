@@ -45,7 +45,8 @@ const Option = Select.Option;
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadTradeParams,
+  {
+    loadTradeParams,
     loadTradeItems,
     deleteItems,
     loadRepo,
@@ -353,7 +354,6 @@ export default class RepoContent extends Component {
   }
   handleItemListLoad = (currentPage, filter, search) => {
     const { listFilter, tradeItemlist: { pageSize, current, searchText } } = this.props;
-    this.setState({ expandedKeys: [] });
     this.props.loadTradeItems({
       repoId: this.props.params.repoId,
       filter: JSON.stringify(filter || listFilter),
@@ -414,7 +414,8 @@ export default class RepoContent extends Component {
     this.setState({ masterReplica });
   }
   handleMasterSlaveReplica = () => {
-    this.props.replicaMasterSlave({ masterRepo: this.props.params.repoId,
+    this.props.replicaMasterSlave({
+      masterRepo: this.props.params.repoId,
       slaveRepo: this.state.masterReplica.slave,
       source: this.state.masterReplica.source,
     }).then((result) => {
@@ -428,7 +429,9 @@ export default class RepoContent extends Component {
     });
   }
   render() {
-    const { tradeItemlist, repo, listFilter, submitting, tenantId } = this.props;
+    const {
+      tradeItemlist, repo, listFilter, submitting, tenantId,
+    } = this.props;
     const { linkedSlaves, searchVal } = this.state;
     const selectedRows = this.state.selectedRowKeys;
     const rowSelection = {
@@ -442,11 +445,11 @@ export default class RepoContent extends Component {
       bulkActions = (<span>
         <Button icon="export" onClick={this.handleExportSelected} >
             批量导出
-          </Button>
-        <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+        </Button>
+        <Popconfirm title="是否删除所有选择项？" onConfirm={() => this.handleDeleteSelected()}>
           <Button type="danger" icon="delete">
               批量删除
-            </Button>
+          </Button>
         </Popconfirm></span>);
     }
     this.dataSource.remotes = tradeItemlist;

@@ -25,8 +25,10 @@ function fetchData({ state, dispatch }) {
   const startDate = `${moment(state.cmsDashboard.statistics.startDate || firstDay).format('YYYY-MM-DD')} 00:00:00`;
   const endDate = `${moment(state.cmsDashboard.statistics.endDate || new Date()).format('YYYY-MM-DD')} 23:59:59`;
   const clientView = JSON.stringify({ tenantIds: [], partnerIds: [] });
-  const promises = [dispatch(loadCmsStatistics({ tenantId: state.account.tenantId, startDate, endDate, clientView })),
-    dispatch(loadPartnersByTypes(state.account.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance))];
+  const promises = [dispatch(loadCmsStatistics({
+    tenantId: state.account.tenantId, startDate, endDate, clientView,
+  })),
+  dispatch(loadPartnersByTypes(state.account.tenantId, [PARTNER_ROLES.CUS, PARTNER_ROLES.DCUS], PARTNER_BUSINESSE_TYPES.clearance))];
   return Promise.all(promises);
 }
 @connectFetch()(fetchData)
@@ -56,10 +58,14 @@ export default class StatsCard extends Component {
   componentDidMount() {
     if (window.localStorage && window.localStorage.cmsDelegationListFilters) {
       let fv = JSON.parse(window.localStorage.cmsDelegationListFilters);
-      fv = { ...fv, acptDate: [], ietype: 'all', status: 'all', clientView: { tenantIds: [], partnerIds: [] } };
+      fv = {
+        ...fv, acptDate: [], ietype: 'all', status: 'all', clientView: { tenantIds: [], partnerIds: [] },
+      };
       window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
     } else if (window.localStorage && !window.localStorage.cmsDelegationListFilters) {
-      const fv = { acptDate: [], ietype: 'all', status: 'all', clientView: { tenantIds: [], partnerIds: [] } };
+      const fv = {
+        acptDate: [], ietype: 'all', status: 'all', clientView: { tenantIds: [], partnerIds: [] },
+      };
       window.localStorage.cmsDelegationListFilters = JSON.stringify(fv);
     }
   }
@@ -82,7 +88,9 @@ export default class StatsCard extends Component {
   }
   onDateChange = (value, dateString) => {
     const clientView = this.props.statistics.clientView;
-    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView });
+    this.props.loadCmsStatistics({
+      tenantId: this.props.tenantId, startDate: `${dateString[0]} 00:00:00`, endDate: `${dateString[1]} 23:59:59`, clientView,
+    });
   }
   handleClientSelectChange = (value) => {
     const { startDate, endDate } = this.props.statistics;
@@ -95,7 +103,9 @@ export default class StatsCard extends Component {
         clientView.tenantIds.push(client.tid);
       }
     }
-    this.props.loadCmsStatistics({ tenantId: this.props.tenantId, startDate, endDate, clientView: JSON.stringify(clientView) });
+    this.props.loadCmsStatistics({
+      tenantId: this.props.tenantId, startDate, endDate, clientView: JSON.stringify(clientView),
+    });
     if (window.localStorage) {
       window.localStorage.cmsDelegationListFilters =
       JSON.stringify({ ...JSON.parse(window.localStorage.cmsDelegationListFilters), clientView });
@@ -125,15 +135,23 @@ export default class StatsCard extends Component {
   handleCurrencyChange = (ev) => {
     const { totVals, totImVals, totExVals } = this.props.statistics;
     if (ev.target.value === 'USD') {
-      this.setState({ currency: 'USD', totalValue: totVals.total_usd, sumImportValue: totImVals.total_usd, sumExportValue: totExVals.total_usd });
+      this.setState({
+        currency: 'USD', totalValue: totVals.total_usd, sumImportValue: totImVals.total_usd, sumExportValue: totExVals.total_usd,
+      });
     } else if (ev.target.value === 'CNY') {
-      this.setState({ currency: 'CNY', totalValue: totVals.total_cny, sumImportValue: totImVals.total_cny, sumExportValue: totExVals.total_cny });
+      this.setState({
+        currency: 'CNY', totalValue: totVals.total_cny, sumImportValue: totImVals.total_cny, sumExportValue: totExVals.total_cny,
+      });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected, declcount } = this.props.statistics;
-    const { totalValue, sumImportValue, sumExportValue, currency } = this.state;
+    const {
+      startDate, endDate, total, sumImport, sumExport, processing, declared, released, inspected, declcount,
+    } = this.props.statistics;
+    const {
+      totalValue, sumImportValue, sumExportValue, currency,
+    } = this.state;
     const clients = [{
       name: '全部客户',
       partner_id: -1,
@@ -150,8 +168,8 @@ export default class StatsCard extends Component {
         >
           {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
             search={`${data.partner_code}${data.name}`}
-          >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-          )}
+          >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+          </Option>))}
         </Select>
         <RangePicker style={{ marginLeft: 8 }} value={[moment(startDate), moment(endDate)]}
           ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
@@ -238,7 +256,7 @@ export default class StatsCard extends Component {
               </div>
               <div className="data-extra">
                 {declcount > 0 ? (inspected / declcount * 100).toFixed(2) : 0}%
-                  <div>{this.msg('inspectedRate')}</div>
+                <div>{this.msg('inspectedRate')}</div>
               </div>
             </div>
           </div>

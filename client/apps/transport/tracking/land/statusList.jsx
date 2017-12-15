@@ -30,7 +30,9 @@ import { SHIPMENT_VEHICLE_CONNECT, SHIPMENT_TRACK_STATUS } from 'common/constant
 
 const formatMsg = format(messages);
 
-function fetchData({ state, dispatch, params, cookie }) {
+function fetchData({
+  state, dispatch, params, cookie,
+}) {
   const newfilters = state.trackingLandStatus.filters.map((flt) => {
     if (flt.name === 'type') {
       return {

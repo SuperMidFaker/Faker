@@ -1,6 +1,10 @@
 import React from 'react';
 import { Route, IndexRoute, IndexRedirect } from 'react-router';
 import warning from 'warning';
+import { loadAccount } from 'common/reducers/account';
+import { loadWhseContext } from 'common/reducers/cwmContext';
+import { isLoaded } from 'client/common/redux-actions';
+import { DEFAULT_MODULES } from 'common/constants/module';
 import Root from './root';
 import * as Home from './home';
 import SSO from './sso/pack-sso';
@@ -105,10 +109,6 @@ import * as BSSPaymentReceived from './bss/receivable/payment';
 import * as BSSPayableBill from './bss/payable/bill';
 import * as BSSPayableInvoice from './bss/payable/invoice';
 import * as BSSPaymentMade from './bss/payable/payment';
-import { loadAccount } from 'common/reducers/account';
-import { loadWhseContext } from 'common/reducers/cwmContext';
-import { isLoaded } from 'client/common/redux-actions';
-import { DEFAULT_MODULES } from 'common/constants/module';
 
 export default(store) => {
   const requireAuth = (nextState, replace, cb) => {
@@ -116,11 +116,12 @@ export default(store) => {
       // const query = nextState.location.query;
       const currState = store.getState();
       const accountSubdomain = currState.account.subdomain;
-      const isAuthed = currState.auth.isAuthed;
-      const subdomain = currState.corpDomain.subdomain;
+      const { auth: { isAuthed }, corpDomain: { subdomain } } = currState;
       if (!isAuthed || (accountSubdomain && !__DEV__ && accountSubdomain !== subdomain)) {
-        warning(!(accountSubdomain && accountSubdomain !== subdomain),
-          'subdomain is not equal to account subdomain, maybe there are tenants with same unique code');
+        warning(
+          !(accountSubdomain && accountSubdomain !== subdomain),
+          'subdomain is not equal to account subdomain, maybe there are tenants with same unique code'
+        );
         const query = { next: nextState.location.pathname };
         replace({ pathname: '/login', query });
       }
@@ -168,7 +169,7 @@ export default(store) => {
           <IndexRedirect to="/hub/integration/installed" />
           <Route path="dev">
             <IndexRoute component={HubDev.List} />
-            <Route path=":appId" component={HubDev.Profile} />
+            {/* <Route path=":appId" component={HubDev.Profile} /> */}
           </Route>
           <Route path="adapter" component={HubAdapter.List} />
           <Route path="integration">

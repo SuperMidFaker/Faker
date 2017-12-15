@@ -20,7 +20,9 @@ import messages from './message.i18n';
 import { sendMessage } from 'common/reducers/notification';
 const formatMsg = format(messages);
 
-function fetchData({ state, dispatch, params, cookie }) {
+function fetchData({
+  state, dispatch, params, cookie,
+}) {
   const newfilters = state.trackingLandPod.filters.map((flt) => {
     if (flt.name === 'type') {
       return {
@@ -56,12 +58,15 @@ function fetchData({ state, dispatch, params, cookie }) {
     loaded: state.trackingLandPod.loaded,
     carriers: state.shipment.partners,
   }),
-  { loadPodTable,
+  {
+    loadPodTable,
     loadShipmtDetail,
     showAuditModal,
     sendMessage,
     changePodFilter,
-    deliverConfirm })
+    deliverConfirm,
+  }
+)
 export default class TrackingPODList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

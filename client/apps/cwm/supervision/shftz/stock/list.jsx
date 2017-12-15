@@ -203,9 +203,11 @@ export default class SHFTZStockList extends React.Component {
     notification.info({ message: '当前仓库已切换' });
   }
   handleStockQuery = (filters) => {
-    const filter = { ...filters,
+    const filter = {
+      ...filters,
       cus_whse_code: this.props.defaultWhse.ftz_whse_code,
-      whse_code: this.props.defaultWhse.code };
+      whse_code: this.props.defaultWhse.code,
+    };
     this.props.loadFtzStocks(filter).then((result) => {
       if (result.error) {
         if (result.error.message === 'WHSE_FTZ_UNEXIST') {
@@ -276,7 +278,7 @@ export default class SHFTZStockList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

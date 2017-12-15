@@ -113,7 +113,7 @@ export default class AmountModel extends React.Component {
   render() {
     const { visibleAmtModal, currencies } = this.props;
     return (
-      <Modal maskClosable={false} title={'金额平摊'} visible={visibleAmtModal}
+      <Modal maskClosable={false} title="金额平摊" visible={visibleAmtModal}
         onOk={this.handleOk} onCancel={this.handleCancel}
       >
         <Alert message="将按每项申报总价的占比重新分摊输入的总金额" type="info" showIcon />
@@ -130,8 +130,7 @@ export default class AmountModel extends React.Component {
                   currencies.map(data => (
                     <Option key={data.value} search={`${data.search}`} >
                       {`${data.value} | ${data.text}`}
-                    </Option>)
-                  )}
+                    </Option>))}
               </Select>
             </FormItem>
           </Col>

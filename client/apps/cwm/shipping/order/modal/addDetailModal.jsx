@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Form, Input, Select } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
@@ -23,7 +24,9 @@ const InputGroup = Input.Group;
     suppliers: state.cwmReceive.suppliers,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers, getSkuAvail }
+  {
+    hideDetailModal, addTemporary, loadProducts, editTemporary, clearProductNos, getSuppliers, getSkuAvail,
+  }
 )
 @Form.create()
 export default class AddDetailModal extends Component {
@@ -187,8 +190,12 @@ export default class AddDetailModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, productNos, units, currencies } = this.props;
-    const { skus, avail, stock, alloc, frozen } = this.state;
+    const {
+      form: { getFieldDecorator }, visible, productNos, units, currencies,
+    } = this.props;
+    const {
+      skus, avail, stock, alloc, frozen,
+    } = this.state;
     const product = this.state.product;
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -200,11 +207,9 @@ export default class AddDetailModal extends Component {
           <FormItem label="商品货号" {...formItemLayout}>
             {getFieldDecorator('product_no', {
               rules: [{ required: true, message: '请输入货号' }],
-            })(
-              <Select mode="combobox" placeholder="请至少输入三位货号" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
-                {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
-              </Select>
-            )}
+            })(<Select mode="combobox" placeholder="请至少输入三位货号" onChange={this.handleSearch} style={{ width: '100%' }} onSelect={this.handleSelect}>
+              {productNos.map(productNo => (<Option value={productNo} key={productNo}>{productNo}</Option>))}
+            </Select>)}
           </FormItem>
           <FormItem label="SKU" {...formItemLayout}>
             <Select style={{ width: '100%' }} value={product.product_sku} onSelect={this.handleSelectSku}>
@@ -226,11 +231,14 @@ export default class AddDetailModal extends Component {
             <InputGroup compact>
               {getFieldDecorator('order_qty', {
                 rules: [{ required: true, message: '请输入订单数量' }],
-              })(
-                <Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />
-              )}
-              <Select showSearch allowClear optionFilterProp="children" placeholder="计量单位" value={product.unit}
-                style={{ width: '30%' }} onChange={this.handleUnitChange}
+              })(<Input type="number" style={{ width: '70%' }} onChange={this.handleQtyChange} />)}
+              <Select showSearch
+                allowClear
+                optionFilterProp="children"
+                placeholder="计量单位"
+                value={product.unit}
+                style={{ width: '30%' }}
+                onChange={this.handleUnitChange}
               >
                 {units.map(unit => <Option value={unit.code} key={unit.code}>{unit.code} | {unit.name}</Option>)}
               </Select>
@@ -239,30 +247,22 @@ export default class AddDetailModal extends Component {
           <FormItem label="库别" {...formItemLayout}>
             {getFieldDecorator('virtual_whse', {
               initialValue: product.virtual_whse,
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem label="入库订单号" {...formItemLayout}>
             {getFieldDecorator('po_no', {
               initialValue: product.po_no,
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem label="批次号" {...formItemLayout}>
             {getFieldDecorator('external_lot_no', {
               initialValue: product.external_lot_no,
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem label="序列号" {...formItemLayout}>
             {getFieldDecorator('serial_no', {
               initialValue: product.serial_no,
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem label="供货商" {...formItemLayout}>
             {getFieldDecorator('supplier', {
@@ -275,12 +275,15 @@ export default class AddDetailModal extends Component {
             <InputGroup compact>
               {getFieldDecorator('unit_price', {
                 initialValue: product.unit_price,
-              })(
-                <Input type="number" placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />
-              )}
+              })(<Input type="number" placeholder="单价" onChange={this.handlePriceChange} style={{ width: '30%' }} />)}
               <Input type="number" placeholder="总价" value={this.state.amount || product.amount} onChange={this.handleAmountChange} style={{ width: '30%' }} />
-              <Select showSearch allowClear optionFilterProp="children" placeholder="币制" value={product.currency && String(product.currency)}
-                style={{ width: '40%' }} onChange={this.handleCurrChange}
+              <Select showSearch
+                allowClear
+                optionFilterProp="children"
+                placeholder="币制"
+                value={product.currency && String(product.currency)}
+                style={{ width: '40%' }}
+                onChange={this.handleCurrChange}
               >
                 {currencies.map(curr => <Option value={curr.code} key={curr.code}>{curr.code} | {curr.name}</Option>)}
               </Select>

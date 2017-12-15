@@ -58,7 +58,9 @@ function fetchData({ state, dispatch }) {
     userMembers: state.account.userMembers,
     adaptors: state.saasLineFileAdaptor.adaptors,
   }),
-  { loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, exportNormalExitBySo, loadAdaptors }
+  {
+    loadSos, switchDefaultWhse, showDock, releaseSo, createWave, showAddToWave, batchRelease, exportNormalExitBySo, loadAdaptors,
+  }
 )
 @connectNav({
   depth: 2,
@@ -74,7 +76,6 @@ export default class ShippingOrderList extends React.Component {
   state = {
     selectedRowKeys: [],
     selectedRows: [],
-    searchInput: '',
     createWaveEnable: true,
     importPanelVisible: false,
   }
@@ -360,8 +361,10 @@ export default class ShippingOrderList extends React.Component {
         if (selectedRows.length > 2) {
           xlsxno = `${xlsxno}等`;
         }
-        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
-          `${xlsxno}_出区凭单.xlsx`);
+        FileSaver.saveAs(
+          new window.Blob([Buffer.from(resp.data)], { type: 'application/octet-stream' }),
+          `${xlsxno}_出区凭单.xlsx`
+        );
       } else {
         notification.error({
           message: '导出失败',
@@ -371,7 +374,9 @@ export default class ShippingOrderList extends React.Component {
     });
   }
   render() {
-    const { whses, defaultWhse, owners, receivers, carriers, filters, loading } = this.props;
+    const {
+      whses, defaultWhse, owners, receivers, carriers, filters, loading,
+    } = this.props;
     let columns = this.columns;
     if (filters.status === 'inWave') {
       columns = [...columns];

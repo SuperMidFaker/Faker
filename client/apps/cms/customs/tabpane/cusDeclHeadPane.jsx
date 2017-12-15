@@ -58,7 +58,9 @@ export default class CusDeclHeadPane extends React.Component {
     this.props.updateMark(change, this.props.formData.id);
   }
   render() {
-    const { form, formData, formRequire, ietype, intl } = this.props;
+    const {
+      form, formData, formRequire, ietype, intl,
+    } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,

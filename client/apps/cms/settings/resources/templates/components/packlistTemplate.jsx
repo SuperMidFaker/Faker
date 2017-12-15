@@ -14,7 +14,9 @@ const Panel = Collapse.Panel;
 const FormItem = Form.Item;
 
 function MSCheckbox(props) {
-  const { checked, field, text, onChange } = props;
+  const {
+    checked, field, text, onChange,
+  } = props;
   function handleChange(ev) {
     onChange(field, ev.target.checked);
   }
@@ -83,12 +85,12 @@ export default class PackinglistTemplate extends React.Component {
           </div>
           <div className="left-sider-panel">
             <Collapse accordion defaultActiveKey="header">
-              <Panel header={'Header'} key="header">
+              <Panel header="Header" key="header">
                 <FormItem label="发票日期：" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
                   <Input value={invData.days_ago} addonBefore="生成发票前" addonAfter="天" onChange={ev => this.handleCheckChange('days_ago', ev.target.value)} />
                 </FormItem>
               </Panel>
-              <Panel header={'Item Table'} key="item">
+              <Panel header="Item Table" key="item">
                 <MSCheckbox field="containerno_en"
                   text={this.msg('containerNo')}
                   onChange={this.handleCheckChange} checked={invData.containerno_en}
@@ -98,13 +100,13 @@ export default class PackinglistTemplate extends React.Component {
                   onChange={this.handleCheckChange} checked={invData.eng_name_en}
                 />
               </Panel>
-              <Panel header={'Total'} key="total">
+              <Panel header="Total" key="total">
                 <MSCheckbox field="sub_total_en"
                   text={this.msg('subTotal')}
                   onChange={this.handleCheckChange} checked={invData.sub_total_en}
                 />
               </Panel>
-              <Panel header={'Footer'} key="footer">
+              <Panel header="Footer" key="footer">
                 <MSCheckbox field="insurance_en"
                   text={this.msg('insurance')}
                   onChange={this.handleCheckChange} checked={invData.insurance_en}

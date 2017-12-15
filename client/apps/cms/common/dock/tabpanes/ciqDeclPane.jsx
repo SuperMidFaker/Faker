@@ -49,7 +49,9 @@ export default class CiqDeclPane extends React.Component {
     this.props.setDispStatus({ ciqDispShow: true });
   }
   render() {
-    const { ciqPanel, ciqSpinning, delegation, tenantId } = this.props;
+    const {
+      ciqPanel, ciqSpinning, delegation, tenantId,
+    } = this.props;
     const columns = [{
       title: '统一编号',
       dataIndex: 'pre_entry_seq_no',

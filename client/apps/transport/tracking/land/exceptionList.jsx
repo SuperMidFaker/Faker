@@ -21,7 +21,9 @@ import { format } from 'client/common/i18n/helpers';
 import messages from './message.i18n';
 const formatMsg = format(messages);
 
-function fetchData({ state, dispatch, params, cookie }) {
+function fetchData({
+  state, dispatch, params, cookie,
+}) {
   const newfilters = state.trackingLandException.filters.map((flt) => {
     if (flt.name === 'type') {
       return {
@@ -78,7 +80,8 @@ function renderActDate(recordActDate, recordEstDate) {
     clients: state.shipment.formRequire.clients,
     carriers: state.shipment.partners,
   }),
-  { loadExcpShipments, loadShipmtDetail, changeExcpFilter })
+  { loadExcpShipments, loadShipmtDetail, changeExcpFilter }
+)
 export default class TrackingExceptionList extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

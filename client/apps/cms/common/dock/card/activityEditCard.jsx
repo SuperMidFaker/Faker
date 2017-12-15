@@ -39,7 +39,9 @@ export default class ActivityEditCard extends React.Component {
     this.props.onSave({ field: this.props.field, value: null });
   }
   render() {
-    const { title, leftLabel, leftValue, rightLabel, rightValue, createdDate } = this.props;
+    const {
+      title, leftLabel, leftValue, rightLabel, rightValue, createdDate,
+    } = this.props;
     return (
       <Card title={<span>{title} <small className="timestamp">{moment(createdDate).format('YYYY-MM-DD HH:mm')}</small></span>} hoverable={false} extra={
         <Popover trigger="click"

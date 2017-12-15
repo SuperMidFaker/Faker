@@ -30,7 +30,9 @@ function fetchData({ state, dispatch }) {
     loading: state.scvTracking.loading,
     loaded: state.scvTracking.loaded,
   }),
-  { loadTrackings, addTracking, removeTracking, updateTracking, toggleTrackingModal, loadTrackingItems }
+  {
+    loadTrackings, addTracking, removeTracking, updateTracking, toggleTrackingModal, loadTrackingItems,
+  }
 )
 @connectNav({
   depth: 2,

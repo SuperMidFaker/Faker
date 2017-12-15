@@ -21,7 +21,9 @@ const Search = Input.Search;
     visible: state.cmsDeclare.declMsgDock.visible,
     modalVisible: state.cmsDeclare.declMsgModal.visible,
   }),
-  { loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal }
+  {
+    loadSendRecords, loadReturnRecords, hideDeclMsgDock, showDeclMsgModal, hideDeclMsgModal,
+  }
 )
 export default class DeclMsgPanel extends React.Component {
   static propTypes = {
@@ -166,16 +168,16 @@ export default class DeclMsgPanel extends React.Component {
       url = `${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`;
     }
     superAgent
-    .get(url)
-    .withCredentials()
-    .type('text/xml')
-    .end((err, req) => {
-      if (!err) {
-        me.setState({
-          text: req.text,
-        });
-      }
-    });
+      .get(url)
+      .withCredentials()
+      .type('text/xml')
+      .end((err, req) => {
+        if (!err) {
+          me.setState({
+            text: req.text,
+          });
+        }
+      });
     this.props.showDeclMsgModal();
   }
   renderTabs = () => {

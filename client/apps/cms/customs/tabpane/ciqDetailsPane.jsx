@@ -10,26 +10,24 @@ const formatMsg = format(messages);
 import { buildTipItems } from 'client/common/customs';
 
 @injectIntl
-@connect(
-  state => ({
-    units: state.cmsManifest.params.units.map(un => ({
-      value: un.unit_code,
-      text: un.unit_name,
-    })),
-    countries: state.cmsManifest.params.tradeCountries.map(tc => ({
-      value: tc.cntry_co,
-      text: tc.cntry_name_cn,
-    })),
-    currencies: state.cmsManifest.params.currencies.map(cr => ({
-      value: cr.curr_code,
-      text: cr.curr_name,
-    })),
-    exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
-      value: ep.value,
-      text: ep.text,
-    })),
-  })
-)
+@connect(state => ({
+  units: state.cmsManifest.params.units.map(un => ({
+    value: un.unit_code,
+    text: un.unit_name,
+  })),
+  countries: state.cmsManifest.params.tradeCountries.map(tc => ({
+    value: tc.cntry_co,
+    text: tc.cntry_name_cn,
+  })),
+  currencies: state.cmsManifest.params.currencies.map(cr => ({
+    value: cr.curr_code,
+    text: cr.curr_name,
+  })),
+  exemptions: state.cmsManifest.params.exemptionWays.map(ep => ({
+    value: ep.value,
+    text: ep.text,
+  })),
+}))
 export default class CiqDetailsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

@@ -51,18 +51,18 @@ function fetchData({ state, dispatch }) {
 
 @connectFetch()(fetchData)
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    username: state.account.username,
-    tenantName: state.account.tenantName,
-    loading: state.crmOrders.loading,
-    orders: state.crmOrders.orders,
-    filters: state.crmOrders.orderFilters,
-    partners: state.partner.partners,
-  }), { loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadOrderDetail }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  username: state.account.username,
+  tenantName: state.account.tenantName,
+  loading: state.crmOrders.loading,
+  orders: state.crmOrders.orders,
+  filters: state.crmOrders.orderFilters,
+  partners: state.partner.partners,
+}), {
+  loadOrders, removeOrder, setClientForm, acceptOrder, emptyFlows, hideDock, loadOrderDetail,
+})
 @connectNav({
   depth: 2,
   moduleName: 'scof',
@@ -116,7 +116,9 @@ export default class OrderList extends React.Component {
   }
   handleRemove = (shipmtOrderNo) => {
     const { tenantId, loginId, username } = this.props;
-    this.props.removeOrder({ tenantId, loginId, username, shipmtOrderNo }).then((result) => {
+    this.props.removeOrder({
+      tenantId, loginId, username, shipmtOrderNo,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -332,8 +334,7 @@ export default class OrderList extends React.Component {
                 dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
               >
                 <Option value="all">全部客户</Option>
-                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                )}
+                {partners.map(data => (<Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
               </Select>
               <span />
               <CreatorSelect onChange={this.handleCreatorChange} onInitialize={this.handleCreatorChange} />

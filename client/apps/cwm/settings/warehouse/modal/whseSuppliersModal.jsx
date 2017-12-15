@@ -18,7 +18,9 @@ const Option = Select.Option;
     visible: state.cwmWarehouse.supplierModal.visible,
     supplier: state.cwmWarehouse.supplierModal.supplier,
   }),
-  { toggleSupplierModal, addSupplier, loadSuppliers, updateSupplier, loadwhseOwners, getSuppliers }
+  {
+    toggleSupplierModal, addSupplier, loadSuppliers, updateSupplier, loadwhseOwners, getSuppliers,
+  }
 )
 
 @Form.create()
@@ -42,7 +44,9 @@ export default class SuppliersModal extends Component {
     this.props.form.resetFields();
   }
   handleAdd = () => {
-    const { whseCode, loginId, whseOwners, supplier, ownerPartnerId } = this.props;
+    const {
+      whseCode, loginId, whseOwners, supplier, ownerPartnerId,
+    } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         const ownerTenantId = whseOwners.find(owner => owner.owner_partner_id === values.owner_partner_id).owner_tenant_id;
@@ -67,7 +71,9 @@ export default class SuppliersModal extends Component {
     });
   }
   render() {
-    const { form: { getFieldDecorator }, visible, whseOwners, ownerPartnerId } = this.props;
+    const {
+      form: { getFieldDecorator }, visible, whseOwners, ownerPartnerId,
+    } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 16 },
@@ -89,25 +95,22 @@ export default class SuppliersModal extends Component {
           <FormItem label="关联货主:" required {...formItemLayout}>
             {getFieldDecorator('owner_partner_id', {
               initialValue: ownerPartnerId,
-            })(
-              <Select id="select"
-                showSearch
-                placeholder=""
-                optionFilterProp="children"
-                notFoundContent=""
-                disabled={!!ownerPartnerId}
-              >
-                {
+            })(<Select id="select"
+              showSearch
+              placeholder=""
+              optionFilterProp="children"
+              notFoundContent=""
+              disabled={!!ownerPartnerId}
+            >
+              {
                   whseOwners.map(pt => (
                     <Option searched={`${pt.owner_code}${pt.owner_name}`}
                       value={pt.owner_partner_id} key={pt.owner_partner_id}
                     >
                       {pt.owner_code ? `${pt.owner_code} | ${pt.owner_name}` : pt.owner_name}
-                    </Option>)
-                  )
+                    </Option>))
                 }
-              </Select>
-            )}
+            </Select>)}
           </FormItem>
         </Form>
       </Modal>

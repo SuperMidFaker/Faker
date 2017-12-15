@@ -50,25 +50,26 @@ export default class AddTradeRepoModal extends React.Component {
       tenantName: this.props.tenantName,
       createrLoginId: this.props.loginId,
       uniqueCode: customer.partner_unique_code,
-    }).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.loadRepos({
-            tenantId: this.props.tenantId,
-          });
-          this.props.closeAddModal();
-          this.props.form.resetFields();
-        }
-      });
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.loadRepos({
+          tenantId: this.props.tenantId,
+        });
+        this.props.closeAddModal();
+        this.props.form.resetFields();
+      }
+    });
   }
   handleSelectChange = (value) => {
     this.setState({ customerid: value });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { form: { getFieldDecorator }, visibleAddModal, customers, repos } = this.props;
+    const {
+      form: { getFieldDecorator }, visibleAddModal, customers, repos,
+    } = this.props;
     let newCustomers = customers;
     for (let i = 0; i < repos.length; i++) {
       const owner = repos[i];
@@ -80,15 +81,14 @@ export default class AddTradeRepoModal extends React.Component {
       >
         <Form>
           <FormItem label={this.msg('repoOwner')} labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('customs')(
-              <Select showSearch placeholder="选择客户" optionFilterProp="children"
-                onChange={this.handleSelectChange}
-              >
-                {newCustomers.map(data => (<Option key={data.id} value={data.id}
-                  search={`${data.partner_code}${data.name}`}
-                >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                )}
-              </Select>)}
+            {getFieldDecorator('customs')(<Select showSearch placeholder="选择客户" optionFilterProp="children"
+              onChange={this.handleSelectChange}
+            >
+              {newCustomers.map(data => (<Option key={data.id} value={data.id}
+                search={`${data.partner_code}${data.name}`}
+              >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+              </Option>))}
+            </Select>)}
           </FormItem>
         </Form>
       </Modal>

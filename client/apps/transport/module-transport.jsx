@@ -11,11 +11,9 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 
 @injectIntl
-@connect(
-  state => ({
-    privileges: state.account.privileges,
-  })
-)
+@connect(state => ({
+  privileges: state.account.privileges,
+}))
 export default class Transport extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

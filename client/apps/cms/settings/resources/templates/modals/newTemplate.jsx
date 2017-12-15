@@ -41,7 +41,9 @@ export default class InvTemplateModal extends React.Component {
   }
   handleAddNew = (formData) => {
     const { tenantId, loginName, customer } = this.props;
-    const params = { ...formData, tenant_id: tenantId, modify_name: loginName, customer_name: customer.name, customer_partner_id: customer.id };
+    const params = {
+      ...formData, tenant_id: tenantId, modify_name: loginName, customer_name: customer.name, customer_partner_id: customer.id,
+    };
     this.props.createInvTemplate(params).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -70,20 +72,16 @@ export default class InvTemplateModal extends React.Component {
           {getFieldDecorator('docu_type', {
             initialValue: docuType,
             rules: [{ required: true, message: '模板名称必填' }],
-          })(
-            <RadioGroup>
-              <Radio value={0}>发票</Radio>
-              <Radio value={1}>合同</Radio>
-              <Radio value={2}>箱单</Radio>
-            </RadioGroup>
-          )}
+          })(<RadioGroup>
+            <Radio value={0}>发票</Radio>
+            <Radio value={1}>合同</Radio>
+            <Radio value={2}>箱单</Radio>
+          </RadioGroup>)}
         </FormItem>
         <FormItem label="模板名称:" {...formItemLayout} >
           {getFieldDecorator('template_name', {
             rules: [{ required: true, message: '模板名称必填' }],
-          })(
-            <Input />
-          )}
+          })(<Input />)}
         </FormItem>
       </Modal>
     );

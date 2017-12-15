@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import { loadFeesBeforeTime, alterBillingFees, loadClearanceFeesBeforeTime, loadTransportFeesBeforeTime,
-showBeforeFeesModal } from 'common/reducers/crmBilling';
+  showBeforeFeesModal } from 'common/reducers/crmBilling';
 import TrimSpan from 'client/components/trimSpan';
 import TrsShipmtNoColumn from '../../common/trsShipmtNoColumn';
 import CcbDelgNoColumn from '../../common/ccbDelgNoColumn';
@@ -24,12 +24,14 @@ const formatMsg = format(messages);
     visible: state.crmBilling.beforeFeesModal.visible,
     beforeFees: state.crmBilling.beforeFeesModal.data,
   }),
-  { loadFeesBeforeTime,
+  {
+    loadFeesBeforeTime,
     alterBillingFees,
     loadOrderDetail,
     loadClearanceFeesBeforeTime,
     loadTransportFeesBeforeTime,
-    showBeforeFeesModal }
+    showBeforeFeesModal,
+  }
 )
 
 export default class BeforeFeesModal extends React.Component {

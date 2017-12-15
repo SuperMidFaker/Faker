@@ -49,10 +49,10 @@ export default class ShareShipmentModal extends React.Component {
     const publicUrlPath = `/pub/tms/tracking/detail/${shipmt.shipmt_no}/${shipmt.publicUrlKey}`;
     const publicUrl = `https://${subdomain}.welogix.cn${publicUrlPath}`;
     const qr = qrcode.qrcode(6, 'M');
-    qr.addData(publicUrl);  // 解决中文乱码
+    qr.addData(publicUrl); // 解决中文乱码
     qr.make();
-    const tag = qr.createImgTag(5, 10);  // 获取base64编码图片字符串
-    const base64 = tag.match(/src="([^"]*)"/)[1];  // 获取图片src数据
+    const tag = qr.createImgTag(5, 10); // 获取base64编码图片字符串
+    const base64 = tag.match(/src="([^"]*)"/)[1]; // 获取图片src数据
     // base64 = base64.replace(/^data:image\/\w+;base64,/, '');  // 获取base64编码
     // base64 = new Buffer(base64, 'base64');  // 新建base64图片缓存
     const publicQRcodeUrl = base64;

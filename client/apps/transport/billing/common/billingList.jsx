@@ -30,7 +30,9 @@ const { Header, Content } = Layout;
     billings: state.transportBilling.billings,
     loading: state.transportBilling.loading,
   }),
-  { loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPartners }
+  {
+    loadBillings, sendBilling, changeBillingsFilter, removeBilling, loadPartners,
+  }
 )
 
 export default class BillingList extends React.Component {
@@ -90,7 +92,9 @@ export default class BillingList extends React.Component {
   }
   handleSendBilling = (billingId) => {
     const { loginId, tenantId, loginName } = this.props;
-    this.props.sendBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
+    this.props.sendBilling({
+      tenantId, loginId, loginName, billingId,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -101,7 +105,9 @@ export default class BillingList extends React.Component {
   }
   handleRemoveBilling = (billingId) => {
     const { loginId, tenantId, loginName } = this.props;
-    this.props.removeBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
+    this.props.removeBilling({
+      tenantId, loginId, loginName, billingId,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {

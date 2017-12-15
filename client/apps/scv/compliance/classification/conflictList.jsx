@@ -37,7 +37,9 @@ const formatMsg = format(messages);
       text: tc.cntry_name_cn,
     })),
   }),
-  { loadConflictItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, setStandardItem }
+  {
+    loadConflictItems, deleteItems, setItemStatus, setCompareVisible, setNominatedVisible, setStandardItem,
+  }
 )
 @connectNav({
   depth: 2,
@@ -251,28 +253,30 @@ export default class ConflictList extends Component {
       ids: [row.id],
       status: TRADE_ITEM_STATUS.classified,
       tenantId: this.props.tenantId,
-      conflicted: true }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.success('归类通过');
-          this.handleItemListLoad();
-        }
-      });
+      conflicted: true,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.success('归类通过');
+        this.handleItemListLoad();
+      }
+    });
   }
   handleItemRefused = (row) => {
     this.props.setItemStatus({
       ids: [row.id],
       status: TRADE_ITEM_STATUS.unclassified,
       tenantId: this.props.tenantId,
-      conflicted: true }).then((result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.warning('归类拒绝');
-          this.handleItemListLoad();
-        }
-      });
+      conflicted: true,
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.warning('归类拒绝');
+        this.handleItemListLoad();
+      }
+    });
   }
   handleSetStandard = (row) => {
     this.props.setStandardItem({

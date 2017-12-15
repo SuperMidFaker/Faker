@@ -46,7 +46,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_EXCPSHIPMT_FAIL:
       return { ...state, loading: false };
     case actionTypes.LOAD_EXCPSHIPMT_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         loading: false,
         loaded: true,
         shipmentlist: action.result.data,
@@ -118,7 +119,9 @@ export function createException(dispId, excpLevel, type, typeName, remark, excep
       ],
       endpoint: 'v1/transport/tracking/exception',
       method: 'post',
-      data: { dispId, excpLevel, type, typeName, remark, exception, tenantId, tenantName, loginId, loginName },
+      data: {
+        dispId, excpLevel, type, typeName, remark, exception, tenantId, tenantName, loginId, loginName,
+      },
     },
   };
 }
@@ -130,7 +133,9 @@ export function showDealExcpModal({ visible, shipmtNo = '', exception = {} }) {
   };
 }
 
-export function dealException({ shipmtNo, excpId, solution, solver }) {
+export function dealException({
+  shipmtNo, excpId, solution, solver,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -140,7 +145,9 @@ export function dealException({ shipmtNo, excpId, solution, solver }) {
       ],
       endpoint: 'v1/transport/tracking/dealException',
       method: 'post',
-      data: { shipmtNo, excpId, solution, solver },
+      data: {
+        shipmtNo, excpId, solution, solver,
+      },
     },
   };
 }

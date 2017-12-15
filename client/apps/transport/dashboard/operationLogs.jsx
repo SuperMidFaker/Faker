@@ -29,8 +29,12 @@ const { Header, Content } = Layout;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-function fetchData({ state, dispatch, cookie, location }) {
-  const { startDate, endDate, type, srPartnerId, srTenantId } = location.query;
+function fetchData({
+  state, dispatch, cookie, location,
+}) {
+  const {
+    startDate, endDate, type, srPartnerId, srTenantId,
+  } = location.query;
   const { pageSize, filters } = state.shipment.statistics.logs;
   return dispatch(loadShipmentEvents(cookie, {
     tenantId: state.account.tenantId,
@@ -50,7 +54,8 @@ function fetchData({ state, dispatch, cookie, location }) {
     statistics: state.shipment.statistics,
     filters: state.shipment.statistics.logs.filters,
   }),
-  { loadShipmentEvents, loadShipmtDetail })
+  { loadShipmentEvents, loadShipmtDetail }
+)
 @connectNav({
   depth: 3,
   text: props => formatMsg(props.intl, 'transportDashboard'),

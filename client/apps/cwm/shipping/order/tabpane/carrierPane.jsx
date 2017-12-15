@@ -56,7 +56,9 @@ export default class CarrierPane extends Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, soHead, carriers, selectedOwner } = this.props;
+    const {
+      form: { getFieldDecorator }, soHead, carriers, selectedOwner,
+    } = this.props;
     const deliverType = this.props.form.getFieldValue('delivery_type');
     let crs;
     if (deliverType !== 3) {
@@ -71,11 +73,9 @@ export default class CarrierPane extends Component {
             <FormItem label="配送方式" >
               {getFieldDecorator('delivery_type', {
                 initialValue: soHead && soHead.delivery_type,
-              })(
-                <Select placeholder="选择配送方式" onChange={this.handleDeliverTypeChange}>
-                  {DELIVER_TYPES.map(item => (<Option value={item.value}>{item.name}</Option>))}
-                </Select>
-              )}
+              })(<Select placeholder="选择配送方式" onChange={this.handleDeliverTypeChange}>
+                {DELIVER_TYPES.map(item => (<Option value={item.value}>{item.name}</Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col span={6}>
@@ -83,11 +83,9 @@ export default class CarrierPane extends Component {
               {getFieldDecorator('carrier_code', {
                 rules: [{ message: 'Please select customer!' }],
                 initialValue: soHead && soHead.carrier_code,
-              })(
-                (<Select placeholder="选择承运人" onChange={this.handleCarrierChange}>
-                  {crs.map(item => (<Option value={item.code}>{item.name}</Option>))}
-                </Select>)
-              )}
+              })((<Select placeholder="选择承运人" onChange={this.handleCarrierChange}>
+                {crs.map(item => (<Option value={item.code}>{item.name}</Option>))}
+              </Select>))}
             </FormItem>
           </Col>
         </Row>

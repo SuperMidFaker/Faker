@@ -21,7 +21,8 @@ const TabPane = Tabs.TabPane;
     emergeList: state.cmsTradeitem.taskEmergeList,
     conflictList: state.cmsTradeitem.taskConflictList,
   }),
-  { loadWorkspaceTask,
+  {
+    loadWorkspaceTask,
     loadTaskEmergeItems,
     loadTaskConflictItems,
     submitAudit,
@@ -91,31 +92,30 @@ export default class TaskDetail extends React.Component {
   }
   handleMasterAudit = () => {
     const taskId = Number(this.props.params.id);
-    this.props.submitAudit({ taskId, auditor: 'master' }).then(
-      (result) => {
-        if (!result.error) {
-          if (result.data.feedback === 'reload') {
-            const emergeFilter = { taskId, status: 'emerge' };
-            const conflictFilter = { taskId, status: 'conflict' };
-            this.props.loadTaskEmergeItems({
-              pageSize: this.props.emergeList.pageSize,
-              current: 1,
-              filter: JSON.stringify(emergeFilter),
-            });
-            this.props.loadTaskConflictItems({
-              pageSize: this.props.conflictList.pageSize,
-              current: 1,
-              filter: JSON.stringify(conflictFilter),
-            });
-            this.setState({ emergeFilter, conflictFilter });
-            notification.info({ title: '提示', description: '归类已提交审核' });
-          } else if (result.data.feedback === 'noop') {
-            notification.info({ title: '提示', description: '没有归类可提交主库审核' });
-          } else {
-            this.context.router.goBack();
-          }
+    this.props.submitAudit({ taskId, auditor: 'master' }).then((result) => {
+      if (!result.error) {
+        if (result.data.feedback === 'reload') {
+          const emergeFilter = { taskId, status: 'emerge' };
+          const conflictFilter = { taskId, status: 'conflict' };
+          this.props.loadTaskEmergeItems({
+            pageSize: this.props.emergeList.pageSize,
+            current: 1,
+            filter: JSON.stringify(emergeFilter),
+          });
+          this.props.loadTaskConflictItems({
+            pageSize: this.props.conflictList.pageSize,
+            current: 1,
+            filter: JSON.stringify(conflictFilter),
+          });
+          this.setState({ emergeFilter, conflictFilter });
+          notification.info({ title: '提示', description: '归类已提交审核' });
+        } else if (result.data.feedback === 'noop') {
+          notification.info({ title: '提示', description: '没有归类可提交主库审核' });
+        } else {
+          this.context.router.goBack();
         }
-      });
+      }
+    });
   }
   render() {
     const { task, emergeList, conflictList } = this.props;

@@ -105,7 +105,8 @@ export default class TradeItemTaskList extends React.Component {
       if (!result.error) {
         this.props.loadWorkspaceTasks();
       } else {
-        notification.error({ title: '错误',
+        notification.error({
+          title: '错误',
           description: result.error.message,
         });
       }
@@ -127,7 +128,8 @@ export default class TradeItemTaskList extends React.Component {
     if (resp.existEmerges.length > 0) {
       const warnCopPnos = resp.existEmerges.length > 5 ? `${resp.existEmerges.slice(5).join(',')}等` :
         `${resp.existEmerges.join(',')}`;
-      notification.warn({ title: '导入反馈',
+      notification.warn({
+        title: '导入反馈',
         description: `货号${warnCopPnos}已经存在于新物料归类工作区`,
       });
     }

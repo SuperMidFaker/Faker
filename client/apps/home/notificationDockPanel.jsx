@@ -28,7 +28,9 @@ function fetchData({ state, dispatch, cookie }) {
     messages: state.notification.messages,
     loginId: state.account.loginId,
   }),
-  { hideNotificationDock, loadMessages, markMessages, markMessage }
+  {
+    hideNotificationDock, loadMessages, markMessages, markMessage,
+  }
 )
 export default class NotificationDockPanel extends React.Component {
   static propTypes = {

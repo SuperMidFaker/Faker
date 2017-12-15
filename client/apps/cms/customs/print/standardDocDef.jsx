@@ -59,10 +59,13 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
     const tOrigDest = declWayCode === 'IBND' ? '境内目的地' : '境内货源地';
     const tOrigDestCntry = declWayCode === 'IBND' ? '原产国(地区)' : '最终目的国(地区)';
     headContent = [
-      { columns: [
-        { text: `${head.delg_no}/${orderNo}`, style: 'header' },
-      ] },
-      { style: 'table',
+      {
+        columns: [
+          { text: `${head.delg_no}/${orderNo}`, style: 'header' },
+        ],
+      },
+      {
+        style: 'table',
         table: {
           widths: ['100%'],
           heights: [60],
@@ -71,7 +74,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           ],
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [50, '*', 220],
           heights: [10],
@@ -84,7 +88,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           ],
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [200, '*', '*', 82, 80],
           heights: [rowHeight, rowHeight],
@@ -116,7 +121,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           },
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [200, 95, '*', 118],
           heights: [rowHeight],
@@ -140,7 +146,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           },
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [131, 60, 95, '*', 118],
           heights: [rowHeight, rowHeight],
@@ -232,10 +239,13 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
     const tOrigDest = declWayCode === 'IMPT' ? '境内目的地' : '境内货源地';
     const tOrigDestCntry = declWayCode === 'IMPT' ? '原产国(地区)' : '最终目的国(地区)';
     headContent = [
-      { columns: [
-        { text: `${head.delg_no}/${orderNo}`, style: 'header' },
-      ] },
-      { style: 'table',
+      {
+        columns: [
+          { text: `${head.delg_no}/${orderNo}`, style: 'header' },
+        ],
+      },
+      {
+        style: 'table',
         table: {
           widths: ['100%'],
           heights: [60],
@@ -244,7 +254,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           ],
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [50, '*', 220],
           heights: [10],
@@ -257,7 +268,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           ],
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [220, 110, '*', 85],
           body: [
@@ -281,7 +293,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           },
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [220, 50, '*', 132],
           body: [
@@ -305,7 +318,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           },
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [220, 110, '*', 102],
           body: [
@@ -329,7 +343,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           },
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [150, 120, '*', 102],
           body: [
@@ -353,7 +368,8 @@ function pdfHeader(head, declWayCode, orderNo, params, skeleton) {
           },
         },
       },
-      { style: 'table',
+      {
+        style: 'table',
         table: {
           widths: [150, 62, 110, '*', 102],
           heights: [20, 20, 20],
@@ -482,15 +498,16 @@ function pdfBody(bodydatas, declWayCode, params) {
     const tradeCurr = currency ? `(${currency.value})\n${currency.text}` : '';
     const exemptions = params.exemptionWays.filter(ep => ep.value === dbody.duty_mode)[0];
     const dutyMode = exemptions || { value: '', text: '' };
-    body.push(`${dbody.g_no || ''}`,
-        `${dbody.code_t || ''}${dbody.code_s || ''}`,
-        `${dbody.g_name || ''}\n${dbody.g_model || ''}`,
-        { text: `${dbody.qty_1 || ''}${unit1}\n${dbody.qty_2 || ''}${unit2}\n${dbody.g_qty || ''}${gunit}`, alignment: 'right' },
-        `${origCountry}`,
-        { text: `${dbody.dec_price || ''}`, alignment: 'right' },
-        { text: `${dbody.trade_total || ''}`, alignment: 'right' },
-        `${tradeCurr}`,
-      );
+    body.push(
+      `${dbody.g_no || ''}`,
+      `${dbody.code_t || ''}${dbody.code_s || ''}`,
+      `${dbody.g_name || ''}\n${dbody.g_model || ''}`,
+      { text: `${dbody.qty_1 || ''}${unit1}\n${dbody.qty_2 || ''}${unit2}\n${dbody.g_qty || ''}${gunit}`, alignment: 'right' },
+      `${origCountry}`,
+      { text: `${dbody.dec_price || ''}`, alignment: 'right' },
+      { text: `${dbody.trade_total || ''}`, alignment: 'right' },
+      `${tradeCurr}`,
+    );
     if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
       body.push(`${dutyMode.text}\n${dutyMode.value}`);
     }
@@ -564,61 +581,74 @@ export function StandardDocDef(head, bodies, declWayCode, orderNo, params, skele
       }
     }
     content = pdfHeader(head, declWayCode, orderNo, params, skeleton);
-    content.push(
-      { style: 'table',
-        table: pdfBody(datas, declWayCode, params, skeleton),
-        layout: {
-          paddingTop() { return 0; },
-          paddingBottom() { return 0; },
-          vLineWidth(i, node) {
-            if (skeleton) { return 0; }
-            return (i !== 0 && i !== node.table.widths.length) ? 0 : 1.2;
-          },
-          hLineColor(i, node) {
-            return (i === 0 || i === 1 || i === node.table.body.length) ? 'black' : 'gray';
-          },
-          hLineWidth(i, node) {
-            if (skeleton) { return 0; }
-            if (i === 0) {
-              return 0;
-            } else if (i === node.table.body.length) {
-              return 0.8;
-            } else {
-              return 0.2;
-            }
-          },
+    content.push({
+      style: 'table',
+      table: pdfBody(datas, declWayCode, params, skeleton),
+      layout: {
+        paddingTop() { return 0; },
+        paddingBottom() { return 0; },
+        vLineWidth(i, node) {
+          if (skeleton) { return 0; }
+          return (i !== 0 && i !== node.table.widths.length) ? 0 : 1.2;
         },
-      });
+        hLineColor(i, node) {
+          return (i === 0 || i === 1 || i === node.table.body.length) ? 'black' : 'gray';
+        },
+        hLineWidth(i, node) {
+          if (skeleton) { return 0; }
+          if (i === 0) {
+            return 0;
+          } else if (i === node.table.body.length) {
+            return 0.8;
+          } else {
+            return 0.2;
+          }
+        },
+      },
+    });
     let pdfFooter = [
       [{ text: '\n', border: [true, false, false, true] },
-      { text: '\n', border: [false, false, false, true] },
-      { text: '\n', border: [false, false, false, true] },
-      { text: '\n', border: [false, false, true, true] }],
+        { text: '\n', border: [false, false, false, true] },
+        { text: '\n', border: [false, false, false, true] },
+        { text: '\n', border: [false, false, true, true] }],
       [{ text: '录入人员\n', style: `${labelStyle}`, border: [true, true, false, true] },
-      { text: '录入单位\n', style: `${labelStyle}`, border: [false, true, true, true] },
-      { text: '兹申明对以上内容承担如实申报、依法纳税之法律责任\n', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [true, true, true, false] },
-      { text: '海关批注及签章\n', style: `${labelStyle}`, border: [true, true, true, false] }],
-      [{ text: '\n报关人员', style: `${labelStyle}`, colSpan: 2, border: [true, true, false, true] }, {},
-      { text: '\n\n申报单位（签章）', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [false, false, true, true] },
+        { text: '录入单位\n', style: `${labelStyle}`, border: [false, true, true, true] },
+        {
+          text: '兹申明对以上内容承担如实申报、依法纳税之法律责任\n', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [true, true, true, false],
+        },
+        { text: '海关批注及签章\n', style: `${labelStyle}`, border: [true, true, true, false] }],
+      [{
+        text: '\n报关人员', style: `${labelStyle}`, colSpan: 2, border: [true, true, false, true],
+      }, {},
+      {
+        text: '\n\n申报单位（签章）', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [false, false, true, true],
+      },
       { text: '\n\n审核日期', style: `${labelStyle}`, border: [true, false, true, true] }],
     ];
     if (declWayCode === 'IMPT' || declWayCode === 'EXPT') {
       pdfFooter = [
         [{ text: '\n', border: [true, false, false, true] },
-        { text: '\n', border: [false, false, false, true] },
-        { text: '\n', border: [false, false, false, true] },
-        { text: '\n', border: [false, false, true, true] }],
+          { text: '\n', border: [false, false, false, true] },
+          { text: '\n', border: [false, false, false, true] },
+          { text: '\n', border: [false, false, true, true] }],
         [{ text: '录入人员\n', style: `${labelStyle}`, border: [true, true, false, true] },
-        { text: '录入单位\n', style: `${labelStyle}`, border: [false, true, true, true] },
-        { text: '兹申明对以上内容承担如实申报、依法纳税之法律责任\n', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [true, true, true, false] },
-        { text: '海关批注及签章\n', style: `${labelStyle}`, border: [true, true, true, false] }],
-        [{ text: '\n报关人员', style: `${labelStyle}`, colSpan: 2, border: [true, true, false, true] }, {},
-        { text: '\n\n申报单位（签章）', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [false, false, true, true] },
+          { text: '录入单位\n', style: `${labelStyle}`, border: [false, true, true, true] },
+          {
+            text: '兹申明对以上内容承担如实申报、依法纳税之法律责任\n', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [true, true, true, false],
+          },
+          { text: '海关批注及签章\n', style: `${labelStyle}`, border: [true, true, true, false] }],
+        [{
+          text: '\n报关人员', style: `${labelStyle}`, colSpan: 2, border: [true, true, false, true],
+        }, {},
+        {
+          text: '\n\n申报单位（签章）', style: `${labelStyle}`, margin: [12, 0, 10, 0], border: [false, false, true, true],
+        },
         { text: '', border: [true, false, true, true] }],
       ];
     }
     if (end) {
-      content.push({ style: 'table',
+      content.push({
+        style: 'table',
         table: { widths: ['15%', '15%', '37%', '33%'], heights: [14, 36, 42], body: pdfFooter },
         layout: {
           vLineWidth(i, node) {
@@ -632,7 +662,8 @@ export function StandardDocDef(head, bodies, declWayCode, orderNo, params, skele
         },
       });
     } else {
-      content.push({ style: 'table',
+      content.push({
+        style: 'table',
         pageBreak: 'after',
         table: { widths: ['15%', '15%', '37%', '33%'], body: pdfFooter },
         layout: {

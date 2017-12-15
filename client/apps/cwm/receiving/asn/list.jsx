@@ -52,7 +52,9 @@ function fetchData({ state, dispatch }) {
     loginName: state.account.username,
     userMembers: state.account.userMembers,
   }),
-  { showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease }
+  {
+    showDock, switchDefaultWhse, loadAsnLists, releaseAsn, cancelAsn, closeAsn, batchRelease,
+  }
 )
 @connectNav({
   depth: 2,
@@ -227,17 +229,15 @@ export default class ReceivingASNList extends React.Component {
   handleReleaseASN = (row) => {
     const { loginId } = this.props;
     const whseCode = this.props.defaultWhse.code;
-    this.props.releaseAsn(row.asn_no, loginId, whseCode).then(
-      (result) => {
-        if (!result.error) {
-          notification.success({
-            message: '操作成功',
-            description: `${row.asn_no} 已释放`,
-          });
-          this.handleListReload();
-        }
+    this.props.releaseAsn(row.asn_no, loginId, whseCode).then((result) => {
+      if (!result.error) {
+        notification.success({
+          message: '操作成功',
+          description: `${row.asn_no} 已释放`,
+        });
+        this.handleListReload();
       }
-    );
+    });
   }
   handleBatchRelease = () => {
     const { selectedRowKeys } = this.state;
@@ -325,7 +325,9 @@ export default class ReceivingASNList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { whses, defaultWhse, owners, suppliers, filters, loading } = this.props;
+    const {
+      whses, defaultWhse, owners, suppliers, filters, loading,
+    } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {
@@ -374,7 +376,8 @@ export default class ReceivingASNList extends React.Component {
         <Option value="all" key="all">全部供货商</Option>
         {suppliers.filter(supplier => filters.ownerCode !== 'all' ? filters.ownerCode === supplier.owner_partner_id : true)
         .map(supplier => (<Option key={supplier.code} value={supplier.code}>{supplier.name}</Option>))}
-      </Select></span>);
+      </Select>
+    </span>);
     const bulkActions = filters.status === 'pending' && <Button icon="play-circle-o" onClick={this.handleBatchRelease}>批量释放</Button>;
     /* const popContent = filters.ownerCode === 'all' ? '先选择货主导入'
       : <a href={`${XLSX_CDN}/ASN库存导入模板_20170901.xlsx`}><Icon type="file-excel" />下载导入模板</a>;

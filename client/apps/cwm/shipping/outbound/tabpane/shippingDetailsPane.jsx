@@ -50,8 +50,10 @@ export default class ShippingDetailsPane extends React.Component {
   handleExportExitVoucher = () => {
     this.props.exportNormalExitBySo(this.props.outboundHead.so_no).then((resp) => {
       if (!resp.error) {
-        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
-          `${this.props.outboundHead.so_no}_出区凭单.xlsx`);
+        FileSaver.saveAs(
+          new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
+          `${this.props.outboundHead.so_no}_出区凭单.xlsx`
+        );
       } else {
         notification.error({
           message: '导出失败',

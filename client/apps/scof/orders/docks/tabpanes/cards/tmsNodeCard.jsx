@@ -30,30 +30,26 @@ export default class TMSNodeCard extends React.Component {
   }
   componentWillMount = () => {
     const { uuid } = this.props;
-    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then(
-      (result) => {
-        if (!result.data) return;
-        this.setState({
-          trigger: this.triggerStepMap[result.data.trigger_name],
-        });
-      }
-    );
+    this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then((result) => {
+      if (!result.data) return;
+      this.setState({
+        trigger: this.triggerStepMap[result.data.trigger_name],
+      });
+    });
   }
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.uuid !== this.props.uuid) {
-      this.props.loadOrderNodesTriggers(nextProps.uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then(
-        (result) => {
-          if (!result.data) {
-            this.setState({
-              trigger: -1,
-            });
-            return;
-          }
+      this.props.loadOrderNodesTriggers(nextProps.uuid, [NODE_BIZ_OBJECTS.tms[0].key]).then((result) => {
+        if (!result.data) {
           this.setState({
-            trigger: this.triggerStepMap[result.data.trigger_name],
+            trigger: -1,
           });
+          return;
         }
-      );
+        this.setState({
+          trigger: this.triggerStepMap[result.data.trigger_name],
+        });
+      });
     }
   }
   triggerStepMap = {
@@ -64,22 +60,22 @@ export default class TMSNodeCard extends React.Component {
     [NODE_BIZ_OBJECTS.tms[0].triggers[5].key]: 4,
   }
   handleShipmtPreview = (No) => {
-    this.props.loadShipmtDetail(No, this.props.tenantId, 'sr', 'order').then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message);
-        } else {
-          this.props.hideDock();
-        }
+    this.props.loadShipmtDetail(No, this.props.tenantId, 'sr', 'order').then((result) => {
+      if (result.error) {
+        message.error(result.error.message);
+      } else {
+        this.props.hideDock();
       }
-    );
+    });
   }
   render() {
-    const { name, children, consignerName, consigneeName, trsMode, in_degree: indegree, pod } = this.props;
+    const {
+      name, children, consignerName, consigneeName, trsMode, in_degree: indegree, pod,
+    } = this.props;
     const extra = indegree === 0 ?
-        (<Tooltip title="进入详情">
-          <Button size="small" shape="circle" icon="right" />
-        </Tooltip>) : null;
+      (<Tooltip title="进入详情">
+        <Button size="small" shape="circle" icon="right" />
+      </Tooltip>) : null;
     const steps = [
       <Step title="接单" key="accept" />,
       <Step title="调度" key="dispatch" />,

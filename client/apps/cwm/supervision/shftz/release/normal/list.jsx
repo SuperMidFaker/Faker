@@ -40,7 +40,9 @@ const RadioButton = Radio.Button;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { openNormalRelRegModal, loadReleaseRegDatas, switchDefaultWhse, showDock }
+  {
+    openNormalRelRegModal, loadReleaseRegDatas, switchDefaultWhse, showDock,
+  }
 )
 @connectNav({
   depth: 2,
@@ -70,7 +72,9 @@ export default class SHFTZNormalRelRegList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'normal', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'normal', ownerView,
+    };
     this.handleReleaseListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -292,8 +296,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
         onChange={this.handleOwnerSelectChange} defaultValue="all" dropdownMatchSelectWidth={false} dropdownStyle={{ width: 360 }}
       >
         <Option value="all">全部货主</Option>
-        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-          )}
+        {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
       </Select>
     </span>);
     const bulkActions = (<span>
@@ -311,7 +314,7 @@ export default class SHFTZNormalRelRegList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

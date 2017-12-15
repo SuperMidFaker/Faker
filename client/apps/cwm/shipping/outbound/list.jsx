@@ -234,7 +234,9 @@ export default class OutboundList extends React.Component {
     this.setState({ selectedRowKeys: [] });
   }
   render() {
-    const { defaultWhse, whses, owners, loading, filters } = this.props;
+    const {
+      defaultWhse, whses, owners, loading, filters,
+    } = this.props;
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadOutbounds(params),
       resolve: result => result.data,

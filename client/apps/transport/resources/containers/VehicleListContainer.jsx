@@ -17,7 +17,9 @@ function fetchData({ dispatch, state }) {
   loading: state.transportResources.loading,
   cars: state.transportResources.cars,
   tenantId: state.account.tenantId,
-}), { editVehicle, toggleVehicleModal, loadVehicleList, removeVehicle })
+}), {
+  editVehicle, toggleVehicleModal, loadVehicleList, removeVehicle,
+})
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -27,8 +29,8 @@ export default class VehicleListContainer extends Component {
     loaded: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
     tenantId: PropTypes.number.isRequired,
-    cars: PropTypes.array.isRequired,                 // 服务器返回的车辆数组
-    editVehicle: PropTypes.func.isRequired,           // 停用和启用车辆的action creator
+    cars: PropTypes.array.isRequired, // 服务器返回的车辆数组
+    editVehicle: PropTypes.func.isRequired, // 停用和启用车辆的action creator
     toggleVehicleModal: PropTypes.func.isRequired,
     loadVehicleList: PropTypes.func.isRequired,
     removeVehicle: PropTypes.func.isRequired,

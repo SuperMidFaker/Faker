@@ -8,7 +8,9 @@ import { argumentContainer } from '../util';
  * 高阶组件状态迁移周期componentDidMount在客户端加载完成时,一般用于显示固定导航标题
  * componentWillReceiveProps在客户端设置props变化后导航信息
  */
-export default function connectNav({ depth, moduleName, jumpOut = false, lifecycle = 'componentDidMount', until }) {
+export default function connectNav({
+  depth, moduleName, jumpOut = false, lifecycle = 'componentDidMount', until,
+}) {
   return (Wrapped) => {
     class WrappedComponent extends Component {
       static contextTypes = {

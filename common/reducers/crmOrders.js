@@ -67,6 +67,7 @@ const initialState = {
     consignerLocations: [],
     consigneeLocations: [],
     containerPackagings: [],
+    declPorts: [],
   },
   orders: {
     totalCount: 0,
@@ -88,11 +89,10 @@ export default function reducer(state = initialState, action) {
         return { ...state, formData: { ...state.formData, ...orderInfo } };
       } else if (index === -2) {
         return { ...state, formData: initialState.formData };
-      } else {
-        const subOrders = [...state.formData.subOrders];
-        subOrders.splice(index, 1, orderInfo);
-        return { ...state, formData: { ...state.formData, subOrders } };
       }
+      const subOrders = [...state.formData.subOrders];
+      subOrders.splice(index, 1, orderInfo);
+      return { ...state, formData: { ...state.formData, subOrders } };
     }
     case actionTypes.LOAD_ORDERS:
       return { ...state, loading: true, orderFilters: JSON.parse(action.params.filters) };
@@ -109,20 +109,24 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SUBMIT_ORDER_FAIL:
       return { ...state, orderSaving: false };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state,
+      return {
+        ...state,
         dock: {
           ...state.dock,
           visible: true,
           tabKey: action.tabKey,
           ...action.result.data,
-        } };
+        },
+      };
     }
     case actionTypes.LOAD_CLEARANCE_FEES_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         dock: {
           ...state.dock,
           clearanceFees: action.result.data || initialState.dock.clearanceFees,
-        } };
+        },
+      };
     case actionTypes.HIDE_DOCK: {
       return { ...state, dock: { ...state.dock, visible: false } };
     }
@@ -137,7 +141,13 @@ export default function reducer(state = initialState, action) {
     }
     case actionTypes.LOAD_FLOWSO_SUCCEED:
     case actionTypes.LOAD_FLOWASN_SUCCEED:
-      return { ...state, dockInstMap: { ...state.dockInstMap, [action.params.uuid]: action.result.data } };
+      return {
+        ...state,
+        dockInstMap: {
+          ...state.dockInstMap,
+          [action.params.uuid]: action.result.data,
+        },
+      };
     default:
       return state;
   }
@@ -158,7 +168,9 @@ export function loadFormRequires(params) {
   };
 }
 
-export function loadOrders({ tenantId, pageSize, current, filters }) {
+export function loadOrders({
+  tenantId, pageSize, current, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -168,7 +180,9 @@ export function loadOrders({ tenantId, pageSize, current, filters }) {
       ],
       endpoint: 'v1/crm/orders',
       method: 'get',
-      params: { tenantId, pageSize, current, filters: JSON.stringify(filters) },
+      params: {
+        tenantId, pageSize, current, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -188,7 +202,9 @@ export function loadOrder(shipmtOrderNo) {
   };
 }
 
-export function removeOrder({ tenantId, loginId, username, shipmtOrderNo }) {
+export function removeOrder({
+  tenantId, loginId, username, shipmtOrderNo,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -198,7 +214,9 @@ export function removeOrder({ tenantId, loginId, username, shipmtOrderNo }) {
       ],
       endpoint: 'v1/crm/order/remove',
       method: 'post',
-      data: { tenantId, loginId, username, shipmtOrderNo },
+      data: {
+        tenantId, loginId, username, shipmtOrderNo,
+      },
     },
   };
 }

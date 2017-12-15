@@ -18,7 +18,9 @@ const Option = Select.Option;
     tenantId: state.account.tenantId,
     customerPartners: state.partner.partners,
   }),
-  { closeCreateFlowModal, loadPartners, saveFlow, loadScvTrackings }
+  {
+    closeCreateFlowModal, loadPartners, saveFlow, loadScvTrackings,
+  }
 )
 @Form.create()
 export default class CreateFlowModal extends React.Component {
@@ -95,23 +97,19 @@ export default class CreateFlowModal extends React.Component {
             {
              getFieldDecorator('customer', {
                rules: [{ required: true, message: '流程对应客户必填' }],
-             })(
-               <Select showSearch optionFilterProp="children" onSelect={this.handleCustomerSelect}>
-                 {customerPartners.map(data => (
-                   <Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-              )}
-               </Select>)
+             })(<Select showSearch optionFilterProp="children" onSelect={this.handleCustomerSelect}>
+               {customerPartners.map(data => (
+                 <Option key={data.id} value={data.id}>{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>))}
+             </Select>)
             }
           </FormItem>
           {this.state.trackings &&
             <FormItem label={this.msg('customerTracking')}>
               {
-               getFieldDecorator('tracking')(
-                 <Select>
-                   {this.state.trackings.map(data => (
-                     <Option key={data.id} value={data.id}>{data.name}</Option>)
-                )}
-                 </Select>)
+               getFieldDecorator('tracking')(<Select>
+                 {this.state.trackings.map(data => (
+                   <Option key={data.id} value={data.id}>{data.name}</Option>))}
+               </Select>)
               }
             </FormItem>
           }

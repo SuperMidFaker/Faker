@@ -64,7 +64,7 @@ export default class RoleList extends React.Component {
     loadRoles: PropTypes.func.isRequired,
   }
   static contextTypes = {
-    router: React.PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
   }
   state = {
     selectedRowKeys: [],
@@ -159,16 +159,15 @@ export default class RoleList extends React.Component {
                 </a>
               </span>
             </PrivilegeCover>);
-        } else {
-          return (
-            <span>
-              <PrivilegeCover module="corp" feature="role" action="edit">
-                <a role="presentation" onClick={() => this.handleEnable(record, index)}>
-                  {formatContainerMsg(intl, 'enableOp')}
-                </a>
-              </PrivilegeCover>
-            </span>);
         }
+        return (
+          <span>
+            <PrivilegeCover module="corp" feature="role" action="edit">
+              <a role="presentation" onClick={() => this.handleEnable(record, index)}>
+                {formatContainerMsg(intl, 'enableOp')}
+              </a>
+            </PrivilegeCover>
+          </span>);
       },
     }];
     return (
@@ -181,8 +180,11 @@ export default class RoleList extends React.Component {
           </PrivilegeCover>
         </div>
         <div className="panel-body table-panel table-fixed-layout">
-          <Table rowSelection={rowSelection} columns={columns} loading={loading}
-            dataSource={dataSource} useFixedHeader
+          <Table rowSelection={rowSelection}
+            columns={columns}
+            loading={loading}
+            dataSource={dataSource}
+            useFixedHeader
           />
         </div>
       </div>);

@@ -25,7 +25,8 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     transitModes: state.shipment.formRequire.transitModes,
   }),
-  { })
+  { }
+)
 @Form.create()
 export default class AdvancedSearchBar extends React.Component {
   static propTypes = {
@@ -193,13 +194,9 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                {getFieldDecorator('transport_mode', { initialValue: '' })(
-                  <Select style={{ width: '100%' }} >
-                    {transitModes.map(
-                    tm => <Option value={tm.mode_name} key={tm.mode_code}>{tm.mode_name}</Option>
-                  )}
-                  </Select>
-                )}
+                {getFieldDecorator('transport_mode', { initialValue: '' })(<Select style={{ width: '100%' }} >
+                  {transitModes.map(tm => <Option value={tm.mode_name} key={tm.mode_code}>{tm.mode_name}</Option>)}
+                </Select>)}
               </FormItem>
             </Col>
             <Col sm={8}>
@@ -208,9 +205,7 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                {getFieldDecorator('pickup_est_date', { initialValue: '' })(
-                  <RangePicker style={{ width: '100%' }} />
-                )
+                {getFieldDecorator('pickup_est_date', { initialValue: '' })(<RangePicker style={{ width: '100%' }} />)
                 }
 
               </FormItem>
@@ -219,9 +214,7 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                {getFieldDecorator('deliver_est_date', { initialValue: '' })(
-                  <RangePicker style={{ width: '100%' }} />
-                )}
+                {getFieldDecorator('deliver_est_date', { initialValue: '' })(<RangePicker style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
             <Col sm={8}>
@@ -230,9 +223,7 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                {getFieldDecorator('pickup_act_date', { initialValue: '' })(
-                  <RangePicker style={{ width: '100%' }} />
-                )}
+                {getFieldDecorator('pickup_act_date', { initialValue: '' })(<RangePicker style={{ width: '100%' }} />)}
 
               </FormItem>
               <FormItem
@@ -240,9 +231,7 @@ export default class AdvancedSearchBar extends React.Component {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 14 }}
               >
-                {getFieldDecorator('deliver_act_date', { initialValue: '' })(
-                  <RangePicker style={{ width: '100%' }} />
-                )}
+                {getFieldDecorator('deliver_act_date', { initialValue: '' })(<RangePicker style={{ width: '100%' }} />)}
               </FormItem>
             </Col>
           </Row>

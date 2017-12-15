@@ -55,7 +55,8 @@ const RangePicker = DatePicker.RangePicker;
     customs: state.cmsDeclare.listRequire.customs,
     // trades: state.cmsDeclare.trades,
   }),
-  { loadCustomsDecls,
+  {
+    loadCustomsDecls,
     loadTableParams,
     loadPartnersByTypes,
     openEfModal,
@@ -66,7 +67,8 @@ const RangePicker = DatePicker.RangePicker;
     openDeclReleasedModal,
     showBatchSendModal,
     showDeclMsgDock,
-    toggleDeclMsgModal }
+    toggleDeclMsgModal,
+  }
 )
 @connectNav({
   depth: 2,
@@ -89,7 +91,6 @@ export default class CustomsList extends Component {
   state = {
     selectedRows: [],
     selectedRowKeys: [],
-    searchInput: '',
   }
   componentDidMount() {
     let filters = { status: 'all', filterDate: [] };
@@ -318,12 +319,11 @@ export default class CustomsList extends Component {
           spanElems.push(<RowAction overlay={<Menu onClick={this.showDeclMsgModal}><Menu.Item key={`${record.sent_file}|sent`}>{this.msg('viewDeclMsg')}</Menu.Item></Menu>} row={record} />);
         }
         if (record.status === CMS_DECL_STATUS.entered.value) {
-          spanElems.push(
-            <PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
-              <RowAction onClick={this.handleShowDeclReleasedModal} row={record}
-                icon="flag" tooltip={this.msg('markReleased')}
-              />
-            </PrivilegeCover>);
+          spanElems.push(<PrivilegeCover module="clearance" feature="customs" action="edit" key="clear">
+            <RowAction onClick={this.handleShowDeclReleasedModal} row={record}
+              icon="flag" tooltip={this.msg('markReleased')}
+            />
+          </PrivilegeCover>);
         }
         if (record.status >= CMS_DECL_STATUS.entered.value) {
           spanElems.push(<RowAction overlay={<Menu>
@@ -513,7 +513,8 @@ export default class CustomsList extends Component {
       ietype: record.i_e_type === 0 ? 'import' : 'export',
       preEntrySeqNo: record.pre_entry_seq_no,
       delgNo: record.delg_no,
-      agentCustCo: record.agent_custco });
+      agentCustCo: record.agent_custco,
+    });
   }
   handleEpSendXmlView = (filename) => {
     window.open(`${API_ROOTS.default}v1/cms/customs/epsend/xml?filename=${filename}`);
@@ -577,7 +578,7 @@ export default class CustomsList extends Component {
                 批量发送
               </Button>
             </PrivilegeCover>}
-            <Popconfirm title={'是否退回所有选择项？'} onConfirm={() => this.handleBatchRecall(this.state.selectedRowKeys)}>
+            <Popconfirm title="是否退回所有选择项？" onConfirm={() => this.handleBatchRecall(this.state.selectedRowKeys)}>
               <Button>
                 批量退回
               </Button>
@@ -626,7 +627,8 @@ export default class CustomsList extends Component {
       <RangePicker value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-      /></span>);
+      />
+    </span>);
     return (
       <Layout>
         <Layout>
@@ -648,8 +650,7 @@ export default class CustomsList extends Component {
               <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>
                 <RadioButton value="all">{this.msg('all')}</RadioButton>
                 {Object.keys(CMS_DECL_STATUS).map(declkey =>
-                  <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>
-                )}
+                  <RadioButton value={declkey} key={declkey}>{CMS_DECL_STATUS[declkey].text}</RadioButton>)}
               </RadioGroup>
               <span />
               <RadioGroup value={listFilter.status} onChange={this.handleStatusFilter}>

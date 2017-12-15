@@ -52,7 +52,9 @@ export default class TraderModal extends React.Component {
   }
   handleOk = () => {
     const { businessUnit } = this.props;
-    const { name, code, customsCode, ciqCode } = this.state;
+    const {
+      name, code, customsCode, ciqCode,
+    } = this.state;
     if (name === '') {
       message.error('请填写企业名称');
     } else if (code === '' && customsCode === '') {
@@ -73,9 +75,15 @@ export default class TraderModal extends React.Component {
     }
   }
   handleAddPartner = () => {
-    const { tenantId, loginId, loginName, customer } = this.props;
-    const { name, code, customsCode, type, ciqCode } = this.state;
-    this.props.addBusinessUnit({ name, code, customsCode, type, tenantId, loginId, loginName, customerPartnerId: customer.id, ciqCode }).then((result1) => {
+    const {
+      tenantId, loginId, loginName, customer,
+    } = this.props;
+    const {
+      name, code, customsCode, type, ciqCode,
+    } = this.state;
+    this.props.addBusinessUnit({
+      name, code, customsCode, type, tenantId, loginId, loginName, customerPartnerId: customer.id, ciqCode,
+    }).then((result1) => {
       if (result1.error) {
         message.error(result1.error.message, 10);
       } else {
@@ -89,7 +97,9 @@ export default class TraderModal extends React.Component {
   }
   render() {
     const { visible } = this.props;
-    const { name, code, customsCode, ciqCode } = this.state;
+    const {
+      name, code, customsCode, ciqCode,
+    } = this.state;
     return (
       <Modal maskClosable={false} title={this.props.operation === 'add' ? '新增收发货人' : '修改收发货人'} visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
         <Form layout="horizontal">

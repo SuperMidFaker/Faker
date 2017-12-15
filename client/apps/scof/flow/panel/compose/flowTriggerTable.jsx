@@ -18,12 +18,14 @@ export default class FlowTriggerTable extends React.Component {
     bizObj: PropTypes.string,
     nodeActions: PropTypes.arrayOf(PropTypes.shape({
       biz_object: PropTypes.string,
-      trigger_name: PropTypes.string.isRequired })),
+      trigger_name: PropTypes.string.isRequired,
+    })),
   }
   msg = formatMsg(this.props.intl)
   eventColumns = [
     { dataIndex: 'name' },
-    { dataIndex: 'operation',
+    {
+      dataIndex: 'operation',
       width: 90,
       render: (di, row) => {
         const { bizObj, nodeActions } = this.props;
@@ -35,7 +37,9 @@ export default class FlowTriggerTable extends React.Component {
     },
   ]
   handleTriggerActions = (key, name, actions, bizObj) => {
-    this.props.openAddTriggerModal({ key, name, actions, node_biz_object: bizObj });
+    this.props.openAddTriggerModal({
+      key, name, actions, node_biz_object: bizObj,
+    });
   }
   render() {
     const { kind, bizObj } = this.props;

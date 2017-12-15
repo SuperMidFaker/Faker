@@ -11,11 +11,9 @@ import messages from '../message.i18n';
 const formatMsg = format(messages);
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-  }), { loadNodeList }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+}), { loadNodeList })
 
 export default class ConsignInfoPane extends React.Component {
   static propTypes = {

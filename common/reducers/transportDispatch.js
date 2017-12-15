@@ -1,7 +1,8 @@
 import { CLIENT_API } from 'common/reduxMiddlewares/requester';
 import { createActionTypes } from 'client/common/redux-actions';
 
-const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
+const actionTypes = createActionTypes(
+  '@@welogix/transport/dispatch/',
   ['LOAD_DISPSHIPMENT', 'LOAD_DISPSHIPMENT_FAIL', 'LOAD_DISPSHIPMENT_SUCCEED',
     'LOAD_LSPS', 'LOAD_LSPS_FAIL', 'LOAD_LSPS_SUCCEED',
     'LOAD_VEHICLES', 'LOAD_VEHICLES_FAIL', 'LOAD_VEHICLES_SUCCEED',
@@ -17,7 +18,8 @@ const actionTypes = createActionTypes('@@welogix/transport/dispatch/',
     'WITHDRAW', 'WITHDRAW_FAIL', 'WITHDRAW_SUCCEED',
     'REMOVE_GROUPEDSUB', 'CHANGE_DOCK_STATUS',
     'SHOW_DISPATCH_CONFIRM_MODAL',
-  ]);
+  ]
+);
 
 const initialState = {
   loaded: true,
@@ -70,7 +72,9 @@ const initialState = {
     visible: false,
   },
 };
-export const { LOAD_DISPSHIPMENT, DO_DISPATCH_SUCCEED, DO_DISPATCH_SEND_SUCCEED, SEGMENT_SUCCEED } = actionTypes;
+export const {
+  LOAD_DISPSHIPMENT, DO_DISPATCH_SUCCEED, DO_DISPATCH_SEND_SUCCEED, SEGMENT_SUCCEED,
+} = actionTypes;
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_DISPSHIPMENT:
@@ -79,7 +83,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: false, dispatched: false };
     case actionTypes.LOAD_DISPSHIPMENT_SUCCEED: {
       const filters = JSON.parse(action.params.filters);
-      return { ...state,
+      return {
+        ...state,
         loading: false,
         shipmentlist: action.result.data,
         filters,
@@ -98,7 +103,8 @@ export default function reducer(state = initialState, action) {
     case actionTypes.DO_DISPATCH_SUCCEED:
       return { ...state, dispatched: true, loaded: false };
     case actionTypes.LOAD_SEGMENT_RQ_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         nodeLocations: action.result.data.nodeLocations,
         transitModes: action.result.data.transitModes,
         vehicleLengths: action.result.data.vehicleLengths,
@@ -115,7 +121,8 @@ export default function reducer(state = initialState, action) {
       const { shipmentlist } = { ...state };
       shipmentlist.data = action.result.data;
       shipmentlist.totalCount = shipmentlist.data.length;
-      return { ...state,
+      return {
+        ...state,
         loading: false,
         loaded: true,
         shipmentlist,

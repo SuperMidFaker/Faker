@@ -60,7 +60,9 @@ export function addBroker(name, customsCode, code, loginId, loginName, id, ciqCo
       ],
       endpoint: 'v1/cms/broker/add',
       method: 'post',
-      data: { name, customsCode, code, loginId, loginName, id, ciqCode },
+      data: {
+        name, customsCode, code, loginId, loginName, id, ciqCode,
+      },
     },
   };
 }
@@ -75,7 +77,9 @@ export function editBroker(id, name, customsCode, code, ciqCode) {
       ],
       endpoint: 'v1/cms/broker/edit',
       method: 'post',
-      data: { id, name, customsCode, code, ciqCode },
+      data: {
+        id, name, customsCode, code, ciqCode,
+      },
     },
   };
 }

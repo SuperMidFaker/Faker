@@ -47,7 +47,9 @@ export default class ImportDataPanel extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
-    const { endpoint, formData = {}, children, visible, title, onUploaded, adaptors } = this.props;
+    const {
+      endpoint, formData = {}, children, visible, title, onUploaded, adaptors,
+    } = this.props;
     const { importInfo, adaptor } = this.state;
     if (adaptor) {
       formData.adaptor = adaptor;

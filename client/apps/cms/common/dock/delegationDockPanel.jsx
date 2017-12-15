@@ -34,7 +34,9 @@ const TabPane = Tabs.TabPane;
     operators: state.crmCustomers.operators,
     partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
   }),
-  { hideDock, setPreviewStatus, setPreviewTabkey, showDispModal, loadBasicInfo, loadOrderDetail, getShipmtOrderNo, acceptDelg, reloadDelegationList }
+  {
+    hideDock, setPreviewStatus, setPreviewTabkey, showDispModal, loadBasicInfo, loadOrderDetail, getShipmtOrderNo, acceptDelg, reloadDelegationList,
+  }
 )
 export default class DelegationDockPanel extends React.Component {
   static propTypes = {
@@ -65,9 +67,7 @@ export default class DelegationDockPanel extends React.Component {
     this.props.setPreviewStatus({ preStatus: 'delgDispCancel' });
   }
   handleDelegationAccept = (record, lid, name) => {
-    this.props.acceptDelg(
-      lid, name, [this.props.previewer.delgDispatch.id], this.props.previewer.delegation.delg_no
-    ).then((result) => {
+    this.props.acceptDelg(lid, name, [this.props.previewer.delgDispatch.id], this.props.previewer.delegation.delg_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -89,56 +89,54 @@ export default class DelegationDockPanel extends React.Component {
     }
     switch (status) {
       case CMS_DELEGATION_STATUS.unaccepted:
-        {
-          if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
-            return <span><Badge status="default" text="待接单" /> {ciqTag}</span>;
-          } else {
-            return <span><Badge status="default" text="待供应商接单" /> {ciqTag}</span>;
-          }
+      {
+        if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
+          return <span><Badge status="default" text="待接单" /> {ciqTag}</span>;
+        } else {
+          return <span><Badge status="default" text="待供应商接单" /> {ciqTag}</span>;
         }
+      }
       case CMS_DELEGATION_STATUS.accepted:
-        {
-          if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
-            return <span><Badge status="default" text="已接单" /> {ciqTag}</span>;
-          } else {
-            return <span><Badge status="default" text="供应商已接单" /> {ciqTag}</span>;
-          }
+      {
+        if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
+          return <span><Badge status="default" text="已接单" /> {ciqTag}</span>;
+        } else {
+          return <span><Badge status="default" text="供应商已接单" /> {ciqTag}</span>;
         }
+      }
       case CMS_DELEGATION_STATUS.processing:
-        {
-          if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
-            return <span><Badge status="warning" text="制单中" /> {ciqTag}</span>;
-          } else {
-            return <span><Badge status="warning" text="供应商制单中" /> {ciqTag}</span>;
-          }
+      {
+        if (delgDispatch.recv_tenant_id === delgDispatch.customs_tenant_id) {
+          return <span><Badge status="warning" text="制单中" /> {ciqTag}</span>;
+        } else {
+          return <span><Badge status="warning" text="供应商制单中" /> {ciqTag}</span>;
         }
+      }
       case CMS_DELEGATION_STATUS.declaring:
-        {
-          if (delgDispatch.sub_status === 1) {
-            return <span><Badge status="processing" text="部分申报" /> {ciqTag}</span>;
-          } else {
-            return <span><Badge status="processing" text="已申报" /> {ciqTag}</span>;
-          }
+      {
+        if (delgDispatch.sub_status === 1) {
+          return <span><Badge status="processing" text="部分申报" /> {ciqTag}</span>;
+        } else {
+          return <span><Badge status="processing" text="已申报" /> {ciqTag}</span>;
         }
+      }
       case CMS_DELEGATION_STATUS.released:
-        {
-          if (delgDispatch.sub_status === 1) {
-            return <span><Badge status="success" text="部分放行" /> {ciqTag}</span>;
-          } else {
-            return <span><Badge status="success" text="已放行" /> {ciqTag}</span>;
-          }
+      {
+        if (delgDispatch.sub_status === 1) {
+          return <span><Badge status="success" text="部分放行" /> {ciqTag}</span>;
+        } else {
+          return <span><Badge status="success" text="已放行" /> {ciqTag}</span>;
         }
+      }
       default: return '';
     }
   }
   goHomeDock = () => {
     const { previewer } = this.props;
-    this.props.getShipmtOrderNo(previewer.delegation.instance_uuid).then(
-      (result) => {
-        this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
-        this.props.hideDock();
-      }
-    );
+    this.props.getShipmtOrderNo(previewer.delegation.instance_uuid).then((result) => {
+      this.props.loadOrderDetail(result.data.order_no, this.props.tenantId);
+      this.props.hideDock();
+    });
   }
   renderTabs() {
     const { previewer, tabKey } = this.props;

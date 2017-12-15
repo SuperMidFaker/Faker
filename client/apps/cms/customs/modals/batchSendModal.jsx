@@ -13,7 +13,9 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnSelect(props) {
-  const { record, field, options, onChange, index } = props;
+  const {
+    record, field, options, onChange, index,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, index, field, value);
@@ -97,7 +99,9 @@ export default class BatchSendModal extends React.Component {
       }
     }
     if (sendVals.length > 0) {
-      this.props.sendMutiDecl({ values: sendVals, subdomain, loginId, username: loginName }).then((result) => {
+      this.props.sendMutiDecl({
+        values: sendVals, subdomain, loginId, username: loginName,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {

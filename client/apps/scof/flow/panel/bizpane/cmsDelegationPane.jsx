@@ -43,8 +43,10 @@ export default class CMSDelegationPane extends Component {
     this.props.loadEpList(tenantId, customs && customs.customs_code);
   }
   render() {
-    const { form: { getFieldDecorator }, model,
-      bizDelegation: { declPorts, customsBrokers, ciqBrokers }, cmsQuotes } = this.props;
+    const {
+      form: { getFieldDecorator }, model,
+      bizDelegation: { declPorts, customsBrokers, ciqBrokers }, cmsQuotes,
+    } = this.props;
     const declWays = model.kind === 'export' ? DECL_E_TYPE : DECL_I_TYPE;
     return (
       <Collapse bordered={false} defaultActiveKey={['properties', 'events']}>
@@ -69,8 +71,7 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     declWays.map(dw =>
-                      <Option value={dw.key} key={dw.key}>{dw.value}</Option>
-                    )
+                      <Option value={dw.key} key={dw.key}>{dw.value}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -82,8 +83,7 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     TRANS_MODE.map(tr =>
-                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>
-                    )
+                      <Option value={tr.value} key={tr.value}>{tr.text}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -96,8 +96,7 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     customsBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>
-                    )
+                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>)
                   }
                 </Select>)}
               </FormItem>
@@ -109,8 +108,7 @@ export default class CMSDelegationPane extends Component {
                 })(<Select allowClear>
                   {
                     ciqBrokers.map(cb =>
-                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>
-                    )
+                      <Option value={cb.partner_id} key={cb.partner_id}>{cb.customs_code}|{cb.name}</Option>)
                   }
                 </Select>)}
               </FormItem>

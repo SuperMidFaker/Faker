@@ -31,7 +31,9 @@ const TabPane = Tabs.TabPane;
     uuid: state.cwmShippingOrder.dock.order.uuid,
     loading: state.cwmShippingOrder.dockLoading,
   }),
-  { hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, loadOrderDetail, cancelOutbound, closeOutbound }
+  {
+    hideDock, changeDockTab, getSo, getSoUuid, getShipmtOrderNo, loadOrderDetail, cancelOutbound, closeOutbound,
+  }
 )
 export default class ShippingDockPanel extends React.Component {
   static propTypes = {
@@ -53,17 +55,15 @@ export default class ShippingDockPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.order.so_no && !this.props.visible && nextProps.visible) {
       this.props.getSoUuid(nextProps.order.so_no);
-      this.props.getSo(nextProps.order.so_no).then(
-        (result) => {
-          if (!result.error) {
-            this.setState({
-              soHead: result.data.soHead ? result.data.soHead : {},
-              soBody: result.data.soBody,
-              outbounds: result.data.outbounds,
-            });
-          }
+      this.props.getSo(nextProps.order.so_no).then((result) => {
+        if (!result.error) {
+          this.setState({
+            soHead: result.data.soHead ? result.data.soHead : {},
+            soBody: result.data.soBody,
+            outbounds: result.data.outbounds,
+          });
         }
-      );
+      });
     }
   }
   componentWillUnmount() {
@@ -115,28 +115,24 @@ export default class ShippingDockPanel extends React.Component {
   }
   goHomeDock = () => {
     const { uuid } = this.props;
-    this.props.getShipmtOrderNo(uuid).then(
-      (result) => {
-        this.props.loadOrderDetail(result.data.order_no);
-        this.props.hideDock();
-      }
-    );
+    this.props.getShipmtOrderNo(uuid).then((result) => {
+      this.props.loadOrderDetail(result.data.order_no);
+      this.props.hideDock();
+    });
   }
   handleExportExcel = () => {
     window.open(`${API_ROOTS.default}v1/cwm/shipping/exportSoExcel/${createFilename('so')}.xlsx?soNo=${this.props.order.so_no}&outboundNo=${this.props.order.outboundNo}`);
   }
   reload = (soNo) => {
-    this.props.getSo(soNo).then(
-      (result) => {
-        if (!result.error) {
-          this.setState({
-            soHead: result.data.soHead ? result.data.soHead : {},
-            soBody: result.data.soBody,
-            outbounds: result.data.outbounds,
-          });
-        }
+    this.props.getSo(soNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          soHead: result.data.soHead ? result.data.soHead : {},
+          soBody: result.data.soBody,
+          outbounds: result.data.outbounds,
+        });
       }
-    );
+    });
   }
   renderStatus(status) {
     switch (status) {
@@ -160,21 +156,18 @@ export default class ShippingDockPanel extends React.Component {
     const { soHead, soBody } = this.state;
     const { order } = this.props;
     const tabs = [];
-    tabs.push(
-      <TabPane tab={this.msg('tabSO')} key="order">
-        <OrderPane soHead={soHead} soBody={soBody} reload={this.reload} />
-      </TabPane>);
+    tabs.push(<TabPane tab={this.msg('tabSO')} key="order">
+      <OrderPane soHead={soHead} soBody={soBody} reload={this.reload} />
+    </TabPane>);
     if (soHead.bonded) {
-      tabs.push(
-        <TabPane tab={this.msg('tabFTZ')} key="ftz">
-          <FTZPane soNo={order.so_no} />
-        </TabPane>);
+      tabs.push(<TabPane tab={this.msg('tabFTZ')} key="ftz">
+        <FTZPane soNo={order.so_no} />
+      </TabPane>);
     }
     if (soHead.status > CWM_SO_STATUS.PENDING.value) {
-      tabs.push(
-        <TabPane tab={this.msg('tabOutbound')} key="outbound">
-          <OutboundPane outboundNo={order.outboundNo} />
-        </TabPane>);
+      tabs.push(<TabPane tab={this.msg('tabOutbound')} key="outbound">
+        <OutboundPane outboundNo={order.outboundNo} />
+      </TabPane>);
     }
     return (
       <Tabs defaultActiveKey="order" onChange={this.handleTabChange}>

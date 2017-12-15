@@ -27,7 +27,9 @@ const { Header, Content } = Layout;
     billingFees: state.cmsBilling.billingFees,
     saving: state.cmsBilling.billingSaving,
   }),
-  { updateBillingFees, checkBilling, acceptBilling, editBilling }
+  {
+    updateBillingFees, checkBilling, acceptBilling, editBilling,
+  }
 )
 
 export default class BillingFeeList extends React.Component {
@@ -53,7 +55,9 @@ export default class BillingFeeList extends React.Component {
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAccept = () => {
-    const { loginId, tenantId, loginName, type, billing } = this.props;
+    const {
+      loginId, tenantId, loginName, type, billing,
+    } = this.props;
     const { id: billingId, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     const modifyTimes = billing.modifyTimes || 0 + 1;
@@ -75,7 +79,9 @@ export default class BillingFeeList extends React.Component {
         }
       });
     } else {
-      this.props.acceptBilling({ tenantId, loginId, loginName, billingId }).then((result) => {
+      this.props.acceptBilling({
+        tenantId, loginId, loginName, billingId,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -85,7 +91,9 @@ export default class BillingFeeList extends React.Component {
     }
   }
   handleEdit = () => {
-    const { loginId, tenantId, loginName, type, billing } = this.props;
+    const {
+      loginId, tenantId, loginName, type, billing,
+    } = this.props;
     const { id: billingId, adjustCharge, totalCharge } = billing;
     const fees = this.props.billingFees.data;
     if (this.state.changed) {

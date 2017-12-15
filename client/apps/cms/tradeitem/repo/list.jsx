@@ -27,7 +27,9 @@ const Search = Input.Search;
     repos: state.cmsTradeitem.repos,
     reposLoading: state.cmsTradeitem.reposLoading,
   }),
-  { loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave, setRepo, loadCustomers }
+  {
+    loadRepos, openAddModal, switchRepoMode, showLinkSlaveModal, unlinkMasterSlave, setRepo, loadCustomers,
+  }
 )
 @connectNav({
   depth: 2,

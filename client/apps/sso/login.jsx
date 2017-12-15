@@ -69,7 +69,8 @@ export default class Login extends React.Component {
           {error ? <div>{
             <Alert type="warning" showIcon message={`C${error.code}:
               ${getFormatMsg(error.message, (key, values) => formatMsg(intl, key, values))}`}
-            />}</div> : null}
+            />}
+          </div> : null}
           <Form onSubmit={::this.handleSubmit} className="login-form">
             <FormItem>
               {(

@@ -6,10 +6,10 @@ import { Row, Col, Form, Input, Select } from 'antd';
 import * as Location from 'client/util/location';
 import InputItem from './input-item';
 import { setConsignFields, loadTariffByQuoteNo } from 'common/reducers/shipment';
-import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { toggleAddLocationModal } from 'common/reducers/scofFlow';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
+
 const formatMsg = format(messages);
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -82,7 +82,6 @@ export default class ConsignInfo extends React.Component {
   }
   constructor(...args) {
     super(...args);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
   msg = (key, values) => formatMsg(this.props.intl, key, values)
   handleAutoInputChange = (val) => {
@@ -204,14 +203,19 @@ export default class ConsignInfo extends React.Component {
       formhoc, consignLocations, customerPartnerId,
       fieldDefaults, vertical, type,
     } = this.props;
-    const { name, byname, addr, contact, mobile, email } = this.renderFields;
+    const {
+      name, byname, addr, contact, mobile, email,
+    } = this.renderFields;
     const consigLocation = (fieldDefaults && fieldDefaults[byname]) ? fieldDefaults[byname] : Location.renderConsignLocation(fieldDefaults, type);
     let content = '';
     if (vertical) {
       content = (
         <div>
           <FormItem label={this.msg(this.renderMsgKeys.name)}>
-            <Select allowClear showArrow value={fieldDefaults[name]} optionLabelProp="name"
+            <Select allowClear
+              showArrow
+              value={fieldDefaults[name]}
+              optionLabelProp="name"
               onChange={this.handleConsignChange}
               onSearch={this.handleAutoInputChange}
               dropdownMatchSelectWidth={false}
@@ -230,19 +234,24 @@ export default class ConsignInfo extends React.Component {
           <FormItem label={this.msg(this.renderMsgKeys.portal)} {...this.renderRules.portal}>
             <Input value={consigLocation} />
           </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
-            field={this.renderFields.addr} {...this.renderRules.addr}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg(this.renderMsgKeys.addr)}
+            field={this.renderFields.addr}
+            {...this.renderRules.addr}
             fieldProps={{ initialValue: fieldDefaults[addr] }}
           />
-          <InputItem formhoc={formhoc} labelName={this.msg('contact')}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg('contact')}
             field={this.renderFields.contact}
             fieldProps={{ initialValue: fieldDefaults[contact] }}
           />
-          <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg('mobile')}
             field={this.renderFields.mobile}
             fieldProps={{ initialValue: fieldDefaults[mobile] }}
           />
-          <InputItem formhoc={formhoc} labelName={this.msg('email')}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg('email')}
             field={this.renderFields.email}
             fieldProps={{ initialValue: fieldDefaults[email] }}
           />
@@ -253,7 +262,10 @@ export default class ConsignInfo extends React.Component {
         <Row gutter={16}>
           <Col sm={24} md={16}>
             <FormItem label={this.msg(this.renderMsgKeys.name)}>
-              <Select allowClear showArrow value={fieldDefaults[name]} optionLabelProp="name"
+              <Select allowClear
+                showArrow
+                value={fieldDefaults[name]}
+                optionLabelProp="name"
                 onChange={this.handleConsignChange}
                 onSearch={this.handleAutoInputChange}
                 dropdownMatchSelectWidth={false}
@@ -273,22 +285,26 @@ export default class ConsignInfo extends React.Component {
             >
               <Input value={consigLocation} />
             </FormItem>
-            <InputItem formhoc={formhoc} labelName={this.msg(this.renderMsgKeys.addr)}
+            <InputItem formhoc={formhoc}
+              labelName={this.msg(this.renderMsgKeys.addr)}
               field={this.renderFields.addr}
               {...this.renderRules.addr}
               fieldProps={{ initialValue: fieldDefaults[addr] }}
             />
           </Col>
           <Col sm={24} md={8}>
-            <InputItem formhoc={formhoc} labelName={this.msg('contact')}
+            <InputItem formhoc={formhoc}
+              labelName={this.msg('contact')}
               field={this.renderFields.contact}
               fieldProps={{ initialValue: fieldDefaults[contact] }}
             />
-            <InputItem formhoc={formhoc} labelName={this.msg('mobile')}
+            <InputItem formhoc={formhoc}
+              labelName={this.msg('mobile')}
               field={this.renderFields.mobile}
               fieldProps={{ initialValue: fieldDefaults[mobile] }}
             />
-            <InputItem formhoc={formhoc} labelName={this.msg('email')}
+            <InputItem formhoc={formhoc}
+              labelName={this.msg('email')}
               field={this.renderFields.email}
               fieldProps={{ initialValue: fieldDefaults[email] }}
             />

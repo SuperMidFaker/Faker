@@ -35,17 +35,17 @@ function calculateTotal(bodies) {
 }
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    currencies: state.cmsCiqDeclare.ciqParams.currencies,
-    ports: state.cmsCiqDeclare.ciqParams.ports,
-    countries: state.cmsCiqDeclare.ciqParams.countries,
-    units: state.cmsCiqDeclare.ciqParams.units,
-    loginId: state.account.loginId,
-    ciqDeclGoods: state.cmsCiqDeclare.ciqDeclGoods,
-  }), { showDeclElementsModal, getElementByHscode, loadCiqDeclGoods, showGoodsModal }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  currencies: state.cmsCiqDeclare.ciqParams.currencies,
+  ports: state.cmsCiqDeclare.ciqParams.ports,
+  countries: state.cmsCiqDeclare.ciqParams.countries,
+  units: state.cmsCiqDeclare.ciqParams.units,
+  loginId: state.account.loginId,
+  ciqDeclGoods: state.cmsCiqDeclare.ciqDeclGoods,
+}), {
+  showDeclElementsModal, getElementByHscode, loadCiqDeclGoods, showGoodsModal,
+})
 export default class CiqDeclGoodsPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -73,9 +73,6 @@ export default class CiqDeclGoodsPane extends React.Component {
     };
   }
   componentWillMount() {
-    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-      this.setState({ scrollY: window.innerHeight - 320 });
-    }
     this.props.loadCiqDeclGoods(this.context.router.params.declNo).then((result) => {
       if (!result.error) {
         const calresult = calculateTotal(result.data);

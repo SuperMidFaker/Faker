@@ -28,7 +28,9 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
-  const { inEdit, edit, record, field, onChange, type, autosize, decimal } = props;
+  const {
+    inEdit, edit, record, field, onChange, type, autosize, decimal,
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(field, ev.target.value);
@@ -55,7 +57,9 @@ ColumnInput.propTypes = {
 };
 
 function ColumnSelect(props) {
-  const { inEdit, edit, record, field, options, onChange } = props;
+  const {
+    inEdit, edit, record, field, options, onChange,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(field, value);
@@ -86,7 +90,9 @@ ColumnSelect.proptypes = {
 };
 
 function ColumnSearchSelect(props) {
-  const { inEdit, edit, record, field, options, onChange } = props;
+  const {
+    inEdit, edit, record, field, options, onChange,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(field, value);
@@ -148,7 +154,9 @@ function calculateTotal(bodies, currencies) {
       totPcs += Number(body.qty_pcs);
     }
   }
-  return { totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup };
+  return {
+    totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup,
+  };
 }
 
 @injectIntl
@@ -187,7 +195,8 @@ function calculateTotal(bodies, currencies) {
     billMeta: state.cmsManifest.billMeta,
     adaptors: state.saasLineFileAdaptor.adaptors,
   }),
-  { loadBill,
+  {
+    loadBill,
     addNewBillBody,
     delBillBody,
     editBillBody,
@@ -263,15 +272,17 @@ export default class ManifestBodyPane extends React.Component {
     };
   }
   componentDidMount() {
-    this.props.loadAdaptors(this.props.billHead.owner_cuspartner_id,
+    this.props.loadAdaptors(
+      this.props.billHead.owner_cuspartner_id,
       [LINE_FILE_ADAPTOR_MODELS.CMS_MANIFEST_BODY.key],
-      true);
+      true
+    );
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.data !== this.props.data) {
       const bodies = [...nextProps.data];
       // if (!nextProps.readonly) {
-        // bodies.push({ id: '__ops' });
+      // bodies.push({ id: '__ops' });
       // }
       const calresult = calculateTotal(bodies, this.props.currencies);
       this.setState({
@@ -286,7 +297,9 @@ export default class ManifestBodyPane extends React.Component {
     }
   }
   getColumns() {
-    const { readonly, units, countries, currencies, exemptions, hscodeData } = this.props;
+    const {
+      readonly, units, countries, currencies, exemptions, hscodeData,
+    } = this.props;
     const { editIndex, editBody } = this.state;
     // const totalCount = bodies.length;
     const columns = [{
@@ -307,11 +320,13 @@ export default class ManifestBodyPane extends React.Component {
         } else if (record.feedback === 'noMatch') {
           return (<Tooltip title="物料库中未对该货号归类"><Tag color="red">
             <a onClick={() => this.handleEditBody(record)}>{o}</a>
-          </Tag></Tooltip>);
+          </Tag>
+          </Tooltip>);
         } else if (record.feedback === 'incomplete') {
           return (<Tooltip title="货号原产国或目的国或币制或征免方式为空"><Tag color="red">
             <a onClick={() => this.handleEditBody(record)}>{o}</a>
-          </Tag></Tooltip>);
+          </Tag>
+          </Tooltip>);
         } else {
           return (
             <a onClick={() => this.handleEditBody(record)}>{o}</a>
@@ -477,7 +492,7 @@ export default class ManifestBodyPane extends React.Component {
         (<ColumnSelect field="unit_pcs" inEdit={index === editIndex} record={record}
           onChange={this.handleEditChange} options={units} edit={editBody}
         />),
-/*    }, {
+      /*    }, {
       title: this.msg('element'),
       render: (o, record, index) =>
         (<ColumnInput field="element" inEdit={index === editIndex} record={record}
@@ -591,7 +606,9 @@ export default class ManifestBodyPane extends React.Component {
       }
       let body = { ...editBody, g_no: gNO };
       const { billSeqNo, loginId, tenantId } = this.props;
-      this.props.addNewBillBody({ billSeqNo, body, loginId, tenantId }).then((result) => {
+      this.props.addNewBillBody({
+        billSeqNo, body, loginId, tenantId,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message, 10);
         } else {
@@ -828,7 +845,8 @@ export default class ManifestBodyPane extends React.Component {
     this.props.toggleDeclImportModal(true);
   }
   handleUnrelatedImport = () => {
-    this.setState({ importPanelVisible: true,
+    this.setState({
+      importPanelVisible: true,
       importPanel: {
         title: '直接导入',
         endpoint: `${API_ROOTS.default}v1/cms/manifest/billbody/import`,
@@ -837,7 +855,8 @@ export default class ManifestBodyPane extends React.Component {
     });
   }
   handleRelatedImport = () => {
-    this.setState({ importPanelVisible: true,
+    this.setState({
+      importPanelVisible: true,
       importPanel: {
         title: '关联导入',
         endpoint: `${API_ROOTS.default}v1/cms/manifest/billbody/related/import`,
@@ -846,7 +865,8 @@ export default class ManifestBodyPane extends React.Component {
     });
   }
   handleManualBodyImport = () => {
-    this.setState({ importPanelVisible: true,
+    this.setState({
+      importPanelVisible: true,
       importPanel: {
         title: '手册导入',
         endpoint: `${API_ROOTS.default}v1/cms/manifest/billbody/related/manual/import`,
@@ -909,7 +929,9 @@ export default class ManifestBodyPane extends React.Component {
   }
 
   render() {
-    const { totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup, editBody, importPanelVisible, importPanel } = this.state;
+    const {
+      totGrossWt, totWetWt, totTrade, totPcs, tradeCurrGroup, editBody, importPanelVisible, importPanel,
+    } = this.state;
     const disabled = this.props.readonly;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -931,10 +953,10 @@ export default class ManifestBodyPane extends React.Component {
         <DataPane.Toolbar>
           {this.renderToolbar()}
           <DataPane.BulkActions selectedRowKeys={this.state.selectedRowKeys} handleDeselectRows={this.handleDeselectRows}>
-            <Popconfirm title={'是否删除所有选择项？'} onConfirm={() => this.handleDeleteSelected()}>
+            <Popconfirm title="是否删除所有选择项？" onConfirm={() => this.handleDeleteSelected()}>
               <Button type="danger" icon="delete" style={{ marginLeft: 8 }}>
               批量删除
-            </Button>
+              </Button>
             </Popconfirm>
           </DataPane.BulkActions>
           <DataPane.Actions>

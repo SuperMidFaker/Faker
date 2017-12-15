@@ -24,7 +24,9 @@ function fetchData({ dispatch, state }) {
   loaded: state.partner.loaded,
   partners: state.partner.partners,
   tenantId: state.account.tenantId,
-}), { changePartnerStatus, deletePartner, toggleCarrierModal, loadPartners })
+}), {
+  changePartnerStatus, deletePartner, toggleCarrierModal, loadPartners,
+})
 @connectNav({
   depth: 2,
   moduleName: 'transport',

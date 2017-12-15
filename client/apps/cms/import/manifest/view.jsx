@@ -11,11 +11,9 @@ function fetchData({ dispatch, params }) {
   promises.push(dispatch(loadCmsParams()));
   return Promise.all(promises);
 }
-@connect(
-  state => ({
-    manifestSpinning: state.cmsManifest.manifestLoading,
-  })
-)
+@connect(state => ({
+  manifestSpinning: state.cmsManifest.manifestLoading,
+}))
 @connectFetch()(fetchData)
 export default class ImportManifestView extends React.Component {
   static propTypes = {

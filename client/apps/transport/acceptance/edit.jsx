@@ -21,16 +21,16 @@ import messages from './message.i18n';
 const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
-function fetchData({ state, dispatch, params, cookie }) {
+function fetchData({
+  state, dispatch, params, cookie,
+}) {
   const promises = [];
   const shipmtNo = params.shipmt;
   promises.push(dispatch(loadForm(cookie, {
     tenantId: state.account.tenantId,
     shipmtNo,
   })));
-  promises.push(dispatch(loadFormRequire(
-    cookie, state.account.tenantId
-  )));
+  promises.push(dispatch(loadFormRequire(cookie, state.account.tenantId)));
   return Promise.all(promises);
 }
 
@@ -51,7 +51,10 @@ function fetchData({ state, dispatch, params, cookie }) {
     formRequireJudgeParams: state.shipment.formRequireJudgeParams, // @Form.create... 这一层使用
     formRequire: state.shipment.formRequire,
   }),
-  { loadTable, saveEdit, onFormFieldsChange, setConsignFields })
+  {
+    loadTable, saveEdit, onFormFieldsChange, setConsignFields,
+  }
+)
 @connectNav({
   depth: 3,
   text: props => props.formData.shipmt_no,
@@ -92,22 +95,22 @@ export default class ShipmentEdit extends React.Component {
         const { formData, tenantId, loginId } = this.props;
         const form = { ...formData, ...this.props.form.getFieldsValue() };
         this.props.saveEdit(form, tenantId, loginId)
-        .then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            message.success(this.msg('shipmtOpSuccess'));
-            this.context.router.goBack();
-            this.props.loadTable(null, {
-              tenantId: this.props.tenantId,
-              pageSize: this.props.pageSize,
-              currentPage: this.props.current,
-              filters: JSON.stringify(this.props.filters),
-              sortField: this.props.sortField,
-              sortOrder: this.props.sortOrder,
-            });
-          }
-        });
+          .then((result) => {
+            if (result.error) {
+              message.error(result.error.message, 10);
+            } else {
+              message.success(this.msg('shipmtOpSuccess'));
+              this.context.router.goBack();
+              this.props.loadTable(null, {
+                tenantId: this.props.tenantId,
+                pageSize: this.props.pageSize,
+                currentPage: this.props.current,
+                filters: JSON.stringify(this.props.filters),
+                sortField: this.props.sortField,
+                sortOrder: this.props.sortOrder,
+              });
+            }
+          });
       }
     });
   }

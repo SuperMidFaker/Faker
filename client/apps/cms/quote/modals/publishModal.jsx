@@ -81,26 +81,20 @@ export default class CreateQtModal extends React.Component {
           <FormItem label={this.msg('basementDateType')} {...formItemLayout}>
             {getFieldDecorator('basement_datetype', {
               rules: [{ required: true, message: '基准时间类型必选' }],
-            })(
-              <Select style={{ width: '100%' }}>
-                <Option value="accept" key="accept1">接单时间</Option>
-                <Option value="clean" key="clean2">海关放行时间</Option>
-              </Select>
-            )}
+            })(<Select style={{ width: '100%' }}>
+              <Option value="accept" key="accept1">接单时间</Option>
+              <Option value="clean" key="clean2">海关放行时间</Option>
+            </Select>)}
           </FormItem>
           <FormItem label={this.msg('basementDate')} {...formItemLayout}>
             {getFieldDecorator('basement_date', {
               rules: [{ required: true, message: '基准时间必选', type: 'object' }],
-            })(
-              <DatePicker showTime format="YYYY-MM-DD HH:mm" disabledDate={this.disabledBasementDate} />
-            )}
+            })(<DatePicker showTime format="YYYY-MM-DD HH:mm" disabledDate={this.disabledBasementDate} />)}
           </FormItem>
           <FormItem label={this.msg('publishRemark')} {...formItemLayout}>
             {getFieldDecorator('publish_commit', {
               rules: [{ required: true, message: '备注必填' }],
-            })(
-              <Input.TextArea row={3} />
-            )}
+            })(<Input.TextArea row={3} />)}
           </FormItem>
         </Form>
       </Modal>

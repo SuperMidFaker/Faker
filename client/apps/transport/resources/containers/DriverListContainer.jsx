@@ -18,7 +18,9 @@ function fetchData({ dispatch, state }) {
   loading: state.transportResources.loading,
   drivers: state.transportResources.drivers,
   tenantId: state.account.tenantId,
-}), { editDriver, editDriverLogin, toggleDriverModal, loadDriverList, removeDriver })
+}), {
+  editDriver, editDriverLogin, toggleDriverModal, loadDriverList, removeDriver,
+})
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -27,7 +29,7 @@ export default class DriverListContainer extends Component {
   static propTypes = {
     loaded: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    drivers: PropTypes.array.isRequired,              // 服务器返回的司机数组
+    drivers: PropTypes.array.isRequired, // 服务器返回的司机数组
     toggleDriverModal: PropTypes.func.isRequired,
     tenantId: PropTypes.number.isRequired,
     loadDriverList: PropTypes.func.isRequired,

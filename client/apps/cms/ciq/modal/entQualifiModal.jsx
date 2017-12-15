@@ -13,7 +13,9 @@ const Option = Select.Option;
     visible: state.cmsCiqDeclare.entQualifictaionModal.visible,
     entQualifs: state.cmsCiqDeclare.entQualifs,
   }),
-  { toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif }
+  {
+    toggleEntQualifiModal, saveEntQualif, loadEntQualif, deleteEntQualif,
+  }
 )
 @Form.create()
 export default class EntQualifiModal extends Component {
@@ -104,34 +106,26 @@ export default class EntQualifiModal extends Component {
               <FormItem {...formItemLayout} label="企业资质类别编号">
                 {getFieldDecorator('ent_qualif_type_code', {
                   required: true,
-                })(
-                  <Select>
-                    {CIQ_ENT_QUALIFY_TYPE.map(type => <Option key={type.value} value={type.value}>{type.value} | {type.text}</Option>)}
-                  </Select>
-                )}
+                })(<Select>
+                  {CIQ_ENT_QUALIFY_TYPE.map(type => <Option key={type.value} value={type.value}>{type.value} | {type.text}</Option>)}
+                </Select>)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem {...formItemLayout} label="企业资质编号">
-                {getFieldDecorator('ent_qualif_no')(
-                  <Input />
-                )}
+                {getFieldDecorator('ent_qualif_no')(<Input />)}
               </FormItem>
             </Col>
           </Row>
           <Row>
             <Col span={12}>
               <FormItem {...formItemLayout} label="企业名称">
-                {getFieldDecorator('ent_name')(
-                  <Input />
-                )}
+                {getFieldDecorator('ent_name')(<Input />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem {...formItemLayout} label="企业组织机构代码">
-                {getFieldDecorator('ent_org_code')(
-                  <Input />
-                )}
+                {getFieldDecorator('ent_org_code')(<Input />)}
               </FormItem>
             </Col>
           </Row>

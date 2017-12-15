@@ -11,16 +11,16 @@ import connectNav from 'client/common/decorators/connect-nav';
 import connectFetch from 'client/common/decorators/connect-fetch';
 import withPrivilege, { PrivilegeCover } from 'client/common/decorators/withPrivilege';
 import { loadTable,
-         doSend,
-         doReturn,
-         segmentCancelRequest,
-         segmentCancelCheckRequest,
-         loadExpandList,
-         loadShipmtsGrouped,
-         loadShipmtsGroupedSub,
-         loadSegRq,
-         removeGroupedSubShipmt,
-         changeDockStatus } from 'common/reducers/transportDispatch';
+  doSend,
+  doReturn,
+  segmentCancelRequest,
+  segmentCancelCheckRequest,
+  loadExpandList,
+  loadShipmtsGrouped,
+  loadShipmtsGroupedSub,
+  loadSegRq,
+  removeGroupedSubShipmt,
+  changeDockStatus } from 'common/reducers/transportDispatch';
 import { format } from 'client/common/i18n/helpers';
 import { Logixon } from 'client/components/FontIcon';
 import { SHIPMENT_TRACK_STATUS, SHIPMENT_VEHICLE_CONNECT, TRANS_MODE_INDICATOR } from 'common/constants';
@@ -70,7 +70,8 @@ function fetch({ state, dispatch, cookie }) {
     cond: state.transportDispatch.cond,
     loaded: state.transportDispatch.loaded,
   }),
-  { loadTable,
+  {
+    loadTable,
     doReturn,
     doSend,
     segmentCancelRequest,
@@ -80,7 +81,9 @@ function fetch({ state, dispatch, cookie }) {
     loadShipmtsGroupedSub,
     removeGroupedSubShipmt,
     loadShipmtDetail,
-    changeDockStatus })
+    changeDockStatus,
+  }
+)
 @connectNav({
   depth: 2,
   moduleName: 'transport',
@@ -266,7 +269,7 @@ export default class DispatchList extends React.Component {
         dataIndex: 'acpt_time',
         width: 100,
         render: (text, record) => (record.acpt_time ?
-         moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
+          moment(record.acpt_time).format('MM-DD HH:mm') : ' '),
       }, {
         title: this.msg('spDispLoginName'),
         dataIndex: 'sp_disp_login_name',
@@ -280,14 +283,16 @@ export default class DispatchList extends React.Component {
           if (sub === 'merge') {
             return (<span><a role="presentation" onClick={() => this.handleRemoveShipmt(record)}>
               {this.msg('btnTextRemove')}
-            </a></span>);
+            </a>
+            </span>);
           }
           if (origin) {
             if (record.segmented === 1 && sub !== 'sub') {
               return (<span>
                 <a role="presentation" onClick={ev => this.handleSegmentCancelConfirm(record, ev)}>
                   {this.msg('btnTextSegmentCancel')}
-                </a></span>);
+                </a>
+              </span>);
             } else {
               return (<span />);
             }
@@ -316,7 +321,7 @@ export default class DispatchList extends React.Component {
           if (record.sp_name) {
             const spSpan = <TrimSpan text={record.sp_name} maxLen={10} />;
             if (record.sp_tenant_id > 0) {
-          // todo pure css circle
+              // todo pure css circle
               return (
                 <span>
                   <i className="zmdi zmdi-circle mdc-text-green" />
@@ -377,7 +382,7 @@ export default class DispatchList extends React.Component {
           dataIndex: 'disp_time',
           width: 100,
           render: (text, record) => (record.disp_time ?
-         moment(record.disp_time).format('MM-DD HH:mm') : ' '),
+            moment(record.disp_time).format('MM-DD HH:mm') : ' '),
         }, {
           title: this.msg('spDispLoginName'),
           dataIndex: 'sp_disp_login_name',
@@ -469,7 +474,7 @@ export default class DispatchList extends React.Component {
             </a>
           </span>
         </PrivilegeCover>
-        ),
+      ),
     }];
 
     return cols;
@@ -551,17 +556,23 @@ export default class DispatchList extends React.Component {
       </div>);
       panelHeader.push(tmp);
     } else if (origin) {
-      panelHeader.push((<span className="ant-divider" style={{ width: '0px' }} />),
-      (<Button onClick={this.handleOriginShipmtsReturn}><span>{this.msg('btnTextReturnList')}</span><Icon type="eye-o" /></Button>));
+      panelHeader.push(
+        (<span className="ant-divider" style={{ width: '0px' }} />),
+        (<Button onClick={this.handleOriginShipmtsReturn}><span>{this.msg('btnTextReturnList')}</span><Icon type="eye-o" /></Button>)
+      );
     } else if (status === 'waiting') {
-      panelHeader.push((<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
-        (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="eye" /></Button>));
+      panelHeader.push(
+        (<Condition msg={this.msgWrapper} onConditionChange={this.handleConditionChange} />),
+        (<Button onClick={this.handleOriginShipmts}><span>{this.msg('btnTextOriginShipments')}</span><Icon type="eye" /></Button>)
+      );
     } else if (status === 'dispatched') {
-      panelHeader.push((<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
-        <Option value="0">最近七天</Option>
-        <Option value="1">最近一月</Option>
-      </Select>),
-        (<Button onClick={this.handleExportDispShipmts} icon="export"><span>{this.msg('btnTextExport')}</span></Button>));
+      panelHeader.push(
+        (<Select defaultValue="0" style={{ width: 90 }} onChange={this.handleDayChange}>
+          <Option value="0">最近七天</Option>
+          <Option value="1">最近一月</Option>
+        </Select>),
+        (<Button onClick={this.handleExportDispShipmts} icon="export"><span>{this.msg('btnTextExport')}</span></Button>)
+      );
     }
 
     this.setState({ panelHeader, selectedRowKeys: [] });
@@ -699,7 +710,9 @@ export default class DispatchList extends React.Component {
         if (count === 0) {
           return;
         }
-        const { tenantId, loginId, avatar, loginName } = this.props;
+        const {
+          tenantId, loginId, avatar, loginName,
+        } = this.props;
         this.props.doSend(null, {
           tenantId,
           loginId,
@@ -730,13 +743,16 @@ export default class DispatchList extends React.Component {
       okText: this.msg('btnTextOk'),
       cancelText: this.msg('btnTextCancel'),
       onOk: () => {
-        const { tenantId, loginId, avatar, loginName } = this.props;
+        const {
+          tenantId, loginId, avatar, loginName,
+        } = this.props;
         this.props.doSend(null, {
           tenantId,
           loginId,
           avatar,
           loginName,
-          list: JSON.stringify([{ dispId: shipmt.key,
+          list: JSON.stringify([{
+            dispId: shipmt.key,
             shipmtNo: shipmt.shipmt_no,
             sp_tenant_id: shipmt.sp_tenant_id,
             sr_name: shipmt.sr_name,
@@ -747,7 +763,8 @@ export default class DispatchList extends React.Component {
             consignee_province: shipmt.consignee_province,
             consignee_city: shipmt.consignee_city,
             consignee_district: shipmt.consignee_district,
-            parentId: shipmt.parent_id }]),
+            parentId: shipmt.parent_id,
+          }]),
         }).then((result) => {
           if (result.error) {
             message.error(result.error.message, 5);

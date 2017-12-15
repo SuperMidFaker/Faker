@@ -55,7 +55,9 @@ export default function reducer(state = initialState, action) {
         const children = subVendors.length > 0 ? subVendors : null;
         return { ...vendor, subVendors, children };
       });
-      return { ...state, vendors, loaded: true, loading: false };
+      return {
+        ...state, vendors, loaded: true, loading: false,
+      };
     }
     case actionTypes.LOAD_VENDORS_FAIL: {
       return { ...state, loading: false };
@@ -70,38 +72,47 @@ export default function reducer(state = initialState, action) {
       return { ...state, loaded: false };
     }
     case actionTypes.SHOW_VENDOR_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         vendorModal: {
           visible: true,
           ...action.data,
-        } };
+        },
+      };
     }
     case actionTypes.HIDE_VENDOR_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         vendorModal: {
           ...initialState.vendorModal,
           visible: false,
-        } };
+        },
+      };
     }
     case actionTypes.LOAD_SUB_VENDORS_SUCCEED: {
       return { ...state, subVendors: action.result.data };
     }
     case actionTypes.SHOW_SUB_VENDOR_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         subVendorModal: {
           visible: true,
           ...action.data,
-        } };
+        },
+      };
     }
     case actionTypes.HIDE_SUB_VENDOR_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         subVendorModal: {
           ...initialState.subVendorModal,
           visible: false,
-        } };
+        },
+      };
     }
     case actionTypes.HIDE_SERVICETEAM_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         serviceTeamModal: {
           ...state.serviceTeamModal,
           visible: false,
@@ -109,14 +120,17 @@ export default function reducer(state = initialState, action) {
       };
     }
     case actionTypes.SHOW_SERVICETEAM_MODAL: {
-      return { ...state,
+      return {
+        ...state,
         serviceTeamModal: {
           ...state.serviceTeamModal,
           visible: true,
-        } };
+        },
+      };
     }
     case actionTypes.LOAD_TENANT_USERS_SUCCEED: {
-      return { ...state,
+      return {
+        ...state,
         serviceTeamModal: {
           ...state.serviceTeamModal,
           tenantUsers: action.result.data.users,

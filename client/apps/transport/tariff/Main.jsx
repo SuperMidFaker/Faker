@@ -23,7 +23,9 @@ const TabPane = Tabs.TabPane;
   formData: state.transportTariff.agreement,
   formParams: state.transportTariff.formParams,
   saving: state.transportTariff.tariffSaving,
-}), { showPublishTariffModal, submitAgreement, updateAgreement, loadTariff })
+}), {
+  showPublishTariffModal, submitAgreement, updateAgreement, loadTariff,
+})
 @connectNav({
   depth: 3,
   moduleName: 'transport',
@@ -73,7 +75,9 @@ export default class Main extends Component {
   }
 
   submit = () => {
-    const { tariffId, tenantId, tenantName, loginId, formData: { quoteNo, version } } = this.props;
+    const {
+      tariffId, tenantId, tenantName, loginId, formData: { quoteNo, version },
+    } = this.props;
     const editForm = this.props.form.getFieldsValue();
     const tms = this.props.formParams.transModes.find(tm => tm.mode_code === editForm.transModeCode);
     const forms = {
@@ -117,7 +121,9 @@ export default class Main extends Component {
     }
   }
   render() {
-    const { type, tariffId, formData, saving } = this.props;
+    const {
+      type, tariffId, formData, saving,
+    } = this.props;
     const { selectedKey } = this.state;
     let content = [
       <TabPane tab="报价设置" key="0"><AgreementForm form={this.props.form} type={type} /></TabPane>,

@@ -42,7 +42,9 @@ export default class RouteForm extends React.Component {
     street: '',
   }
   handleSubmit = () => {
-    const { dispId, shipmtNo, parentNo, tenantId } = this.props;
+    const {
+      dispId, shipmtNo, parentNo, tenantId,
+    } = this.props;
     const { province, city, district } = this.state;
     const { locationTime, address } = this.props.form.getFieldsValue();
     if (!locationTime) {
@@ -57,13 +59,14 @@ export default class RouteForm extends React.Component {
           location_time: locationTime,
           address,
           from: TRACKING_POINT_FROM_TYPE.manual,
-        }).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            this.handleClear();
-          }
-        });
+        }
+      ).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.handleClear();
+        }
+      });
     }
   }
   handleClear = () => {
@@ -88,7 +91,9 @@ export default class RouteForm extends React.Component {
   }
   render() {
     const { form: { getFieldDecorator } } = this.props;
-    const { province, city, district, street } = this.state;
+    const {
+      province, city, district, street,
+    } = this.state;
     return (
       <Form layout="vertical">
         <Row gutter={16}>

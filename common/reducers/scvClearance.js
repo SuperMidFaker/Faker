@@ -35,25 +35,33 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case actionTypes.LOAD_MANIFESTS:
-      return { ...state,
+      return {
+        ...state,
         manifestFilters: JSON.parse(action.params.filter),
-        manifestList: { ...state.manifestList, manifestLoading: true } };
+        manifestList: { ...state.manifestList, manifestLoading: true },
+      };
     case actionTypes.LOAD_MANIFESTS_FAIL:
       return { ...state, manifestList: { ...state.manifestList, manifestLoading: false } };
     case actionTypes.LOAD_MANIFESTS_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         manifestList: { ...state.manifestList, manifestLoading: false, ...action.result.data },
-        formRequire: action.result.data.formRequire };
+        formRequire: action.result.data.formRequire,
+      };
     case actionTypes.LOAD_MANIFESTTP_SUCCEED:
       return { ...state, manifestParams: action.result.data };
     case actionTypes.LOAD_CUSTOMS:
-      return { ...state,
+      return {
+        ...state,
         customsFilters: JSON.parse(action.params.filter),
-        manifestList: { ...state.customsList, customsDeclLoading: true } };
+        manifestList: { ...state.customsList, customsDeclLoading: true },
+      };
     case actionTypes.LOAD_CUSTOMS_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         customsList: { ...state.customsList, customsDeclLoading: false, ...action.result.data },
-        customsDeclParams: { ...state.customsDeclParams, customs: action.result.data.customs } };
+        customsDeclParams: { ...state.customsDeclParams, customs: action.result.data.customs },
+      };
     case actionTypes.LOAD_CUSTOMSRES:
       return { ...state, customsResultsLoading: true };
     case actionTypes.LOAD_CUSTOMSRES_SUCCEED:

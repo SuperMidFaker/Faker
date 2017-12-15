@@ -19,7 +19,9 @@ const FormItem = Form.Item;
     loginName: state.account.username,
     tenantName: state.account.tenantName,
   }),
-  { savePickOrDeliverDate, reportLoc, cancelPickup, cancelDeliver }
+  {
+    savePickOrDeliverDate, reportLoc, cancelPickup, cancelDeliver,
+  }
 )
 @Form.create()
 export default class PickupDeliverPopover extends React.Component {
@@ -48,22 +50,25 @@ export default class PickupDeliverPopover extends React.Component {
   handleOk = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { form, type, shipmtNo, parentNo, dispId, onOK, loginId, loginName, tenantId, tenantName, location } = this.props;
+        const {
+          form, type, shipmtNo, parentNo, dispId, onOK, loginId, loginName, tenantId, tenantName, location,
+        } = this.props;
         const { actDate } = form.getFieldsValue();
-        this.props.savePickOrDeliverDate({ type, shipmtNo, dispId, actDate, loginId, tenantId, loginName, tenantName }).then(
-          (result) => {
-            if (result.error) {
-              message.error(result.error.message, 10);
-            } else {
-              // 上报位置
-              location.location_time = actDate;
-              location.from = TRACKING_POINT_FROM_TYPE.manual;
-              this.props.reportLoc(tenantId, shipmtNo, parentNo, dispId, location);
-              form.resetFields();
-              this.setState({ visible: false });
-              onOK();
-            }
-          });
+        this.props.savePickOrDeliverDate({
+          type, shipmtNo, dispId, actDate, loginId, tenantId, loginName, tenantName,
+        }).then((result) => {
+          if (result.error) {
+            message.error(result.error.message, 10);
+          } else {
+            // 上报位置
+            location.location_time = actDate;
+            location.from = TRACKING_POINT_FROM_TYPE.manual;
+            this.props.reportLoc(tenantId, shipmtNo, parentNo, dispId, location);
+            form.resetFields();
+            this.setState({ visible: false });
+            onOK();
+          }
+        });
       }
     });
   }
@@ -71,7 +76,9 @@ export default class PickupDeliverPopover extends React.Component {
     this.setState({ visible: false });
   }
   handleCancel = () => {
-    const { shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName } = this.props;
+    const {
+      shipmtNo, dispId, onOK, loginId, loginName, tenantId, tenantName,
+    } = this.props;
     const body = {
       shipmtNo,
       tenantId,

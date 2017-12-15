@@ -16,7 +16,9 @@ const formatMsg = format(messages);
     loginId: state.account.loginId,
     tenantUsers: state.crmCustomers.serviceTeamModal.tenantUsers,
   }),
-  { hideStaffModal, addStaff, loadStaffs, loadTenantUsers }
+  {
+    hideStaffModal, addStaff, loadStaffs, loadTenantUsers,
+  }
 )
 
 export default class ServiceTeamModal extends React.Component {
@@ -64,14 +66,12 @@ export default class ServiceTeamModal extends React.Component {
     const { whseCode, loginId } = this.props;
     const targetKeys = this.state.targetKeys;
     const staffs = this.props.tenantUsers.filter(user => targetKeys.find(key => key === user.user_id));
-    this.props.addStaff(whseCode, staffs, loginId).then(
-      (result) => {
-        if (!result.error) {
-          this.props.hideStaffModal();
-          this.props.loadStaffs(whseCode);
-        }
+    this.props.addStaff(whseCode, staffs, loginId).then((result) => {
+      if (!result.error) {
+        this.props.hideStaffModal();
+        this.props.loadStaffs(whseCode);
       }
-    );
+    });
   }
   render() {
     const { visible, tenantUsers } = this.props;

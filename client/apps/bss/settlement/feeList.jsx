@@ -52,7 +52,9 @@ function fetchData({ state, dispatch }) {
     fees: state.crmBilling.fees,
     loading: state.crmBilling.loading,
   }),
-  { loadOrders, loadClearanceFees, loadTransportFees, loadOrderDetail, changeFeesFilter, loadPartners }
+  {
+    loadOrders, loadClearanceFees, loadTransportFees, loadOrderDetail, changeFeesFilter, loadPartners,
+  }
 )
 
 export default class FeesList extends React.Component {
@@ -75,11 +77,13 @@ export default class FeesList extends React.Component {
     selectedRowKeys: [],
   }
   componentWillMount() {
-    this.props.loadPartners(this.props.tenantId,
+    this.props.loadPartners(
+      this.props.tenantId,
       [PARTNER_ROLES.CUS],
-      [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]).then((result) => {
-        this.setState({ customers: result.data });
-      });
+      [PARTNER_BUSINESSE_TYPES.clearance, PARTNER_BUSINESSE_TYPES.transport]
+    ).then((result) => {
+      this.setState({ customers: result.data });
+    });
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.fees.searchValue !== nextProps.fees.searchValue) {
@@ -109,7 +113,9 @@ export default class FeesList extends React.Component {
   handleTableLoad = (searchValue) => {
     this.handleSelectionClear();
     const { tenantId } = this.props;
-    const { pageSize, current, filters, startDate, endDate } = this.props.fees;
+    const {
+      pageSize, current, filters, startDate, endDate,
+    } = this.props.fees;
     this.props.loadOrders({
       tenantId,
       pageSize,

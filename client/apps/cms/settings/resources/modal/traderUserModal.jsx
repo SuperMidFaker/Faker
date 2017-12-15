@@ -12,7 +12,9 @@ const Option = Select.Option;
   visible: state.cmsResources.unitRuleSetModal.visible,
   relationId: state.cmsResources.unitRuleSetModal.relationId,
   businessUnitUsers: state.cmsResources.businessUnitUsers,
-}), { toggleUnitRuleSetModal, loadBusinessUnitUsers, loadBrokers, addTradeUser, deleteTradeUser })
+}), {
+  toggleUnitRuleSetModal, loadBusinessUnitUsers, loadBrokers, addTradeUser, deleteTradeUser,
+})
 
 export default class TraderUserModal extends React.Component {
   static propTypes = {
@@ -71,16 +73,14 @@ export default class TraderUserModal extends React.Component {
     this.setState({ datas: data });
   }
   handleSave = (record) => {
-    this.props.addTradeUser(record).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功', 5);
-          this.props.loadBusinessUnitUsers(this.props.relationId);
-        }
+    this.props.addTradeUser(record).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
+        this.props.loadBusinessUnitUsers(this.props.relationId);
       }
-    );
+    });
   }
   handleDelete = (record, index) => {
     this.props.deleteTradeUser(record.id).then((result) => {

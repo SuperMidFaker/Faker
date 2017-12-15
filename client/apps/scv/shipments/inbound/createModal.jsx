@@ -11,10 +11,11 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @injectIntl
-@connect(state => ({
-  visible: state.scvInboundShipments.createModal.visible,
-  tenantId: state.account.tenantId,
-}),
+@connect(
+  state => ({
+    visible: state.scvInboundShipments.createModal.visible,
+    tenantId: state.account.tenantId,
+  }),
   { closeCreateModal, createShipment }
 )
 @Form.create()
@@ -70,12 +71,10 @@ export default class CreateModal extends React.Component {
                 rules: [{
                   required: true, message: this.msg('transModeRequired'),
                 }],
-              })(
-                <RadioGroup>
-                  <RadioButton value="SEA">{this.msg('seaWay')}</RadioButton>
-                  <RadioButton value="AIR">{this.msg('airWay')}</RadioButton>
-                </RadioGroup>
-              )
+              })(<RadioGroup>
+                <RadioButton value="SEA">{this.msg('seaWay')}</RadioButton>
+                <RadioButton value="AIR">{this.msg('airWay')}</RadioButton>
+              </RadioGroup>)
             }
           </FormItem>
           {

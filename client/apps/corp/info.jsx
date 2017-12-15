@@ -34,7 +34,8 @@ function fetchData({ state, dispatch, cookie }) {
   state => ({
     formData: state.corps.formData,
   }),
-  { edit, checkCorpDomain })
+  { edit, checkCorpDomain }
+)
 @withPrivilege({ module: 'corp', feature: 'info' })
 @Form.create()
 export default class CorpInfo extends React.Component {
@@ -50,8 +51,12 @@ export default class CorpInfo extends React.Component {
   }
   constructor(props) {
     super(props);
-    const { country, province, city, district, logo } = this.props.formData;
-    this.state = { country, province, city, district, logo };
+    const {
+      country, province, city, district, logo,
+    } = this.props.formData;
+    this.state = {
+      country, province, city, district, logo,
+    };
   }
   componentWillReceiveProps(nextProps) {
     const newState = this.state;
@@ -126,7 +131,9 @@ export default class CorpInfo extends React.Component {
       },
       form: { getFieldDecorator }, intl,
     } = this.props;
-    const { country, province, city, district } = this.state;
+    const {
+      country, province, city, district,
+    } = this.state;
     const msg = (descriptor, values) => formatMsg(intl, descriptor, values);
     return (
       <Card title={msg('basicInfo')}>

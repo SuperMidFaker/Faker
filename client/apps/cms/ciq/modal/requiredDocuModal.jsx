@@ -13,7 +13,7 @@ import { CIQ_INSP_QUAE_DOCUMENTS } from 'common/constants';
   { toggleReqDocuModal, saveRequiredDocuments, loadCiqDeclHead }
 )
 export default class RequiredDocuModal extends Component {
-  static PropTypes = {
+  static propTypes = {
     preEntrySeqNo: PropTypes.string.isRequired,
     selectedRowKeys: PropTypes.string,
     applOris: PropTypes.string,

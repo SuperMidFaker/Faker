@@ -24,7 +24,9 @@ const Option = Select.Option;
     username: state.account.username,
     submitting: state.cwmOutbound.submitting,
   }),
-  { closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails }
+  {
+    closeShippingModal, shipConfirm, loadPickDetails, loadOutboundHead, loadShipDetails,
+  }
 )
 @Form.create()
 export default class ShippingModal extends Component {
@@ -55,17 +57,21 @@ export default class ShippingModal extends Component {
     this.setState({ shippingMode: e.target.value });
   }
   handleSubmit = () => {
-    const { outboundNo, skuPackQty, pickedQty, username, shipMode, selectedRows, id } = this.props;
+    const {
+      outboundNo, skuPackQty, pickedQty, username, shipMode, selectedRows, id,
+    } = this.props;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         let list = [];
-        const outbounddata = { no: outboundNo,
+        const outbounddata = {
+          no: outboundNo,
           pieces: values.pieces,
           volumes: values.volumes,
           pack_type: values.pack,
         };
         if (shipMode === 'single') {
-          list.push({ id,
+          list.push({
+            id,
             shipped_qty: pickedQty,
             shipped_pack_qty: pickedQty / skuPackQty,
             drop_id: '',

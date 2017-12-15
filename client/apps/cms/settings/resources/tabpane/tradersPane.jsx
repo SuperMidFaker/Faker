@@ -25,7 +25,9 @@ function fetchData({ dispatch, state }) {
   businessUnits: state.cmsResources.businessUnits,
   tenantId: state.account.tenantId,
   customer: state.cmsResources.customer,
-}), { loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers })
+}), {
+  loadBusinessUnits, deleteBusinessUnit, toggleBusinessUnitModal, toggleUnitRuleSetModal, loadBusinessUnitUsers,
+})
 export default class TraderList extends Component {
   static propTyps = {
     intl: intlShape.isRequired,
@@ -89,7 +91,7 @@ export default class TraderList extends Component {
       dataIndex: 'ciq_code',
       key: 'ciq_code',
       width: 120,
-  /*
+      /*
     }, {
       title: '注册海关',
       dataIndex: 'reg_customs',
@@ -133,7 +135,7 @@ export default class TraderList extends Component {
             <RowAction confirm="确定删除？" onConfirm={this.handleDeleteBtnClick} icon="delete" tooltip={this.msg('delete')} row={record} />
           </PrivilegeCover>
         </span>
-        ),
+      ),
     }];
     return (
       <Content>

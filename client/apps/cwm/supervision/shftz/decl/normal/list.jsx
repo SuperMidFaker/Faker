@@ -34,7 +34,9 @@ const RadioButton = Radio.Button;
     loading: state.cwmShFtz.loading,
     userMembers: state.account.userMembers,
   }),
-  { openNormalDeclModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear }
+  {
+    openNormalDeclModal, switchDefaultWhse, loadNormalDelgList, cancelBatchNormalClear,
+  }
 )
 @connectNav({
   depth: 2,
@@ -260,8 +262,7 @@ export default class NormalDeclList extends React.Component {
       >
         <Option value="all">全部货主</Option>
         {owners.map(data => (
-          <Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-        )}
+          <Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
       </Select>
     </span>);
     return (
@@ -271,7 +272,7 @@ export default class NormalDeclList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

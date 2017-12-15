@@ -14,12 +14,10 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 
 @injectIntl
-@connect(
-  state => ({
-    eplist: state.scofFlow.eplist,
-    qplist: state.scofFlow.qplist,
-  })
-)
+@connect(state => ({
+  eplist: state.scofFlow.eplist,
+  qplist: state.scofFlow.qplist,
+}))
 export default class CMSCustomsDeclPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -27,7 +25,9 @@ export default class CMSCustomsDeclPane extends Component {
   }
   msg = formatMsg(this.props.intl)
   render() {
-    const { form: { getFieldDecorator, getFieldValue }, model, eplist, qplist } = this.props;
+    const {
+      form: { getFieldDecorator, getFieldValue }, model, eplist, qplist,
+    } = this.props;
     let cmsDeclTypes = [];
     if (model.kind === 'import') {
       cmsDeclTypes = CMS_IMPORT_DECL_TYPE;
@@ -51,14 +51,12 @@ export default class CMSCustomsDeclPane extends Component {
               <FormItem label={this.msg('customsDeclChannel')}>
                 {getFieldDecorator('dec_channel', {
                   initialValue: model.dec_channel,
-                })(
-                  <RadioGroup>
-                    {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
+                })(<RadioGroup>
+                  {Object.keys(CMS_DECL_CHANNEL).map((declChannel) => {
                       const channel = CMS_DECL_CHANNEL[declChannel];
                       return <RadioButton value={channel.value} key={channel.value} disabled={channel.disabled}>{channel.text}</RadioButton>;
                     })}
-                  </RadioGroup>
-                  )}
+                </RadioGroup>)}
               </FormItem>
             </Col>
             { getFieldValue('dec_channel') === CMS_DECL_CHANNEL.EP.value && <Col sm={24} lg={12}>

@@ -48,48 +48,47 @@ export default class ReceivingModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.inboundProduct.asn_seq_no) {
       this.setState({ loading: true });
-      this.props.loadProductDetails(nextProps.inboundNo, nextProps.inboundProduct.asn_seq_no).then(
-        (result) => {
-          if (!result.error) {
-            let dataSource = [];
-            if (result.data.length === 0 && nextProps.inboundHead.rec_mode === 'manual') {
-              dataSource = [{
-                id: `${this.props.productNo}1`,
-                inbound_qty: 0,
-                inbound_pack_qty: 0,
-                location: '',
-                damage_level: 0,
-                avail: true,
-                received_by: nextProps.username,
-                priority: null,
-              }];
-            } else {
-              dataSource = result.data.map(data => ({
-                id: data.trace_id,
-                trace_id: data.trace_id,
-                location: data.location,
-                damage_level: data.damage_level,
-                inbound_qty: Number(data.inbound_qty),
-                inbound_pack_qty: Number(data.inbound_pack_qty),
-                convey_no: data.convey_no,
-                avail: data.avail_qty > 0,
-                received_by: data.received_by,
-                serial_no: data.serial_no,
-                attrib_1_string: data.attrib_1_string,
-                attrib_2_string: data.attrib_2_string,
-                attrib_3_string: data.attrib_3_string,
-                attrib_4_string: data.attrib_4_string,
-              }));
-            }
-            this.setState({
-              dataSource,
-              receivedQty: nextProps.inboundProduct.received_qty,
-              receivedPackQty: nextProps.inboundProduct.received_pack_qty,
-              loading: false,
-              receivedDate: nextProps.inboundProduct.received_date ? nextProps.inboundProduct.received_date : new Date(),
-            });
+      this.props.loadProductDetails(nextProps.inboundNo, nextProps.inboundProduct.asn_seq_no).then((result) => {
+        if (!result.error) {
+          let dataSource = [];
+          if (result.data.length === 0 && nextProps.inboundHead.rec_mode === 'manual') {
+            dataSource = [{
+              id: `${this.props.productNo}1`,
+              inbound_qty: 0,
+              inbound_pack_qty: 0,
+              location: '',
+              damage_level: 0,
+              avail: true,
+              received_by: nextProps.username,
+              priority: null,
+            }];
+          } else {
+            dataSource = result.data.map(data => ({
+              id: data.trace_id,
+              trace_id: data.trace_id,
+              location: data.location,
+              damage_level: data.damage_level,
+              inbound_qty: Number(data.inbound_qty),
+              inbound_pack_qty: Number(data.inbound_pack_qty),
+              convey_no: data.convey_no,
+              avail: data.avail_qty > 0,
+              received_by: data.received_by,
+              serial_no: data.serial_no,
+              attrib_1_string: data.attrib_1_string,
+              attrib_2_string: data.attrib_2_string,
+              attrib_3_string: data.attrib_3_string,
+              attrib_4_string: data.attrib_4_string,
+            }));
           }
-        });
+          this.setState({
+            dataSource,
+            receivedQty: nextProps.inboundProduct.received_qty,
+            receivedPackQty: nextProps.inboundProduct.received_pack_qty,
+            loading: false,
+            receivedDate: nextProps.inboundProduct.received_date ? nextProps.inboundProduct.received_date : new Date(),
+          });
+        }
+      });
     }
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -235,7 +234,9 @@ export default class ReceivingModal extends Component {
     }
   }
   handleConfirmReceive = () => {
-    const { loginId, inboundNo, inboundProduct, inboundHead } = this.props;
+    const {
+      loginId, inboundNo, inboundProduct, inboundHead,
+    } = this.props;
     this.props.receiveProduct(this.state.dataSource.filter(data => !data.trace_id).map(data => ({
       location: data.location,
       damage_level: data.damage_level,
@@ -409,8 +410,12 @@ export default class ReceivingModal extends Component {
     render: (o, record, index) => !record.trace_id && (<RowAction onClick={() => this.handleDeleteDetail(index)} label={<Icon type="delete" />} row={record} />),
   }]
   render() {
-    const { inboundProduct, inboundHead, editable, saveLoading } = this.props;
-    const { receivedQty, receivedPackQty, receivedDate, disabled } = this.state;
+    const {
+      inboundProduct, inboundHead, editable, saveLoading,
+    } = this.props;
+    const {
+      receivedQty, receivedPackQty, receivedDate, disabled,
+    } = this.state;
     const columns = inboundHead.rec_mode === 'scan' ? this.scanColumns : this.manualColumns;
     let footer;
     if (inboundHead.rec_mode === 'manual' && editable) {

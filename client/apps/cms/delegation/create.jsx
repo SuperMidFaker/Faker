@@ -52,7 +52,9 @@ export default class CreateDelegation extends Component {
   handleSave = ({ accepted }) => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { type, tenantId, loginId, username, tenantName, formData } = this.props;
+        const {
+          type, tenantId, loginId, username, tenantName, formData,
+        } = this.props;
         const delegation = { ...formData, ...this.props.form.getFieldsValue() };
         this.props.createDelegationByCCB({
           delegation,

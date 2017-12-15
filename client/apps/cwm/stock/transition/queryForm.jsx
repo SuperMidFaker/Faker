@@ -17,7 +17,9 @@ const { RangePicker } = DatePicker;
     filter: state.cwmTransition.listFilter,
     owners: state.cwmContext.whseAttrs.owners,
   }),
-  { checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList }
+  {
+    checkOwnerColumn, checkProductColumn, checkLocationColumn, checkProductLocation, changeSearchType, clearList,
+  }
 )
 @Form.create()
 export default class QueryForm extends React.Component {
@@ -58,10 +60,9 @@ export default class QueryForm extends React.Component {
         <Row gutter={16}>
           <Col span={5}>
             <FormItem {...formItemLayout} label="货主">
-              {getFieldDecorator('owner', { initialValue: filter.owner })(
-                <Select showSearch optionFilterProp="children" allowClear>
-                  {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
-                </Select>)}
+              {getFieldDecorator('owner', { initialValue: filter.owner })(<Select showSearch optionFilterProp="children" allowClear>
+                {owners.map(owner => (<Option value={owner.id} key={owner.id}>{owner.name}</Option>))}
+              </Select>)}
             </FormItem>
           </Col>
           <Col span={5}>
@@ -73,14 +74,12 @@ export default class QueryForm extends React.Component {
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="入库单号">
-              {getFieldDecorator('asn_no', { initialValue: filter.asn_no })(
-                <Input placeholder="ASN/进区凭单号/客户订单号" />)}
+              {getFieldDecorator('asn_no', { initialValue: filter.asn_no })(<Input placeholder="ASN/进区凭单号/客户订单号" />)}
             </FormItem>
           </Col>
           <Col span={5}>
             <FormItem {...formItemLayout} label="批次号">
-              {getFieldDecorator('external_lot_no', { initialValue: filter.external_lot_no })(
-                <Input placeholder="批次号" />)}
+              {getFieldDecorator('external_lot_no', { initialValue: filter.external_lot_no })(<Input placeholder="批次号" />)}
             </FormItem>
           </Col>
           <Col span={3}>

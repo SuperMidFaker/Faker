@@ -18,7 +18,9 @@ const Option = Select.Option;
     receiver: state.cwmWarehouse.receiverModal.receiver,
     loginId: state.account.loginId,
   }),
-  { loadReceivers, addReceiver, toggleReceiverModal, updateReceiver }
+  {
+    loadReceivers, addReceiver, toggleReceiverModal, updateReceiver,
+  }
 )
 @Form.create()
 export default class WhseReceiversModal extends Component {
@@ -40,13 +42,15 @@ export default class WhseReceiversModal extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.visible && nextProps.visible) {
       if (nextProps.receiver.id) {
-        const { receiver: {
-          province,
-          city,
-          district,
-          street,
-          region_code,
-        } } = nextProps;
+        const {
+          receiver: {
+            province,
+            city,
+            district,
+            street,
+            region_code,
+          },
+        } = nextProps;
         this.setState({
           region: {
             province,
@@ -77,7 +81,9 @@ export default class WhseReceiversModal extends Component {
     this.props.toggleReceiverModal(false);
   }
   handleOk = () => {
-    const { form, whseCode, loginId, whseOwners, whseTenantId, receiver } = this.props;
+    const {
+      form, whseCode, loginId, whseOwners, whseTenantId, receiver,
+    } = this.props;
     const { region } = this.state;
     let ownerTenantId = null;
     const recv = form.getFieldsValue();
@@ -85,10 +91,12 @@ export default class WhseReceiversModal extends Component {
     if (owner) {
       ownerTenantId = owner.owner_tenant_id;
     }
-    const data = Object.assign({}, recv, { ...region,
+    const data = Object.assign({}, recv, {
+      ...region,
       whse_code: whseCode,
       owner_tenant_id: ownerTenantId,
-      loginId });
+      loginId,
+    });
     if (receiver.id) {
       this.props.updateReceiver({ ...data, id: receiver.id }).then(() => {
         this.props.loadReceivers(whseCode, whseTenantId);
@@ -103,7 +111,9 @@ export default class WhseReceiversModal extends Component {
   }
   handleRegionChange = (value) => {
     const [code, province, city, district, street] = value;
-    const region = { region_code: code, province, city, district, street };
+    const region = {
+      region_code: code, province, city, district, street,
+    };
     this.setState({ region });
   }
   render() {
@@ -130,24 +140,21 @@ export default class WhseReceiversModal extends Component {
             {getFieldDecorator('ftz_whse_code')(<Input />)}
           </FormItem>
           <FormItem label="关联货主" required {...formItemLayout}>
-            {getFieldDecorator('owner_partner_id')(
-              <Select id="select"
-                showSearch
-                placeholder=""
-                optionFilterProp="children"
-                notFoundContent=""
-              >
-                {
+            {getFieldDecorator('owner_partner_id')(<Select id="select"
+              showSearch
+              placeholder=""
+              optionFilterProp="children"
+              notFoundContent=""
+            >
+              {
                   whseOwners.map(pt => (
                     <Option searched={`${pt.owner_code}${pt.owner_name}`}
                       value={pt.owner_partner_id} key={pt.owner_partner_id}
                     >
                       {pt.owner_code ? `${pt.owner_code} | ${pt.owner_name}` : pt.owner_name}
-                    </Option>)
-                  )
+                    </Option>))
                 }
-              </Select>
-              )}
+            </Select>)}
           </FormItem>
 
           <FormItem label="地区" required {...formItemLayout}>

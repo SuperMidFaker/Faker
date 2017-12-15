@@ -37,7 +37,8 @@ const Option = Select.Option;
     allocatedDataLoading: state.cwmOutbound.allocatedDataLoading,
     outboundProducts: state.cwmOutbound.outboundProducts,
   }),
-  { closeAllocatingModal,
+  {
+    closeAllocatingModal,
     loadProductInboundDetail,
     loadAllocatedDetails,
     manualAlloc,
@@ -59,7 +60,9 @@ export default class AllocatingModal extends Component {
     searchContent: '',
     filterInventoryColumns: [],
     filterAllocatedColumns: [],
-    filters: { location: '', startTime: '', endTime: '', searchType: 'external_lot_no' },
+    filters: {
+      location: '', startTime: '', endTime: '', searchType: 'external_lot_no',
+    },
   }
   componentWillMount() {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -74,8 +77,10 @@ export default class AllocatingModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.visible && nextProps.visible !== this.props.visible) {
-      this.props.loadProductInboundDetail(nextProps.outboundProduct.product_no, nextProps.defaultWhse.code,
-         nextProps.outboundHead.owner_partner_id);
+      this.props.loadProductInboundDetail(
+        nextProps.outboundProduct.product_no, nextProps.defaultWhse.code,
+        nextProps.outboundHead.owner_partner_id
+      );
       this.props.loadAllocatedDetails(nextProps.outboundProduct.outbound_no, nextProps.outboundProduct.seq_no);
       this.setState({
         outboundProduct: nextProps.outboundProduct,
@@ -94,7 +99,8 @@ export default class AllocatingModal extends Component {
     }
     if (nextProps.allocatedData !== this.props.allocatedData) {
       this.setState({
-        allocatedData: nextProps.allocatedData.map(ad => ({ ...ad,
+        allocatedData: nextProps.allocatedData.map(ad => ({
+          ...ad,
           allocated_qty: ad.alloc_qty,
           allocated_pack_qty: ad.sku_pack_qty ? ad.alloc_qty / ad.sku_pack_qty : ad.alloc_qty,
           alloced: true,
@@ -119,7 +125,7 @@ export default class AllocatingModal extends Component {
     width: 60,
     fixed: 'left',
     render: (o, record) => {
-      let disabled = !this.props.editable || !record.inbound_timestamp;  // 不可编辑 或 未入库时disable
+      let disabled = !this.props.editable || !record.inbound_timestamp; // 不可编辑 或 未入库时disable
       let reason = '';
       if (!disabled) {
         const outboundHead = this.props.outboundHead;
@@ -128,7 +134,7 @@ export default class AllocatingModal extends Component {
           reason = disabled ? '保税库存' : '';
         }
         if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'normal') {
-          disabled = !record.ftz_ent_filed_id;                  // 没有明细ID时disable
+          disabled = !record.ftz_ent_filed_id; // 没有明细ID时disable
           reason = disabled ? '海关入库明细ID为空' : '';
         }
         if (outboundHead.bonded === 1 && outboundHead.bonded_outtype === 'portion') {
@@ -138,7 +144,7 @@ export default class AllocatingModal extends Component {
         if (record.priority === 0) {
           reason = '库位封存';
         }
-        if (!record.avail_qty || record.avail_qty === 0) {  // 可用库存为空或等于0时disable
+        if (!record.avail_qty || record.avail_qty === 0) { // 可用库存为空或等于0时disable
           disabled = true;
           reason = '库存数量不足';
         }
@@ -488,12 +494,14 @@ export default class AllocatingModal extends Component {
     } else {
       const allocs = this.state.allocatedData.filter(ad => !ad.alloced);
       if (allocs.length > 0) {
-        this.props.manualAlloc(this.props.outboundNo, this.state.outboundProduct.seq_no,
-        allocs.map(ad => ({
-          trace_id: ad.trace_id,
-          allocated_qty: ad.allocated_qty,
-          allocated_pack_qty: ad.allocated_pack_qty,
-        })), this.props.loginId, this.props.loginName).then((result) => {
+        this.props.manualAlloc(
+          this.props.outboundNo, this.state.outboundProduct.seq_no,
+          allocs.map(ad => ({
+            trace_id: ad.trace_id,
+            allocated_qty: ad.allocated_qty,
+            allocated_pack_qty: ad.allocated_pack_qty,
+          })), this.props.loginId, this.props.loginName
+        ).then((result) => {
           if (result.error) {
             message.error(result.error.message);
           } else {
@@ -571,7 +579,9 @@ export default class AllocatingModal extends Component {
     });
   }
   handleSeqNoChange = (value) => {
-    const { outboundProduct, defaultWhse, outboundHead, outboundProducts } = this.props;
+    const {
+      outboundProduct, defaultWhse, outboundHead, outboundProducts,
+    } = this.props;
     const newOutboundProduct = outboundProducts.find(pro => pro.seq_no === value);
     this.props.loadProductInboundDetail(newOutboundProduct.product_no, defaultWhse.code, outboundHead.owner_partner_id);
     this.props.loadAllocatedDetails(outboundProduct.outbound_no, value);
@@ -581,7 +591,9 @@ export default class AllocatingModal extends Component {
   }
   render() {
     const { outboundHead, editable, outboundProducts } = this.props;
-    const { outboundProduct, filterInventoryColumns, filterAllocatedColumns, filters } = this.state;
+    const {
+      outboundProduct, filterInventoryColumns, filterAllocatedColumns, filters,
+    } = this.state;
     const searchOptions = (
       <Select value={filters.searchType} allowClear style={{ width: 120 }} onSelect={this.handleSelectChangeType} onChange={this.handleSelectChangeType}>
         <Option value="external_lot_no">批次号</Option>

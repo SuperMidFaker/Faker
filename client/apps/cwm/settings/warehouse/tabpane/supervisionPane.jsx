@@ -127,8 +127,7 @@ export default class SupervisionPane extends Component {
               value={this.state.ftzAppId} onSelect={this.handleFtzAppSelect}
             >
               {whseSupervisonApps.map(wsa =>
-                <Option key={wsa.uuid} value={wsa.uuid}>{wsa.name}</Option>
-              )}
+                <Option key={wsa.uuid} value={wsa.uuid}>{wsa.name}</Option>)}
             </Select>
           </FormItem>
           <FormItem {...tailFormItemLayout}>

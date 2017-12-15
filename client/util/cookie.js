@@ -1,7 +1,9 @@
 /* eslint-env browser */
 
 const cookie = {
-  set({ name, value = '', path = '/', domain = '', expiresIn = '' }) {
+  set({
+    name, value = '', path = '/', domain = '', expiresIn = '',
+  }) {
     let expires = expiresIn;
     if (expires instanceof Date) {
       expires = expires.toUTCString();

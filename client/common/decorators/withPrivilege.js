@@ -48,7 +48,8 @@ export default function withPrivilege({ module, feature, action }) {
         const actionName = typeof action === 'function' ? action(this.props) : action;
         if (!hasPermission(
           this.context.store.getState().account.privileges,
-          { module, feature, action: actionName })) {
+          { module, feature, action: actionName }
+        )) {
           this.context.router.replace('/login');
         }
       }

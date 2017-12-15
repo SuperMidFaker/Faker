@@ -65,7 +65,9 @@ export default class StockInventoryList extends React.Component {
     const frozenQty = data.reduce((prev, curr) => prev + curr.frozen_qty, 0);
     const bondedQty = data.reduce((prev, curr) => prev + curr.bonded_qty, 0);
     const nonbondedQty = data.reduce((prev, curr) => prev + curr.nonbonded_qty, 0);
-    return { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty };
+    return {
+      stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+    };
   }
   msg = formatMsg(this.props.intl);
   columns = [{
@@ -186,7 +188,9 @@ export default class StockInventoryList extends React.Component {
       current: currentPage || current,
     }).then((result) => {
       if (!result.error) {
-        const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.getTotalData(result.data.data);
+        const {
+          stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+        } = this.getTotalData(result.data.data);
         this.setState({
           selectedRowKeys: [],
           stockQty,
@@ -227,8 +231,12 @@ export default class StockInventoryList extends React.Component {
     return colObj;
   }
   render() {
-    const { defaultWhse, whses, loading, listFilter } = this.props;
-    const { stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty } = this.state;
+    const {
+      defaultWhse, whses, loading, listFilter,
+    } = this.props;
+    const {
+      stockQty, availQty, allocQty, frozenQty, bondedQty, nonbondedQty,
+    } = this.state;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys, selRows) => {

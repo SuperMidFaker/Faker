@@ -32,7 +32,9 @@ export default class ClassificationStatsCard extends Component {
   }
   msg = key => formatMsg(this.props.intl, key);
   render() {
-    const { repoCount, classifiedItems, pendingItems, unclassifiedItems } = this.props.itemsStats;
+    const {
+      repoCount, classifiedItems, pendingItems, unclassifiedItems,
+    } = this.props.itemsStats;
     return (
       <Card title={this.msg('classificationStats')}
         extra={<div style={{ width: 300, marginTop: 4 }}>

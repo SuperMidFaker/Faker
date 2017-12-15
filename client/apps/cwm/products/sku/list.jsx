@@ -36,7 +36,9 @@ const Panel = Collapse.Panel;
     sortFilter: state.cwmSku.sortFilter,
     loginId: state.account.loginId,
   }),
-  { setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal }
+  {
+    setCurrentOwner, syncTradeItemSkus, loadOwnerSkus, switchDefaultWhse, delSku, openApplyPackingRuleModal,
+  }
 )
 @connectNav({
   depth: 2,
@@ -265,7 +267,9 @@ export default class CWMSkuList extends React.Component {
     });
   }
   render() {
-    const { skulist, owner, whse, whses, loading, syncing, listFilter } = this.props;
+    const {
+      skulist, owner, whse, whses, loading, syncing, listFilter,
+    } = this.props;
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: (selectedRowKeys) => {

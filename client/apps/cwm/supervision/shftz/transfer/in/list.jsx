@@ -70,7 +70,9 @@ export default class SHFTZTransferInList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'transfer', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'transfer', ownerView,
+    };
     this.handleEntryListLoad(null, null, filter);
   }
   msg = key => formatMsg(this.props.intl, key);
@@ -246,8 +248,7 @@ export default class SHFTZTransferInList extends React.Component {
       >
         <OptGroup>
           <Option value="all">全部货主</Option>
-          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>)
-            )}
+          {owners.map(data => (<Option key={data.customs_code} value={data.customs_code} search={`${data.partner_code}${data.name}`}>{data.name}</Option>))}
         </OptGroup>
       </Select>
     </span>);
@@ -258,7 +259,7 @@ export default class SHFTZTransferInList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

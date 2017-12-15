@@ -79,7 +79,7 @@ export default class OperatorsPopover extends React.Component {
     } else if (module === 'shipment' || module === 'delegation') {
       button = (<Button key="accept" type="primary" icon="check" >
           接单
-        </Button>);
+      </Button>);
     } else {
       button = (<span style={{ color: '#108ee9', background: 'transparent' }}><Icon type="check-square-o" />{this.msg('accepting')}</span>);
     }

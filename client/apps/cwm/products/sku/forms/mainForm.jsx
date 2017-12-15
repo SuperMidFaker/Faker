@@ -102,7 +102,9 @@ export default class MainForm extends Component {
     }
   }
   render() {
-    const { form: { getFieldDecorator }, owner, units, currencies, skuForm, mode } = this.props;
+    const {
+      form: { getFieldDecorator }, owner, units, currencies, skuForm, mode,
+    } = this.props;
     return (
       <div>
         <Card title="产品属性">
@@ -191,7 +193,7 @@ export default class MainForm extends Component {
         <Card title="SKU属性" extra={<span>
           <Checkbox checked={skuForm.product_default} onChange={ev => this.handleFormChange('product_default', ev.target.checked)}>
               设置当前为默认
-            </Checkbox>
+          </Checkbox>
           {mode !== 'create' &&
           <Dropdown.Button onClick={this.handleVariantAdd} overlay={
             <Menu onClick={this.handleSkuVariantClick}>
@@ -200,7 +202,8 @@ export default class MainForm extends Component {
               }
           >
             添加变种
-          </Dropdown.Button>}</span>}
+          </Dropdown.Button>}
+        </span>}
         >
           <Row gutter={16}>
             <Col sm={24} lg={8}>

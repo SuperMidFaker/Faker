@@ -58,7 +58,8 @@ const RangePicker = DatePicker.RangePicker;
     })),
     operators: state.crmCustomers.operators,
   }),
-  { loadDelegationList,
+  {
+    loadDelegationList,
     acceptDelg,
     delDelg,
     showPreviewer,
@@ -71,7 +72,8 @@ const RangePicker = DatePicker.RangePicker;
     loadBasicInfo,
     loadCustPanel,
     loadDeclCiqPanel,
-    loadFormRequire }
+    loadFormRequire,
+  }
 )
 @connectNav({
   depth: 2,
@@ -318,8 +320,10 @@ export default class DelegationList extends Component {
     this.props.showPreviewer(delgNo, tabKey);
   }
   handleDelgListLoad = (currentPage, filter) => {
-    const { tenantId, listFilter, loginId,
-      delegationlist: { pageSize, current } } = this.props;
+    const {
+      tenantId, listFilter, loginId,
+      delegationlist: { pageSize, current },
+    } = this.props;
     this.setState({ expandedKeys: [] });
     this.props.loadDelegationList({
       tenantId,
@@ -334,8 +338,10 @@ export default class DelegationList extends Component {
     });
   }
   handleCiqListLoad = (currentPage, filter) => {
-    const { tenantId, ietype, listFilter, loginId,
-      delegationlist: { pageSize, current } } = this.props;
+    const {
+      tenantId, ietype, listFilter, loginId,
+      delegationlist: { pageSize, current },
+    } = this.props;
     this.props.loadCiqTable({
       ietype,
       filter: JSON.stringify(filter || listFilter),
@@ -403,9 +409,7 @@ export default class DelegationList extends Component {
       return;
     }
     const operator = this.props.operators.filter(dop => dop.lid === lid)[0];
-    this.props.acceptDelg(
-      operator.lid, operator.name, [row.id], row.delg_no
-    ).then((result) => {
+    this.props.acceptDelg(operator.lid, operator.name, [row.id], row.delg_no).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -552,7 +556,8 @@ export default class DelegationList extends Component {
       <RangePicker value={dateVal}
         ranges={{ Today: [moment(), moment()], 'This Month': [moment().startOf('month'), moment()] }}
         onChange={this.handleDateRangeChange}
-      /></span>);
+      />
+    </span>);
 
     dataSource.remotes = delegationlist;
     let columns = [];
@@ -564,10 +569,10 @@ export default class DelegationList extends Component {
       fixed: 'right',
       render: (o, record) => {
         const clearType = record.i_e_type === 0 ? 'import' : 'export';
-        if (record.status === CMS_DELEGATION_STATUS.unaccepted) {         // 1.当前租户未接单
+        if (record.status === CMS_DELEGATION_STATUS.unaccepted) { // 1.当前租户未接单
           let editOverlay = null;
           if (record.source === DELG_SOURCE.consigned) {
-              // 直接委托未接单可编辑
+            // 直接委托未接单可编辑
             editOverlay = (
               <Menu>
                 <Menu.Item key="edit">
@@ -591,18 +596,18 @@ export default class DelegationList extends Component {
                 <Dropdown overlay={editOverlay}>
                   <a role="presentation"><Icon type="down" /></a>
                 </Dropdown>
-                </PrivilegeCover>}
+              </PrivilegeCover>}
             </span>
           );
-        } else if (record.status === CMS_DELEGATION_STATUS.accepted) {    // 2.当前租户已接单
+        } else if (record.status === CMS_DELEGATION_STATUS.accepted) { // 2.当前租户已接单
           let extraOp = null;
-          if (record.customs_tenant_id === tenantId) {                    // 2.1 报关单位为当前租户(未作分配)
+          if (record.customs_tenant_id === tenantId) { // 2.1 报关单位为当前租户(未作分配)
             extraOp = (
               <RowAction onClick={() => this.handleDelegationAssign(record)} row={record}
                 label={<Icon type="share-alt" />} tooltip={this.msg('delgDispatch')}
               />);
-          } else if (record.customs_tenant_id === -1 ||                   // 2.2 报关单位为线下企业(已作分配)
-              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 2.3 报关供应商尚未接单(已作分配)
+          } else if (record.customs_tenant_id === -1 || // 2.2 报关单位为线下企业(已作分配)
+              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) { // 2.3 报关供应商尚未接单(已作分配)
             extraOp = (
               <RowAction confirm="你确定撤回分配吗?" onConfirm={this.handleDelgAssignRecall} row={record}
                 label={<Icon type="rollback" />} tooltip={this.msg('delgRecall')}
@@ -613,17 +618,17 @@ export default class DelegationList extends Component {
               <RowAction primary onClick={this.handleManifestCreate} label={<span><Icon type="file-add" /> {this.msg('createManifest')}</span>} row={record} />
               {extraOp}
             </span>);
-        } else if (record.status === CMS_DELEGATION_STATUS.processing) {  // 3.
+        } else if (record.status === CMS_DELEGATION_STATUS.processing) { // 3.
           let dispatchOverlay = null;
-          if (record.customs_tenant_id === tenantId) {                    // 3.1 报关单位为当前租户(未作分配)
+          if (record.customs_tenant_id === tenantId) { // 3.1 报关单位为当前租户(未作分配)
             dispatchOverlay = (
               <Menu>
                 <Menu.Item>
                   <a onClick={() => this.handleDelegationAssign(record)}><Icon type="share-alt" /> {this.msg('delgDispatch')}</a>
                 </Menu.Item>
               </Menu>);
-          } else if (record.customs_tenant_id === -1 ||                   // 3.2 报关单位为线下企业(已作分配)
-              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) {     // 3.3 报关供应商尚未接单(已作分配)
+          } else if (record.customs_tenant_id === -1 || // 3.2 报关单位为线下企业(已作分配)
+              record.sub_status === CMS_DELEGATION_STATUS.unaccepted) { // 3.3 报关供应商尚未接单(已作分配)
             dispatchOverlay = (
               <Menu>
                 <Menu.Item>
@@ -635,10 +640,10 @@ export default class DelegationList extends Component {
           }
           let manifestOp = null;
           switch (record.manifested) {
-            case CMS_DELEGATION_MANIFEST.created:           // 制单中
+            case CMS_DELEGATION_MANIFEST.created: // 制单中
               manifestOp = <RowAction onClick={this.handleManifestMake} label={<span><Icon type="form" /> {this.msg('editManifest')}</span>} row={record} />;
               break;
-            case CMS_DELEGATION_MANIFEST.manifested:        // 制单完成(已生成报关清单)
+            case CMS_DELEGATION_MANIFEST.manifested: // 制单完成(已生成报关清单)
               manifestOp = <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />;
               break;
             default:
@@ -651,8 +656,8 @@ export default class DelegationList extends Component {
               </PrivilegeCover>
               {dispatchOverlay && <RowAction overlay={dispatchOverlay} />}
             </span>);
-        } else if (record.status === CMS_DELEGATION_STATUS.declaring ||   // 4. 申报
-                      record.status === CMS_DELEGATION_STATUS.released) {   // 5. 放行
+        } else if (record.status === CMS_DELEGATION_STATUS.declaring || // 4. 申报
+                      record.status === CMS_DELEGATION_STATUS.released) { // 5. 放行
           return (
             <PrivilegeCover module="clearance" feature={clearType} action="create">
               <RowAction onClick={this.handleManifestView} label={<span><Icon type="eye-o" /> {this.msg('viewManifest')}</span>} row={record} />

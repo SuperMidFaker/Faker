@@ -14,7 +14,9 @@ const FormItem = Form.Item;
 const Step = Steps.Step;
 
 function getFieldInits(formData) {
-  const init = { mergeOpt_arr: [], specialHsSortArr: [], splHsMergeArr: [], splNoMergeArr: [] };
+  const init = {
+    mergeOpt_arr: [], specialHsSortArr: [], splHsMergeArr: [], splNoMergeArr: [],
+  };
   if (formData) {
     ['rule_currency', 'rule_orig_country', 'rule_net_wt',
     ].forEach((fd) => {
@@ -137,10 +139,14 @@ export default class SaveAsTemplateModal extends React.Component {
     this.props.setStepVisible(false);
   }
   handleOk = () => {
-    const { tenantId, tenantName, loginId, loginName, ietype, billHead } = this.props;
+    const {
+      tenantId, tenantName, loginId, loginName, ietype, billHead,
+    } = this.props;
     const { formData } = this.state;
     const ieType = ietype === 'import' ? 0 : 1;
-    const params = { template_name: formData.template_name, i_e_type: ieType, tenant_id: tenantId, tenantName, modify_id: loginId, modify_name: loginName };
+    const params = {
+      template_name: formData.template_name, i_e_type: ieType, tenant_id: tenantId, tenantName, modify_id: loginId, modify_name: loginName,
+    };
     let element = formData.rule_element;
     if (typeof formData.rule_element !== 'string') {
       element = Mention.toString(formData.rule_element);
@@ -149,7 +155,9 @@ export default class SaveAsTemplateModal extends React.Component {
     const specialHsSortArr = this.props.form.getFieldValue('split_spl_category');
     const splHsMergeArr = this.props.form.getFieldValue('merge_spl_hs');
     const splNoMergeArr = this.props.form.getFieldValue('merge_spl_no');
-    const mergeObj = { merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0 };
+    const mergeObj = {
+      merge_byhscode: 0, merge_bygname: 0, merge_bycurr: 0, merge_bycountry: 0, merge_bycopgno: 0, merge_byengno: 0,
+    };
     for (const mergeOpt of mergeOptArr) {
       if (mergeOpt === 'byHsCode') {
         mergeObj.merge_byhscode = 1;
@@ -178,14 +186,16 @@ export default class SaveAsTemplateModal extends React.Component {
     if (splNoMergeArr) {
       splNoMergeSorts = splNoMergeArr.join(',');
     }
-    const ruleDatas = { ...billHead,
+    const ruleDatas = {
+      ...billHead,
       ...formData,
       ...this.props.form.getFieldsValue(),
       ...mergeObj,
       rule_element: element,
       split_spl_category: specialHsSorts,
       merge_spl_hs: splHsMergeSorts,
-      merge_spl_no: splNoMergeSorts };
+      merge_spl_no: splNoMergeSorts,
+    };
     this.props.createGeneratedTemplate({ params, ruleDatas }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -220,9 +230,7 @@ export default class SaveAsTemplateModal extends React.Component {
                 {getFieldDecorator('template_name', {
                   initialValue: this.state.formData.template_name,
                   rules: [{ required: true, message: '模板名称必填' }],
-                })(
-                  <Input />
-                )}
+                })(<Input />)}
             </FormItem>
           }
           {this.state.current === 1 &&

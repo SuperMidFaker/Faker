@@ -60,7 +60,8 @@ function fetchData({ dispatch, params }) {
     whse: state.cwmContext.defaultWhse,
     submitting: state.cwmShFtz.submitting,
   }),
-  { loadRelDetails,
+  {
+    loadRelDetails,
     updateRelReg,
     fileRelStockouts,
     exportNormalExitByRel,
@@ -68,7 +69,8 @@ function fetchData({ dispatch, params }) {
     queryPortionoutInfos,
     cancelRelReg,
     editReleaseWt,
-    splitRelDetails }
+    splitRelDetails,
+  }
 )
 @connectNav({
   depth: 3,
@@ -122,12 +124,16 @@ export default class SHFTZNormalRelRegDetail extends Component {
       const detail = details[i];
       if (detailMap.has(detail.ftz_ent_detail_id)) {
         const merged = detailMap.get(detail.ftz_ent_detail_id);
-        detailMap.set(detail.ftz_ent_detail_id, Object.assign({}, merged,
-          { qty: (Number(merged.qty) + Number(detail.qty)).toFixed(2),
+        detailMap.set(detail.ftz_ent_detail_id, Object.assign(
+          {}, merged,
+          {
+            qty: (Number(merged.qty) + Number(detail.qty)).toFixed(2),
             gross_wt: (Number(merged.gross_wt) + Number(detail.gross_wt)).toFixed(4),
             net_wt: (Number(merged.net_wt) + Number(detail.net_wt)).toFixed(4),
             amount: (Number(merged.amount) + Number(detail.amount)).toFixed(2),
-            freight: (Number(merged.freight) + Number(detail.freight)).toFixed(2) }));
+            freight: (Number(merged.freight) + Number(detail.freight)).toFixed(2),
+          }
+        ));
       } else {
         detailMap.set(detail.ftz_ent_detail_id, detail);
       }
@@ -264,8 +270,10 @@ export default class SHFTZNormalRelRegDetail extends Component {
     const reg = this.state.reg;
     this.props.exportNormalExitByRel(reg.ftz_rel_no).then((resp) => {
       if (!resp.error) {
-        FileSaver.saveAs(new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
-          `${reg.ftz_rel_no}_出区凭单.xlsx`);
+        FileSaver.saveAs(
+          new window.Blob([new Buffer(resp.data)], { type: 'application/octet-stream' }),
+          `${reg.ftz_rel_no}_出区凭单.xlsx`
+        );
       } else {
         notification.error({
           message: '导出失败',
@@ -422,7 +430,9 @@ export default class SHFTZNormalRelRegDetail extends Component {
     },
   }]
   render() {
-    const { relSo, relRegs, whse, submitting } = this.props;
+    const {
+      relSo, relRegs, whse, submitting,
+    } = this.props;
     const { reg, filingDetails, exitDetails } = this.state;
     if (relRegs.length === 0) {
       return null;

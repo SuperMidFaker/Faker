@@ -164,7 +164,7 @@ export default class CustomerList extends React.Component {
               <Breadcrumb.Item>
                 {customer.name}
               </Breadcrumb.Item>
-              </Breadcrumb>}
+            </Breadcrumb>}
             <ButtonToggle
               iconOn="menu-fold" iconOff="menu-unfold"
               onClick={this.toggle}

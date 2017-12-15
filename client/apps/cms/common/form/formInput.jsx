@@ -37,10 +37,9 @@ export default class FormInput extends React.Component {
             <Input type={type} disabled value={initialValue}
               addonBefore={addonBefore} addonAfter={addonAfter}
             /> :
-            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(
-              <Input type={type} disabled={disabled} placeholder={placeholder}
-                addonBefore={addonBefore} addonAfter={addonAfter}
-              />)}
+            getFieldDecorator(field, { rules, initialValue, ...fieldProps })(<Input type={type} disabled={disabled} placeholder={placeholder}
+              addonBefore={addonBefore} addonAfter={addonAfter}
+            />)}
         </FormItem>
       </Col>
     );

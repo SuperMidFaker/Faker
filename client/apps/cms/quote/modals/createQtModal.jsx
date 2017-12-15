@@ -51,8 +51,7 @@ export default class CreateQtModal extends React.Component {
     const quoteData = {};
     const field = this.props.form.getFieldsValue();
     if (field.partner.name) {
-      const selpartners = this.props.partners.filter(
-        pt => pt.name === field.partner.name);
+      const selpartners = this.props.partners.filter(pt => pt.name === field.partner.name);
       quoteData.partner = selpartners[0];
     }
     if (field.tariff_kind === 'salesBase') {
@@ -125,33 +124,28 @@ export default class CreateQtModal extends React.Component {
           <FormItem label={this.msg('tariffKinds')} {...formItemLayout}>
             {getFieldDecorator('tariff_kind', {
               rules: [{ required: true, message: '报价类型必选' }],
-            })(
-              <Select style={{ width: '100%' }} onSelect={this.handleKindSelect}>
-                {
+            })(<Select style={{ width: '100%' }} onSelect={this.handleKindSelect}>
+              {
                 TARIFF_KINDS.map(qt =>
-                  <Option value={qt.value} key={qt.value}>{qt.text}</Option>
-                )
+                  <Option value={qt.value} key={qt.value}>{qt.text}</Option>)
               }
-              </Select>
-            )}
+            </Select>)}
           </FormItem>
           <FormItem label={this.msg('partnerLabel')} {...formItemLayout}>
             {getFieldDecorator('partner.name', {
               rules: [{ required: true, message: '必选' }],
               getValueFromEvent: this.handleClientChange,
-            })(
-              <Select showSearch showArrow optionFilterProp="searched"
-                style={{ width: '100%' }} disabled={disBase}
-              >
-                {
+            })(<Select showSearch showArrow optionFilterProp="searched"
+              style={{ width: '100%' }} disabled={disBase}
+            >
+              {
                 partners.map(pt => (
                   <Option searched={`${pt.partner_code}${pt.name}`}
                     value={pt.partner_id} key={pt.partner_id}
-                  >{pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}</Option>)
-                )
+                  >{pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
+                  </Option>))
               }
-              </Select>
-            )}
+            </Select>)}
           </FormItem>
         </div>
       </Modal>

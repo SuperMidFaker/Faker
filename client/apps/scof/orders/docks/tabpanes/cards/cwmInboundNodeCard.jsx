@@ -16,7 +16,9 @@ const Step = Steps.Step;
     tenantId: state.account.tenantId,
     asn: state.crmOrders.dockInstMap[props.uuid],
   }),
-  { hideDock, showDock, loadOrderNodesTriggers, getAsnFromFlow }
+  {
+    hideDock, showDock, loadOrderNodesTriggers, getAsnFromFlow,
+  }
 )
 export default class CWMInboundNodeCard extends React.Component {
   static propTypes = {
@@ -45,17 +47,15 @@ export default class CWMInboundNodeCard extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.uuid !== this.props.uuid) {
       const { uuid, kind, tenantId } = nextProps;
-      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then(
-        (result) => {
-          if (result.error) {
-            message.error(result.error.message);
-          } else if (result.data) {
-            this.setState({
-              trigger: this.triggerStepMap[result.data.trigger_name],
-            });
-          }
+      this.props.loadOrderNodesTriggers(uuid, [NODE_BIZ_OBJECTS[kind][0].key]).then((result) => {
+        if (result.error) {
+          message.error(result.error.message);
+        } else if (result.data) {
+          this.setState({
+            trigger: this.triggerStepMap[result.data.trigger_name],
+          });
         }
-      );
+      });
       this.props.getAsnFromFlow(uuid, tenantId);
     }
   }

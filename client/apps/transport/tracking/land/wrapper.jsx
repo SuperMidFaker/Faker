@@ -91,19 +91,13 @@ export default class TrackingLandWrapper extends React.Component {
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   handleStatusNav = (ev) => {
-    this.context.router.push(
-      `/transport/tracking/road/status/${ev.target.value}`
-    );
+    this.context.router.push(`/transport/tracking/road/status/${ev.target.value}`);
   }
   handlePodNav = (ev) => {
-    this.context.router.push(
-      `/transport/tracking/road/pod/${ev.target.value}`
-    );
+    this.context.router.push(`/transport/tracking/road/pod/${ev.target.value}`);
   }
   handleExcpNav = (ev) => {
-    this.context.router.push(
-      `/transport/tracking/road/exception/${ev.target.value}`
-    );
+    this.context.router.push(`/transport/tracking/road/exception/${ev.target.value}`);
   }
 
   render() {

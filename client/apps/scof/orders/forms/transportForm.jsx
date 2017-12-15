@@ -33,12 +33,14 @@ const quoteNoFieldWarning = {
     serviceTeam: state.crmCustomers.operators,
     needLoadTariff: state.scofFlow.needLoadTariff,
   }),
-  { setClientForm,
+  {
+    setClientForm,
     loadFlowNodeData,
     loadTariffsByTransportInfo,
     toggleAddLineModal,
     isLineIntariff,
-    toggleAddLocationModal }
+    toggleAddLocationModal,
+  }
 )
 export default class TransportForm extends Component {
   static propTypes = {
@@ -117,7 +119,8 @@ export default class TransportForm extends Component {
             quote_no: nodedata.quote_no,
             remark: '',
             package: '',
-            uuid: uuidWithoutDash() });
+            uuid: uuidWithoutDash(),
+          });
           this.props.loadTariffsByTransportInfo(customerPartnerId, nodedata.transit_mode, nodedata.goods_type).then((result1) => {
             this.setState({
               tariffs: result1.data || [],
@@ -405,9 +408,7 @@ export default class TransportForm extends Component {
   handlePickupChange = (pickupDt) => {
     if (pickupDt) {
       const transitTime = this.props.formData.node.transit_time || 0;
-      const deliverDate = new Date(
-        pickupDt.valueOf() + transitTime * ONE_DAY_MS
-      );
+      const deliverDate = new Date(pickupDt.valueOf() + transitTime * ONE_DAY_MS);
       this.handleSetClientForm({
         pickup_est_date: pickupDt,
         deliver_est_date: moment(deliverDate),
@@ -418,9 +419,7 @@ export default class TransportForm extends Component {
     const pickupDt = this.props.formData.node.pickup_est_date;
     if (typeof value === 'number') {
       if (pickupDt) {
-        const deliverDate = new Date(
-          pickupDt.valueOf() + value * ONE_DAY_MS
-        );
+        const deliverDate = new Date(pickupDt.valueOf() + value * ONE_DAY_MS);
         this.handleSetClientForm({
           deliver_est_date: moment(deliverDate),
           transit_time: value,
@@ -435,9 +434,7 @@ export default class TransportForm extends Component {
   handleDeliveryChange = (deliverDt) => {
     if (deliverDt) {
       const transitTime = this.props.formData.node.transit_time || 0;
-      const pickupDt = new Date(
-        deliverDt.valueOf() - transitTime * ONE_DAY_MS
-      );
+      const pickupDt = new Date(deliverDt.valueOf() - transitTime * ONE_DAY_MS);
       this.handleSetClientForm({
         deliver_est_date: deliverDt,
         pickup_est_date: moment(pickupDt, 'YYYY-MM-DD'),
@@ -522,8 +519,12 @@ export default class TransportForm extends Component {
     return text;
   }
   render() {
-    const { formData, serviceTeam, formRequires: { consignerLocations, consigneeLocations,
-      transitModes, packagings, vehicleTypes, vehicleLengths }, customerPartnerId } = this.props;
+    const {
+      formData, serviceTeam, formRequires: {
+        consignerLocations, consigneeLocations,
+        transitModes, packagings, vehicleTypes, vehicleLengths,
+      }, customerPartnerId,
+    } = this.props;
     const { quoteNoField } = this.state;
     // todo consigner consignee by customer partner id
     const formItemLayout = {
@@ -543,18 +544,14 @@ export default class TransportForm extends Component {
         <Col key="vehicle_type" sm={24} md={8}>
           <FormItem label={this.msg('vehicleType')} {...formItemLayout}>
             <Select onSelect={this.handelVehicleTypeSelect} value={node.vehicle_type_id}>
-              {vehicleTypes.map(
-                vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>
-              )}
+              {vehicleTypes.map(vt => <Option value={vt.value} key={`${vt.text}${vt.value}`}>{vt.text}</Option>)}
             </Select>
           </FormItem>
         </Col>,
         <Col key="vehicle_length" sm={24} md={8}>
           <FormItem label={this.msg('vehicleLength')} {...formItemLayout}>
             <Select onSelect={this.handelVehicleLengthSelect} value={node.vehicle_length_id}>
-              {vehicleLengths.map(
-                vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>
-              )}
+              {vehicleLengths.map(vl => <Option value={vl.value} key={`${vl.text}${vl.value}`}>{vl.text}</Option>)}
             </Select>
           </FormItem>
         </Col>
@@ -565,9 +562,7 @@ export default class TransportForm extends Component {
         <Col key="container" sm={24} md={8} >
           <FormItem label={this.msg('containerPack')} {...formItemLayout}>
             <Select onSelect={value => this.handleCommonFieldChange('container', value)} value={node.container}>
-              {CONTAINER_PACKAGE_TYPE.map(
-                ct => <Option value={ct.key} key={ct.key}>{ct.value}</Option>
-              )}
+              {CONTAINER_PACKAGE_TYPE.map(ct => <Option value={ct.key} key={ct.key}>{ct.value}</Option>)}
             </Select>
           </FormItem>
         </Col>,
@@ -605,9 +600,7 @@ export default class TransportForm extends Component {
           <Col sm={24} md={8}>
             <FormItem label="运输模式" required {...formItemLayout}>
               <Select value={node.trs_mode_id} onChange={this.handleTransmodeChange}>
-                {transitModes.map(
-                  tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>
-                )}
+                {transitModes.map(tm => <Option value={tm.id} key={`${tm.mode_code}${tm.id}`}>{tm.mode_name}</Option>)}
               </Select>
             </FormItem>
           </Col>
@@ -646,9 +639,7 @@ export default class TransportForm extends Component {
                 <Select style={{ width: '50%' }} placeholder="选择包装方式"
                   value={node.package} onChange={value => this.handleCommonFieldChange('package', value)}
                 >
-                  {packagings.map(
-                    pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-                  )}
+                  {packagings.map(pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>)}
                 </Select>
               </InputGroup>
             </FormItem>

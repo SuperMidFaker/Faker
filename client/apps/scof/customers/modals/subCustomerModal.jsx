@@ -82,7 +82,9 @@ export default class SubCustomerModal extends React.Component {
     this.props.hideSubCustomerModal();
   }
   handleOk = () => {
-    const { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
+    const {
+      id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
+    } = this.state;
     const { tenantId, operation } = this.props;
     if (!name || name === '') {
       message.error('企业名称必填');
@@ -97,7 +99,9 @@ export default class SubCustomerModal extends React.Component {
     } else if (operation === 'edit') {
       this.props.editCustomer({
         tenantId,
-        partnerInfo: { id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
+        partnerInfo: {
+          id, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email,
+        },
         businessType,
       }).then((result) => {
         if (result.error) {
@@ -113,11 +117,15 @@ export default class SubCustomerModal extends React.Component {
     }
   }
   hancleAddCustomer = () => {
-    const { parentId, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType } = this.state;
+    const {
+      parentId, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email, businessType,
+    } = this.state;
     const { tenantId } = this.props;
     this.props.addCustomer({
       tenantId,
-      partnerInfo: { parentId, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email },
+      partnerInfo: {
+        parentId, name, partnerCode, partnerUniqueCode, customsCode, contact, phone, email,
+      },
       businessType,
     }).then((result1) => {
       if (result1.error) {

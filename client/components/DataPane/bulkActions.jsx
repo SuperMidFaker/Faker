@@ -11,7 +11,9 @@ export default class BulkActions extends Component {
     handleDeselectRows: PropTypes.func,
   }
   render() {
-    const { baseCls, children, selectedRowKeys, handleDeselectRows } = this.props;
+    const {
+      baseCls, children, selectedRowKeys, handleDeselectRows,
+    } = this.props;
     return (
       <div className={`${baseCls}-toolbar-row-selection ${selectedRowKeys.length === 0 ? 'hide' : ''}`}>
         <h3>已选中{selectedRowKeys.length}项</h3>

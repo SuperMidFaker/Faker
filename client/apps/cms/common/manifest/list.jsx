@@ -86,7 +86,7 @@ export default class ManifestList extends Component {
     title: '制单日期',
     width: 90,
     render: (o, record) => (record.id ?
-    record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
+      record.created_date && moment(record.created_date).format('YYYY.MM.DD') : '-'),
   }, {
     title: <Tooltip title="表体记录数"><Icon type="bars" /></Tooltip>,
     dataIndex: 'detail_count',
@@ -328,8 +328,8 @@ export default class ManifestList extends Component {
                     <Option value="all">全部客户</Option>
                     {clients.map(data => (<Option key={data.partner_id} value={data.partner_id}
                       search={`${data.partner_code}${data.name}`}
-                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}</Option>)
-                    )}
+                    >{data.partner_code ? `${data.partner_code} | ${data.name}` : data.name}
+                    </Option>))}
                   </Select>
                   <span />
                   <Select value={listFilter.viewStatus} style={{ width: 160 }} showSearch={false}

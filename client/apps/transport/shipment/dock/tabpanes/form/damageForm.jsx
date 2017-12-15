@@ -37,7 +37,9 @@ export default class DamageForm extends React.Component {
   state = {
   }
   handleSubmit = () => {
-    const { dispId, tenantId, tenantName, loginId, loginName } = this.props;
+    const {
+      dispId, tenantId, tenantName, loginId, loginName,
+    } = this.props;
     const exception = TRANSPORT_EXCEPTIONS.find(item => item.key === 'SHIPMENT_EXCEPTION_GOODS_SHORTAGE');
     const { damagedQty, shortageQty, remark } = this.props.form.getFieldsValue();
     if (!damagedQty && !shortageQty) {
@@ -48,13 +50,14 @@ export default class DamageForm extends React.Component {
         {
           damaged_qty: damagedQty,
           shortage_qty: shortageQty,
-        }, tenantId, tenantName, loginId, loginName).then((result) => {
-          if (result.error) {
-            message.error(result.error.message, 10);
-          } else {
-            this.handleClear();
-          }
-        });
+        }, tenantId, tenantName, loginId, loginName
+      ).then((result) => {
+        if (result.error) {
+          message.error(result.error.message, 10);
+        } else {
+          this.handleClear();
+        }
+      });
     }
   }
   handleClear = () => {

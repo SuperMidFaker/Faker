@@ -24,7 +24,9 @@ import InfoItem from 'client/components/InfoItem';
     partnerId: state.cmsDelgInfoHub.previewer.delgDispatch.send_partner_id,
     userMembers: state.account.userMembers,
   }),
-  { loadCustPanel, ensureManifestMeta, setOpetaor, loadOperators }
+  {
+    loadCustPanel, ensureManifestMeta, setOpetaor, loadOperators,
+  }
 )
 export default class CustomsDeclPane extends React.Component {
   static propTypes = {
@@ -51,7 +53,7 @@ export default class CustomsDeclPane extends React.Component {
     this.props.loadOperators(this.props.partnerId, this.props.tenantId);
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.delgNo !== this.props.delgNo) {  // fixme 已经翻到当前tab页, 关闭panel再打开, receive在翻到tab页前就会产生
+    if (nextProps.delgNo !== this.props.delgNo) { // fixme 已经翻到当前tab页, 关闭panel再打开, receive在翻到tab页前就会产生
       nextProps.loadCustPanel({
         delgNo: nextProps.delgNo,
         tenantId: this.props.tenantId,
@@ -91,9 +93,7 @@ export default class CustomsDeclPane extends React.Component {
   }
   handleMenuClick = (loginId) => {
     const operator = this.props.userMembers.filter(dop => dop.login_id === Number(loginId))[0];
-    this.props.setOpetaor(
-      operator.login_id, operator.name, this.props.delgNo
-    );
+    this.props.setOpetaor(operator.login_id, operator.name, this.props.delgNo);
   }
   renderManifestAction() {
     const { customsPanel } = this.props;
@@ -111,7 +111,9 @@ export default class CustomsDeclPane extends React.Component {
     }
   }
   render() {
-    const { customsPanel, customsSpinning, tenantId, partnerId } = this.props;
+    const {
+      customsPanel, customsSpinning, tenantId, partnerId,
+    } = this.props;
     const bill = customsPanel.bill;
     const tableDatas = customsPanel.decls;
     // const declTypes = DECL_I_TYPE.concat(DECL_E_TYPE).filter(dt => dt.key === bill.decl_way_code);

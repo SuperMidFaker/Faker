@@ -80,7 +80,8 @@ export default class EmergeItemTable extends React.Component {
     },
     remotes: this.props.emergeList,
   })
-  emergeColumns = makeColumns({ msg: this.msg,
+  emergeColumns = makeColumns({
+    msg: this.msg,
     units: this.props.units,
     tradeCountries: this.props.tradeCountries,
     currencies: this.props.currencies,
@@ -135,7 +136,9 @@ export default class EmergeItemTable extends React.Component {
     this.setState({ emergeSelRowKeys: [] });
   }
   render() {
-    const { loading, emergeList, withRepo, repos, noBorder } = this.props;
+    const {
+      loading, emergeList, withRepo, repos, noBorder,
+    } = this.props;
     const { emergeSelRowKeys } = this.state;
     this.emergeDataSource.remotes = emergeList;
     const emergeSelRows = {

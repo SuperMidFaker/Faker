@@ -13,7 +13,9 @@ const formatMsg = format(messages);
 const Option = Select.Option;
 
 function ColumnInput(props) {
-  const { inEdit, record, field, onChange } = props;
+  const {
+    inEdit, record, field, onChange,
+  } = props;
   function handleChange(ev) {
     if (onChange) {
       onChange(record, field, ev.target.value);
@@ -30,7 +32,9 @@ ColumnInput.propTypes = {
 };
 
 function ColumnSelect(props) {
-  const { inEdit, record, field, options, onChange } = props;
+  const {
+    inEdit, record, field, options, onChange,
+  } = props;
   function handleChange(value) {
     if (onChange) {
       onChange(record, field, value);
@@ -118,15 +122,13 @@ export default class AttachedDocsPane extends React.Component {
       message.info('随附单据编号为必填项');
       return;
     }
-    this.props.saveDocuMark(record).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          message.info('保存成功', 5);
-        }
+    this.props.saveDocuMark(record).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        message.info('保存成功', 5);
       }
-    );
+    });
   }
   handleDelete = (record, index) => {
     this.props.delDocumark(record.id).then((result) => {

@@ -56,7 +56,9 @@ const RadioButton = Radio.Button;
     suppliers: state.cwmReceive.suppliers,
     brokers: state.cwmWarehouse.brokers,
   }),
-  { loadBrokers, loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers }
+  {
+    loadBrokers, loadManifestTemplates, closeBatchDeclModal, loadParams, loadBatchOutRegs, loadBatchRegDetails, beginBatchDecl, getSuppliers,
+  }
 )
 @Form.create()
 export default class BatchDeclModal extends Component {
@@ -220,8 +222,7 @@ export default class BatchDeclModal extends Component {
     this.props.loadBatchRegDetails(row.pre_entry_seq_no).then((result) => {
       if (!result.error) {
         const relNo = row.ftz_rel_no;
-        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(
-          result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
+        const regDetails = this.state.regDetails.filter(reg => reg.ftz_rel_no !== relNo).concat(result.data.map(dt => ({ ...dt, ftz_rel_no: relNo })));
         const portionRegs = this.state.portionRegs.map(pr => pr.ftz_rel_no === relNo ? { ...pr, added: true } : pr);
         this.setState({ regDetails, portionRegs });
       }
@@ -235,7 +236,9 @@ export default class BatchDeclModal extends Component {
       if (!result.error) {
         const regDetails = this.state.regDetails.filter(reg => !relNos.find(no => no === reg.ftz_rel_no)).concat(result.data);
         const portionRegs = this.state.portionRegs.map(pr => relNos.find(no => no === pr.ftz_rel_no) ? { ...pr, added: true } : pr);
-        this.setState({ regDetails, portionRegs, portionRowSelKeys: [], portionSelRows: [] });
+        this.setState({
+          regDetails, portionRegs, portionRowSelKeys: [], portionSelRows: [],
+        });
       }
     });
   }
@@ -350,8 +353,12 @@ export default class BatchDeclModal extends Component {
       customs_code: own.customs_code,
       name: own.name,
     }))[0];
-    const { loginId, loginName, tenantName, defaultWhse } = this.props;
-    const { template, groupVals, destCountry, dutyMode } = this.state;
+    const {
+      loginId, loginName, tenantName, defaultWhse,
+    } = this.props;
+    const {
+      template, groupVals, destCountry, dutyMode,
+    } = this.state;
     this.props.form.validateFields((errors, values) => {
       if (errors) {
         return;
@@ -395,8 +402,12 @@ export default class BatchDeclModal extends Component {
     this.setState({ destCountry });
   }
   render() {
-    const { form: { getFieldDecorator }, owners, brokers, customsCode, tenantName, submitting, billTemplates, exemptions, tradeCountries } = this.props;
-    const { relNo, ownerCusCode, template, regDetails, dutyMode, destCountry } = this.state;
+    const {
+      form: { getFieldDecorator }, owners, brokers, customsCode, tenantName, submitting, billTemplates, exemptions, tradeCountries,
+    } = this.props;
+    const {
+      relNo, ownerCusCode, template, regDetails, dutyMode, destCountry,
+    } = this.state;
     const dataSource = regDetails.filter((item) => {
       if (this.state.ftzRelNo) {
         const reg = new RegExp(this.state.ftzRelNo);
@@ -454,43 +465,38 @@ export default class BatchDeclModal extends Component {
             <Row gutter={16}>
               <Col span={4}>
                 <FormItem label="货主">
-                  {getFieldDecorator('owner', { initialValue: ownerCusCode,
+                  {getFieldDecorator('owner', {
+ initialValue: ownerCusCode,
                     rules: [{ required: true, message: '收货单位必选' }],
-                  })(
-                    <Select placeholder="请选择收货单位" onChange={this.handleOwnerChange} showSearch optionFilterProp="children" >
-                      {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
-                    </Select>)}
+                  })(<Select placeholder="请选择收货单位" onChange={this.handleOwnerChange} showSearch optionFilterProp="children" >
+                    {owners.map(owner => (<Option value={owner.customs_code} key={owner.customs_code}>{owner.name}</Option>))}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span={4}>
                 <FormItem label="报关代理">
-                  {getFieldDecorator('broker', { rules: [{ required: true, message: '报关代理必选' }] })(
-                    <Select placeholder="请选择报关代理" >
-                      {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(
-                        <Option value={customsCode} key={customsCode}>{tenantName}</Option>
-                  )}
-                    </Select>)}
+                  {getFieldDecorator('broker', { rules: [{ required: true, message: '报关代理必选' }] })(<Select placeholder="请选择报关代理" >
+                    {brokers.map(broker => (<Option value={broker.customs_code} key={broker.customs_code}>{broker.name}</Option>)).concat(<Option value={customsCode} key={customsCode}>{tenantName}</Option>)}
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span={4}>
                 <FormItem label="报关申请类型">
                   {getFieldDecorator('apply_type', {
                     initialValue: '0',
-                  })(
-                    <Select placeholder="请选择报关申请类型">
-                      <Option value="0" key="0">普通报关申请单</Option>
-                      <Option value="1" key="1">跨关区报关申请单</Option>
-                      <Option value="2" key="2">保展报关申请单</Option>
-                    </Select>)}
+                  })(<Select placeholder="请选择报关申请类型">
+                    <Option value="0" key="0">普通报关申请单</Option>
+                    <Option value="1" key="1">跨关区报关申请单</Option>
+                    <Option value="2" key="2">保展报关申请单</Option>
+                  </Select>)}
                 </FormItem>
               </Col>
               <Col span={3}>
                 <FormItem label="进出口标识">
-                  {getFieldDecorator('ietype', { initialValue: 'import' })(
-                    <RadioGroup>
-                      <RadioButton value="import">进口</RadioButton>
-                      <RadioButton value="export">出口</RadioButton>
-                    </RadioGroup>)}
+                  {getFieldDecorator('ietype', { initialValue: 'import' })(<RadioGroup>
+                    <RadioButton value="import">进口</RadioButton>
+                    <RadioButton value="export">出口</RadioButton>
+                  </RadioGroup>)}
                 </FormItem>
               </Col>
               <Col span={3}>

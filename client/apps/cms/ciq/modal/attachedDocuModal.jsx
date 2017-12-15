@@ -11,10 +11,12 @@ import { CIQ_ATT_DOCUMENTS } from 'common/constants';
   state => ({
     visible: state.cmsCiqDeclare.attDocuModal.visible,
   }),
-  { toggleAttDocuModal, saveAttDocuments, loadCiqDeclHead, loadAttDocuments }
+  {
+    toggleAttDocuModal, saveAttDocuments, loadCiqDeclHead, loadAttDocuments,
+  }
 )
 export default class AttachedDocuModal extends Component {
-  static PropTypes = {
+  static propTypes = {
     preEntrySeqNo: PropTypes.string.isRequired,
   }
   state = {

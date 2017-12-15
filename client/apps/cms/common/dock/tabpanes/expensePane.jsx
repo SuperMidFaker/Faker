@@ -138,7 +138,7 @@ export default class ExpensePane extends React.Component {
     const { expenses: { revenue, allcost, parameters }, expensesLoading } = this.props;
     const { checkedExpCates, checkedExpTypes } = this.state;
     const revenueFees = revenue.filter(rev =>
-        checkedExpCates.indexOf(rev.fee_style) !== -1
+      checkedExpCates.indexOf(rev.fee_style) !== -1
       && checkedExpTypes.indexOf(SERVER_CATEGORY_MAP[rev.category]) !== -1);
     if (revenueFees.length > 0) {
       const totalFee = revenueFees.reduce((res, bsf) => ({
@@ -158,8 +158,8 @@ export default class ExpensePane extends React.Component {
       });
     }
     let costFees = allcost.reduce((res, cost) =>
-        res.concat({ key: 'vendor', fee_name: cost.vendor }).concat(cost.fees.filter(ct =>
-            checkedExpCates.indexOf(ct.fee_style) !== -1
+      res.concat({ key: 'vendor', fee_name: cost.vendor }).concat(cost.fees.filter(ct =>
+        checkedExpCates.indexOf(ct.fee_style) !== -1
           && checkedExpTypes.indexOf(SERVER_CATEGORY_MAP[ct.category]) !== -1)), []);
     /*
       if (allcost.length === 1) {
@@ -198,13 +198,13 @@ export default class ExpensePane extends React.Component {
       return (
         <CheckableTag key={ec.key} checked={checked} {...tagProps}
           onChange={chked => this.handleCateTagChange(ec.key, chked)}
-        >{ec.text}</CheckableTag>);
-    }).concat(
-      CMS_EXPENSE_TYPES.map(et => (
-        <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
-          onChange={chked => this.handleTypeTagChange(et.key, chked)}
-        >{et.text}</CheckableTag>))
-    );
+        >{ec.text}
+        </CheckableTag>);
+    }).concat(CMS_EXPENSE_TYPES.map(et => (
+      <CheckableTag key={et.key} checked={checkedExpTypes.indexOf(et.key) !== -1}
+        onChange={chked => this.handleTypeTagChange(et.key, chked)}
+      >{et.text}
+      </CheckableTag>)));
     return (
       <div className="pane-content tab-pane">
         <Spin spinning={expensesLoading}>

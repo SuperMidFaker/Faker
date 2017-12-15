@@ -10,14 +10,12 @@ import { } from 'common/constants';
 const Panel = Collapse.Panel;
 
 @injectIntl
-@connect(
-  state => ({
-    order: state.crmOrders.dock.order,
-    pickDetails: state.cwmOutbound.pickDetails,
-    packDetails: state.cwmOutbound.packDetails,
-    shipDetails: state.cwmOutbound.shipDetails,
-  }), { loadPickDetails, loadPackDetails, loadShipDetails }
-)
+@connect(state => ({
+  order: state.crmOrders.dock.order,
+  pickDetails: state.cwmOutbound.pickDetails,
+  packDetails: state.cwmOutbound.packDetails,
+  shipDetails: state.cwmOutbound.shipDetails,
+}), { loadPickDetails, loadPackDetails, loadShipDetails })
 export default class InboundPane extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -161,7 +159,7 @@ export default class InboundPane extends React.Component {
     return (
       <div className="pane-content tab-pane">
         <Card bodyStyle={{ padding: 0 }} hoverable={false}>
-          <Collapse bordered={false} defaultActiveKey={'pickDetails'} accordion>
+          <Collapse bordered={false} defaultActiveKey="pickDetails" accordion>
             <Panel header="拣货明细" key="pickDetails" >
               <div className="table-panel table-fixed-layout">
                 <Table size="middle" columns={this.pickColumns} dataSource={pickDetails} scroll={{ x: 1500 }} />

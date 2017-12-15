@@ -15,13 +15,11 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-    loginId: state.account.loginId,
-    trackingList: state.shipment.statistics.todos.trackingList,
-  }), { loadTransitTable, loadShipmtDetail, hideDock }
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+  loginId: state.account.loginId,
+  trackingList: state.shipment.statistics.todos.trackingList,
+}), { loadTransitTable, loadShipmtDetail, hideDock })
 export default class TodoTrackingPane extends Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -93,8 +91,8 @@ export default class TodoTrackingPane extends Component {
           currentPage: pagination.current,
           filters: [
             { name: 'viewStatus', value: this.props.filter.viewStatus },
-        { name: 'sr_tenant_id', value: this.props.filter.srTenantId },
-        { name: 'sr_partner_id', value: this.props.filter.srPartnerId },
+            { name: 'sr_tenant_id', value: this.props.filter.srTenantId },
+            { name: 'sr_partner_id', value: this.props.filter.srPartnerId },
             { name: 'loginId', value: this.props.loginId },
             { name: 'type', value: this.state.type },
           ],

@@ -30,7 +30,9 @@ const Option = Select.Option;
     })),
     submitting: state.cwmShFtz.submitting,
   }),
-  { closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails, loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo }
+  {
+    closeNormalRelRegModal, loadParams, loadNormalSoRegs, loadNormalEntryRegs, loadNormalEntryDetails, loadSoRelDetails, loadNormalEntryRegDetails, newNormalRegByEntryReg, newNormalRegBySo,
+  }
 )
 export default class NormalRelRegModal extends Component {
   static propTypes = {
@@ -247,7 +249,8 @@ export default class NormalRelRegModal extends Component {
     });
   }
   handleCancel = () => {
-    this.setState({ ownerCusCode: '',
+    this.setState({
+      ownerCusCode: '',
       srcType: '',
       normalSources: [],
       relDetails: [],
@@ -278,7 +281,7 @@ export default class NormalRelRegModal extends Component {
         } else {
           soCountObj[regd.so_no] = 1;
         }
-   // } else if (regd.ftz_ent_no) {
+        // } else if (regd.ftz_ent_no) {
       }
     });
     const soCounts = Object.keys(soCountObj).map(relNo => ({
@@ -292,7 +295,9 @@ export default class NormalRelRegModal extends Component {
     } else {
       createNormalReg = this.props.newNormalRegByEntryReg;
     }
-    createNormalReg({ detailIds, soCounts, owner: owner.id, whse_code: this.props.defaultWhse.code }).then((result) => {
+    createNormalReg({
+      detailIds, soCounts, owner: owner.id, whse_code: this.props.defaultWhse.code,
+    }).then((result) => {
       if (!result.error) {
         this.handleCancel();
         this.props.reload();
@@ -332,7 +337,9 @@ export default class NormalRelRegModal extends Component {
         relDetails = [];
       }
     }
-    this.setState({ normalRegColumns, srcType: value, relDetails, srcFilter: {} });
+    this.setState({
+      normalRegColumns, srcType: value, relDetails, srcFilter: {},
+    });
     this.handleLoadNormalSrc(value, {
       owner_cus_code: this.state.ownerCusCode,
       whse_code: this.props.defaultWhse.code,
@@ -389,7 +396,9 @@ export default class NormalRelRegModal extends Component {
   }
   render() {
     const { submitting, owners } = this.props;
-    const { srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType, ownerCusCode } = this.state;
+    const {
+      srcFilter, relDetails, relDetailFilter, selRelDetailKeys, srcType, ownerCusCode,
+    } = this.state;
     let normalRegColumns = this.state.normalRegColumns;
     if (!normalRegColumns) {
       normalRegColumns = this.ftzEntryNormalSrcColumns;
@@ -404,17 +413,13 @@ export default class NormalRelRegModal extends Component {
     });
     const srcSearchTool = [];
     if (srcType === 'so_no') {
-      srcSearchTool.push(
-        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户单号"
-          onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
-        />
-      );
+      srcSearchTool.push(<Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="客户单号"
+        onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+      />);
     } else if (srcType === 'ftz_ent_no') {
-      srcSearchTool.push(
-        <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="海关入库单号"
-          onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
-        />
-      );
+      srcSearchTool.push(<Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="海关入库单号"
+        onChange={ev => this.handleSrcFilterChange('bill_no', ev.target.value)} style={{ width: 200 }}
+      />);
     } else if (srcType === 'ftz_ent_stock') {
       srcSearchTool.push(
         <Input key="ftz_ent_no" value={srcFilter.bill_no} placeholder="海关入库单号"

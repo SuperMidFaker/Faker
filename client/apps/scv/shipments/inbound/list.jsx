@@ -41,7 +41,9 @@ function fetchData({ state, dispatch }) {
     inboundlist: state.scvInboundShipments.list,
     listFilter: state.scvInboundShipments.listFilter,
   }),
-  { loadInbounds, loadInboundPartners, openModal, openCreateModal }
+  {
+    loadInbounds, loadInboundPartners, openModal, openCreateModal,
+  }
 )
 @connectNav({
   depth: 2,
@@ -288,14 +290,13 @@ export default class InboundShipmentsList extends React.Component {
     this.setState({ expandedKeys });
   }
   handleSendAtDest = (row) => {
-    this.props.loadInboundPartners(this.props.tenantId).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.props.openModal(row);
-        }
-      });
+    this.props.loadInboundPartners(this.props.tenantId).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.props.openModal(row);
+      }
+    });
   }
   handleShipmentLoad = () => {
     const { tenantId, listFilter, inboundlist: { pageSize, current } } = this.props;

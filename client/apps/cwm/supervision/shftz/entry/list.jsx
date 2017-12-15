@@ -69,7 +69,9 @@ export default class SHFTZEntryList extends React.Component {
     if (ownerView !== 'all' && this.props.owners.filter(owner => listFilter.ownerView === owner.customs_code).length === 0) {
       ownerView = 'all';
     }
-    const filter = { ...listFilter, status, type: 'bonded', ownerView };
+    const filter = {
+      ...listFilter, status, type: 'bonded', ownerView,
+    };
     this.handleEntryListLoad(null, null, filter);
   }
   componentWillReceiveProps(nextprops) {
@@ -274,9 +276,9 @@ export default class SHFTZEntryList extends React.Component {
         {owners.map(data => (<Option key={data.customs_code} value={data.customs_code}
           search={`${data.partner_code}${data.name}`}
         >{data.name}
-        </Option>)
-          )}
-      </Select></span>);
+        </Option>))}
+      </Select>
+    </span>);
     return (
       <Layout>
         <Sider width={200} className="menu-sider" key="sider">
@@ -284,7 +286,7 @@ export default class SHFTZEntryList extends React.Component {
             <Breadcrumb>
               <Breadcrumb.Item>
                   上海自贸区监管
-                </Breadcrumb.Item>
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="left-sider-panel">

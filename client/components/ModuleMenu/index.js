@@ -14,11 +14,9 @@ const formatMsg = format(messages);
 const MenuItem = Menu.Item;
 
 @injectIntl
-@connect(
-  state => ({
-    enabledmods: state.account.modules,
-  })
-)
+@connect(state => ({
+  enabledmods: state.account.modules,
+}))
 export default class ModuleMenu extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

@@ -191,9 +191,13 @@ export default function reducer(state = initialState, action) {
     case actionTypes.SET_CONSIGN_FIELDS:
       return { ...state, formData: { ...state.formData, ...action.data } };
     case actionTypes.SAVE_LOCAL_GOODS:
-      return { ...state,
-        formData: { ...state.formData,
-          goodslist: [...state.formData.goodslist, action.data.goods] } };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          goodslist: [...state.formData.goodslist, action.data.goods],
+        },
+      };
     case actionTypes.EDIT_LOCAL_GOODS: {
       const goodslist = [...state.formData.goodslist];
       goodslist[action.data.index] = action.data.goods;
@@ -214,12 +218,15 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DRAFTFORM:
       return { ...state, formData: initialState.formData };
     case actionTypes.LOAD_DRAFTFORM_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         formData: {
           ...state.formData, ...action.result.data.shipmt, goodslist: action.result.data.goodslist,
-        } };
+        },
+      };
     case actionTypes.LOAD_DETAIL_SUCCEED: {
-      return { ...state,
+      return {
+        ...state,
         previewer: {
           shipmt: action.result.data.shipmt,
           dispatch: action.result.data.dispatch,
@@ -231,7 +238,8 @@ export default function reducer(state = initialState, action) {
           tabKey: action.tabKey,
           params: action.params,
           row: action.row,
-        } };
+        },
+      };
     }
     case actionTypes.LOAD_CHARGES_SUCCEED: {
       return { ...state, ...action.result.data };
@@ -249,7 +257,8 @@ export default function reducer(state = initialState, action) {
       return { ...state, previewer: { ...state.previewer, loaded: false, visible: false } };
     }
     case actionTypes.SHIPMENT_STATISTICS_SUCCEED: {
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           ...action.result.data,
@@ -267,8 +276,10 @@ export default function reducer(state = initialState, action) {
       return { ...state, statistics: { ...state.statistics, logs: action.result.data } };
     }
     case actionTypes.REMOVE_SHIPMENT_POINT_SUCCEED: {
-      return { ...state,
-        previewer: { ...state.previewer,
+      return {
+        ...state,
+        previewer: {
+          ...state.previewer,
           logs: state.previewer.logs.map((item) => {
             if (item.id === action.data.logId) {
               return { ...item, type: '' };
@@ -276,7 +287,8 @@ export default function reducer(state = initialState, action) {
               return item;
             }
           }),
-        } };
+        },
+      };
     }
     case actionTypes.CHANGE_PREVIEWER_TAB: {
       return { ...state, previewer: { ...state.previewer, tabKey: action.data.tabKey } };
@@ -339,21 +351,26 @@ export default function reducer(state = initialState, action) {
           totalVolumeRequired = true;
         }
       }
-      return { ...state,
+      return {
+        ...state,
         totalWeightRequired,
         totalVolumeRequired,
-        formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
+        formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams },
+      };
     }
     case actionTypes.LOAD_TARIFF_BY_TRANSPORTINFO_FAIL: {
-      return { ...state,
+      return {
+        ...state,
         totalWeightRequired: false,
         totalVolumeRequired: false,
-        formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams } };
+        formRequireJudgeParams: { ...state.formRequireJudgeParams, ...action.formRequireJudgeParams },
+      };
     }
     case actionTypes.LOAD_PARTNERS_SUCCEED:
       return { ...state, partners: action.result.data };
     case actionTypes.LOAD_DISPATCH_SHIPMENT:
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           todos: {
@@ -363,7 +380,8 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.LOAD_DISPATCH_SHIPMENT_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           todos: {
@@ -373,7 +391,8 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.LOAD_TRANSHIPMT:
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           todos: {
@@ -383,7 +402,8 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.LOAD_TRANSHIPMT_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           todos: {
@@ -393,7 +413,8 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.LOAD_PODSHIPMT:
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           todos: {
@@ -403,7 +424,8 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.LOAD_PODSHIPMT_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           todos: {
@@ -413,7 +435,8 @@ export default function reducer(state = initialState, action) {
         },
       };
     case actionTypes.COUNT_TOTAL_SUCCEED:
-      return { ...state,
+      return {
+        ...state,
         statistics: {
           ...state.statistics,
           todos: {
@@ -616,7 +639,9 @@ export function sendTrackingDetailSMSMessage(data) {
 }
 
 export function loadShipmentStatistics(cookie, tenantId, sDate, eDate, srPartnerId, srTenantId) {
-  const params = { tenantId, startDate: sDate.toString(), endDate: eDate.toString(), srPartnerId, srTenantId };
+  const params = {
+    tenantId, startDate: sDate.toString(), endDate: eDate.toString(), srPartnerId, srTenantId,
+  };
   return {
     [CLIENT_API]: {
       types: [
@@ -632,7 +657,9 @@ export function loadShipmentStatistics(cookie, tenantId, sDate, eDate, srPartner
   };
 }
 
-export function loadShipmentEvents(cookie, { tenantId, startDate, endDate, type, pageSize, currentPage, filters }) {
+export function loadShipmentEvents(cookie, {
+  tenantId, startDate, endDate, type, pageSize, currentPage, filters,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -643,7 +670,9 @@ export function loadShipmentEvents(cookie, { tenantId, startDate, endDate, type,
       endpoint: 'v1/transport/shipment/events',
       method: 'get',
       cookie,
-      params: { tenantId, startDate, endDate, type, pageSize, currentPage, filters: JSON.stringify(filters) },
+      params: {
+        tenantId, startDate, endDate, type, pageSize, currentPage, filters: JSON.stringify(filters),
+      },
     },
   };
 }
@@ -825,7 +854,9 @@ export function countTotal(filters) {
   };
 }
 
-export function loadDispatchTable({ tenantId, filters, pageSize, current }) {
+export function loadDispatchTable({
+  tenantId, filters, pageSize, current,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -835,12 +866,16 @@ export function loadDispatchTable({ tenantId, filters, pageSize, current }) {
       ],
       endpoint: 'v1/transport/dispatch/shipmts',
       method: 'get',
-      params: { tenantId, filters: JSON.stringify(filters), pageSize, current },
+      params: {
+        tenantId, filters: JSON.stringify(filters), pageSize, current,
+      },
     },
   };
 }
 
-export function loadTransitTable({ tenantId, filters, pageSize, currentPage }) {
+export function loadTransitTable({
+  tenantId, filters, pageSize, currentPage,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -850,12 +885,16 @@ export function loadTransitTable({ tenantId, filters, pageSize, currentPage }) {
       ],
       endpoint: 'v1/transport/tracking/shipmts',
       method: 'get',
-      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage },
+      params: {
+        tenantId, filters: JSON.stringify(filters), pageSize, currentPage,
+      },
     },
   };
 }
 
-export function loadPodTable({ tenantId, filters, pageSize, currentPage }) {
+export function loadPodTable({
+  tenantId, filters, pageSize, currentPage,
+}) {
   return {
     [CLIENT_API]: {
       types: [
@@ -865,7 +904,9 @@ export function loadPodTable({ tenantId, filters, pageSize, currentPage }) {
       ],
       endpoint: 'v1/transport/tracking/pod/shipmts',
       method: 'get',
-      params: { tenantId, filters: JSON.stringify(filters), pageSize, currentPage },
+      params: {
+        tenantId, filters: JSON.stringify(filters), pageSize, currentPage,
+      },
     },
   };
 }

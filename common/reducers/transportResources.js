@@ -73,7 +73,9 @@ const initialState = {
  * @param {}
  * @return {}
  */
-function updateArray({ array, key, value, updateInfo }) {
+function updateArray({
+  array, key, value, updateInfo,
+}) {
   const updatingItem = array.find(item => item[key] === value);
   const updatingItemIndex = array.findIndex(item => item[key] === value);
   const newItem = Object.assign({}, updatingItem, updateInfo);
@@ -89,13 +91,19 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_DRIVERLIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_DRIVERLIST_SUCCEED:
-      return { ...state, drivers: action.result.data, loading: false, loaded: true };
+      return {
+        ...state, drivers: action.result.data, loading: false, loaded: true,
+      };
     case actionTypes.EDIT_CAR:
       return { ...state, loading: true };
     case actionTypes.EDIT_CAR_SUCCEED: {
       const { carId, carInfo } = action.result.data;
-      const cars = updateArray({ array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo });
-      return { ...state, cars, loaded: false, loading: false };
+      const cars = updateArray({
+        array: state.cars, key: 'vehicle_id', value: carId, updateInfo: carInfo,
+      });
+      return {
+        ...state, cars, loaded: false, loading: false,
+      };
     }
     case actionTypes.REMOVE_CAR:
       return { ...state, loading: true };
@@ -110,12 +118,16 @@ export default function reducer(state = initialState, action) {
       return { ...state, loading: true };
     case actionTypes.EDIT_DRIVER_SUCCEED: {
       const { driverId, driverInfo } = action.result.data;
-      const drivers = updateArray({ array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo });
+      const drivers = updateArray({
+        array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo,
+      });
       return { ...state, loading: false, drivers };
     }
     case actionTypes.EDIT_DRIVER_LOGIN_SUCCEED: {
       const { driverId, driverInfo } = action.result.data;
-      const drivers = updateArray({ array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo });
+      const drivers = updateArray({
+        array: state.drivers, key: 'driver_id', value: driverId, updateInfo: driverInfo,
+      });
       return { ...state, loading: false, drivers };
     }
     case actionTypes.REMOVE_DRIVER:
@@ -128,11 +140,15 @@ export default function reducer(state = initialState, action) {
     case actionTypes.LOAD_CARLIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_CARLIST_SUCCEED:
-      return { ...state, cars: action.result.data, loading: false, loaded: true };
+      return {
+        ...state, cars: action.result.data, loading: false, loaded: true,
+      };
     case actionTypes.LOAD_NODELIST:
       return { ...state, loading: true };
     case actionTypes.LOAD_NODELIST_SUCCEED:
-      return { ...state, loading: false, nodes: action.result.data, loaded: true };
+      return {
+        ...state, loading: false, nodes: action.result.data, loaded: true,
+      };
     case actionTypes.REMOVE_NODE:
       return { ...state, loading: true };
     case actionTypes.REMOVE_NODE_SUCCEED: {

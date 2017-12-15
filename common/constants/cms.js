@@ -107,20 +107,48 @@ export const INSPECT_STATUS = {
 };
 
 export const TRANS_MODE = [
-  { value: '2', text: '水路运输', icon: 'boat', desc: '' },
-  { value: '5', text: '航空运输', icon: 'airplane', desc: '' },
-  { value: '3', text: '铁路运输', icon: 'subway', desc: '' },
-  { value: '4', text: '公路运输', icon: 'truck', desc: '' },
-  { value: '9', text: '其他运输', icon: 'border-outer', desc: '其他境内流转货物，包括特殊监管区域内货物之间的流转、调拨货物，特殊监管区域、保税监管场所之间相互流转货物，特殊监管区域外的加工贸易余料结转、深加工结转、内销等货物' },
-  { value: '0', text: '非保税区', icon: 'border-outer', desc: '境内非保税区运入保税区货物和保税区退区货物' },
-  { value: '1', text: '监管仓库', icon: 'border-outer', desc: '境内存入出口监管仓库和出口监管仓库退仓货物' },
-  { value: '7', text: '保税区', icon: 'border-outer', desc: '保税区运往境内非保税区货物' },
-  { value: '8', text: '保税仓库', icon: 'border-outer', desc: '保税仓库转内销货物' },
-  { value: 'W', text: '物流中心', icon: 'border-outer', desc: '从境内保税物流中心外运入中心或从中心运往境内中心外的货物' },
-  { value: 'X', text: '物流园区', icon: 'border-outer', desc: '从境内保税物流园区外运入园区或从园区内运往境内园区外的货物' },
-  { value: 'Y', text: '保税港区/综合保税区', icon: 'border-outer', desc: '保税港区、综合保税区与境内（区外）（非特殊区域、保税监管场所）之间进出的货物' },
-  { value: 'Z', text: '出口加工区', icon: 'border-outer', desc: '出口加工区与境内（区外）（非特殊区域、保税监管场所）之间进出的货物' },
-  { value: 'H', text: '边境特殊', icon: 'border-outer', desc: '境内运入深港西部通道港方口岸区的货物' },
+  {
+    value: '2', text: '水路运输', icon: 'boat', desc: '',
+  },
+  {
+    value: '5', text: '航空运输', icon: 'airplane', desc: '',
+  },
+  {
+    value: '3', text: '铁路运输', icon: 'subway', desc: '',
+  },
+  {
+    value: '4', text: '公路运输', icon: 'truck', desc: '',
+  },
+  {
+    value: '9', text: '其他运输', icon: 'border-outer', desc: '其他境内流转货物，包括特殊监管区域内货物之间的流转、调拨货物，特殊监管区域、保税监管场所之间相互流转货物，特殊监管区域外的加工贸易余料结转、深加工结转、内销等货物',
+  },
+  {
+    value: '0', text: '非保税区', icon: 'border-outer', desc: '境内非保税区运入保税区货物和保税区退区货物',
+  },
+  {
+    value: '1', text: '监管仓库', icon: 'border-outer', desc: '境内存入出口监管仓库和出口监管仓库退仓货物',
+  },
+  {
+    value: '7', text: '保税区', icon: 'border-outer', desc: '保税区运往境内非保税区货物',
+  },
+  {
+    value: '8', text: '保税仓库', icon: 'border-outer', desc: '保税仓库转内销货物',
+  },
+  {
+    value: 'W', text: '物流中心', icon: 'border-outer', desc: '从境内保税物流中心外运入中心或从中心运往境内中心外的货物',
+  },
+  {
+    value: 'X', text: '物流园区', icon: 'border-outer', desc: '从境内保税物流园区外运入园区或从园区内运往境内园区外的货物',
+  },
+  {
+    value: 'Y', text: '保税港区/综合保税区', icon: 'border-outer', desc: '保税港区、综合保税区与境内（区外）（非特殊区域、保税监管场所）之间进出的货物',
+  },
+  {
+    value: 'Z', text: '出口加工区', icon: 'border-outer', desc: '出口加工区与境内（区外）（非特殊区域、保税监管场所）之间进出的货物',
+  },
+  {
+    value: 'H', text: '边境特殊', icon: 'border-outer', desc: '境内运入深港西部通道港方口岸区的货物',
+  },
 ];
 export const INVOICE_TYPE = [
   { value: 0, text: '增值税专用发票' },
@@ -137,9 +165,9 @@ export const CMS_DELEGATION_STATUS = {
 };
 
 export const CMS_DELEGATION_MANIFEST = {
-  uncreated: 0,   // 未制单
-  created: 1,     // 制单中
-  manifested: 2,  // 已生成报关建议书（制单完成）
+  uncreated: 0, // 未制单
+  created: 1, // 制单中
+  manifested: 2, // 已生成报关建议书（制单完成）
 };
 
 export const CMS_BILLING_STATUS = {
@@ -301,8 +329,8 @@ export const DELG_EXEMPTIONWAY = [{
 }];
 
 export const DELG_SOURCE = {
-  consigned: 1,       // 委托
-  subcontracted: 2,   // 分包
+  consigned: 1, // 委托
+  subcontracted: 2, // 分包
 };
 
 export const DELG_STATUS = {
@@ -314,12 +342,24 @@ export const DELG_STATUS = {
 };
 
 export const CMS_DECL_STATUS = {
-  proposed: { value: 0, text: '建议书', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date' },
-  reviewed: { value: 1, text: '已复核', badge: 'processing', step: 1, stepDesc: '复核', date: 'reviewed_date' },
-  sent: { value: 2, text: '已发送', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date' },
-  entered: { value: 3, text: '回执', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date' },
-  released: { value: 4, text: '放行', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date' },
-  closed: { value: 5, text: '结关', badge: 'success', step: 5, stepDesc: '结关', date: 'close_date' },
+  proposed: {
+    value: 0, text: '建议书', badge: 'default', step: 0, stepDesc: '制单', date: 'created_date',
+  },
+  reviewed: {
+    value: 1, text: '已复核', badge: 'processing', step: 1, stepDesc: '复核', date: 'reviewed_date',
+  },
+  sent: {
+    value: 2, text: '已发送', badge: 'processing', step: 2, stepDesc: '发送', date: 'epsend_date',
+  },
+  entered: {
+    value: 3, text: '回执', badge: 'processing', step: 3, stepDesc: '回执', date: 'backfill_date',
+  },
+  released: {
+    value: 4, text: '放行', badge: 'success', step: 4, stepDesc: '放行', date: 'clear_date',
+  },
+  closed: {
+    value: 5, text: '结关', badge: 'success', step: 5, stepDesc: '结关', date: 'close_date',
+  },
 };
 
 export const CMS_DECL_CHANNEL = {
@@ -532,22 +572,54 @@ export const CIQ_ENT_QUALIFY_TYPE = [
 ];
 
 export const CIQ_INSP_QUAE_DOCUMENTS = [
-  { app_cert_code: '11', app_cert_name: '品质证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '12', app_cert_name: '重量证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '13', app_cert_name: '数量证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '14', app_cert_name: '兽医卫生证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '15', app_cert_name: '健康证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '16', app_cert_name: '卫生证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '17', app_cert_name: '动物卫生证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '18', app_cert_name: '植物检疫证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '19', app_cert_name: '熏蒸/消毒证书', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '20', app_cert_name: '出境货物换证凭单', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '21', app_cert_name: '入境货物检验检疫证明', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '22', app_cert_name: '出境货物不合格通知单', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '23', app_cert_name: '集装箱检验检疫结果单', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '97', app_cert_name: '通关单', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '98', app_cert_name: '其他单', appl_ori: 1, appl_copy_quan: 2 },
-  { app_cert_code: '99', app_cert_name: '其他证书', appl_ori: 1, appl_copy_quan: 2 },
+  {
+    app_cert_code: '11', app_cert_name: '品质证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '12', app_cert_name: '重量证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '13', app_cert_name: '数量证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '14', app_cert_name: '兽医卫生证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '15', app_cert_name: '健康证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '16', app_cert_name: '卫生证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '17', app_cert_name: '动物卫生证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '18', app_cert_name: '植物检疫证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '19', app_cert_name: '熏蒸/消毒证书', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '20', app_cert_name: '出境货物换证凭单', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '21', app_cert_name: '入境货物检验检疫证明', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '22', app_cert_name: '出境货物不合格通知单', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '23', app_cert_name: '集装箱检验检疫结果单', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '97', app_cert_name: '通关单', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '98', app_cert_name: '其他单', appl_ori: 1, appl_copy_quan: 2,
+  },
+  {
+    app_cert_code: '99', app_cert_name: '其他证书', appl_ori: 1, appl_copy_quan: 2,
+  },
 ];
 
 export const CIQ_ATT_DOCUMENTS = [

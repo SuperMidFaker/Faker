@@ -35,7 +35,9 @@ function fetchData({ state, dispatch }) {
     flowList: state.scofFlow.flowList,
     listCollapsed: state.scofFlow.listCollapsed,
   }),
-  { openCreateFlowModal, loadFlowList, loadFlowTrackingFields, openFlow, reloadFlowList, editFlow }
+  {
+    openCreateFlowModal, loadFlowList, loadFlowTrackingFields, openFlow, reloadFlowList, editFlow,
+  }
 )
 @connectNav({
   depth: 2,
@@ -129,7 +131,9 @@ export default class FlowList extends React.Component {
     });
   }
   render() {
-    const { thisFlow, flowList, loading, listCollapsed } = this.props;
+    const {
+      thisFlow, flowList, loading, listCollapsed,
+    } = this.props;
     return (
       <Layout>
         <Sider width={320} className="menu-sider" key="sider" trigger={null}

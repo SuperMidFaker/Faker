@@ -104,24 +104,21 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            {getFieldDecorator('partnerId')(
-              <Select id="select"
-                showSearch
-                placeholder=""
-                optionFilterProp="children"
-                notFoundContent=""
-              >
-                {
+            {getFieldDecorator('partnerId')(<Select id="select"
+              showSearch
+              placeholder=""
+              optionFilterProp="children"
+              notFoundContent=""
+            >
+              {
                   partners.map(pt => (
                     <Option searched={`${pt.partner_code}${pt.name}`}
                       value={pt.partner_id} key={pt.partner_id}
                     >
                       {pt.partner_code ? `${pt.partner_code} | ${pt.name}` : pt.name}
-                    </Option>)
-                  )
+                    </Option>))
                 }
-              </Select>
-            )}
+            </Select>)}
           </FormItem>
           <FormItem
             id="select"
@@ -129,14 +126,12 @@ export default class BillingForm extends React.Component {
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 14 }}
           >
-            {getFieldDecorator('chooseModel')(
-              <Select id="select" >
-                <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
-                <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
-                <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>
-                <Option value="deliverActDate">{this.msg('deliverActDate')}</Option>
-              </Select>
-            )}
+            {getFieldDecorator('chooseModel')(<Select id="select" >
+              <Option value="pickupEstDate">{this.msg('pickupEstDate')}</Option>
+              <Option value="deliverEstDate">{this.msg('deliverEstDate')}</Option>
+              <Option value="pickupActDate">{this.msg('pickupActDate')}</Option>
+              <Option value="deliverActDate">{this.msg('deliverActDate')}</Option>
+            </Select>)}
           </FormItem>
           <FormItem
             id="control-input"
@@ -154,9 +149,7 @@ export default class BillingForm extends React.Component {
           >
             {getFieldDecorator('name', {
               initialValue: name,
-            })(
-              <Input id="control-input" placeholder={this.msg('namePlaceholder')} />
-            )}
+            })(<Input id="control-input" placeholder={this.msg('namePlaceholder')} />)}
           </FormItem>
         </Form>
       </Modal>

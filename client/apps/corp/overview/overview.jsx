@@ -11,11 +11,9 @@ const formatMsg = format(messages);
 const { Header, Content } = Layout;
 
 @injectIntl
-@connect(
-  state => ({
-    tenantId: state.account.tenantId,
-  }),
-)
+@connect(state => ({
+  tenantId: state.account.tenantId,
+}), )
 export default class CorpOverview extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,

@@ -58,7 +58,9 @@ function fetchData({ dispatch, params, state }) {
     formRequire: state.cmsManifest.params,
     declSpinning: state.cmsManifest.customsDeclLoading,
   }),
-  { saveEntryHead, loadEntry, loadCmsParams, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer }
+  {
+    saveEntryHead, loadEntry, loadCmsParams, deleteDecl, setDeclReviewed, openDeclReleasedModal, showSendDeclModal, setNavTitle, showPreviewer,
+  }
 )
 @connectFetch()(fetchData)
 @connectNav(navObj)
@@ -153,12 +155,14 @@ export default class CustomsDeclEditor extends React.Component {
   handleShowSendDeclModal = () => {
     const head = this.props.head;
     const ietype = this.props.params.ietype;
-    this.props.showSendDeclModal({ visible: true,
+    this.props.showSendDeclModal({
+      visible: true,
       defaultDecl: { channel: head.dec_channel, dectype: head.pre_entry_dec_type, appuuid: head.ep_app_uuid },
       ietype,
       preEntrySeqNo: head.pre_entry_seq_no,
       delgNo: head.delg_no,
-      agentCustCo: head.agent_custco });
+      agentCustCo: head.agent_custco,
+    });
   }
   handleMarkReleasedModal = () => {
     const head = this.props.head;
@@ -185,7 +189,9 @@ export default class CustomsDeclEditor extends React.Component {
     window.open(`${API_ROOTS.default}v1/cms/customs/eprecv/xml?filename=${filename}`);
   }
   handlePrintMenuClick = (ev) => {
-    const { head, bodies, billMeta, formRequire } = this.props;
+    const {
+      head, bodies, billMeta, formRequire,
+    } = this.props;
     let docDefinition;
     window.pdfMake.fonts = {
       yahei: {
@@ -205,7 +211,9 @@ export default class CustomsDeclEditor extends React.Component {
     this.props.showPreviewer(delgNo, 'customsDecl');
   }
   render() {
-    const { params, form, head, bodies, billMeta } = this.props;
+    const {
+      params, form, head, bodies, billMeta,
+    } = this.props;
     let filterProducts = [];
     if (params.ietype === 'import') {
       filterProducts = bodies.filter(item => item.customs && item.customs.indexOf('A') !== -1);
@@ -236,35 +244,28 @@ export default class CustomsDeclEditor extends React.Component {
       </Menu>
     );
     const tabs = [];
-    tabs.push(
-      <TabPane tab="报关单表头" key="header">
-        <CusDeclHeadPane ietype={params.ietype} form={form} formData={head} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="报关单表体" key="body">
-        <CusDeclBodyPane ietype={params.ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
-        <ContainersPane fullscreen={this.state.fullscreen} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="随附单证" key="attachedCerts" head={head}>
-        <AttachedCertsPane fullscreen={this.state.fullscreen} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="随附单据" key="attachedDocs" head={head}>
-        <AttachedDocsPane fullscreen={this.state.fullscreen} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="申报商品明细" key="manifestDetails" head={head}>
-        <ManifestDetailsPane fullscreen={this.state.fullscreen} />
-      </TabPane>);
+    tabs.push(<TabPane tab="报关单表头" key="header">
+      <CusDeclHeadPane ietype={params.ietype} form={form} formData={head} />
+    </TabPane>);
+    tabs.push(<TabPane tab="报关单表体" key="body">
+      <CusDeclBodyPane ietype={params.ietype} data={bodies} headNo={head.id} fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    tabs.push(<TabPane tab="集装箱" key="containers" head={head} disabled={head.traf_mode === '5'}>
+      <ContainersPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    tabs.push(<TabPane tab="随附单证" key="attachedCerts" head={head}>
+      <AttachedCertsPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    tabs.push(<TabPane tab="随附单据" key="attachedDocs" head={head}>
+      <AttachedDocsPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    tabs.push(<TabPane tab="申报商品明细" key="manifestDetails" head={head}>
+      <ManifestDetailsPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
     if (filterProducts.length > 0) {
-      tabs.push(
-        <TabPane tab="法检商品" key="ciqDetails">
-          <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
-        </TabPane>);
+      tabs.push(<TabPane tab="法检商品" key="ciqDetails">
+        <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
+      </TabPane>);
     }
     return (
       <Layout>
@@ -292,7 +293,7 @@ export default class CustomsDeclEditor extends React.Component {
             <Dropdown overlay={printMenu}>
               <Button >
                 <Icon type="printer" /> 打印
-                </Button>
+              </Button>
             </Dropdown>
             { head.status === CMS_DECL_STATUS.proposed.value &&
             <Button type="primary" icon="check-circle-o" onClick={this.handleReview}>{this.msg('review')}</Button>

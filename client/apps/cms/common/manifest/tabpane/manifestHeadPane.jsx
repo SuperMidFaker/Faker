@@ -101,7 +101,9 @@ export default class ManifestHeadPane extends React.Component {
   }
 
   render() {
-    const { form, readonly, formData, formRequire, ietype, intl } = this.props;
+    const {
+      form, readonly, formData, formRequire, ietype, intl,
+    } = this.props;
     const formProps = {
       getFieldDecorator: form.getFieldDecorator,
       getFieldValue: form.getFieldValue,

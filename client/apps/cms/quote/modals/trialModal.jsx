@@ -93,7 +93,9 @@ export default class TrialModal extends React.Component {
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {
     const { form: { getFieldDecorator }, visible } = this.props;
-    const { curStep, progressStatus, progressPercent, trialFilename, trialFileurl } = this.state;
+    const {
+      curStep, progressStatus, progressPercent, trialFilename, trialFileurl,
+    } = this.state;
     let footer;
     let stepContent;
     if (curStep === 0) {
@@ -106,19 +108,15 @@ export default class TrialModal extends React.Component {
           <FormItem label={this.msg('basementDateType')} {...formItemLayout}>
             {getFieldDecorator('basement_datetype', {
               rules: [{ required: true, message: '基准时间类型必选' }],
-            })(
-              <Select style={{ width: '100%' }}>
-                <Option value="accept" key="accept1">接单时间</Option>
-                <Option value="clean" key="clean2">海关放行时间</Option>
-              </Select>
-            )}
+            })(<Select style={{ width: '100%' }}>
+              <Option value="accept" key="accept1">接单时间</Option>
+              <Option value="clean" key="clean2">海关放行时间</Option>
+            </Select>)}
           </FormItem>
           <FormItem label={this.msg('basementDate')} {...formItemLayout}>
             {getFieldDecorator('basement_date', {
               rules: [{ required: true, message: '基准时间必选', type: 'array' }],
-            })(
-              <RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} />
-            )}
+            })(<RangePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} />)}
           </FormItem>
         </Form>
       );

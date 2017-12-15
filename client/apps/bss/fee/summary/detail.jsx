@@ -42,8 +42,6 @@ export default class FeeSummaryDetail extends Component {
     router: PropTypes.object.isRequired,
   }
   state = {
-    printed: false,
-    activeTab: '',
     fullscreen: true,
     summary: {},
   }
@@ -99,7 +97,8 @@ export default class FeeSummaryDetail extends Component {
       } else {
         return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
           <span className="ant-divider" />
-          <RowAction onClick={this.handleDetail} label="排除" row={record} /></span>);
+          <RowAction onClick={this.handleDetail} label="排除" row={record} />
+        </span>);
       }
     },
   }]
@@ -153,16 +152,13 @@ export default class FeeSummaryDetail extends Component {
       } else {
         return (<span><RowAction onClick={this.handleDetail} label="调整" row={record} />
           <span className="ant-divider" />
-          <RowAction onClick={this.handleDetail} label="排除" row={record} /></span>);
+          <RowAction onClick={this.handleDetail} label="排除" row={record} />
+        </span>);
       }
     },
   }]
   toggleFullscreen = (fullscreen) => {
     this.setState({ fullscreen });
-  }
-
-  handleTabChange = (activeTab) => {
-    this.setState({ activeTab });
   }
 
   render() {

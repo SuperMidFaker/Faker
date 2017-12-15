@@ -48,9 +48,9 @@ export default class SKUPopover extends Component {
           <FormItem label={(
             <span>
                 SKU&nbsp;
-                  <Tooltip title="仓库料号">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="仓库料号">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >
@@ -59,9 +59,9 @@ export default class SKUPopover extends Component {
           <FormItem label={(
             <span>
               每SKU商品数量&nbsp;
-                  <Tooltip title="每件SKU对应商品的数量(计量单位)">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="每件SKU对应商品的数量(计量单位)">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >
@@ -70,9 +70,9 @@ export default class SKUPopover extends Component {
           <FormItem label={(
             <span>
                 内包装容量&nbsp;
-                  <Tooltip title="每个内包装容纳的SKU件数、商品计量单位数量">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="每个内包装容纳的SKU件数、商品计量单位数量">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >
@@ -84,9 +84,9 @@ export default class SKUPopover extends Component {
           <FormItem label={(
             <span>
                 装箱容量&nbsp;
-                  <Tooltip title="每箱容纳的SKU件数、商品计量单位数量">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="每箱容纳的SKU件数、商品计量单位数量">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >
@@ -98,9 +98,9 @@ export default class SKUPopover extends Component {
           <FormItem label={(
             <span>
                   码盘容量&nbsp;
-                  <Tooltip title="每托盘容纳的箱数量、SKU件数、商品计量单位数量">
-                    <Icon type="question-circle-o" />
-                  </Tooltip>
+              <Tooltip title="每托盘容纳的箱数量、SKU件数、商品计量单位数量">
+                <Icon type="question-circle-o" />
+              </Tooltip>
             </span>
                 )}
           >

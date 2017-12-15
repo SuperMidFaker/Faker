@@ -63,24 +63,22 @@ export default class CreateShippingOrder extends Component {
     fullscreen: true,
   }
   componentWillMount() {
-    this.props.getSo(this.props.params.soNo).then(
-      (result) => {
-        if (!result.error) {
-          this.setState({
-            soHead: result.data.soHead,
-            soBody: result.data.soBody,
-            region: {
-              receiver_province: result.data.soHead.receiver_province,
-              receiver_city: result.data.soHead.receiver_city,
-              receiver_district: result.data.soHead.receiver_district,
-              receiver_street: result.data.soHead.receiver_street,
-              receiver_region_code: result.data.soHead.receiver_region_code,
-            },
-            carrier_name: result.data.soHead.carrier_name,
-          });
-        }
+    this.props.getSo(this.props.params.soNo).then((result) => {
+      if (!result.error) {
+        this.setState({
+          soHead: result.data.soHead,
+          soBody: result.data.soBody,
+          region: {
+            receiver_province: result.data.soHead.receiver_province,
+            receiver_city: result.data.soHead.receiver_city,
+            receiver_district: result.data.soHead.receiver_district,
+            receiver_street: result.data.soHead.receiver_street,
+            receiver_region_code: result.data.soHead.receiver_region_code,
+          },
+          carrier_name: result.data.soHead.carrier_name,
+        });
       }
-    );
+    });
   }
   componentWillUnmount() {
     this.props.clearTemporary();
@@ -90,7 +88,9 @@ export default class CreateShippingOrder extends Component {
     this.setState({ fullscreen });
   }
   handleSave = () => {
-    const { temporaryDetails, defaultWhse, owners, loginId, tenantName } = this.props;
+    const {
+      temporaryDetails, defaultWhse, owners, loginId, tenantName,
+    } = this.props;
     if (temporaryDetails.length === 0) {
       message.info('明细不能为空');
       return;
@@ -106,16 +106,14 @@ export default class CreateShippingOrder extends Component {
         data.whseCode = defaultWhse.code;
         data.loginId = loginId;
         data.tenantName = tenantName;
-        this.props.updateSo(data).then(
-          (result) => {
-            if (!result.error) {
-              message.success('出货订单已保存成功');
-              this.context.router.push('/cwm/shipping/order');
-            } else {
-              message.error('操作失败');
-            }
+        this.props.updateSo(data).then((result) => {
+          if (!result.error) {
+            message.success('出货订单已保存成功');
+            this.context.router.push('/cwm/shipping/order');
+          } else {
+            message.error('操作失败');
           }
-        );
+        });
       }
     });
   };

@@ -14,7 +14,9 @@ import { formatMsg } from '../message.i18n';
   state => ({
     staffs: state.cwmWarehouse.staffs,
   }),
-  { showStaffModal, loadStaffs, changeStaffStatus, deleteStaff }
+  {
+    showStaffModal, loadStaffs, changeStaffStatus, deleteStaff,
+  }
 )
 export default class StaffsPane extends Component {
   static propTypes = {

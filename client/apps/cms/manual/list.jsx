@@ -181,7 +181,8 @@ export default class ManualList extends Component {
     const toolbarActions = (<span>
       <SearchBar placeholder={this.msg('搜索手/账册编号')}
         onInputSearch={this.handleSearch}
-      /></span>);
+      />
+    </span>);
     const dataSource = new DataTable.DataSource({
       fetcher: params => this.props.loadManualLists(params),
       resolve: result => result.data,

@@ -18,7 +18,9 @@ const FormItem = Form.Item;
     warehouse: state.cwmWarehouse.editWarehouseModal.warehouse,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { hideEditWhseModal, editWarehouse, loadWhseContext, loadWhse }
+  {
+    hideEditWhseModal, editWarehouse, loadWhseContext, loadWhse,
+  }
 )
 @Form.create()
 export default class WareHouseModal extends Component {
@@ -70,10 +72,15 @@ export default class WareHouseModal extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode } = values;
+        const {
+          whseMode, whseCode, whseName, whseAddress, whseTel, ftzWhseCode,
+        } = values;
         const { loginId, warehouse, defaultWhse } = this.props;
-        const { bonded, province, city, district, street, regionCode } = this.state;
-        this.props.editWarehouse({ whseMode,
+        const {
+          bonded, province, city, district, street, regionCode,
+        } = this.state;
+        this.props.editWarehouse({
+          whseMode,
           whseCode,
           whseName,
           whseAddress,
@@ -86,18 +93,16 @@ export default class WareHouseModal extends Component {
           regionCode,
           whseTel,
           ftzWhseCode,
-        }).then(
-          (result) => {
-            if (!result.error) {
-              this.props.loadWhseContext();
-              if (whseMode === 'PRI' && warehouse.code === defaultWhse.code && warehouse.whse_mode !== whseMode) {
-                this.props.loadWhse(warehouse.code);
-              }
-              message.info('编辑仓库成功');
-              this.props.hideEditWhseModal();
+        }).then((result) => {
+          if (!result.error) {
+            this.props.loadWhseContext();
+            if (whseMode === 'PRI' && warehouse.code === defaultWhse.code && warehouse.whse_mode !== whseMode) {
+              this.props.loadWhse(warehouse.code);
             }
+            message.info('编辑仓库成功');
+            this.props.hideEditWhseModal();
           }
-        );
+        });
       }
     });
   }
@@ -117,7 +122,9 @@ export default class WareHouseModal extends Component {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
     };
-    const { province, city, district, street } = this.state;
+    const {
+      province, city, district, street,
+    } = this.state;
     const regionValues = [province, city, district, street];
     return (
       <Modal maskClosable={false} title="编辑仓库" visible={this.props.visible} onCancel={this.handleCancel} onOk={this.handleSubmit}>

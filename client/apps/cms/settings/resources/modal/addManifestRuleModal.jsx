@@ -51,8 +51,12 @@ export default class AddManifestRuleModal extends React.Component {
     }
   }
   handleAddNew = (formData) => {
-    const { tenantId, loginId, loginName, tenantName } = this.props;
-    const params = { ...formData, tenant_id: tenantId, modify_id: loginId, modify_name: loginName, tenant_name: tenantName };
+    const {
+      tenantId, loginId, loginName, tenantName,
+    } = this.props;
+    const params = {
+      ...formData, tenant_id: tenantId, modify_id: loginId, modify_name: loginName, tenant_name: tenantName,
+    };
     this.props.createBillTemplate(params).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
@@ -78,19 +82,15 @@ export default class AddManifestRuleModal extends React.Component {
           <FormItem label="规则名称" {...formItemLayout}>
             {getFieldDecorator('template_name', {
               rules: [{ required: true, message: '规则名称必填' }],
-            })(
-              <Input />
-            )}
+            })(<Input />)}
           </FormItem>
           <FormItem label="进出口类型" {...formItemLayout}>
             {getFieldDecorator('i_e_type', {
               rules: [{ required: true, message: '进出口类型必选' }],
-            })(
-              <RadioGroup onChange={this.handleIEChange}>
-                <Radio value={0}>进口</Radio>
-                <Radio value={1}>出口</Radio>
-              </RadioGroup>
-            )}
+            })(<RadioGroup onChange={this.handleIEChange}>
+              <Radio value={0}>进口</Radio>
+              <Radio value={1}>出口</Radio>
+            </RadioGroup>)}
           </FormItem>
         </Form>
       </Modal>

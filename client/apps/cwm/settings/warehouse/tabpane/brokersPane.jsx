@@ -18,7 +18,9 @@ import { formatMsg } from '../message.i18n';
     whseOwners: state.cwmWarehouse.whseOwners,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus, authorizeBroker }
+  {
+    toggleBrokerModal, loadBrokers, deleteBroker, changeBrokerStatus, authorizeBroker,
+  }
 )
 export default class BrokersPane extends Component {
   static propTypes = {

@@ -28,7 +28,9 @@ function fetchData({ dispatch, state }) {
     tenantId: state.account.tenantId,
     paramVehicles: state.transportSettings.paramVehicles,
   }),
-  { loadParamVehicles, removeParamVehicle, addParamVehicle, updateParamVehicle }
+  {
+    loadParamVehicles, removeParamVehicle, addParamVehicle, updateParamVehicle,
+  }
 )
 @connectNav({
   depth: 2,
@@ -50,7 +52,11 @@ export default class ParamVehicles extends Component {
     paramVehicles: [],
   }
   componentWillReceiveProps(nextProps) {
-    this.setState({ paramVehicles: nextProps.paramVehicles.concat([{ id: -1, text: '', value: '', kind: null }]) });
+    this.setState({
+      paramVehicles: nextProps.paramVehicles.concat([{
+        id: -1, text: '', value: '', kind: null,
+      }]),
+    });
   }
   msg = key => formatMsg(this.props.intl, key)
   handleEdit = (id) => {
@@ -158,14 +164,16 @@ export default class ParamVehicles extends Component {
             return (<a onClick={() => {
               this.setState({ editId: row.id });
             }}
-            ><Icon type="plus" /></a>);
+            ><Icon type="plus" />
+            </a>);
           } else {
             return (
               <span>
                 <a onClick={() => {
                   this.setState({ editId: row.id });
                 }}
-                ><Icon type="edit" /></a>
+                ><Icon type="edit" />
+                </a>
                 <span className="ant-divider" />
                 <Popconfirm title="确认删除?" onConfirm={() => this.handleRemove(row)}>
                   <a role="presentation"><Icon type="delete" /></a>

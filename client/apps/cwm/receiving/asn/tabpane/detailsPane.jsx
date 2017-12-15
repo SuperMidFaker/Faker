@@ -22,7 +22,9 @@ const formatMsg = format(messages);
     units: state.cwmSku.params.units,
     currencies: state.cwmSku.params.currencies,
   }),
-  { showDetailModal, addTemporary, deleteTemporary, clearTemporary }
+  {
+    showDetailModal, addTemporary, deleteTemporary, clearTemporary,
+  }
 )
 export default class DetailsPane extends Component {
   static propTypes = {
@@ -80,7 +82,9 @@ export default class DetailsPane extends Component {
     window.open(`${XLSX_CDN}/ASN明细导入模板_20170901.xlsx`);
   }
   render() {
-    const { editable, temporaryDetails, detailEnable, form, units, currencies } = this.props;
+    const {
+      editable, temporaryDetails, detailEnable, form, units, currencies,
+    } = this.props;
     const poNo = form.getFieldValue('po_no');
     const ownerPartnerId = form.getFieldValue('owner_partner_id');
     const rowSelection = {
@@ -114,7 +118,7 @@ export default class DetailsPane extends Component {
       title: '计量单位',
       dataIndex: 'unit',
       className: 'cell-align-center',
-      render: o => (o && units.length > 0) ? units.find(unit => unit.code === o).name : '',
+      render: o => ((o && units.length > 0) ? units.find(unit => unit.code === o).name : ''),
     }, {
       title: '采购订单号',
       dataIndex: 'po_no',
@@ -136,7 +140,13 @@ export default class DetailsPane extends Component {
       title: '币制',
       dataIndex: 'currency',
       className: 'cell-align-center',
-      render: o => o && <span>{`${o}|${currencies.find(currency => Number(currency.code) === Number(o)).name}`}</span>,
+      render: (o) => {
+        const currency = currencies.find(curr => Number(curr.code) === Number(o));
+        if (currency) {
+          return <span>{currency.name}</span>;
+        }
+        return o;
+      },
     }, {
       title: '操作',
       width: 80,
@@ -146,12 +156,16 @@ export default class DetailsPane extends Component {
           <RowAction onClick={this.handleEdit} icon="edit" row={record} />
           <RowAction confirm="确定删除?" onConfirm={() => this.handleDelete(record.index)} icon="delete" row={record} />
         </span>
-        ),
+      ),
     }];
     return (
       <DataPane fullscreen={this.props.fullscreen}
-        columns={columns} rowSelection={rowSelection} indentSize={0}
-        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))} rowKey="index" loading={this.state.loading}
+        columns={columns}
+        rowSelection={rowSelection}
+        indentSize={0}
+        dataSource={temporaryDetails.map((item, index) => ({ ...item, index }))}
+        rowKey="index"
+        loading={this.state.loading}
       >
         <DataPane.Toolbar>
           {editable && <Button type="primary" icon="plus-circle-o" disabled={detailEnable ? '' : 'disabled'} onClick={this.showDetailModal}>添加</Button>}
@@ -161,7 +175,8 @@ export default class DetailsPane extends Component {
                 loginId: this.props.loginId,
                 ownerPartnerId,
               }),
-            }} onUploaded={this.asnDetailsUploaded}
+            }}
+            onUploaded={this.asnDetailsUploaded}
           >
             {editable && <Button icon="upload" disabled={detailEnable ? '' : 'disabled'}>导入</Button>}
           </ExcelUploader>

@@ -12,15 +12,19 @@ const Option = Select.Option;
 const FormItem = Form.Item;
 
 @injectIntl
-@connect(state => ({
-  visible: state.cmsExpense.advanceFeeModal.visible,
-  delgNo: state.cmsExpense.advanceFeeModal.delg_no,
-  fees: state.cmsExpense.advanceFeeModal.fees,
-  currencies: state.cmsExpense.currencies,
-  advanceParties: state.cmsExpense.advanceParties,
-  advDirection: state.cmsExpense.advanceFeeModal.direction,
-}),
-  { loadCurrencies, closeAdvanceFeeModal, loadDelgAdvanceFee, computeDelgAdvanceFees })
+@connect(
+  state => ({
+    visible: state.cmsExpense.advanceFeeModal.visible,
+    delgNo: state.cmsExpense.advanceFeeModal.delg_no,
+    fees: state.cmsExpense.advanceFeeModal.fees,
+    currencies: state.cmsExpense.currencies,
+    advanceParties: state.cmsExpense.advanceParties,
+    advDirection: state.cmsExpense.advanceFeeModal.direction,
+  }),
+  {
+    loadCurrencies, closeAdvanceFeeModal, loadDelgAdvanceFee, computeDelgAdvanceFees,
+  }
+)
 export default class DelgAdvanceExpenseModal extends React.Component {
   static propTypes = {
     intl: intlShape.isRequired,
@@ -56,7 +60,7 @@ export default class DelgAdvanceExpenseModal extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.advanceParties !== this.props.advanceParties) {
       const dispIds = nextProps.advanceParties.reduce((dispatchIds, ap) =>
-          dispatchIds.concat(ap.dispId), []);
+        dispatchIds.concat(ap.dispId), []);
       this.props.loadDelgAdvanceFee(dispIds);
     }
   }
@@ -209,7 +213,9 @@ export default class DelgAdvanceExpenseModal extends React.Component {
     });
   }
   render() {
-    const { advanceParties, advDirection, visible, delgNo, fees } = this.props;
+    const {
+      advanceParties, advDirection, visible, delgNo, fees,
+    } = this.props;
     return (
       <Modal maskClosable={false} title={`${delgNo} ${advDirection === 'send' ? this.msg('cushCost') : this.msg('cushBill')}`}
         onOk={this.handleOk} onCancel={this.handleCancel} visible={visible}

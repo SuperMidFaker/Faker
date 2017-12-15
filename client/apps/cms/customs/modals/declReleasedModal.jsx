@@ -34,7 +34,8 @@ export default class DeclReleasedModal extends React.Component {
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.entry !== this.props.entry) {
-      this.setState({ entryNo: nextProps.entry.entryNo,
+      this.setState({
+        entryNo: nextProps.entry.entryNo,
         ieLabel: nextProps.entry.ietype === 0 ? '进口日期' : '出口日期',
       });
     }
@@ -73,16 +74,15 @@ export default class DeclReleasedModal extends React.Component {
       clearTime: this.state.clearTime,
       ieTime: this.state.ieTime,
       loginName,
-    }).then(
-      (result) => {
-        if (result.error) {
-          message.error(result.error.message, 10);
-        } else {
-          this.setState({ entryNo: '', clearTime: null });
-          this.handleCancel();
-          this.props.reload();
-        }
-      });
+    }).then((result) => {
+      if (result.error) {
+        message.error(result.error.message, 10);
+      } else {
+        this.setState({ entryNo: '', clearTime: null });
+        this.handleCancel();
+        this.props.reload();
+      }
+    });
   }
   msg = descriptor => formatMsg(this.props.intl, descriptor)
   render() {

@@ -82,18 +82,15 @@ export default class TradeItemEdit extends Component {
   render() {
     const { form, submitting, itemData } = this.props;
     const tabs = [];
-    tabs.push(
-      <TabPane tab="主数据" key="master">
-        <ItemMasterPane action="edit" form={form} itemData={itemData} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="相关资料" key="docu">
-        <ItemDocuPane fullscreen={this.state.fullscreen} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="历史版本" key="history">
-        <ItemHistoryPane fullscreen={this.state.fullscreen} />
-      </TabPane>);
+    tabs.push(<TabPane tab="主数据" key="master">
+      <ItemMasterPane action="edit" form={form} itemData={itemData} />
+    </TabPane>);
+    tabs.push(<TabPane tab="相关资料" key="docu">
+      <ItemDocuPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    tabs.push(<TabPane tab="历史版本" key="history">
+      <ItemHistoryPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
     return (
       <Layout>
         <PageHeader>

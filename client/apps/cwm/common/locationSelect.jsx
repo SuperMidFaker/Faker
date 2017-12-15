@@ -111,26 +111,30 @@ export default class LocationSelect extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       const { type, status } = this.state;
       if (!err) {
-        this.props.addLocation(this.props.defaultWhse.code, values.zone, values.location,
-          type, status, this.props.loginId).then((result) => {
-            if (!result.error) {
-              this.setState({ location: values.location });
-              if (this.props.onChange) {
-                const location = this.state.options.filter(loc => loc.location === values.location)[0];
-                this.props.onChange(values.location, location);
-              }
-              if (this.props.onSelect) {
-                const location = this.state.options.filter(loc => loc.location === values.location)[0];
-                this.props.onSelect(values.location, location);
-              }
+        this.props.addLocation(
+          this.props.defaultWhse.code, values.zone, values.location,
+          type, status, this.props.loginId
+        ).then((result) => {
+          if (!result.error) {
+            this.setState({ location: values.location });
+            if (this.props.onChange) {
+              const location = this.state.options.filter(loc => loc.location === values.location)[0];
+              this.props.onChange(values.location, location);
             }
-            this.handleCancel();
-          });
+            if (this.props.onSelect) {
+              const location = this.state.options.filter(loc => loc.location === values.location)[0];
+              this.props.onSelect(values.location, location);
+            }
+          }
+          this.handleCancel();
+        });
       }
     });
   }
   render() {
-    const { visible, type, status, zones } = this.state;
+    const {
+      visible, type, status, zones,
+    } = this.state;
     const { form: { getFieldDecorator } } = this.props;
     const formItemLayout = {
       labelCol: { span: 6 },

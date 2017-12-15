@@ -46,7 +46,9 @@ export default class TradeItemAdd extends Component {
   handleSave = () => {
     this.props.form.validateFields((errors) => {
       if (!errors) {
-        const { repoId, tenantId, loginId, loginName } = this.props;
+        const {
+          repoId, tenantId, loginId, loginName,
+        } = this.props;
         const item = this.props.form.getFieldsValue();
         item.special_mark = item.specialMark.join('/');
         this.props.createTradeItem({
@@ -69,10 +71,9 @@ export default class TradeItemAdd extends Component {
   render() {
     const { form } = this.props;
     const tabs = [];
-    tabs.push(
-      <TabPane tab="主数据" key="master">
-        <ItemMasterPane action="create" form={form} />
-      </TabPane>);
+    tabs.push(<TabPane tab="主数据" key="master">
+      <ItemMasterPane action="create" form={form} />
+    </TabPane>);
     return (
       <Layout>
         <PageHeader>

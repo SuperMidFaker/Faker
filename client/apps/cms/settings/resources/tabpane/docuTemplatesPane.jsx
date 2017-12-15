@@ -25,7 +25,9 @@ const { Content, Sider } = Layout;
     customer: state.cmsResources.customer,
     tempFile: state.cmsInvoice.tempFile,
   }),
-  { toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile }
+  {
+    toggleInvTempModal, loadInvTemplates, deleteInvTemplate, saveDoctsTempFile, loadTempFile, deleteTempFile,
+  }
 )
 @connectNav({
   depth: 2,
@@ -204,7 +206,8 @@ export default class InvoiceTemplate extends Component {
         <Button>
           <Icon type="upload" /> upload
         </Button>
-      </Upload></div>);
+      </Upload>
+    </div>);
     return (
       <Layout className="main-wrapper">
         <Sider className="nav-sider">

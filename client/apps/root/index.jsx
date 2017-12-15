@@ -42,13 +42,11 @@ function fetchData({ state, dispatch }) {
 }
 
 @connectFetch()(fetchData)
-@connect(
-  state => ({
-    locale: state.preference.locale,
-    messages: state.preference.messages,
-    isAuthed: state.auth.isAuthed,
-  }),
-)
+@connect(state => ({
+  locale: state.preference.locale,
+  messages: state.preference.messages,
+  isAuthed: state.auth.isAuthed,
+}), )
 export default class Root extends React.Component {
   static defaultProps = {
     locale: 'zh',

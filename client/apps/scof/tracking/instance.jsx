@@ -27,7 +27,9 @@ const Search = Input.Search;
     trackingItems: state.scvTracking.trackingItems,
     orders: state.scvTracking.orderList,
   }),
-  { loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom, makeExcel }
+  {
+    loadTrackingItems, loadTrackingOrders, upsertTrackingOrderCustom, makeExcel,
+  }
 )
 @connectNav({
   depth: 2,

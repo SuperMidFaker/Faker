@@ -31,13 +31,15 @@ export default class OverTime extends React.Component {
     window.$(window).unbind('resize');
   }
   initializeCharts = (props) => {
-    const { transitModes, range, shipmentCounts, punctualShipmentCounts } = props.kpi;
+    const {
+      transitModes, range, shipmentCounts, punctualShipmentCounts,
+    } = props.kpi;
     const barOption = {
       title: { text: '超时率', textStyle: { fontSize: 14 } },
       tooltip: {
         trigger: 'axis',
-        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-          type: 'shadow',        // 默认为直线，可选为：'line' | 'shadow'
+        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+          type: 'shadow', // 默认为直线，可选为：'line' | 'shadow'
         },
       },
       legend: {
@@ -133,8 +135,8 @@ export default class OverTime extends React.Component {
           },
         },
         data: [
-              { value: punctualShipmentCount, name: '准时' },
-              { value: allShipmentCount - punctualShipmentCount, name: '超时' },
+          { value: punctualShipmentCount, name: '准时' },
+          { value: allShipmentCount - punctualShipmentCount, name: '超时' },
         ],
         itemStyle: {
           emphasis: {

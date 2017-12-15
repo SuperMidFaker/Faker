@@ -23,7 +23,9 @@ const Search = Input.Search;
     reload: state.cwmMovement.movementReload,
     defaultWhse: state.cwmContext.defaultWhse,
   }),
-  { loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail }
+  {
+    loadMovementDetails, executeMovement, loadMovementHead, removeMoveDetail, cancelMovement, updateMovementDetail,
+  }
 )
 @connectNav({
   depth: 3,
@@ -102,12 +104,14 @@ export default class MovementDetailsPane extends React.Component {
     Modal.confirm({
       title: '是否确认库存移动已完成?',
       onOk() {
-        props.executeMovement(props.movementNo, toTraceIds,
-          props.username, props.defaultWhse.code).then((result) => {
-            if (!result.err) {
-              props.loadMovementHead(props.movementNo);
-            }
-          });
+        props.executeMovement(
+          props.movementNo, toTraceIds,
+          props.username, props.defaultWhse.code
+        ).then((result) => {
+          if (!result.err) {
+            props.loadMovementHead(props.movementNo);
+          }
+        });
       },
       onCancel() {},
       okText: '执行库存移动',

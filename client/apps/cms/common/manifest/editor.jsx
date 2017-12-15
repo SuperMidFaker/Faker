@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Icon, Form, Modal, message,
-   notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
+  notification, Switch, Tooltip, Tabs, Select, Spin, Popconfirm } from 'antd';
 import { intlShape, injectIntl } from 'react-intl';
 import connectNav from 'client/common/decorators/connect-nav';
 import { saveBillHead, lockManifest, openMergeSplitModal, resetBill, updateHeadNetWt, editBillBody,
@@ -50,7 +50,8 @@ const confirm = Modal.confirm;
     templateValLoading: state.cmsManifest.templateValLoading,
     billHeadFieldsChangeTimes: state.cmsManifest.billHeadFieldsChangeTimes,
   }),
-  { saveBillHead,
+  {
+    saveBillHead,
     openMergeSplitModal,
     resetBill,
     updateHeadNetWt,
@@ -67,7 +68,8 @@ const confirm = Modal.confirm;
     loadBillMeta,
     showPreviewer,
     loadDocuDatas,
-    resetBillHead }
+    resetBillHead,
+  }
 )
 @connectNav({
   depth: 3,
@@ -137,8 +139,7 @@ export default class ManifestEditor extends React.Component {
   generateEntry = () => {
     const { billHead } = this.props;
     this.setState({ generating: true });
-    this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no }).then(
-    (result) => {
+    this.props.validateBillDatas({ billSeqNo: this.props.billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
       if (result.error) {
         this.setState({ generating: false });
         if (result.error.message.key === 'body-error') {
@@ -181,7 +182,9 @@ export default class ManifestEditor extends React.Component {
     return info;
   }
   handleBillSave = () => {
-    const { billHead, ietype, loginId, tenantId, formData } = this.props;
+    const {
+      billHead, ietype, loginId, tenantId, formData,
+    } = this.props;
     let templateId = formData.template_id;
     if (!this.props.form.getFieldValue('model')) {
       templateId = null;
@@ -199,8 +202,9 @@ export default class ManifestEditor extends React.Component {
     if (agentInfo) {
       return message.error(`${agentInfo}`);
     }
-    this.props.saveBillHead({ head, ietype, loginId, tenantId }).then(
-    (result) => {
+    this.props.saveBillHead({
+      head, ietype, loginId, tenantId,
+    }).then((result) => {
       if (result.error) {
         message.error(result.error.message, 10);
       } else {
@@ -215,18 +219,16 @@ export default class ManifestEditor extends React.Component {
       content: '点击确定将清空所有表头和表体数据',
       onOk() {
         return new Promise((resolve, reject) => {
-          self.props.resetBill(self.props.billHead.id).then(
-            (result) => {
-              if (result.error) {
-                message.error(result.error.message, 10);
-                return reject();
-              } else {
-                message.info('清单已重置');
-                self.props.form.resetFields();
-                return resolve();
-              }
+          self.props.resetBill(self.props.billHead.id).then((result) => {
+            if (result.error) {
+              message.error(result.error.message, 10);
+              return reject();
+            } else {
+              message.info('清单已重置');
+              self.props.form.resetFields();
+              return resolve();
             }
-          );
+          });
         }).catch(() => message.error('重置失败'));
       },
       onCancel() {},
@@ -316,7 +318,9 @@ export default class ManifestEditor extends React.Component {
   handleLock = (lock) => {
     if (lock) {
       const { loginId, loginName, billHead } = this.props;
-      this.props.lockManifest({ loginId, loginName, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
+      this.props.lockManifest({
+        loginId, loginName, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -325,7 +329,9 @@ export default class ManifestEditor extends React.Component {
       });
     } else {
       const { billHead } = this.props;
-      this.props.lockManifest({ loginId: null, loginName: null, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no }).then((result) => {
+      this.props.lockManifest({
+        loginId: null, loginName: null, billSeqNo: billHead.bill_seq_no, delgNo: billHead.delg_no,
+      }).then((result) => {
         if (result.error) {
           message.error(result.error.message);
         } else {
@@ -390,7 +396,9 @@ export default class ManifestEditor extends React.Component {
       </Menu>);
   }
   render() {
-    const { billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates } = this.props;
+    const {
+      billHeadFieldsChangeTimes, ietype, form: { getFieldDecorator }, loginId, form, billHead, billBodies, billMeta, templates,
+    } = this.props;
     const { locked, lockedByOthers } = this.state;
     let sendable = billMeta.entries.length > 0;
     let revertable = billMeta.entries.length > 0;
@@ -414,30 +422,25 @@ export default class ManifestEditor extends React.Component {
       filterProducts = billBodies.filter(item => item.customs && item.customs.indexOf('B') !== -1);
     }
     const tabs = [];
-    tabs.push(
-      <TabPane tab="清单表头" key="header">
-        <Spin spinning={this.props.templateValLoading}>
-          <ManifestHeadPane ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
-        </Spin>
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="申报商品明细" key="body">
-        <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
-      </TabPane>);
+    tabs.push(<TabPane tab="清单表头" key="header">
+      <Spin spinning={this.props.templateValLoading}>
+        <ManifestHeadPane ietype={ietype} readonly={!editable} form={form} formData={this.state.headData} onSave={this.handleBillSave} />
+      </Spin>
+    </TabPane>);
+    tabs.push(<TabPane tab="申报商品明细" key="body">
+      <ManifestBodyPane ietype={ietype} readonly={!editable} headForm={form} data={billBodies} billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
+    </TabPane>);
     if (filterProducts.length > 0) {
-      tabs.push(
-        <TabPane tab="法检商品" key="legalInspection">
-          <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
-        </TabPane>);
+      tabs.push(<TabPane tab="法检商品" key="legalInspection">
+        <CiqDetailsPane filterProducts={filterProducts} fullscreen={this.state.fullscreen} />
+      </TabPane>);
     }
-    tabs.push(
-      <TabPane tab="集装箱" key="containers">
-        <ContainersPane fullscreen={this.state.fullscreen} />
-      </TabPane>);
-    tabs.push(
-      <TabPane tab="随附单据" key="attachedDocs" >
-        <DocuPane billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
-      </TabPane>);
+    tabs.push(<TabPane tab="集装箱" key="containers">
+      <ContainersPane fullscreen={this.state.fullscreen} />
+    </TabPane>);
+    tabs.push(<TabPane tab="随附单据" key="attachedDocs" >
+      <DocuPane billSeqNo={billHead.bill_seq_no} fullscreen={this.state.fullscreen} />
+    </TabPane>);
     return (
       <Layout>
         <Layout>
@@ -474,8 +477,8 @@ export default class ManifestEditor extends React.Component {
                 <OptGroup label="可用制单规则">
                   {templates.map(data => (<Option key={data.id} value={data.id}
                     search={`${data.id}${data.template_name}`}
-                  ><Icon type="book" /> {data.template_name}</Option>)
-                  )}
+                  ><Icon type="book" /> {data.template_name}
+                  </Option>))}
                 </OptGroup>
               </Select>)
             }
@@ -488,13 +491,14 @@ export default class ManifestEditor extends React.Component {
               {sendable &&
               <Button type="primary" icon="mail" onClick={this.handleSendDecls}>{this.msg('sendAllPackets')}</Button>}
               {editable &&
-                <Popconfirm title={'是否确认清空表头数据?'} onConfirm={this.handleBillHeadReset}>
+                <Popconfirm title="是否确认清空表头数据?" onConfirm={this.handleBillHeadReset}>
                   <Button type="danger" icon="delete" />
                 </Popconfirm>}
               {editable &&
               (<Button type="primary" icon="addfile" disabled={billHeadFieldsChangeTimes > 0}
                 loading={this.state.generating} onClick={this.handleGenerateEntry}
-              >{this.msg('generateCDP')}</Button>) }
+              >{this.msg('generateCDP')}
+              </Button>) }
               {editable &&
               <Button type="primary" icon="save" onClick={this.handleBillSave} disabled={billHeadFieldsChangeTimes === 0}>保存</Button>}
               <Dropdown overlay={this.renderOverlayMenu(editable, revertable)}><Button icon="ellipsis" /></Dropdown>

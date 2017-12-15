@@ -97,42 +97,42 @@ export default class TrackingItem extends Component {
   };
 
   render() {
-    const { row, isDragging, connectDragSource, connectDropTarget } = this.props;
+    const {
+      row, isDragging, connectDragSource, connectDropTarget,
+    } = this.props;
     const opacity = isDragging ? 0 : 1;
-    return connectDragSource(connectDropTarget(
-      <tr style={{ ...style, opacity }} className="ant-table-row  ant-table-row-level-0">
-        <td style={{ ...colStyle, width: 50 }}>
-          {row.source === 1 && <Icon type="rocket" />}
-          {row.source === 2 && <Icon type="form" />}
-          {row.source === 3 && <Icon type="form" />}
-        </td>
-        <td style={{ ...colStyle, width: '25%' }}>{row.title}</td>
-        <td style={{ ...colStyle }}>
-          <EditableCell value={row.custom_title} cellTrigger
-            onSave={value => this.props.handleCustomTitleChange(row.id, value)}
-          />
-        </td>
-        <td style={{ ...colStyle, width: 150 }}>
-          <EditableCell value={row.width} cellTrigger
-            onSave={value => this.props.handleWidthChange(row.id, value)}
-          />
-        </td>
-        <td style={{ ...colStyle, width: 200 }}>
-          <EditableCell value={row.datatype} type="select" cellTrigger
-            options={[{ key: 'STRING', text: '文本' }, { key: 'INTEGER', text: '数字' }, { key: 'DATE', text: '日期' }]}
-            onSave={value => this.props.handleDatatypeChange(row.id, value)}
-          />
-        </td>
-        <td style={{ ...colStyle, width: 150 }}>
-          <EditableCell value={String(row.editable)} type="select" cellTrigger
-            options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
-            onSave={value => this.props.handleEditableChange(row.id, value)}
-          />
-        </td>
-        <td style={{ ...colStyle, width: 100 }}>
-          <RowAction danger confirm="确认删除?" onConfirm={this.props.handleRemove} row={row} icon="delete" />
-        </td>
-      </tr>
-    ));
+    return connectDragSource(connectDropTarget(<tr style={{ ...style, opacity }} className="ant-table-row  ant-table-row-level-0">
+      <td style={{ ...colStyle, width: 50 }}>
+        {row.source === 1 && <Icon type="rocket" />}
+        {row.source === 2 && <Icon type="form" />}
+        {row.source === 3 && <Icon type="form" />}
+      </td>
+      <td style={{ ...colStyle, width: '25%' }}>{row.title}</td>
+      <td style={{ ...colStyle }}>
+        <EditableCell value={row.custom_title} cellTrigger
+          onSave={value => this.props.handleCustomTitleChange(row.id, value)}
+        />
+      </td>
+      <td style={{ ...colStyle, width: 150 }}>
+        <EditableCell value={row.width} cellTrigger
+          onSave={value => this.props.handleWidthChange(row.id, value)}
+        />
+      </td>
+      <td style={{ ...colStyle, width: 200 }}>
+        <EditableCell value={row.datatype} type="select" cellTrigger
+          options={[{ key: 'STRING', text: '文本' }, { key: 'INTEGER', text: '数字' }, { key: 'DATE', text: '日期' }]}
+          onSave={value => this.props.handleDatatypeChange(row.id, value)}
+        />
+      </td>
+      <td style={{ ...colStyle, width: 150 }}>
+        <EditableCell value={String(row.editable)} type="select" cellTrigger
+          options={[{ key: '0', text: '否' }, { key: '1', text: '是' }]}
+          onSave={value => this.props.handleEditableChange(row.id, value)}
+        />
+      </td>
+      <td style={{ ...colStyle, width: 100 }}>
+        <RowAction danger confirm="确认删除?" onConfirm={this.props.handleRemove} row={row} icon="delete" />
+      </td>
+    </tr>));
   }
 }

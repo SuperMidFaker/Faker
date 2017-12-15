@@ -6,11 +6,11 @@ import { Row, Col, Form, Input, Select, Table } from 'antd';
 import InputItem from './input-item';
 import { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
   from 'common/reducers/shipment';
-import PureRenderMixin from 'react/lib/ReactComponentWithPureRenderMixin';
 import { PRESET_TRANSMODES } from 'common/constants';
 import { format } from 'client/common/i18n/helpers';
 import messages from '../message.i18n';
 import globalMessages from 'client/common/root.i18n';
+
 const formatMsg = format(messages);
 const formatGlobalMsg = format(globalMessages);
 
@@ -25,12 +25,13 @@ function asNumber(str) {
 function showValue(val) {
   if (val === null || val === undefined) {
     return '';
-  } else {
-    return val;
   }
+  return val;
 }
 function ColumnInput(props) {
-  const { record, field, index, state, onChange } = props;
+  const {
+    record, field, index, state, onChange,
+  } = props;
   function handleInputChange(ev) {
     onChange(field, ev.target.value);
   }
@@ -48,7 +49,9 @@ ColumnInput.propTypes = {
 };
 
 function ColumnSelect(props) {
-  const { record, field, index, state, options, onChange } = props;
+  const {
+    record, field, index, state, options, onChange,
+  } = props;
   function handleChange(val) {
     onChange(field, val);
   }
@@ -63,9 +66,7 @@ function ColumnSelect(props) {
   }
   return selectedIndex === index ? (
     <Select value={showValue(state.editGoods[field])} onChange={handleChange}>
-      {options.map(
-        op => <Option value={op.value} key={op.key}>{op.name}</Option>
-      )}
+      {options.map(op => <Option value={op.value} key={op.key}>{op.name}</Option>)}
     </Select>
   ) : <span>{value}</span>;
 }
@@ -95,7 +96,9 @@ ColumnSelect.propTypes = {
     totalWeightRequired: state.shipment.totalWeightRequired,
     totalVolumeRequired: state.shipment.totalVolumeRequired,
   }),
-  { saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields }
+  {
+    saveLocalGoods, editLocalGoods, removeLocalGoods, setConsignFields,
+  }
 )
 export default class GoodsInfo extends React.Component {
   static propTypes = {
@@ -117,7 +120,6 @@ export default class GoodsInfo extends React.Component {
   }
   constructor(...args) {
     super(...args);
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
   }
   state = {
     editGoods: {
@@ -209,7 +211,9 @@ export default class GoodsInfo extends React.Component {
     const {
       formhoc, goods, goodsTypes, formhoc: { getFieldDecorator },
       packagings,
-      fieldDefaults: { goods_type, total_count, packageform, total_weight, insure_value, total_volume },
+      fieldDefaults: {
+        goods_type, total_count, packageform, total_weight, insure_value, total_volume,
+      },
       vertical, modeCode,
       totalWeightRequired, totalVolumeRequired,
     } = this.props;
@@ -217,23 +221,32 @@ export default class GoodsInfo extends React.Component {
       title: this.msg('goodsCode'),
       dataIndex: 'goods_no',
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="goods_no" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="goods_no"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsName'),
       dataIndex: 'name',
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="name" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="name"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsPackage'),
       dataIndex: 'package',
       width: 90,
       render: (text, record, index) =>
-        (<ColumnSelect record={record} field="package" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnSelect record={record}
+          field="package"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
           options={packagings.map(pk => ({
             key: pk.package_code,
             value: pk.package_code,
@@ -245,55 +258,76 @@ export default class GoodsInfo extends React.Component {
       dataIndex: 'count',
       width: 60,
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="count" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="count"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsWeight'),
       dataIndex: 'weight',
       width: 80,
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="weight" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="weight"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsVolume'),
       dataIndex: 'volume',
       width: 90,
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="volume" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="volume"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsLength'),
       dataIndex: 'length',
       width: 60,
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="length" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="length"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsWidth'),
       dataIndex: 'width',
       width: 60,
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="width" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="width"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsHeight'),
       dataIndex: 'height',
       width: 60,
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="height" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="height"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsRemark'),
       dataIndex: 'remark',
       render: (text, record, index) =>
-        (<ColumnInput record={record} field="remark" index={index}
-          state={this.state} onChange={this.handleGoodsColumnEdit}
+        (<ColumnInput record={record}
+          field="remark"
+          index={index}
+          state={this.state}
+          onChange={this.handleGoodsColumnEdit}
         />),
     }, {
       title: this.msg('goodsOp'),
@@ -313,36 +347,27 @@ export default class GoodsInfo extends React.Component {
           );
         } else if (record.__ops) {
           const opRendered = [];
-          record.__ops.forEach(
-            (op, idx) => {
-              if (idx !== record.__ops.length - 1) {
-                opRendered.push(
-                  <a key={`__ops0${op.name}`} onClick={op.handler}>{op.name}</a>
-                );
-                opRendered.push(
-                  <span key="__ops1divider" className="ant-divider" />
-                );
-              } else {
-                opRendered.push(
-                  <a key={`__ops2${op.name}`} onClick={op.handler}>{op.name}</a>
-                );
-              }
+          record.__ops.forEach((op, idx) => {
+            if (idx !== record.__ops.length - 1) {
+              opRendered.push(<a key={`__ops0${op.name}`} onClick={op.handler}>{op.name}</a>);
+              opRendered.push(<span key="__ops1divider" className="ant-divider" />);
+            } else {
+              opRendered.push(<a key={`__ops2${op.name}`} onClick={op.handler}>{op.name}</a>);
             }
-          );
+          });
           return (<span>{opRendered}</span>);
-        } else {
-          return (
-            <span>
-              <a onClick={() => this.handleGoodsEdit(record, index)}>
-                {formatGlobalMsg(this.props.intl, 'edit')}
-              </a>
-              <span className="ant-divider" />
-              <a onClick={() => this.handleGoodsRemove(index)}>
-                {formatGlobalMsg(this.props.intl, 'delete')}
-              </a>
-            </span>
-          );
         }
+        return (
+          <span>
+            <a onClick={() => this.handleGoodsEdit(record, index)}>
+              {formatGlobalMsg(this.props.intl, 'edit')}
+            </a>
+            <span className="ant-divider" />
+            <a onClick={() => this.handleGoodsRemove(index)}>
+              {formatGlobalMsg(this.props.intl, 'delete')}
+            </a>
+          </span>
+        );
       },
     }];
     let content = '';
@@ -356,32 +381,35 @@ export default class GoodsInfo extends React.Component {
               }],
               initialValue: goods_type,
             })(<Select>
-              {goodsTypes.map(
-                gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
-              )}
+              {goodsTypes.map(gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>)}
             </Select>)}
           </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg('totalCount')}
             field="total_count"
             fieldProps={{ initialValue: total_count }}
           />
-          <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
-            field="total_weight" addonAfter={this.msg('kilogram')}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg('totalWeight')}
+            field="total_weight"
+            addonAfter={this.msg('kilogram')}
             fieldProps={{ initialValue: total_weight }}
           />
-          <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
-            field="total_volume" addonAfter={this.msg('cubicMeter')}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg('totalVolume')}
+            field="total_volume"
+            addonAfter={this.msg('cubicMeter')}
             fieldProps={{ initialValue: total_volume }}
           />
           <FormItem label={this.msg('goodsPackage')}>
             {getFieldDecorator('package', { initialValue: packageform })(<Select>
-              {packagings.map(
-                pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-              )}
+              {packagings.map(pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>)}
             </Select>)}
           </FormItem>
-          <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
-            field="insure_value" addonAfter={this.msg('CNY')}
+          <InputItem formhoc={formhoc}
+            labelName={this.msg('insuranceValue')}
+            field="insure_value"
+            addonAfter={this.msg('CNY')}
             fieldProps={{ initialValue: insure_value }}
           />
         </div>
@@ -398,12 +426,11 @@ export default class GoodsInfo extends React.Component {
                   }],
                   initialValue: goods_type,
                 })(<Select>
-                  {goodsTypes.map(
-                gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>
-              )}
+                  {goodsTypes.map(gt => <Option value={parseInt(gt.value, 10)} key={`${gt.text}${gt.value}`}>{gt.text}</Option>)}
                 </Select>)}
               </FormItem>
-              <InputItem formhoc={formhoc} labelName={this.msg('totalCount')}
+              <InputItem formhoc={formhoc}
+                labelName={this.msg('totalCount')}
                 field="total_count"
                 fieldProps={{ initialValue: total_count }}
               />
@@ -411,30 +438,38 @@ export default class GoodsInfo extends React.Component {
             <Col sm={24} md={8}>
               <FormItem label={this.msg('goodsPackage')} required={modeCode === PRESET_TRANSMODES.ctn}>
                 {getFieldDecorator('package', { initialValue: packageform })(<Select>
-                  {packagings.map(
-                pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>
-              )}
+                  {packagings.map(pk => <Option value={pk.package_code} key={pk.package_code}>{pk.package_name}</Option>)}
                 </Select>)}
               </FormItem>
-              <InputItem formhoc={formhoc} labelName={this.msg('totalWeight')}
-                field="total_weight" addonAfter={this.msg('kilogram')}
-                fieldProps={{ initialValue: total_weight }} required={totalWeightRequired}
+              <InputItem formhoc={formhoc}
+                labelName={this.msg('totalWeight')}
+                field="total_weight"
+                addonAfter={this.msg('kilogram')}
+                fieldProps={{ initialValue: total_weight }}
+                required={totalWeightRequired}
               />
             </Col>
             <Col sm={24} md={8}>
-              <InputItem formhoc={formhoc} labelName={this.msg('insuranceValue')}
-                field="insure_value" addonAfter={this.msg('CNY')}
+              <InputItem formhoc={formhoc}
+                labelName={this.msg('insuranceValue')}
+                field="insure_value"
+                addonAfter={this.msg('CNY')}
                 fieldProps={{ initialValue: insure_value }}
               />
-              <InputItem formhoc={formhoc} labelName={this.msg('totalVolume')}
-                field="total_volume" addonAfter={this.msg('cubicMeter')}
-                fieldProps={{ initialValue: total_volume }} required={totalVolumeRequired}
+              <InputItem formhoc={formhoc}
+                labelName={this.msg('totalVolume')}
+                field="total_volume"
+                addonAfter={this.msg('cubicMeter')}
+                fieldProps={{ initialValue: total_volume }}
+                required={totalVolumeRequired}
               />
             </Col>
           </Row>
           <Row>
             <Col span="24">
-              <Table size="small" columns={columns} dataSource={[...goods, {
+              <Table size="small"
+                columns={columns}
+                dataSource={[...goods, {
                 key: 'goodsinfinity',
                 __ops: [{
                   name: formatGlobalMsg(this.props.intl, 'add'),
@@ -443,7 +478,8 @@ export default class GoodsInfo extends React.Component {
                   name: formatMsg(this.props.intl, 'compute'),
                   handler: this.handleGoodsListCompute,
                 }],
-              }]} pagination={false}
+              }]}
+                pagination={false}
               />
             </Col>
           </Row>
